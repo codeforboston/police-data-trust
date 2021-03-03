@@ -11,19 +11,21 @@ class Incidents(db.Model, fs_mixin):
 
 		__tablename__ = "incident"
 
-		incident_id = db.Column(db.Unicode(512), primary_key=True)
+		incident_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 		occurence_date = db.Column(db.DateTime)  # noqa: N815
-		state_abbv = db.Column(db.Unicode(512))
-		city = db.Column(db.Unicode(512))
-		address_1 = db.Column(db.Unicode(512))
-		address_2 = db.Column(db.Unicode(512))
-		zip_code = db.Column(db.Unicode(512))
-		stop_type = db.Column(db.Unicode(512))
-		call_type = db.Column(db.Unicode(512))
+		state_abbv = db.Column(db.Unicode(2))
+		city = db.Column(db.Unicode(100))
+		address_1 = db.Column(db.Unicode(100))
+		address_2 = db.Column(db.Unicode(100))
+		zip_code = db.Column(db.Unicode(10))
+		stop_type = db.Column(db.Integer)
+		call_type = db.Column(db.Integer)
 		has_multimedia = db.Column(db.Boolean)
 		from_report = db.Column(db.Boolean)
 		race = db.Column(db.Boolean)
-		neighborhood = db.Column(db.Unicode(512))
+		neighborhood = db.Column(db.Unicode(50))
+
+		convert_types = [{'type': bool, 'method': lambda v: True if v else False}]
 
 		# role = db.relationship("RoleTable", backref=db.backref("incidents", lazy=True))
 		
