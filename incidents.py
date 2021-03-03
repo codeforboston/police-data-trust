@@ -1,25 +1,31 @@
 """Define the SQL classes for Users."""
 
-from api import db
 from flask_sqlalchemy import SQLAlchemy
+from flask_serialize.flask_serialize import FlaskSerialize
 
-class Incidents(SQLAlchemy.Model):
+db = SQLAlchemy()
+fs_mixin = FlaskSerialize(db)
+
+class Incidents(db.Model, fs_mixin):
 		"""The SQL dataclass for an Incident."""
 
-		__tablename__ = "incidents"
+		__tablename__ = "incident"
 
-		Incident_ID = db.Column(db.Unicode(512), primary_key=True)
-		Occurence_Date = db.Column(db.DateTime)  # noqa: N815
-		State_Abbv = db.Column(db.Unicode(512))
-		City = db.Column(db.Unicode(512))
-		Address_1 = db.Column(db.Unicode(512))
-		Address_2 = db.Column(db.Unicode(512))
-		Zip_Code = db.Column(db.Unicode(512))
-		Stop_Type = db.Column(db.Unicode(512))
-		Call_Type = db.Column(db.Unicode(512))
-		Has_Multimedia = db.Column(db.Boolean)
-		From_Report = db.Column(db.Boolean)
-		Race = db.Column(db.Boolean)
-		Neighborhood = db.Column(db.Unicode(512))
+		incident_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+		occurence_date = db.Column(db.DateTime)  # noqa: N815
+		state_abbv = db.Column(db.Unicode(2))
+		city = db.Column(db.Unicode(100))
+		address_1 = db.Column(db.Unicode(100))
+		address_2 = db.Column(db.Unicode(100))
+		zip_code = db.Column(db.Unicode(10))
+		stop_type = db.Column(db.Integer)
+		call_type = db.Column(db.Integer)
+		has_multimedia = db.Column(db.Boolean)
+		from_report = db.Column(db.Boolean)
+		race = db.Column(db.Boolean)
+		neighborhood = db.Column(db.Unicode(50))
 
-		role = db.relationship("RoleTable", backref=db.backref("incidents", lazy=True))
+		convert_types = [{'type': bool, 'method': lambda v: True if v else False}]
+
+		# role = db.relationship("RoleTable", backref=db.backref("incidents", lazy=True))
+		
