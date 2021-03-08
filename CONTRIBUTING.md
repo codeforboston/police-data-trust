@@ -10,13 +10,10 @@
 The Police Misconduct Data Collaborative project has a [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 to which all contributors must adhere.
 
-## [Issues]()
+## [Issues and Feature Requests](https://github.com/codeforboston/police-data-trust/issues)
 
-* [Feature Requests]()
-* [Submitting a Bug Report]()
-
-If you think that you've found a bug in the application, first be certain that you're testing against the most recent version of the application available on the main repo. If not, search our [issues list]() on GitHub in case a similar issue has already been opened.
-* [Triaging a Bug Report](https://github.com/codeforboston/police-data-trust/issues)
+- If you have a feature request or but report, our [issues page](https://github.com/codeforboston/police-data-trust/issues) is where to go to place those.
+- If you think that you've found a bug in the application, first be certain that you're testing against the most recent version of the application available on the main repo. If not, search our [issues list](https://github.com/codeforboston/police-data-trust/issues) on GitHub in case a similar issue has already been opened.
 
 ## [Pull Requests]()
 
