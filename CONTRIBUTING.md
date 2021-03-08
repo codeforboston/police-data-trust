@@ -2,7 +2,7 @@
 
 - [Contributing to Police Misconduct Data Collaborative](#contributing-to-police-misconduct-data-collaborative)
   - [Code of Conduct](#code-of-conduct)
-  - [Issues](#issues-and-feature-requests)
+  - [Issues and Feature Requests](#issues-and-feature-requests)
   - [Pull Requests](#pull-requests)
 
 ## [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
