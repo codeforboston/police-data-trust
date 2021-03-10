@@ -1,0 +1,2 @@
+-r _dev.in
+psycopg2
