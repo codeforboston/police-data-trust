@@ -6,12 +6,14 @@ import enum
 db = SQLAlchemy()
 fs_mixin = FlaskSerialize(db)
 
+
 class Initial_Encounter_Enum(enum.Enum):
     Unknown = 1
     TrafficViolation = 2
     Trespassing = 3
     PotentialCrimeSuspect = 4
     Other = 5
+
 
 class Victim_Weapon_Enum(enum.Enum):
     Unknown = 1
@@ -20,6 +22,7 @@ class Victim_Weapon_Enum(enum.Enum):
     Blunt = 4
     NoWeapon = 5
     Other = 6
+
 
 class Victim_Action_Enum(enum.Enum):
     Unknown = 1
@@ -30,6 +33,7 @@ class Victim_Action_Enum(enum.Enum):
     Attacking = 6
     Other = 7
 
+
 class Cause_Of_Death_Enum(enum.Enum):
     Unknown = 1
     BluntForce = 2
@@ -37,11 +41,13 @@ class Cause_Of_Death_Enum(enum.Enum):
     Choke = 4
     Other = 5
 
+
 class Gender_Enum(enum.Enum):
     Unknown = 1
     Male = 2
     Female = 3
     Transgender = 4
+
 
 class Race_Enum(enum.Enum):
     Unknown = 1
@@ -50,6 +56,7 @@ class Race_Enum(enum.Enum):
     American_Indian_Alaska_Native = 4
     Asian = 5
     Native_Hawaiian_Pacific_Islander = 6
+
 
 class Status_Enum(enum.Enum):
     Unknown = 1
