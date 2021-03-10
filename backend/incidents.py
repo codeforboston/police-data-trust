@@ -117,3 +117,4 @@ class Incidents(db.Model, fs_mixin):
 
     role = db.relationship("RoleTable",
                            backref=db.backref("incidents", lazy=True))
+    
