@@ -115,4 +115,5 @@ class Incidents(db.Model, fs_mixin):
     Agency_Latitude = db.Column(db.Float)
     Agency_Longitude = db.Column(db.Float)
 
-    role = db.relationship("RoleTable", backref=db.backref("incidents", lazy=True))
+    role = db.relationship("RoleTable",
+                           backref=db.backref("incidents", lazy=True))
