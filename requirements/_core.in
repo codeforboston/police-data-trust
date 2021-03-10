@@ -1,4 +1,4 @@
 flask
 flask-sqlalchemy
-psycopg2
+# psycopg2
 flask-serialize

@@ -51,8 +51,6 @@ pluggy==0.13.1
     # via pytest
 psycopg2-binary==2.8.6
     # via -r requirements/dev_unix.in
-psycopg2==2.8.6
-    # via -r requirements/_core.in
 py==1.10.0
     # via pytest
 pycodestyle==2.6.0
