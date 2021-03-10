@@ -27,4 +27,7 @@ class Incidents(db.Model, fs_mixin):
 
     convert_types = [{'type': bool, 'method': lambda v: True if v else False}]
 
-    # role = db.relationship("RoleTable", backref=db.backref("incidents", lazy=True))
+    # role = db.relationship(
+    #     "RoleTable",
+    #      backref=db.backref("incidents", lazy=True)
+    # )

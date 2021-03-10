@@ -21,6 +21,10 @@ def create_app(config=None):
         """Do initial setup of application."""
         db.create_all()
 
+    @app.route("/")
+    def hello_world():
+        return "Hello, world!"
+
     return app
 
 

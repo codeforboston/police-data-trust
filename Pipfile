@@ -12,7 +12,9 @@ flask-serialize = "*"
 [dev-packages]
 python-dotenv = "*"
 pytest = "*"
+pytest-cov = "*"
 flake8 = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"

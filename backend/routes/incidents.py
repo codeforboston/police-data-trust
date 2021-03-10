@@ -2,7 +2,8 @@ from flask import Blueprint
 from backend.incidents import Incidents
 
 
-incident_routes = Blueprint("incident_routes", __name__, url_prefix="/incidents")
+incident_routes = Blueprint("incident_routes", __name__,
+                            url_prefix="/incidents")
 
 
 @incident_routes.route("/", methods=["POST", "GET"])
