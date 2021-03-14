@@ -46,7 +46,7 @@ def make_all_tables():
     '''
 
     # read configs
-    with open(r'pull-public-data/configs.yaml') as file:
+    with open(r'backend/pull-public-data/configs.yaml') as file:
         configs = yaml.load(file, Loader=yaml.FullLoader)
     xwalk = pd.read_csv(configs['resources']['varname_crosswalk'])
 
