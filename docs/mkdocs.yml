@@ -1,0 +1,49 @@
+site_name: Police Misconduct Data Initiative
+site_url: https://codeforboston.github.io/police-data-trust/
+#site_description:
+site_author: Code For Boston
+repo_url: https://github.com/codeforboston/police-data-trust
+repo_name: codeforboston/police-data-trust
+docs_dir: src
+nav:
+- Home: index.md
+- Setup: setup.md
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: black
+    accent: orange
+  icon:
+    logo: fontawesome/regular/id-badge
+  font:
+    text: Opens Sans
+    code: Roboto Mono
+plugins:
+  - macros
+markdown_extensions:
+- admonition
+- pymdownx.tabbed # https://facelessuser.github.io/pymdown-extensions/
+- pymdownx.keys
+- pymdownx.details
+- pymdownx.inlinehilite
+- pymdownx.magiclink:
+    repo_url_shorthand: true
+    user: squidfunk
+    repo: mkdocs-material
+#- pymdownx.superfences:
+#    custom_fences:
+#    - name: mermaid
+#      class: mermaid
+#      format: !!python/name:pymdownx.superfences.fence_div_format
+- sane_lists
+extra:
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/police-data-trust/flagging
+  - icon: fontawesome/brands/meetup
+    link: https://www.meetup.com/Code-for-Boston/
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/codeforboston
+#extra_javascript:
+#- https://unpkg.com/mermaid@8.4.6/dist/mermaid.min.js
