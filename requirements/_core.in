@@ -2,3 +2,5 @@ flask
 flask-sqlalchemy
 # psycopg2
 flask-serialize
+requests
+celery
