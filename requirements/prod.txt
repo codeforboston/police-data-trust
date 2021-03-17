@@ -83,6 +83,8 @@ python-dotenv==0.15.0
     # via -r requirements/_core.in
 pytz==2021.1
     # via pandas
+pyyaml==5.4.1
+    # via -r requirements/_core.in
 regex==2020.11.13
     # via black
 requests==2.25.1

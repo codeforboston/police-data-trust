@@ -5,6 +5,7 @@ pandas
 requests
 pytest
 pytest-cov
+PyYAML
 black
 flake8
 pip-tools
