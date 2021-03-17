@@ -99,7 +99,7 @@ class Incidents(db.Model, fs_mixin):
     Death_City = db.Column(db.Unicode(512))
     Death_Address_1 = db.Column(db.Unicode(512))
     Death_Address_2 = db.Column(db.Unicode(512))
-    Death_Zip_Code = db.Column(db.Integer)
+    Death_Zip_Code = db.Column(db.Unicode(10))
     Cause_Of_Death = db.Column(db.Enum(Cause_Of_Death_Enum))
     Cause_Of_Death_Description = db.Column(db.Unicode(512))
 
@@ -118,7 +118,7 @@ class Incidents(db.Model, fs_mixin):
     Agency_City = db.Column(db.Unicode(512))
     Agency_Address_1 = db.Column(db.Unicode(512))
     Agency_Address_2 = db.Column(db.Unicode(512))
-    Agency_Zip_Code = db.Column(db.Integer)
+    Agency_Zip_Code = db.Column(db.Unicode(10))
     Agency_Latitude = db.Column(db.Float)
     Agency_Longitude = db.Column(db.Float)
 
