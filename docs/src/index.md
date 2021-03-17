@@ -6,7 +6,7 @@
 
 ## Join Us
 
-If you are interested in volunteering for the Safe Drinking Water Project:
+If you are interested in volunteering for our project:
 
 - __Join the Slack.__ Say hi and introduce yourself! Additionally, the `#police-data-trust` channel has various pinned items that will be of use for getting started.
 

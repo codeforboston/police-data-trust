@@ -152,4 +152,4 @@ After you get everything set up, you should run the website at least once. The p
      * Restarting with stat
     ```
 
-4. Point your browser of choice to the URL shown in the terminal output. If everything worked out, the website should be running on your local computer!
+3. Point your browser of choice to the URL shown in the terminal output. If everything worked out, the website should be running on your local computer!
