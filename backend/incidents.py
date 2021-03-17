@@ -79,7 +79,7 @@ class Incidents(db.Model, fs_mixin):
     City = db.Column(db.Unicode(512))
     Address_1 = db.Column(db.Unicode(512))
     Address_2 = db.Column(db.Unicode(512))
-    Zip_Code = db.Column(db.Integer)
+    Zip_Code = db.Column(db.Unicode(10))
     Latitude = db.Column(db.Float)
     Longitude = db.Column(db.Float)
     Reported_Date = db.Column(db.DateTime)
