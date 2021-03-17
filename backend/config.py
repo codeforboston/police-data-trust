@@ -10,7 +10,7 @@ class Config(object):
                                    os.environ.get("USER", "postgres"))
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "postgres")
-    
+
     SQLALCHEMY_DATABASE_URI = "postgresql://%s:%s@%s:%s/%s" % (
         POSTGRES_USER,
         POSTGRES_PASSWORD,
