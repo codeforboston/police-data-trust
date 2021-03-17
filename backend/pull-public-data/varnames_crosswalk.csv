@@ -1,0 +1,11 @@
+﻿common,mpv,mpv_test
+death_location_city,city,city
+death_location_county,county,county
+death_location_street_address,street_address_of_incident,street_address_of_incident
+death_manner,cause_of_death,cause_of_death
+incident_date,date_of_incident_monthdayyear,date_of_incident_monthdayyear
+record_id,mpv_id,mpv_id
+victim_age,victims_age,victims_age
+victim_name_full,victims_name,victims_name
+victim_race,victims_race,victims_race
+victim_sex,victims_gender,victims_gender
