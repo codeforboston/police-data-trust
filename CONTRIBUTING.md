@@ -4,6 +4,7 @@
   - [Code of Conduct](#code-of-conduct)
   - [Issues and Feature Requests](#issues-and-feature-requests)
   - [If You're New to Open Source](#if-youre-new-to-open-source)
+  - [Git Flow](#git-flow)
   - [Making Pull Requests](#making-pull-requests)
 
 ## [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
@@ -18,7 +19,15 @@ to which all contributors must adhere.
 
 ## If You're New to Open Source
 
-If you're brand new to Git and/or GitHub, you'll want to familiarize yourself with the basics of version control, which you can do with Github's [Hello World tutorial](https://guides.github.com/activities/hello-world/) 
+If you're brand new to Git and/or GitHub, you'll want to familiarize yourself with the basics of version control, which you can do with Github's [Hello World tutorial](https://guides.github.com/activities/hello-world/).
+
+## Git Flow
+
+Project flow will work like this:
+
+1. You'll make a clone of the `main` branch of the repo on your local machine, and [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account. 
+
+2. You'll push any changes made on your local project to the forked version on your GitHub account, and then open a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) from your forked repo to the main repo.
 
 ## [Making Pull Requests]()
 
