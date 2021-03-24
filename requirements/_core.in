@@ -1,4 +1,12 @@
 flask
 flask-sqlalchemy
-# psycopg2
 flask-serialize
+pandas
+requests
+pytest
+pytest-cov
+PyYAML
+black
+flake8
+pip-tools
+python-dotenv

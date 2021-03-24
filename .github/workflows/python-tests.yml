@@ -1,4 +1,4 @@
-name: tests
+name: Python tests
 
 on:
 - push
@@ -29,6 +29,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install python-dev libpq-dev
         python -m pip install --upgrade pip
         python -m pip install -r requirements/dev_unix.txt

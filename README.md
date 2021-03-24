@@ -1,15 +1,22 @@
 # police-data-trust
+# Installation
 
-## Development Setup
+1. Make sure that you have [Python 3.8](https://www.python.org/), [Git](https://git-scm.com/), and [PostgreSQL](https://www.postgresql.org/) are installed on your machine.
 
-### Prerequisites
+2. Clone this repository `git clone git@github.com:codeforboston/police-data-trust.git`
 
-Please have the following installed on your computer to use the application:
+3. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
 
-- [Git](https://git-scm.com/)
-- [Python](https://www.python.org/) (Version 3.8+)
-- [Postgres](https://www.postgresql.org/)
+```
+POSTGRES_USER=<YOUR_USERNAME>
+POSTGRES_PASSWORD=<YOUR_PASSWORD>
+```
+
+4. Login into your local PostgreSQL instance using the preferred user from the previous step, and run the command:
+
+`CREATE DATABASE police_data;`
 
 
+# Documentation
 
-
+[Docs](https://codeforboston.github.io/police-data-trust)

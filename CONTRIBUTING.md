@@ -17,7 +17,7 @@ to which all contributors must adhere.
 
 ## [Pull Requests]()
 
-* [Dependencies]()
-* [Setting up your local environment]()
+
+
 * [The Process of Making Changes]()
 * [Reviewing Pull Requests]()

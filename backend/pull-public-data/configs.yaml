@@ -1,0 +1,40 @@
+resources:
+  varname_crosswalk: 'backend/pull-public-data/varnames_crosswalk.csv'
+
+sources:
+  mpv:
+      url: https://mappingpoliceviolence.org/s/MPVDatasetDownload.xlsx
+  
+tables:
+  report:
+    required:
+      - record_id
+      - data_source_id
+    optional: 
+      - null
+  incident:
+    required:
+      - record_id
+      - incident_id # primary key
+    optional:
+      - incident_date
+      - incident_type
+  victim:
+    required:
+      - incident_id
+      - victim_id # primary key
+    optional:
+      - victim_age
+      - victim_name_full
+      - victim_race
+      - victim_sex
+  death:
+    required:
+      - incident_id
+      - victim_id
+      - death_id # primary key
+    optional:
+      - death_location_city
+      - death_location_county
+      - death_location_street_address
+      - death_manner
