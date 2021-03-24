@@ -8,8 +8,8 @@
 
 If you are interested in volunteering for our project:
 
-- __Join the Slack.__ Say hi and introduce yourself! Additionally, the `#police-data-trust` channel has various pinned items that will be of use for getting started.
+- **Join the Slack.** Say hi and introduce yourself! Additionally, the `#police-data-trust` channel has various pinned items that will be of use for getting started.
 
-- __Read the docs.__ The docs contain more information about the project, plus steps on how to set up the project so you can start contributing.
+- **Read the docs.** The docs contain more information about the project, plus steps on how to set up the project so you can start contributing.
 
-- __Meet us on Tuesday nights.__ We would love to meet you! We meet alongside other Code for Boston teams every Tuesday at 7:00pm. [Sign up to attend Code for Boston events here](https://www.meetup.com/Code-for-Boston/). At the moment, Code for Boston meets remotely; visit the `#general` channel in our Slack every Tuesday at 7:00pm EST for a link to our Zoom meeting.
+- **Meet us on Tuesday nights.** We would love to meet you! We meet alongside other Code for Boston teams every Tuesday at 7:00pm. [Sign up to attend Code for Boston events here](https://www.meetup.com/Code-for-Boston/). At the moment, Code for Boston meets remotely; visit the `#general` channel in our Slack every Tuesday at 7:00pm EST for a link to our Zoom meeting.
