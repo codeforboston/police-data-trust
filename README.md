@@ -12,7 +12,7 @@ POSTGRES_USER=<YOUR_USERNAME>
 POSTGRES_PASSWORD=<YOUR_PASSWORD>
 ```
 
-4. Login into your local PostgreSQL instance using the preferred user from the previous step:
+4. Login into your local PostgreSQL instance using the preferred user from the previous step using the SQL Shell or the following command:
 
 `psql -U postgres` 
 
