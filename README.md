@@ -14,7 +14,7 @@ POSTGRES_PASSWORD=<YOUR_PASSWORD>
 
 4. Login into your local PostgreSQL instance using the preferred user from the previous step, and run the command: `CREATE DATABASE police_data;`
 
-5. Test application by running either the `run_unix.sh` or `run_windows.bat` executable as appropriate for your operating system.
+5. Test application by running either the `run_unix.sh` or `run_windows.bat` executable from the root of the application as appropriate for your operating system.
 
 
 # Documentation
