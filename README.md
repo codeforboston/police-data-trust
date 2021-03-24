@@ -3,9 +3,11 @@
 
 1. Make sure that [Python 3.8](https://www.python.org/), [Git](https://git-scm.com/), and [PostgreSQL](https://www.postgresql.org/) are installed on your machine.
 
-2. Clone this repository `git clone git@github.com:codeforboston/police-data-trust.git`
+2. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account. 
 
-3. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
+3. Clone this repository `git clone git@github.com:codeforboston/police-data-trust.git`
+
+4. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
 
 ```
 POSTGRES_USER=<YOUR_USERNAME>
