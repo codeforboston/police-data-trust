@@ -12,7 +12,7 @@ Among those datasets available to the public, each data source reporting on poli
 
 - **The schemas of the data may differ:** There are lots of ways to record all the events that occur within a single police interaction with a member of the public, and data aggregators pick and choose what data they believe is salient in a format they prefer.
 
-  - An example: Complaint filing systems differ based on different departments. For example, many complaint systems have encodings such as “improper use of force” or “illegal search.” These encoding systems may differ from department to department.
+    - An example: Complaint filing systems differ based on different departments. For example, many complaint systems have encodings such as “improper use of force” or “illegal search.” These encoding systems may differ from department to department.
 
 ### Affected Stakeholders
 
@@ -45,10 +45,12 @@ Our end goal is a web application with a public facing API that is queryable by 
 Police Data Trust is not the first project to tackle this problem. If you want to understand police data in the United States, a good place to start are datasets compiled by organizations that already go through the hard work of collecting, cleaning, aggregating, and presenting that data to the public.
 
 - **[Chicago Police Data Trust](https://cpdp.co/)** (via [Invisible Institute](https://invisible.institute/)) - Data received from FOIAs and discovery from a few legal cases involving police officers.
-  - _Invisible Institute has a Github [here](https://github.com/invinst/)._
+
+    - _Invisible Institute has a Github [here](https://github.com/invinst/)._
 
 - **[Mapping Police Violence](https://mappingpoliceviolence.org/)** (via Campaign Zero) - Curated dataset of nationwide police killings. It appears they collect all of their data based on media coverage.
-  - _Campaign Zero has a Github [here](https://github.com/campaignzero)._
+
+    - _Campaign Zero has a Github [here](https://github.com/campaignzero)._
 
 - **[Texas Justice Initiative](https://texasjusticeinitiative.org/)** - Collects police shooting and deaths in custody data for Texas.
 
