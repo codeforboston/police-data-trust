@@ -15,6 +15,18 @@ to which all contributors must adhere.
 - If you have a feature request or but report, our [issues page](https://github.com/codeforboston/police-data-trust/issues) is where to go to place those.
 - If you think that you've found a bug in the application, first be certain that you're testing against the most recent version of the application available on the main repo. If not, search our [issues list](https://github.com/codeforboston/police-data-trust/issues) on GitHub in case a similar issue has already been opened.
 
+## Python Code Contributions
+
+#### Style guide:
+
+- Use [PEP-8](https://www.python.org/dev/peps/pep-0008/) above everything. We adhere to 80 line limits and 4 space indents.
+- Also use the [Google Style Guide](https://google.github.io/styleguide/pyguide.html).
+
+#### Before you submit a [pull request](https://github.com/codeforboston/police-data-trust/pulls):
+
+- Run backend tests with `python -m pytest`
+- Run flake8 with `flake8 backend/`. If flake8 gives you any trouble, you can run `black backend/` to prettify your code automatically or use `# noqa` comments _sparingly_ if you are absolutely sure a line of code is fine.
+
 ## [Pull Requests]()
 
 * [Dependencies]()
