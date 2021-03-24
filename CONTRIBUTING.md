@@ -33,9 +33,11 @@ Project flow will work like this:
 
 Pull requests are merged into our main branch. This makes main our main development branch. You'll want to keep your fork and local repo current with this branch so you're always working off the latest code. To do so, run these commands:
 
+```
 git checkout main
 git pull upstream main
 git push origin main
+```
 
 
 

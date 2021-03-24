@@ -1,7 +1,7 @@
 # police-data-trust
-# Installation
+## Installation
 
-1. Make sure that you have [Python 3.8](https://www.python.org/), [Git](https://git-scm.com/), and [PostgreSQL](https://www.postgresql.org/) are installed on your machine.
+1. Make sure that [Python 3.8](https://www.python.org/), [Git](https://git-scm.com/), and [PostgreSQL](https://www.postgresql.org/) are installed on your machine.
 
 2. Clone this repository `git clone git@github.com:codeforboston/police-data-trust.git`
 
