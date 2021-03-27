@@ -1,5 +1,5 @@
 from flask import Flask
-
+import enum
 from backend.routes.incidents import incident_routes
 from backend.config import Config
 from backend.incidents import db
