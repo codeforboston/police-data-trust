@@ -3,6 +3,7 @@ from flask import Flask
 from backend.routes.incidents import incident_routes
 from backend.config import Config
 from backend.incidents import db
+from backend.cli import pip_compile
 
 
 def create_app(config=None):
@@ -13,8 +14,8 @@ def create_app(config=None):
     app.config.from_object(config)
 
     db.init_app(app)
-
     app.register_blueprint(incident_routes)
+    app.cli.add_command(pip_compile)
 
     @app.before_first_request
     def setup_application() -> None:
