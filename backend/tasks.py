@@ -30,17 +30,17 @@ def get_or_create(session, model, **kwargs):
             session.commit()
             return instance
     except Exception as err:
-        raise
+        print(err)
 
 
-@app.task(bind=True, name='refresh')
+@ app.task(bind=True, name='refresh')
 def refresh(self, urls):
     session = Session()
     for url in urls:
         fetch_data(url)
 
 
-@app.task(bind=True, name='fetch_data')
+@ app.task(bind=True, name='fetch_data')
 def fetch_data(self, url):
     res = requests.get(url)
     try:
@@ -48,4 +48,4 @@ def fetch_data(self, url):
             for data in res.data:
                 get_or_create(session, Incidents, data)
     except Exception as err:
-        raise
+        print(err)
