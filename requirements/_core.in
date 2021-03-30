@@ -1,10 +1,7 @@
 flask
 flask-sqlalchemy
 flask-serialize
-<<<<<<< HEAD
-requests
 celery
-=======
 pandas
 requests
 pytest
@@ -14,4 +11,3 @@ black
 flake8
 pip-tools
 python-dotenv
->>>>>>> upstream/main
