@@ -1,4 +1,3 @@
-from celery import Celery
 from incidents import Incidents
 from config import Config
 from sqlalchemy import create_engine
