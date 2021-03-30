@@ -35,13 +35,13 @@ def get_or_create(session, model, **kwargs):
 
 @ app.task(bind=True, name='refresh')
 def refresh(self, urls):
-    session = Session()
     for url in urls:
         fetch_data(url)
 
 
 @ app.task(bind=True, name='fetch_data')
 def fetch_data(self, url):
+    session = Session()
     res = requests.get(url)
     try:
         if res.data:
