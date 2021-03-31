@@ -1,4 +1,5 @@
 black
+celery
 flake8
 flask
 flask-serialize
