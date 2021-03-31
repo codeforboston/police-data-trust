@@ -1,9 +1,9 @@
-from incidents import Incidents
-from config import Config
+from ..incidents import Incidents
+from ..config import Config
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from worker import app
+from .worker import app
 import requests
 
 
