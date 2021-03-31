@@ -9,8 +9,8 @@ from .database import db_cli
 from .utils import dev_only
 
 
-def create_app(config: Optional[object] = None):
-    """"""
+def create_app(config: Optional[str] = None):
+    """Create the API application."""
     app = Flask(__name__)
     config_obj = get_config_from_env(config or app.env)
     app.config.from_object(config_obj)
@@ -20,11 +20,6 @@ def create_app(config: Optional[object] = None):
         register_commands(app)
         register_routes(app)
         register_misc(app)
-
-    @app.before_first_request
-    def setup_application() -> None:
-        """Do initial setup of application."""
-        db.create_all()
 
     return app
 
@@ -85,6 +80,11 @@ def register_routes(app: Flask):
 def register_misc(app: Flask):
     """For things that don't neatly fit into the other "register" functions.
     """
+
+    @app.before_first_request
+    def setup_application() -> None:
+        """Do initial setup of application."""
+        db.create_all()
 
     @app.shell_context_processor
     def make_shell_context():

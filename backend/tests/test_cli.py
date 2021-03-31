@@ -1,4 +1,3 @@
-
 def test_shell_context_processor(app):
     with app.app_context():
         shell_globals = app.shell_context_processors[0]()

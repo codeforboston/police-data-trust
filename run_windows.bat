@@ -4,7 +4,7 @@ python -m pip install -r requirements/dev_windows.txt
 
 set FLASK_ENV=development
 
-flask database create
-flask database init
+flask psql create
+flask psql init
 
 flask run

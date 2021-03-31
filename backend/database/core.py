@@ -22,7 +22,7 @@ from ..utils import dev_only
 db = SQLAlchemy()
 
 
-@click.group("database", cls=AppGroup)
+@click.group("psql", cls=AppGroup)
 @with_appcontext
 @click.pass_context
 def db_cli(ctx: click.Context):
