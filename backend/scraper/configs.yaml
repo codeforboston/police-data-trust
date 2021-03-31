@@ -1,5 +1,5 @@
 resources:
-  varname_crosswalk: 'backend/pull-public-data/varnames_crosswalk.csv'
+  varname_crosswalk: 'backend/scraper/varnames_crosswalk.csv'
 
 sources:
   mpv:
