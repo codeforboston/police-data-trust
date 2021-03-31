@@ -1,5 +1,5 @@
 """Define the SQL classes for Users."""
-from backend.database.core import db
+from backend.database import db
 
 from flask_serialize.flask_serialize import FlaskSerialize
 import enum

@@ -19,6 +19,7 @@ def create_app(config: Optional[object] = None):
         register_extensions(app)
         register_commands(app)
         register_routes(app)
+        register_misc(app)
 
     @app.before_first_request
     def setup_application() -> None:
@@ -79,6 +80,22 @@ def register_routes(app: Flask):
     @app.route("/")
     def hello_world():
         return "Hello, world!"
+
+
+def register_misc(app: Flask):
+    """For things that don't neatly fit into the other "register" functions.
+    """
+
+    @app.shell_context_processor
+    def make_shell_context():
+        """This function makes some objects available in the Flask shell without
+        the need to manually declare an import. This is just a convenience for
+        using the Flask shell.
+        """
+        from flask import current_app as app
+        from .database import db  # noqa: F401
+        client = app.test_client()
+        return locals()
 
 
 if __name__ == "__main__":

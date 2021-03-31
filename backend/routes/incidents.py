@@ -1,5 +1,5 @@
 from flask import Blueprint
-from backend.database.models.incidents import Incidents
+from backend.database import Incidents
 
 
 incident_routes = Blueprint(
