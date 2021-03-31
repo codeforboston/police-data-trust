@@ -6,6 +6,9 @@
   - [If You're New to Open Source](#if-youre-new-to-open-source)
   - [Git Flow](#git-flow)
   - [Making Pull Requests](#making-pull-requests)
+  - [Python Code Contributions](#python-code-contributions)
+    - [Style guide:](#style-guide)
+    - [Before you submit a pull request:](#before-you-submit-a-pull-request)
 
 ## [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 
@@ -38,8 +41,15 @@ git checkout main
 git pull upstream main
 git push origin main
 ```
+## Python Code Contributions
 
+### Style guide:
 
+- Use [PEP-8](https://www.python.org/dev/peps/pep-0008/) above everything. We adhere to 80 line limits and 4 space indents.
+- Also use the [Google Style Guide](https://google.github.io/styleguide/pyguide.html).
 
-* [The Process of Making Changes]()
-* [Reviewing Pull Requests]()
+### Before you submit a [pull request](https://github.com/codeforboston/police-data-trust/pulls):
+
+- Run backend tests with `python -m pytest`
+- Run flake8 with `flake8 backend/`. If flake8 gives you any trouble, you can run `black backend/` to prettify your code automatically or use `# noqa` comments _sparingly_ if you are absolutely sure a line of code is fine.
+
