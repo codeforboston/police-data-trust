@@ -1,6 +1,7 @@
 flask
 flask-sqlalchemy
 flask-serialize
+celery
 pandas
 requests
 pytest
