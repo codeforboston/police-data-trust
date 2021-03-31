@@ -67,18 +67,18 @@ def make_all_tables():
 
     # make data tables
     data_sources = list(configs["sources"].keys())
-#    print("Sources: ")
-#    print(configs["sources"])
+    # print("Sources: ")
+    # print(configs["sources"])
     data_list = [
         make_tables_data_source(x, xwalk, configs) for x in data_sources
     ]
     table_names = list(configs["tables"].keys())
     table_list = [pd.concat([d[t] for d in data_list]) for t in table_names]
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
-    #print(table_dict)
+    # print(table_dict)
     return table_dict
 
 
 if __name__ == "__main__":
-    #print("in main")
+    # print("in main")
     make_all_tables()
