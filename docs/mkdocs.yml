@@ -32,11 +32,11 @@ markdown_extensions:
     repo_url_shorthand: true
     user: squidfunk
     repo: mkdocs-material
-#- pymdownx.superfences:
-#    custom_fences:
-#    - name: mermaid
-#      class: mermaid
-#      format: !!python/name:pymdownx.superfences.fence_div_format
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_div_format
 - sane_lists
 extra:
   social:
@@ -46,5 +46,5 @@ extra:
     link: https://www.meetup.com/Code-for-Boston/
   - icon: fontawesome/brands/twitter
     link: https://twitter.com/codeforboston
-#extra_javascript:
-#- https://unpkg.com/mermaid@8.4.6/dist/mermaid.min.js
+extra_javascript:
+- https://unpkg.com/mermaid@8.4.6/dist/mermaid.min.js

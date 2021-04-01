@@ -158,5 +158,10 @@ def delete_database(
                        "The database will not be deleted.")
             return None
 
-    cursor.execute(f"DROP DATABASE {database};")
-    click.echo(f"Database {database!r} was deleted.")
+    try:
+        cursor.execute(f"DROP DATABASE {database};")
+    except psycopg2.errors.lookup("3D000"):
+        click.echo(f"Database {database!r} does not exist.")
+        cursor.execute("ROLLBACK")
+    else:
+        click.echo(f"Database {database!r} was deleted.")
