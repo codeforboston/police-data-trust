@@ -4,12 +4,18 @@ setting up and tearing down the database.
 Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
+from typing import Optional
+import os
+
+import pandas as pd
 import click
 
 from flask import current_app
 from flask.cli import AppGroup
 from flask.cli import with_appcontext
+from werkzeug.utils import secure_filename
 
+from sqlalchemy.exc import ResourceClosedError
 from flask_sqlalchemy import SQLAlchemy
 
 import psycopg2.errors
@@ -20,6 +26,32 @@ from ..config import TestingConfig
 from ..utils import dev_only
 
 db = SQLAlchemy()
+
+
+QUERIES_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "queries"))
+
+
+def execute_query(filename: str) -> Optional[pd.DataFrame]:
+    """Run SQL from a file. It will return a Pandas DataFrame if it selected
+    anything; otherwise it will return None.
+
+    I do not recommend you use this function too often. In general we should be
+    using the SQLAlchemy ORM. That said, it's a nice convenience, and there are
+    times where this function is genuinely something you want to run.
+    """
+    with open(os.path.join(QUERIES_DIR, secure_filename(filename))) as f:
+        query = f.read()
+    with db.engine.connect() as conn:
+        res = conn.execute(query)
+        try:
+            df = pd.DataFrame(
+                res.fetchall(),
+                columns=res.keys()
+            )
+            return df
+        except ResourceClosedError:
+            return None
 
 
 @click.group("psql", cls=AppGroup)
@@ -84,6 +116,13 @@ def init_database():
     database = current_app.config["POSTGRES_DB"]
     db.create_all()
     click.echo(f"Initialized the database {database!r}.")
+
+
+@db_cli.command("gen-examples")
+def gen_examples_command():
+    """Generate 2 incident examples in the database."""
+    execute_query("example_incidents.sql")
+    click.echo("Added 2 example incidents to the database.")
 
 
 @db_cli.command("delete")
