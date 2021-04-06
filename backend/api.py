@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, redirect, render_template, session, request, flash
+from flask_login import login_required
 
 from backend.routes.incidents import incident_routes
 from backend.config import Config
@@ -23,10 +24,13 @@ def create_app(config=None):
         db.create_all()
 
     @app.route("/")
+    @login_required
     def hello_world():
+        """Hello World Page."""
         return "Hello, world!"
 
     return app
+    
 
 
 if __name__ == "__main__":
