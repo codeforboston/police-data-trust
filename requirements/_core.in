@@ -10,3 +10,5 @@ black
 flake8
 pip-tools
 python-dotenv
+flask-login
+flask-user
