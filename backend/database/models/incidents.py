@@ -1,9 +1,10 @@
 """Define the SQL classes for Users."""
-from flask_sqlalchemy import SQLAlchemy
+from backend.database import db
+
 from flask_serialize.flask_serialize import FlaskSerialize
 import enum
 
-db = SQLAlchemy()
+
 fs_mixin = FlaskSerialize(db)
 
 
