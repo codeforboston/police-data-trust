@@ -25,7 +25,6 @@ def create_app(config: Optional[str] = None):
 
 
 def register_extensions(app: Flask):
-    """"""
     db.init_app(app)
 
 
