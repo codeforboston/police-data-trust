@@ -1,9 +1,10 @@
-from flask import Blueprint, jsonify
-from backend.models.incidents import Incident
+from flask import Blueprint
+from backend.database import Incidents
 
 
-incident_routes = Blueprint("incident_routes", __name__,
-                            url_prefix="/incidents")
+incident_routes = Blueprint(
+    "incident_routes", __name__, url_prefix="/incidents"
+)
 
 @incident_routes.route("/test/test", methods=["GET"])
 def get_incidents():

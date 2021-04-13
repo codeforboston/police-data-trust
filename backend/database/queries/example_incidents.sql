@@ -1,3 +1,4 @@
+<<<<<<< HEAD:sql/incidents.sql
 -- public.incidents definition
 
 -- Drop table
@@ -119,6 +120,8 @@ CREATE TABLE public.incidents (
 );
 
 
+=======
+>>>>>>> 4fc5b73ef2ed7185f6ff68ecc6e60b5e04f1ef79:backend/database/queries/example_incidents.sql
 INSERT INTO public.incidents
 ("incident_id", "occurrence_date", "state_abbv", "city", "address_1", "address_2", "zip_code", "latitude", "longitude", "reported_date", "initial_reason_for_encounter", "charges_involved", "victim_weapon", "victim_action", "has_multimedia", "media_URL", "from_report", "description", "associated_incidents", "death_date", "death_state_abbv", "death_city", "death_address_1", "death_address_2", "death_zip_code", "cause_of_death", "cause_of_death_description", "first_name", "last_name", "age_at_incident", "gender", "race", "status", "agency_id", "agency_name", "agency_state_abbv", "agency_city", "agency_address_1", "agency_address_2", "agency_zip_code", "agency_latitude", "agency_longitude")
 VALUES(1, '2021-03-01 00:00:00.000', 'MA', 'Boston', '1 Commonwealth Ave', '', '02215', NULL, NULL, NULL, 'Trespassing'::initial_encounter_enum::initial_encounter_enum, 'None', 'Firearm'::victim_weapon_enum::victim_weapon_enum, 'Fleeing'::victim_action_enum::victim_action_enum, false, NULL, true, 'This is an example incident description', NULL, '2020-04-01 00:00:00.000', 'MA', 'Boston', '120 Ward St', NULL, '02120', 'BluntForce'::cause_of_death_enum::cause_of_death_enum, NULL, 'Jane', 'Smith', 25, 'Female'::gender_enum::gender_enum, 'Black_African_American'::race_enum::race_enum, 'Deceased'::status_enum::status_enum, NULL, 'Boston Police Department', 'MA', 'Boston', '1 Schroder Plaza', NULL, '02120', 42.3339686, -71.0907954);

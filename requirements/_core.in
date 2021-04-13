@@ -1,6 +1,20 @@
+black
+celery
+flake8
 flask
-flask-sqlalchemy
-# psycopg2
 flask-serialize
+<<<<<<< HEAD
 flask-marshmallow
 marshmallow-sqlalchemy
+=======
+flask-sqlalchemy
+gunicorn
+pandas
+pip-tools
+pytest
+pytest-cov
+pytest-flask-sqlalchemy
+python-dotenv
+PyYAML
+requests
+>>>>>>> 4fc5b73ef2ed7185f6ff68ecc6e60b5e04f1ef79
