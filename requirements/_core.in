@@ -2,3 +2,5 @@ flask
 flask-sqlalchemy
 # psycopg2
 flask-serialize
+flask-marshmallow
+marshmallow-sqlalchemy

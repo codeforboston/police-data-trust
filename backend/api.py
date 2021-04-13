@@ -2,11 +2,14 @@ from flask import Flask
 import enum
 from backend.routes.incidents import incident_routes
 from backend.config import Config
-from backend.incidents import db
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow 
 
 
 def create_app(config=None):
     app = Flask(__name__)
+
+    db = SQLAlchemy()
 
     if config is None:
         config = Config()

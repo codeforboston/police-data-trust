@@ -63,15 +63,15 @@ class Status_Enum(enum.Enum):
     Disabled = 4
     Deceased = 5
 
-class Incidents(db.Model):
+class Incident(db.Model):
     """The SQL dataclass for an Incident."""
 
     __tablename__ = "incidents"
 
-    incident_ID = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, primary_key=True)
 
     # incident data
-    occurrance_date = db.Column(db.DateTime)
+    occurrence_date = db.Column(db.DateTime)
     state_abbv = db.Column(db.Unicode(512))
     city = db.Column(db.Unicode(512))
     address_1 = db.Column(db.Unicode(512))
@@ -109,7 +109,7 @@ class Incidents(db.Model):
     status = db.Column(db.Enum(Status_Enum))
 
     # agency data
-    agency_ID = db.Column(db.Integer)
+    agency_id = db.Column(db.Integer)
     agency_name = db.Column(db.Unicode(512))
     agency_state_abbv = db.Column(db.Unicode(512))
     agency_city = db.Column(db.Unicode(512))
@@ -120,7 +120,10 @@ class Incidents(db.Model):
     agency_longitude = db.Column(db.Float)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(Incident_ID={self.incident_id!r})"
+        return f"{self.__class__.__name__}(Incident_id={self.incident_id!r})"
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
     # role = db.relationship("RoleTable",
 
     # backref=db.backref("incidents", lazy=True))
