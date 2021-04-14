@@ -3,10 +3,9 @@ celery
 flake8
 flask
 flask-serialize
-<<<<<<< HEAD
 flask-marshmallow
 marshmallow-sqlalchemy
-=======
+marshmallow-enum
 flask-sqlalchemy
 gunicorn
 pandas
@@ -17,4 +16,3 @@ pytest-flask-sqlalchemy
 python-dotenv
 PyYAML
 requests
->>>>>>> 4fc5b73ef2ed7185f6ff68ecc6e60b5e04f1ef79

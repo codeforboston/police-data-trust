@@ -1,5 +1,5 @@
-from flask import Blueprint
-from backend.database import Incidents
+from flask import Blueprint, Response, jsonify
+from backend.database import Incidents, IncidentSchema
 
 
 incident_routes = Blueprint(
@@ -8,6 +8,9 @@ incident_routes = Blueprint(
 
 @incident_routes.route("/test/test", methods=["GET"])
 def get_incidents():
-    incidents = Incident.query.all()
-    incidents = list(map(lambda x: x.as_dict(), incidents))
-    return jsonify(incidents)
+    incidents = Incidents.query.all()
+    print(incidents)
+    incident_schema = IncidentSchema(many=True)
+    incidents_dump = incident_schema.dump(incidents)
+    print(incidents_dump)
+    return jsonify(incidents_dump)
