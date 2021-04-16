@@ -129,10 +129,14 @@ class Incidents(db.Model, fs_mixin):
 
     # backref=db.backref("incidents", lazy=True))
 
-class IncidentSchema(ma.SQLAlchemySchema):
+class IncidentSchema(ma.SQLAlchemyAutoSchema):
     gender = EnumField(Gender_Enum)
     race = EnumField(Race_Enum)
-
+    victim_weapon = EnumField(Victim_Weapon_Enum)
+    victim_action = EnumField(Victim_Action_Enum)
+    cause_of_death = EnumField(Cause_Of_Death_Enum)
+    status = EnumField(Status_Enum)
+    initial_reason_for_encounter = EnumField(Initial_Encounter_Enum)
+    
     class Meta:
         model = Incidents
-        fields = ("incident_id", "gender", "race")

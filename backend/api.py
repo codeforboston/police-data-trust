@@ -7,6 +7,8 @@ from .config import get_config_from_env
 from .database import db
 from .database import db_cli
 from .utils import dev_only
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 
 
 def create_app(config: Optional[str] = None):
