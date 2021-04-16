@@ -4,7 +4,8 @@ from flask import redirect
 from flask import render_template
 from flask import session
 from flask import url_for
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user
+from flask_user import current_user, login_required, roles_required, UserManager
 from api import app
 from user import User
 from backend.incidents import db
@@ -12,12 +13,26 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, FileField, BooleanField, ValidationError
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 
-
-
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
 login_manager.login_view = "login"
 login_manager.init_app(app)
+
+ # Flask-Mail SMTP server settings
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USE_TLS = False
+MAIL_USERNAME = 'email@example.com'
+MAIL_PASSWORD = 'password'
+MAIL_DEFAULT_SENDER = '"MyApp" <noreply@example.com>'
+
+# Flask-User settings
+USER_APP_NAME = "Police Data Trust"      # Shown in and email templates and page footers
+USER_ENABLE_EMAIL = True                 # Enable email authentication
+USER_ENABLE_USERNAME = False             # Disable username authentication
+USER_EMAIL_SENDER_NAME = USER_APP_NAME
+USER_EMAIL_SENDER_EMAIL = "noreply@example.com" 
 
 
 ###########
@@ -56,16 +71,24 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """Login Page."""
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if(user is not None and user.verify_password(form.password.data)):
-            login_user(user, form.remember_me.data)
-            return redirect(request.args.get("next") or "/")
-    return render_template("login.html", form=form)
+    # form = LoginForm()
+    form = request.form
+    if form['password'] != '' and form['email'] != '':
+        user = User.query.filter_by(email=form['email']).first()
+        if(user is not None and user.verify_password(form['password'])):
+            login_user(user, form['remember_me'])
+            # return redirect(request.args.get("next") or "/")
+            return {"status":"ok", "message": "Successfully logged in.", "user": { "email": form['email']}}
+        else
+            return {"status":"ok", "message": "Error. Username or Password invalid."}
+    missing_fields = ""
+    for field in form:
+        if field == '':
+            missing_fields= missing_fields + ", " + field
+    return {"status":"ok", "message": "Failed to log in. Please include the following fields: " + missing_fields}
 
 @app.route("/logout")
 @login_required
@@ -76,10 +99,17 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(email=form.email.data, username=form.username.data, password=form.password.data)
+    # form = RegistrationForm()
+    form = request.form
+    if form['username'] != '' and form['password'] != '' and form['email'] != '':
+        user = User(email=form['email'], username=form['username'], password=form['password'])
         db.session.add(user)
         db.session.commit()
-        return redirect("/login")
-    return render_template("register.html", form=form)
+        # return redirect("/login")
+        return {"status":"ok", "message": "Successfully registered.", "user": { "email": form['email'], "username": form['username']}}
+    missing_fields = ""
+    for field in form:
+        if field == '':
+            missing_fields= missing_fields + ", " + field
+
+    return {"status":"ok", "message": "Failed to register. Please include the following fields: " + missing_fields}

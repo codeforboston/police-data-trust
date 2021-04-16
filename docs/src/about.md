@@ -24,7 +24,7 @@ This ecosystem of incomplete and inconsistent data creates problems for lawyers,
 
 - 🧑‍🔬 **Researchers** can’t conduct good research without good data.
 
-- 👪 **Concerned** citizens will not have a good idea of what is happening in their local community or whether a police officer in their community has a history of complaints against them.
+- 👪 **Concerned citizens** will not have a good idea of what is happening in their local community or whether a police officer in their community has a history of complaints against them.
 
 ### Value in Aggregation and a Common Specification
 
