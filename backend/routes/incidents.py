@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, jsonify
+from flask import Blueprint, jsonify
 from backend.database import Incidents, IncidentSchema
 
 

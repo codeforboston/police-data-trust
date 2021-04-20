@@ -5,6 +5,7 @@ import marshmallow_sqlalchemy as ma
 from marshmallow_enum import EnumField
 import enum
 
+
 class Initial_Encounter_Enum(enum.Enum):
     Unknown = 1
     TrafficViolation = 2
@@ -124,6 +125,7 @@ class Incidents(db.Model):
 
     # backref=db.backref("incidents", lazy=True))
 
+
 class IncidentSchema(ma.SQLAlchemyAutoSchema):
     gender = EnumField(Gender_Enum)
     race = EnumField(Race_Enum)
@@ -132,6 +134,6 @@ class IncidentSchema(ma.SQLAlchemyAutoSchema):
     cause_of_death = EnumField(Cause_Of_Death_Enum)
     status = EnumField(Status_Enum)
     initial_reason_for_encounter = EnumField(Initial_Encounter_Enum)
-    
+
     class Meta:
         model = Incidents
