@@ -2,7 +2,6 @@ black
 celery
 flake8
 flask
-flask-serialize
 flask-marshmallow
 marshmallow-sqlalchemy
 marshmallow-enum

@@ -1,14 +1,9 @@
 """Define the SQL classes for Users."""
 from backend.database import db
 
-from flask_serialize.flask_serialize import FlaskSerialize
 import marshmallow_sqlalchemy as ma
 from marshmallow_enum import EnumField
 import enum
-
-
-fs_mixin = FlaskSerialize(db)
-
 
 class Initial_Encounter_Enum(enum.Enum):
     Unknown = 1
@@ -69,7 +64,7 @@ class Status_Enum(enum.Enum):
     Deceased = 5
 
 
-class Incidents(db.Model, fs_mixin):
+class Incidents(db.Model):
     """The SQL dataclass for an Incident."""
 
     __tablename__ = "incidents"
