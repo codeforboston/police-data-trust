@@ -82,7 +82,7 @@ def login():
             login_user(user, form['remember_me'])
             # return redirect(request.args.get("next") or "/")
             return {"status":"ok", "message": "Successfully logged in.", "user": { "email": form['email']}}
-        else
+        else:
             return {"status":"ok", "message": "Error. Username or Password invalid."}
     missing_fields = ""
     for field in form:
