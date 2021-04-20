@@ -1,4 +1,7 @@
 # police-data-trust
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Installation
 
 1. Make sure that [Python 3.8](https://www.python.org/), [Git](https://git-scm.com/), and [PostgreSQL](https://www.postgresql.org/) are installed on your machine.
