@@ -29,7 +29,8 @@ db = SQLAlchemy()
 
 
 QUERIES_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "queries"))
+    os.path.join(os.path.dirname(__file__), "queries")
+)
 
 
 def execute_query(filename: str) -> Optional[pd.DataFrame]:
@@ -45,10 +46,7 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
     with db.engine.connect() as conn:
         res = conn.execute(query)
         try:
-            df = pd.DataFrame(
-                res.fetchall(),
-                columns=res.keys()
-            )
+            df = pd.DataFrame(res.fetchall(), columns=res.keys())
             return df
         except ResourceClosedError:
             return None
@@ -64,7 +62,7 @@ def db_cli(ctx: click.Context):
         password=current_app.config["POSTGRES_PASSWORD"],
         host=current_app.config["POSTGRES_HOST"],
         port=current_app.config["POSTGRES_PORT"],
-        dbname="postgres"
+        dbname="postgres",
     )
 
 
@@ -72,18 +70,18 @@ pass_psql_admin_connection = click.make_pass_decorator(connection)
 
 
 @db_cli.command("create")
-@click.option("--overwrite/--no-overwrite",
-              default=False,
-              is_flag=True,
-              show_default=True,
-              help="If true, overwrite the database if it exists.")
+@click.option(
+    "--overwrite/--no-overwrite",
+    default=False,
+    is_flag=True,
+    show_default=True,
+    help="If true, overwrite the database if it exists.",
+)
 @pass_psql_admin_connection
 @click.pass_context
 @dev_only
 def create_database(
-        ctx: click.Context,
-        conn: connection,
-        overwrite: bool = False
+    ctx: click.Context, conn: connection, overwrite: bool = False
 ):
     """Create the database from nothing."""
     database = current_app.config["POSTGRES_DB"]
@@ -126,16 +124,16 @@ def gen_examples_command():
 
 
 @db_cli.command("delete")
-@click.option("--test-db", "-t",
-              default=False,
-              is_flag=True,
-              help=f"Deletes the database {TestingConfig.POSTGRES_DB!r}.")
+@click.option(
+    "--test-db",
+    "-t",
+    default=False,
+    is_flag=True,
+    help=f"Deletes the database {TestingConfig.POSTGRES_DB!r}.",
+)
 @pass_psql_admin_connection
 @dev_only
-def delete_database(
-        conn: connection,
-        test_db: bool
-):
+def delete_database(conn: connection, test_db: bool):
     """Delete the database."""
     if test_db:
         database = TestingConfig.POSTGRES_DB
@@ -149,13 +147,16 @@ def delete_database(
     if database != TestingConfig.POSTGRES_DB:
         # Make sure we want to do this.
         click.echo(f"Are you sure you want to delete database {database!r}?")
-        click.echo("Type in the database name '" +
-                   click.style(database, fg="red") +
-                   "' to confirm")
+        click.echo(
+            "Type in the database name '"
+            + click.style(database, fg="red")
+            + "' to confirm"
+        )
         confirmation = click.prompt("Database name")
         if database != confirmation:
-            click.echo("The input does not match. "
-                       "The database will not be deleted.")
+            click.echo(
+                "The input does not match. " "The database will not be deleted."
+            )
             return None
 
     try:
