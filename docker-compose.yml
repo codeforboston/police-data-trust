@@ -4,9 +4,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: police_data
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-police_data}
     volumes:
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     ports:
@@ -15,6 +15,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - db
     environment:
       POSTGRES_HOST: db
     ports:
