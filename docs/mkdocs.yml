@@ -7,6 +7,7 @@ repo_name: codeforboston/police-data-trust
 docs_dir: src
 nav:
 - Home: index.md
+- About: about.md
 - Setup: setup.md
 theme:
   name: material
@@ -31,19 +32,19 @@ markdown_extensions:
     repo_url_shorthand: true
     user: squidfunk
     repo: mkdocs-material
-#- pymdownx.superfences:
-#    custom_fences:
-#    - name: mermaid
-#      class: mermaid
-#      format: !!python/name:pymdownx.superfences.fence_div_format
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_div_format
 - sane_lists
 extra:
   social:
   - icon: fontawesome/brands/github
-    link: https://github.com/police-data-trust/flagging
+    link: https://github.com/codeforboston/police-data-trust/
   - icon: fontawesome/brands/meetup
     link: https://www.meetup.com/Code-for-Boston/
   - icon: fontawesome/brands/twitter
     link: https://twitter.com/codeforboston
-#extra_javascript:
-#- https://unpkg.com/mermaid@8.4.6/dist/mermaid.min.js
+extra_javascript:
+- https://unpkg.com/mermaid@8.4.6/dist/mermaid.min.js
