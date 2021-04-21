@@ -38,4 +38,5 @@ def _db(app):
     We use this extension to allow for easy testing of the database.
     """
     from backend.database import db
+
     yield db

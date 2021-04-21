@@ -32,13 +32,13 @@ def get_or_create(session, model, **kwargs):
         print(err)
 
 
-@ app.task(bind=True, name='refresh')
+@app.task(bind=True, name="refresh")
 def refresh(self, urls):
     for url in urls:
         fetch_data(url)
 
 
-@ app.task(bind=True, name='fetch_data')
+@app.task(bind=True, name="fetch_data")
 def fetch_data(self, url):
     session = Session()
     res = requests.get(url)

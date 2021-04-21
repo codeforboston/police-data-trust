@@ -33,11 +33,14 @@ def register_commands(app: Flask):
 
     app.cli.add_command(db_cli)
 
-    @app.cli.command("pip-compile",
-                     context_settings=dict(
-                         ignore_unknown_options=True,
-                         allow_extra_args=True,
-                         help_option_names=[]))
+    @app.cli.command(
+        "pip-compile",
+        context_settings=dict(
+            ignore_unknown_options=True,
+            allow_extra_args=True,
+            help_option_names=[],
+        ),
+    )
     @click.pass_context
     @dev_only
     def pip_compile(ctx: click.Context):
@@ -46,6 +49,7 @@ def register_commands(app: Flask):
         This command is for development purposes only.
         """
         import subprocess
+
         if len(ctx.args) == 1 and ctx.args[0] == "--help":
             subprocess.call(["pip-compile", "--help"])
         else:
@@ -53,7 +57,7 @@ def register_commands(app: Flask):
                 "requirements/dev_unix.in",
                 "requirements/dev_windows.in",
                 "requirements/prod.in",
-                "requirements/docs.in"
+                "requirements/docs.in",
             ]
             for filename in req_files:
                 subprocess.call(["pip-compile", filename, *ctx.args])
@@ -77,8 +81,7 @@ def register_routes(app: Flask):
 
 
 def register_misc(app: Flask):
-    """For things that don't neatly fit into the other "register" functions.
-    """
+    """For things that don't neatly fit into the other "register" functions."""
 
     @app.before_first_request
     def setup_application() -> None:
@@ -93,6 +96,7 @@ def register_misc(app: Flask):
         """
         from flask import current_app as app
         from .database import db  # noqa: F401
+
         client = app.test_client()
         return locals()
 
