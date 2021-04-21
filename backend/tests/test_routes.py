@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.parametrize(
     ("page", "expected_status_code"),
     [
-        ("/incidents/", 200),
+        ("/incidents", 200),
     ],
 )
 def test_routes(client, page, expected_status_code):
