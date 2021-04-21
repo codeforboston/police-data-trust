@@ -14,14 +14,13 @@ class Config(object):
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
-        return \
-            "postgresql://%s:%s@%s:%s/%s" % (
-                self.POSTGRES_USER,
-                self.POSTGRES_PASSWORD,
-                self.POSTGRES_HOST,
-                self.POSTGRES_PORT,
-                self.POSTGRES_DB
-            )
+        return "postgresql://%s:%s@%s:%s/%s" % (
+            self.POSTGRES_USER,
+            self.POSTGRES_PASSWORD,
+            self.POSTGRES_HOST,
+            self.POSTGRES_PORT,
+            self.POSTGRES_DB,
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -32,6 +31,7 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     """Config designed for Heroku CLI deployment."""
+
     ENV = "production"
 
     @property
@@ -69,8 +69,10 @@ def get_config_from_env(env: str) -> Config:
     try:
         config = config_mapping[env]
     except KeyError:
-        print(f"Bad config passed."
-              f"The config must be in {config_mapping.keys()}")
+        print(
+            f"Bad config passed."
+            f"The config must be in {config_mapping.keys()}"
+        )
         raise
     else:
         return config()
