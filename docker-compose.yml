@@ -9,9 +9,13 @@ services:
       POSTGRES_DB: police_data
     volumes:
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+    ports:
+      - 5432:5432
   app:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       POSTGRES_HOST: db
+    ports:
+      - 5000:5000
