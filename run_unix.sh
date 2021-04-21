@@ -1,3 +1,4 @@
+#!/bin/bash
 # TODO: Postgres db is not set up in this script.
 
 function get_python_exec() {
