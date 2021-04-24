@@ -6,7 +6,7 @@ class Config(object):
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get(
-        "POSTGRES_USER", "postgres"
+        "POSTGRES_USER", "lorenha"
     )
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
