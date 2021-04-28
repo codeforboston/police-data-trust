@@ -1,4 +1,7 @@
 # police-data-trust
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Installation
 
 1. Make sure that [Docker](https://www.docker.com) is installed on your machine. 
