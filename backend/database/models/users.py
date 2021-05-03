@@ -1,17 +1,23 @@
 """Define the SQL classes for Users."""
 from flask_sqlalchemy import SQLAlchemy
 from flask_serialize.flask_serialize import FlaskSerialize
+from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_user import current_user, login_required, roles_required, UserManager, SQLAlchemyAdapter
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
-from api import app
+from backend.database.core import db
 
 import enum
 
-db = SQLAlchemy()
 fs_mixin = FlaskSerialize(db)
 
+login_manager = LoginManager()
+login_manager.session_protection = "strong"
+login_manager.login_view = "login"
+
+
 # Define the User data-model.
-class User(db.Model, UserMixin):
+class Users(db.Model, UserMixin):
     """The SQL dataclass for an Incident."""
 
     __tablename__ = "users"
@@ -36,12 +42,12 @@ class User(db.Model, UserMixin):
     # def password(self):
     #     raise AttributeError("Password is not a readable attribute")
 
-    @password.setter
-    def password(self, pw):
-        self.password = generate_password_hash(pw)
-
     def verify_password(self, pw):
         return check_password_hash(self.password, pw)
+
+
+db_adapter = SQLAlchemyAdapter(db, Users)
+user_manager = UserManager(db_adapter)
 
  # Define the Role data-model
 class Role(db.Model):
@@ -55,8 +61,3 @@ class UserRoles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
-
-# Setup Flask-User and specify the User data-model
-user_manager = UserManager(app, db, User)
-
-db.create_all()

@@ -2,7 +2,9 @@ black
 celery
 flake8
 flask
-flask-serialize
+flask-marshmallow
+marshmallow-sqlalchemy
+marshmallow-enum
 flask-sqlalchemy
 gunicorn
 pandas
@@ -18,3 +20,6 @@ flask-wtf
 flask-babelex
 PyYAML
 requests
+email-validator
+flask-serialize
+flask-migrate

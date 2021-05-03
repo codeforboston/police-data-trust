@@ -6,21 +6,36 @@ class Config(object):
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get(
-        "POSTGRES_USER", "lorenha"
+        "POSTGRES_USER", "postgres"
     )
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
 
+    # Flask-Mail SMTP server settings
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USE_TLS = False
+    MAIL_USERNAME = 'email@example.com'
+    MAIL_PASSWORD = 'password'
+    MAIL_DEFAULT_SENDER = '"MyApp" <noreply@example.com>'
+
+    # Flask-User settings
+    USER_APP_NAME = "Police Data Trust"      # Shown in and email templates and page footers
+    USER_ENABLE_EMAIL = True                 # Enable email authentication
+    USER_ENABLE_USERNAME = True             # Disable username authentication
+    USER_EMAIL_SENDER_NAME = USER_APP_NAME
+    USER_EMAIL_SENDER_EMAIL = "noreply@policedatatrust.com" 
+
     @property
     def SQLALCHEMY_DATABASE_URI(self):
-        return \
-            "postgresql://%s:%s@%s:%s/%s" % (
-                self.POSTGRES_USER,
-                self.POSTGRES_PASSWORD,
-                self.POSTGRES_HOST,
-                self.POSTGRES_PORT,
-                self.POSTGRES_DB
-            )
+        return "postgresql://%s:%s@%s:%s/%s" % (
+            self.POSTGRES_USER,
+            self.POSTGRES_PASSWORD,
+            self.POSTGRES_HOST,
+            self.POSTGRES_PORT,
+            self.POSTGRES_DB,
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -31,6 +46,7 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     """Config designed for Heroku CLI deployment."""
+
     ENV = "production"
 
     @property
@@ -68,8 +84,10 @@ def get_config_from_env(env: str) -> Config:
     try:
         config = config_mapping[env]
     except KeyError:
-        print(f"Bad config passed."
-              f"The config must be in {config_mapping.keys()}")
+        print(
+            f"Bad config passed."
+            f"The config must be in {config_mapping.keys()}"
+        )
         raise
     else:
         return config()
