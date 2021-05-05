@@ -1,13 +1,17 @@
 """Define the SQL classes for Users."""
-from flask_sqlalchemy import SQLAlchemy
-from flask_serialize.flask_serialize import FlaskSerialize
-from flask_login import LoginManager, login_user, logout_user, login_required
-from flask_user import current_user, login_required, roles_required, UserManager, SQLAlchemyAdapter
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
-from backend.database.core import db
-
 import enum
+
+import bcrypt
+from backend.database.core import db
+from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_serialize.flask_serialize import FlaskSerialize
+from flask_sqlalchemy import SQLAlchemy
+from flask_user import (SQLAlchemyAdapter, UserManager, UserMixin,
+                        current_user, login_required, roles_required)
+from passlib.context import CryptContext
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.types import String, TypeDecorator
+from werkzeug.security import check_password_hash, generate_password_hash
 
 fs_mixin = FlaskSerialize(db)
 
@@ -15,6 +19,24 @@ login_manager = LoginManager()
 login_manager.session_protection = "strong"
 login_manager.login_view = "login"
 
+# Creating this class as NOCASE collation is not compatible with ordinary SQLAlchemy Strings
+class CI_String(TypeDecorator): 
+  """ Case-insensitive String subclass definition"""
+  impl = String
+  def __init__(self, length, **kwargs):
+      if kwargs.get('collate'):
+          if kwargs['collate'].upper() not in ['BINARY','NOCASE','RTRIM']:
+              raise TypeError("%s is not a valid SQLite collation" % kwargs['collate'])
+          self.collation = kwargs.pop('collate').upper()
+      super(CI_String, self).__init__(length=length, **kwargs)
+
+@compiles(CI_String, 'sqlite')
+def compile_ci_string(element, compiler, **kwargs):
+  base_visit = compiler.visit_string(element, **kwargs) 
+  if element.collation:
+      return "%s COLLATE %s" % (base_visit, element.collation) 
+  else:
+      return base_visit
 
 # Define the User data-model.
 class Users(db.Model, UserMixin):
@@ -27,23 +49,19 @@ class Users(db.Model, UserMixin):
 
     # User authentication information. The collation='NOCASE' is required
     # to search case insensitively when USER_IFIND_MODE is 'nocase_collation'.
-    email = db.Column(db.String(255, collation='NOCASE'), nullable=False, unique=True)
+    email = db.Column(CI_String(255, collation='NOCASE'), nullable=False, unique=True)
     email_confirmed_at = db.Column(db.DateTime())
     password = db.Column(db.String(255), nullable=False, server_default='')
 
     # User information
-    first_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
-    last_name = db.Column(db.String(100, collation='NOCASE'), nullable=False, server_default='')
+    first_name = db.Column(CI_String(100, collation='NOCASE'), nullable=False, server_default='')
+    last_name = db.Column(CI_String(100, collation='NOCASE'), nullable=False, server_default='')
 
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Role', secondary='user_roles')
 
-    # @property
-    # def password(self):
-    #     raise AttributeError("Password is not a readable attribute")
-
     def verify_password(self, pw):
-        return check_password_hash(self.password, pw)
+        return bcrypt.checkpw(pw.encode('utf8'), self.password.encode('utf8'))
 
 
 db_adapter = SQLAlchemyAdapter(db, Users)
