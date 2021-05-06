@@ -4,3 +4,4 @@ from .core import db_cli
 from .core import execute_query
 
 from .models.incidents import Incidents, IncidentSchema
+from .models.users import Users

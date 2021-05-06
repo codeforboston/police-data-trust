@@ -7,8 +7,8 @@ WORKDIR /app/
 
 COPY requirements.txt requirements.txt
 COPY requirements/ requirements/
-RUN pip3 install -r requirements/dev_unix.txt
 
+RUN pip3 install -r requirements/dev_unix.txt
 COPY . .
 
 CMD [ "/bin/bash", "run_unix.sh" ]
