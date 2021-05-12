@@ -30,3 +30,8 @@ class Officer(db.model):
     # TODO: number of stars?
     star = db.Column(db.Integer)
     age = db.Column(db.Integer)
+
+
+class OfficerAtIncident(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # TODO: Relationships, fields?

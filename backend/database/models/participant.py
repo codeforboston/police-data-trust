@@ -7,3 +7,7 @@ class Participant(db.model):
     gender = db.Column(db.String)
     race = db.Column(db.String)
     age = db.Column(db.Integer)
+
+
+class ParticipantAtIncident(db.model):
+    id = db.Column(db.Integer, primary_key=True)
