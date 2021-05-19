@@ -4,8 +4,7 @@ import click
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_login import LoginManager, login_required, login_user, logout_user
 from flask_migrate import Migrate
-from flask_user import (UserManager, current_user, login_required,
-                        roles_required)
+from flask_user import UserManager, current_user, login_required, roles_required
 
 from .config import get_config_from_env
 from .database import db, db_cli
@@ -20,8 +19,6 @@ def create_app(config: Optional[str] = None):
     config_obj = get_config_from_env(config or app.env)
     app.config.from_object(config_obj)
 
-    
-    
     with app.app_context():
         register_extensions(app)
         register_commands(app)
@@ -99,20 +96,31 @@ def register_routes(app: Flask):
         if request.method == "POST":
             form = request.form
             # Verify user
-            if form.get('password') != None and form.get('email') != None:
-                user = Users.query.filter_by(email=form.get('email')).first()
-                if user != None and user.verify_password(form.get('password')):
-                    login_user(user, form.get('remember_me'))
-                    return {"status":"ok", "message": "Successfully logged in.", "user": { "email": form.get('email')}}
+            if form.get("password") != None and form.get("email") != None:
+                user = Users.query.filter_by(email=form.get("email")).first()
+                if user != None and user.verify_password(form.get("password")):
+                    login_user(user, form.get("remember_me"))
+                    return {
+                        "status": "ok",
+                        "message": "Successfully logged in.",
+                        "user": {"email": form.get("email")},
+                    }
                 else:
-                    return {"status":"ok", "message": "Error. Email or Password invalid."}
+                    return {
+                        "status": "ok",
+                        "message": "Error. Email or Password invalid.",
+                    }
             # In case of missing fields, return error message indicating required fields.
             missing_fields = []
-            required_keys = ['email', 'password']
+            required_keys = ["email", "password"]
             for key in required_keys:
                 if key not in form.keys() or form.get(key) == None:
                     missing_fields.append(key)
-            return {"status":"ok", "message": "Failed to log in. Please include the following fields: " + ", ".join(missing_fields)}
+            return {
+                "status": "ok",
+                "message": "Failed to log in. Please include the following fields: "
+                + ", ".join(missing_fields),
+            }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}
 
@@ -128,22 +136,38 @@ def register_routes(app: Flask):
         if request.method == "POST":
             form = request.form
             # Check to see if user already exists
-            user = Users.query.filter_by(email=form.get('email')).first()
-            if user != None and user.verify_password(form.get('password')):
-                return {"status":"ok", "message": "Error. Email matches existing account."}
+            user = Users.query.filter_by(email=form.get("email")).first()
+            if user != None and user.verify_password(form.get("password")):
+                return {
+                    "status": "ok",
+                    "message": "Error. Email matches existing account.",
+                }
             # Verify all fields included and create user
-            if form.get('password') != None and form.get('email') != None:
-                user = Users(email=form.get('email'), password=user_manager.hash_password(form.get('password')), first_name=form.get('firstName'), last_name=form.get('lastName'))
+            if form.get("password") != None and form.get("email") != None:
+                user = Users(
+                    email=form.get("email"),
+                    password=user_manager.hash_password(form.get("password")),
+                    first_name=form.get("firstName"),
+                    last_name=form.get("lastName"),
+                )
                 db.session.add(user)
                 db.session.commit()
-                return {"status":"ok", "message": "Successfully registered.", "user": { "email": form.get('email')}}
+                return {
+                    "status": "ok",
+                    "message": "Successfully registered.",
+                    "user": {"email": form.get("email")},
+                }
             # In case of missing fields, return error message indicating required fields.
             missing_fields = []
-            required_keys = ['email', 'password']
+            required_keys = ["email", "password"]
             for key in required_keys:
                 if key not in form.keys() or form.get(key) == None:
                     missing_fields.append(key)
-            return {"status":"ok", "message": "Failed to register. Please include the following fields: " + ", ".join(missing_fields)}
+            return {
+                "status": "ok",
+                "message": "Failed to register. Please include the following fields: "
+                + ", ".join(missing_fields),
+            }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}
 
