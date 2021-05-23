@@ -6,9 +6,7 @@ sources:
       url: https://mappingpoliceviolence.org/s/MPVDatasetDownload.xlsx
   cpdp:
       url: https://github.com/invinst/chicago-police-data/raw/master/data/unified_data.zip
-  #nyclu:
-  #    url: https://github.com/new-york-civil-liberties-union/NYPD-Misconduct-Complaint-Database/raw/master/CCRB_database_raw.xlsx
-  
+
 tables:
   report:
     required:
@@ -19,13 +17,13 @@ tables:
   incident:
     required:
       - record_id
-      - incident_id # primary key
+    #  - incident_id # primary key
     optional:
       - incident_date
       - incident_type
   victim:
     required:
-      - incident_id
+   #   - incident_id
       - victim_id # primary key
     optional:
       - victim_age
@@ -34,7 +32,7 @@ tables:
       - victim_sex
   death:
     required:
-      - incident_id
+  #    - incident_id
       - victim_id
       - death_id # primary key
     optional:
