@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - ".env"
+    volumes:
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+    ports:
+      - 5000:5000
+
+volumes:
+  postgres: {}

@@ -1,0 +1,11 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+build:
+  docker:
+    web: Dockerfile
+  config:
+    POSTGRES_HOST: DATABASE
+run:
+  web: gunicorn -w 4 --reload --log-level=debug -b 0.0.0.0:$PORT "backend.api:create_app(config='production')"

@@ -1,3 +1,6 @@
+#!/bin/bash
+# TODO: Postgres db is not set up in this script. It is set up in the init script for docker-compose.
+
 function get_python_exec() {
   # Get a Python executable that can run this app.
   for pyexec in "python" "python3" "python3.8" "python3.9"
@@ -27,4 +30,4 @@ export FLASK_ENV=development
 flask psql create
 flask psql init
 
-flask run
+flask run --host=0.0.0.0
