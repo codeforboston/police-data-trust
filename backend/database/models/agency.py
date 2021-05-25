@@ -1,5 +1,4 @@
-
-#TODO agency
+# TODO agency
 from backend.database import db
 
 
