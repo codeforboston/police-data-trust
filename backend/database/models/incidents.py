@@ -1,97 +1,63 @@
 """Define the SQL classes for Users."""
-from backend.database import db
+from .. import db
+from .types.enums import Race
+from .types.enums import Gender
 
 import marshmallow_sqlalchemy as ma
 from marshmallow_enum import EnumField
 import enum
 
 
+# Should we be doing
 class InitialEncounter(enum.Enum):
     # https://docs.python.org/3/library/enum.html#creating-an-enum
     UNKNOWN = 1
     TRAFFIC_VIOLATION = 2
     TRESSPASSING = 3
-    PotentialCrimeSuspect = 4
-    Other = 5
+    POTENTIAL_CRIMINAL_SUSPECT = 4
+    OTHER = 5
 
 
 class VictimWeapon(enum.Enum):
-    Unknown = 1
-    Firearm = 2
-    Blade = 3
-    Blunt = 4
-    NoWeapon = 5
-    Other = 6
+    UNKNOWN = 1
+    FIREARM = 2
+    BLADE = 3
+    BLUNT = 4
+    NO_WEAPON = 5
+    OTHER = 6
 
 
 class VictimAction(enum.Enum):
-    Unknown = 1
-    Speaking = 2
-    NoAction = 3
-    Fleeing = 4
-    Approaching = 5
-    Attacking = 6
-    Other = 7
+    UNKNOWN = 1
+    SPEAKING = 2
+    NO_ACTION = 3
+    FLEEING = 4
+    APPROACHING = 5
+    ATTACKING = 6
+    OTHER = 7
 
 
 class CauseOfDeath(enum.Enum):
-    Unknown = 1
-    BluntForce = 2
-    GunShot = 3
-    Choke = 4
-    Other = 5
-
-
-class Gender(enum.Enum):
-    Unknown = 1
-    Male = 2
-    Female = 3
-    Transgender = 4
-
-
-class Race(enum.Enum):
-    Unknown = 1
-    White = 2
-    Black_African_American = 3
-    American_Indian_Alaska_Native = 4
-    Asian = 5
-    Native_Hawaiian_Pacific_Islander = 6
+    UNKNOWN = 1
+    BLUNT_FORCE = 2
+    GUNSHOT = 3
+    CHOKE = 4
+    OTHER = 5
 
 
 class VictimStatus(enum.Enum):
-    Unknown = 1
-    Unharmed = 2
-    Injured = 3
-    Disabled = 4
-    Deceased = 5
+    UNKNOWN = 1
+    UNHARMED = 2
+    INJURED = 3
+    DISABLED = 4
+    DECEASED = 5
 
 
-class Victim(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    race = db.Column(db.Enum(Race))
-    gender = db.Column(db.Enum(Gender))
-    date_of_birth = db.Column(db.Date)  # TODO: add "estimated"?
-    manner_of_injury = db.Column(db.Text)  # TODO: is an enum
-    # TODO: deceased is better as calculated value; if time of death is null.
-    deceased = db.Column(db.Boolean)
-    time_of_death = db.Column(db.DateTime, nullable=True)
-
-
-class Officer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # officer id
-    first_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
-    race = db.Column(db.Enum(Race))
-    gender = db.Column(db.Enum(Gender))
-    appointed_date = db.Column(db.DateTime)
-    badge = db.Column(db.Text)
-    unit = db.Column(db.Text)  # type?
-    # TODO: How do we handle changes over time in rank?
-    rank = db.Column(db.Text)  # type?
-    star = db.Column(db.Text)  # type?
-    age = db.Column(db.Integer)
-    # TODO: Age changes over time. Might we use birth year?
+# TODO: This file's a bit of a mess (my fault!)
+#  There are a lot of association tables in here, and the incidents table is
+#  not clearly either a facts table or component table.
+#  We need to get a better idea of the relationships we want and then we should
+#  implement them accordingly.
 
 
 class Incident(db.Model):
@@ -171,6 +137,8 @@ class ResultOfStop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     result = db.Column(db.Text)
 
+
+# TODO: not sure if the below model should be used.
 
 class Incidents(db.Model):
     """The SQL dataclass for an Incident."""

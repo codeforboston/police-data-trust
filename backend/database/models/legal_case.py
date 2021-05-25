@@ -1,8 +1,8 @@
-from backend.database import db
+from .. import db
 import enum
 
 
-class LegalCaseType(str, enum.enum):
+class LegalCaseType(str, enum.Enum):
     # TODO: Do we want string enumerations to be all caps? i.e. CIVIL = "CIVIL"
     CIVIL = "CIVIL"
     CRIMINAL = "CRIMINAL"

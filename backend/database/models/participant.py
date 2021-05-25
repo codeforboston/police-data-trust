@@ -1,7 +1,7 @@
-from backend.database import db
+from .. import db
 
 
-class Participant(db.model):
+class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # TODO: Enums for these? Also used in other models
     gender = db.Column(db.String)
@@ -9,5 +9,5 @@ class Participant(db.model):
     age = db.Column(db.Integer)
 
 
-class ParticipantAtIncident(db.model):
+class ParticipantAtIncident(db.Model):
     id = db.Column(db.Integer, primary_key=True)

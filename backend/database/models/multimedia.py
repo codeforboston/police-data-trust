@@ -1,6 +1,5 @@
-from backend.database import db
+from .. import db
 
 
-class Multimedia(db.model):
+class Multimedia(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-

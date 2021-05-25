@@ -1,7 +1,7 @@
+from .. import db
 
-#TODO agency
-from backend.database import db
+# TODO agency model
 
 
-class AgencyAtIncident(db.model):
+class AgencyAtIncident(db.Model):
     id = db.Column(db.Integer, primary_key=True)
