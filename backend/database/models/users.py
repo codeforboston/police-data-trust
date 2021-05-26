@@ -1,23 +1,15 @@
 """Define the SQL classes for Users."""
-import enum
 
 import bcrypt
 from backend.database.core import db
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager
 from flask_serialize.flask_serialize import FlaskSerialize
-from flask_sqlalchemy import SQLAlchemy
-from flask_user import (
-    SQLAlchemyAdapter,
-    UserManager,
-    UserMixin,
-    current_user,
-    login_required,
-    roles_required,
-)
-from passlib.context import CryptContext
+from flask_user import SQLAlchemyAdapter
+from flask_user import UserManager
+from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
-from werkzeug.security import check_password_hash, generate_password_hash
+
 
 fs_mixin = FlaskSerialize(db)
 
@@ -25,7 +17,9 @@ login_manager = LoginManager()
 login_manager.session_protection = "strong"
 login_manager.login_view = "login"
 
-# Creating this class as NOCASE collation is not compatible with ordinary SQLAlchemy Strings
+
+# Creating this class as NOCASE collation is not compatible with ordinary
+# SQLAlchemy Strings
 class CI_String(TypeDecorator):
     """ Case-insensitive String subclass definition"""
 
@@ -86,6 +80,7 @@ class Users(db.Model, UserMixin):
 
 db_adapter = SQLAlchemyAdapter(db, Users)
 user_manager = UserManager(db_adapter)
+
 
 # Define the Role data-model
 class Role(db.Model):

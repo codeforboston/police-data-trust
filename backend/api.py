@@ -1,13 +1,15 @@
 from typing import Optional
 
 import click
-from flask import Flask, flash, redirect, render_template, request, session
-from flask_login import LoginManager, login_required, login_user, logout_user
-from flask_migrate import Migrate
-from flask_user import UserManager, current_user, login_required, roles_required
+from flask import Flask
+from flask import redirect
+from flask import request
+from flask_login import login_required
+from flask_login import login_user
+from flask_login import logout_user
 
 from .config import get_config_from_env
-from .database import db, db_cli
+from .database import db, db_cli, migrate
 from .database.models.users import Users, login_manager, user_manager
 from .routes.incidents import incident_routes
 from .utils import dev_only
@@ -30,7 +32,7 @@ def create_app(config: Optional[str] = None):
 
 def register_extensions(app: Flask):
     db.init_app(app)
-    migrate = Migrate(app, db)
+    migrate.init_app(app)
     login_manager.init_app(app)
     user_manager.init_app(app)
 
@@ -96,9 +98,14 @@ def register_routes(app: Flask):
         if request.method == "POST":
             form = request.form
             # Verify user
-            if form.get("password") != None and form.get("email") != None:
+            if (
+                form.get("password") is not None
+                and form.get("email") is not None
+            ):
                 user = Users.query.filter_by(email=form.get("email")).first()
-                if user != None and user.verify_password(form.get("password")):
+                if user is not None and user.verify_password(
+                    form.get("password")
+                ):
                     login_user(user, form.get("remember_me"))
                     return {
                         "status": "ok",
@@ -110,16 +117,17 @@ def register_routes(app: Flask):
                         "status": "ok",
                         "message": "Error. Email or Password invalid.",
                     }
-            # In case of missing fields, return error message indicating required fields.
+            # In case of missing fields, return error message indicating
+            # required fields.
             missing_fields = []
             required_keys = ["email", "password"]
             for key in required_keys:
-                if key not in form.keys() or form.get(key) == None:
+                if key not in form.keys() or form.get(key) is None:
                     missing_fields.append(key)
             return {
                 "status": "ok",
-                "message": "Failed to log in. Please include the following fields: "
-                + ", ".join(missing_fields),
+                "message": "Failed to log in. Please include the following"
+                           " fields: " + ", ".join(missing_fields),
             }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}
@@ -137,13 +145,16 @@ def register_routes(app: Flask):
             form = request.form
             # Check to see if user already exists
             user = Users.query.filter_by(email=form.get("email")).first()
-            if user != None and user.verify_password(form.get("password")):
+            if user is not None and user.verify_password(form.get("password")):
                 return {
                     "status": "ok",
                     "message": "Error. Email matches existing account.",
                 }
             # Verify all fields included and create user
-            if form.get("password") != None and form.get("email") != None:
+            if (
+                form.get("password") is not None
+                and form.get("email") is not None
+            ):
                 user = Users(
                     email=form.get("email"),
                     password=user_manager.hash_password(form.get("password")),
@@ -157,16 +168,17 @@ def register_routes(app: Flask):
                     "message": "Successfully registered.",
                     "user": {"email": form.get("email")},
                 }
-            # In case of missing fields, return error message indicating required fields.
+            # In case of missing fields, return error message indicating
+            # required fields.
             missing_fields = []
             required_keys = ["email", "password"]
             for key in required_keys:
-                if key not in form.keys() or form.get(key) == None:
+                if key not in form.keys() or form.get(key) is None:
                     missing_fields.append(key)
             return {
                 "status": "ok",
-                "message": "Failed to register. Please include the following fields: "
-                + ", ".join(missing_fields),
+                "message": "Failed to register. Please include the following"
+                           " fields: " + ", ".join(missing_fields),
             }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}

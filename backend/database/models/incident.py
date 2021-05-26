@@ -1,14 +1,11 @@
 """Define the SQL classes for Users."""
-from .. import db
-from .types.enums import Race
-from .types.enums import Gender
-
-import marshmallow_sqlalchemy as ma
-from marshmallow_enum import EnumField
 import enum
+from .. import db
 
 
-# Should we be doing
+# Question: Should we be doing string enums?
+
+
 class InitialEncounter(enum.Enum):
     # https://docs.python.org/3/library/enum.html#creating-an-enum
     UNKNOWN = 1
@@ -79,6 +76,9 @@ class Incident(db.Model):
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
+# Association tables
+
+
 class IncidentVictim(db.Model):  # TODO: rename as IncidentVictimXRef ?
     id = db.Column(db.Integer, primary_key=True)
     incident_id = db.Column(db.Integer)  # TODO: foreign key
@@ -111,11 +111,6 @@ class IncidentTag(db.Model):
     tag_id = db.Column(db.Integer)  # TODO: foreign key
 
 
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    term = db.Column(db.Text)
-
-
 class IncidentUseOfForce(db.Model):
     # TODO: rename to IncidentUseOfForceXRef ?
     id = db.Column(db.Integer, primary_key=True)
@@ -136,79 +131,3 @@ class ResultOfStopAtIncident(db.Model):
 class ResultOfStop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     result = db.Column(db.Text)
-
-
-# TODO: not sure if the below model should be used.
-
-class Incidents(db.Model):
-    """The SQL dataclass for an Incident."""
-
-    __tablename__ = "incidents"
-
-    incident_id = db.Column(db.Integer, primary_key=True)
-
-    # incident data
-    occurrence_date = db.Column(db.DateTime)
-    state_abbv = db.Column(db.Unicode(512))
-    city = db.Column(db.Unicode(512))
-    address_1 = db.Column(db.Unicode(512))
-    address_2 = db.Column(db.Unicode(512))
-    zip_code = db.Column(db.Unicode(10))
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
-    reported_date = db.Column(db.DateTime)
-    initial_reason_for_encounter = db.Column(db.Enum(InitialEncounter))
-    charges_involved = db.Column(db.Unicode(512))
-    victim_weapon = db.Column(db.Enum(VictimWeapon))
-    victim_action = db.Column(db.Enum(VictimAction))
-    has_multimedia = db.Column(db.Boolean)
-    media_URL = db.Column(db.Unicode(512))
-    from_report = db.Column(db.Boolean)
-    description = db.Column(db.Unicode(512))
-    associated_incidents = db.Column(db.Unicode(512))
-
-    # Death information
-    death_state_abbv = db.Column(db.Unicode(512))
-    death_date = db.Column(db.DateTime)
-    death_city = db.Column(db.Unicode(512))
-    death_address_1 = db.Column(db.Unicode(512))
-    death_address_2 = db.Column(db.Unicode(512))
-    death_zip_code = db.Column(db.Unicode(10))
-    cause_of_death = db.Column(db.Enum(CauseOfDeath))
-    cause_of_death_description = db.Column(db.Unicode(512))
-
-    # victim data
-    first_name = db.Column(db.Unicode(512))
-    last_name = db.Column(db.Unicode(512))
-    age_at_incident = db.Column(db.Integer)
-    gender = db.Column(db.Enum(Gender))
-    race = db.Column(db.Enum(Race))
-    status = db.Column(db.Enum(VictimStatus))
-
-    # agency data
-    agency_id = db.Column(db.Integer)
-    agency_name = db.Column(db.Unicode(512))
-    agency_state_abbv = db.Column(db.Unicode(512))
-    agency_city = db.Column(db.Unicode(512))
-    agency_address_1 = db.Column(db.Unicode(512))
-    agency_address_2 = db.Column(db.Unicode(512))
-    agency_zip_code = db.Column(db.Unicode(10))
-    agency_latitude = db.Column(db.Float)
-    agency_longitude = db.Column(db.Float)
-
-    # role = db.relationship("RoleTable",
-
-    # backref=db.backref("incidents", lazy=True))
-
-
-class IncidentSchema(ma.SQLAlchemyAutoSchema):
-    gender = EnumField(Gender)
-    race = EnumField(Race)
-    victim_weapon = EnumField(VictimWeapon)
-    victim_action = EnumField(VictimAction)
-    cause_of_death = EnumField(CauseOfDeath)
-    status = EnumField(VictimStatus)
-    initial_reason_for_encounter = EnumField(InitialEncounter)
-
-    class Meta:
-        model = Incidents
