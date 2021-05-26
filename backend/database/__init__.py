@@ -14,4 +14,5 @@ from .models.legal_case import *
 from .models.multimedia import *
 from .models.officer import *
 from .models.participant import *
+from .models.users import *
 from .models.victim import *

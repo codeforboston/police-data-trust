@@ -1,9 +1,13 @@
 resources:
-  varname_crosswalk: 'backend/pull-public-data/varnames_crosswalk.csv'
+  varname_crosswalk: 'backend/scraper/varnames_crosswalk.csv'
 
 sources:
   mpv:
       url: https://mappingpoliceviolence.org/s/MPVDatasetDownload.xlsx
+  cpdp:
+      url: https://github.com/invinst/chicago-police-data/raw/master/data/unified_data.zip
+  #nyclu:
+  #    url: https://github.com/new-york-civil-liberties-union/NYPD-Misconduct-Complaint-Database/raw/master/CCRB_database_raw.xlsx
   
 tables:
   report:
