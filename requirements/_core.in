@@ -13,5 +13,13 @@ pytest
 pytest-cov
 pytest-flask-sqlalchemy
 python-dotenv
+flask-login
+flask-user
+wtforms
+flask-wtf
+flask-babelex
 PyYAML
 requests
+email-validator
+flask-serialize
+flask-migrate
