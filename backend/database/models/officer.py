@@ -26,10 +26,10 @@ class Officer(db.Model):
     appointed_date = db.Column(db.DateTime)
     badge = db.Column(db.Text)
     unit = db.Column(db.Text)  # type?
-    # TODO: How do we handle changes over time in rank?
+    # Note: rank at time of incident
     rank = db.Column(db.Text)  # type?
     star = db.Column(db.Text)  # type?
-    age = db.Column(db.Integer)
+    date_of_birth = db.Column(db.Date)
     # TODO: Age changes over time. Might we use birth year?
 
 
