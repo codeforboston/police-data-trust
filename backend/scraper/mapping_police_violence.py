@@ -13,8 +13,9 @@ import os
 def map_varnames(df, data_source, xwalk):
     # clean column names
     df.columns = (
-        df.columns.str.replace(" ", "_").str.replace
-        ("[^\\d\\w]", "").str.lower()
+        df.columns.str.replace(" ", "_")
+        .str.replace("[^\\d\\w]", "")
+        .str.lower()
     )
     # assert all(xwalk["mpv"].isin(df.columns))
     # assert all(xwalk["nyclu"].isin(df.columns))
@@ -44,8 +45,8 @@ def gen_ids(df, data_source):
 def make_single_table(table, dat, configs):
     assert all([x in dat.columns for x in configs["tables"][table]["required"]])
     cols = (
-            configs["tables"][table]["required"]
-            + configs["tables"][table]["optional"]
+        configs["tables"][table]["required"]
+        + configs["tables"][table]["optional"]
     )
     return dat[dat.columns[dat.columns.isin(cols)]]
 
@@ -57,14 +58,22 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat):
                 continue
             if dat is None or len(dat) == 0:
                 dat = extract_all_subfolders(
-                    head_directory + "/" + filename, data_source, xwalk, dat)
+                    head_directory + "/" + filename, data_source, xwalk, dat
+                )
             else:
-                dat = dat.append(extract_all_subfolders(
-                    head_directory + "/" + filename, data_source, xwalk, dat))
+                dat = dat.append(
+                    extract_all_subfolders(
+                        head_directory + "/" + filename, data_source, xwalk, dat
+                    )
+                )
         return dat
     elif head_directory.endswith("csv.gz"):
-        data = pd.read_csv(head_directory, nrows=1048576, compression='gzip',
-                           error_bad_lines=False)
+        data = pd.read_csv(
+            head_directory,
+            nrows=1048576,
+            compression="gzip",
+            error_bad_lines=False,
+        )
         print(data)
         return data
 
@@ -78,12 +87,13 @@ def make_tables_data_source(data_source, xwalk, configs):
         r = requests.get(configs["sources"][data_source]["url"])
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(".")
-        dat_raw = extract_all_subfolders("fully-unified-data",
-                                         data_source, xwalk, [])
-        dat_raw['victims_name'] = ""
-        dat_raw['cause_of_death'] = ""
-        dat_raw['county'] = ""
-        dat_raw = dat_raw.groupby(['cr_id']).first().reset_index()
+        dat_raw = extract_all_subfolders(
+            "fully-unified-data", data_source, xwalk, []
+        )
+        dat_raw["victims_name"] = ""
+        dat_raw["cause_of_death"] = ""
+        dat_raw["county"] = ""
+        dat_raw = dat_raw.groupby(["cr_id"]).first().reset_index()
         dat = map_varnames(dat_raw, data_source, xwalk)
         dat = gen_ids(dat, data_source)
         # dat.to_csv(r'cpdp_data.csv', index=False, header=True)
