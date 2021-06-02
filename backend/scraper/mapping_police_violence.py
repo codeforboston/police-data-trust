@@ -14,7 +14,9 @@ next_index = 0
 def map_varnames(df, data_source, xwalk):
     # clean column names
     df.columns = (
-       df.columns.str.replace(" ", "_").str.replace("[^\\d\\w]", "").str.lower()
+        df.columns.str.replace(" ", "_")
+        .str.replace("[^\\d\\w]", "")
+        .str.lower()
     )
     for i in range(xwalk.shape[0]):
         if xwalk[data_source][i] not in df.columns:
@@ -55,8 +57,8 @@ def gen_ids(df, data_source):
 def make_single_table(table, dat, configs):
     assert all([x in dat.columns for x in configs["tables"][table]["required"]])
     cols = (
-            configs["tables"][table]["required"]
-            + configs["tables"][table]["optional"]
+        configs["tables"][table]["required"]
+        + configs["tables"][table]["optional"]
     )
     return dat[dat.columns[dat.columns.isin(cols)]]
 
@@ -68,15 +70,22 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat):
                 continue
             if dat is None or len(dat) == 0:
                 dat = extract_all_subfolders(
-                    head_directory + "/" + filename, data_source, xwalk, dat)
+                    head_directory + "/" + filename, data_source, xwalk, dat
+                )
             else:
-                dat = dat.append(extract_all_subfolders(
-                    head_directory + "/" + filename, data_source, xwalk, dat))
+                dat = dat.append(
+                    extract_all_subfolders(
+                        head_directory + "/" + filename, data_source, xwalk, dat
+                    )
+                )
         return dat
     elif head_directory.endswith("csv.gz"):
-        data = pd.read_csv(head_directory, nrows=1048576, compression='gzip',
-                           error_bad_lines=False)
-        # print(data)
+        data = pd.read_csv(
+            head_directory,
+            nrows=1048576,
+            compression="gzip",
+            error_bad_lines=False,
+        )
         return data
 
 
@@ -85,14 +94,12 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat_raw = pd.read_excel(configs["sources"][data_source]["url"])
         dat = map_varnames(dat_raw, data_source, xwalk)
         dat = gen_ids(dat, data_source)
-
-        print(dat.index)
     elif configs["sources"][data_source]["url"].endswith(".zip"):
         r = requests.get(configs["sources"][data_source]["url"])
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(".")
-        dat_raw = extract_all_subfolders("fully-unified-data",
-                                         data_source, xwalk, [])
+        dat_raw = extract_all_subfolders(
+            "fully-unified-data", data_source, xwalk, [])
         dat_raw = dat_raw.groupby(['cr_id']).first().reset_index()
         dat = map_varnames(dat_raw, data_source, xwalk)
         dat = gen_ids(dat, data_source)
@@ -124,8 +131,6 @@ def make_all_tables():
 
     # make data tables
     data_sources = list(configs["sources"].keys())
-    print("Sources: ")
-    print(configs["sources"])
     data_list = [
         make_tables_data_source(x, xwalk, configs) for x in data_sources
     ]
@@ -157,5 +162,4 @@ def make_all_tables():
 
 
 if __name__ == "__main__":
-    # print("in main")
     make_all_tables()

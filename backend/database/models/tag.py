@@ -1,7 +1,6 @@
 from .. import db
 
-# TODO agency model
 
-
-class AgencyAtIncident(db.Model):
+class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    term = db.Column(db.Text)

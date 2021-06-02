@@ -12,15 +12,20 @@ tables:
     required:
       - record_id
       - data_source_id
+      - record_type
     optional: 
-      - null
+      - attachments_available
   incident:
     required:
       - record_id
+      - description
+      - perpetrator
     #  - incident_id # primary key
     optional:
       - incident_date
+      - incident_time
       - incident_type
+      - department_present
   victim:
     required:
    #   - incident_id
