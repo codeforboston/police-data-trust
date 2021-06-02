@@ -1,4 +1,25 @@
+black
+celery
+flake8
 flask
+flask-marshmallow
+marshmallow-sqlalchemy
+marshmallow-enum
 flask-sqlalchemy
-# psycopg2
+gunicorn
+pandas
+pip-tools
+pytest
+pytest-cov
+pytest-flask-sqlalchemy
+python-dotenv
+flask-login
+flask-user
+wtforms
+flask-wtf
+flask-babelex
+PyYAML
+requests
+email-validator
 flask-serialize
+flask-migrate

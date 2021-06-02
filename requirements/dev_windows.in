@@ -1,2 +1,2 @@
--r _dev.in
+-r _core.in
 psycopg2
