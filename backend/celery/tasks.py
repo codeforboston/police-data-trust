@@ -1,4 +1,4 @@
-from ..incidents import Incidents
+from ..database import Incident
 from ..config import Config
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -45,6 +45,6 @@ def fetch_data(self, url):
     try:
         if res.data:
             for data in res.data:
-                get_or_create(session, Incidents, data)
+                get_or_create(session, Incident, data)
     except Exception as err:
         print(err)

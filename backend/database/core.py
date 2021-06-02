@@ -15,6 +15,8 @@ from flask.cli import AppGroup
 from flask.cli import with_appcontext
 from werkzeug.utils import secure_filename
 
+from flask_migrate import Migrate
+
 from sqlalchemy.exc import ResourceClosedError
 from flask_sqlalchemy import SQLAlchemy
 
@@ -26,7 +28,7 @@ from ..config import TestingConfig
 from ..utils import dev_only
 
 db = SQLAlchemy()
-
+migrate = Migrate(db=db)
 
 QUERIES_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "queries")
