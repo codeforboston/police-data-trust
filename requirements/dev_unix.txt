@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements/dev_unix.in
 #
+alembic==1.6.5
+    # via flask-db
 amqp==5.0.5
     # via kombu
 appdirs==1.4.4
@@ -25,9 +27,7 @@ celery==5.0.5
 certifi==2020.12.5
     # via requests
 cffi==1.14.5
-    # via
-    #   bcrypt
-    #   cryptography
+    # via bcrypt
 chardet==4.0.0
     # via requests
 click-didyoumean==0.0.3
@@ -47,8 +47,6 @@ click==7.1.2
     #   pip-tools
 coverage==5.5
     # via pytest-cov
-cryptography==3.4.7
-    # via flask-user
 dnspython==2.1.0
     # via email-validator
 email-validator==1.1.2
@@ -56,6 +54,8 @@ email-validator==1.1.2
 flake8==3.8.4
     # via -r requirements/_core.in
 flask-babelex==0.9.4
+    # via -r requirements/_core.in
+flask-db==0.3.1
     # via -r requirements/_core.in
 flask-login==0.5.0
     # via
@@ -65,13 +65,12 @@ flask-mail==0.9.1
     # via flask-user
 flask-marshmallow==0.14.0
     # via -r requirements/_core.in
-flask-migrate==2.7.0
-    # via -r requirements/_core.in
 flask-serialize==1.5.1
     # via -r requirements/_core.in
 flask-sqlalchemy==2.4.4
     # via
     #   -r requirements/_core.in
+    #   flask-db
     #   flask-user
     #   pytest-flask-sqlalchemy
 flask-user==0.6.21
@@ -84,6 +83,7 @@ flask==1.1.2
     # via
     #   -r requirements/_core.in
     #   flask-babelex
+    #   flask-db
     #   flask-login
     #   flask-mail
     #   flask-marshmallow
@@ -108,9 +108,12 @@ jinja2==2.11.3
     #   flask-babelex
 kombu==5.0.2
     # via celery
+mako==1.1.4
+    # via alembic
 markupsafe==1.1.1
     # via
     #   jinja2
+    #   mako
     #   wtforms
 marshmallow-enum==1.5.1
     # via -r requirements/_core.in
@@ -153,6 +156,8 @@ pycodestyle==2.6.0
     # via flake8
 pycparser==2.20
     # via cffi
+pycryptodome==3.10.1
+    # via flask-user
 pyflakes==2.2.0
     # via flake8
 pyparsing==2.4.7
@@ -170,9 +175,13 @@ pytest==6.2.2
     #   pytest-flask-sqlalchemy
     #   pytest-mock
 python-dateutil==2.8.1
-    # via pandas
+    # via
+    #   alembic
+    #   pandas
 python-dotenv==0.15.0
     # via -r requirements/_core.in
+python-editor==1.0.4
+    # via alembic
 pytz==2021.1
     # via
     #   babel
@@ -190,13 +199,19 @@ six==1.15.0
     #   click-repl
     #   flask-marshmallow
     #   python-dateutil
+    #   sqlalchemy-utils
 speaklater==1.3
     # via flask-babelex
+sqlalchemy-utils==0.37.5
+    # via flask-db
 sqlalchemy==1.3.23
     # via
+    #   alembic
+    #   flask-db
     #   flask-sqlalchemy
     #   marshmallow-sqlalchemy
     #   pytest-flask-sqlalchemy
+    #   sqlalchemy-utils
 toml==0.10.2
     # via
     #   black

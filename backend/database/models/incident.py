@@ -58,22 +58,29 @@ class VictimStatus(enum.Enum):
 
 
 class Incident(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    """The incident table is the fact table."""
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
-    location = db.Column(db.Text)  # TODO: location object
-    # TODO: neighborhood seems like a weird identifier that may not always
-    #  apply in consistent ways across municipalities.
-    neighborhood = db.Column(db.Text)
-    stop_type = db.Column(db.Text)  # TODO: enum
-    call_type = db.Column(db.Text)  # TODO: enum
-    has_multimedia = db.Column(db.Boolean)
-    from_report = db.Column(db.Boolean)
-    # These may require an additional table. Also can dox a victim
-    was_victim_arrested = db.Column(db.Boolean)
-    arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-    # Does an existing warrant count here?
-    criminal_case_brought = db.Column(db.Boolean)
-    case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+
+    # officers
+    officers = db.relationship('Officer', backref='officer', lazy=True)
+
+    # multimedia ID
+
+    # location = db.Column(db.Text)  # TODO: location object
+    # # TODO: neighborhood seems like a weird identifier that may not always
+    # #  apply in consistent ways across municipalities.
+    # neighborhood = db.Column(db.Text)
+    # stop_type = db.Column(db.Text)  # TODO: enum
+    # call_type = db.Column(db.Text)  # TODO: enum
+    # has_multimedia = db.Column(db.Boolean)
+    # from_report = db.Column(db.Boolean)
+    # # These may require an additional table. Also can dox a victim
+    # was_victim_arrested = db.Column(db.Boolean)
+    # arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+    # # Does an existing warrant count here?
+    # criminal_case_brought = db.Column(db.Boolean)
+    # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
 # Association tables

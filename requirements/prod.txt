@@ -4,20 +4,32 @@
 #
 #    pip-compile requirements/prod.in
 #
+alembic==1.6.5
+    # via flask-db
 amqp==5.0.5
     # via kombu
 appdirs==1.4.4
     # via black
 attrs==20.3.0
     # via pytest
+babel==2.9.1
+    # via flask-babelex
+bcrypt==3.2.0
+    # via flask-user
 billiard==3.6.3.0
     # via celery
 black==20.8b1
     # via -r requirements/_core.in
+blinker==1.4
+    # via flask-mail
 celery==5.0.5
     # via -r requirements/_core.in
 certifi==2020.12.5
     # via requests
+cffi==1.14.5
+    # via
+    #   bcrypt
+    #   cryptography
 chardet==4.0.0
     # via requests
 click-didyoumean==0.0.3
@@ -37,33 +49,76 @@ click==7.1.2
     #   pip-tools
 coverage==5.5
     # via pytest-cov
+cryptography==3.4.7
+    # via flask-user
+dnspython==2.1.0
+    # via email-validator
+email-validator==1.1.2
+    # via -r requirements/_core.in
 flake8==3.9.0
     # via -r requirements/_core.in
+flask-babelex==0.9.4
+    # via -r requirements/_core.in
+flask-db==0.3.1
+    # via -r requirements/_core.in
+flask-login==0.5.0
+    # via
+    #   -r requirements/_core.in
+    #   flask-user
+flask-mail==0.9.1
+    # via flask-user
 flask-marshmallow==0.14.0
+    # via -r requirements/_core.in
+flask-serialize==1.5.1
     # via -r requirements/_core.in
 flask-sqlalchemy==2.4.4
     # via
     #   -r requirements/_core.in
+    #   flask-db
+    #   flask-user
     #   pytest-flask-sqlalchemy
+flask-user==1.0.2.2
+    # via -r requirements/_core.in
+flask-wtf==0.15.1
+    # via
+    #   -r requirements/_core.in
+    #   flask-user
 flask==1.1.2
     # via
     #   -r requirements/_core.in
+    #   flask-babelex
+    #   flask-db
+    #   flask-login
+    #   flask-mail
     #   flask-marshmallow
     #   flask-sqlalchemy
+    #   flask-user
+    #   flask-wtf
 gunicorn==20.1.0
     # via -r requirements/_core.in
 idna==2.10
-    # via requests
+    # via
+    #   email-validator
+    #   requests
 iniconfig==1.1.1
     # via pytest
 itsdangerous==1.1.0
-    # via flask
+    # via
+    #   flask
+    #   flask-wtf
 jinja2==2.11.3
-    # via flask
+    # via
+    #   flask
+    #   flask-babelex
 kombu==5.0.2
     # via celery
+mako==1.1.4
+    # via alembic
 markupsafe==1.1.1
-    # via jinja2
+    # via
+    #   jinja2
+    #   mako
+    #   wtforms
 marshmallow-enum==1.5.1
     # via -r requirements/_core.in
 marshmallow-sqlalchemy==0.24.2
@@ -85,10 +140,14 @@ packaging==20.9
     #   pytest-flask-sqlalchemy
 pandas==1.2.3
     # via -r requirements/_core.in
+passlib==1.7.4
+    # via flask-user
 pathspec==0.8.1
     # via black
 pep517==0.10.0
     # via pip-tools
+permissive-dict==1.0.4
+    # via flask-serialize
 pip-tools==6.0.1
     # via -r requirements/_core.in
 pluggy==0.13.1
@@ -101,6 +160,8 @@ py==1.10.0
     # via pytest
 pycodestyle==2.7.0
     # via flake8
+pycparser==2.20
+    # via cffi
 pyflakes==2.3.0
     # via flake8
 pyparsing==2.4.7
@@ -118,11 +179,16 @@ pytest==6.2.2
     #   pytest-flask-sqlalchemy
     #   pytest-mock
 python-dateutil==2.8.1
-    # via pandas
+    # via
+    #   alembic
+    #   pandas
 python-dotenv==0.15.0
     # via -r requirements/_core.in
+python-editor==1.0.4
+    # via alembic
 pytz==2021.1
     # via
+    #   babel
     #   celery
     #   pandas
 pyyaml==5.4.1
@@ -133,14 +199,23 @@ requests==2.25.1
     # via -r requirements/_core.in
 six==1.15.0
     # via
+    #   bcrypt
     #   click-repl
     #   flask-marshmallow
     #   python-dateutil
+    #   sqlalchemy-utils
+speaklater==1.3
+    # via flask-babelex
+sqlalchemy-utils==0.37.5
+    # via flask-db
 sqlalchemy==1.3.23
     # via
+    #   alembic
+    #   flask-db
     #   flask-sqlalchemy
     #   marshmallow-sqlalchemy
     #   pytest-flask-sqlalchemy
+    #   sqlalchemy-utils
 toml==0.10.2
     # via
     #   black
@@ -160,6 +235,10 @@ wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==1.0.1
     # via flask
+wtforms==2.3.3
+    # via
+    #   -r requirements/_core.in
+    #   flask-wtf
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
