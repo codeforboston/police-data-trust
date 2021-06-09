@@ -15,7 +15,7 @@ if you run into an error such as
 Error: .git can't be found
 ```
 
-you can copy the .git/ directory in the root of the project and move it to the frontend/ and try the install again and it should succeed. try the install again and move on.
+you can copy the .git/ directory in the root of the project and move it to the frontend/ and try the install again and it should succeed. try the install again and remember do not commit this .git/ you may want to delete it afterwards until figured out alernative.
 
 Second, run the development server:
 
