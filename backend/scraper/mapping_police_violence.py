@@ -11,7 +11,7 @@ next_index = 0
 # data manipulation functions
 
 
-def map_varnames(df, data_source, xwalk):
+def map_varnames(df, data_source, xwalk, configs):
     # clean column names
     df.columns = (
         df.columns.str.replace(" ", "_")
@@ -21,7 +21,11 @@ def map_varnames(df, data_source, xwalk):
     for i in range(xwalk.shape[0]):
         if xwalk[data_source][i] not in df.columns:
             df[xwalk[data_source][i]] = ""
-
+            if xwalk[data_source][i] == "record_type":
+                df[xwalk[data_source][i]] = xwalk[data_source]
+                if xwalk[data_source][i] == 'record_type':
+                    df[xwalk[data_source][i]]\
+                        = configs["sources"][data_source]["type"]
     # assert all(xwalk["mpv"].isin(df.columns))
     # assert all(xwalk["nyclu"].isin(df.columns))
 
@@ -55,7 +59,6 @@ def gen_ids(df, data_source):
 
 
 def make_single_table(table, dat, configs):
-    assert all([x in dat.columns for x in configs["tables"][table]["required"]])
     cols = (
         configs["tables"][table]["required"]
         + configs["tables"][table]["optional"]
@@ -92,7 +95,7 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat):
 def make_tables_data_source(data_source, xwalk, configs):
     if configs["sources"][data_source]["url"].endswith(".xlsx"):
         dat_raw = pd.read_excel(configs["sources"][data_source]["url"])
-        dat = map_varnames(dat_raw, data_source, xwalk)
+        dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".zip"):
         r = requests.get(configs["sources"][data_source]["url"])
@@ -101,14 +104,17 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat_raw = extract_all_subfolders(
             "fully-unified-data", data_source, xwalk, [])
         dat_raw = dat_raw.groupby(['cr_id']).first().reset_index()
-        dat = map_varnames(dat_raw, data_source, xwalk)
+        dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
         dat_raw = pd.read_csv(configs["sources"][data_source]["url"])
         for i in range(xwalk.shape[0]):
             if xwalk[data_source][i] not in dat_raw.columns:
                 dat_raw[xwalk[data_source][i]] = ""
-        dat = map_varnames(dat_raw, data_source, xwalk)
+            if xwalk[data_source][i] == 'record_type':
+                dat_raw[xwalk[data_source][i]]\
+                    = configs["sources"][data_source]["type"]
+        dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
 
     dat = dat.loc[~dat.index.duplicated(keep='first')]
