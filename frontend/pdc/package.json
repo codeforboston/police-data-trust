@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "cd ../.. && husky install frontend/pdc/.husky"
   },
   "dependencies": {
     "next": "10.2.0",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.5",
+    "husky": "^6.0.0",
     "typescript": "^4.2.4"
   }
 }
