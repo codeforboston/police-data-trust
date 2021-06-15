@@ -1,10 +1,11 @@
 The mapping_police_violence.py script should be able to run by itself, independent of the server and database.
 The following are required and can be downloaded with pip install:
-    Python 3.8
-    Numpy
-    Pandas
-    openpyxl
-    xlsxwriter
+
+    * Python 3.8
+    * Numpy
+    * Pandas
+    * openpyxl
+    * xlsxwriter
 
 To run, call the script from the head of the repository. You may see several warnings about mixed types. The script could also take several minutes.
 
