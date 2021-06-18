@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prepare": "husky install"
+    "prepare": "cd .. && husky install frontend/.husky"
   },
   "dependencies": {
     "next": "10.2.0",
