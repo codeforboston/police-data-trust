@@ -1,4 +1,4 @@
-from backend.database import db
+from .. import db
 
 class OfficerAtIncident(db.Model):
   id = db.Column(db.Integer, primary_key=True)
