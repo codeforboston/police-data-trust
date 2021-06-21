@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest"
   },
   "dependencies": {
     "next": "10.2.0",
@@ -14,13 +15,55 @@
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@testing-library/dom": "^7.31.2",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@types/jest": "^26.0.23",
     "@types/react": "^17.0.5",
+    "@types/react-test-renderer": "^17.0.1",
+    "babel-jest": "^27.0.2",
     "husky": "^6.0.0",
+    "jest": "^27.0.4",
+    "jest-dom": "^4.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.3.0",
+    "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.0.3",
     "typescript": "^4.2.4"
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.(test|spec).(ts|tsx)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "babelConfig": true,
+        "tsConfig": "jest.tsconfig.json"
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "text-summary"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/mocks.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/mocks.js"
+    }
   }
 }
