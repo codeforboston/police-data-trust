@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Home correctly 1`] = `
+<div>
+  I am the Police Data Trust Application!
+</div>
+`;
+
+exports[`renders correctly 1`] = `
+<div>
+  I am the Police Data Trust Application!
+</div>
+`;
