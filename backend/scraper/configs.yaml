@@ -5,9 +5,26 @@ sources:
   mpv:
       url: https://mappingpoliceviolence.org/s/MPVDatasetDownload.xlsx
       type: news article
+      id: mpv_id
   cpdp:
       url: https://github.com/invinst/chicago-police-data/raw/master/data/unified_data.zip
       type: government record
+      id: cr_id
+      headdirectory: fully-unified-data
+      subdirectory: complaints
+      location: .
+  fatal:
+      url: https://raw.githubusercontent.com/washingtonpost/data-police-shootings/master/fatal-police-shootings-data.csv
+      type: news article
+      id: id
+      location: .
+  counted:
+      url: https://interactive.guim.co.uk/2015/the-counted/thecounted-data.zip
+      type: news article
+      id: uid
+      headdirectory: thecounted-data
+      subdirectory: None
+      location: thecounted-data
 tables:
   report:
     required:
