@@ -30,6 +30,10 @@ def create_app(config: Optional[str] = None):
         register_routes(app)
         register_misc(app)
 
+    # @app.before_first_request
+    # def _():
+    #     db.create_all()
+
     return app
 
 
