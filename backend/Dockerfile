@@ -11,4 +11,6 @@ COPY requirements/ requirements/
 RUN pip3 install -r requirements/dev_unix.txt
 COPY . .
 
+ENV PORT=5000
+EXPOSE $PORT
 CMD [ "/bin/bash", "run_unix.sh" ]
