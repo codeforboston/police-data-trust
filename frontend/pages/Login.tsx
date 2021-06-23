@@ -189,6 +189,14 @@ const Login = () => {
                         Login
                     </Button>
                 </CardActions>
+                <CardActions>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        color="secondary">
+                        Forgot your username or password?
+                    </Button>
+                </CardActions>
             </Card>
         </form>
     );
