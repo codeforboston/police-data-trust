@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p ${PORT:-3000}",
     "build": "next build",
     "start": "next start",
-    "prepare": "cd .. && husky install frontend/.husky",
+    "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
     "test": "jest"
   },
   "dependencies": {
