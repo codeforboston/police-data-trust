@@ -1,4 +1,5 @@
 import "../styles/globals.css"
+import "./login/style.css"
 
 function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
