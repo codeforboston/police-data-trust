@@ -10,11 +10,22 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - 5432:5432
-  app:
+  web:
     restart: always
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./frontend/Dockerfile
+    volumes:
+      - ./frontend/pages:/usr/src/app/pages
+      - ./frontend/public:/usr/src/app/public
+      - ./frontend/styles:/usr/src/app/styles
+    ports:
+      - 3000:3000
+  api:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
     depends_on:
       - db
     environment:
