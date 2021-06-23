@@ -1,0 +1,16 @@
+{
+  "name": "Police Data Trust",
+  "description": "Web server for Police Data Trust database project",
+  "buildpacks": [{ "url": "heroku/python" }],
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.5"
+      }
+    }
+  ],
+  "env": {
+    "SECRET_KEY": { "generator": "secret" }
+  }
+}
