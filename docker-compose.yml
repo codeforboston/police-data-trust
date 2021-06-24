@@ -17,6 +17,7 @@ services:
       dockerfile: ./frontend/Dockerfile
     volumes:
       - ./frontend/pages:/usr/src/app/pages
+      - ./frontend/components:/usr/src/app/components
       - ./frontend/public:/usr/src/app/public
       - ./frontend/styles:/usr/src/app/styles
     ports:
