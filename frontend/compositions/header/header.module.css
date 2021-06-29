@@ -1,0 +1,48 @@
+.container {
+  background-image: url(./assets/Banner.svg);
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 124px;
+  display: flex;
+}
+
+.logo {
+  position: absolute;
+  margin-top: 27px;
+  margin-left: 95px;
+}
+
+.titleContainer {
+  width: 549px;
+  height: 49px;
+  margin-top: 44px;
+  margin-left: 193px;
+  color: var(--darkBlue);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 33.89px;
+}
+
+.subtitle {
+  height: 26px;
+  width: 509px;
+  color: var(--black);
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.3px;
+}
+
+.links {
+  display: flex;
+  margin-top: 46px;
+  margin-left: 88px;
+}
+
+.links button {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 3px solid var(--darkBlue);
+  margin-right: 44px;
+}
