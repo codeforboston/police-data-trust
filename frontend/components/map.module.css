@@ -1,0 +1,21 @@
+.mappage {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.mapframe {
+  height: 600px;
+  width: 900px;
+  background-color: green;
+}
+
+.mapcontainer {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  opacity: 1;
+}
