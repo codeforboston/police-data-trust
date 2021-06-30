@@ -57,77 +57,98 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
+incident_officer_xref = db.Table(
+    'incident_officer_association',
+    db.Column(
+        'incident_id', db.Integer,
+        db.ForeignKey('incidents.id'), primary_key=True
+    ),
+    db.Column(
+        'officer_id', db.Integer,
+        db.ForeignKey('officers.id'), primary_key=True
+    )
+)
+
+
 class Incident(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    """The incident table is the fact table."""
+    __tablename__ = "incidents"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
+
+    # officers
+    officers = db.relationship('Officer', secondary=incident_officer_xref, lazy=True)
+
+    # multimedia ID
+
     location = db.Column(db.Text)  # TODO: location object
-    # TODO: neighborhood seems like a weird identifier that may not always
-    #  apply in consistent ways across municipalities.
-    neighborhood = db.Column(db.Text)
-    stop_type = db.Column(db.Text)  # TODO: enum
-    call_type = db.Column(db.Text)  # TODO: enum
-    has_multimedia = db.Column(db.Boolean)
-    from_report = db.Column(db.Boolean)
-    # These may require an additional table. Also can dox a victim
-    was_victim_arrested = db.Column(db.Boolean)
-    arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-    # Does an existing warrant count here?
-    criminal_case_brought = db.Column(db.Boolean)
-    case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+    # # TODO: neighborhood seems like a weird identifier that may not always
+    # #  apply in consistent ways across municipalities.
+    # neighborhood = db.Column(db.Text)
+    # stop_type = db.Column(db.Text)  # TODO: enum
+    # call_type = db.Column(db.Text)  # TODO: enum
+    # has_multimedia = db.Column(db.Boolean)
+    # from_report = db.Column(db.Boolean)
+    # # These may require an additional table. Also can dox a victim
+    # was_victim_arrested = db.Column(db.Boolean)
+    # arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+    # # Does an existing warrant count here?
+    # criminal_case_brought = db.Column(db.Boolean)
+    # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
 # Association tables
 
 
-class IncidentVictim(db.Model):  # TODO: rename as IncidentVictimXRef ?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    victim_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class IncidentDescription(db.Model):
-    # (Note) Removed all the `description_*` prefixes.
-    id = db.Column(db.Integer, primary_key=True)  # description id
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    text = db.Column(db.Text)
-    type = db.Column(db.Text)  # TODO: enum
-    # TODO: are there rules for this column other than text?
-    source = db.Column(db.Text)
-
-
-class IncidentAction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # action id
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    date = db.Column(db.DateTime)
-    action = db.Column(db.Text)  # TODO: Not sure what this is.
-    actor = db.Column(db.Text)  # TODO: Not sure what this is.
-    notes = db.Column(db.Text)
-
-
-class IncidentTag(db.Model):
-    # TODO: rename as IncidentTagXRef ?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    tag_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class IncidentUseOfForce(db.Model):
-    # TODO: rename to IncidentUseOfForceXRef ?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    use_of_force_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class ResultOfStopAtIncident(db.Model):
-    # TODO: Rename to IncidentResultOfStopXRef?
-    # TODO:
-    #  Does this need to be an crossref table?
-    #  Is there a many-to-many relationship?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    result_of_stop_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class ResultOfStop(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    result = db.Column(db.Text)
+# class IncidentVictim(db.Model):  # TODO: rename as IncidentVictimXRef ?
+#     id = db.Column(db.Integer, primary_key=True)
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     victim_id = db.Column(db.Integer)  # TODO: foreign key
+#
+#
+# class IncidentDescription(db.Model):
+#     # (Note) Removed all the `description_*` prefixes.
+#     id = db.Column(db.Integer, primary_key=True)  # description id
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     text = db.Column(db.Text)
+#     type = db.Column(db.Text)  # TODO: enum
+#     # TODO: are there rules for this column other than text?
+#     source = db.Column(db.Text)
+#
+#
+# class IncidentAction(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)  # action id
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     date = db.Column(db.DateTime)
+#     action = db.Column(db.Text)  # TODO: Not sure what this is.
+#     actor = db.Column(db.Text)  # TODO: Not sure what this is.
+#     notes = db.Column(db.Text)
+#
+#
+# class IncidentTag(db.Model):
+#     # TODO: rename as IncidentTagXRef ?
+#     id = db.Column(db.Integer, primary_key=True)
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     tag_id = db.Column(db.Integer)  # TODO: foreign key
+#
+#
+# class IncidentUseOfForce(db.Model):
+#     # TODO: rename to IncidentUseOfForceXRef ?
+#     id = db.Column(db.Integer, primary_key=True)
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     use_of_force_id = db.Column(db.Integer)  # TODO: foreign key
+#
+#
+# class ResultOfStopAtIncident(db.Model):
+#     # TODO: Rename to IncidentResultOfStopXRef?
+#     # TODO:
+#     #  Does this need to be an crossref table?
+#     #  Is there a many-to-many relationship?
+#     id = db.Column(db.Integer, primary_key=True)
+#     incident_id = db.Column(db.Integer)  # TODO: foreign key
+#     result_of_stop_id = db.Column(db.Integer)  # TODO: foreign key
+#
+#
+# class ResultOfStop(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     result = db.Column(db.Text)

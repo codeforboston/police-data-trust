@@ -22,4 +22,4 @@ PyYAML
 requests
 email-validator
 flask-serialize
-flask-migrate
+Flask-DB

@@ -9,8 +9,11 @@ from flask_login import login_user
 from flask_login import logout_user
 
 from .config import get_config_from_env
-from .database import db, db_cli, migrate
-from .database.models.users import Users, login_manager, user_manager
+from .database import db
+from .database import db_cli
+from .database.models.users import Users
+from .database.models.users import login_manager
+from .database.models.users import user_manager
 from .routes.incidents import incident_routes
 from .utils import dev_only
 
@@ -27,12 +30,15 @@ def create_app(config: Optional[str] = None):
         register_routes(app)
         register_misc(app)
 
+    # @app.before_first_request
+    # def _():
+    #     db.create_all()
+
     return app
 
 
 def register_extensions(app: Flask):
     db.init_app(app)
-    migrate.init_app(app)
     login_manager.init_app(app)
     user_manager.init_app(app)
 
