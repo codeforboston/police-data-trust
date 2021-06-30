@@ -20,6 +20,7 @@ class Rank(str, enum.Enum):
 class Officer(db.Model):
     __tablename__ = "officers"
     id = db.Column(db.Integer, primary_key=True)  # officer id
+    incident_id = db.Column(db.Integer, db.ForeignKey("incidents.id"), nullable=False)
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
     race = db.Column(db.Enum(Race))
@@ -33,7 +34,7 @@ class Officer(db.Model):
     date_of_birth = db.Column(db.Date)
     # TODO: Age changes over time. Might we use birth year?
 
-
-class OfficerAtIncident(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # TODO: Relationships, fields?
+#
+# class OfficerAtIncident(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     # TODO: Relationships, fields?

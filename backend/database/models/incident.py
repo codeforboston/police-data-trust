@@ -57,31 +57,18 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-incident_officer_xref = db.Table(
-    'incident_officer_association',
-    db.Column(
-        'incident_id', db.Integer,
-        db.ForeignKey('incidents.id'), primary_key=True
-    ),
-    db.Column(
-        'officer_id', db.Integer,
-        db.ForeignKey('officers.id'), primary_key=True
-    )
-)
-
-
 class Incident(db.Model):
     """The incident table is the fact table."""
     __tablename__ = "incidents"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
+    officers = db.relationship("Officer", backref="incident", lazy=True)
 
     # officers
-    officers = db.relationship('Officer', secondary=incident_officer_xref, lazy=True)
 
     # multimedia ID
 
-    location = db.Column(db.Text)  # TODO: location object
+    # location = db.Column(db.Text)  # TODO: location object
     # # TODO: neighborhood seems like a weird identifier that may not always
     # #  apply in consistent ways across municipalities.
     # neighborhood = db.Column(db.Text)
