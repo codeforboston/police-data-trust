@@ -12,7 +12,7 @@ export default function Header() {
   }
 
   return (
-    <header className={styles.container}>
+    <header className={styles.wrapper}>
       <div className={styles.banner}>
         <div className={styles.logo}>
           <NPDCLogo />
@@ -28,8 +28,8 @@ export default function Header() {
             <li className={selected === 'About' ? styles.tab : ''} onClick={handleNavChange}>About</li>
           </ul>
         </nav>
-        <div className={styles.item4}>
-          Grid Item 4
+        <div className={styles.donate}>
+          <button type="button">DONATE</button>
         </div>
       </div>
     </header>

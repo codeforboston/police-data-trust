@@ -1,4 +1,4 @@
-.container {
+.wrapper {
   width: 100%;
   height: 124px;
   display: grid;
@@ -6,17 +6,18 @@
 }
 
 .banner {
+  height: 76px;
   background-image: url(./assets/Banner.svg);
   background-repeat: no-repeat;
   background-size: 100%;
-  height: 76px;
   display: grid;
-  grid-template-columns: 167px 549px 1fr 1fr;
+  grid-template-columns: 167px 549px 225px 100px;
+  grid-template-rows: 124px;
 }
 
 .logo {
   padding-left: 72px;
-  padding-top: 27px;
+  margin-top: 27px;
 }
 
 .titleContainer {
@@ -44,27 +45,41 @@
   grid-template-columns: 1fr 1fr 1fr;
   height: 25px;
   margin-top: 51px;
-  color: #303463;
-  text-align: center;
-  cursor: pointer;
 }
 
 .nav li {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
+  color: var(--darkBlue);
+  text-align: center;
   line-height: 12px;
   padding: 8px 15px 5px 14px;
+  cursor: pointer;
 }
 
 .tab {
-  background-color: white;
+  background-color: #ffffff;
   width: 75px;
   height: 25px;
   border-radius: 3px 3px 0px 0px;
   box-shadow: 0px -2px 4px rgba(48, 52, 99, 0.25);
 }
 
-.item4 {
-  background-color: green;
+.donate {
+  margin-top: 21px;
+}
+
+.donate button {
+  width: 100px;
+  height: 35px;
+  background-color: var(--darkBlue);
+  border: 2px solid var(--darkBlue);
+  box-sizing: border-box;
+  border-radius: 4px;
+
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
 }
