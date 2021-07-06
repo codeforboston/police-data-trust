@@ -1,31 +1,37 @@
 .container {
-  background-image: url(./assets/Banner.svg);
-  background-repeat: no-repeat;
   width: 100%;
   height: 124px;
-  display: flex;
+  display: grid;
+  position: relative;
+}
+
+.banner {
+  background-image: url(./assets/Banner.svg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 76px;
+  display: grid;
+  grid-template-columns: 167px 549px 1fr 1fr;
 }
 
 .logo {
-  position: absolute;
-  margin-top: 27px;
-  margin-left: 95px;
+  padding-left: 72px;
+  padding-top: 27px;
 }
 
 .titleContainer {
-  width: 549px;
-  height: 49px;
-  margin-top: 44px;
-  margin-left: 193px;
+  padding-top: 46px;
+  margin-left: 16px;
+}
+
+.titleContainer .title {
   color: var(--darkBlue);
   font-weight: 700;
   font-size: 28px;
   line-height: 33.89px;
 }
 
-.subtitle {
-  height: 26px;
-  width: 509px;
+.titleContainer .subtitle {
   color: var(--black);
   font-weight: normal;
   font-size: 14px;
@@ -33,16 +39,32 @@
   letter-spacing: -0.3px;
 }
 
-.links {
-  display: flex;
-  margin-top: 46px;
-  margin-left: 88px;
+.nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 25px;
+  margin-top: 51px;
+  color: #303463;
+  text-align: center;
+  cursor: pointer;
 }
 
-.links button {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 3px solid var(--darkBlue);
-  margin-right: 44px;
+.nav li {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 12px;
+  padding: 8px 15px 5px 14px;
+}
+
+.tab {
+  background-color: white;
+  width: 75px;
+  height: 25px;
+  border-radius: 3px 3px 0px 0px;
+  box-shadow: 0px -2px 4px rgba(48, 52, 99, 0.25);
+}
+
+.item4 {
+  background-color: green;
 }
