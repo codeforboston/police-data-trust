@@ -1,0 +1,9 @@
+.Login {
+  position: relative;
+  margin: 0 auto;
+  width: 25rem;
+}
+
+.Login .email-container {
+  background-color: rebeccapurple;
+}

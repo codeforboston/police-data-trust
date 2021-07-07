@@ -67,20 +67,22 @@ def make_single_table(table, dat, configs):
     return dat[dat.columns[dat.columns.isin(cols)]]
 
 
-def extract_all_subfolders(head_directory, data_source, xwalk, dat):
+def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
     if os.path.isdir(head_directory):
         for filename in os.listdir(head_directory):
-            if "complaints" not in filename:
+            if configs["sources"][data_source]["subdirectory"] not in filename\
+                    and configs["sources"][data_source]["subdirectory"]\
+                    != "None":
                 continue
             if dat is None or len(dat) == 0:
                 dat = extract_all_subfolders(
-                    head_directory + "/" + filename, data_source, xwalk, dat
-                )
+                    head_directory + "/" + filename, data_source,
+                    xwalk, dat, configs)
             else:
                 dat = dat.append(
                     extract_all_subfolders(
-                        head_directory + "/" + filename, data_source, xwalk, dat
-                    )
+                        head_directory + "/" + filename, data_source,
+                        xwalk, dat, configs)
                 )
         return dat
     elif head_directory.endswith("csv.gz"):
@@ -90,6 +92,9 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat):
             compression="gzip",
             error_bad_lines=False,
         )
+        return data
+    elif head_directory.endswith("csv"):
+        data = pd.read_csv(head_directory, nrows=1048576)
         return data
 
 
@@ -101,11 +106,12 @@ def make_tables_data_source(data_source, xwalk, configs):
     elif configs["sources"][data_source]["url"].endswith(".zip"):
         r = requests.get(configs["sources"][data_source]["url"])
         z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(".")
+        z.extractall(configs["sources"][data_source]["location"])
         dat_raw = extract_all_subfolders(
-            "fully-unified-data", data_source, xwalk, []
-        )
-        dat_raw = dat_raw.groupby(["cr_id"]).first().reset_index()
+            configs["sources"][data_source]["headdirectory"],
+            data_source, xwalk, [], configs)
+        dat_raw = dat_raw.groupby([configs["sources"][data_source]["id"]])\
+            .first().reset_index()
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
