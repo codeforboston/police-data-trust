@@ -73,22 +73,26 @@ class Incident(db.Model):
     # Does an existing warrant count here?
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-    victims = db.relationship('Victim', backref='incident')
-    descriptions = db.relationship('Description', backref='incident')
-    tags = db.relationship('Tag', backref='incident')
-    participants = db.relationship('Particpant', backref='incident')
-    multimedias = db.relationship('Multimedia', backref='incident')
-    investigations = db.relationship('Investigation', backref='incident')
+    victims = db.relationship("Victim", backref="incident")
+    descriptions = db.relationship("Description", backref="incident")
+    tags = db.relationship("Tag", backref="incident")
+    participants = db.relationship("Particpant", backref="incident")
+    multimedias = db.relationship("Multimedia", backref="incident")
+    investigations = db.relationship("Investigation", backref="incident")
     # TODO: Are the below one to many?
-    result_of_stop = db.relationship('ResultOfStop', backref='incident', uselist=False)
-    action = db.relationship('Action', backref='incident', uselist=False)
-    use_of_force = db.relationship('UseOfForce', backref='incident')
-    legal_case = db.relationship('LegalCase', backref='incident')
+    result_of_stop = db.relationship(
+        "ResultOfStop", backref="incident", uselist=False
+    )
+    action = db.relationship("Action", backref="incident", uselist=False)
+    use_of_force = db.relationship("UseOfForce", backref="incident")
+    legal_case = db.relationship("LegalCase", backref="incident")
 
 
 class Description(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # description id
-    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'), nullable=False)
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
     text = db.Column(db.Text)
     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
@@ -97,18 +101,22 @@ class Description(db.Model):
 
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # action id
-    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'), nullable=False)
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
     date = db.Column(db.DateTime)
     action = db.Column(db.Text)  # TODO: Not sure what this is.
     actor = db.Column(db.Text)  # TODO: Not sure what this is.
     notes = db.Column(db.Text)
 
+
 class UseOfForce(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
+    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     item = db.Text()
+
 
 class ResultOfStop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
+    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     result = db.Column(db.Text)

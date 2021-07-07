@@ -127,7 +127,7 @@ def register_routes(app: Flask):
             return {
                 "status": "ok",
                 "message": "Failed to log in. Please include the following"
-                           " fields: " + ", ".join(missing_fields),
+                " fields: " + ", ".join(missing_fields),
             }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}
@@ -178,7 +178,7 @@ def register_routes(app: Flask):
             return {
                 "status": "ok",
                 "message": "Failed to register. Please include the following"
-                           " fields: " + ", ".join(missing_fields),
+                " fields: " + ", ".join(missing_fields),
             }
         else:
             return {"status": 400, "message:": "Error: Bad Request."}

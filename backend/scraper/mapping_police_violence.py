@@ -23,9 +23,10 @@ def map_varnames(df, data_source, xwalk, configs):
             df[xwalk[data_source][i]] = ""
             if xwalk[data_source][i] == "record_type":
                 df[xwalk[data_source][i]] = xwalk[data_source]
-                if xwalk[data_source][i] == 'record_type':
-                    df[xwalk[data_source][i]]\
-                        = configs["sources"][data_source]["type"]
+                if xwalk[data_source][i] == "record_type":
+                    df[xwalk[data_source][i]] = configs["sources"][data_source][
+                        "type"
+                    ]
     # assert all(xwalk["mpv"].isin(df.columns))
     # assert all(xwalk["nyclu"].isin(df.columns))
 
@@ -102,8 +103,9 @@ def make_tables_data_source(data_source, xwalk, configs):
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(".")
         dat_raw = extract_all_subfolders(
-            "fully-unified-data", data_source, xwalk, [])
-        dat_raw = dat_raw.groupby(['cr_id']).first().reset_index()
+            "fully-unified-data", data_source, xwalk, []
+        )
+        dat_raw = dat_raw.groupby(["cr_id"]).first().reset_index()
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
@@ -111,14 +113,15 @@ def make_tables_data_source(data_source, xwalk, configs):
         for i in range(xwalk.shape[0]):
             if xwalk[data_source][i] not in dat_raw.columns:
                 dat_raw[xwalk[data_source][i]] = ""
-            if xwalk[data_source][i] == 'record_type':
-                dat_raw[xwalk[data_source][i]]\
-                    = configs["sources"][data_source]["type"]
+            if xwalk[data_source][i] == "record_type":
+                dat_raw[xwalk[data_source][i]] = configs["sources"][
+                    data_source
+                ]["type"]
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
 
-    dat = dat.loc[~dat.index.duplicated(keep='first')]
-    dat.to_csv(data_source + '.csv', index=True, header=True)
+    dat = dat.loc[~dat.index.duplicated(keep="first")]
+    dat.to_csv(data_source + ".csv", index=True, header=True)
     table_names = list(configs["tables"].keys())
     table_list = [make_single_table(x, dat, configs) for x in table_names]
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
@@ -155,7 +158,7 @@ def make_all_tables():
         sub_table = full_df
         table_list.append(sub_table)
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
-    writer = pd.ExcelWriter('full_database.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter("full_database.xlsx", engine="xlsxwriter")
 
     # Write each dataframe to a different worksheet.
     for key in table_dict:
