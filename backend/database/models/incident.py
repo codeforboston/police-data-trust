@@ -79,11 +79,8 @@ class Incident(db.Model):
     participants = db.relationship("Particpant", backref="incident")
     multimedias = db.relationship("Multimedia", backref="incident")
     investigations = db.relationship("Investigation", backref="incident")
-    # TODO: Are the below one to many?
-    result_of_stop = db.relationship(
-        "ResultOfStop", backref="incident", uselist=False
-    )
-    action = db.relationship("Action", backref="incident", uselist=False)
+    result_of_stop = db.relationship("ResultOfStop", backref="incident")
+    action = db.relationship("Action", backref="incident")
     use_of_force = db.relationship("UseOfForce", backref="incident")
     legal_case = db.relationship("LegalCase", backref="incident")
 
