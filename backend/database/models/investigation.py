@@ -9,6 +9,7 @@ class Finding(str, enum.Enum):
 
 class Investigation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
     official_id = db.Column(db.Integer)
     investigator_name = db.Column(db.String)
     investigator_rank = db.Column(db.String)

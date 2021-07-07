@@ -73,17 +73,17 @@ class Incident(db.Model):
     # Does an existing warrant count here?
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-    victims = db.relationship('Victim', backref='incident', lazy=True)
-    description = db.relationship('Description', backref='incident', lazy=True,
-            uselist=False
-        )
-    action = db.relationship('Action', backref='incident', lazy=True, uselist=False)
-    tags = db.relationship('Tag', backref='incident', lazy=True)
-    participants = db.relationship('Particpant', backref='incident', lazy=True)
-    multimedia = db.relationship('Multimedia', backref='incident', lazy=True)
-    # TODO: Are result of stop and use of force One to many?
-    result_of_stop = db.relationship('ResultOfStop', backref='incident', lazy=True, uselist=False)
-    use_of_force = db.relationship('UseOfForce', backref='incident', lazy=True)
+    victims = db.relationship('Victim', backref='incident')
+    descriptions = db.relationship('Description', backref='incident')
+    tags = db.relationship('Tag', backref='incident')
+    participants = db.relationship('Particpant', backref='incident')
+    multimedias = db.relationship('Multimedia', backref='incident')
+    investigations = db.relationship('Investigation', backref='incident')
+    # TODO: Are the below one to many?
+    result_of_stop = db.relationship('ResultOfStop', backref='incident', uselist=False)
+    action = db.relationship('Action', backref='incident', uselist=False)
+    use_of_force = db.relationship('UseOfForce', backref='incident')
+    legal_case = db.relationship('LegalCase', backref='incident')
 
 
 class Description(db.Model):
