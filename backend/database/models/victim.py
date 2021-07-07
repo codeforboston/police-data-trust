@@ -5,6 +5,7 @@ from .types.enums import Gender
 
 class Victim(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
     name = db.Column(db.Text)
     race = db.Column(db.Enum(Race))
     gender = db.Column(db.Enum(Gender))

@@ -7,7 +7,6 @@ from .. import db
 
 
 class InitialEncounter(enum.Enum):
-    # https://docs.python.org/3/library/enum.html#creating-an-enum
     UNKNOWN = 1
     TRAFFIC_VIOLATION = 2
     TRESSPASSING = 3
@@ -74,60 +73,42 @@ class Incident(db.Model):
     # Does an existing warrant count here?
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+    victims = db.relationship('Victim', backref='incident', lazy=True)
+    description = db.relationship('Description', backref='incident', lazy=True,
+            uselist=False
+        )
+    action = db.relationship('Action', backref='incident', lazy=True, uselist=False)
+    tags = db.relationship('Tag', backref='incident', lazy=True)
+    participants = db.relationship('Particpant', backref='incident', lazy=True)
+    multimedia = db.relationship('Multimedia', backref='incident', lazy=True)
+    # TODO: Are result of stop and use of force One to many?
+    result_of_stop = db.relationship('ResultOfStop', backref='incident', lazy=True, uselist=False)
+    use_of_force = db.relationship('UseOfForce', backref='incident', lazy=True)
 
 
-# Association tables
-
-
-class IncidentVictim(db.Model):  # TODO: rename as IncidentVictimXRef ?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    victim_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class IncidentDescription(db.Model):
-    # (Note) Removed all the `description_*` prefixes.
+class Description(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # description id
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'), nullable=False)
     text = db.Column(db.Text)
     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
     source = db.Column(db.Text)
 
 
-class IncidentAction(db.Model):
+class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # action id
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'), nullable=False)
     date = db.Column(db.DateTime)
     action = db.Column(db.Text)  # TODO: Not sure what this is.
     actor = db.Column(db.Text)  # TODO: Not sure what this is.
     notes = db.Column(db.Text)
 
-
-class IncidentTag(db.Model):
-    # TODO: rename as IncidentTagXRef ?
+class UseOfForce(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    tag_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class IncidentUseOfForce(db.Model):
-    # TODO: rename to IncidentUseOfForceXRef ?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    use_of_force_id = db.Column(db.Integer)  # TODO: foreign key
-
-
-class ResultOfStopAtIncident(db.Model):
-    # TODO: Rename to IncidentResultOfStopXRef?
-    # TODO:
-    #  Does this need to be an crossref table?
-    #  Is there a many-to-many relationship?
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer)  # TODO: foreign key
-    result_of_stop_id = db.Column(db.Integer)  # TODO: foreign key
-
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
+    item = db.Text()
 
 class ResultOfStop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
     result = db.Column(db.Text)

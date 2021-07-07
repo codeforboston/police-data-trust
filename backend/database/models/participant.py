@@ -1,13 +1,12 @@
 from .. import db
+from .types.enums import Race
+from .types.enums import Gender
 
 
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # TODO: Enums for these? Also used in other models
-    gender = db.Column(db.String)
-    race = db.Column(db.String)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'))
+    gender = db.Column(db.Enum(Gender))
+    race = db.Column(db.Enum(Race))
     age = db.Column(db.Integer)
 
-
-class ParticipantAtIncident(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
