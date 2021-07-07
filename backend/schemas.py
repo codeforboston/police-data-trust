@@ -4,8 +4,7 @@ from .database.models.incident import Incident
 from .database.models.officer import Officer
 
 
+CreateIncidentSchema = sqlalchemy_to_pydantic(Incident, exclude="id")
 IncidentSchema = sqlalchemy_to_pydantic(Incident)
-OfficerSchema = sqlalchemy_to_pydantic(Officer)
 
-
-IncidentSchema()
+OfficerSchema = sqlalchemy_to_pydantic(Officer, exclude="id")

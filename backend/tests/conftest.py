@@ -1,8 +1,10 @@
 import pytest
+
 from backend.api import create_app
+from backend.database import db
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app():
     app = create_app(config="testing")
 
@@ -15,7 +17,8 @@ def app():
     cli_runner.invoke(app.cli, ["psql", "init"])
 
     # The app should be ready! Provide the app instance here.
-    yield app
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
@@ -37,6 +40,4 @@ def _db(app):
     Basically, this '_db' fixture is required for the above extension to work.
     We use this extension to allow for easy testing of the database.
     """
-    from backend.database import db
-
     yield db

@@ -2,6 +2,7 @@ from typing import Optional
 
 import click
 from flask import Flask
+from flask.testing import FlaskClient
 
 from .config import get_config_from_env
 from .database import db
@@ -103,7 +104,18 @@ def register_misc(app: Flask):
         from .database import db  # noqa: F401
 
         client = app.test_client()
+
         return locals()
+
+    # Client that makes testing a bit easier.
+
+    class FlaskClientWithDefaultHeaders(FlaskClient):
+
+        def post(self, *args, **kwargs):
+            kwargs.setdefault("headers", {"Content-Type": "application/json"})
+            return super().post(*args, **kwargs)
+
+    app.test_client_class = FlaskClientWithDefaultHeaders
 
 
 if __name__ == "__main__":

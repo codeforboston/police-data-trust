@@ -1,6 +1,8 @@
 """Define the SQL classes for Users."""
 import enum
-from .. import db
+
+from ..core import db
+from ..core import CrudMixin
 
 
 # Question: Should we be doing string enums?
@@ -57,7 +59,7 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-class Incident(db.Model):
+class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
     __tablename__ = "incidents"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

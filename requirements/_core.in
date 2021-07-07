@@ -2,14 +2,15 @@ black
 celery
 flake8
 flask
-flask-marshmallow
-marshmallow-sqlalchemy
-marshmallow-enum
+# flask-marshmallow
+# marshmallow-sqlalchemy
+# marshmallow-enum
 flask-sqlalchemy
 gunicorn
 pandas
 pip-tools
 pytest
+pytest-env
 pytest-cov
 pytest-flask-sqlalchemy
 python-dotenv

@@ -1,4 +1,9 @@
 import os
+from dotenv import load_dotenv
+
+
+if os.environ.get("FLASK_ENV") != "production":
+    load_dotenv()
 
 
 class Config(object):
