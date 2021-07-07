@@ -94,8 +94,6 @@ flask==2.0.1
     #   flask-sqlalchemy
     #   flask-user
     #   flask-wtf
-greenlet==1.1.0
-    # via sqlalchemy
 gunicorn==20.1.0
     # via -r requirements/_core.in
 idna==2.10
@@ -210,8 +208,9 @@ speaklater==1.3
     # via flask-babelex
 sqlalchemy-utils==0.37.7
     # via flask-db
-sqlalchemy==1.4.18
+sqlalchemy==1.3.23
     # via
+    #   -r requirements/_core.in
     #   alembic
     #   flask-db
     #   flask-sqlalchemy
