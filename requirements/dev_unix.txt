@@ -4,25 +4,27 @@
 #
 #    pip-compile requirements/dev_unix.in
 #
-amqp==5.0.5
+alembic==1.6.5
+    # via flask-db
+amqp==5.0.6
     # via kombu
 appdirs==1.4.4
     # via black
-attrs==20.3.0
+attrs==21.2.0
     # via pytest
-babel==2.9.0
+babel==2.9.1
     # via flask-babelex
 bcrypt==3.2.0
     # via flask-user
-billiard==3.6.3.0
+billiard==3.6.4.0
     # via celery
-black==20.8b1
+black==21.6b0
     # via -r requirements/_core.in
 blinker==1.4
     # via flask-mail
-celery==5.0.5
+celery==5.1.0
     # via -r requirements/_core.in
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 cffi==1.14.5
     # via
@@ -34,7 +36,7 @@ click-didyoumean==0.0.3
     # via celery
 click-plugins==1.1.1
     # via celery
-click-repl==0.1.6
+click-repl==0.2.0
     # via celery
 click==7.1.2
     # via
@@ -51,11 +53,13 @@ cryptography==3.4.7
     # via flask-user
 dnspython==2.1.0
     # via email-validator
-email-validator==1.1.2
+email-validator==1.1.3
     # via -r requirements/_core.in
-flake8==3.8.4
+flake8==3.9.2
     # via -r requirements/_core.in
 flask-babelex==0.9.4
+    # via -r requirements/_core.in
+flask-db==0.3.2
     # via -r requirements/_core.in
 flask-login==0.5.0
     # via
@@ -63,30 +67,30 @@ flask-login==0.5.0
     #   flask-user
 flask-mail==0.9.1
     # via flask-user
-flask-marshmallow==0.14.0
-    # via -r requirements/_core.in
-flask-migrate==2.7.0
+flask-pydantic==0.8.0
     # via -r requirements/_core.in
 flask-serialize==1.5.1
     # via -r requirements/_core.in
-flask-sqlalchemy==2.4.4
+flask-sqlalchemy==2.5.1
     # via
     #   -r requirements/_core.in
+    #   flask-db
     #   flask-user
     #   pytest-flask-sqlalchemy
-flask-user==0.6.21
+flask-user==1.0.2.2
     # via -r requirements/_core.in
-flask-wtf==0.14.3
+flask-wtf==0.15.1
     # via
     #   -r requirements/_core.in
     #   flask-user
-flask==1.1.2
+flask==2.0.1
     # via
     #   -r requirements/_core.in
     #   flask-babelex
+    #   flask-db
     #   flask-login
     #   flask-mail
-    #   flask-marshmallow
+    #   flask-pydantic
     #   flask-sqlalchemy
     #   flask-user
     #   flask-wtf
@@ -98,81 +102,91 @@ idna==2.10
     #   requests
 iniconfig==1.1.1
     # via pytest
-itsdangerous==1.1.0
+itsdangerous==2.0.1
     # via
     #   flask
     #   flask-wtf
-jinja2==2.11.3
+jinja2==3.0.1
     # via
     #   flask
     #   flask-babelex
-kombu==5.0.2
+kombu==5.1.0
     # via celery
-markupsafe==1.1.1
+mako==1.1.4
+    # via alembic
+markupsafe==2.0.1
     # via
     #   jinja2
+    #   mako
     #   wtforms
-marshmallow-enum==1.5.1
-    # via -r requirements/_core.in
-marshmallow-sqlalchemy==0.24.2
-    # via -r requirements/_core.in
-marshmallow==3.11.1
-    # via
-    #   flask-marshmallow
-    #   marshmallow-enum
-    #   marshmallow-sqlalchemy
 mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
-numpy==1.20.1
+numpy==1.20.3
     # via pandas
 packaging==20.9
     # via
     #   pytest
     #   pytest-flask-sqlalchemy
-pandas==1.2.3
+pandas==1.2.4
     # via -r requirements/_core.in
 passlib==1.7.4
     # via flask-user
 pathspec==0.8.1
     # via black
-permissive-dict==1.0.3
+pep517==0.10.0
+    # via pip-tools
+permissive-dict==1.0.4
     # via flask-serialize
-pip-tools==5.5.0
+pip-tools==6.1.0
     # via -r requirements/_core.in
 pluggy==0.13.1
     # via pytest
-prompt-toolkit==3.0.17
+prompt-toolkit==3.0.18
     # via click-repl
 psycopg2-binary==2.8.6
     # via -r requirements/dev_unix.in
 py==1.10.0
     # via pytest
-pycodestyle==2.6.0
+pycodestyle==2.7.0
     # via flake8
 pycparser==2.20
     # via cffi
-pyflakes==2.2.0
+pydantic-sqlalchemy==0.0.9
+    # via -r requirements/_core.in
+pydantic==1.8.2
+    # via
+    #   -r requirements/_core.in
+    #   flask-pydantic
+    #   pydantic-sqlalchemy
+pyflakes==2.3.1
     # via flake8
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.11.1
+pytest-cov==2.12.1
+    # via -r requirements/_core.in
+pytest-env==0.6.2
     # via -r requirements/_core.in
 pytest-flask-sqlalchemy==1.0.2
     # via -r requirements/_core.in
-pytest-mock==3.5.1
+pytest-mock==3.6.1
     # via pytest-flask-sqlalchemy
-pytest==6.2.2
+pytest==6.2.4
     # via
     #   -r requirements/_core.in
     #   pytest-cov
+    #   pytest-env
     #   pytest-flask-sqlalchemy
     #   pytest-mock
 python-dateutil==2.8.1
-    # via pandas
-python-dotenv==0.15.0
+    # via
+    #   alembic
+    #   pandas
+python-dotenv==0.17.1
     # via -r requirements/_core.in
+python-editor==1.0.4
+    # via alembic
 pytz==2021.1
     # via
     #   babel
@@ -180,40 +194,47 @@ pytz==2021.1
     #   pandas
 pyyaml==5.4.1
     # via -r requirements/_core.in
-regex==2020.11.13
+regex==2021.4.4
     # via black
 requests==2.25.1
     # via -r requirements/_core.in
-six==1.15.0
+six==1.16.0
     # via
     #   bcrypt
     #   click-repl
-    #   flask-marshmallow
     #   python-dateutil
+    #   sqlalchemy-utils
 speaklater==1.3
     # via flask-babelex
+sqlalchemy-utils==0.37.7
+    # via flask-db
 sqlalchemy==1.3.23
     # via
+    #   -r requirements/_core.in
+    #   alembic
+    #   flask-db
     #   flask-sqlalchemy
-    #   marshmallow-sqlalchemy
+    #   pydantic-sqlalchemy
     #   pytest-flask-sqlalchemy
+    #   sqlalchemy-utils
 toml==0.10.2
     # via
     #   black
+    #   pep517
     #   pytest
-typed-ast==1.4.2
-    # via black
-typing-extensions==3.7.4.3
-    # via black
-urllib3==1.26.4
+    #   pytest-cov
+typing-extensions==3.10.0.0
+    # via pydantic
+urllib3==1.26.5
     # via requests
 vine==5.0.0
     # via
     #   amqp
     #   celery
+    #   kombu
 wcwidth==0.2.5
     # via prompt-toolkit
-werkzeug==1.0.1
+werkzeug==2.0.1
     # via flask
 wtforms==2.3.3
     # via
