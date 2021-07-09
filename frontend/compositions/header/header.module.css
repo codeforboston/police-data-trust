@@ -1,6 +1,6 @@
 .wrapper {
   width: 100%;
-  height: 124px;
+  height: 8rem;
   display: grid;
   position: relative;
 }
@@ -11,46 +11,58 @@
   background-repeat: no-repeat;
   background-size: 100%;
   display: grid;
-  grid-template-columns: 167px 549px 225px 100px;
-  grid-template-rows: 124px;
+  /* grid-template-columns: 167px 565px 283px 137px; */
+  grid-template-columns: 1fr 1fr;
 }
 
-.logo {
+.logoTitle {
   padding-left: 72px;
   margin-top: 27px;
+  display: flex;
 }
 
 .titleContainer {
-  padding-top: 46px;
-  margin-left: 16px;
+  margin-top: 14px;
+  padding-left: 10px;
 }
 
-.titleContainer .title {
+.titleContainer h2 {
   color: var(--darkBlue);
   font-weight: 700;
   font-size: 28px;
   line-height: 33.89px;
 }
 
-.titleContainer .subtitle {
+.titleContainer p {
   color: var(--black);
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
   letter-spacing: -0.3px;
+  padding-top: 5px;
+}
+
+.navDonate {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .nav {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  height: 25px;
+  /* display: grid;
+  grid-template-columns: 46px 42px 40px;
+  column-gap: 36px; */
+  display: flex;
+  justify-content: space-evenly;
   margin-top: 51px;
+  /* padding-left: 83px;
+  margin-top: 51px; */
 }
 
 .nav li {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
+  height: 25px;
   color: var(--darkBlue);
   text-align: center;
   line-height: 12px;
@@ -68,9 +80,9 @@
 
 .donate {
   margin-top: 21px;
-}
+  margin-left: 20px;
+  margin-right: 17px;
 
-.donate button {
   width: 100px;
   height: 35px;
   background-color: var(--darkBlue);
@@ -82,4 +94,5 @@
   font-size: 16px;
   font-weight: bold;
   line-height: 19px;
+  cursor: pointer;
 }
