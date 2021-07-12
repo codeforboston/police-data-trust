@@ -1,61 +1,69 @@
 .wrapper {
   width: 100%;
-  height: 8rem;
+  height: 6.94rem;
   display: grid;
-  position: relative;
-}
-
-.banner {
-  height: 76px;
-  background-image: url(./assets/Banner.svg);
-  background-repeat: no-repeat;
-  background-size: 100%;
-  display: grid;
-  /* grid-template-columns: 167px 565px 283px 137px; */
   grid-template-columns: 1fr 1fr;
 }
 
+.backgroundBanner {
+  width: 100%;
+  position: absolute;
+  z-index: -10000;
+  background-image: url("./assets/BannerMobile.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 4.74rem;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.desktop {
+  display: none;
+}
+
 .logoTitle {
-  padding-left: 72px;
-  margin-top: 27px;
+  padding-left: 13px;
+  margin-top: 36px;
   display: flex;
+  justify-content: flex-start;
 }
 
 .titleContainer {
-  margin-top: 14px;
-  padding-left: 10px;
+  margin-top: 8px;
+  padding-left: 0.625rem;
+  width: 141px;
+  height: 62px;
 }
 
 .titleContainer h2 {
   color: var(--darkBlue);
   font-weight: 700;
+  font-style: normal;
   font-size: 28px;
   line-height: 33.89px;
+  letter-spacing: -0.3px;
 }
 
 .titleContainer p {
+  width: 120px;
+  height: 26px;
   color: var(--black);
   font-weight: normal;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 10px;
+  line-height: 12px;
   letter-spacing: -0.3px;
-  padding-top: 5px;
-}
-
-.navDonate {
-  display: flex;
-  justify-content: flex-end;
+  padding-top: 3px;
 }
 
 .nav {
-  /* display: grid;
-  grid-template-columns: 46px 42px 40px;
-  column-gap: 36px; */
   display: flex;
-  justify-content: space-evenly;
-  margin-top: 51px;
-  /* padding-left: 83px;
-  margin-top: 51px; */
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.nav .mobile {
+  margin-top: 27px;
+  margin-right: 27px;
+  margin-bottom: 36px;
 }
 
 .nav li {
@@ -79,20 +87,56 @@
 }
 
 .donate {
-  margin-top: 21px;
-  margin-left: 20px;
-  margin-right: 17px;
-
-  width: 100px;
-  height: 35px;
+  margin-right: 14px;
+  width: 75px;
+  height: 26.25px;
   background-color: var(--darkBlue);
   border: 2px solid var(--darkBlue);
   box-sizing: border-box;
   border-radius: 4px;
-
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 19px;
   cursor: pointer;
+}
+
+.donate p {
+  color: #ffffff;
+  font-family: PT Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+/* css to apply on laptop size */
+
+@media screen and (min-width: 1100px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 145px;
+  }
+
+  .backgroundBanner {
+    background-image: url("./assets/Banner.svg");
+    filter: none;
+  }
+
+  .logoDesktop {
+    display: flex;
+  }
+
+  .shortTitle {
+    display: none;
+  }
+
+  .fullTitle {
+    display: flex;
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .nav {
+    display: flex;
+  }
 }

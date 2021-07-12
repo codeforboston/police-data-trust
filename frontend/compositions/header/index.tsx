@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import NPDCLogo from './assets/NPDCLogo.svg'
+import LogoMobile from './assets/LogoMobile.svg'
+import Banner from './assets/Banner.svg'
 import styles  from './header.module.css'
+import HamburgerMenu from './assets/Vector.svg'
 
 
 
@@ -12,29 +15,43 @@ export default function Header() {
     setSelected(value);
   }
 
-  const { wrapper, banner, logoTitle, titleContainer, nav, tab, donate, navDonate} = styles;
+  const {
+    wrapper,
+    logoTitle,
+    titleContainer,
+    mobile,
+    desktop,
+    nav,
+    donate,
+  } = styles;
 
   return (
     <header className={wrapper}>
-      <div className={banner}>
-        <div className={logoTitle}>
-          <NPDCLogo />
+       <div className={logoTitle}>
+          <LogoMobile />
           <div className={titleContainer}>
-            <h2>National Police Data Coalition</h2>
+            <h2 className={mobile}>N.P.D.C.</h2>
+            <h2 className={desktop}>National Police Data Coalition</h2>
             <p>The national index of police incidents</p>
           </div>
         </div>
-        <div className={navDonate}>
-          <nav>
-            <ul className={nav}>
-              <li className={selected === 'Search' ? tab : ''} onClick={handleNavChange}>Search</li>
-              <li className={selected === 'Profile' ? tab : ''} onClick={handleNavChange}>Profile</li>
-              <li className={selected === 'About' ? tab : ''} onClick={handleNavChange}>About</li>
-            </ul>
-          </nav>
-          <button className={donate}type="button">DONATE</button>
+      <div className={nav}>
+        <div className={mobile}>
+          <HamburgerMenu />
         </div>
+        <button className={donate} type="button">
+          <p>DONATE</p>
+        </button>
       </div>
     </header>
   )
 }
+
+
+{/* <nav>
+          <ul className={nav}>
+            <li className={selected === 'Search' ? tab : ''} onClick={handleNavChange}><a href='#'>Search</a></li>
+            <li className={selected === 'Profile' ? tab : ''} onClick={handleNavChange}><a href='#'>Profile</a></li>
+            <li className={selected === 'About' ? tab : ''} onClick={handleNavChange}><a href='#'>About</a></li>
+          </ul>
+        </nav> */}
