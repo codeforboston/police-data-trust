@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react"
 
-export function useMediaQuery(width: number) {
+export function useMediaQuery(width: number): boolean {
   const [targetReached, setTargetReached] = useState(false);
 
   const updateTarget = useCallback((e) => {
