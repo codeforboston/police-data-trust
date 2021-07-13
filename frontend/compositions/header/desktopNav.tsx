@@ -17,13 +17,11 @@ export default function DesktopNav() {
   }
 
   return (
-    <nav>
-      <ul className={styles.nav} onClick={handleNavChange}>
-        <li className={setClassName('Search')} ><a href='#'>Search</a></li>
-        <li className={setClassName('Profile')} ><a href='#'>Profile</a></li>
-        <li className={setClassName('About')}><a href='#'>About</a></li>
-      </ul>
-    </nav>
+    <ul className={styles.rightHeader} onClick={handleNavChange}>
+      <li className={setClassName('Search')} ><a href='#'>Search</a></li>
+      <li className={setClassName('Profile')} ><a href='#'>Profile</a></li>
+      <li className={setClassName('About')}><a href='#'>About</a></li>
+    </ul>
   )
 }
 
