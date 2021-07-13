@@ -1,4 +1,4 @@
-import ViewerRegistration from './viewer-registration/viewer-registration'
+import ViewerRegistration from './viewer-registration'
 
 export default function Register() {
   return <ViewerRegistration />
