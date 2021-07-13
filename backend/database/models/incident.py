@@ -98,7 +98,6 @@ class Description(db.Model):
     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
     source = db.Column(db.Text)
-
     # location = db.Column(db.Text)  # TODO: location object
     # # TODO: neighborhood seems like a weird identifier that may not always
     # #  apply in consistent ways across municipalities.
@@ -113,6 +112,7 @@ class Description(db.Model):
     # # Does an existing warrant count here?
     # criminal_case_brought = db.Column(db.Boolean)
     # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+
 
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # action id
