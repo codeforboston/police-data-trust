@@ -1,4 +1,9 @@
 import os
+from dotenv import load_dotenv
+
+
+if os.environ.get("FLASK_ENV") != "production":
+    load_dotenv()
 
 
 class Config(object):
@@ -39,6 +44,7 @@ class Config(object):
         )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
 
 
 class DevelopmentConfig(Config):

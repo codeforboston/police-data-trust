@@ -1,6 +1,8 @@
 """Define the SQL classes for Users."""
 import enum
-from .. import db
+
+from ..core import db
+from ..core import CrudMixin
 
 
 # Question: Should we be doing string enums?
@@ -56,8 +58,10 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-class Incident(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Incident(db.Model, CrudMixin):
+    """The incident table is the fact table."""
+    __tablename__ = "incidents"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
     location = db.Column(db.Text)  # TODO: location object
     # TODO: neighborhood seems like a weird identifier that may not always
@@ -95,6 +99,20 @@ class Description(db.Model):
     # TODO: are there rules for this column other than text?
     source = db.Column(db.Text)
 
+    # location = db.Column(db.Text)  # TODO: location object
+    # # TODO: neighborhood seems like a weird identifier that may not always
+    # #  apply in consistent ways across municipalities.
+    # neighborhood = db.Column(db.Text)
+    # stop_type = db.Column(db.Text)  # TODO: enum
+    # call_type = db.Column(db.Text)  # TODO: enum
+    # has_multimedia = db.Column(db.Boolean)
+    # from_report = db.Column(db.Boolean)
+    # # These may require an additional table. Also can dox a victim
+    # was_victim_arrested = db.Column(db.Boolean)
+    # arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+    # # Does an existing warrant count here?
+    # criminal_case_brought = db.Column(db.Boolean)
+    # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # action id

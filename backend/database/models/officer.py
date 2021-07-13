@@ -18,6 +18,7 @@ class Rank(str, enum.Enum):
 
 
 class Officer(db.Model):
+    __tablename__ = "officers"
     id = db.Column(db.Integer, primary_key=True)  # officer id
     incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     first_name = db.Column(db.Text)
