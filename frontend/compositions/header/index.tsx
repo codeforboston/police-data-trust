@@ -1,57 +1,48 @@
-import React, { useState } from "react"
-import NPDCLogo from './assets/NPDCLogo.svg'
+import React from "react"
+import { useMediaQuery } from './helperFunctions'
 import LogoMobile from './assets/LogoMobile.svg'
-import Banner from './assets/Banner.svg'
-import styles  from './header.module.css'
+import NPDCLogo from './assets/NPDCLogo.svg'
 import HamburgerMenu from './assets/Vector.svg'
+import DesktopNav from './desktopNav'
+import styles from './header.module.css'
 
 
-
-export default function Header() {
-  let [selected, setSelected] = useState('Search');
-
-  const handleNavChange = (e: any) => {
-    let value = e.target.innerText;
-    setSelected(value);
-  }
-
+export default function DashboardHeader() {
   const {
     wrapper,
-    logoTitle,
+    leftHeader,
+    logoContainer,
     titleContainer,
-    mobile,
-    desktop,
+    rightHeader,
     nav,
-    donate,
+    button,
   } = styles;
+
+  const belowBreakpoint = useMediaQuery(375);
+  const logo = belowBreakpoint ? <LogoMobile /> : <NPDCLogo />;
+  const title = belowBreakpoint ? 'N.P.D.C.' : 'National Police Data Coalition';
+  const navBar = belowBreakpoint ? <HamburgerMenu /> : <DesktopNav />
 
   return (
     <header className={wrapper}>
-       <div className={logoTitle}>
-          <LogoMobile />
-          <div className={titleContainer}>
-            <h2 className={mobile}>N.P.D.C.</h2>
-            <h2 className={desktop}>National Police Data Coalition</h2>
-            <p>The national index of police incidents</p>
-          </div>
+      <div className={leftHeader}>
+        <div className={logoContainer}>
+          {logo}
         </div>
-      <div className={nav}>
-        <div className={mobile}>
-          <HamburgerMenu />
+        <div className={titleContainer}>
+          <h2>{title}</h2>
+          <p>The national index of police incidents</p>
         </div>
-        <button className={donate} type="button">
+      </div>
+
+      <div className={rightHeader}>
+        <nav className={nav}>
+          {navBar}
+        </nav>
+        <button className={button} type="button">
           <p>DONATE</p>
         </button>
       </div>
     </header>
   )
 }
-
-
-{/* <nav>
-          <ul className={nav}>
-            <li className={selected === 'Search' ? tab : ''} onClick={handleNavChange}><a href='#'>Search</a></li>
-            <li className={selected === 'Profile' ? tab : ''} onClick={handleNavChange}><a href='#'>Profile</a></li>
-            <li className={selected === 'About' ? tab : ''} onClick={handleNavChange}><a href='#'>About</a></li>
-          </ul>
-        </nav> */}
