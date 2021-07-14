@@ -60,7 +60,6 @@ class VictimStatus(enum.Enum):
 
 class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
-    __tablename__ = "incidents"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
     location = db.Column(db.Text)  # TODO: location object
@@ -80,7 +79,7 @@ class Incident(db.Model, CrudMixin):
     victims = db.relationship("Victim", backref="incident")
     descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", backref="incident")
-    participants = db.relationship("Particpant", backref="incident")
+    participants = db.relationship("Participant", backref="incident")
     multimedias = db.relationship("Multimedia", backref="incident")
     investigations = db.relationship("Investigation", backref="incident")
     results_of_stop = db.relationship("ResultOfStop", backref="incident")

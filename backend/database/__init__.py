@@ -10,15 +10,15 @@ from .core import execute_query
 #  because we want to do baby steps-- one model at a time. This ensures that
 #  Alembic only does a couple models, not all of them.
 
-# from .models.agency import *
-# from .models.attorney import *
-# from .models.case_document import *
+from .models.agency import *
+from .models.attorney import *
+from .models.case_document import *
 from .models.incident import *
-# from .models.investigation import *
-# from .models.legal_case import *
-# from .models.multimedia import *
+from .models.investigation import *
+from .models.legal_case import *
+from .models.multimedia import *
 from .models.officer import *
-# from .models.participant import *
-# from .models.tag import *
+from .models.participant import *
+from .models.tag import *
 # from .models.users import *
-# from .models.victim import *
+from .models.victim import *

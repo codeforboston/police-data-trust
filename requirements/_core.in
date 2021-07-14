@@ -15,7 +15,7 @@ pytest-cov
 pytest-flask-sqlalchemy
 python-dotenv
 flask-login
-flask-user
+flask-user<0.7
 wtforms
 SQLAlchemy==1.3.23
 flask-wtf

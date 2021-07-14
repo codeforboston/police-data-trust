@@ -18,11 +18,11 @@ class LegalCase(db.Model):
     # TODO: Foreign key to officer/victim?
     defendant = db.Column(db.String)
     defendant_council = db.relationship(
-        "Attorney", backref="legal_case", uselist=False
+        "Attorney", backref="legal_case_defendant", uselist=False
     )
     plaintiff = db.Column(db.String)
     plaintiff_council = db.relationship(
-        "Attorney", backref="legal_case", uselist=False
+        "Attorney", backref="legal_case_plaintiff", uselist=False
     )
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)

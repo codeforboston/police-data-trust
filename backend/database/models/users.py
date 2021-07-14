@@ -48,7 +48,6 @@ def compile_ci_string(element, compiler, **kwargs):
 class Users(db.Model, UserMixin):
     """The SQL dataclass for an Incident."""
 
-    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     active = db.Column(
@@ -84,14 +83,12 @@ user_manager = UserManager(db_adapter)
 
 # Define the Role data-model
 class Role(db.Model):
-    __tablename__ = "roles"
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
 
 # Define the UserRoles association table
 class UserRoles(db.Model):
-    __tablename__ = "user_roles"
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(
         db.Integer(), db.ForeignKey("users.id", ondelete="CASCADE")
