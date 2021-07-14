@@ -111,26 +111,3 @@ class Description(db.Model):
     # # Does an existing warrant count here?
     # criminal_case_brought = db.Column(db.Boolean)
     # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-
-
-class Action(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # action id
-    incident_id = db.Column(
-        db.Integer, db.ForeignKey("incident.id"), nullable=False
-    )
-    date = db.Column(db.DateTime)
-    action = db.Column(db.Text)  # TODO: Not sure what this is.
-    actor = db.Column(db.Text)  # TODO: Not sure what this is.
-    notes = db.Column(db.Text)
-
-
-class UseOfForce(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
-    item = db.Text()
-
-
-class ResultOfStop(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
-    result = db.Column(db.Text)
