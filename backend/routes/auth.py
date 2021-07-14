@@ -5,9 +5,9 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 from ..database import db
-from ..database.models.users import Users
-from ..database.models.users import login_manager
-from ..database.models.users import user_manager
+from ..database.models.User import User
+from ..database.models.User import login_manager
+from ..database.models.User import user_manager
 
 
 bp = Blueprint("auth", __name__)
@@ -23,7 +23,7 @@ def login():
                 form.get("password") is not None
                 and form.get("email") is not None
         ):
-            user = Users.query.filter_by(email=form.get("email")).first()
+            user = User.query.filter_by(email=form.get("email")).first()
             if user is not None and user.verify_password(
                     form.get("password")
             ):
@@ -67,7 +67,7 @@ def register():
     if request.method == "POST":
         form = request.form
         # Check to see if user already exists
-        user = Users.query.filter_by(email=form.get("email")).first()
+        user = User.query.filter_by(email=form.get("email")).first()
         if user is not None and user.verify_password(form.get("password")):
             return {
                 "status": "ok",
@@ -78,7 +78,7 @@ def register():
                 form.get("password") is not None
                 and form.get("email") is not None
         ):
-            user = Users(
+            user = User(
                 email=form.get("email"),
                 password=user_manager.hash_password(form.get("password")),
                 first_name=form.get("firstName"),
@@ -109,4 +109,4 @@ def register():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Users.query.get(int(user_id))
+    return User.query.get(int(user_id))
