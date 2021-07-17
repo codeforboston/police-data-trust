@@ -15,7 +15,7 @@ if you run into an error such as
 Error: .git can't be found
 ```
 
-you can copy the .git/ directory in the root of the project and move it to the frontend/ and try the install again and it should succeed. try the install again and remember do not commit this .git/ you may want to delete it afterwards until figured out alernative.
+you can copy the .git/ directory in the root of the project and move it to the frontend/ and try the install again and it should succeed. try the install again and remember do not commit this .git/ you may want to delete it afterwards until figured out alternative.
 
 Second, run the development server:
 
@@ -37,7 +37,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 Once completed the steps above then to run tests: `yarn test`
 
-Bare minimum each incoming PR chages updating the UI must have UI snapshot tests. We expect tests only for project important logic but must reside in the `tests/` directory.
+Bare minimum each incoming PR changes updating the UI must have UI snapshot tests. We expect tests only for project important logic but must reside in the `tests/` directory.
 
 ## Learn More
 
@@ -45,3 +45,23 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+## What's different in Next.js from regular React?
+
+- Next.js uses a page-based routing that will be familiar if you've used tools like Gatsby or Wordpress: A page will be created for every file with a `.js` (or any file type that compiles to JS) that goes in the `pages` folder. You can also nest routes using folders! See https://nextjs.org/docs/basic-features/pages
+
+- Important note about pages: While there are a lot of good reasons to avoid using [default exports](https://humanwhocodes.com/blog/2019/01/stop-using-default-exports-javascript-module/), Next requires all page components to use this convention.
+
+- All static assets must go in the `public` folder in the root of the front-end directory. It's ok to have nested folders within there, but every asset must be somewhere inside of that `public` folder. See https://nextjs.org/docs/basic-features/static-file-serving
+
+- Next behaves mostly like React when it comes to styling applications. For full details for how the use case works (we're currently using CSS Modules), see https://nextjs.org/docs/basic-features/built-in-css-support
+
+- Next has built-in image optimization(https://nextjs.org/docs/basic-features/image-optimization), and font optimization(https://nextjs.org/docs/basic-features/font-optimization).
+
+- If there's data that needs to be served but that we don't necessarily need to/can serve from the Python back-end, API routes could be an option: https://nextjs.org/docs/api-routes/introduction.
+
+- Because it's written in Node.js, you also have access to standard Node API packages such as `fs`, `path`, etc.
+
+## Resources
+
+- React/TS Cheatsheet: https://react-typescript-cheatsheet.netlify.app/
