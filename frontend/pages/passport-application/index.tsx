@@ -20,7 +20,6 @@ export default function Passport({ name = "Herbert Q. Placeholder" }) {
     ppPara,
     ppRedirect,
     ppTextarea,
-    ppButton,
     ppAddress,
     ppAddInput,
     ppZip,
@@ -50,12 +49,7 @@ export default function Passport({ name = "Herbert Q. Placeholder" }) {
           <label htmlFor="address" className={styles.label}>
             <strong>Street Address:</strong>
           </label>
-          <input
-            type="text"
-            id="address"
-            required={true}
-            className={ppAddInput}
-          />
+          <input type="text" id="address" required={true} className={ppAddInput} />
         </div>
         <div className={[ppCity, inputWrapper].join(" ")}>
           {" "}
@@ -92,15 +86,15 @@ export default function Passport({ name = "Herbert Q. Placeholder" }) {
             required={true}
           />
         </div>
-        <div className={ppButton}>
-          <button type="submit" onSubmit={handleSubmit} className="primaryButton">
-            Submit
-          </button>
-        </div>
-        <Link href="/dashboard">
-          <a className={ppRedirect}>Return to dashboard</a>
-        </Link>
       </form>
+      <button type="submit" onSubmit={handleSubmit} className="primaryButton">
+        Submit
+      </button>
+      <div className={ppRedirect}>
+        <Link href="/dashboard">
+          <a>Return to dashboard</a>
+        </Link>
+      </div>
     </div>
   )
 }

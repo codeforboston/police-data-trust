@@ -26,14 +26,11 @@
   display: grid;
   grid-gap: 20px;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   grid-template-areas:
     "address address address"
     "city state zip"
-    "textarea textarea textarea"
-    ". button ."
-    ". redirect .";
-
+    "textarea textarea textarea";
   justify-items: center;
   margin: 0 auto;
   width: 100%;
@@ -41,10 +38,6 @@
 
 .ppAddress {
   grid-area: address;
-}
-
-.button {
-  grid-area: button;
 }
 
 .city {
@@ -98,7 +91,7 @@
 
 .ppRedirect {
   font-size: var(--size14);
-  grid-area: redirect;
+  text-align: center;
 }
 
 @media (max-width: 551px) {
@@ -107,8 +100,6 @@
       "address address address"
       "city state ."
       ". zip ."
-      "textarea textarea textarea"
-      ". button ."
-      ". redirect .";
+      "textarea textarea textarea";
   }
 }
