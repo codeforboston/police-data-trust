@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react'
 import styles from './viewer-registration.module.css'
-import PasswordAid from './password-aid/password-aid'
+import PasswordAid from '../../shared-components/password-aid/password-aid'
 import { EnrollmentCTA, EnrollmentHeader, TextInput } from '../../shared-components'
 import { CTATypes, InputNames, TooltipTypes } from '../../models'
 

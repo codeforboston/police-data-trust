@@ -1,9 +1,10 @@
 import React, { MouseEvent, useState } from 'react' 
 import styles from './password-aid.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { passwordToggleViews } from '../../../models'
+import { passwordToggleViews } from '../../models'
 
 interface PasswordAidProps { id: string, onDisplayChange: any }
+
 export default function PasswordAid({ id, onDisplayChange }: PasswordAidProps) {  
   const { passwordAid, passwordToggle } = styles
   const { showView, hideView } = passwordToggleViews
