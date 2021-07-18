@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Register correctly 1`] = `
-<section
-  className="registration"
+exports[`renders correctly 1`] = `
+<div
+  className="wrapper"
 >
   <div
-    className="header"
+    className="logowrapper"
   >
     <svg
       fill="none"
@@ -38,222 +38,404 @@ exports[`renders Register correctly 1`] = `
         />
       </defs>
     </svg>
-    <h1>
-      Register: Viewer Account
-      <div
-        aria-describedby="viewerTooltip"
-        aria-label="Learn more about viewer"
-        className="tooltipContainer"
-        tabIndex={0}
-      >
-        <svg
-          aria-hidden={true}
-          className="svg-inline--fa fa-question-circle fa-w-16 tooltipIcon"
-          data-icon="question-circle"
-          data-prefix="far"
-          focusable="false"
-          role="img"
-          style={Object {}}
-          viewBox="0 0 512 512"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"
-            fill="currentColor"
-            style={Object {}}
-          />
-        </svg>
-        <div
-          className="tooltip"
-          id="viewerTooltip"
-        >
-          <p>
-            A Viewer account allows you to see data that is publically available.
-          </p>
-          <p>
-            Once registered, you may optionally apply to see legally protected data through a Passport account
-          </p>
-        </div>
-      </div>
-    </h1>
   </div>
-  <form>
-    <fieldset
-      className="inputLine"
+  <h1
+    className="heading"
+  >
+    Passport Account Application
+  </h1>
+  <div
+    className="paraWrapper"
+  >
+    <p
+      className="para"
     >
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="firstNameInput"
-        >
-          First Name:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="firstNameInput"
-          name="firstName"
-          onChange={[Function]}
-          type="text"
-          value=""
-        />
-      </div>
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="lastNameInput"
-        >
-          Last Name:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="lastNameInput"
-          name="lastName"
-          onChange={[Function]}
-          type="text"
-          value=""
-        />
-      </div>
-    </fieldset>
-    <fieldset
-      className="inputLine"
+      Hello 
+      <em>
+        Herbert Q. Placeholder
+      </em>
+      , thank you for your continued interest in the National Police Data Coalition.
+    </p>
+    <p
+      className="para"
     >
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="emailAddressInput"
-        >
-          Email Address:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="emailAddressInput"
-          name="emailAddress"
-          onChange={[Function]}
-          type="email"
-          value=""
-        />
-      </div>
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="phoneNumberInput"
-        >
-          Phone Number:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="phoneNumberInput"
-          name="phoneNumber"
-          onChange={[Function]}
-          type="tel"
-          value=""
-        />
-      </div>
-    </fieldset>
-    <fieldset
-      aria-describedby="passwordAid"
-      className="inputLine"
-    >
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="createPasswordInput"
-        >
-          Create Password:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="createPasswordInput"
-          name="createPassword"
-          onChange={[Function]}
-          type="password"
-          value=""
-        />
-      </div>
-      <div
-        className="inputContainer"
-      >
-        <label
-          htmlFor="confirmPasswordInput"
-        >
-          Confirm Password:
-        </label>
-        <input
-          aria-required="true"
-          className="inputField false"
-          id="confirmPasswordInput"
-          name="confirmPassword"
-          onChange={[Function]}
-          type="text"
-          value=""
-        />
-      </div>
-    </fieldset>
+      We are able to provide access to legally protected data to users with the appropriate permissions. This form will submit your profile for approval.
+    </p>
+  </div>
+  <form
+    className="form"
+  >
     <div
-      className="passwordAid"
+      className="address inputwrapper"
     >
-      <p
-        id="passwordAid"
+      <label
+        className="label"
+        htmlFor="address"
       >
-        Use eight or more characters with a mix of letters, numbers, and symbols
-      </p>
-      <button
-        className="passwordToggle"
-        onClick={[Function]}
+        <strong>
+          Street Address:
+        </strong>
+      </label>
+      <input
+        className="input addInput"
+        id="address"
+        placeholder="Enter your street address"
+        required={true}
+        type="text"
+      />
+    </div>
+    <div
+      className="city inputwrapper"
+    >
+       
+      <label
+        className="label"
+        htmlFor="city"
       >
-        <svg
-          aria-hidden="true"
-          className="svg-inline--fa fa-eye fa-w-18 "
-          data-icon="eye"
-          data-prefix="fas"
-          focusable="false"
-          role="img"
-          style={Object {}}
-          viewBox="0 0 576 512"
-          xmlns="http://www.w3.org/2000/svg"
+        <strong>
+          City or Town:
+        </strong>
+      </label>
+      <input
+        className="cityInput"
+        id="city"
+        placeholder="Enter your city"
+        required={true}
+        type="text"
+      />
+    </div>
+    <div
+      className="state inputwrapper"
+    >
+       
+      <label
+        className="label"
+        htmlFor="state"
+      >
+        <strong>
+          State:
+        </strong>
+      </label>
+      <select
+        className="select"
+      >
+        <option
+          value="AL"
         >
-          <path
-            d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31 95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0 288 160z"
-            fill="currentColor"
-            style={Object {}}
-          />
-        </svg>
-         
-        Show password
+          AL
+        </option>
+        <option
+          value="AK"
+        >
+          AK
+        </option>
+        <option
+          value="AR"
+        >
+          AR
+        </option>
+        <option
+          value="AZ"
+        >
+          AZ
+        </option>
+        <option
+          value="CA"
+        >
+          CA
+        </option>
+        <option
+          value="CO"
+        >
+          CO
+        </option>
+        <option
+          value="CT"
+        >
+          CT
+        </option>
+        <option
+          value="DC"
+        >
+          DC
+        </option>
+        <option
+          value="DE"
+        >
+          DE
+        </option>
+        <option
+          value="FL"
+        >
+          FL
+        </option>
+        <option
+          value="GA"
+        >
+          GA
+        </option>
+        <option
+          value="HI"
+        >
+          HI
+        </option>
+        <option
+          value="IA"
+        >
+          IA
+        </option>
+        <option
+          value="ID"
+        >
+          ID
+        </option>
+        <option
+          value="IL"
+        >
+          IL
+        </option>
+        <option
+          value="IN"
+        >
+          IN
+        </option>
+        <option
+          value="KS"
+        >
+          KS
+        </option>
+        <option
+          value="KY"
+        >
+          KY
+        </option>
+        <option
+          value="LA"
+        >
+          LA
+        </option>
+        <option
+          value="MA"
+        >
+          MA
+        </option>
+        <option
+          value="MD"
+        >
+          MD
+        </option>
+        <option
+          value="ME"
+        >
+          ME
+        </option>
+        <option
+          value="MI"
+        >
+          MI
+        </option>
+        <option
+          value="MN"
+        >
+          MN
+        </option>
+        <option
+          value="MO"
+        >
+          MO
+        </option>
+        <option
+          value="MS"
+        >
+          MS
+        </option>
+        <option
+          value="MT"
+        >
+          MT
+        </option>
+        <option
+          value="NC"
+        >
+          NC
+        </option>
+        <option
+          value="NE"
+        >
+          NE
+        </option>
+        <option
+          value="NH"
+        >
+          NH
+        </option>
+        <option
+          value="NJ"
+        >
+          NJ
+        </option>
+        <option
+          value="NM"
+        >
+          NM
+        </option>
+        <option
+          value="NV"
+        >
+          NV
+        </option>
+        <option
+          value="NY"
+        >
+          NY
+        </option>
+        <option
+          value="ND"
+        >
+          ND
+        </option>
+        <option
+          value="OH"
+        >
+          OH
+        </option>
+        <option
+          value="OK"
+        >
+          OK
+        </option>
+        <option
+          value="OR"
+        >
+          OR
+        </option>
+        <option
+          value="PA"
+        >
+          PA
+        </option>
+        <option
+          value="RI"
+        >
+          RI
+        </option>
+        <option
+          value="SC"
+        >
+          SC
+        </option>
+        <option
+          value="SD"
+        >
+          SD
+        </option>
+        <option
+          value="TN"
+        >
+          TN
+        </option>
+        <option
+          value="TX"
+        >
+          TX
+        </option>
+        <option
+          value="UT"
+        >
+          UT
+        </option>
+        <option
+          value="VT"
+        >
+          VT
+        </option>
+        <option
+          value="VA"
+        >
+          VA
+        </option>
+        <option
+          value="WA"
+        >
+          WA
+        </option>
+        <option
+          value="WI"
+        >
+          WI
+        </option>
+        <option
+          value="WV"
+        >
+          WV
+        </option>
+        <option
+          value="WY"
+        >
+          WY
+        </option>
+      </select>
+    </div>
+    <div
+      className="zip inputwrapper"
+    >
+       
+      <label
+        className="label"
+        htmlFor="zip"
+      >
+        <strong>
+          Zip Code:
+        </strong>
+      </label>
+      <input
+        className="zipInput"
+        id="zip"
+        placeholder="12345"
+        required={true}
+        type="number"
+      />
+    </div>
+    <div
+      className="textarea inputwrapper"
+    >
+      <label
+        className="label"
+        htmlFor="textarea"
+      >
+        <strong>
+          Why are you signing up to the NPDC?:
+        </strong>
+      </label>
+      <textarea
+        className="ppTextarea"
+        cols={33}
+        defaultValue="I want to sign up for the NPDC because..."
+        id="textarea"
+        maxLength={500}
+        required={true}
+        rows={5}
+      />
+    </div>
+    <div
+      className="button"
+    >
+      <button
+        className="primaryButton"
+        onSubmit={[Function]}
+        type="submit"
+      >
+        Submit
       </button>
     </div>
-    <button
-      className="primaryButton"
-      onClick={[Function]}
-      type="submit"
-    >
-      Submit
-    </button>
-  </form>
-  <div
-    className="ctaContainer"
-  >
-    <p>
-      Do you already have an account with us?
-    </p>
     <a
-      className="ctaLink"
-      href="/login"
+      className="redirect"
+      href="/dashboard"
       onClick={[Function]}
       onMouseEnter={[Function]}
     >
-      Login instead
+      Return to dashboard
     </a>
-  </div>
-</section>
+  </form>
+</div>
 `;
