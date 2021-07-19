@@ -10,6 +10,7 @@ import styles from './header.module.css'
 export default function DashboardHeader() {
   const {
     wrapper,
+    backgroundBanner,
     leftHeader,
     logoContainer,
     titleContainer,
@@ -25,6 +26,7 @@ export default function DashboardHeader() {
 
   return (
     <header className={wrapper}>
+      <div className={backgroundBanner}>
       <div className={leftHeader}>
         <div className={logoContainer}>
           {logo}
@@ -42,6 +44,7 @@ export default function DashboardHeader() {
         <button className={button} type="button">
           <p>DONATE</p>
         </button>
+      </div>
       </div>
     </header>
   )
