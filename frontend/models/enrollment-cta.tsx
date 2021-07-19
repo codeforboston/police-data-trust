@@ -24,7 +24,7 @@ export const enrollmentCTAText: { [key in CTATypes]: CTAText} = {
     linkPath: AppRoutes.REGISTER
   },
   [CTATypes.DASHBOARD]: {
-    description: 'Is the publically available data sufficient?',
+    description: 'Is the publically available data sufficient for your needs?',
     linkText: 'Return to dashboard',
     linkPath: AppRoutes.DASHBOARD
   }

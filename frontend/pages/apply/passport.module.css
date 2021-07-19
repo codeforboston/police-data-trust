@@ -1,25 +1,11 @@
-.ppWrapper {
-  display: flexbox;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  width: var(--size512);
+.ppPara {
+  width: var(--size384);
+  margin-bottom: var(--size8);
 }
 
 .inputWrapper {
   display: flex;
   flex-direction: column;
-}
-
-.logoWrapper {
-  max-width: fit-content;
-  margin: 0 auto;
-  margin-top: var(--size16);
-}
-
-.ppParaWrapper {
-  align-self: center;
 }
 
 .ppForm {
@@ -33,14 +19,14 @@
     "textarea textarea textarea";
   justify-items: center;
   margin: 0 auto;
-  width: 100%;
+  width: var(--size512);
 }
 
 .ppAddress {
   grid-area: address;
 }
 
-.city {
+.ppCity {
   grid-area: city;
 }
 
@@ -54,12 +40,6 @@
 
 .ppTextarea {
   grid-area: textarea;
-}
-
-.ppHeading {
-  color: var(--darkBlue);
-  margin-bottom: var(--size16);
-  text-align: center;
 }
 
 .ppLabel {
@@ -83,15 +63,6 @@
 
 .ppTextarea {
   width: var(--size384);
-}
-
-.ppPara {
-  margin-bottom: var(--size8);
-}
-
-.ppRedirect {
-  font-size: var(--size14);
-  text-align: center;
 }
 
 @media (max-width: 551px) {

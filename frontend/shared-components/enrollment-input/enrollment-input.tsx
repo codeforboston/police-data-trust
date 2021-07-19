@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import React, { FormEvent, useState } from 'react'
-import styles from './text-input.module.css'
+import styles from './enrollment-input.module.css'
 import { getTitleCaseFromCamel } from '../../helpers/syntax-helper'
-import { InputNames, inputValidation } from '../../models' 
+import { EnrollmentInputNames, inputValidation } from '../../models' 
 
-interface TextInputProps { inputName: InputNames, isSubmitted: boolean, isPasswordShown?: boolean  }
+interface EnrollmentInputProps { inputName: EnrollmentInputNames, isSubmitted: boolean, isPasswordShown?: boolean  }
 
-export default function TextInput({ inputName, isSubmitted, isPasswordShown }: TextInputProps) {
+export default function EnrollmentInput({ inputName, isSubmitted, isPasswordShown }: EnrollmentInputProps) {
   const { inputContainer, inputField, inputError, errorMessage } = styles
   const { errorMessageText, pattern, inputType } = inputValidation[inputName]
 
@@ -20,7 +20,7 @@ export default function TextInput({ inputName, isSubmitted, isPasswordShown }: T
   const [inputValue, setInputValue] = useState('')
   const [isValid, setIsValid] = useState(checkIsValid(''))
 
-  function handleChange({ target: {value} }: FormEvent<HTMLInputElement>): void {
+  function handleChange({ target: { value } }: FormEvent<HTMLInputElement>): void {
     setInputValue(value)
     setIsValid(checkIsValid(value))
   }
@@ -31,13 +31,15 @@ export default function TextInput({ inputName, isSubmitted, isPasswordShown }: T
       <input 
         id={inputId} 
         aria-required="true" 
+        aria-describedby={errorId}
         className={`${inputField} ${!isValid && inputError}`} 
         name={inputName}
         type={displayType}
         value={inputValue}
         onChange={handleChange}
       />
-      {!isValid && <p id={errorId} className={errorMessage}>
+      {!isValid && 
+      <p id={errorId} className={errorMessage}>
         <FontAwesomeIcon aria-hidden="true" icon={faExclamationCircle}/>
         &nbsp;{errorMessageText}
       </p>}
