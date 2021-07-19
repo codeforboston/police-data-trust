@@ -1,5 +1,5 @@
 interface enrollmentValidation {
-  errorMessageText: string,
+  errorMessage: string,
   pattern: RegExp,
   inputType: string
 }
@@ -22,53 +22,53 @@ const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", 'i')
 
 export const enrollmentValidation: { [key in EnrollmentInputNames]: enrollmentValidation } = {
   [EnrollmentInputNames.FIRST_NAME]: {
-    errorMessageText: 'A name requires 2+ letters',
+    errorMessage: 'A name requires 2+ letters',
     pattern: nameRgx,
     inputType: 'text'
   },
   [EnrollmentInputNames.LAST_NAME]: {
-    errorMessageText: 'A name requires 2+ letters',
+    errorMessage: 'A name requires 2+ letters',
     pattern: nameRgx,
     inputType: 'text'
   },
   [EnrollmentInputNames.EMAIL_ADDRESS]: {
-    errorMessageText: 'Please enter a valid email address',
+    errorMessage: 'Please enter a valid email address',
     pattern: new RegExp('^[a-z0-9_\.\-]+@([a-z0-9_\-]+\.)+[a-z]{2,4}$', 'i'),
     inputType: 'email'
   },
   [EnrollmentInputNames.PHONE_NUMBER]: {
-    errorMessageText: 'Please enter a valid phone number',
+    errorMessage: 'Please enter a valid phone number',
     pattern: new RegExp('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$'),
     inputType: 'tel'
   },
   [EnrollmentInputNames.CREATE_PASSWORD]: {
-    errorMessageText: 'Please enter a valid password',
+    errorMessage: 'Please enter a valid password',
     pattern: passwordRgx,
     inputType: 'password'
   },
   [EnrollmentInputNames.CONFIRM_PASSWORD]: {
-    errorMessageText: 'Passwords do not match',
+    errorMessage: 'Passwords do not match',
     pattern: passwordRgx,
     inputType: 'text'
   },
   [EnrollmentInputNames.LOGIN_PASSWORD]: {
-    errorMessageText: 'A password is required',
+    errorMessage: 'A password is required',
     pattern: passwordRgx,
     inputType: 'password'
   },
   [EnrollmentInputNames.STREET_ADDRESS]: {
-    errorMessageText: 'A street address is required',
-    pattern: /.+/,
+    errorMessage: 'A street address is required',
+    pattern: new RegExp("^[a-z0-9'\.\-\s\,]+$/", 'i'),
     inputType: 'text'
   }, 
   [EnrollmentInputNames.CITY_TOWN]: {
-    errorMessageText: 'A city or town is required',
-    pattern: /.+/,
+    errorMessage: 'A city or town is required',
+    pattern: nameRgx,
     inputType: 'text'
   },
   [EnrollmentInputNames.ZIP_CODE]: {
-    errorMessageText: 'Zipcode is required',
-    pattern: /.+/,
+    errorMessage: '5 digits required',
+    pattern: new RegExp('^[0-9]{5}$'),
     inputType: 'number'
   }
 }

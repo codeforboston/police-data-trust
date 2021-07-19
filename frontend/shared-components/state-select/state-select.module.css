@@ -1,18 +1,22 @@
-.stateSelectContainer {
+.selectContainer {
   display: flex;
   flex-direction: column;
 }
 
-.stateSelectContainer label {
+.selectContainer label {
   font-size: var(--size16);
   font-weight: 600;
   margin-left: var(--size4);
 }
 
-.stateSelectContainer select {
+.selectContainer select {
   border: 1px solid black;
   border-radius: var(--size4);
   height: var(--size40);
   width: var(--size72);
   text-indent: var(--size4);
+}
+
+.selectContainer.inputError select {
+  border: 2px solid var(--red);
 }

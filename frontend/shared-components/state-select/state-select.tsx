@@ -1,4 +1,6 @@
+import React, { FormEvent, useState } from "react"
 import styles from "./state-select.module.css"
+import { FormLevelError } from '../index'
 
 const states: string[] = [
   "AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", 
@@ -6,17 +8,36 @@ const states: string[] = [
   "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WI", "WV", "WY"
 ]
 
-export default function USStateSelect() {
+interface USStateSelectProps { isSubmitted: boolean }
+export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
+  const { inputError, selectContainer } = styles
+  const [selectId, errorId] = ['stateSelect', 'stateSelectError']
+
+  const [isValid, setIsValid] = useState(!isSubmitted)
+
+  function handleChange({ target: { value } }: FormEvent<HTMLSelectElement>): void {
+    if (isSubmitted) setIsValid(!!value)
+  }
+  
   return (
-    <div className={styles.stateSelectContainer}>
-      <label htmlFor="stateSelect">State:</label>
-      <select id="stateSelect">
+    <div className={`${selectContainer} ${!isValid && inputError}`}>
+      <label htmlFor={selectId}>State:</label>
+      <select 
+        id={selectId} 
+        name="states" 
+        defaultValue=""
+        aria-required="true" 
+        aria-describedby={errorId} 
+        onChange={handleChange}
+      >
+        <option disabled value="">&ndash; &ndash;</option>
         {states.map((state) => (
           <option key={state} value={state}>
             {state}
           </option>
         ))}
       </select>
+      {!isValid && <FormLevelError errorId={errorId} errorMessage="Required"/>}
     </div>
   )
 }

@@ -1,15 +1,14 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import React, { FormEvent, useState } from 'react'
 import styles from './enrollment-input.module.css'
+import { FormLevelError } from '../index'
 import { getTitleCaseFromCamel } from '../../helpers/syntax-helper'
 import { EnrollmentInputNames, enrollmentValidation } from '../../models' 
 
 interface EnrollmentInputProps{inputName: EnrollmentInputNames, isSubmitted: boolean, isShown?: boolean, size?: string}
 
 export default function EnrollmentInput({ inputName, isSubmitted, isShown, size }: EnrollmentInputProps) {
-  const { inputContainer, inputField, inputError, errorMessage } = styles
-  const { errorMessageText, pattern, inputType } = enrollmentValidation[inputName]
+  const { inputContainer, inputField, inputError } = styles
+  const { errorMessage, pattern, inputType } = enrollmentValidation[inputName]
 
   const [inputId, errorId] = [`${inputName}Input`, `${inputName}Error`]
   const labelText: string = `${getTitleCaseFromCamel(inputName)}:`
@@ -22,6 +21,7 @@ export default function EnrollmentInput({ inputName, isSubmitted, isShown, size 
   const [isValid, setIsValid] = useState(checkIsValid(''))
 
   function handleChange({ target: { value } }: FormEvent<HTMLInputElement>): void {
+    value = value.toString()
     setInputValue(value)
     setIsValid(checkIsValid(value))
   }
@@ -31,7 +31,7 @@ export default function EnrollmentInput({ inputName, isSubmitted, isShown, size 
       <label htmlFor={inputId}>{labelText}</label>
       <input 
         id={inputId} 
-        className={`${inputField} ${styles[size]} ${!isValid && inputError}`} 
+        className={`${inputField} ${styles[size]} ${!isValid && inputError}`}
         max={ifNumber(99999)}
         min={ifNumber(0)}
         name={inputName}
@@ -41,14 +41,7 @@ export default function EnrollmentInput({ inputName, isSubmitted, isShown, size 
         aria-describedby={errorId}
         onChange={handleChange}
       />
-      {!isValid && 
-        <p id={errorId} className={errorMessage}>
-          <FontAwesomeIcon aria-hidden="true" icon={faExclamationCircle}/>
-          &nbsp;{errorMessageText}
-        </p>
-      }
+      {!isValid && <FormLevelError errorId={errorId} errorMessage={errorMessage}/>}
     </div>
   )
 }
-
-

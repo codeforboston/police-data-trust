@@ -15,7 +15,14 @@
   border-radius: var(--size4);
 }
 
+.responseError textarea {
+  border: 2px solid var(--red);
+}
+
 .responseSubtext {
   display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
   justify-content: space-between;
+  height: var(--size16);
 }
