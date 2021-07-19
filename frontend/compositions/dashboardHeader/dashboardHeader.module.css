@@ -1,7 +1,7 @@
-/* default - mobile styles */
 .wrapper {
   width: 100%;
-  height: 6.94rem;
+  height: var(--size112);
+  z-index: -10000;
 }
 
 .backgroundBanner {
@@ -9,44 +9,43 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   position: absolute;
-  z-index: -10000;
   background-image: url("./assets/BannerMobile.svg");
   background-repeat: no-repeat;
   background-size: cover;
-  height: 4.74rem;
-  filter: drop-shadow(0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25));
+  height: var(--size80);
+  filter: drop-shadow(0 var(--size4) var(--size4) rgba(0, 0, 0, var(--size4)));
 }
 
 .leftHeader {
-  padding-left: 0.82rem;
-  margin-top: 2.15rem;
+  padding-left: var(--size14);
+  margin-top: var(--size32);
   display: flex;
   justify-content: flex-start;
 }
 
 .titleContainer {
-  margin-top: 0.22rem;
-  padding-left: 0.56rem;
-  width: 8.81rem;
-  height: 3.88rem;
+  margin-top: var(--size4);
+  padding-left: var(--size10);
+  width: var(--size128);
+  height: var(--size64);
 }
 
 .titleContainer h2 {
   color: var(--darkBlue);
   font-weight: 700;
   font-style: normal;
-  font-size: 1.75rem;
-  line-height: 2.12rem;
+  font-size: var(--size24);
+  line-height: var(--size32);
   letter-spacing: -0.02rem;
 }
 
 .titleContainer p {
-  width: 6.9rem;
-  height: 1.63rem;
+  width: var(--size112);
+  height: var(--size24);
   color: var(--black);
   font-weight: normal;
-  font-size: 0.63rem;
-  line-height: 0.75rem;
+  font-size: var(--size10);
+  line-height: var(--size12);
   letter-spacing: -0.02rem;
 }
 
@@ -57,17 +56,17 @@
 }
 
 .nav {
-  margin: 1.69rem 1.69rem 1.8rem;
+  margin: var(--size24) var(--size24) var(--size32);
 }
 
 .button {
-  margin-right: 0.88rem;
-  width: 4.69rem;
-  height: 1.64rem;
+  margin-right: var(--size14);
+  width: var(--size80);
+  height: var(--size24);
   background-color: var(--darkBlue);
-  border: 0.13rem solid var(--darkBlue);
+  border: var(--size2) solid var(--darkBlue);
   box-sizing: border-box;
-  border-radius: 0.25rem;
+  border-radius: var(--size4);
   cursor: pointer;
 }
 
@@ -76,16 +75,15 @@
   font-family: PT Sans;
   font-style: normal;
   font-weight: bold;
-  font-size: 0.88rem;
-  line-height: 1.125rem;
+  font-size: var(--size14);
+  line-height: var(--size20);
   text-align: center;
   letter-spacing: -0.012rem;
 }
 
-/* laptop breakpoint */
 @media screen and (min-width: 68.75rem) {
   .wrapper {
-    height: 7.63rem;
+    height: var(--size128);
   }
 
   .backgroundBanner {
@@ -94,22 +92,22 @@
   }
 
   .leftHeader {
-    margin-left: 4.5rem;
-    margin-top: 1.69rem;
+    margin-left: var(--size80);
+    margin-top: var(--size24);
   }
 
   .titleContainer {
-    width: 25.31rem;
-    margin-top: 0.88rem;
-    margin-left: 0.3rem;
+    width: var(--size384);
+    margin-top: var(--size14);
+    margin-left: var(--size4);
   }
 
   .titleContainer p {
-    width: 31.81rem;
-    height: 1.63rem;
-    line-height: 1.06rem;
-    font-size: 0.88rem;
-    margin-top: 0.3rem;
+    width: var(--size512);
+    height: var(--size24);
+    line-height: var(--size16);
+    font-size: var(--size14);
+    margin-top: var(--size8);
   }
 
   .rightHeader {
@@ -119,38 +117,39 @@
   }
 
   .nav {
-    margin-top: 3.25rem;
+    margin-top: var(--size40);
   }
 
-  .rightHeader li {
+  .nav li {
     font-style: normal;
     font-weight: 500;
-    font-size: 0.88rem;
-    height: 1.56rem;
+    font-size: var(--size14);
+    height: var(--size24);
     color: var(--darkBlue);
     text-align: center;
-    line-height: 0.75rem;
-    padding: 0.5rem 0.94rem 0.31rem 0.88rem;
+    line-height: var(--size12);
+    padding: var(--size8) var(--size16) var(--size4) var(--size14);
     cursor: pointer;
+    list-style: none;
   }
 
   .tab {
     background-color: #ffffff;
-    width: 4.69rem;
-    height: 1.56rem;
+    width: var(--size80);
+    height: var(--size24);
     border-radius: 0.19rem 0.19rem 0rem 0rem;
     box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
   .button {
-    width: 6.25rem;
-    height: 2.19rem;
-    margin-top: 1.31rem;
-    margin-right: 1.06rem;
+    width: var(--size96);
+    height: var(--size32);
+    margin-top: var(--size20);
+    margin-right: var(--size16);
   }
 
   .rightHeader p {
-    font-size: 1rem;
-    line-height: 1.19rem;
+    font-size: var(--size16);
+    line-height: var(--size20);
   }
 }

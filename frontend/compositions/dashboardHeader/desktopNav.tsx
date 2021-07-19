@@ -1,10 +1,11 @@
 import React, { useState } from "react"
-import styles  from './header.module.css'
+import styles  from './dashboardHeader.module.css'
 
 export default function DesktopNav() {
   let [selected, setSelected] = useState('Search');
 
   const handleNavChange = (e: React.MouseEvent<Element>) => {
+    console.log('link clicked');
     const value = (e.target as HTMLElement).innerText;
     setSelected(value);
   }
