@@ -11,7 +11,10 @@ export enum EnrollmentInputNames {
   PHONE_NUMBER = 'phoneNumber',
   CREATE_PASSWORD = 'createPassword',
   CONFIRM_PASSWORD = 'confirmPassword',
-  LOGIN_PASSWORD = 'loginPassword'
+  LOGIN_PASSWORD = 'loginPassword',
+  STREET_ADDRESS = 'streetAddress',
+  CITY_TOWN = 'cityOrTown',
+  ZIP_CODE = 'zipCode'
 }
 
 const passwordRgx: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$")
@@ -19,12 +22,12 @@ const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", 'i')
 
 export const inputValidation: { [key in EnrollmentInputNames]: InputValidation } = {
   [EnrollmentInputNames.FIRST_NAME]: {
-    errorMessageText: 'A first name is required',
+    errorMessageText: 'A name requires 2+ letters',
     pattern: nameRgx,
     inputType: 'text'
   },
   [EnrollmentInputNames.LAST_NAME]: {
-    errorMessageText: 'A last name is required',
+    errorMessageText: 'A name requires 2+ letters',
     pattern: nameRgx,
     inputType: 'text'
   },
@@ -52,5 +55,20 @@ export const inputValidation: { [key in EnrollmentInputNames]: InputValidation }
     errorMessageText: 'A password is required',
     pattern: passwordRgx,
     inputType: 'password'
+  },
+  [EnrollmentInputNames.STREET_ADDRESS]: {
+    errorMessageText: 'A street address is required',
+    pattern: /.+/,
+    inputType: 'text'
+  }, 
+  [EnrollmentInputNames.CITY_TOWN]: {
+    errorMessageText: 'A city or town is required',
+    pattern: /.+/,
+    inputType: 'text'
+  },
+  [EnrollmentInputNames.ZIP_CODE]: {
+    errorMessageText: 'Zipcode is required',
+    pattern: /.+/,
+    inputType: 'number'
   }
 }

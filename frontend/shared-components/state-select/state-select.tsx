@@ -8,12 +8,15 @@ const states: string[] = [
 
 export default function USStateSelect() {
   return (
-    <select className={styles.select}>
-      {states.map((state) => (
-        <option key={state} value={state}>
-          {state}
-        </option>
-      ))}
-    </select>
+    <div className={styles.stateSelectContainer}>
+      <label htmlFor="stateSelect">State:</label>
+      <select id="stateSelect">
+        {states.map((state) => (
+          <option key={state} value={state}>
+            {state}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }

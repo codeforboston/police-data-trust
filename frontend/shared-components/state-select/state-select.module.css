@@ -1,3 +1,18 @@
-.select {
-  width: var(--size60);
+.stateSelectContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.stateSelectContainer label {
+  font-size: var(--size16);
+  font-weight: 600;
+  margin-left: var(--size4);
+}
+
+.stateSelectContainer select {
+  border: 1px solid black;
+  border-radius: var(--size4);
+  height: var(--size40);
+  width: var(--size72);
+  text-indent: var(--size4);
 }

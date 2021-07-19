@@ -1,76 +1,8 @@
-.ppPara {
+.passportIntro {
   width: var(--size384);
   margin-bottom: var(--size8);
 }
 
-.inputWrapper {
+.passportForm fieldset {
   display: flex;
-  flex-direction: column;
-}
-
-.ppForm {
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-areas:
-    "address address address"
-    "city state zip"
-    "textarea textarea textarea";
-  justify-items: center;
-  margin: 0 auto;
-  width: var(--size512);
-}
-
-.ppAddress {
-  grid-area: address;
-}
-
-.ppCity {
-  grid-area: city;
-}
-
-.ppState {
-  grid-area: state;
-}
-
-.ppZip {
-  grid-area: zip;
-}
-
-.ppTextarea {
-  grid-area: textarea;
-}
-
-.ppLabel {
-  color: var(--darkBlue);
-  font-weight: 500;
-  margin-right: var(--size16);
-  margin-bottom: var(--size8);
-}
-
-.ppAddInput {
-  width: var(--size384);
-}
-
-.cityInput {
-  width: var(--size192);
-}
-
-.zipInput {
-  width: var(--size112);
-}
-
-.ppTextarea {
-  width: var(--size384);
-}
-
-@media (max-width: 551px) {
-  .form {
-    grid-template-areas:
-      "address address address"
-      "city state ."
-      ". zip ."
-      "textarea textarea textarea";
-  }
 }
