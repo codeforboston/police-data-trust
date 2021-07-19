@@ -21,6 +21,16 @@
   text-indent: var(--size8);
 }
 
+.inputField[type="number"]::-webkit-outer-spin-button,
+.inputField[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputField[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .inputError {
   border: 2px solid var(--red);
 }

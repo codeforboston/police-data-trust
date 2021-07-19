@@ -14,7 +14,8 @@ export default function EnrollmentInput({ inputName, isSubmitted, isPasswordShow
   const [inputId, errorId] = [`${inputName}Input`, `${inputName}Error`]
   const labelText: string = `${getTitleCaseFromCamel(inputName)}:`
   const displayType: string = isPasswordShown ? 'text' : inputType
-
+  
+  const ifNumber = (value: number): number | null => { return displayType === 'number' ? value : null }
   const checkIsValid = (value: string): boolean => { return !isSubmitted || pattern.test(value) }
 
   const [inputValue, setInputValue] = useState('')
@@ -30,19 +31,22 @@ export default function EnrollmentInput({ inputName, isSubmitted, isPasswordShow
       <label htmlFor={inputId}>{labelText}</label>
       <input 
         id={inputId} 
-        aria-required="true" 
-        aria-describedby={errorId}
         className={`${inputField} ${!isValid && inputError}`} 
+        max={ifNumber(99999)}
+        min={ifNumber(0)}
         name={inputName}
         type={displayType}
         value={inputValue}
+        aria-required="true" 
+        aria-describedby={errorId}
         onChange={handleChange}
       />
       {!isValid && 
-      <p id={errorId} className={errorMessage}>
-        <FontAwesomeIcon aria-hidden="true" icon={faExclamationCircle}/>
-        &nbsp;{errorMessageText}
-      </p>}
+        <p id={errorId} className={errorMessage}>
+          <FontAwesomeIcon aria-hidden="true" icon={faExclamationCircle}/>
+          &nbsp;{errorMessageText}
+        </p>
+      }
     </div>
   )
 }
