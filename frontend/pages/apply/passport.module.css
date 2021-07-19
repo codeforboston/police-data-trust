@@ -1,8 +1,0 @@
-.passportIntro {
-  width: var(--size384);
-  margin-bottom: var(--size8);
-}
-
-.passportForm fieldset {
-  display: flex;
-}

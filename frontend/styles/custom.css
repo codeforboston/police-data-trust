@@ -6,7 +6,7 @@
   height: 100vh;
   min-width: var(--size512);
   max-width: 90vw;
-  margin: auto;
+  margin: 0 auto var(--size24);
   font-size: var(--size12);
 }
 

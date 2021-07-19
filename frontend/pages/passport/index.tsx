@@ -1,14 +1,16 @@
 import styles from "./passport.module.css"
-import { EnrollmentCTA, EnrollmentHeader, EnrollmentInput, USStateSelect } from "../../shared-components"
+import { 
+  ApplicationResponse, EnrollmentCTA, EnrollmentHeader, EnrollmentInput, USStateSelect 
+} from "../../shared-components"
 import { CTATypes, EnrollmentInputNames } from '../../models'
-
-function handleSubmit() {
-  // TODO: add form submission logic
-}
 
 export default function Passport({ name = ['Herbert', 'Placeholder'] }) {
   const { passportForm, passportIntro } = styles
   const { CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = EnrollmentInputNames
+
+  function handleSubmit() {
+    // TODO: add form submission logic
+  }
 
   return (
     <section className="enrollmentSection">
@@ -20,25 +22,16 @@ export default function Passport({ name = ['Herbert', 'Placeholder'] }) {
       </p>
       <form className={passportForm}>
         <fieldset>
-          <EnrollmentInput inputName={STREET_ADDRESS} isSubmitted={false} />
+          <EnrollmentInput inputName={STREET_ADDRESS} isSubmitted={false} size="large"/>
           <EnrollmentInput inputName={CITY_TOWN} isSubmitted={false} />
           <USStateSelect />
-          <EnrollmentInput inputName={ZIP_CODE} isSubmitted={false} />
+          <EnrollmentInput inputName={ZIP_CODE} isSubmitted={false} size="small"/>
         </fieldset>
-        <label htmlFor="interestDescription">
-          Why are you signing up to the NPDC?:
-        </label>
-        <textarea
-          id="interestDescription"
-          maxLength={500}
-          rows={5}
-          cols={33}
-          aria-required="true"
-        />
+        <ApplicationResponse />
+        <button className="primaryButton" type="submit" onSubmit={handleSubmit}>
+          Submit
+        </button>
       </form>
-      <button className="primaryButton" type="submit" onSubmit={handleSubmit} >
-        Submit
-      </button>
       <EnrollmentCTA ctaType={CTATypes.DASHBOARD}/>
     </section>
   )

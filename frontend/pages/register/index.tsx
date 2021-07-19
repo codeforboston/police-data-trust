@@ -40,7 +40,7 @@ export default function ViewerRegistration() {
           <EnrollmentInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted}/>
         </fieldset>
         <fieldset className={inputLine} aria-describedby={passwordAidId}>
-          <EnrollmentInput inputName={CREATE_PASSWORD} isSubmitted={isSubmitted} isPasswordShown={isPasswordShown}/>
+          <EnrollmentInput inputName={CREATE_PASSWORD} isSubmitted={isSubmitted} isShown={isPasswordShown}/>
           <EnrollmentInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted}/>
         </fieldset>
         <PasswordAid id={passwordAidId} onDisplayChange={handlePasswordDisplay}/>

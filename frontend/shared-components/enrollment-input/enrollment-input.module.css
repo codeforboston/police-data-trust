@@ -3,7 +3,6 @@
   flex-direction: column;
   margin: 0 var(--size20);
   height: var(--size80);
-  width: var(--size192);
   font-size: var(--size16);
   font-weight: 600;
 }
@@ -19,6 +18,14 @@
   width: var(--size192);
   font-size: var(--size14);
   text-indent: var(--size8);
+}
+
+.inputField.large {
+  width: var(--size424);
+}
+
+.inputField.small {
+  width: var(--size112);
 }
 
 .inputField[type="number"]::-webkit-outer-spin-button,

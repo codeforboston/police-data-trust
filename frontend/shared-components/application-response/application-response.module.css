@@ -1,0 +1,21 @@
+.responseContainer {
+  display: flex;
+  flex-direction: column;
+  width: var(--size424);
+}
+
+.responseContainer label {
+  font-size: var(--size16);
+  font-weight: 600;
+  margin-left: var(--size4);
+}
+
+.responseContainer textarea {
+  border: 1px solid black;
+  border-radius: var(--size4);
+}
+
+.responseSubtext {
+  display: flex;
+  justify-content: space-between;
+}

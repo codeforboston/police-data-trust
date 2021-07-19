@@ -3,17 +3,17 @@ import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import React, { FormEvent, useState } from 'react'
 import styles from './enrollment-input.module.css'
 import { getTitleCaseFromCamel } from '../../helpers/syntax-helper'
-import { EnrollmentInputNames, inputValidation } from '../../models' 
+import { EnrollmentInputNames, enrollmentValidation } from '../../models' 
 
-interface EnrollmentInputProps { inputName: EnrollmentInputNames, isSubmitted: boolean, isPasswordShown?: boolean  }
+interface EnrollmentInputProps{inputName: EnrollmentInputNames, isSubmitted: boolean, isShown?: boolean, size?: string}
 
-export default function EnrollmentInput({ inputName, isSubmitted, isPasswordShown }: EnrollmentInputProps) {
+export default function EnrollmentInput({ inputName, isSubmitted, isShown, size }: EnrollmentInputProps) {
   const { inputContainer, inputField, inputError, errorMessage } = styles
-  const { errorMessageText, pattern, inputType } = inputValidation[inputName]
+  const { errorMessageText, pattern, inputType } = enrollmentValidation[inputName]
 
   const [inputId, errorId] = [`${inputName}Input`, `${inputName}Error`]
   const labelText: string = `${getTitleCaseFromCamel(inputName)}:`
-  const displayType: string = isPasswordShown ? 'text' : inputType
+  const displayType: string = isShown ? 'text' : inputType
   
   const ifNumber = (value: number): number | null => { return displayType === 'number' ? value : null }
   const checkIsValid = (value: string): boolean => { return !isSubmitted || pattern.test(value) }
@@ -31,7 +31,7 @@ export default function EnrollmentInput({ inputName, isSubmitted, isPasswordShow
       <label htmlFor={inputId}>{labelText}</label>
       <input 
         id={inputId} 
-        className={`${inputField} ${!isValid && inputError}`} 
+        className={`${inputField} ${styles[size]} ${!isValid && inputError}`} 
         max={ifNumber(99999)}
         min={ifNumber(0)}
         name={inputName}

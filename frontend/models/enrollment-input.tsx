@@ -1,4 +1,4 @@
-interface InputValidation {
+interface enrollmentValidation {
   errorMessageText: string,
   pattern: RegExp,
   inputType: string
@@ -20,7 +20,7 @@ export enum EnrollmentInputNames {
 const passwordRgx: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$")
 const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", 'i')
 
-export const inputValidation: { [key in EnrollmentInputNames]: InputValidation } = {
+export const enrollmentValidation: { [key in EnrollmentInputNames]: enrollmentValidation } = {
   [EnrollmentInputNames.FIRST_NAME]: {
     errorMessageText: 'A name requires 2+ letters',
     pattern: nameRgx,
