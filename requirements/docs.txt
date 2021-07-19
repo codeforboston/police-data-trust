@@ -4,71 +4,67 @@
 #
 #    pip-compile requirements/docs.in
 #
-click==7.1.2
-    # via
-    #   mkdocs
-    #   nltk
-future==0.18.2
-    # via lunr
-jinja2==2.11.3
+click==8.0.1
+    # via mkdocs
+ghp-import==2.0.1
+    # via mkdocs
+importlib-metadata==4.5.0
+    # via mkdocs
+jinja2==3.0.1
     # via
     #   mkdocs
     #   mkdocs-macros-plugin
-joblib==1.0.1
-    # via nltk
-livereload==2.6.3
-    # via mkdocs
-lunr[languages]==0.5.8
-    # via mkdocs
 markdown==3.3.4
     # via
     #   mkdocs
     #   mkdocs-material
     #   pymdown-extensions
-markupsafe==1.1.1
+markupsafe==2.0.1
     # via jinja2
+mergedeep==1.3.4
+    # via mkdocs
 mkdocs-macros-plugin==0.5.5
     # via -r requirements/docs.in
 mkdocs-material-extensions==1.0.1
     # via mkdocs-material
-mkdocs-material==7.0.6
+mkdocs-material==7.1.8
     # via
     #   -r requirements/docs.in
     #   mkdocs-macros-plugin
     #   mkdocs-material-extensions
-mkdocs==1.1.2
+mkdocs==1.2.1
     # via
     #   -r requirements/docs.in
     #   mkdocs-macros-plugin
     #   mkdocs-material
-nltk==3.5
-    # via lunr
-pygments==2.8.1
+packaging==20.9
+    # via mkdocs
+pygments==2.9.0
     # via
     #   -r requirements/docs.in
     #   mkdocs-material
-pymdown-extensions==8.1.1
+pymdown-extensions==8.2
     # via
     #   -r requirements/docs.in
     #   mkdocs-material
+pyparsing==2.4.7
+    # via packaging
 python-dateutil==2.8.1
-    # via mkdocs-macros-plugin
+    # via
+    #   ghp-import
+    #   mkdocs-macros-plugin
+pyyaml-env-tag==0.1
+    # via mkdocs
 pyyaml==5.4.1
     # via
     #   mkdocs
     #   mkdocs-macros-plugin
-regex==2020.11.13
-    # via nltk
-six==1.15.0
-    # via
-    #   livereload
-    #   lunr
-    #   python-dateutil
+    #   pyyaml-env-tag
+six==1.16.0
+    # via python-dateutil
 termcolor==1.1.0
     # via mkdocs-macros-plugin
-tornado==6.1
-    # via
-    #   livereload
-    #   mkdocs
-tqdm==4.59.0
-    # via nltk
+watchdog==2.1.2
+    # via mkdocs
+zipp==3.4.1
+    # via importlib-metadata

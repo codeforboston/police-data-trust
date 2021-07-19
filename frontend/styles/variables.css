@@ -1,0 +1,40 @@
+:root {
+  --darkBlue: #303463;
+  --lightBlue: #7caed7;
+  --grey: #666666;
+  --red: #bf1212;
+  --linkBlue: #0645ad;
+
+  --insetShadow: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
+
+  --tabletMin: 550;
+  --laptopMin: 1100;
+  --desktopMin: 1500;
+
+  /* Use this scale for a sizing that scales consistently */
+  --size4: 0.25rem;
+  --size6: 0.375rem;
+  --size8: 0.5rem;
+  --size10: 0.625rem;
+  --size12: 0.75rem;
+  --size14: 0.875rem;
+  --size16: 1rem;
+  --size20: 1.25rem;
+  --size24: 1.5rem;
+  --size32: 2rem;
+  --size40: 2.5rem;
+  --size48: 3rem;
+  --size64: 4rem;
+  --size80: 5rem;
+  --size96: 6rem;
+  --size112: 7rem;
+  --size128: 8rem;
+  --size160: 10rem;
+  --size192: 12rem;
+  --size200: 12.5rem;
+  --size256: 16rem;
+  --size384: 24rem;
+  --size512: 32rem;
+  --size640: 40rem;
+  --size768: 48rem;
+}

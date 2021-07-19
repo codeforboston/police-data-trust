@@ -4,18 +4,17 @@ setting up and tearing down the database.
 Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
-from typing import Optional
+from typing import Optional, Any
 import os
 
 import pandas as pd
 import click
 
 from flask import current_app
+from flask import abort
 from flask.cli import AppGroup
 from flask.cli import with_appcontext
 from werkzeug.utils import secure_filename
-
-from flask_migrate import Migrate
 
 from sqlalchemy.exc import ResourceClosedError
 from flask_sqlalchemy import SQLAlchemy
@@ -28,7 +27,31 @@ from ..config import TestingConfig
 from ..utils import dev_only
 
 db = SQLAlchemy()
-migrate = Migrate(db=db)
+
+
+class CrudMixin:
+    """Mix me into a database model whose CRUD operations you want to expose in
+    a convenient manner.
+    """
+
+    def create(self, refresh: bool = True):
+        db.session.add(self)
+        db.session.commit()
+        if refresh:
+            db.session.refresh(self)
+        return self
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def get(cls, id: Any, abort_if_null: bool = True):
+        obj = db.session.query(cls).get(id)
+        if obj is None and abort_if_null:
+            abort(404)
+        return obj
+
 
 QUERIES_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "queries")

@@ -1,0 +1,12 @@
+@import "./variables.css";
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+details:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 1px dashed black;
+  outline-offset: var(--size4);
+}

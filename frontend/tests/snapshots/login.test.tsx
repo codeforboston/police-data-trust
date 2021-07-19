@@ -1,5 +1,5 @@
 import * as React from "react"
-import Login from "../../pages/login"
+import Login from "../../pages/user-login/user-login"
 import renderer from "react-test-renderer"
 
 it("renders Login correctly", () => {
