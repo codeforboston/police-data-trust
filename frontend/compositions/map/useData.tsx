@@ -9,17 +9,18 @@ export default function useData(property, value) {
   const data = uscities
   // const data = fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json")
 
-  const [filterProperties, setFilterProperties] = useState({ property: "density", value: 500 })
+  // console.log(uscities)
+  const [filterProperties, setFilterProperties] = useState({ property: "population", value: 10000 })
 
   const [filteredData, setFilteredData] = useState(data)
 
 
   useEffect(() => {
 
-    console.log(filterProperties)
+    // console.log(filterProperties)
     
     const { property, value } = filterProperties
-    console.log(property, value)
+    // console.log(property, value)
     
     setFilteredData({
       ...data,

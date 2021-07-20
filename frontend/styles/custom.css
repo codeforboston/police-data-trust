@@ -17,3 +17,26 @@
   -webkit-box-shadow: var(--insetShadow);
   box-shadow: var(--insetShadow);
 }
+
+#show-data {
+  pointer-events: none;
+}
+
+.map-city-point {
+  fill: var(--linkBlue);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.map-geo-shape.state {
+  stroke: var(--grey);
+  fill: var(--darkBlue);
+  stroke-width: 1;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+#map-background {
+  background-color: #7caed725;
+  pointer-events: none;
+}
