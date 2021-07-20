@@ -20,7 +20,6 @@ export default function useData(property, value) {
     // console.log(filterProperties)
     
     const { property, value } = filterProperties
-    // console.log(property, value)
     
     setFilteredData({
       ...data,

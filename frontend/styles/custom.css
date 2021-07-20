@@ -23,9 +23,12 @@
 }
 
 .map-city-point {
-  fill: var(--linkBlue);
+  /* fill: var(--linkBlue); */
   cursor: pointer;
   pointer-events: all;
+  fill-opacity: 0.8;
+  pointer-events: all;
+  cursor: pointer;
 }
 
 .map-geo-shape.state {
@@ -39,4 +42,17 @@
 #map-background {
   background-color: #7caed725;
   pointer-events: none;
+}
+
+.map-perimeter-outline {
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  fill: transparent;
+  stroke-width: 2px;
+  stroke: lightgray;
+}
+
+.circle-marker {
+  transition: all 500ms ease;
 }

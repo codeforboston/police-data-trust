@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-// import Map from "../../compositions/map"
 
 
 const Map: any = dynamic(()=> import("../../compositions/map"), {ssr: false})

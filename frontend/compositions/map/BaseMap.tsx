@@ -27,7 +27,6 @@ export default function BaseMap() {
     dataPromise
       .then((res) => res.json())
       .then((data) => {
-        console.log(topojson.feature(data, data.objects.states).features[0])
 
         const svg = d3.select(ref.current)
 
