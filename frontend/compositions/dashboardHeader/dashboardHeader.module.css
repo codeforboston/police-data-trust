@@ -18,13 +18,13 @@
 
 .leftHeader {
   padding-left: var(--size14);
-  margin-top: var(--size32);
+  margin-top: var(--size40);
   display: flex;
   justify-content: flex-start;
 }
 
 .titleContainer {
-  margin-top: var(--size4);
+  margin-top: var(--size6);
   padding-left: var(--size10);
   width: var(--size128);
   height: var(--size64);
@@ -88,17 +88,18 @@
 
   .backgroundBanner {
     background-image: url(./assets/Banner.svg);
+    background-size: 100%;
     filter: none;
   }
 
   .leftHeader {
-    margin-left: var(--size80);
-    margin-top: var(--size24);
+    margin-left: var(--size64);
+    margin-top: var(--size32);
   }
 
   .titleContainer {
     width: var(--size384);
-    margin-top: var(--size14);
+    margin-top: var(--size16);
     margin-left: var(--size4);
   }
 
@@ -107,7 +108,7 @@
     height: var(--size24);
     line-height: var(--size16);
     font-size: var(--size14);
-    margin-top: var(--size8);
+    margin-top: var(--size6);
   }
 
   .rightHeader {
@@ -125,12 +126,16 @@
     font-weight: 500;
     font-size: var(--size14);
     height: var(--size24);
-    color: var(--darkBlue);
     text-align: center;
     line-height: var(--size12);
     padding: var(--size8) var(--size16) var(--size4) var(--size14);
     cursor: pointer;
     list-style: none;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: var(--darkBlue);
   }
 
   .tab {
