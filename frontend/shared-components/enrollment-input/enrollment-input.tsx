@@ -7,7 +7,7 @@ import { EnrollmentInputNames, enrollmentValidation } from '../../models'
 interface EnrollmentInputProps{inputName: EnrollmentInputNames, isSubmitted: boolean, isShown?: boolean, size?: string}
 
 export default function EnrollmentInput({ inputName, isSubmitted, isShown, size }: EnrollmentInputProps) {
-  const { inputContainer, inputField, inputError } = styles
+  const { inputContainer, inputField } = styles
   const { errorMessage, pattern, inputType } = enrollmentValidation[inputName]
 
   const [inputId, errorId] = [`${inputName}Input`, `${inputName}Error`]
@@ -27,11 +27,11 @@ export default function EnrollmentInput({ inputName, isSubmitted, isShown, size 
   }
 
   return (
-    <div className={inputContainer}>
+    <div className={`defaultInputContainer ${inputContainer} ${!isValid && 'hasError'}`}>
       <label htmlFor={inputId}>{labelText}</label>
       <input 
         id={inputId} 
-        className={`${inputField} ${styles[size]} ${!isValid && inputError}`}
+        className={`${inputField} ${styles[size]}`}
         max={ifNumber(99999)}
         min={ifNumber(0)}
         name={inputName}

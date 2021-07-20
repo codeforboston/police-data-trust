@@ -10,7 +10,6 @@ const states: string[] = [
 
 interface USStateSelectProps { isSubmitted: boolean }
 export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
-  const { inputError, selectContainer } = styles
   const [selectId, errorId] = ['stateSelect', 'stateSelectError']
 
   const [isValid, setIsValid] = useState(!isSubmitted)
@@ -20,10 +19,11 @@ export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
   }
   
   return (
-    <div className={`${selectContainer} ${!isValid && inputError}`}>
+    <div className={`defaultInputContainer ${!isValid && 'hasError'}`}>
       <label htmlFor={selectId}>State:</label>
       <select 
         id={selectId} 
+        className={styles.stateSelect}
         name="states" 
         defaultValue=""
         aria-required="true" 

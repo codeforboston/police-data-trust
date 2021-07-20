@@ -5,8 +5,7 @@ import { FormEvent, useState } from 'react'
 interface ResponseTextAreaProps { isSubmitted: boolean}
 
 export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps) {
-  const { responseContainer, responseError, responseSubtext} = styles
-  const [textareaId, counterId, errorId] = ['ResponseTextArea', 'responseCounter', 'responseError']
+  const [textareaId, counterId, errorId] = ['responseTextArea', 'responseCounter', 'responseError']
   const [charMax, charMin] = [500, 150]
 
   const errorMessage: string = `Please provide a response of at least ${charMin} characters`
@@ -22,20 +21,20 @@ export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps)
   }
 
   return (
-    <div className={`${responseContainer} ${!isValid && responseError}`}>
+    <div className={`defaultInputContainer ${!isValid && 'hasError'}`}>
       <label htmlFor={textareaId}>
         Why are you signing up to the NPDC?:
       </label>
       <textarea
         id={textareaId}
-        cols={33}
+        cols={52}
         rows={7}
         maxLength={charMax}
         aria-required="true"
         aria-describedby={`${counterId} ${errorId}`}
         onChange={handleChange}
       />
-      <div className={responseSubtext}>
+      <div className={styles.responseSubtext}>
         <p id={counterId}>{charCount}/{charMax}</p>
         {!isValid && <FormLevelError errorId={errorId} errorMessage={errorMessage} />}
       </div>

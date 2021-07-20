@@ -1,23 +1,11 @@
 .inputContainer {
-  display: flex;
-  flex-direction: column;
   margin: 0 var(--size20);
   height: var(--size80);
-  font-size: var(--size16);
-  font-weight: 600;
-}
-
-.inputContainer label {
-  margin-left: var(--size4);
 }
 
 .inputField {
-  border: 1px solid black;
-  border-radius: var(--size4);
   height: var(--size40);
   width: var(--size192);
-  font-size: var(--size14);
-  text-indent: var(--size8);
 }
 
 .inputField.large {
@@ -36,8 +24,4 @@
 
 .inputField[type="number"] {
   -moz-appearance: textfield;
-}
-
-.inputError {
-  border: 2px solid var(--red);
 }
