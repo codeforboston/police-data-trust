@@ -1,12 +1,7 @@
 import React, { FormEvent, useState } from "react"
 import styles from "./state-select.module.css"
 import { FormLevelError } from '../index'
-
-const states: string[] = [
-  "AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", 
-  "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", 
-  "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WI", "WV", "WY"
-]
+import { states } from '../../models'
 
 interface USStateSelectProps { isSubmitted: boolean }
 export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
@@ -31,9 +26,9 @@ export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
         onChange={handleChange}
       >
         <option disabled value="">&ndash; &ndash;</option>
-        {states.map((state) => (
-          <option key={state} value={state}>
-            {state}
+        {states.map(({ initials, name }) => (
+          <option key={initials} value={initials} aria-label={name}>
+            {initials}
           </option>
         ))}
       </select>
