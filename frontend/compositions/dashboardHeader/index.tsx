@@ -1,5 +1,5 @@
-import React from "react"
-import { useMediaQuery } from './helperFunctions'
+import * as React from "react"
+import { useMediaQuery } from './media-query-helper'
 import LogoMobile from './assets/LogoMobile.svg'
 import NPDCLogo from './assets/NPDCLogo.svg'
 import HamburgerMenu from './assets/Vector.svg'
