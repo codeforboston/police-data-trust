@@ -32,12 +32,12 @@ export const enrollmentValidation: { [key in EnrollmentInputNames]: enrollmentVa
     inputType: 'text'
   },
   [EnrollmentInputNames.EMAIL_ADDRESS]: {
-    errorMessage: 'Please enter a valid email address',
+    errorMessage: 'Please enter a valid email',
     pattern: new RegExp('^[a-z0-9_\.\-]+@([a-z0-9_\-]+\.)+[a-z]{2,4}$', 'i'),
     inputType: 'email'
   },
   [EnrollmentInputNames.PHONE_NUMBER]: {
-    errorMessage: 'Please enter a valid phone number',
+    errorMessage: 'A phone number is required',
     pattern: new RegExp('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$'),
     inputType: 'tel'
   },

@@ -20,5 +20,5 @@ export const tooltipContent: { [key in TooltipTypes]: Tooltips } = {
       'Please review this brief legal explainer for further clarification.',
       'We apologize for any unintentional omissions, if you identify one please alert our development team.'
     ]
-  } // TODO: Convert relevant text portions to new-tab links, adjust tooltip size to extra text
+  } 
 }
