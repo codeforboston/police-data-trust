@@ -9,6 +9,7 @@ import os
 next_index = 0
 
 # data manipulation functions
+all_names = []
 
 
 def map_varnames(df, data_source, xwalk, configs):
@@ -63,6 +64,7 @@ def make_single_table(table, dat, configs):
         configs["tables"][table]["required"]
         + configs["tables"][table]["optional"]
     )
+
     return dat[dat.columns[dat.columns.isin(cols)]]
 
 
@@ -128,7 +130,9 @@ def make_tables_data_source(data_source, xwalk, configs):
     dat.to_csv(data_source + '.csv', index=True, header=True)
     table_names = list(configs["tables"].keys())
     table_list = [make_single_table(x, dat, configs) for x in table_names]
+
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
+    print("returning table_dict")
     return table_dict
 
 
@@ -147,8 +151,12 @@ def make_all_tables():
     data_list = [
         make_tables_data_source(x, xwalk, configs) for x in data_sources
     ]
+
+    print("made data list")
+
     table_names = list(configs["tables"].keys())
     table_list = []
+    print("iterating table names")
     for t in table_names:
         first_iteration = True
         sub_table_list = []
@@ -161,7 +169,32 @@ def make_all_tables():
             sub_table_list.append(d[t])
         sub_table = full_df
         table_list.append(sub_table)
+    print("done iterating table names")
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
+    total_len = len(table_dict[table_names[2]].victim_name_full)
+    num_duplicates = 0
+    for v in range(0, total_len):
+        # total_len = len(table_dict[table_names[2]].victim_name_full)
+        # print(v)
+        name = table_dict[table_names[2]].victim_name_full[v]
+        if name == "Name withheld by police":
+            continue
+        if name in all_names:
+            # print(name)
+            # shrink all tables
+            for t in table_names:
+                # print("table name len: ", len(table_names))
+                table = table_dict[t]
+                dat_1 = table.iloc[0:v-num_duplicates, ]
+                dat_2 = table.iloc[v+1-num_duplicates:, ]
+                table_dict[t] = dat_1.append(dat_2)
+            # v = v-1
+            print("deleted")
+            num_duplicates = num_duplicates + 1
+        else:
+            all_names.append(name)
+    print("done one, removed ", num_duplicates, " size ", total_len)
+
     writer = pd.ExcelWriter('full_database.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.

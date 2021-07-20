@@ -15,3 +15,4 @@ victim_age,victims_age,victims_age,age,age,age
 victim_name_full,victims_name,victims_name,victims_name,name,name
 victim_race,victims_race,victims_race,race,race,raceethnicity
 victim_sex,victims_gender,victims_gender,gender,gender,gender
+duplicate_of,duplicate_of,duplicate_of,duplicate_of,duplicate_of,duplicate_of
