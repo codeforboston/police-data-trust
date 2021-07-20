@@ -30,3 +30,5 @@ export default function InfoTooltip({ type }: InfoTooltipProps) {
     </div>
   )
 }
+// TODO: 1) Convert relevant text portions in INCIDENTS content to new-tab links
+// 2) Adjust styling so that it's responsive to text length & doesn't mess w/mobile page layout
