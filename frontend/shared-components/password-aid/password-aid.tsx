@@ -3,7 +3,7 @@ import styles from './password-aid.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { passwordToggleViews } from '../../models'
 
-interface PasswordAidProps { id: string, onDisplayChange: any }
+interface PasswordAidProps { id: string, onDisplayChange: Function }
 
 export default function PasswordAid({ id, onDisplayChange }: PasswordAidProps) {  
   const { passwordAid, passwordToggle } = styles
