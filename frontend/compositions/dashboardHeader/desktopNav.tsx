@@ -1,15 +1,15 @@
 import * as React from "react"
 import styles  from './dashboardHeader.module.css'
 
-export default function DesktopNav() {
+export default function DesktopNav() : JSX.Element {
   let [selected, setSelected] = React.useState('Search');
 
-  const handleNavChange = (e: React.MouseEvent<Element>) => {
+  const handleNavChange = (e: React.MouseEvent<Element>) : void => {
     const value = (e.target as HTMLElement).innerText;
     setSelected(value);
   }
 
-  const setClassName = (linkName: string) => {
+  const setClassName = (linkName: string) : string => {
     return linkName === selected ? styles.tab : '';
   }
 
