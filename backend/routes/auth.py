@@ -7,7 +7,11 @@ from flask_login import logout_user
 from ..database import db
 from ..database import User
 from ..database import login_manager
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from ..auth import user_manager
 from ..schemas import UserSchema
 
@@ -21,14 +25,9 @@ def login():
     if request.method == "POST":
         form = request.form
         # Verify user
-        if (
-                form.get("password") is not None
-                and form.get("email") is not None
-        ):
+        if form.get("password") is not None and form.get("email") is not None:
             user = User.query.filter_by(email=form.get("email")).first()
-            if user is not None and user.verify_password(
-                    form.get("password")
-            ):
+            if user is not None and user.verify_password(form.get("password")):
                 login_user(user, form.get("remember_me"))
                 return {
                     "status": "ok",
@@ -50,7 +49,7 @@ def login():
         return {
             "status": "ok",
             "message": "Failed to log in. Please include the following"
-                       " fields: " + ", ".join(missing_fields),
+            " fields: " + ", ".join(missing_fields),
         }
     else:
         return {"status": 400, "message:": "Error: Bad Request."}
@@ -78,23 +77,19 @@ def register():
                 "message": "Error. Email matches existing account.",
             }
         # Verify all fields included and create user
-        if (
-                form.get("password") is not None
-                and form.get("email") is not None
-        ):
+        if form.get("password") is not None and form.get("email") is not None:
             user = User(
                 email=form.get("email"),
                 password=user_manager.hash_password(form.get("password")),
                 first_name=form.get("firstName"),
                 last_name=form.get("lastName"),
-                
             )
             db.session.add(user)
             db.session.commit()
             return {
                 "status": "ok",
                 "message": "Successfully registered.",
-                "access_token":  create_access_token(identity=user.id),
+                "access_token": create_access_token(identity=user.id),
             }
         # In case of missing fields, return error message indicating
         # required fields.
@@ -106,7 +101,7 @@ def register():
         return {
             "status": "ok",
             "message": "Failed to register. Please include the following"
-                       " fields: " + ", ".join(missing_fields),
+            " fields: " + ", ".join(missing_fields),
         }
     else:
         return {"status": 400, "message:": "Error: Bad Request."}
@@ -115,6 +110,7 @@ def register():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()

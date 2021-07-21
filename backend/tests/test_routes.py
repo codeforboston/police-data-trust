@@ -16,14 +16,13 @@ def test_simple_routes(client, page, expected_status_code):
 def test_create_incident(client, db_session):
     res = client.post(
         "/api/v1/incidents/create",
-        json={"time_of_incident": "2021-03-14 01:05:09"}
+        json={"time_of_incident": "2021-03-14 01:05:09"},
     )
     incident_id = res.json["id"]
 
-    incident_obj = db_session \
-        .query(Incident) \
-        .filter(Incident.id == incident_id) \
-        .first()
+    incident_obj = (
+        db_session.query(Incident).filter(Incident.id == incident_id).first()
+    )
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
 

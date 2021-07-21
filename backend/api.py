@@ -3,8 +3,6 @@ from typing import Optional
 import click
 from flask import Flask
 from flask.testing import FlaskClient
-from flask_user import UserManager
-
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
@@ -115,7 +113,6 @@ def register_misc(app: Flask):
     # Client that makes testing a bit easier.
 
     class FlaskClientWithDefaultHeaders(FlaskClient):
-
         def post(self, *args, **kwargs):
             kwargs.setdefault("headers", {"Content-Type": "application/json"})
             return super().post(*args, **kwargs)

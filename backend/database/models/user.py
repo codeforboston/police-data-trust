@@ -11,7 +11,6 @@ from ..core import CrudMixin
 import enum
 
 
-
 fs_mixin = FlaskSerialize(db)
 
 login_manager = LoginManager()
@@ -22,7 +21,7 @@ login_manager.login_view = "login"
 # Creating this class as NOCASE collation is not compatible with ordinary
 # SQLAlchemy Strings
 class CI_String(TypeDecorator):
-    """ Case-insensitive String subclass definition"""
+    """Case-insensitive String subclass definition"""
 
     impl = String
 
@@ -48,6 +47,7 @@ def compile_ci_string(element, compiler, **kwargs):
 class UserRole(enum.Enum):
     PASSPORT = 1
     PUBLIC = 2
+
 
 # Define the User data-model.
 class User(db.Model, UserMixin, CrudMixin):
