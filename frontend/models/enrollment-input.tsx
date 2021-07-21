@@ -58,12 +58,12 @@ export const enrollmentValidation: { [key in EnrollmentInputNames]: enrollmentVa
   },
   [EnrollmentInputNames.STREET_ADDRESS]: {
     errorMessage: 'A street address is required',
-    pattern: new RegExp("^[a-z0-9'\.\-\s\,]+$/", 'i'),
+    pattern: /\d+\s[a-z'-]{2,}\s[a-z'-]{2,}\s?[a-z\d'\.\-\s#]*/i,
     inputType: 'text'
   }, 
   [EnrollmentInputNames.CITY_TOWN]: {
     errorMessage: 'A city or town is required',
-    pattern: nameRgx,
+    pattern: /[a-z' -]{3,}/i,
     inputType: 'text'
   },
   [EnrollmentInputNames.ZIP_CODE]: {

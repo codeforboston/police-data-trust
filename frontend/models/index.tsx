@@ -12,7 +12,7 @@ export {
   EnrollmentInputNames,
   enrollmentValidation,
   passwordToggleViews,
+  states,
   tooltipContent,
-  TooltipTypes,
-  states
+  TooltipTypes
 }

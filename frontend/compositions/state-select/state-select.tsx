@@ -22,7 +22,6 @@ export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
   }
 
   function handleInputChange({ target: { value } }: FormEvent<HTMLInputElement>): void {
-    console.log(value, checkIsValid(value))
     if (isSubmitted) setIsValid(checkIsValid(value))
     setInputValue(value)
   }

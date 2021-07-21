@@ -1,6 +1,6 @@
 import styles from './response-textarea.module.css'
 import { FormLevelError } from '../index'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 interface ResponseTextAreaProps { isSubmitted: boolean}
 
@@ -12,13 +12,14 @@ export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps)
   
   const [charCount, setCharCount] = useState(0)
   const [isValid, setIsValid] = useState(!isSubmitted)
-
-  function handleChange($event: FormEvent<HTMLTextAreaElement>): void {
-    const currCharCount: number = $event.target.value.length
-
-    if (isSubmitted) setIsValid(currCharCount >= charMin)
-    setCharCount(currCharCount)
+  
+  function handleTextareaChange({ target: { value }}: FormEvent<HTMLTextAreaElement>): void {
+    if (isSubmitted) setIsValid(value.length >= charMin)
+    setCharCount(value.length)
   }
+  
+
+  useEffect(() => { if (isSubmitted) setIsValid(charCount >= charMin) }, [isSubmitted])
 
   return (
     <div className={`defaultInputContainer ${!isValid && 'hasError'}`}>
@@ -32,7 +33,7 @@ export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps)
         maxLength={charMax}
         aria-required="true"
         aria-describedby={`${counterId} ${errorId}`}
-        onChange={handleChange}
+        onChange={handleTextareaChange}
       />
       <div className={styles.responseSubtext}>
         <p id={counterId}>{charCount}/{charMax}</p>
