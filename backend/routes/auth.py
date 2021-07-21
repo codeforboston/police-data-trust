@@ -5,14 +5,15 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 from ..database import db
-from ..database.models.User import User
-from ..database.models.User import login_manager
-from ..database.models.User import user_manager
+from ..database import User
+from ..database import login_manager
+from ..auth import user_manager
 
 
-bp = Blueprint("auth", __name__)
+bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
+# TODO: Place cookie on users browser with JWT token
 @bp.route("/login", methods=["POST"])
 def login():
     """Login Page."""
@@ -54,6 +55,7 @@ def login():
         return {"status": 400, "message:": "Error: Bad Request."}
 
 
+# TODO: Clear cookie on users browser
 @bp.route("/logout")
 @login_required
 def logout():
@@ -62,6 +64,7 @@ def logout():
     return redirect("/login")
 
 
+# TODO: place cookie on users browser
 @bp.route("/register", methods=["POST"])
 def register():
     if request.method == "POST":
@@ -83,13 +86,14 @@ def register():
                 password=user_manager.hash_password(form.get("password")),
                 first_name=form.get("firstName"),
                 last_name=form.get("lastName"),
+                
             )
             db.session.add(user)
             db.session.commit()
             return {
                 "status": "ok",
                 "message": "Successfully registered.",
-                "user": {"email": form.get("email")},
+                "user": {"email": user.email},
             }
         # In case of missing fields, return error message indicating
         # required fields.

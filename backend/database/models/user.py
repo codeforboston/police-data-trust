@@ -4,11 +4,11 @@ import bcrypt
 from backend.database.core import db
 from flask_login import LoginManager
 from flask_serialize.flask_serialize import FlaskSerialize
-from flask_user import SQLAlchemyAdapter
-from flask_user import UserManager
 from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
+import enum
+
 
 
 fs_mixin = FlaskSerialize(db)
@@ -44,6 +44,10 @@ def compile_ci_string(element, compiler, **kwargs):
         return base_visit
 
 
+class UserRole(enum.Enum):
+    PASSPORT = 1
+    PUBLIC = 2
+
 # Define the User data-model.
 class User(db.Model, UserMixin):
     """The SQL dataclass for an Incident."""
@@ -69,29 +73,7 @@ class User(db.Model, UserMixin):
         CI_String(100, collate="NOCASE"), nullable=False, server_default=""
     )
 
-    # Define the relationship to Role via UserRoles
-    roles = db.relationship("Role", secondary="user_role")
+    role = db.Column(db.Enum(UserRole))
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
-
-
-db_adapter = SQLAlchemyAdapter(db, User)
-user_manager = UserManager(db_adapter)
-
-
-# Define the Role data-model
-class Role(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
-
-
-# Define the UserRoles association table
-class UserRole(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(
-        db.Integer(), db.ForeignKey("user.id", ondelete="CASCADE")
-    )
-    role_id = db.Column(
-        db.Integer(), db.ForeignKey("role.id", ondelete="CASCADE")
-    )

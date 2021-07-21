@@ -57,6 +57,8 @@ flask-babelex==0.9.4
     # via -r requirements/_core.in
 flask-db==0.3.2
     # via -r requirements/_core.in
+flask-jwt==0.3.2
+    # via -r requirements/_core.in
 flask-login==0.5.0
     # via
     #   -r requirements/_core.in
@@ -84,6 +86,7 @@ flask==2.0.1
     #   -r requirements/_core.in
     #   flask-babelex
     #   flask-db
+    #   flask-jwt
     #   flask-login
     #   flask-mail
     #   flask-pydantic
@@ -160,6 +163,8 @@ pydantic==1.8.2
     #   pydantic-sqlalchemy
 pyflakes==2.3.1
     # via flake8
+pyjwt==1.4.2
+    # via flask-jwt
 pyparsing==2.4.7
     # via packaging
 pytest-cov==2.12.1
