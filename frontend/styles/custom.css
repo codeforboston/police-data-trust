@@ -23,7 +23,7 @@
 }
 
 .map-city-point {
-  /* fill: var(--linkBlue); */
+  fill: var(--linkBlue);
   cursor: pointer;
   pointer-events: all;
   fill-opacity: 0.8;
@@ -54,5 +54,7 @@
 }
 
 .circle-marker {
+  pointer-events: all;
+  cursor: pointer;
   transition: all 500ms ease;
 }

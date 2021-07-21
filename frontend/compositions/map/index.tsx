@@ -1,10 +1,10 @@
 //@ts-nocheck
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import BaseMap from "./BaseMap"
 import useData from "./useData"
 import * as d3 from "d3"
 import useResizeObserver from "use-resize-observer"
-import { circleMarker, MarkerLayer } from "../map-symbols"
+import { MarkerLayer } from "./marker-layer"
 
 export interface Map {}
 
@@ -12,25 +12,29 @@ export default function Map() {
   const data = useData()
   const ref = useRef()
 
-  const dimensions = useResizeObserver({ ref })
+  const [translate, setTranslate] = useState<Coord>([487.5 + 112, 305 + 50])
 
+
+  // we'll use projection to correctly overlay other geodata on the base map
+  // type/scale/translate taken from the baselayer data set
   const projection = d3
     .geoAlbersUsa()
     .scale(1300)
-    .translate([487.5 + 112, 305 + 50])
+    // .translate([487.5 + 112, 305 + 50])
+    .translate(translate)
 
-  useEffect(() => {
-    if (!data || !dimensions) return
-
-    const { width, height } = dimensions
-
-  }, [dimensions])
 
   return (
-    <div id="map-background">
-      <svg id="show-data" viewBox="0, 0, 1200, 700" ref={ref}>
-        <MarkerLayer data={data} projection={projection}/>
-        <BaseMap />
+    <div
+      ref={ref}
+      id="map-background"
+      style={{
+        outline: "1px solid yellow",
+        height: "100vh"
+      }}>
+      <svg id="show-data" viewBox={`0, 0, 1200, 700`}  height="100%" width="100%">
+        <MarkerLayer data={data} projection={projection} />
+        <BaseMap projection={projection}/>
       </svg>
     </div>
   )
