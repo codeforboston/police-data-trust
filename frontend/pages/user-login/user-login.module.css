@@ -1,9 +1,0 @@
-.login {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: var(--size512);
-  max-width: 85vw;
-  margin: var(--size64) auto;
-  font-size: var(--size12);
-}
