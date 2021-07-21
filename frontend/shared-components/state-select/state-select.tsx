@@ -9,9 +9,8 @@ export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
 
   const [isValid, setIsValid] = useState(!isSubmitted)
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    // if (isSubmitted) setIsValid(event.target.value)
-    console.log(event);
+  function handleChange({ target: { value } }: FormEvent<HTMLSelectElement>): void {
+    if (isSubmitted) setIsValid(!!value)
   }
   
   return (
