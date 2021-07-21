@@ -1,7 +1,5 @@
 import DashboardHeader from "../../compositions/dashboardHeader/index"
-import styles from "../../compositions/dashboardHeader/header.module.css"
-
-import Layout from "../../shared-components/layout/Layout"
+import Layout from "../../shared-components/layout/layout"
 
 export default function Dashboard() {
   return (

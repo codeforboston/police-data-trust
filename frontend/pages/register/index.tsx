@@ -4,7 +4,7 @@ import styles from "./viewer-registration.module.css"
 import PasswordAid from "../../compositions/password-aid/password-aid"
 import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput } from "../../shared-components"
 import { CallToActionTypes, EnrollmentInputNames, TooltipTypes } from "../../models"
-import Layout from "../../shared-components/layout/Layout"
+import Layout from "../../shared-components/layout/layout"
 
 export default function ViewerRegistration() {
   const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } =

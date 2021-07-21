@@ -8,7 +8,7 @@ import {
   USStateSelect,
 } from "../../shared-components"
 import { CallToActionTypes, EnrollmentInputNames } from "../../models"
-import Layout from "../../shared-components/layout/Layout"
+import Layout from "../../shared-components/layout/layout"
 
 export default function Passport({ name = ["Herbert Placeholder"] }) {
   const { passportForm, passportIntro } = styles

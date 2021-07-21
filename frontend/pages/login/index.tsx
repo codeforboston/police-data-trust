@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from "react"
 import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput } from "../../shared-components"
 import { CallToActionTypes, EnrollmentInputNames } from "../../models"
-import Layout from "../../shared-components/layout/Layout"
+import Layout from "../../shared-components/layout/layout"
 
 export default function UserLogin() {
   const { EMAIL_ADDRESS, LOGIN_PASSWORD } = EnrollmentInputNames
