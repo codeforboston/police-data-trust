@@ -25,4 +25,4 @@ requests
 email-validator
 flask-serialize
 Flask-DB
-Flask-JWT
+Flask-JWT-Extended

@@ -7,6 +7,7 @@ from flask_serialize.flask_serialize import FlaskSerialize
 from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
+from ..core import CrudMixin
 import enum
 
 
@@ -49,7 +50,7 @@ class UserRole(enum.Enum):
     PUBLIC = 2
 
 # Define the User data-model.
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin, CrudMixin):
     """The SQL dataclass for an Incident."""
 
     id = db.Column(db.Integer, primary_key=True)

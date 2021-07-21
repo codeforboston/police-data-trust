@@ -57,7 +57,7 @@ flask-babelex==0.9.4
     # via -r requirements/_core.in
 flask-db==0.3.2
     # via -r requirements/_core.in
-flask-jwt==0.3.2
+flask-jwt-extended==4.2.3
     # via -r requirements/_core.in
 flask-login==0.5.0
     # via
@@ -86,7 +86,7 @@ flask==2.0.1
     #   -r requirements/_core.in
     #   flask-babelex
     #   flask-db
-    #   flask-jwt
+    #   flask-jwt-extended
     #   flask-login
     #   flask-mail
     #   flask-pydantic
@@ -163,8 +163,8 @@ pydantic==1.8.2
     #   pydantic-sqlalchemy
 pyflakes==2.3.1
     # via flake8
-pyjwt==1.4.2
-    # via flask-jwt
+pyjwt==2.1.0
+    # via flask-jwt-extended
 pyparsing==2.4.7
     # via packaging
 pytest-cov==2.12.1
@@ -238,7 +238,9 @@ vine==5.0.0
 wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==2.0.1
-    # via flask
+    # via
+    #   flask
+    #   flask-jwt-extended
 wtforms==2.3.3
     # via
     #   -r requirements/_core.in

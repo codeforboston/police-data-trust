@@ -8,7 +8,7 @@ from flask_user import UserManager
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
-from .auth import user_manager, authenticate, identity
+from .auth import user_manager, jwt
 from .routes.incidents import bp as incidents_bp
 from .routes.auth import bp as auth_bp
 from .utils import dev_only
@@ -17,6 +17,7 @@ from .utils import dev_only
 def create_app(config: Optional[str] = None):
     """Create the API application."""
     app = Flask(__name__)
+    app.config["JWT_SECRET_KEY"] = "super-secret"
     config_obj = get_config_from_env(config or app.env)
     app.config.from_object(config_obj)
 
@@ -36,6 +37,7 @@ def create_app(config: Optional[str] = None):
 def register_extensions(app: Flask):
     db.init_app(app)
     user_manager.init_app(app)
+    jwt.init_app(app)
     # login_manager.init_app(app)
     # user_manager.init_app(app)
 

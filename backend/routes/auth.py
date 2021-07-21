@@ -7,8 +7,9 @@ from flask_login import logout_user
 from ..database import db
 from ..database import User
 from ..database import login_manager
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from ..auth import user_manager
-
+from ..schemas import UserSchema
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -32,7 +33,7 @@ def login():
                 return {
                     "status": "ok",
                     "message": "Successfully logged in.",
-                    "user": {"email": form.get("email")},
+                    "access_token": create_access_token(identity=user.id),
                 }
             else:
                 return {
@@ -93,7 +94,7 @@ def register():
             return {
                 "status": "ok",
                 "message": "Successfully registered.",
-                "user": {"email": user.email},
+                "access_token":  create_access_token(identity=user.id),
             }
         # In case of missing fields, return error message indicating
         # required fields.
@@ -114,3 +115,9 @@ def register():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@bp.route("/test", methods=["GET"])
+@jwt_required()
+def test_auth():
+    current_identity = get_jwt_identity()
+    return UserSchema.from_orm(User.get(current_identity)).dict()
