@@ -32,7 +32,7 @@ export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps)
         rows={7}
         maxLength={charMax}
         aria-required="true"
-        aria-describedby={`${counterId} ${errorId}`}
+        aria-describedby={`${counterId} ${!isValid ? errorId : null}`}
         onChange={handleTextareaChange}
       />
       <div className={styles.responseSubtext}>
