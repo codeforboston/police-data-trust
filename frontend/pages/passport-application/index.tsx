@@ -8,7 +8,7 @@ function handleSubmit() {
   // TODO: add form submission logic
 }
 
-export default function Passport({ name = "Herbert Q. Placeholder" }) {
+export default function Passport({ name = "placeholder" }) {
   const {
     ppWrapper,
     cityInput,
