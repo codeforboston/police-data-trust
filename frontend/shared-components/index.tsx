@@ -4,6 +4,7 @@ import EnrollmentHeader from "../compositions/enrollment-header/enrollment-heade
 import EnrollmentInput from "../compositions/enrollment-input/enrollment-input"
 import FormLevelError from "./error-form-level/error-form-level"
 import InfoTooltip from "./info-tooltip/info-tooltip"
+import Logo from './logo/logo'
 import USStateSelect from "../compositions/state-select/state-select"
 
 export {
