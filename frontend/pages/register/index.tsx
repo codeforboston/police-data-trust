@@ -1,8 +1,10 @@
 import React, { FormEvent, useState } from 'react'
 import styles from './viewer-registration.module.css'
+
 import PasswordAid from './password-aid/password-aid'
 import { EnrollmentCTA, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
 import { CTATypes, EnrollmentInputNames, TooltipTypes } from '../../models'
+
 
 export default function ViewerRegistration() {  
   const { 
