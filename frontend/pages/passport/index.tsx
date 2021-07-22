@@ -1,9 +1,9 @@
 import React, { FormEvent, useState } from "react"
 import styles from "./passport.module.css"
 import { 
-  ResponseTextArea, EnrollmentCTA, EnrollmentHeader, EnrollmentInput, USStateSelect 
+  ResponseTextArea, EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput, USStateSelect 
 } from "../../shared-components"
-import { CTATypes, EnrollmentInputNames } from '../../models'
+import { CallToActionTypes, EnrollmentInputNames } from '../../models'
 
 export default function Passport({ name = ['Herbert Placeholder'] }) {
   const { passportForm, passportIntro } = styles
@@ -37,7 +37,7 @@ export default function Passport({ name = ['Herbert Placeholder'] }) {
           Submit
         </button>
       </form>
-      <EnrollmentCTA ctaType={CTATypes.DASHBOARD}/>
+      <EnrollmentCallToAction callToActionType={CallToActionTypes.DASHBOARD}/>
     </section>
   )
 }

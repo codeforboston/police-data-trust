@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react'
-import { EnrollmentCTA, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
-import { CTATypes, EnrollmentInputNames } from '../../models'
+import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
+import { CallToActionTypes, EnrollmentInputNames } from '../../models'
 
 export default function UserLogin() {
   const { EMAIL_ADDRESS, LOGIN_PASSWORD } = EnrollmentInputNames
@@ -22,7 +22,7 @@ export default function UserLogin() {
           Submit
         </button>
       </form>
-      <EnrollmentCTA ctaType={CTATypes.REGISTER}/>
+      <EnrollmentCallToAction callToActionType={CallToActionTypes.REGISTER}/>
     </section>
   )
 }

@@ -2,8 +2,8 @@ import React, { FormEvent, useState } from 'react'
 import styles from './viewer-registration.module.css'
 
 import PasswordAid from './password-aid/password-aid'
-import { EnrollmentCTA, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
-import { CTATypes, EnrollmentInputNames, TooltipTypes } from '../../models'
+import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
+import { CallToActionTypes, EnrollmentInputNames, TooltipTypes } from '../../models'
 
 
 export default function ViewerRegistration() {  
@@ -50,7 +50,7 @@ export default function ViewerRegistration() {
           Submit
         </button>
       </form>
-      <EnrollmentCTA ctaType={CTATypes.LOGIN}/>
+      <EnrollmentCallToAction callToActionType={CallToActionTypes.LOGIN}/>
     </section>
   )
 }
