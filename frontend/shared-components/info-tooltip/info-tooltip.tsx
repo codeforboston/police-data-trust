@@ -2,13 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 import React from 'react' 
 import styles from './info-tooltip.module.css'
+import { getTitleCaseFromCamel } from '../../helpers/syntax-helper'
 import { tooltipContent, TooltipTypes } from '../../models'
 
 interface InfoTooltipProps { type: TooltipTypes }
 export default function InfoTooltip({ type }: InfoTooltipProps) {
   const { tooltipContainer, tooltipIcon, tooltip } = styles
   
-  const ariaLabel: string = `Learn more about ${type}`
+  const ariaLabel: string = `Learn more about ${getTitleCaseFromCamel(type)}`
   const tooltipBodyId: string = `${type}Tooltip`
   const { content } = tooltipContent[type]
 
@@ -17,6 +18,7 @@ export default function InfoTooltip({ type }: InfoTooltipProps) {
       className={tooltipContainer}
       aria-label={ariaLabel} 
       aria-describedby={tooltipBodyId}
+      role="tooltip"
       tabIndex={0}
     >
       <FontAwesomeIcon 

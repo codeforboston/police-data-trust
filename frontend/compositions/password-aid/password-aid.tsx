@@ -22,7 +22,7 @@ export default function PasswordAid({ id, onDisplayChange }: PasswordAidProps) {
   return (
     <div className={passwordAid}>
       <p id={id}>Use eight or more characters with a mix of letters, numbers, and symbols</p>
-      <button className={passwordToggle} onClick={togglePasswordView}>
+      <button className={passwordToggle} role="switch" aria-checked={isHidden} onClick={togglePasswordView}>
         <FontAwesomeIcon icon={icon} /> {text}
       </button>
     </div>
