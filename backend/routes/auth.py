@@ -5,8 +5,9 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 from ..database import db
-from ..database import User
+from ..database import User, UserRole
 from ..database import login_manager
+from ..auth import role_required, blueprint_role_required
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -16,6 +17,7 @@ from ..auth import user_manager
 from ..schemas import UserSchema
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+# bp.before_request(blueprint_role_required(UserRole.PUBLIC))
 
 
 # TODO: Place cookie on users browser with JWT token
@@ -83,6 +85,7 @@ def register():
                 password=user_manager.hash_password(form.get("password")),
                 first_name=form.get("firstName"),
                 last_name=form.get("lastName"),
+                role=UserRole.PUBLIC
             )
             db.session.add(user)
             db.session.commit()
@@ -114,6 +117,7 @@ def load_user(user_id):
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()
+@role_required(UserRole.PUBLIC)
 def test_auth():
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
