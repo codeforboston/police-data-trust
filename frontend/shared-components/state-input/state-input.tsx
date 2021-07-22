@@ -1,13 +1,13 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import styles from "./state-select.module.css"
-import { FormLevelError } from '../../shared-components/index'
+import { FormLevelError } from '../index'
 import { capitalizeFirstChar } from '../../helpers/syntax-helper'
 import { states } from '../../models'
 
-interface USStateSelectProps {
+interface USAStateInputProps {
   isSubmitted: boolean
 }
-export default function USStateSelect({ isSubmitted }: USStateSelectProps) {
+export default function USAStateInput({ isSubmitted }: USAStateInputProps) {
   const {stateSelect, hasError} = styles
   const [inputId, listId, errorId] = ['stateSelectInput', 'stateSelectList', 'stateSelectError']
 

@@ -5,7 +5,7 @@ import {
   EnrollmentCallToAction,
   EnrollmentHeader,
   EnrollmentInput,
-  USStateSelect,
+  USAStateInput
 } from "../../shared-components"
 import { CallToActionTypes, EnrollmentInputNames } from "../../models"
 import Layout from "../../shared-components/layout/layout"
@@ -25,28 +25,25 @@ export default function Passport({ name = ["Herbert Placeholder"] }) {
   return (
     <Layout>
       <section className="enrollmentSection">
-        <EnrollmentHeader headerText="Passport Account Application" />
+        <EnrollmentHeader headerText="Passport Account Application"/>
         <p className={passportIntro}>
-          Hello <em>{name}</em>, thank you for your continued interest in the National Police Data
-          Coalition.
-          <br />
-          <br />
-          We are able to provide access to legally protected data to users with the appropriate
-          permissions. This form will submit your profile for approval.
+          Hello <em>{name}</em>, thank you for your continued interest in the National Police Data Coalition.<br/><br/>
+          We are able to provide access to legally protected data to users with the appropriate permissions. 
+          This form will submit your profile for approval.
         </p>
         <form className={passportForm}>
           <fieldset>
-            <EnrollmentInput inputName={STREET_ADDRESS} size="large" isSubmitted={isSubmitted} />
-            <EnrollmentInput inputName={CITY_TOWN} isSubmitted={isSubmitted} />
-            <USStateSelect isSubmitted={isSubmitted} />
-            <EnrollmentInput inputName={ZIP_CODE} size="small" isSubmitted={isSubmitted} />
+            <EnrollmentInput inputName={STREET_ADDRESS} size="large" isSubmitted={isSubmitted}/>
+            <EnrollmentInput inputName={CITY_TOWN} isSubmitted={isSubmitted}/>
+            <USAStateInput isSubmitted={isSubmitted} />
+            <EnrollmentInput inputName={ZIP_CODE} size="small" isSubmitted={isSubmitted}/>
           </fieldset>
           <ResponseTextArea isSubmitted={isSubmitted} />
           <button className="primaryButton" type="submit" onClick={handleSubmit}>
             Submit
           </button>
         </form>
-        <EnrollmentCallToAction callToActionType={CallToActionTypes.DASHBOARD} />
+        <EnrollmentCallToAction callToActionType={CallToActionTypes.DASHBOARD}/>
       </section>
     </Layout>
   )

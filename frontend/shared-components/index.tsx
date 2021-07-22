@@ -5,7 +5,7 @@ import EnrollmentInput from "../compositions/enrollment-input/enrollment-input"
 import FormLevelError from "./error-form-level/error-form-level"
 import InfoTooltip from "./info-tooltip/info-tooltip"
 import Logo from './logo/logo'
-import USStateSelect from "../compositions/state-select/state-select"
+import USAStateInput from './state-input/state-input'
 
 export {
   ResponseTextArea,
@@ -14,5 +14,6 @@ export {
   EnrollmentInput,
   FormLevelError,
   InfoTooltip,
-  USStateSelect,
+  Logo,
+  USAStateInput
 }
