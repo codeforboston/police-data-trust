@@ -11,11 +11,12 @@
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "babel-plugin-inline-react-svg": "^2.0.1",
     "@babel/preset-typescript": "^7.14.5",
+    "babel-plugin-inline-react-svg": "^2.0.1",
     "next": "10.2.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-table": "^7.7.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -28,8 +29,8 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
     "@types/jest": "^26.0.23",
-    "@types/react": "^17.0.5",
     "@types/node": "^16.3.0",
+    "@types/react": "^17.0.5",
     "@types/react-test-renderer": "^17.0.1",
     "babel-jest": "^27.0.2",
     "babel-plugin-inline-react-svg": "^2.0.1",
