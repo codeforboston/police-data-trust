@@ -1,5 +1,4 @@
 import * as React from "react"
-import { useMediaQuery } from './media-query-helper'
 import NPDCLogo from '../../shared-components/logo'
 import HamburgerMenu from './assets/Vector.svg'
 import DesktopNav from './desktopNav'
