@@ -24,9 +24,14 @@
 }
 
 .logoContainer {
-  width: 75px;
-  height: 75px;
+  width: var(--size72);
+  height: var(--size72);
 }
+
+/* .logoContainer svg {
+  width: 100%;
+  height: 100%;
+} */
 
 .titleContainer {
   margin-top: var(--size6);
@@ -72,24 +77,9 @@
   display: none;
 }
 
-.button {
-  margin-right: var(--size14);
-  width: var(--size80);
-  height: var(--size24);
-  background-color: var(--darkBlue);
-  border: var(--size2) solid var(--darkBlue);
-  box-sizing: border-box;
-  border-radius: var(--size4);
-  cursor: pointer;
-
-  color: #ffffff;
-  font-family: PT Sans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: var(--size14);
-  line-height: var(--size20);
-  text-align: center;
-  letter-spacing: -0.012rem;
+.buttonContainer button {
+  margin: 21px 17px 20px 20px;
+  font-weight: 700;
 }
 
 @media screen and (min-width: 68.75rem) {

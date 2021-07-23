@@ -15,6 +15,7 @@ export default function DashboardHeader() {
     desktopTitle,
     rightHeader,
     nav,
+    buttonContainer,
     mobileNav,
     desktopNav,
   } = styles;
@@ -42,9 +43,11 @@ export default function DashboardHeader() {
               <DesktopNav />
             </div>
           </nav>
-          <button className="primaryButton" type="button">
-            DONATE
-          </button>
+          <div className={buttonContainer}>
+            <button className="primaryButton" type="button">
+              DONATE
+            </button>
+          </div>
         </div>
       </div>
     </header>
