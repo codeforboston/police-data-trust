@@ -1,6 +1,6 @@
 
 import ResponseTextArea from './response-textarea/response-textarea'
-import EnrollmentCTA from './enrollment-cta/enrollment-cta'
+import EnrollmentCallToAction from './enrollment-call-to-action/enrollment-call-to-action'
 import EnrollmentHeader from './enrollment-header/enrollment-header'
 import EnrollmentInput from './enrollment-input/enrollment-input'
 import FormLevelError from './error-form-level/error-form-level'
@@ -10,7 +10,7 @@ import USStateSelect from './state-select/state-select'
 
 export {
   ResponseTextArea,
-  EnrollmentCTA,
+  EnrollmentCallToAction,
   EnrollmentHeader,
   EnrollmentInput,
   FormLevelError,

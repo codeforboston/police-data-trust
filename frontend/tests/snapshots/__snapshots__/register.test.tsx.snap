@@ -241,13 +241,13 @@ exports[`renders Register correctly 1`] = `
     </button>
   </form>
   <div
-    className="ctaContainer"
+    className="callToActionContainer"
   >
     <p>
       Do you already have an account with us?
     </p>
     <a
-      className="ctaLink"
+      className="callToActionLink"
       href="/login"
       onClick={[Function]}
       onMouseEnter={[Function]}
