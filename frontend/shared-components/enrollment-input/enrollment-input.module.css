@@ -1,0 +1,27 @@
+.inputContainer {
+  margin: 0 var(--size20);
+  height: var(--size80);
+}
+
+.inputField {
+  height: var(--size40);
+  width: var(--size192);
+}
+
+.inputField.large {
+  width: var(--size424);
+}
+
+.inputField.small {
+  width: var(--size112);
+}
+
+.inputField[type="number"]::-webkit-outer-spin-button,
+.inputField[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputField[type="number"] {
+  -moz-appearance: textfield;
+}
