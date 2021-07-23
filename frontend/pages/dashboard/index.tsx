@@ -4,12 +4,8 @@ import styles  from '../../compositions/dashboardHeader/header.module.css';
 
 export default function Dashboard() {
 
-  const {
-    backgroundBanner,
-  } = styles;
 
-  return <div className="Dashboard">
-    <div className={backgroundBanner}></div>
+  return <div>
     <DashboardHeader />
   </div>
 }
