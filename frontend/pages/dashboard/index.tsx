@@ -1,7 +1,4 @@
-import dynamic from 'next/dynamic'
-
-
-const Map: any = dynamic(()=> import("../../compositions/map"), {ssr: false})
+import Map from '../../compositions/map';
 
 export default function Dashboard() {
   return (

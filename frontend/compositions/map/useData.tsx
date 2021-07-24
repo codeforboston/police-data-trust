@@ -1,27 +1,50 @@
-//@ts-nocheck
-import { useEffect, useState } from "react"
+import { Feature } from "geojson"
+import { Geometry } from "geojson"
+import { GeometryObject } from "geojson"
+import { GeoJsonProperties } from "geojson"
+import { FeatureCollection } from "geojson"
+import { useMemo, useState } from "react"
 import uscities from "./uscities.json"
 
-export default function useData() {
-  // temp dummy data set
-  const data = uscities
+export interface GeoJson {
+  type: string
+  features: Feature[]
+}
 
-  const [filterProperties, setFilterProperties] = useState({ property: "population", value: 10000 })
+export interface Filter {
+  property: string
+  value: number | string
+}
 
-  const [filteredData, setFilteredData] = useState(data)
+export interface Data {
+  features: Feature[]
+  filter: Filter
+  setFilterProperties: (filter: Filter) => void
+}
 
-  useEffect(() => {
+export default function useData(): Data {
+  // using temp dummy data set
+  const data: GeoJson = uscities as GeoJson
+
+  const [filterProperties, setFilterProperties] = useState<Filter>({
+    property: "state_name",
+    value: "",
+  })
+
+  return useMemo(() => {
     const { property, value } = filterProperties
 
-    setFilteredData({
-      ...data,
-      features: data.features.filter((d) => d.properties[property] > value),
-    })
-  }, [filterProperties])
+    const filteredFeatures =
+      value === ""
+        ? ([] as Feature[])
+        : value === "all"
+        ? data.features
+        : data.features.filter((d: Feature) => d.properties[property] === value)
 
-  return {
-    data: filteredData,
-    filter: filterProperties,
-    setFilterProperties: setFilterProperties,
-  }
+    return {
+      features: filteredFeatures,
+      filter: filterProperties,
+      setFilterProperties,
+    }
+  }, [filterProperties])
 }

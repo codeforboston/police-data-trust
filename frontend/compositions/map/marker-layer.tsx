@@ -1,76 +1,37 @@
-//@ts-nocheck
-import * as d3 from "d3"
-import { Polygon } from "geojson"
-import { useEffect, useState } from "react"
-
-type MarkerLayerProps = {
-  data: {},
-  projection: d3.GeoProjection,
+export type MarkerDescription = {
+  geoCenter: [number, number]
+  dataPoint: number
+  label: string
 }
 
-type Coord = [number, number]
-
-type CircleDescription = {
-  center: Coord
-  path: string
-  population: number,
-  city: string
+export type MarkerLayerProps = {
+  markersData: MarkerDescription[]
 }
 
 export function MarkerLayer(props: MarkerLayerProps) {
-  const [circles, setCircles] = useState<Polygon>([])
-  const path = d3.geoPath()
-  const circleGenerator = d3.geoCircle()
-  const { data, projection} = props
-
-  useEffect(() => {
-    if (!data) return
-
-    const populationScale = d3
-      .scaleLinear()
-      .domain(d3.extent(data.data.features, (d) => d.properties.population))
-      .range([1, 50])
-
-    
-    const dataCircs: CircleDescription[] = data.data.features.slice(0, 100).map((d) => {
-    
-      // population data, coordinates from dummy data set
-      const {
-        properties: { population, city },
-        geometry: { coordinates },
-      } = d
-
-      const circ = circleGenerator({
-        r: populationScale(population),
-        center: coordinates,
-      })
-
-      return {
-        center: projection(coordinates),
-        path: path(circ),
-        population: populationScale(population),
-        city: city
-      }
-    })
-
-    setCircles(dataCircs)
-  }, [data])
-
+  const { markersData } = props
   return (
-    <svg viewBox="0, 0, 1200, 700" className="marker-layer" height={"100%"} width={"100%"} >
-      {circles.map((c, i) => (
-        <circle
-          className="circle-marker"
-          cx={c.center[0]}
-          cy={c.center[1]}
-          r={c.population}
-          key={`${i}${c.population}`}
-          fill="#2572"
-          stroke="green"
-          strokeWidth="3"
-          onClick={() => console.log(c.city)}
-        />
-      ))}
+    <svg viewBox="0, 0, 1200, 700" className="marker-layer" height={"100%"} width={"100%"}>
+      {markersData && markersData.map((c, i) => {
+        return <CircleMarker markerDescription={c} key={`${i}${c.dataPoint}`} />
+      })}
     </svg>
+  )
+}
+
+export type CircleMarkerProps = {
+  markerDescription: MarkerDescription
+}
+
+export function CircleMarker(props: CircleMarkerProps) {
+  const { markerDescription: c } = props
+  return (
+    <circle
+      className="circle-marker"
+      cx={c.geoCenter[0]}
+      cy={c.geoCenter[1]}
+      r={c.dataPoint}
+      onClick={() => console.log(c.label)}
+    />
   )
 }

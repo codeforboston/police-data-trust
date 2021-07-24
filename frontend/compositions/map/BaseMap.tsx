@@ -1,7 +1,8 @@
-//@ts-nocheck
 import * as d3 from "d3"
-import React, { useEffect, useRef, useState } from "react"
+import { FeatureCollection } from "geojson"
+import React, { useEffect, useRef } from "react"
 import * as topojson from "topojson"
+import { Topology } from "topojson-specification"
 
 type BaseMapProps = {
   projection: d3.GeoProjection
@@ -9,7 +10,7 @@ type BaseMapProps = {
 
 export default function BaseMap(props: BaseMapProps) {
   const ref = useRef(null)
-  const { projection } = props
+  const { projection} = props
 
   // gets geojson data holding borders for us, states, and counties with names
   const link: string = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
@@ -20,26 +21,21 @@ export default function BaseMap(props: BaseMapProps) {
 
   const opacityScale = d3.scaleLinear().domain([0, 50]).range([0, 1])
 
-  function stateclick(d, e){
-    console.log(d, e)
-    
-  }
-
   useEffect(() => {
     dataPromise
       .then((res) => res.json())
-      .then((data) => {
-        const svg = d3.select(ref.current)
-
+      .then((data: Topology) => {
+        const svg = d3.select(ref.current).classed("map-geo-shape state", true)
+        const statesTopo = topojson.feature(data, data.objects.states) as FeatureCollection
         svg
           .selectAll("path")
-          .data(topojson.feature(data, data.objects.states).features)
+          .data(statesTopo.features)
           .enter()
           .append("path")
-          .classed("map-geo-shape state", true)
+          .attr("id", (d) => d.properties.name)
+          .classed("state", true)
           .attr("d", path)
-          .attr("fill-opacity", (d) => opacityScale(d.id))
-          .on("click", (d) => stateclick(d))
+          .attr("fill-opacity", (d) => opacityScale(Number(d.id)))
       })
   }, [dataPromise])
 
