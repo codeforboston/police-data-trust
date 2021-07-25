@@ -1,9 +1,10 @@
-import Map from '../../compositions/map';
+import DashboardHeader from "../../compositions/dashboardHeader/index"
+import Map from "../../compositions/map"
 
 export default function Dashboard() {
   return (
-    <div className="Dashboard">
-      I AM DASHBORD!!!!!!
+    <div>
+      <DashboardHeader />
       <Map />
     </div>
   )

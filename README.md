@@ -25,3 +25,26 @@ POSTGRES_HOST=db
 # Documentation
 
 [Docs](https://codeforboston.github.io/police-data-trust)
+
+# Code Standards
+
+Typescript Syntax
+Interfaces vs. Types — interfaces extend union types, types have some broader applicability/power
+
+Ordering of components — 
+- Class definitions
+- Component / imports
+- Event handlers inside class
+
+HTML Props/attributes order: 
+- id, class, attributes 
+- Like properties alphabetized (?)
+
+Typing: “As little as possible, as much as necessary” 
+- Function return values
+- Parameters if they will be incorrectly assumed by the compiler
+
+Directory structure: 
+- Pages: routable containers
+- Shared: components being used/planned to be used in multiple places
+- Compositions: components that have a single/limited specific context
