@@ -1,0 +1,16 @@
+.dTable {
+  width: 100vw;
+}
+
+.dHeader {
+  background-color: var(--lightBlue);
+}
+
+.dFooter {
+  background-color: var(--lightBlue);
+  display: flex;
+  max-width: 100vw;
+}
+
+.dPagContainer {
+}

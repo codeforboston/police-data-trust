@@ -2,6 +2,8 @@ import * as React from "react"
 
 import { useTable } from "react-table"
 
+import styles from './data-table.module.css';
+
 type IncidentData = {
   dates: string
   incidentType: string
@@ -10,8 +12,10 @@ type IncidentData = {
   source: string
 }
 
-export function DataTable() {
+export function DataTable({ count = 220375}) {
   // Defines table rows
+  const { dTable, dHeader, dFooter, dPagContainer } = styles;
+  const [rowsShown, setRowsShown] = React.useState(7);
   const data = React.useMemo(
     () => [
       {
@@ -97,8 +101,8 @@ export function DataTable() {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
   return (
-    <table {...getTableProps()}>
-      <thead>
+    <table {...getTableProps()} className={dTable}>
+      <thead className={dHeader}>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
@@ -119,6 +123,12 @@ export function DataTable() {
           )
         })}
       </tbody>
+      <tfoot className={dFooter}>
+        <span>{count} records found</span>
+        <div className={dPagContainer}>
+          <p>Show <span>{rowsShown}</span> rows</p>
+        </div>
+      </tfoot>
     </table>
   )
 }

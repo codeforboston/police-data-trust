@@ -38,3 +38,11 @@ a:visited {
   color: var(--linkBlue);
   text-decoration: underline;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+tr:nth-child(odd) {
+  background-color: rgba(124, 174, 215, 0.5);
+}
