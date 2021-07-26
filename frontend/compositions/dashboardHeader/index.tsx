@@ -1,8 +1,8 @@
 import * as React from "react"
-import NPDCLogo from '../../shared-components/logo'
-import HamburgerMenu from './assets/Vector.svg'
-import DesktopNav from './desktopNav'
-import styles from './dashboardHeader.module.css'
+import { Logo as NPDCLogo } from "../index"
+import HamburgerMenu from "./assets/Vector.svg"
+import DesktopNav from "./desktopNav"
+import styles from "./dashboardHeader.module.css"
 
 export default function DashboardHeader() {
   const {
@@ -17,7 +17,7 @@ export default function DashboardHeader() {
     nav,
     mobileNav,
     desktopNav,
-  } = styles;
+  } = styles
 
   return (
     <header className={wrapper}>
