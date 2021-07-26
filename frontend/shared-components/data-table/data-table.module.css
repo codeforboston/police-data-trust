@@ -4,9 +4,11 @@
 
 .dHeader {
   background-color: var(--lightBlue);
+  border-top: 3px solid black;
 }
 
 .dFooter {
+  border-bottom: 3px solid black;
   background-color: var(--lightBlue);
   display: flex;
   max-width: 100vw;

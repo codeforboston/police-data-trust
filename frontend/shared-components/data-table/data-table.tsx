@@ -1,8 +1,11 @@
 import * as React from "react"
 
 import { useTable } from "react-table"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGreaterThan, faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 
-import styles from './data-table.module.css';
+import styles from "./data-table.module.css"
+import { callbackify } from "util"
 
 type IncidentData = {
   dates: string
@@ -12,10 +15,13 @@ type IncidentData = {
   source: string
 }
 
-export function DataTable({ count = 220375}) {
+export function DataTable({ count = 220375 }) {
   // Defines table rows
-  const { dTable, dHeader, dFooter, dPagContainer } = styles;
-  const [rowsShown, setRowsShown] = React.useState(7);
+  const { dTable, dHeader, dFooter, dPagContainer } = styles
+  const [rowsShown, setRowsShown] = React.useState(7)
+
+  // TODO: When this gets changed from mocking to fetching the data from an api call, append
+  // the
   const data = React.useMemo(
     () => [
       {
@@ -24,6 +30,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -31,6 +39,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -38,6 +48,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -45,6 +57,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -52,6 +66,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -59,6 +75,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
       {
         dates: "2003/01/01",
@@ -66,6 +84,8 @@ export function DataTable({ count = 220375}) {
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
       },
     ],
     []
@@ -93,6 +113,14 @@ export function DataTable({ count = 220375}) {
         Header: "Source",
         accessor: "source" as const,
       },
+      {
+        Header: "Full Record",
+        accessor: "full" as const,
+      },
+      {
+        Header: "Save Record",
+        accessor: "save" as const,
+      },
     ],
     []
   )
@@ -117,6 +145,14 @@ export function DataTable({ count = 220375}) {
           return (
             <tr {...row.getRowProps()}>
               {row.cells.map((cell) => {
+                console.log(cell)
+                if (cell.column.id === "full" || cell.column.id === "save") {
+                  return (
+                    <td>
+                      <FontAwesomeIcon icon={cell.value} />
+                    </td>
+                  )
+                }
                 return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
               })}
             </tr>
@@ -126,7 +162,9 @@ export function DataTable({ count = 220375}) {
       <tfoot className={dFooter}>
         <span>{count} records found</span>
         <div className={dPagContainer}>
-          <p>Show <span>{rowsShown}</span> rows</p>
+          <p>
+            Show <span>{rowsShown}</span> rows
+          </p>
         </div>
       </tfoot>
     </table>
