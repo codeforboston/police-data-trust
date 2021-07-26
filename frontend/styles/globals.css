@@ -46,6 +46,7 @@ table {
 td,
 thead,
 tfoot {
+  font-family: Inter;
   height: 36px;
   text-align: center;
 }
