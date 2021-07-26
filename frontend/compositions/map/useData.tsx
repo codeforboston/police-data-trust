@@ -1,8 +1,4 @@
 import { Feature } from "geojson"
-import { Geometry } from "geojson"
-import { GeometryObject } from "geojson"
-import { GeoJsonProperties } from "geojson"
-import { FeatureCollection } from "geojson"
 import { useMemo, useState } from "react"
 import uscities from "./uscities.json"
 

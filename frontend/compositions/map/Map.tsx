@@ -1,5 +1,4 @@
 import * as d3 from "d3"
-import { geoPath } from "d3-geo"
 import { Feature, Point } from "geojson"
 import { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
@@ -46,7 +45,7 @@ export default function Map() {
     .geoAlbersUsa()
     .scale(1300)
     .translate([487.5 + 112, 305 + 50])
-  const path = geoPath(projection)
+  const path = d3.geoPath(projection)
 
   // set marker
   useEffect(() => {
