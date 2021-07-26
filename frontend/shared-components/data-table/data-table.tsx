@@ -20,7 +20,7 @@ export function DataTable({ count = 220375 }) {
   const [rowsShown, setRowsShown] = React.useState(7)
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, append
-  // the
+  // the full and save values dynamically
   const data = React.useMemo(
     () => [
       {
