@@ -2,7 +2,7 @@ import React from "react"
 import styles from "./layout.module.css"
 
 type Props = {
-  children?: JSX.Element | JSX.Element[]
+  children?: React.ReactNode
 }
 export default function Layout({ children }: Props) {
   const { Layout } = styles
