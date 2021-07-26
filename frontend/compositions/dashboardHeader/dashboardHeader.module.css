@@ -72,6 +72,7 @@
   margin-top: var(--size8);
   margin-right: var(--size14);
   font-weight: 700;
+  font-size: var(--size14);
 }
 
 .desktopNav {
@@ -95,8 +96,8 @@
   }
 
   .logoContainer {
-    max-width: 75px;
-    max-height: 75px;
+    max-width: var(--size72);
+    max-height: var(--size72);
   }
 
   .titleContainer {
