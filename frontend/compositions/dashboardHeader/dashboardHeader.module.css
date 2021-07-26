@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   position: absolute;
-  background-image: url("./assets/BannerMobile.svg");
+  background-image: url("../../public/BannerMobile.svg");
   background-repeat: no-repeat;
   background-size: cover;
   height: var(--size80);
@@ -78,14 +78,14 @@
   display: none;
 }
 
-@media screen and (min-width: 68.75rem) {
+@media screen and (min-width: 32em) {
   .wrapper {
     height: var(--size128);
   }
 
   .backgroundBanner {
-    background-image: url(./assets/Banner.svg);
-    background-size: 100%;
+    background-image: url("../../public/Banner.svg");
+    background-size: cover;
     filter: none;
   }
 
