@@ -1,7 +1,10 @@
-import DashboardHeader from '../../compositions/dashboardHeader/index';
+import DashboardHeader from "../../compositions/dashboardHeader/index"
+import Layout from "../../shared-components/layout/layout"
 
 export default function Dashboard() {
-  return <div>
-    <DashboardHeader />
-  </div>
+  return (
+    <Layout>
+      <DashboardHeader />
+    </Layout>
+  )
 }
