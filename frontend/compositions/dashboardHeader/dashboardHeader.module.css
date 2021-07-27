@@ -7,7 +7,7 @@
 .backgroundBanner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  width: 100%;
+  min-width: 100%;
   position: absolute;
   background-image: url("../../public/BannerMobile.svg");
   background-repeat: no-repeat;
