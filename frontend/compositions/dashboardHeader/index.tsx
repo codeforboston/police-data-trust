@@ -9,24 +9,16 @@ export default function DashboardHeader() {
     wrapper,
     backgroundBanner,
     leftHeader,
-    logoContainer,
     titleContainer,
     mobileTitle,
     desktopTitle,
-    rightHeader,
-    nav,
-    buttonContainer,
-    mobileNav,
-    desktopNav,
   } = styles
 
   return (
     <header className={wrapper}>
       <div className={backgroundBanner}>
         <div className={leftHeader}>
-          <div className={logoContainer}>
-            <NPDCLogo />
-          </div>
+          <NPDCLogo />
           <div className={titleContainer}>
             <h2 className={mobileTitle}>N.P.D.C.</h2>
             <h2 className={desktopTitle}>National Police Data Coalition</h2>
@@ -34,21 +26,15 @@ export default function DashboardHeader() {
           </div>
         </div>
 
-        <div className={rightHeader}>
-          <nav className={nav}>
-            <div className={mobileNav}>
-              <HamburgerMenu />
-            </div>
-            <div className={desktopNav}>
-              <DesktopNav />
-            </div>
-          </nav>
-          <div className={buttonContainer}>
-            <button className="primaryButton" type="button">
-              DONATE
-            </button>
-          </div>
-        </div>
+        <nav>
+          <HamburgerMenu />
+          <DesktopNav />
+          <button
+            className="primaryButton"
+            type="button">
+             DONATE
+          </button>
+        </nav>
       </div>
     </header>
   )

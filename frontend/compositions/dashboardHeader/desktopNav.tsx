@@ -16,9 +16,9 @@ export default function DesktopNav() {
 
   return (
     <ul className={styles.rightHeader} onClick={handleNavChange}>
-      <li tabIndex={0} className={setClassName('Search')} ><a href='#'>Search</a></li>
-      <li tabIndex={0} className={setClassName('Profile')} ><a href='#'>Profile</a></li>
-      <li tabIndex={0} className={setClassName('About')}><a href='#'>About</a></li>
+      <li className={setClassName('Search')} ><a href='#'>Search</a></li>
+      <li className={setClassName('Profile')} ><a href='#'>Profile</a></li>
+      <li className={setClassName('About')}><a href='#'>About</a></li>
     </ul>
   )
 }

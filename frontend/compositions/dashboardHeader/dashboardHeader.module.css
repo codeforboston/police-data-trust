@@ -23,7 +23,7 @@
   justify-content: flex-start;
 }
 
-.logoContainer {
+.leftHeader svg {
   width: var(--size72);
   height: var(--size72);
 }
@@ -58,25 +58,25 @@
   letter-spacing: -0.02rem;
 }
 
-.rightHeader {
+.backgroundBanner nav {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-.nav {
+.backgroundBanner nav svg {
   margin: var(--size24) var(--size24) var(--size32);
 }
 
-.buttonContainer button {
-  margin-top: var(--size8);
-  margin-right: var(--size14);
-  font-weight: 700;
-  font-size: var(--size14);
+.backgroundBanner nav ul {
+  display: none;
 }
 
-.desktopNav {
-  display: none;
+.backgroundBanner nav button {
+  margin-top: var(--size8);
+  margin-right: var(--size10);
+  font-weight: 700;
+  font-size: var(--size18);
 }
 
 @media screen and (min-width: 32em) {
@@ -95,9 +95,9 @@
     margin-top: var(--size32);
   }
 
-  .logoContainer {
-    max-width: var(--size72);
-    max-height: var(--size72);
+  .leftHeader svg {
+    width: var(--size96);
+    height: var(--size96);
   }
 
   .titleContainer {
@@ -122,25 +122,22 @@
     margin-top: var(--size6);
   }
 
-  .rightHeader {
+  .backgroundBanner nav {
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-start;
   }
 
-  .nav {
-    margin-top: var(--size40);
-  }
-
-  .mobileNav {
+  .backgroundBanner nav svg {
     display: none;
   }
 
-  .desktopNav {
+  .backgroundBanner nav ul {
     display: flex;
+    margin-top: var(--size56);
   }
 
-  .nav li {
+  .backgroundBanner nav ul li {
     font-style: normal;
     font-weight: 500;
     font-size: var(--size14);
@@ -152,7 +149,7 @@
     list-style: none;
   }
 
-  .nav a {
+  .backgroundBanner nav ul a {
     text-decoration: none;
     color: var(--darkBlue);
   }
@@ -165,13 +162,10 @@
     box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
-  .buttonContainer button {
+  .backgroundBanner nav button {
     margin: var(--size20) var(--size16) var(--size20) var(--size20);
     width: var(--size96);
     height: var(--size32);
-  }
-
-  .rightHeader p {
     font-size: var(--size16);
     line-height: var(--size20);
   }
