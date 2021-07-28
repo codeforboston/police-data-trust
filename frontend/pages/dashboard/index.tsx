@@ -1,9 +1,6 @@
-import DashboardHeader from "../../compositions/dashboardHeader/index"
+import { DashboardHeader } from "../../compositions"
 import Map from "../../compositions/map"
-import styles from "../../compositions/dashboardHeader/header.module.css"
-import Layout from "../../shared-components/layout/Layout"
-
-
+import Layout from "../../shared-components/layout/layout"
 export default function Dashboard() {
   return (
     <Layout>
