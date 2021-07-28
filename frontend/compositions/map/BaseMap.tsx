@@ -3,6 +3,7 @@ import { FeatureCollection } from "geojson"
 import React, { useEffect, useRef } from "react"
 import * as topojson from "topojson"
 import { Topology } from "topojson-specification"
+import styles from "./map.module.css"
 
 type BaseMapProps = {
   projection: d3.GeoProjection
@@ -10,13 +11,11 @@ type BaseMapProps = {
 
 export default function BaseMap(props: BaseMapProps) {
   const ref = useRef(null)
-  const { projection} = props
+  const { projection } = props
 
-  // gets geojson data holding borders for us, states, and counties with names
   const link: string = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
   const dataPromise = fetch(link)
 
-  // path is how you apply the projection to other data
   const path = d3.geoPath().projection(projection)
 
   const opacityScale = d3.scaleLinear().domain([0, 50]).range([0, 1])
@@ -25,7 +24,11 @@ export default function BaseMap(props: BaseMapProps) {
     dataPromise
       .then((res) => res.json())
       .then((data: Topology) => {
-        const svg = d3.select(ref.current).classed("map-geo-shape state", true)
+        const svg = d3
+          .select(ref.current)
+          // .classed("map-geo-shape state", true)
+          .classed(styles.mapGeoShape, true)
+          .classed(styles.state, true)
         const statesTopo = topojson.feature(data, data.objects.states) as FeatureCollection
         svg
           .selectAll("path")

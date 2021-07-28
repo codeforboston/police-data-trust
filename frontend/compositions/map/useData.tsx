@@ -40,7 +40,7 @@ export default function useData(): Data {
     return {
       features: filteredFeatures,
       filter: filterProperties,
-      setFilterProperties,
+      setFilterProperties
     }
   }, [filterProperties])
 }
