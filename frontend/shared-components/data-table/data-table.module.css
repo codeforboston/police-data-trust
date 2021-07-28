@@ -1,5 +1,6 @@
 .dataTable {
   border-collapse: collapse;
+  margin-top: var(--size36);
   width: 100vw;
 }
 
