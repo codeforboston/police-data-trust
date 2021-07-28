@@ -1,3 +1,8 @@
+.extraSmall {
+  height: var(--size72);
+  width: var(--size72);
+}
+
 .small {
   height: var(--size112);
   width: var(--size112);

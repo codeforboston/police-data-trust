@@ -1,5 +1,5 @@
-import DashboardHeader from "../../compositions/dashboardHeader/index"
-import Layout from "../../shared-components/layout/layout"
+import { DashboardHeader } from "../../compositions"
+import { Layout } from "../../shared-components"
 
 export default function Dashboard() {
   return (

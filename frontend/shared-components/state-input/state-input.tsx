@@ -1,5 +1,5 @@
-import React, { FormEvent, useEffect, useState } from "react"
-import styles from "./state-select.module.css"
+import React, { ChangeEvent, useEffect, useState } from "react"
+import styles from "./state-input.module.css"
 import { FormLevelError } from '../index'
 import { capitalizeFirstChar } from '../../helpers/syntax-helper'
 import { states } from '../../models'
@@ -8,20 +8,20 @@ interface USAStateInputProps {
   isSubmitted: boolean
 }
 export default function USAStateInput({ isSubmitted }: USAStateInputProps) {
-  const {stateSelect, hasError} = styles
+  const { stateSelect, hasError } = styles
   const [inputId, listId, errorId] = ['stateSelectInput', 'stateSelectList', 'stateSelectError']
 
   const [inputValue, setInputValue] = useState('')
-  const [isValid, setIsValid] = useState(!isSubmitted)
+  const [isValid, setIsValid] = useState(checkIsValid(''))
 
   function checkIsValid(value: string): boolean {
-    const matchingState = states.filter(({initials, name}) => {
+    const matchingState = !!states.find(({ initials, name }) => {
       return value.toUpperCase() === initials || capitalizeFirstChar(value) === name
     })
-    return !!matchingState.length
+    return !isSubmitted || !!matchingState
   }
 
-  function handleInputChange({ target: { value } }: FormEvent<HTMLInputElement>): void {
+  function handleInputChange({ target: { value }}: ChangeEvent<HTMLInputElement>): void {
     if (isSubmitted) setIsValid(checkIsValid(value))
     setInputValue(value)
   }

@@ -1,18 +1,12 @@
 import React, { FormEvent, useState } from "react"
 import styles from "./passport.module.css"
-import {
-  ResponseTextArea,
-  EnrollmentCallToAction,
-  EnrollmentHeader,
-  EnrollmentInput,
-  USAStateInput
-} from "../../shared-components"
-import { CallToActionTypes, EnrollmentInputNames } from "../../models"
-import Layout from "../../shared-components/layout/layout"
+import { EnrollmentCallToAction, EnrollmentHeader } from '../../compositions'
+import { CallToActionTypes, PrimaryInputNames } from "../../models"
+import { Layout, PrimaryInput, ResponseTextArea, USAStateInput } from "../../shared-components"
 
 export default function Passport({ name = ["Herbert Placeholder"] }) {
   const { passportForm, passportIntro } = styles
-  const { CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = EnrollmentInputNames
+  const { CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = PrimaryInputNames
 
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -33,10 +27,10 @@ export default function Passport({ name = ["Herbert Placeholder"] }) {
         </p>
         <form className={passportForm}>
           <fieldset>
-            <EnrollmentInput inputName={STREET_ADDRESS} size="large" isSubmitted={isSubmitted}/>
-            <EnrollmentInput inputName={CITY_TOWN} isSubmitted={isSubmitted}/>
+            <PrimaryInput inputName={STREET_ADDRESS} size="large" isSubmitted={isSubmitted}/>
+            <PrimaryInput inputName={CITY_TOWN} isSubmitted={isSubmitted}/>
             <USAStateInput isSubmitted={isSubmitted} />
-            <EnrollmentInput inputName={ZIP_CODE} size="small" isSubmitted={isSubmitted}/>
+            <PrimaryInput inputName={ZIP_CODE} size="small" isSubmitted={isSubmitted}/>
           </fieldset>
           <ResponseTextArea isSubmitted={isSubmitted} />
           <button className="primaryButton" type="submit" onClick={handleSubmit}>

@@ -1,6 +1,6 @@
 import styles from './response-textarea.module.css'
 import { FormLevelError } from '../index'
-import { FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 interface ResponseTextAreaProps { isSubmitted: boolean}
 
@@ -11,15 +11,19 @@ export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps)
   const errorMessage: string = `Please provide a response of at least ${charMin} characters`
   
   const [charCount, setCharCount] = useState(0)
-  const [isValid, setIsValid] = useState(!isSubmitted)
-  
-  function handleTextareaChange({ target: { value }}: FormEvent<HTMLTextAreaElement>): void {
-    if (isSubmitted) setIsValid(value.length >= charMin)
-    setCharCount(value.length)
+  const [isValid, setIsValid] = useState(checkIsValid())
+
+  function checkIsValid(newCharCount?: number): boolean {
+    const currCharCount = newCharCount || charCount
+    return !isSubmitted || currCharCount >= charMin
   }
   
+  function handleTextareaChange({ target: { value }}: ChangeEvent<HTMLTextAreaElement>): void {
+    setIsValid(checkIsValid(value.length))
+    setCharCount(value.length)
+  }
 
-  useEffect(() => { if (isSubmitted) setIsValid(charCount >= charMin) }, [isSubmitted])
+  useEffect(() => { setIsValid(checkIsValid()) }, [isSubmitted])
 
   return (
     <div className={`defaultInputContainer ${!isValid && 'hasError'}`}>

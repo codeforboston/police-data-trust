@@ -1,10 +1,10 @@
 import React, { FormEvent, useState } from "react"
-import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput } from "../../shared-components"
-import { CallToActionTypes, EnrollmentInputNames } from "../../models"
-import Layout from "../../shared-components/layout/layout"
+import { EnrollmentCallToAction, EnrollmentHeader } from '../../compositions'
+import { CallToActionTypes, PrimaryInputNames } from "../../models"
+import { Layout, PrimaryInput } from "../../shared-components"
 
 export default function UserLogin() {
-  const { EMAIL_ADDRESS, LOGIN_PASSWORD } = EnrollmentInputNames
+  const { EMAIL_ADDRESS, LOGIN_PASSWORD } = PrimaryInputNames
 
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -18,8 +18,8 @@ export default function UserLogin() {
       <section className="enrollmentSection">
         <EnrollmentHeader headerText="Login" />
         <form>
-          <EnrollmentInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
-          <EnrollmentInput inputName={LOGIN_PASSWORD} isSubmitted={isSubmitted} />
+          <PrimaryInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
+          <PrimaryInput inputName={LOGIN_PASSWORD} isSubmitted={isSubmitted} />
           <button className="primaryButton" type="submit" onClick={handleSubmit}>
             Submit
           </button>

@@ -1,14 +1,12 @@
 import React, { FormEvent, useState } from "react"
 import styles from "./viewer-registration.module.css"
 
-import { EnrollmentCallToAction, EnrollmentHeader, EnrollmentInput, PasswordAid } from '../../shared-components'
-import { CallToActionTypes, EnrollmentInputNames, TooltipTypes } from '../../models'
-import Layout from "../../shared-components/layout/layout"
+import { EnrollmentCallToAction, EnrollmentHeader, PasswordAid } from '../../compositions'
+import { CallToActionTypes, PrimaryInputNames, TooltipTypes } from '../../models'
+import { Layout, PrimaryInput } from "../../shared-components"
 
 export default function ViewerRegistration() {  
-  const { 
-    FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD 
-  } = EnrollmentInputNames
+  const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } = PrimaryInputNames
   const { inputLine } = styles
   const passwordAidId: string = 'passwordAid'
   
@@ -31,20 +29,20 @@ export default function ViewerRegistration() {
         <EnrollmentHeader headerText="Register: Viewer Account" tooltip={TooltipTypes.VIEWER} />
         <form>
           <fieldset className={inputLine}>
-            <EnrollmentInput inputName={FIRST_NAME} isSubmitted={isSubmitted} />
-            <EnrollmentInput inputName={LAST_NAME} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={FIRST_NAME} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={LAST_NAME} isSubmitted={isSubmitted} />
           </fieldset>
           <fieldset className={inputLine}>
-            <EnrollmentInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
-            <EnrollmentInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted} />
           </fieldset>
           <fieldset className={inputLine} aria-describedby={passwordAidId}>
-            <EnrollmentInput
+            <PrimaryInput
               inputName={CREATE_PASSWORD}
               isSubmitted={isSubmitted}
               isShown={isPasswordShown}
             />
-            <EnrollmentInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted} />
           </fieldset>
           <PasswordAid id={passwordAidId} onDisplayChange={handlePasswordDisplay} />
           <button className="primaryButton" type="submit" onClick={handleSubmit}>

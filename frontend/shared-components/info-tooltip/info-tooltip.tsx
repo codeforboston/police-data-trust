@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 import React from 'react' 
 import styles from './info-tooltip.module.css'
 import { getTitleCaseFromCamel } from '../../helpers/syntax-helper'
 import { tooltipContent, TooltipTypes } from '../../models'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 interface InfoTooltipProps { type: TooltipTypes }
 export default function InfoTooltip({ type }: InfoTooltipProps) {
