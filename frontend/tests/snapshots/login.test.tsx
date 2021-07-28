@@ -1,8 +1,8 @@
 import * as React from "react"
-import UserLogin from "../../pages/login"
+import Login from "../../pages/login"
 import renderer from "react-test-renderer"
 
 it("renders Login correctly", () => {
-  const tree = renderer.create(<UserLogin />).toJSON()
+  const tree = renderer.create(<Login />).toJSON()
   expect(tree).toMatchSnapshot()
 })
