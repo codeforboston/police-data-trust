@@ -1,24 +1,24 @@
-import React, { FormEvent, useState } from "react"
-import styles from "./enrollment-input.module.css"
-import { FormLevelError } from "../../shared-components/index"
+import React, { ChangeEvent, useEffect, useState } from "react"
+import styles from "./primary-input.module.css"
+import { FormLevelError } from ".."
 import { getTitleCaseFromCamel } from "../../helpers/syntax-helper"
-import { EnrollmentInputNames, enrollmentValidation } from "../../models"
+import { PrimaryInputNames, primaryInputValidation } from "../../models"
 
-interface EnrollmentInputProps {
-  inputName: EnrollmentInputNames
+interface PrimaryInputProps {
+  inputName: PrimaryInputNames
   isSubmitted: boolean
   isShown?: boolean
   size?: string
 }
 
-export default function EnrollmentInput({
+export default function PrimaryInput({
   inputName,
   isSubmitted,
   isShown,
   size,
-}: EnrollmentInputProps) {
+}: PrimaryInputProps) {
   const { inputContainer, inputField } = styles
-  const { errorMessage, pattern, inputType } = enrollmentValidation[inputName]
+  const { errorMessage, pattern, inputType } = primaryInputValidation[inputName]
 
   const [inputId, errorId] = [`${inputName}Input`, `${inputName}Error`]
   const labelText: string = `${getTitleCaseFromCamel(inputName)}:`
@@ -28,17 +28,19 @@ export default function EnrollmentInput({
     return displayType === "number" ? value : null
   }
   const checkIsValid = (value: string): boolean => {
-    return !isSubmitted || pattern.test(value)
+    return !isSubmitted || (value && pattern.test(value))
   }
 
   const [inputValue, setInputValue] = useState("")
   const [isValid, setIsValid] = useState(checkIsValid(""))
 
-  function handleChange({ target: { value } }: FormEvent<HTMLInputElement>): void {
+  function handleInputChange({ target: { value } }: ChangeEvent<HTMLInputElement>): void {
     value = value.toString()
     setInputValue(value)
     setIsValid(checkIsValid(value))
   }
+
+  useEffect(() => { if (isSubmitted) setIsValid(checkIsValid(inputValue)) }, [isSubmitted])
 
   return (
     <div className={`defaultInputContainer ${inputContainer} ${!isValid && "hasError"}`}>
@@ -53,7 +55,7 @@ export default function EnrollmentInput({
         value={inputValue}
         aria-required="true"
         aria-describedby={errorId}
-        onChange={handleChange}
+        onChange={handleInputChange}
       />
       {!isValid && <FormLevelError errorId={errorId} errorMessage={errorMessage} />}
     </div>

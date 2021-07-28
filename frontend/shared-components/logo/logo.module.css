@@ -1,0 +1,19 @@
+.extraSmall {
+  height: var(--size72);
+  width: var(--size72);
+}
+
+.small {
+  height: var(--size112);
+  width: var(--size112);
+}
+
+.medium {
+  height: var(--size128);
+  width: var(--size128);
+}
+
+.large {
+  height: var(--size256);
+  width: var(--size256);
+}
