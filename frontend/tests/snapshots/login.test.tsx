@@ -1,5 +1,4 @@
 import * as React from "react"
-//import Login from "../../pages/login/user-login"
 import Login from "../../pages/login"
 import renderer from "react-test-renderer"
 
