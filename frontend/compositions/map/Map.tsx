@@ -15,8 +15,8 @@ export type DispatchType = d3.Dispatch<d3.ZoomTransform>
 
 export default function Map() {
   const data = useData()
-  const ref = useRef<HTMLDivElement>()
-  const { width, height } = useResizeObserver({ ref })
+  const mapRef = useRef<HTMLDivElement>()
+  const { width, height } = useResizeObserver({ ref: mapRef })
 
   const zoomRef = useRef<SVGSVGElement>()
 
@@ -93,7 +93,7 @@ export default function Map() {
     <div
       id="map-container"
       className={styles.mapContainer}
-      ref={ref}
+      ref={mapRef}
       style={{ height: "80vh", width: "100vw" }}>
       <div
         className={styles.gridSettings}
