@@ -1,8 +1,9 @@
 import * as React from "react"
-import { Logo as NPDCLogo } from "../index"
-import HamburgerMenu from "./assets/Vector.svg"
-import DesktopNav from "./desktopNav"
-import styles from "./dashboardHeader.module.css"
+import { Logo as NPDCLogo } from '../../shared-components'
+import DesktopNav from "./desktop-nav"
+import styles from "./dashboard-header.module.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 export default function DashboardHeader() {
   const {
@@ -16,7 +17,7 @@ export default function DashboardHeader() {
     rightHeader,
     nav,
     mobileNav,
-    desktopNav,
+    desktopNav
   } = styles
 
   return (
@@ -36,7 +37,7 @@ export default function DashboardHeader() {
         <div className={rightHeader}>
           <nav className={nav}>
             <div className={mobileNav}>
-              <HamburgerMenu />
+              <FontAwesomeIcon icon={faBars}/>
             </div>
             <div className={desktopNav}>
               <DesktopNav />

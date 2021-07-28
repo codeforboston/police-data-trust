@@ -3,8 +3,8 @@ interface Tooltips {
 }
 
 export enum TooltipTypes {
-  VIEWER = "viewer",
-  INCIDENTS = "incidents"
+  VIEWER = "viewerAccounts",
+  INCIDENTS = "policeIncidents"
 }
 
 export const tooltipContent: { [key in TooltipTypes]: Tooltips } = {

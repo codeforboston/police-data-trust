@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   position: absolute;
-  background-image: url("./assets/BannerMobile.svg");
+  background-image: url("/BannerMobile.svg");
   background-repeat: no-repeat;
   background-size: cover;
   height: var(--size80);
@@ -83,7 +83,6 @@
   cursor: pointer;
 
   color: #ffffff;
-  font-family: PT Sans;
   font-style: normal;
   font-weight: bold;
   font-size: var(--size14);
@@ -98,7 +97,7 @@
   }
 
   .backgroundBanner {
-    background-image: url(./assets/Banner.svg);
+    background-image: url("/Banner.svg");
     background-size: 100%;
     filter: none;
   }
