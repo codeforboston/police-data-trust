@@ -7,18 +7,10 @@ import { faGreaterThan, faPlusCircle, IconDefinition } from "@fortawesome/free-s
 import styles from "./data-table.module.css"
 
 export function DataTable({ count = 220375 }) {
+  const icons = ["full", "save"];
   const { useMemo, useState } = React;
   const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows, dataRow } = styles
   const [rowsShown, setRowsShown] = useState(7)
-
-  // TODO: Move to models
-  interface IncidentData {
-    dates: string
-    incidentType: string
-    officersInvolved: string[]
-    subject: IconDefinition
-    source: IconDefinition
-  }
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
   // 'save' values will be appended to each item dynamically
@@ -211,7 +203,7 @@ export function DataTable({ count = 220375 }) {
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
                   const { id } = cell.column
-                  if (id === "full" || id === "save") {
+                  if (icons.includes(id)) {
                     return (
                       <td>
                         <FontAwesomeIcon icon={cell.value} />

@@ -1,13 +1,15 @@
 import * as React from 'react';
 
 import { DataTable } from "../../shared-components/data-table/data-table"
-import styles from './dashboard.module.css'
+import DashboardHeader from "../../compositions/dashboardHeader/index"
+import Layout from '../../shared-components/layout/Layout';
 
 export default function Dashboard() {
   return (
-    <div>
-      <div className="Dashboard">I AM DASHBORD!!!!!!</div>
+    <Layout>
+      <DashboardHeader />
       <DataTable />
-    </div>
+
+    </Layout>
   )
-}
+    
