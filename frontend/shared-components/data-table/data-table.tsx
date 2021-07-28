@@ -2,30 +2,67 @@ import * as React from "react"
 
 import { useTable } from "react-table"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGreaterThan, faPlusCircle } from "@fortawesome/free-solid-svg-icons"
+import { faGreaterThan, faPlusCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons"
 
 import styles from "./data-table.module.css"
 
-type IncidentData = {
-  dates: string
-  incidentType: string
-  officersInvolved: string[]
-  subject: string
-  source: string
-}
-
 export function DataTable({ count = 220375 }) {
-  // Defines table rows
-  const { dTable, dHeader, dFooter, dPagContainer, dRowPage, dTableWrapper } = styles
-  const [rowsShown, setRowsShown] = React.useState(7)
+  const { useMemo, useState } = React;
+  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows, dataRow } = styles
+  const [rowsShown, setRowsShown] = useState(7)
 
-  // TODO: When this gets changed from mocking to fetching the data from an api call, append
-  // the full and save values dynamically
-  const data = React.useMemo(
+  // TODO: Move to models
+  interface IncidentData {
+    dates: string
+    incidentType: string
+    officersInvolved: string[]
+    subject: IconDefinition
+    source: IconDefinition
+  }
+
+  // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
+  // 'save' values will be appended to each item dynamically
+  const data = useMemo(
     () => [
       {
         dates: "2003/01/01",
         incidentType: "Use of force",
+        officersInvolved: ["Dan Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["John Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["Ed Smith, Vince Gilligan"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["John Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
         officersInvolved: ["John Smith"],
         subject: "unknown",
         source: "News Article",
@@ -45,6 +82,33 @@ export function DataTable({ count = 220375 }) {
         dates: "2003/01/01",
         incidentType: "Use of force",
         officersInvolved: ["John Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["Dan Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["John Smith"],
+        subject: "unknown",
+        source: "News Article",
+        full: faGreaterThan,
+        save: faPlusCircle,
+      },
+      {
+        dates: "2003/01/01",
+        incidentType: "Use of force",
+        officersInvolved: ["Ed Smith, Vince Gilligan"],
         subject: "unknown",
         source: "News Article",
         full: faGreaterThan,
@@ -123,16 +187,17 @@ export function DataTable({ count = 220375 }) {
     ],
     []
   )
+
   const tableInstance = useTable({ columns, data })
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
   return (
-    <div className={dTableWrapper}>
-      <table {...getTableProps()} className={dTable}>
-        <thead className={dHeader}>
+    <div>
+      <table {...getTableProps()} className={dataTable} aria-label="Search Results Table">
+        <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr {...headerGroup.getHeaderGroupProps()} >
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -143,10 +208,10 @@ export function DataTable({ count = 220375 }) {
           {rows.map((row) => {
             prepareRow(row)
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
-                  console.log(cell)
-                  if (cell.column.id === "full" || cell.column.id === "save") {
+                  const { id } = cell.column
+                  if (id === "full" || id === "save") {
                     return (
                       <td>
                         <FontAwesomeIcon icon={cell.value} />
@@ -159,20 +224,17 @@ export function DataTable({ count = 220375 }) {
             )
           })}
         </tbody>
-        <tfoot className={dFooter}>
+        <tfoot className={dataFooter}>
           <tr>
             <td>{count.toLocaleString()} records found</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              Show <span className={dRowPage}>{rowsShown}</span> rows
-            </td>
-            <td>&lt; 1 of 31,482 &gt;</td>
+              <td colSpan={4}></td>
+              <td>
+                Show <span className={dataRowPage}>{rowsShown}</span> rows
+              </td>
+              <td>&lt; 1 of 31,482 &gt;</td>
           </tr>
         </tfoot>
       </table>
-      </div>
+    </div>
   )
 }

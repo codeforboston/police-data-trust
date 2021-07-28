@@ -38,19 +38,3 @@ a:visited {
   color: var(--linkBlue);
   text-decoration: underline;
 }
-
-table {
-  border-collapse: collapse;
-}
-
-td,
-thead,
-tfoot {
-  font-family: Inter;
-  height: 36px;
-  text-align: center;
-}
-
-tr:nth-child(odd) {
-  background-color: rgba(124, 174, 215, 0.5);
-}

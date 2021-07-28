@@ -1,21 +1,26 @@
-.dTable {
+.dataTable {
+  border-collapse: collapse;
   width: 100vw;
 }
 
-.dTableWrapper {
-}
-
-.dHeader {
-  background-color: var(--lightBlue);
-  border-top: 3px solid black;
-}
-
-.dFooter {
+.dataFooter,
+.dataHeader,
+.dataRows {
   border-bottom: 3px solid black;
+  height: var(--size36);
+  text-align: center;
+}
+
+.dataFooter,
+.dataHeader {
   background-color: var(--lightBlue);
 }
 
-.dRowPage {
+.dataRows:nth-child(odd) {
+  background-color: rgba(124, 174, 215, 0.5);
+}
+
+.dataRowPage {
   border: 1px solid black;
   padding: var(--size4);
 }
