@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   min-width: 100%;
   position: absolute;
-  background-image: url("../../public/BannerMobile.svg");
+  background-image: url("/BannerMobile.svg");
   background-repeat: no-repeat;
   background-size: cover;
   height: var(--size80);
@@ -17,20 +17,16 @@
 }
 
 .leftHeader {
-  padding-left: var(--size14);
-  margin-top: var(--size40);
   display: flex;
   justify-content: flex-start;
 }
 
-.leftHeader svg {
-  width: var(--size72);
-  height: var(--size72);
+.leftHeader img {
+  margin-top: var(--size20);
 }
 
 .titleContainer {
-  margin-top: var(--size6);
-  padding-left: var(--size10);
+  margin-top: var(--size44);
   width: var(--size128);
   height: var(--size64);
 }
@@ -39,11 +35,15 @@
   display: none;
 }
 
+.desktopLogo {
+  display: none;
+}
+
 .titleContainer h2 {
   color: var(--darkBlue);
   font-weight: 700;
   font-style: normal;
-  font-size: var(--size24);
+  font-size: var(--size28);
   line-height: var(--size32);
   letter-spacing: -0.02rem;
 }
@@ -56,6 +56,7 @@
   font-size: var(--size10);
   line-height: var(--size12);
   letter-spacing: -0.02rem;
+  margin-top: var(--size4);
 }
 
 .backgroundBanner nav {
@@ -64,19 +65,23 @@
   align-items: flex-end;
 }
 
-.backgroundBanner nav svg {
-  margin: var(--size24) var(--size24) var(--size32);
+.backgroundBanner svg {
+  margin-top: var(--size24);
+  margin-right: var(--size24);
+  color: var(--darkBlue);
 }
 
-.backgroundBanner nav ul {
+.backgroundBanner ul {
   display: none;
 }
 
-.backgroundBanner nav button {
-  margin-top: var(--size8);
+.backgroundBanner button {
   margin-right: var(--size10);
+  margin-top: var(--size32);
   font-weight: 700;
-  font-size: var(--size18);
+  font-size: var(--size14);
+  height: var(--size32);
+  width: var(--size80);
 }
 
 @media screen and (min-width: 32em) {
@@ -85,24 +90,26 @@
   }
 
   .backgroundBanner {
-    background-image: url("../../public/Banner.svg");
-    background-size: cover;
+    background-image: url("/Banner.svg");
+    background-size: 100%;
     filter: none;
   }
 
   .leftHeader {
     margin-left: var(--size64);
-    margin-top: var(--size32);
   }
 
-  .leftHeader svg {
-    width: var(--size96);
-    height: var(--size96);
+  .mobileLogo {
+    display: none;
+  }
+
+  .desktopLogo {
+    display: flex;
   }
 
   .titleContainer {
-    width: var(--size384);
-    margin-top: var(--size16);
+    width: var(--size424);
+    margin-top: var(--size48);
     margin-left: var(--size4);
   }
 
@@ -128,16 +135,16 @@
     align-items: flex-start;
   }
 
-  .backgroundBanner nav svg {
+  .backgroundBanner svg {
     display: none;
   }
 
-  .backgroundBanner nav ul {
+  .backgroundBanner ul {
     display: flex;
     margin-top: var(--size56);
   }
 
-  .backgroundBanner nav ul li {
+  .backgroundBanner li {
     font-style: normal;
     font-weight: 500;
     font-size: var(--size14);
@@ -149,7 +156,7 @@
     list-style: none;
   }
 
-  .backgroundBanner nav ul a {
+  .backgroundBanner a {
     text-decoration: none;
     color: var(--darkBlue);
   }
@@ -162,10 +169,10 @@
     box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
-  .backgroundBanner nav button {
+  .backgroundBanner button {
     margin: var(--size20) var(--size16) var(--size20) var(--size20);
-    width: var(--size96);
-    height: var(--size32);
+    width: var(--size100);
+    height: var(--size36);
     font-size: var(--size16);
     line-height: var(--size20);
   }

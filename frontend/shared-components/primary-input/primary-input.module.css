@@ -1,6 +1,6 @@
 .inputContainer {
   margin: 0 var(--size20);
-  height: var(--size80);
+  min-height: var(--size80);
 }
 
 .inputField {

@@ -1,8 +1,7 @@
 import React from "react"
 import styles from "./enrollment-header.module.css"
-import { InfoTooltip } from "../../shared-components/index"
+import { InfoTooltip, Logo } from "../../shared-components"
 import { TooltipTypes } from "../../models"
-import { Logo } from ".."
 
 interface EnrollmentHeaderProps {
   headerText: string
