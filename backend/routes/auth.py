@@ -15,7 +15,6 @@ from flask_pydantic import validate
 
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
-# bp.before_request(blueprint_role_required(UserRole.PUBLIC))
 
 
 # TODO: Place cookie on users browser with JWT token
@@ -51,7 +50,6 @@ def login(body: LoginUserDTO):
 @bp.route("/register", methods=["POST"])
 @validate()
 def register(body: RegisterUserDTO):
-    print(body)
     # Check to see if user already exists
     user = User.query.filter_by(email=body.email).first()
     if user is not None and user.verify_password(body.password):

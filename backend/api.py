@@ -36,8 +36,6 @@ def register_extensions(app: Flask):
     db.init_app(app)
     user_manager.init_app(app)
     jwt.init_app(app)
-    # login_manager.init_app(app)
-    # user_manager.init_app(app)
 
 
 def register_commands(app: Flask):
