@@ -5,9 +5,9 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 from ..database import db
-from ..database.models.User import User
-from ..database.models.User import login_manager
-from ..database.models.User import user_manager
+from ..database.models.users import User
+from ..database.models.users import login_manager
+from ..database.models.users import user_manager
 
 
 bp = Blueprint("auth", __name__)
