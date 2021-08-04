@@ -1,4 +1,5 @@
 from flask import redirect
+from flask import Response
 from flask import request
 from flask import Blueprint
 from flask_login import login_required
@@ -15,49 +16,43 @@ from flask_jwt_extended import (
 )
 from ..auth import user_manager
 from ..schemas import UserSchema
+from ..dto import RegisterUserDTO, LoginUserDTO
+from flask_pydantic import validate
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 # bp.before_request(blueprint_role_required(UserRole.PUBLIC))
 
 
 # TODO: Place cookie on users browser with JWT token
 @bp.route("/login", methods=["POST"])
-def login():
-    """Login Page."""
-    if request.method == "POST":
-        form = request.form
-        # Verify user
-        if form.get("password") is not None and form.get("email") is not None:
-            user = User.query.filter_by(email=form.get("email")).first()
-            if user is not None and user.verify_password(form.get("password")):
-                login_user(user, form.get("remember_me"))
-                return {
-                    "status": "ok",
-                    "message": "Successfully logged in.",
-                    "access_token": create_access_token(identity=user.id),
-                }
-            else:
-                return {
-                    "status": "ok",
-                    "message": "Error. Email or Password invalid.",
-                }
-        # In case of missing fields, return error message indicating
-        # required fields.
-        missing_fields = []
-        required_keys = ["email", "password"]
-        for key in required_keys:
-            if key not in form.keys() or form.get(key) is None:
-                missing_fields.append(key)
-        return {
-            "status": "ok",
-            "message": "Failed to log in. Please include the following"
-            " fields: " + ", ".join(missing_fields),
-        }
-    else:
-        return {"status": 400, "message:": "Error: Bad Request."}
+@validate()
+def login(body: LoginUserDTO):
+    # Verify user
+    if body.password is not None and body.email is not None:
+        user = User.query.filter_by(email=body.email).first()
+        if user is not None and user.verify_password(body.password):
+            return {
+                "message": "Successfully logged in.",
+                "access_token": create_access_token(identity=user.id),
+            }, 200
+        else:
+            return {
+                "message": "Error. Email or Password invalid.",
+            }, 401
+    # In case of missing fields, return error message indicating
+    # required fields.
+    missing_fields = []
+    required_keys = ["email", "password"]
+    for key in required_keys:
+        if key not in body or body[key] is None:
+            missing_fields.append(key)
+    return {
+        "message": "Failed to log in. Please include the following"
+        "fields: " + ", ".join(missing_fields),
+    }, 400
 
 
-# TODO: Clear cookie on users browser
 @bp.route("/logout")
 @login_required
 def logout():
@@ -68,46 +63,44 @@ def logout():
 
 # TODO: place cookie on users browser
 @bp.route("/register", methods=["POST"])
-def register():
-    if request.method == "POST":
-        form = request.form
-        # Check to see if user already exists
-        user = User.query.filter_by(email=form.get("email")).first()
-        if user is not None and user.verify_password(form.get("password")):
-            return {
-                "status": "ok",
-                "message": "Error. Email matches existing account.",
-            }
-        # Verify all fields included and create user
-        if form.get("password") is not None and form.get("email") is not None:
-            user = User(
-                email=form.get("email"),
-                password=user_manager.hash_password(form.get("password")),
-                first_name=form.get("firstName"),
-                last_name=form.get("lastName"),
-                role=UserRole.PUBLIC
-            )
-            db.session.add(user)
-            db.session.commit()
-            return {
-                "status": "ok",
-                "message": "Successfully registered.",
-                "access_token": create_access_token(identity=user.id),
-            }
-        # In case of missing fields, return error message indicating
-        # required fields.
-        missing_fields = []
-        required_keys = ["email", "password"]
-        for key in required_keys:
-            if key not in form.keys() or form.get(key) is None:
-                missing_fields.append(key)
+@validate()
+def register(body: RegisterUserDTO):
+    print(body)
+    # Check to see if user already exists
+    user = User.query.filter_by(email=body.email).first()
+    if user is not None and user.verify_password(body.password):
         return {
             "status": "ok",
-            "message": "Failed to register. Please include the following"
-            " fields: " + ", ".join(missing_fields),
-        }
-    else:
-        return {"status": 400, "message:": "Error: Bad Request."}
+            "message": "Error. Email matches existing account.",
+        }, 400
+    # Verify all fields included and create user
+    if body.password is not None and body.email is not None:
+        user = User(
+            email=body.email,
+            password=user_manager.hash_password(body.password),
+            first_name=body.firstName,
+            last_name=body.lastName,
+            role=UserRole.PUBLIC
+        )
+        db.session.add(user)
+        db.session.commit()
+        return {
+            "status": "ok",
+            "message": "Successfully registered.",
+            "access_token": create_access_token(identity=user.id),
+        }, 200
+    # In case of missing fields, return error message indicating
+    # required fields.
+    missing_fields = []
+    required_keys = ["email", "password"]
+    for key in required_keys:
+        if key not in body.keys() or body.get(key) is None:
+            missing_fields.append(key)
+    return {
+        "status": "ok",
+        "message": "Failed to register. Please include the following"
+        " fields: " + ", ".join(missing_fields),
+    }, 400
 
 
 @login_manager.user_loader
