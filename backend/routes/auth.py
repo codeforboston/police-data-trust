@@ -1,14 +1,8 @@
-from flask import redirect
-from flask import Response
-from flask import request
 from flask import Blueprint
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import logout_user
 from ..database import db
 from ..database import User, UserRole
 from ..database import login_manager
-from ..auth import role_required, blueprint_role_required
+from ..auth import role_required
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -53,14 +47,6 @@ def login(body: LoginUserDTO):
     }, 400
 
 
-@bp.route("/logout")
-@login_required
-def logout():
-    """Logout Page."""
-    logout_user()
-    return redirect("/login")
-
-
 # TODO: place cookie on users browser
 @bp.route("/register", methods=["POST"])
 @validate()
@@ -80,7 +66,7 @@ def register(body: RegisterUserDTO):
             password=user_manager.hash_password(body.password),
             first_name=body.firstName,
             last_name=body.lastName,
-            role=UserRole.PUBLIC
+            role=UserRole.PUBLIC,
         )
         db.session.add(user)
         db.session.commit()
