@@ -3,9 +3,9 @@ import { Feature, Point } from "geojson"
 import { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
 import BaseMap from "./BaseMap"
+import styles from "./map.module.css"
 import { MarkerDescription, MarkerLayer } from "./marker-layer"
 import useData from "./useData"
-import styles from "./map.module.css"
 
 export type BoundingType = [[number, number], [number, number]]
 export type D3CallableSelectionType = d3.Selection<Element, unknown, any, any>
@@ -16,32 +16,94 @@ export type DispatchType = d3.Dispatch<d3.ZoomTransform>
 export default function Map() {
   const data = useData()
   const mapRef = useRef<HTMLDivElement>()
-  const { width, height } = useResizeObserver({ ref: mapRef })
-
   const zoomRef = useRef<SVGSVGElement>()
-
+  const { width, height } = useResizeObserver({ ref: mapRef })
   const [markerParams, setMarkerParams] = useState<MarkerDescription[]>([])
+  const [transform, setTransform] = useState<d3.ZoomTransform>(d3.zoomIdentity)
 
-  const zoom = d3.zoom().on("zoom", zoomed)
-  const zoomContainer = d3.select("#zoom-container") as D3CallableSelectionType
-  zoomContainer.call(zoom)
+  useEffect(() => {
+    const path = d3.geoPath(projection)
 
-  function zoomed(event: D3ZoomEventType) {
-    const { transform } = event
-    zoomContainer.attr("transform", transform.toString())
-  }
+    const zoomMap = (zoomable: D3CallableSelectionType, transform: d3.ZoomTransform) => {
+      console.log("zoomMap", transform)
+      zoomable.transition().duration(750).call(zoom.transform, transform)
+    }
 
-  const zoomResetButton = d3.select("#zoom-reset")
-  zoomResetButton.on("click", (event: MouseEvent) => {
-    zoomContainer.transition().duration(750).call(zoom.transform, d3.zoomIdentity)
-  })
+    const svgZoomable = d3.select("#map-svg") as D3CallableSelectionType
+    const zoom = d3.zoom().on("zoom", (event) => setTransform(event.transform))
+    svgZoomable.call(zoom)
+
+    /* 
+    const gZoomable = d3.select("#zoom-container") as D3CallableSelectionType
+
+    function zoomed(event: D3ZoomEventType) {
+      const { transform } = event
+      const transformStr = transform.toString()
+      if (transformStr.includes("NaN")) return
+      gZoomable.attr("transform", transformStr)
+    }
+
+    gZoomable.call(zoomIn)
+*/
+    const resetZoom = () => {
+      zoomMap(svgZoomable, d3.zoomIdentity)
+      // svgZoomable.transition().duration(750).call(zoom.transform, d3.zoomIdentity)
+    }
+
+    const zoomResetButton = d3.select("#zoom-reset")
+    zoomResetButton.on("click", resetZoom)
+
+    function onMapClick(event: MouseEvent){
+      const target = event.target as any
+      const d = target.__data__ as Feature
+      event.stopPropagation()
+
+      if (target.classList.contains("state")) {
+        const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
+
+        const clickTransform = zoomIDFitToWindow(width, height, d)
+        setTransform(clickTransform)
+
+        console.log("mapClickZoom", path.bounds(d))
+        console.log(zoomIDFitToWindow(width, height, d))
+
+        /*         gZoomable
+          .transition()
+          .duration(750)
+          .call(
+            zoomIn.transform,
+            d3.zoomIdentity
+              .translate(width / 2, height / 2)
+              .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+              .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+            d3.pointer(event, gZoomable.node())
+          ) */
+        data.filter.value = d.properties.name
+        data.setFilterProperties({ ...data.filter })
+      }
+    }
+
+    function zoomIDFitToWindow(width: number, height: number, d: Feature): d3.ZoomTransform {
+      const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
+      return d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
+        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
+    }
+
+    svgZoomable.on("click", onMapClick)
+
+    return () => {
+      zoomResetButton.on(".click", resetZoom)
+      // zoom.on(".zoom", zoomed)
+      svgZoomable.on(".click", onMapClick)
+    }
+  }, [])
 
   const projection = d3
     .geoAlbersUsa()
     .scale(1300)
     .translate([487.5 + 112, 305 + 50])
-
-  const path = d3.geoPath(projection)
 
   useEffect(() => {
     if (!data) return
@@ -63,43 +125,11 @@ export default function Map() {
     setMarkerParams(data.features.map((feature) => getMarkerParamsFromFeature(feature)))
   }, [data])
 
-  const onMapClick = (event: MouseEvent) => {
-    const target = event.target as any
-    const d = target.__data__
-    if (target.classList.contains("state")) {
-      const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
-
-      event.stopPropagation()
-
-      zoomContainer
-        .transition()
-        .duration(750)
-        .call(
-          zoom.transform,
-          d3.zoomIdentity
-            .translate(width / 2, height / 2)
-            .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
-            .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-          d3.pointer(event, zoomContainer.node())
-        )
-      data.filter.value = d.properties.name
-      data.setFilterProperties({ ...data.filter })
-    }
-  }
-
-  zoomContainer.on("click", onMapClick)
-
   return (
-    <div
-      id="map-container"
-      className={styles.mapContainer}
-      ref={mapRef}
-      style={{ height: "80vh", width: "100vw" }}>
-      <div
-        className={styles.gridSettings}
-        style={{ width: width, height: height, minHeight: height, minWidth: width }}>
-        <div className={styles.svgWrapper}>
-          <svg id="show-data" className={"showData"} viewBox={`0, 0, 1200, 700`}>
+    <div id="map-container" className={styles.mapContainer} ref={mapRef}>
+      <div className={styles.gridSettings}>
+        <div className={styles.mapWrapper}>
+          <svg id="map-svg" className={styles.mapData} viewBox={`0, 0, 1200, 700`}>
             <g ref={zoomRef} id="zoom-container">
               <rect className={styles.mapClickZone}></rect>
               <BaseMap projection={projection} />

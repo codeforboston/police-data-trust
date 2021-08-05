@@ -1,31 +1,37 @@
-.showdata {
-  pointer-events: none;
-}
-
 .mapContainer {
   position: relative;
+  height: calc(100vh - var(--size160));
+  width: 50%;
   pointer-events: none;
   pointer-events: all;
   z-index: 10;
   margin: auto;
-  overflow: hidden;
+  outline: 5px solid orange;
 }
 
 .gridSettings {
-  position: relative;
-  display: grid;
-  grid-template-rows: var(--size96) var(--size96) auto var(--size96) var(--size96);
-  grid-template-columns: var(--size96) auto var(--size96);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  outline: 5px solid green;
 }
 
-.svgWrapper {
-  grid-column: 2;
-  grid-row: 2 / 6;
-  overflow: hidden;
+.mapWrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  outline: 5px solid yellow;
+}
+
+.mapData {
+  position: absolute;
+  /* pointer-events: none; */
+  width: 100%;
+  height: 100%;
 }
 
 .mapCityPoint {
-  fill: var(--linkBlue);
+  fill: var(--lightBlue);
   cursor: pointer;
   pointer-events: all;
   fill-opacity: 0.8;
