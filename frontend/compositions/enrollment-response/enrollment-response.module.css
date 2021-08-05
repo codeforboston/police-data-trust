@@ -1,16 +1,29 @@
-.responseArea {
+.response {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  height: var(--size16);
+  justify-content: left;
 }
 
-.responseLogo {
+.message {
+  text-align: left;
+  line-height: var(--size24);
+  max-width: var(--size512);
 }
 
-.responseTitle {
+.message p {
+  margin-bottom: var(--size8);
 }
 
-.responsePara {
+.boldText {
+  font-weight: bold;
+  color: var(--darkBlue);
+}
+
+.title {
+  color: var(--darkBlue);
+  height: var(--size32);
+  font-weight: bold;
+  font-size: var(--size32);
+  margin-bottom: var(--size16);
 }
