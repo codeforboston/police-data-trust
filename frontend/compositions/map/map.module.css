@@ -1,31 +1,21 @@
 .mapContainer {
   position: relative;
-  height: calc(100vh - var(--size160));
-  width: 50%;
+  height: 70vh;
+  width: 80vw;
   pointer-events: none;
-  pointer-events: all;
   z-index: 10;
   margin: auto;
-  outline: 5px solid orange;
-}
-
-.gridSettings {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  outline: 5px solid green;
+  top: 10vh;
 }
 
 .mapWrapper {
   position: absolute;
   height: 100%;
   width: 100%;
-  outline: 5px solid yellow;
 }
 
 .mapData {
   position: absolute;
-  /* pointer-events: none; */
   width: 100%;
   height: 100%;
 }
@@ -52,7 +42,7 @@
   cursor: pointer;
   fill: var(--lightBlue);
   fill-opacity: 0.9;
-  mix-blend-mode: lighten;
+  mix-blend-mode: color-dodge;
   transform: scale(1);
   transition: transform 500ms 500ms ease;
 }
