@@ -3,18 +3,18 @@ import styles from './external-link.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
-interface ExternalLinkProps { linkPath: string, children: React.ReactNode }
+interface ExternalLinkProps { linkPath: string, linkText: string }
 
-export default function ExternalLink ({ linkPath, children }: ExternalLinkProps) {
+export default function ExternalLink ({ linkPath, linkText }: ExternalLinkProps) {
+  const {externalLink} = styles
   return (
     <a 
-      className={styles.externalLink} 
-      target="_blank"
+      className={externalLink} 
       rel="noopener noreferrer"
       href={linkPath}
-      >
-        {children}
-        <FontAwesomeIcon aria-hidden="true" icon={faExternalLinkAlt} size="xs" />
-      </a>
+    >
+      {linkText}
+      <FontAwesomeIcon aria-hidden="true" icon={faExternalLinkAlt} size="xs" />
+    </a>
   )
 }
