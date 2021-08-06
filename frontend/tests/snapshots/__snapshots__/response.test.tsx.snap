@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Passport:Fail correctly 1`] = `null`;
+
+exports[`renders Passport:Success correctly 1`] = `null`;
+
+exports[`renders Register:Fail correctly 1`] = `null`;
+
+exports[`renders Register:Success correctly 1`] = `null`;
