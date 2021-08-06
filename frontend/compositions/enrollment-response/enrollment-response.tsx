@@ -4,7 +4,7 @@ import styles from './enrollment-response.module.css'
 import { Logo, ExternalLink } from '../../shared-components'
 import { AppRoutes, LogoSizes } from '../../models'
 
-interface EnrollmentResponseProps { isSuccess: boolean }
+interface EnrollmentResponseProps { isSuccess?: boolean }
 
 interface EnrollmentErrorText {
   statusMessage: string,
@@ -53,7 +53,7 @@ function failureResponseMessage( enrollmentType: EnrollmentTypes) {
   )
 }
 
-export function RegistrationResponse({ isSuccess }: EnrollmentResponseProps) {
+export function RegistrationResponse({ isSuccess = false }: EnrollmentResponseProps) {
   const { response, message, title, boldText } = styles
   return (
     <div className={response}>
@@ -74,7 +74,7 @@ export function RegistrationResponse({ isSuccess }: EnrollmentResponseProps) {
   )
 }
 
-export function PassportApplicationResponse({ isSuccess }: EnrollmentResponseProps) {
+export function PassportApplicationResponse({ isSuccess = false }: EnrollmentResponseProps) {
   const { returnText, returnPath } = enrollmentMessage[EnrollmentTypes.PASSPORT]
   const { response, message, title, boldText } = styles
   return (
@@ -83,7 +83,7 @@ export function PassportApplicationResponse({ isSuccess }: EnrollmentResponsePro
       {isSuccess ? (
         <div className={message}>
           <header className={title}>Success!</header>
-          <p>You have been successfully submitted an application for a Passport account</p>
+          <p>You have successfully submitted an application for a Passport account</p>
           <p className={boldText}>Please check your email to confirm your registration</p>
           <p>You can expect to receive a decision in XX days with further instructions. 
             In the meantime, you may continue to explore all public data.
