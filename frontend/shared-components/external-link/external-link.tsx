@@ -10,7 +10,6 @@ export default function ExternalLink ({ linkPath, linkText }: ExternalLinkProps)
   return (
     <a 
       className={externalLink} 
-      rel="noopener noreferrer"
       href={linkPath}
     >
       {linkText}
