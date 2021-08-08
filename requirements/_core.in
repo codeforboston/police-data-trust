@@ -12,6 +12,7 @@ pydantic-sqlalchemy
 pytest
 pytest-env
 pytest-cov
+pytest-postgresql
 pytest-flask-sqlalchemy
 python-dotenv
 flask-login
