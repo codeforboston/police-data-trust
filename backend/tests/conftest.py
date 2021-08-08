@@ -1,5 +1,6 @@
 import pytest
 
+import psycopg2.errors
 from pytest_postgresql.janitor import DatabaseJanitor
 
 from backend.api import create_app
@@ -18,8 +19,14 @@ def database():
         9.6,
         cfg.POSTGRES_PASSWORD,
     )
-    janitor.init()
+
+    try:
+        janitor.init()
+    except psycopg2.errors.lookup("42P04"):
+        pass
+
     yield
+
     janitor.drop()
 
 
