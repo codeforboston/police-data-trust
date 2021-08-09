@@ -7,12 +7,13 @@ import styles from "./map.module.css"
 import { MarkerDescription, MarkerLayer } from "./marker-layer"
 import useData from "./useData"
 
-export type PointerType = [number, number]
-export type BoundingType = [PointerType, PointerType]
+export type Pair<T> = [T, T]
+export type PointCoord = Pair<number>
+export type BoundingType = [PointCoord, PointCoord]
 export type D3CallableSelectionType = d3.Selection<Element, unknown, any, any>
 export type D3ZoomEventType = d3.D3ZoomEvent<Element, any>
-export type ZoomBehaviorType = d3.ZoomBehavior<Element, unknown>
-export type DispatchType = d3.Dispatch<d3.ZoomTransform>
+export type D3ZoomBehaviorType = d3.ZoomBehavior<Element, unknown>
+export type D3DispatchType = d3.Dispatch<d3.ZoomTransform>
 
 export default function Map() {
   const data = useData()
@@ -49,7 +50,7 @@ export default function Map() {
 
     zoomResetButton.on("click", resetZoom)
 
-    function moveMap(transform: d3.ZoomTransform, transition = true, pointer?: PointerType) {
+    function moveMap(transform: d3.ZoomTransform, transition = true, pointer?: PointCoord) {
       const transformStr = transform.toString()
       if (transformStr.includes("NaN")) return
       const mover = transition ? gZoomable.transition().duration(500) : gZoomable

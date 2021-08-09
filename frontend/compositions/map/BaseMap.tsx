@@ -5,12 +5,12 @@ import * as topojson from "topojson"
 import { Topology } from "topojson-specification"
 import styles from "./map.module.css"
 
-type BaseMapProps = {
+export interface BaseMapProps {
   projection: d3.GeoProjection
 }
 
 export default function BaseMap(props: BaseMapProps) {
-  const ref = useRef(null)
+  const baseMapRef = useRef(null)
   const { projection } = props
 
   const link: string = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
@@ -25,7 +25,7 @@ export default function BaseMap(props: BaseMapProps) {
       .then((res) => res.json())
       .then((data: Topology) => {
         const svg = d3
-          .select(ref.current)
+          .select(baseMapRef.current)
           // .classed("map-geo-shape state", true)
           .classed(styles.mapGeoShape, true)
           .classed(styles.state, true)
@@ -42,5 +42,5 @@ export default function BaseMap(props: BaseMapProps) {
       })
   }, [dataPromise])
 
-  return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={ref}></svg>
+  return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }

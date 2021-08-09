@@ -1,12 +1,13 @@
+import { Pair } from "./Map"
 import styles from "./map.module.css"
 
-export type MarkerDescription = {
-  geoCenter: [number, number]
+export interface MarkerDescription {
+  geoCenter: Pair<number>
   dataPoint: number
   label: string
 }
 
-export type MarkerLayerProps = {
+export interface MarkerLayerProps {
   markersData: MarkerDescription[]
 }
 
@@ -22,7 +23,7 @@ export function MarkerLayer(props: MarkerLayerProps) {
   )
 }
 
-export type CircleMarkerProps = {
+export interface CircleMarkerProps {
   markerDescription: MarkerDescription
 }
 
