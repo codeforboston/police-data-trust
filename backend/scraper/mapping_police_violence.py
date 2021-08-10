@@ -180,8 +180,8 @@ def make_all_tables():
         df_victim[df_victim['victim_name_full'] == 'Name withheld by police'],
         df_victim[df_victim['victim_name_full'] == ''],
         df_victim[df_victim['victim_name_full'].isnull()],
-        df_victim[filtered_indices]
-            .drop_duplicates(['victim_name_full'], keep='first')
+        df_victim[filtered_indices].drop_duplicates(['victim_name_full'],
+                                                    keep='first')
     ])
     final_indices = df_victim_filtered.index
 

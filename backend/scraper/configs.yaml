@@ -29,7 +29,6 @@ tables:
   report:
     required:
       - record_id
-      - duplicate_of
       - data_source_id
       - record_type
       - attachments_available
