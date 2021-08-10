@@ -171,36 +171,26 @@ def make_all_tables():
         table_list.append(sub_table)
     print("done iterating table names")
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
-    total_len = len(table_dict[table_names[2]].victim_name_full)
-    num_duplicates = 0
-    for v in range(0, total_len):
-        # total_len = len(table_dict[table_names[2]].victim_name_full)
-        # print(v)
-        name = table_dict[table_names[2]].victim_name_full[v]
-        if name == "Name withheld by police":
-            continue
-        if name in all_names:
-            # print(name)
-            # shrink all tables
-            for t in table_names:
-                # print("table name len: ", len(table_names))
-                table = table_dict[t]
-                dat_1 = table.iloc[0:v-num_duplicates, ]
-                dat_2 = table.iloc[v+1-num_duplicates:, ]
-                table_dict[t] = dat_1.append(dat_2)
-            # v = v-1
-            print("deleted")
-            num_duplicates = num_duplicates + 1
-        else:
-            all_names.append(name)
-    print("done one, removed ", num_duplicates, " size ", total_len)
+    df_victim = table_dict["victim"]
+    victim_indices = df_victim['victim_name_full'] != 'Name withheld by police'
+    victim_indices_2 = df_victim['victim_name_full'] != ''
+    victim_indices_3 = df_victim['victim_name_full'].notnull()
+    filtered_indices = (victim_indices & victim_indices_2 & victim_indices_3)
+    df_victim_filtered = pd.concat([
+        df_victim[df_victim['victim_name_full'] == 'Name withheld by police'],
+        df_victim[df_victim['victim_name_full'] == ''],
+        df_victim[df_victim['victim_name_full'].isnull()],
+        df_victim[filtered_indices]
+            .drop_duplicates(['victim_name_full'], keep='first')
+    ])
+    final_indices = df_victim_filtered.index
 
     writer = pd.ExcelWriter('full_database.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.
     for key in table_dict:
         sub_data = table_dict[key]
-        sub_data.to_excel(writer, sheet_name=key)
+        sub_data.iloc[final_indices].to_excel(writer, sheet_name=key)
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
