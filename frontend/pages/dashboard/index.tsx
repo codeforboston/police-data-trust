@@ -1,5 +1,5 @@
 import { DashboardHeader } from "../../compositions"
-import Map from "../../compositions/map"
+import { Map } from "../../compositions"
 import { Layout } from "../../shared-components"
 
 export default function Dashboard() {

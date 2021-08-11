@@ -23,11 +23,11 @@ export function MarkerLayer(props: MarkerLayerProps) {
   )
 }
 
-export interface CircleMarkerProps {
+interface CircleMarkerProps {
   markerDescription: MarkerDescription
 }
 
-export function CircleMarker(props: CircleMarkerProps) {
+function CircleMarker(props: CircleMarkerProps) {
   const { markerDescription: c } = props
   return (
     <circle

@@ -3,17 +3,15 @@ import { Feature, Point } from "geojson"
 import { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
 import BaseMap from "./BaseMap"
-import styles from "./map.module.css"
 import { MarkerDescription, MarkerLayer } from "./marker-layer"
 import useData from "./useData"
+import styles from "./map.module.css"
 
 export type Pair<T> = [T, T]
 export type PointCoord = Pair<number>
 export type BoundingType = [PointCoord, PointCoord]
 export type D3CallableSelectionType = d3.Selection<Element, unknown, any, any>
 export type D3ZoomEventType = d3.D3ZoomEvent<Element, any>
-export type D3ZoomBehaviorType = d3.ZoomBehavior<Element, unknown>
-export type D3DispatchType = d3.Dispatch<d3.ZoomTransform>
 
 export default function Map() {
   const data = useData()
