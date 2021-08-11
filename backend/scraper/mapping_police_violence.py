@@ -132,7 +132,6 @@ def make_tables_data_source(data_source, xwalk, configs):
     table_list = [make_single_table(x, dat, configs) for x in table_names]
 
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
-    print("returning table_dict")
     return table_dict
 
 
@@ -152,11 +151,8 @@ def make_all_tables():
         make_tables_data_source(x, xwalk, configs) for x in data_sources
     ]
 
-    print("made data list")
-
     table_names = list(configs["tables"].keys())
     table_list = []
-    print("iterating table names")
     for t in table_names:
         first_iteration = True
         sub_table_list = []
@@ -169,7 +165,6 @@ def make_all_tables():
             sub_table_list.append(d[t])
         sub_table = full_df
         table_list.append(sub_table)
-    print("done iterating table names")
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
     df_victim = table_dict["victim"]
     victim_indices = df_victim['victim_name_full'] != 'Name withheld by police'
