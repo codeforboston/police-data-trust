@@ -1,3 +1,10 @@
+import { DashboardHeader } from "../../compositions"
+import { Layout } from "../../shared-components"
+
 export default function Dashboard() {
-  return <div className="Dashboard">I AM DASHBORD!!!!!!</div>
+  return (
+    <Layout>
+      <DashboardHeader />
+    </Layout>
+  )
 }

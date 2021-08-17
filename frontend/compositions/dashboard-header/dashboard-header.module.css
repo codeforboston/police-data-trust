@@ -1,0 +1,179 @@
+.wrapper {
+  width: 100%;
+  height: var(--size112);
+  z-index: -10000;
+}
+
+.backgroundBanner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-width: 100%;
+  position: absolute;
+  background-image: url("/BannerMobile.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: var(--size80);
+  filter: drop-shadow(0 var(--size4) var(--size4) rgba(0, 0, 0, var(--size4)));
+}
+
+.leftHeader {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.leftHeader img {
+  margin-top: var(--size20);
+}
+
+.titleContainer {
+  margin-top: var(--size44);
+  width: var(--size128);
+  height: var(--size64);
+}
+
+.desktopTitle {
+  display: none;
+}
+
+.desktopLogo {
+  display: none;
+}
+
+.titleContainer h2 {
+  color: var(--darkBlue);
+  font-weight: 700;
+  font-style: normal;
+  font-size: var(--size28);
+  line-height: var(--size32);
+  letter-spacing: -0.02rem;
+}
+
+.titleContainer p {
+  width: var(--size112);
+  height: var(--size24);
+  color: var(--black);
+  font-weight: normal;
+  font-size: var(--size10);
+  line-height: var(--size12);
+  letter-spacing: -0.02rem;
+  margin-top: var(--size4);
+}
+
+.backgroundBanner nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.backgroundBanner svg {
+  margin-top: var(--size24);
+  margin-right: var(--size24);
+  color: var(--darkBlue);
+}
+
+.backgroundBanner ul {
+  display: none;
+}
+
+.backgroundBanner button {
+  margin-right: var(--size10);
+  margin-top: var(--size32);
+  font-weight: 700;
+  font-size: var(--size14);
+  height: var(--size32);
+  width: var(--size80);
+}
+
+@media screen and (min-width: 32em) {
+  .wrapper {
+    height: var(--size128);
+  }
+
+  .backgroundBanner {
+    background-image: url("/Banner.svg");
+    background-size: 100%;
+    filter: none;
+  }
+
+  .leftHeader {
+    margin-left: var(--size64);
+  }
+
+  .mobileLogo {
+    display: none;
+  }
+
+  .desktopLogo {
+    display: flex;
+  }
+
+  .titleContainer {
+    width: var(--size424);
+    margin-top: var(--size48);
+    margin-left: var(--size4);
+  }
+
+  .mobileTitle {
+    display: none;
+  }
+
+  .desktopTitle {
+    display: flex;
+  }
+
+  .titleContainer p {
+    width: var(--size512);
+    height: var(--size24);
+    line-height: var(--size16);
+    font-size: var(--size14);
+    margin-top: var(--size6);
+  }
+
+  .backgroundBanner nav {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  .backgroundBanner svg {
+    display: none;
+  }
+
+  .backgroundBanner ul {
+    display: flex;
+    margin-top: var(--size56);
+  }
+
+  .backgroundBanner li {
+    font-style: normal;
+    font-weight: 500;
+    font-size: var(--size14);
+    height: var(--size24);
+    text-align: center;
+    line-height: var(--size12);
+    padding: var(--size8) var(--size16) var(--size4) var(--size14);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .backgroundBanner a {
+    text-decoration: none;
+    color: var(--darkBlue);
+  }
+
+  .tab {
+    background-color: #ffffff;
+    width: var(--size80);
+    height: var(--size24);
+    border-radius: 0.19rem 0.19rem 0rem 0rem;
+    box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
+  }
+
+  .backgroundBanner button {
+    margin: var(--size20) var(--size16) var(--size20) var(--size20);
+    width: var(--size100);
+    height: var(--size36);
+    font-size: var(--size16);
+    line-height: var(--size20);
+  }
+}

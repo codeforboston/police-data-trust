@@ -1,9 +1,10 @@
-import React, { FormEvent, useState } from 'react'
-import { EnrollmentCTA, EnrollmentHeader, EnrollmentInput } from '../../shared-components'
-import { CTATypes, EnrollmentInputNames } from '../../models'
+import React, { FormEvent, useState } from "react"
+import { EnrollmentCallToAction, EnrollmentHeader } from '../../compositions'
+import { CallToActionTypes, PrimaryInputNames } from "../../models"
+import { Layout, PrimaryInput } from "../../shared-components"
 
 export default function UserLogin() {
-  const { EMAIL_ADDRESS, LOGIN_PASSWORD } = EnrollmentInputNames
+  const { EMAIL_ADDRESS, LOGIN_PASSWORD } = PrimaryInputNames
 
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -13,16 +14,18 @@ export default function UserLogin() {
   }
 
   return (
-    <section className="enrollmentSection">
-      <EnrollmentHeader headerText="Login"/>
-      <form>
-        <EnrollmentInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted}/>
-        <EnrollmentInput inputName={LOGIN_PASSWORD} isSubmitted={isSubmitted}/>
-        <button className="primaryButton" type="submit" onClick={handleSubmit}>
-          Submit
-        </button>
-      </form>
-      <EnrollmentCTA ctaType={CTATypes.REGISTER}/>
-    </section>
+    <Layout>
+      <section className="enrollmentSection">
+        <EnrollmentHeader headerText="Login" />
+        <form>
+          <PrimaryInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
+          <PrimaryInput inputName={LOGIN_PASSWORD} isSubmitted={isSubmitted} />
+          <button className="primaryButton" type="submit" onClick={handleSubmit}>
+            Submit
+          </button>
+        </form>
+        <EnrollmentCallToAction callToActionType={CallToActionTypes.REGISTER} />
+      </section>
+    </Layout>
   )
 }
