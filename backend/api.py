@@ -15,7 +15,6 @@ from .utils import dev_only
 def create_app(config: Optional[str] = None):
     """Create the API application."""
     app = Flask(__name__)
-    app.config["JWT_SECRET_KEY"] = "super-secret"
     config_obj = get_config_from_env(config or app.env)
     app.config.from_object(config_obj)
 
