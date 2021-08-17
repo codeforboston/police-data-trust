@@ -52,7 +52,7 @@ def login(body: LoginUserDTO):
 def register(body: RegisterUserDTO):
     # Check to see if user already exists
     user = User.query.filter_by(email=body.email).first()
-    if user is not None and user.verify_password(body.password):
+    if user is not None:
         return {
             "status": "ok",
             "message": "Error. Email matches existing account.",
