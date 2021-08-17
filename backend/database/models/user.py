@@ -47,6 +47,8 @@ def compile_ci_string(element, compiler, **kwargs):
 class UserRole(enum.Enum):
     PASSPORT = 1
     PUBLIC = 2
+    CONTRIBUTOR = 3
+    ADMIN = 4
 
 
 # Define the User data-model.
