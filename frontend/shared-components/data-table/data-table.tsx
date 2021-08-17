@@ -1,195 +1,63 @@
 import * as React from "react"
 
-import { useTable } from "react-table"
+import { useTable, usePagination } from "react-table"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGreaterThan, faPlusCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons"
+import { debounce } from "lodash"
 
+import { mockData, tableColumns } from "../../models/mock-table-data"
 import styles from "./data-table.module.css"
 
-export function DataTable({ count = 220375 }) {
-  const icons = ["full", "save"];
-  const { useMemo, useState } = React;
-  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows, dataRow } = styles
-  const [rowsShown, setRowsShown] = useState(7)
+export function DataTable() {
+  const icons = ["full", "save"]
+  const { useMemo, useState } = React
+  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
   // 'save' values will be appended to each item dynamically
-  const data = useMemo(
-    () => [
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Dan Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Ed Smith, Vince Gilligan"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Dan Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Ed Smith, Vince Gilligan"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-      {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle,
-      },
-    ],
-    []
+  const data = useMemo(() => mockData, [])
+
+  const columns = React.useMemo(() => tableColumns, [])
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize }
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0 }
+    },
+    usePagination
   )
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Date(s)",
-        accessor: "dates" as const,
-      },
-      {
-        Header: "Incident Type",
-        accessor: "incidentType" as const,
-      },
-      {
-        Header: "Officer(s) Involved",
-        accessor: "officersInvolved" as const,
-      },
-      {
-        Header: "Subject",
-        accessor: "subject" as const,
-      },
-      {
-        Header: "Source",
-        accessor: "source" as const,
-      },
-      {
-        Header: "Full Record",
-        accessor: "full" as const,
-      },
-      {
-        Header: "Save Record",
-        accessor: "save" as const,
-      },
-    ],
-    []
-  )
+  const [pageSizeValue, setPageSizeValue] = useState(pageSize)
 
-  const tableInstance = useTable({ columns, data })
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPageSizeValue(+e.target.value)
+  }
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
+  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+    setPageSize(+e.target.value)
+  }
 
   return (
     <div>
       <table {...getTableProps()} className={dataTable} aria-label="Search Results Table">
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()} >
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -197,7 +65,7 @@ export function DataTable({ count = 220375 }) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {page.map((row, i) => {
             prepareRow(row)
             return (
               <tr {...row.getRowProps()} className={dataRows}>
@@ -218,12 +86,31 @@ export function DataTable({ count = 220375 }) {
         </tbody>
         <tfoot className={dataFooter}>
           <tr>
-            <td>{count.toLocaleString()} records found</td>
-              <td colSpan={4}></td>
-              <td>
-                Show <span className={dataRowPage}>{rowsShown}</span> rows
-              </td>
-              <td>&lt; 1 of 31,482 &gt;</td>
+            <td>{data.length.toLocaleString()} records found</td>
+            <td colSpan={4}></td>
+            <td>
+              Show{" "}
+              <input
+                className={dataRowPage}
+                min={1}
+                max={10}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                type="number"
+                value={pageSizeValue}
+              />{" "}
+              rows
+            </td>
+            <td>
+              {" "}
+              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                {"<"}
+              </button>{" "}
+              {pageIndex + 1} of {pageOptions.length}{" "}
+              <button onClick={() => nextPage()} disabled={!canNextPage}>
+                {">"}
+              </button>{" "}
+            </td>
           </tr>
         </tfoot>
       </table>

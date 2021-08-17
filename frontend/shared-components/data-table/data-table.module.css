@@ -18,10 +18,18 @@
 }
 
 .dataRows:nth-child(odd) {
-  background-color: rgba(124, 174, 215, 0.5);
+  background-color: #b1cfe7;
 }
 
+/* The below webkit rules are to remove the number input arrows */
 .dataRowPage {
-  border: 1px solid black;
+  -moz-appearance: textfield;
   padding: var(--size4);
+  border: none;
+}
+
+.dataRowPage::-webkit-outer-spin-button,
+.dataRowPage::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
