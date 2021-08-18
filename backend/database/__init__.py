@@ -23,5 +23,5 @@ from .models.tag import *
 from .models.result_of_stop import *
 from .models.action import *
 from .models.use_of_force import *
-# from .models.users import *
+from .models.user import *
 from .models.victim import *
