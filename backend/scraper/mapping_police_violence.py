@@ -70,19 +70,28 @@ def make_single_table(table, dat, configs):
 def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
     if os.path.isdir(head_directory):
         for filename in os.listdir(head_directory):
-            if configs["sources"][data_source]["subdirectory"] not in filename\
-                    and configs["sources"][data_source]["subdirectory"]\
-                    != "None":
+            if (
+                configs["sources"][data_source]["subdirectory"] not in filename
+                and configs["sources"][data_source]["subdirectory"] != "None"
+            ):
                 continue
             if dat is None or len(dat) == 0:
                 dat = extract_all_subfolders(
-                    head_directory + "/" + filename, data_source,
-                    xwalk, dat, configs)
+                    head_directory + "/" + filename,
+                    data_source,
+                    xwalk,
+                    dat,
+                    configs,
+                )
             else:
                 dat = dat.append(
                     extract_all_subfolders(
-                        head_directory + "/" + filename, data_source,
-                        xwalk, dat, configs)
+                        head_directory + "/" + filename,
+                        data_source,
+                        xwalk,
+                        dat,
+                        configs,
+                    )
                 )
         return dat
     elif head_directory.endswith("csv.gz"):
@@ -109,9 +118,16 @@ def make_tables_data_source(data_source, xwalk, configs):
         z.extractall(configs["sources"][data_source]["location"])
         dat_raw = extract_all_subfolders(
             configs["sources"][data_source]["headdirectory"],
-            data_source, xwalk, [], configs)
-        dat_raw = dat_raw.groupby([configs["sources"][data_source]["id"]])\
-            .first().reset_index()
+            data_source,
+            xwalk,
+            [],
+            configs,
+        )
+        dat_raw = (
+            dat_raw.groupby([configs["sources"][data_source]["id"]])
+            .first()
+            .reset_index()
+        )
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
