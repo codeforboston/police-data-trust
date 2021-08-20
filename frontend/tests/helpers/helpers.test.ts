@@ -1,5 +1,9 @@
 import { capitalizeFirstChar, getTitleCaseFromCamel } from "../../helpers/syntax-helper"
 
+test("handles empty string", () => {
+  expect(capitalizeFirstChar("")).toBe("")
+})
+
 test("capitalizes first char", () => {
   expect(capitalizeFirstChar("word")).toBe("Word")
 })
