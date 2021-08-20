@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import { FeatureCollection } from "geojson"
 import React, { useEffect, useRef } from "react"
-import * as topojson from "topojson"
+import * as topojson from "topojson-client"
 import { Topology } from "topojson-specification"
 import styles from "./map.module.css"
 
