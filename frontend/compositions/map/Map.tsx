@@ -105,7 +105,7 @@ export default function Map() {
       const markerParams: MarkerDescription = {
         geoCenter: projection((d.geometry as Point).coordinates as [number, number]),
         dataPoint: populationScale(d.properties.population),
-        label: d.properties.city,
+        label: d.properties.city
       }
       return markerParams
     }
