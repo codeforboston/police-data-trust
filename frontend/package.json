@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
     "test": "jest --updateSnapshot"
   },
@@ -39,6 +40,9 @@
     "@types/topojson": "^3.2.3",
     "babel-jest": "^27.0.2",
     "babel-plugin-inline-react-svg": "^2.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "^11.1.0",
+    "eslint-config-prettier": "^8.3.0",
     "husky": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.4",
