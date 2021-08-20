@@ -245,8 +245,6 @@ exports[`renders Register correctly 1`] = `
       <a
         className="callToActionLink"
         href="/login"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         Login instead
       </a>
