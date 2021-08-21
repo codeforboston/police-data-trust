@@ -1,4 +1,5 @@
 FROM node:lts-buster
+RUN npm install --global npm@latest
 
 WORKDIR /usr/src/app
 
