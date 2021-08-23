@@ -25,10 +25,13 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    volumes:
+      - .:/app
     depends_on:
       - db
     environment:
       POSTGRES_HOST: db
+      FLASK_ENV: development
       WAIT_HOSTS: db:5432
     ports:
       - 5000:5000
