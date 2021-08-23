@@ -1,15 +1,16 @@
 import React, { FormEvent, useState } from "react"
 import styles from "./viewer-registration.module.css"
 
-import { EnrollmentCallToAction, EnrollmentHeader, PasswordAid } from '../../compositions'
-import { CallToActionTypes, PrimaryInputNames, TooltipTypes } from '../../models'
+import { EnrollmentCallToAction, EnrollmentHeader, PasswordAid } from "../../compositions"
+import { CallToActionTypes, PrimaryInputNames, TooltipTypes } from "../../models"
 import { Layout, PrimaryInput } from "../../shared-components"
 
-export default function ViewerRegistration() {  
-  const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } = PrimaryInputNames
+export default function ViewerRegistration() {
+  const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } =
+    PrimaryInputNames
   const { inputLine } = styles
-  const passwordAidId: string = 'passwordAid'
-  
+  const passwordAidId: string = "passwordAid"
+
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 

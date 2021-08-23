@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react"
 
 import { DataTable } from "../../shared-components/data-table/data-table"
 import { DashboardHeader } from "../../compositions"

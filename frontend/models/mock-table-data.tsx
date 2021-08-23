@@ -1,133 +1,133 @@
 import { faGreaterThan, faPlusCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons"
 
 export const mockData = [
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Dan Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Ed Smith, Vince Gilligan"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Dan Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["Ed Smith, Vince Gilligan"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    },
-    {
-        dates: "2003/01/01",
-        incidentType: "Use of force",
-        officersInvolved: ["John Smith"],
-        subject: "unknown",
-        source: "News Article",
-        full: faGreaterThan,
-        save: faPlusCircle
-    }
-];
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["Dan Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["Ed Smith, Vince Gilligan"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["Dan Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["Ed Smith, Vince Gilligan"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  },
+  {
+    dates: "2003/01/01",
+    incidentType: "Use of force",
+    officersInvolved: ["John Smith"],
+    subject: "unknown",
+    source: "News Article",
+    full: faGreaterThan,
+    save: faPlusCircle
+  }
+]
 
 export const tableColumns = [
   {

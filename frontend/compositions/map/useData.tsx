@@ -24,7 +24,7 @@ export default function useData(): Data {
 
   const [filterProperties, setFilterProperties] = useState<Filter>({
     property: "state_name",
-    value: "",
+    value: ""
   })
 
   return useMemo(() => {
