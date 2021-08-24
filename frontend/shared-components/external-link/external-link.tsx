@@ -11,6 +11,7 @@ export default function ExternalLink ({ linkPath, linkText }: ExternalLinkProps)
     <a 
       className={externalLink} 
       href={linkPath}
+      aria-label={`${linkText}-external`}
     >
       {linkText}
       <FontAwesomeIcon aria-hidden="true" icon={faExternalLinkAlt} size="xs" />
