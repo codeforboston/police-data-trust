@@ -1,16 +1,17 @@
 from flask import Blueprint
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+
 from ..database import db
-from ..database import User, UserRole
+from ..database import User
+from ..database import UserRole
 from ..database import login_manager
 from ..auth import role_required
-from flask_jwt_extended import (
-    create_access_token,
-    get_jwt_identity,
-    jwt_required,
-)
 from ..auth import user_manager
 from ..schemas import UserSchema
-from ..dto import RegisterUserDTO, LoginUserDTO
+from ..dto import RegisterUserDTO
+from ..dto import LoginUserDTO
 from flask_pydantic import validate
 
 

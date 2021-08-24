@@ -120,6 +120,8 @@ markupsafe==2.0.1
     #   wtforms
 mccabe==0.6.1
     # via flake8
+mirakuru==2.4.1
+    # via pytest-postgresql
 mypy-extensions==0.4.3
     # via black
 numpy==1.20.3
@@ -142,8 +144,12 @@ pip-tools==6.1.0
     # via -r requirements/_core.in
 pluggy==0.13.1
     # via pytest
+port-for==0.6.1
+    # via pytest-postgresql
 prompt-toolkit==3.0.18
     # via click-repl
+psutil==5.8.0
+    # via mirakuru
 psycopg2==2.8.6
     # via -r requirements/dev_windows.in
 py==1.10.0
@@ -175,6 +181,8 @@ pytest-flask-sqlalchemy==1.0.2
     # via -r requirements/_core.in
 pytest-mock==3.6.1
     # via pytest-flask-sqlalchemy
+pytest-postgresql==3.1.1
+    # via -r requirements/_core.in
 pytest==6.2.4
     # via
     #   -r requirements/_core.in
@@ -182,6 +190,7 @@ pytest==6.2.4
     #   pytest-env
     #   pytest-flask-sqlalchemy
     #   pytest-mock
+    #   pytest-postgresql
 python-dateutil==2.8.1
     # via
     #   alembic

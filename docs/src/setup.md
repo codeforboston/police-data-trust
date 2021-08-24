@@ -153,23 +153,3 @@ After you get everything set up, you should run the website at least once. The p
     ```
 
 3. Point your browser of choice to the URL shown in the terminal output. If everything worked out, the website should be running on your local computer!
-
-## Other Setup
-
-### Python Console Startup Script (PyCharm)
-
-If you are using PyCharm, it is recommended that you setup your Python console's starting script to load from the dotenv files.
-
-In the options, go here:
-
-![](img/setup-console.png)
-
-And then replace the default starting script with the following:
-
-```python
-import sys; print('Python %s on %s' % (sys.version, sys.platform))
-sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])
-import dotenv
-dotenv.load_dotenv('.flaskenv')
-dotenv.load_dotenv('.env')
-```

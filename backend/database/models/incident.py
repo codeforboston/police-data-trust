@@ -78,6 +78,7 @@ class Incident(db.Model, CrudMixin):
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
     victims = db.relationship("Victim", backref="incident")
+    officers = db.relationship("Officer", backref="incident")
     descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", backref="incident")
     participants = db.relationship("Participant", backref="incident")
