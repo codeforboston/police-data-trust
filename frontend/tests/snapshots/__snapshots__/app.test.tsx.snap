@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders Home correctly 1`] = `
-<h1>
-  NPDC Home page
-</h1>
+<div>
+  <h1>
+    NPDC Home page
+  </h1>
+</div>
 `;

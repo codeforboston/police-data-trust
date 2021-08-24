@@ -1,9 +1,9 @@
 import * as React from "react"
-import { Logo as NPDCLogo } from '../../shared-components'
+import { Logo as NPDCLogo } from "../../shared-components"
 import DesktopNav from "./desktop-nav"
 import styles from "./dashboard-header.module.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 
 export default function DashboardHeader() {
@@ -15,7 +15,7 @@ export default function DashboardHeader() {
     desktopLogo,
     titleContainer,
     mobileTitle,
-    desktopTitle,
+    desktopTitle
   } = styles
 
   return (
@@ -23,10 +23,10 @@ export default function DashboardHeader() {
       <div className={backgroundBanner}>
         <div className={leftHeader}>
           <div className={mobileLogo}>
-            <NPDCLogo size={LogoSizes.SMALL}/>
+            <NPDCLogo size={LogoSizes.SMALL} />
           </div>
           <div className={desktopLogo}>
-            <NPDCLogo size={LogoSizes.MEDIUM}/>
+            <NPDCLogo size={LogoSizes.MEDIUM} />
           </div>
           <div className={titleContainer}>
             <h2 className={mobileTitle}>N.P.D.C.</h2>
@@ -36,12 +36,10 @@ export default function DashboardHeader() {
         </div>
 
         <nav>
-          <FontAwesomeIcon icon={faBars} size={'2x'}/>
+          <FontAwesomeIcon icon={faBars} size={"2x"} />
           <DesktopNav />
-          <button
-            className="primaryButton"
-            type="button">
-             DONATE
+          <button className="primaryButton" type="button">
+            DONATE
           </button>
         </nav>
       </div>

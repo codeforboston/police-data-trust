@@ -19,6 +19,7 @@ from .database.models.action import Action
 from .database.models.use_of_force import UseOfForce
 from .database.models.legal_case import LegalCase
 from .database.models.officer import Officer
+from .database import User
 
 
 _incident_list_attrs = [
@@ -113,3 +114,6 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     actions: List[ActionSchema]
     use_of_force: List[UseOfForceSchema]
     legal_case: List[LegalCaseSchema]
+
+
+UserSchema = sqlalchemy_to_pydantic(User, exclude="role")

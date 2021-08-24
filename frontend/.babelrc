@@ -1,4 +1,4 @@
 {
-  "presets": ["next/babel", "@babel/preset-typescript"],
-  "plugins": ["inline-react-svg", "@babel/syntax-dynamic-import"]
+  "presets": ["next/babel"],
+  "plugins": ["inline-react-svg"]
 }
