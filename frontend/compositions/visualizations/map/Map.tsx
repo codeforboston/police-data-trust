@@ -7,7 +7,7 @@ import {
   Selection,
   zoom,
   zoomIdentity,
-  ZoomTransform
+  ZoomTransform,
 } from "d3"
 import { geoAlbersUsa, geoPath } from "d3-geo"
 import { Feature, Point } from "geojson"

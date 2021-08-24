@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { useState } from "react"
-import { DashboardHeader } from "../../compositions"
+import { BubbleChart, DashboardHeader } from "../../compositions"
 import { Map } from "../../compositions"
 
 import { Layout } from "../../shared-components"
@@ -19,21 +19,18 @@ export default function Dashboard() {
   }
 
   const VisChoiceButton = (buttonType: "bubble" | "map") => {
-    return (
-      <button
-        type="button"
-        className={"primaryButton"}
-        onClick={() => setWhichChart(buttonType)}
-        style={buttonStyle}>
+      return <button type="button" className={"primaryButton"} onClick={() => setWhichChart(buttonType)} style={buttonStyle}>
         {buttonType}
       </button>
-    )
-  }
+}
   return (
     <Layout>
       <DashboardHeader />
-      <Map />
+      {VisChoiceButton("bubble")  }
+      {VisChoiceButton("map")  }
+      {whichChart === "map" ? <Map /> : <BubbleChart />}
       <DataTable />
     </Layout>
   )
 }
+
