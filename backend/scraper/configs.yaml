@@ -41,6 +41,8 @@ tables:
       - incident_time
       - death_location_street_address
       - death_location_city
+      - death_location_county
+      - death_location_state
       - description
       - perpetrator
       - department_present

@@ -71,6 +71,7 @@ def make_single_table(table, dat, configs):
 def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
     if os.path.isdir(head_directory):
         for filename in os.listdir(head_directory):
+            print(filename)
             if configs["sources"][data_source]["subdirectory"] not in filename\
                     and configs["sources"][data_source]["subdirectory"]\
                     != "None":
