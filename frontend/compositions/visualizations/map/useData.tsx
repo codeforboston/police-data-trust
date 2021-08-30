@@ -1,7 +1,7 @@
 import { Feature } from "geojson"
 import { useMemo, useState } from "react"
 import uscities from "./uscities.json"
-import { GeoJson, Filter, Data } from "../../../models"
+import { GeoJson, Filter, Data } from "../../../models/visualizations"
 
 export default function useData(): Data {
   // using temp dummy data set

@@ -108,7 +108,7 @@ export default function Map() {
     if (!data) return
 
     const populationScale = scaleLinear()
-      .domain(extent(data.features, (d) => d.properties.population))
+      .domain(extent((data.features as Feature[]), (features: Feature) => features.properties.population))
       .range([1, 25])
 
     const getMarkerParamsFromFeature = (d: Feature) => {
@@ -120,7 +120,7 @@ export default function Map() {
       return markerParams
     }
 
-    setMarkerParams(data.features.map((feature) => getMarkerParamsFromFeature(feature)))
+    setMarkerParams(data.features.map((feature: Feature) => getMarkerParamsFromFeature(feature)))
   }, [data])
 
   return (
