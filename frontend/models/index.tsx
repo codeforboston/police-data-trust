@@ -5,6 +5,7 @@ import { LogoSizes } from "./logo-sizes"
 import { passwordToggleViews } from "./password-aid"
 import { PrimaryInputNames, primaryInputValidation } from "./primary-input"
 import { states } from "./state-select"
+import { GeoJson, Filter, Data, CityProperties } from "./visualizations"
 
 export {
   AppRoutes,
@@ -16,5 +17,11 @@ export {
   primaryInputValidation,
   states,
   tooltipContent,
-  TooltipTypes
+  TooltipTypes,
+}
+export type {
+  GeoJson,
+  Filter,
+  Data,
+  CityProperties
 }
