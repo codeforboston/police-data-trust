@@ -9,6 +9,7 @@ if os.environ.get("FLASK_ENV") != "production":
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(32))
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(64))
+    JWT_TOKEN_LOCATION = os.environ.get("JWT_TOKEN_LOCATION", ["headers", "cookies"])
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
@@ -53,11 +54,12 @@ class DevelopmentConfig(Config):
     SECRET_KEY = os.environ.get("SECRET_KEY", "my-secret-key")
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-jwt-secret-key")
 
-
 class ProductionConfig(Config):
     """Config designed for Heroku CLI deployment."""
 
     ENV = "production"
+    JWT_COOKIE_SECURE = True
+    JWT_COOKIE_CSRF_PROTECT = True
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):

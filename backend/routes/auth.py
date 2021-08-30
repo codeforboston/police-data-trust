@@ -1,7 +1,10 @@
 from flask import Blueprint
+from flask import jsonify
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import unset_access_cookies
 
 from ..database import db
 from ..database import User
@@ -26,10 +29,13 @@ def login(body: LoginUserDTO):
     if body.password is not None and body.email is not None:
         user = User.query.filter_by(email=body.email).first()
         if user is not None and user.verify_password(body.password):
-            return {
+            token = create_access_token(identity=user.id)
+            resp = jsonify({
                 "message": "Successfully logged in.",
-                "access_token": create_access_token(identity=user.id),
-            }, 200
+                "access_token": token,
+            })
+            set_access_cookies(resp, token)
+            return resp, 200
         else:
             return {
                 "message": "Error. Email or Password invalid.",
@@ -69,11 +75,14 @@ def register(body: RegisterUserDTO):
         )
         db.session.add(user)
         db.session.commit()
-        return {
+        token = create_access_token(identity=user.id)
+        resp = jsonify({
             "status": "ok",
             "message": "Successfully registered.",
-            "access_token": create_access_token(identity=user.id),
-        }, 200
+            "access_token": token,
+        })
+        set_access_cookies(resp, token)
+        return  resp, 200
     # In case of missing fields, return error message indicating
     # required fields.
     missing_fields = []
@@ -91,6 +100,12 @@ def register(body: RegisterUserDTO):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@bp.route("/logout", methods=["POST"])
+def logout():
+    resp = jsonify({ "message": "successfully logged out"})
+    unset_access_cookies(resp);
+    return resp, 200
 
 
 @bp.route("/test", methods=["GET"])
