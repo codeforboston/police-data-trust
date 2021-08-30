@@ -20,8 +20,6 @@ from flask_pydantic import validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
-
-# TODO: Place cookie on users browser with JWT token
 @bp.route("/login", methods=["POST"])
 @validate()
 def login(body: LoginUserDTO):
@@ -53,7 +51,6 @@ def login(body: LoginUserDTO):
     }, 400
 
 
-# TODO: place cookie on users browser
 @bp.route("/register", methods=["POST"])
 @validate()
 def register(body: RegisterUserDTO):
@@ -96,10 +93,17 @@ def register(body: RegisterUserDTO):
         " fields: " + ", ".join(missing_fields),
     }, 400
 
+@bp.route("/refresh", methods=["POST"])
+@jwt_required()
+def refresh_token():
+    access_token = create_access_token(identity=get_jwt_identity()) 
+    resp = jsonify({
+        "message": "token refreshed successfully",
+        "access_token": access_token,
+    })
+    set_access_cookies(resp, access_token)
+    return resp, 200
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 @bp.route("/logout", methods=["POST"])
 def logout():

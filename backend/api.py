@@ -6,7 +6,7 @@ from flask.testing import FlaskClient
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
-from .auth import user_manager, jwt
+from .auth import user_manager, jwt, refresh_token
 from .routes.incidents import bp as incidents_bp
 from .routes.auth import bp as auth_bp
 from .utils import dev_only
@@ -88,6 +88,11 @@ def register_routes(app: Flask):
     @app.route("/")
     def hello_world():
         return "Hello, world!"
+
+    @app.after_request
+    def after_request(response):
+        response = refresh_token(response)
+        return response
 
 
 def register_misc(app: Flask):
