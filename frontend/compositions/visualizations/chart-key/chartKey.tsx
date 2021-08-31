@@ -1,25 +1,30 @@
 import { scaleLinear } from "d3"
 import React from "react"
 import { Circle, Square } from "../charts"
-import styles from "./chart.module.css"
+import styles from "./chartKey.module.css"
 import { steppedGradient } from "../charts/chartScales"
 import { GradientKeyItemProps, KeyItemProps, Position } from "../charts/chartTypes"
 
 export default function ChartKey(props: {
   title: string
-  children: React.ReactElement[]
+  entries: JSX.Element[]
   position: Position
 }) {
+  const dirs = props.position.split(" ")
+  const style: { [name: string]: string } = {}
+
+  dirs.forEach((p) => (style[p] = "0"))
+
   return (
-    <div id={`${props.title}`} className={styles.chartKeyContainer}>
-      {React.Children.map(props.children, (item, i) => (
-        <KeyEntryWrapper key={i} children={item} />
+    <div id={`${props.title}`} className={styles.chartKeyContainer} style={style}>
+      {React.Children.map(props.entries, (item, i) => (
+        <KeyEntryWrapper key={i}>{item}</KeyEntryWrapper>
       ))}
     </div>
   )
 }
 
-export function KeyEntryWrapper(props: { children: React.ReactElement }) {
+export function KeyEntryWrapper(props: { children: React.ReactNode }) {
   return <div className={styles.KeyEntry}>{props.children}</div>
 }
 
@@ -36,17 +41,20 @@ export function SymbolKeyItem(props: KeyItemProps) {
 }
 
 export function GradientKeyItem(props: GradientKeyItemProps) {
-  const { lowLabel, highLabel, colorTheme, colorScale, symbol } = props
+  const { lowLabel, highLabel, colorTheme, colorScale, symbol, title } = props
   const colorSteps = steppedGradient(4, colorTheme, colorScale)
 
   return (
-    <div className={styles.keyGradientEntry}>
-      <label className={styles.label}>{lowLabel}</label>
-      {colorSteps.map((colorStep, i) => (
-        <KeySymbol color={colorStep} symbol={symbol} key={i} />
-      ))}
-      <label className={styles.label}>{highLabel}</label>
-    </div>
+    <>
+      <div>{title}</div>
+      <div className={styles.keyGradientEntry}>
+        <label className={styles.label}>{lowLabel}</label>
+        {colorSteps.map((colorStep, i) => (
+          <KeySymbol color={colorStep} symbol={symbol} key={i} />
+        ))}
+        <label className={styles.label}>{highLabel}</label>
+      </div>
+    </>
   )
 }
 

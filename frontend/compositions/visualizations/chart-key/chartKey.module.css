@@ -1,9 +1,4 @@
 .chartKeyContainer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,7 +9,7 @@
 .KeyEntry {
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: var(--size32);
   padding: var(--size8);
   align-items: center;

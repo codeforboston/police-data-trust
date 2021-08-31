@@ -5,7 +5,7 @@ import { ChartKey, GradientKeyItem, scaleDataToColorTheme, SymbolKeyItem } from 
 export default function MapKey(props: {title: string}) {
   const colorScale = scaleDataToColorTheme(0, 1000)
   const {title} = props
-  const chartKeyElements = [
+  const chartKeyElements: JSX.Element[] = [
     <SymbolKeyItem
       label="Data Rich Cities"
       labelPosition={"right"}
@@ -38,5 +38,7 @@ export default function MapKey(props: {title: string}) {
     />
   ]
 
-  return <ChartKey title={title} children={chartKeyElements} position={"bottom right"} />
+  return <div style={{position: "absolute", right: 0, bottom: 0}}>
+    <ChartKey title={title} entries={chartKeyElements} position={"none"} />
+  </div>
 }

@@ -15,7 +15,7 @@ export default function useData(): Data {
   })
 
   return useMemo(() => {
-    const { property, value, sliceMin: lowCut, sliceMax: limit } = filterProperties
+    const { property, value, sliceMin, sliceMax } = filterProperties
 
     let filteredFeatures: Feature[]
     if (value === "") {
@@ -26,13 +26,13 @@ export default function useData(): Data {
       filteredFeatures = data.features.filter((d: Feature) => d.properties[property] === value)
     }
 
-    const minimum = lowCut || 0
-    const maximum = limit || lowCut + 50
+    const minimum = sliceMin || 0
+    const maximum = sliceMax && sliceMax < filteredFeatures.length ? sliceMax : filteredFeatures.length
 
     return {
       features: filteredFeatures.slice(minimum, maximum),
       filter: filterProperties,
       setFilterProperties
     }
-  }, [filterProperties])
+  }, [data.features, filterProperties])
 }

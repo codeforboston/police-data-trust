@@ -4,8 +4,6 @@
   width: 80vw;
   pointer-events: none;
   margin: auto;
-  margin-bottom: var(--size32);
-  top: 10vh;
 }
 
 .mapWrapper {

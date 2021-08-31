@@ -1,9 +1,7 @@
 import * as React from "react"
 
 import { useState } from "react"
-import { BubbleChart, DashboardHeader } from "../../compositions"
-import { Map } from "../../compositions"
-
+import { BubbleChart, DashboardHeader, Map } from "../../compositions"
 import { Layout } from "../../shared-components"
 import { DataTable } from "../../shared-components/data-table/data-table"
 
@@ -15,7 +13,7 @@ export default function Dashboard() {
   const buttonStyle = {
     PointerEvents: "all",
     cursor: "pointer",
-    marginTop: "2em"
+    margin: "2em 1em 1em 1em "
   }
 
   const VisChoiceButton = (buttonType: "bubble" | "map") => {
@@ -26,8 +24,10 @@ export default function Dashboard() {
   return (
     <Layout>
       <DashboardHeader />
-      {VisChoiceButton("bubble")  }
-      {VisChoiceButton("map")  }
+      <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+        {VisChoiceButton("bubble")  }
+        {VisChoiceButton("map")  }
+      </div>
       {whichChart === "map" ? <Map /> : <BubbleChart />}
       <DataTable />
     </Layout>

@@ -6,3 +6,19 @@
 .background {
   background-color: white;
 }
+
+.filterInput {
+  flex: 1;
+}
+
+.filterWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inset {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

@@ -1,5 +1,5 @@
 import { BaseType, ScaleLinear, Selection, Transition } from "d3"
-import { CityProperties } from "../../../models"
+import { CityProperties } from "../../../models/visualizations"
 
 export interface Coord {
   x: number
@@ -7,7 +7,6 @@ export interface Coord {
 }
 export type Pair<T> = [T, T]
 export type Path = string
-
 
 export type Range = Pair<number>
 export type ColorTheme = (t: number) => string
@@ -24,6 +23,7 @@ export type Position =
   | "bottom right"
   | "top left"
   | "bottom left"
+  | "none"
 
 export interface ChartSymbolAttributes {
   label: string
@@ -68,7 +68,8 @@ export interface GradientKeyItemProps {
   colorTheme: ColorTheme
   colorScale: ColorScale
   range: Range
-  symbol: "circle" | "square"
+  symbol: "circle" | "square",
+  title?: string
 }
 
 export type JoinSelection = Selection<SVGElement, DataPoint, BaseType, any>

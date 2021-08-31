@@ -1,11 +1,11 @@
 import { Circle, Square } from "../chartSymbols"
 import { lightBlueGrey, lightDarkBlueTheme } from "./chartScales"
-import ChartKey, {
+import {ChartKey, 
   KeyEntryWrapper,
   GradientKeyItem,
   scaleDataToColorTheme,
   SymbolKeyItem
-} from "./chartKey"
+} from "../chart-key"
 import { DataPoint, JoinSelection, ChartSymbolProps } from "./chartTypes"
 import { parseProperties, formatSymbolData } from "./chartDataHandlers"
 import {steppedGradient} from "./chartScales"

@@ -1,6 +1,6 @@
 import { extent, hierarchy, HierarchyCircularNode, pack } from "d3"
 import { Feature } from "geojson"
-import { CityProperties } from "../../../models"
+import { CityProperties } from "../../../models/visualizations"
 import { createColorScale, createLogScale, lightDarkBlueTheme } from "./chartScales"
 import { DataPoint, PackableObj } from "./chartTypes"
 
