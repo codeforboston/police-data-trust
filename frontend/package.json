@@ -12,7 +12,9 @@
     "test": "jest",
     "test:update-snapshots": "jest --updateSnapshot",
     "watch": "jest --watch",
-    "fix": "next lint --fix; prettier --write ."
+    "fix": "next lint --fix; prettier --write .",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "d3": "^7.0.0",
@@ -23,11 +25,16 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@storybook/addon-actions": "^6.3.7",
+    "@storybook/addon-essentials": "^6.3.7",
+    "@storybook/addon-links": "^6.3.7",
+    "@storybook/react": "^6.3.7",
     "@testing-library/dom": "^7.31.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -42,6 +49,7 @@
     "@types/react-test-renderer": "^17.0.1",
     "@types/topojson": "^3.2.3",
     "babel-jest": "^27.0.2",
+    "babel-loader": "^8.2.2",
     "babel-plugin-inline-react-svg": "^2.0.1",
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.0",
