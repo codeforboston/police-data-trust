@@ -5,12 +5,13 @@ import requests
 import zipfile
 import io
 import os
+import sys
 
 next_index = 0
 
 # data manipulation functions
 all_names = []
-
+output_dir = "excel_outputs"
 
 def map_varnames(df, data_source, xwalk, configs):
     # clean column names
@@ -128,7 +129,7 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat = gen_ids(dat, data_source)
 
     dat = dat.loc[~dat.index.duplicated(keep='first')]
-    dat.to_csv(data_source + '.csv', index=True, header=True)
+    dat.to_csv(output_dir + "/" + data_source + '.csv', index=True, header=True)
     table_names = list(configs["tables"].keys())
     table_list = [make_single_table(x, dat, configs) for x in table_names]
 
@@ -144,6 +145,8 @@ def make_all_tables():
     # read configs
     with open(r"backend/scraper/configs.yaml") as file:
         configs = yaml.load(file, Loader=yaml.FullLoader)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     xwalk = pd.read_csv(configs["resources"]["varname_crosswalk"])
 
     # make data tables
@@ -167,21 +170,24 @@ def make_all_tables():
         sub_table = full_df
         table_list.append(sub_table)
     table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
-    df_victim = table_dict["victim"]
-    victim_indices = df_victim['victim_name_full'] != 'Name withheld by police'
-    victim_indices_2 = df_victim['victim_name_full'] != ''
-    victim_indices_3 = df_victim['victim_name_full'].notnull()
-    filtered_indices = (victim_indices & victim_indices_2 & victim_indices_3)
-    df_victim_filtered = pd.concat([
-        df_victim[df_victim['victim_name_full'] == 'Name withheld by police'],
-        df_victim[df_victim['victim_name_full'] == ''],
-        df_victim[df_victim['victim_name_full'].isnull()],
-        df_victim[filtered_indices].drop_duplicates(['victim_name_full'],
+    df_combine = pd.concat([table_dict["victim"], table_dict["incident"]])
+    victim_indices = df_combine['victim_name_full'] != 'Name withheld by police'
+    victim_indices_2 = df_combine['victim_name_full'] != ''
+    victim_indices_3 = df_combine['victim_name_full'].notnull()
+    victim_indices_4 = df_combine["incident_date"].notnull()
+    filtered_indices = (victim_indices & victim_indices_2 & victim_indices_3 & victim_indices_4)
+    df_filtered = pd.concat([
+        df_combine[df_combine['victim_name_full'] == 'Name withheld by police'],
+        df_combine[df_combine['victim_name_full'] == ''],
+        df_combine[df_combine['victim_name_full'].isnull()],
+        df_combine[df_combine['incident_date'].isnull()],
+        df_combine[filtered_indices].drop_duplicates(['victim_name_full', 'incident_date'],
                                                     keep='first')
     ])
-    final_indices = df_victim_filtered.index
+    df_filtered = df_filtered[~df_filtered.index.duplicated(keep='first')]
+    final_indices = df_filtered.index
 
-    writer = pd.ExcelWriter('full_database.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(output_dir + '/full_database.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.
     for key in table_dict:
@@ -194,4 +200,11 @@ def make_all_tables():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 2:
+        print('Too many arguments')
+        sys.exit()
+    if len(sys.argv) == 2:
+        output_dir = sys.argv[1]
+    else:
+        print("defaulting output directory to " + output_dir)
     make_all_tables()
