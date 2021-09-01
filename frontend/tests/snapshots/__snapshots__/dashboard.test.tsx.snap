@@ -72,14 +72,6 @@ exports[`renders Dashboard correctly 1`] = `
           <li
             className="tab"
           >
-            <a
-              href="#"
-            >
-              Search
-            </a>
-          </li>
-          <li
-            className=""
             <svg
               aria-hidden="true"
               className="svg-inline--fa fa-bars fa-w-14 "

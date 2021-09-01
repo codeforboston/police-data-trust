@@ -3,32 +3,11 @@ import Link from 'next/link'
 import styles from './enrollment-response.module.css'
 import { Logo, ExternalLink } from '../../shared-components'
 import { AppRoutes, LogoSizes } from '../../models'
+import { EnrollmentTypes, enrollmentMessage } from '../../models'
+
+// TODO: development team link could be stored someplace else
 
 interface EnrollmentResponseProps { isSuccess?: boolean }
-
-interface EnrollmentErrorText {
-  statusMessage: string,
-  returnText: string,
-  returnPath: string
-}
-
-export enum EnrollmentTypes {
-  VIEWER = 'viewer',
-  PASSPORT = 'passport'
-}
-
-const enrollmentMessage: { [key in EnrollmentTypes]: EnrollmentErrorText} = {
-  [EnrollmentTypes.VIEWER]: {
-    statusMessage: 'complete your registration',
-    returnText: 'Return to login',
-    returnPath: AppRoutes.LOGIN
-  },
-  [EnrollmentTypes.PASSPORT]: {
-    statusMessage: 'submit your application',
-    returnText: 'Return to dashboard',
-    returnPath: AppRoutes.DASHBOARD
-  }
-}
 
 function failureResponseMessage( enrollmentType: EnrollmentTypes) {
   const { statusMessage, returnText, returnPath } = enrollmentMessage[enrollmentType]
@@ -36,7 +15,7 @@ function failureResponseMessage( enrollmentType: EnrollmentTypes) {
   return (
     <div className={message}>
       <header className={title}>Something went wrong...</header>
-      <p>We weren't able to {statusMessage}</p>
+      <p>We weren&apos;t able to {statusMessage}</p>
       <p className={boldText}>Please come back and try again later</p>
       <p>If the problem perists, please 
         <ExternalLink 
