@@ -39,7 +39,7 @@ exports[`renders correctly 1`] = `
           <label
             htmlFor="streetAddressInput"
           >
-            Street address:
+            Street Address:
           </label>
           <input
             aria-describedby="streetAddressError"
@@ -60,7 +60,7 @@ exports[`renders correctly 1`] = `
           <label
             htmlFor="cityOrTownInput"
           >
-            City or town:
+            City Or Town:
           </label>
           <input
             aria-describedby="cityOrTownError"
@@ -373,7 +373,7 @@ exports[`renders correctly 1`] = `
           <label
             htmlFor="zipCodeInput"
           >
-            Zip code:
+            Zip Code:
           </label>
           <input
             aria-describedby="zipCodeError"
