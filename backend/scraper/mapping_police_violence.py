@@ -13,6 +13,7 @@ next_index = 0
 all_names = []
 output_dir = "excel_outputs"
 
+
 def map_varnames(df, data_source, xwalk, configs):
     # clean column names
     df.columns = (
@@ -104,12 +105,14 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
 def make_tables_data_source(data_source, xwalk, configs):
     if configs["sources"][data_source]["url"].endswith(".xlsx"):
         dat_raw = pd.read_excel(configs["sources"][data_source]["url"])
+        dat_raw.to_excel(output_dir + '/' + data_source + '_raw.xlsx')
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".zip"):
         r = requests.get(configs["sources"][data_source]["url"])
         z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(configs["sources"][data_source]["location"])
+        z.extractall(output_dir + "/"
+                     + configs["sources"][data_source]["location"])
         dat_raw = extract_all_subfolders(
             configs["sources"][data_source]["headdirectory"],
             data_source, xwalk, [], configs)
@@ -119,6 +122,7 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
         dat_raw = pd.read_csv(configs["sources"][data_source]["url"])
+        dat_raw.to_excel(output_dir + '/' + data_source + '_raw.xlsx')
         for i in range(xwalk.shape[0]):
             if xwalk[data_source][i] not in dat_raw.columns:
                 dat_raw[xwalk[data_source][i]] = ""
@@ -175,19 +179,22 @@ def make_all_tables():
     victim_indices_2 = df_combine['victim_name_full'] != ''
     victim_indices_3 = df_combine['victim_name_full'].notnull()
     victim_indices_4 = df_combine["incident_date"].notnull()
-    filtered_indices = (victim_indices & victim_indices_2 & victim_indices_3 & victim_indices_4)
+    filtered_indices = (victim_indices & victim_indices_2
+                        & victim_indices_3 & victim_indices_4)
     df_filtered = pd.concat([
         df_combine[df_combine['victim_name_full'] == 'Name withheld by police'],
         df_combine[df_combine['victim_name_full'] == ''],
         df_combine[df_combine['victim_name_full'].isnull()],
         df_combine[df_combine['incident_date'].isnull()],
-        df_combine[filtered_indices].drop_duplicates(['victim_name_full', 'incident_date'],
-                                                    keep='first')
+        df_combine[filtered_indices].drop_duplicates(['victim_name_full',
+                                                      'incident_date'],
+                                                     keep='first')
     ])
     df_filtered = df_filtered[~df_filtered.index.duplicated(keep='first')]
     final_indices = df_filtered.index
 
-    writer = pd.ExcelWriter(output_dir + '/full_database.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter(output_dir + '/full_database.xlsx',
+                            engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet.
     for key in table_dict:
