@@ -77,8 +77,6 @@ exports[`renders Login correctly 1`] = `
       <a
         className="callToActionLink"
         href="/register"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         Register for an account
       </a>

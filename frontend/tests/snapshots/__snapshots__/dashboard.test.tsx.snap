@@ -12,7 +12,16 @@ exports[`renders Dashboard correctly 1`] = `
         className="leftHeader"
       >
         <div
-          className="logoContainer"
+          className="mobileLogo"
+        >
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            className="logo small"
+            src="/NPDCLogo.svg"
+          />
+        </div>
+        <div
+          className="desktopLogo"
         >
           <img
             alt="A blue circular logo design reads 'National Police Data Coalition'"
@@ -38,14 +47,30 @@ exports[`renders Dashboard correctly 1`] = `
           </p>
         </div>
       </div>
-      <div
-        className="rightHeader"
-      >
-        <nav
-          className="nav"
+      <nav>
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-bars fa-w-14 fa-2x "
+          data-icon="bars"
+          data-prefix="fas"
+          focusable="false"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 448 512"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <div
-            className="mobileNav"
+          <path
+            d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+        <ul
+          className="rightHeader"
+          onClick={[Function]}
+        >
+          <li
+            className="tab"
           >
             <svg
               aria-hidden="true"
@@ -68,48 +93,821 @@ exports[`renders Dashboard correctly 1`] = `
           <div
             className="desktopNav"
           >
-            <ul
-              className="rightHeader"
-              onClick={[Function]}
+            <a
+              href="#"
             >
-              <li
-                className="tab"
-              >
-                <a
-                  href="#"
-                >
-                  Search
-                </a>
-              </li>
-              <li
-                className=""
-              >
-                <a
-                  href="#"
-                >
-                  Profile
-                </a>
-              </li>
-              <li
-                className=""
-              >
-                <a
-                  href="#"
-                >
-                  About
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
+              Profile
+            </a>
+          </li>
+          <li
+            className=""
+          >
+            <a
+              href="#"
+            >
+              About
+            </a>
+          </li>
+        </ul>
         <button
           className="primaryButton"
           type="button"
         >
           DONATE
         </button>
-      </div>
+      </nav>
     </div>
   </header>
+  <div>
+    <table
+      aria-label="Search Results Table"
+      className="dataTable"
+      role="table"
+    >
+      <thead
+        className="dataHeader"
+      >
+        <tr
+          role="row"
+        >
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Date(s)
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Incident Type
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Officer(s) Involved
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Subject
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Source
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Full Record
+          </th>
+          <th
+            colSpan={1}
+            role="columnheader"
+          >
+            Save Record
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        role="rowgroup"
+      >
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            Dan Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            Ed Smith, Vince Gilligan
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            Dan Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            John Smith
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+        <tr
+          className="dataRows"
+          role="row"
+        >
+          <td
+            role="cell"
+          >
+            2003/01/01
+          </td>
+          <td
+            role="cell"
+          >
+            Use of force
+          </td>
+          <td
+            role="cell"
+          >
+            Ed Smith, Vince Gilligan
+          </td>
+          <td
+            role="cell"
+          >
+            unknown
+          </td>
+          <td
+            role="cell"
+          >
+            News Article
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-greater-than fa-w-12 "
+              data-icon="greater-than"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 384 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+          <td>
+            <svg
+              aria-hidden="true"
+              className="svg-inline--fa fa-plus-circle fa-w-16 "
+              data-icon="plus-circle"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              style={Object {}}
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot
+        className="dataFooter"
+      >
+        <tr>
+          <td>
+            14
+             records found
+          </td>
+          <td
+            colSpan={4}
+          />
+          <td>
+            Show
+             
+            <input
+              className="dataRowPage"
+              max={10}
+              min={1}
+              onBlur={[Function]}
+              onChange={[Function]}
+              type="number"
+              value={10}
+            />
+             
+            rows
+          </td>
+          <td>
+             
+            <button
+              disabled={true}
+              onClick={[Function]}
+            >
+              &lt;
+            </button>
+             
+            1
+             of 
+            2
+             
+            <button
+              disabled={false}
+              onClick={[Function]}
+            >
+              &gt;
+            </button>
+             
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 </div>
 `;

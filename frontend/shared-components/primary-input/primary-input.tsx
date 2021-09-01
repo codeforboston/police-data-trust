@@ -11,12 +11,7 @@ interface PrimaryInputProps {
   size?: string
 }
 
-export default function PrimaryInput({
-  inputName,
-  isSubmitted,
-  isShown,
-  size,
-}: PrimaryInputProps) {
+export default function PrimaryInput({ inputName, isSubmitted, isShown, size }: PrimaryInputProps) {
   const { inputContainer, inputField } = styles
   const { errorMessage, pattern, inputType } = primaryInputValidation[inputName]
 
@@ -40,7 +35,9 @@ export default function PrimaryInput({
     setIsValid(checkIsValid(value))
   }
 
-  useEffect(() => { if (isSubmitted) setIsValid(checkIsValid(inputValue)) }, [isSubmitted])
+  useEffect(() => {
+    if (isSubmitted) setIsValid(checkIsValid(inputValue))
+  }, [isSubmitted])
 
   return (
     <div className={`defaultInputContainer ${inputContainer} ${!isValid && "hasError"}`}>

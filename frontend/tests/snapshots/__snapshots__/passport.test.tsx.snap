@@ -435,8 +435,6 @@ exports[`renders correctly 1`] = `
       <a
         className="callToActionLink"
         href="/dashboard"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         Return to dashboard
       </a>

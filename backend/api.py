@@ -3,12 +3,12 @@ from typing import Optional
 import click
 from flask import Flask
 from flask.testing import FlaskClient
-
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
+from .auth import user_manager, jwt
 from .routes.incidents import bp as incidents_bp
-# from .routes.auth import bp as auth_bp
+from .routes.auth import bp as auth_bp
 from .utils import dev_only
 
 
@@ -33,8 +33,8 @@ def create_app(config: Optional[str] = None):
 
 def register_extensions(app: Flask):
     db.init_app(app)
-    # login_manager.init_app(app)
-    # user_manager.init_app(app)
+    user_manager.init_app(app)
+    jwt.init_app(app)
 
 
 def register_commands(app: Flask):
@@ -83,7 +83,7 @@ def register_commands(app: Flask):
 
 def register_routes(app: Flask):
     app.register_blueprint(incidents_bp)
-    # app.register_blueprint(auth_bp)
+    app.register_blueprint(auth_bp)
 
     @app.route("/")
     def hello_world():
@@ -110,7 +110,6 @@ def register_misc(app: Flask):
     # Client that makes testing a bit easier.
 
     class FlaskClientWithDefaultHeaders(FlaskClient):
-
         def post(self, *args, **kwargs):
             kwargs.setdefault("headers", {"Content-Type": "application/json"})
             return super().post(*args, **kwargs)

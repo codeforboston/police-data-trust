@@ -3,6 +3,7 @@ import EnrollmentCallToAction from './enrollment-call-to-action/enrollment-call-
 import EnrollmentHeader from './enrollment-header/enrollment-header'
 import PasswordAid from './password-aid/password-aid'
 import { RegistrationResponse, PassportApplicationResponse } from './enrollment-response/enrollment-response'
+import Map from "./map"
 
 export { 
   DashboardHeader,
@@ -10,5 +11,7 @@ export {
   EnrollmentHeader,
   PassportApplicationResponse,
   RegistrationResponse,
-  PasswordAid
+  PasswordAid,
+  Map
 }
+

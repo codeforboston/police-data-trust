@@ -17,7 +17,7 @@ exports[`renders Register correctly 1`] = `
         Register: Viewer Account
         <div
           aria-describedby="viewerAccountsTooltip"
-          aria-label="Learn more about Viewer accounts"
+          aria-label="Learn more about Viewer Accounts"
           className="tooltipContainer"
           role="tooltip"
           tabIndex={0}
@@ -245,8 +245,6 @@ exports[`renders Register correctly 1`] = `
       <a
         className="callToActionLink"
         href="/login"
-        onClick={[Function]}
-        onMouseEnter={[Function]}
       >
         Login instead
       </a>

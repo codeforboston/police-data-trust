@@ -60,6 +60,7 @@ class VictimStatus(enum.Enum):
 
 class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
     location = db.Column(db.Text)  # TODO: location object
