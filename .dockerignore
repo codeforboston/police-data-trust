@@ -1,0 +1,6 @@
+# Files that shouldn't be copied into the api image
+frontend
+.vscode
+.pytest_cache
+.env
+**/__pycache__

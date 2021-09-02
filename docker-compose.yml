@@ -13,12 +13,11 @@ services:
   web:
     restart: always
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: ./frontend
     volumes:
-      - ./frontend/pages:/usr/src/app/pages
-      - ./frontend/public:/usr/src/app/public
-      - ./frontend/styles:/usr/src/app/styles
+      - ./frontend:/app
+      # Prevents the host node_modules from clobbering the image's
+      - /app/node_modules
     ports:
       - 3000:3000
   api:
@@ -26,10 +25,14 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    volumes:
+      - .:/app
     depends_on:
       - db
     environment:
       POSTGRES_HOST: db
+      FLASK_ENV: development
+      WAIT_HOSTS: db:5432
     ports:
       - 5000:5000
 
