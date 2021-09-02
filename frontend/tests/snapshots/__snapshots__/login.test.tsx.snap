@@ -24,7 +24,7 @@ exports[`renders Login correctly 1`] = `
         <label
           htmlFor="emailAddressInput"
         >
-          Email address:
+          Email Address:
         </label>
         <input
           aria-describedby="emailAddressError"
@@ -45,7 +45,7 @@ exports[`renders Login correctly 1`] = `
         <label
           htmlFor="loginPasswordInput"
         >
-          Login password:
+          Login Password:
         </label>
         <input
           aria-describedby="loginPasswordError"
