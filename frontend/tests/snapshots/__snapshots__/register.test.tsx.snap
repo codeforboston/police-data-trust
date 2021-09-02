@@ -63,7 +63,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="firstNameInput"
           >
-            First name:
+            First Name:
           </label>
           <input
             aria-describedby="firstNameError"
@@ -84,7 +84,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="lastNameInput"
           >
-            Last name:
+            Last Name:
           </label>
           <input
             aria-describedby="lastNameError"
@@ -109,7 +109,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="emailAddressInput"
           >
-            Email address:
+            Email Address:
           </label>
           <input
             aria-describedby="emailAddressError"
@@ -130,7 +130,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="phoneNumberInput"
           >
-            Phone number:
+            Phone Number:
           </label>
           <input
             aria-describedby="phoneNumberError"
@@ -156,7 +156,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="createPasswordInput"
           >
-            Create password:
+            Create Password:
           </label>
           <input
             aria-describedby="createPasswordError"
@@ -177,7 +177,7 @@ exports[`renders Register correctly 1`] = `
           <label
             htmlFor="confirmPasswordInput"
           >
-            Confirm password:
+            Confirm Password:
           </label>
           <input
             aria-describedby="confirmPasswordError"
