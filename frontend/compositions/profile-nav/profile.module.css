@@ -1,0 +1,40 @@
+.wrapper {
+  width: 100%;
+  height: var(--size112);
+  z-index: -10000;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.leftMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: bold;
+  text-align: left;
+  line-height: 1.5;
+  border: thin outset var(--darkBlue);
+  border-radius: 1em;
+  width: 15vw;
+  margin-left: 2rem;
+}
+
+.leftMenu li {
+  list-style-type: none;
+  text-decoration: none;
+  color: var(--linkBlue);
+  cursor: pointer;
+}
+
+.leftMenu li.selected {
+  text-decoration: underline;
+  color: var(--darkBlue);
+  cursor: default;
+}
+
+.rightContent {
+  width: 80vw;
+}
