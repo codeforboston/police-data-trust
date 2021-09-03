@@ -38,7 +38,7 @@ export default function DashboardHeader() {
 
         <nav>
           <FontAwesomeIcon icon={faBars} size={"2x"} />
-          <DesktopNav currentNav={nav} selectNav={setNav}  />
+          <DesktopNav />
           <button className="primaryButton" type="button">
             DONATE
           </button>
