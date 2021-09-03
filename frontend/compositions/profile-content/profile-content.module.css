@@ -41,6 +41,7 @@
   vertical-align: text-top;
   margin-left: var(--size10);
   margin-bottom: var(--size12);
+  cursor: pointer;
 }
 
 .profileForm {
@@ -61,11 +62,13 @@
 .cancelButton {
   background-color: #7caed7;
   color: var(--darkBlue);
+  cursor: pointer;
 }
 
 .submitButton {
   background-color: var(--darkBlue);
   color: white;
+  cursor: pointer;
 }
 
 .profileTypeText {
