@@ -1,0 +1,61 @@
+.profileData {
+  /* height: var(--size200); */
+
+  padding: var(--size12);
+  max-width: var(--size512);
+}
+
+.row {
+  display: block;
+  line-height: 1.5;
+}
+.row label {
+  display: block;
+  font-weight: bold;
+  font-size: var(--size16);
+}
+
+.row input {
+  height: var(--size20);
+}
+
+.label {
+  font-size: var(--size10);
+  color: var(--grey);
+  margin-left: var(--size24);
+}
+
+.dataField {
+  display: inline-block;
+  font-size: var(--size12);
+  margin-left: var(--size10);
+}
+
+.sectionTitle {
+  font-size: var(--size28);
+  font-weight: bold;
+  color: var(--darkBlue);
+}
+
+.editButton {
+  vertical-align: text-top;
+  margin-left: var(--size10);
+  margin-bottom: var(--size12);
+}
+
+.profileTypeText {
+  font-size: var(--size36);
+  color: #3473a8;
+  font-weight: bold;
+}
+
+.description {
+  font-size: var(--size14);
+  color: black;
+}
+
+.profileTypeLink {
+  font-size: var(--size16);
+  color: var(--linkBlue);
+  text-decoration: underline;
+}
