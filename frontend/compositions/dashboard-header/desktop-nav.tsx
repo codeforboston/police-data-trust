@@ -1,41 +1,30 @@
 import * as React from "react"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import styles from "./dashboard-header.module.css"
-import { AppRoutes } from "../../models"
+import { headerTabs } from '../../models/header-nav'
 
 
-interface NavTypes {
-  loc: AppRoutes,
-  text: string
-}
 
-const topNav: NavTypes[] = [
-  { loc: AppRoutes.DASHBOARD, text: 'Search' },
-  { loc: AppRoutes.PROFILE, text: 'Profile' },
-  { loc: AppRoutes.ABOUT, text: 'About' }
-]
+export default function DesktopNav() {
 
-interface DesktopNavProps {
-  currentNav: string,
-  selectNav: Function
-}
-
-export default function DesktopNav({ currentNav, selectNav}: DesktopNavProps) {
-
+  const router = useRouter()
 
   const clsName = (loc: string): string => {
-    return loc === currentNav ? styles.tab : ""
+    return loc === router.pathname ? styles.tab : ''
   }
 
   return (
-    <ul className={styles.rightHeader}>
-      {topNav.map(itm => (
-        <li key={itm.loc} className={clsName(itm.loc)} onClick={() => selectNav(itm.loc)}>
-          <Link href={itm.loc}>
-            <a>{itm.text}</a>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <nav>
+      <ul className={styles.rightHeader}>
+        {headerTabs.map(tab => (
+          <li 
+            key={tab.loc} 
+            className={clsName(tab.loc)}>
+            <Link href={tab.loc}>{tab.text}</Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   )
 }
