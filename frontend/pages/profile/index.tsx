@@ -3,15 +3,59 @@ import * as React from "react"
 import { Layout } from "../../shared-components"
 import { DashboardHeader } from "../../compositions"
 import ProfileNav from "../../compositions/profile-nav/profile-nav"
-import { ProfileMenu } from "../../models/profile"
+import { ProfileMenu, UserType } from "../../models/profile"
+import { 
+  ProfileInfo, 
+  ProfileType,
+  SavedSearch, 
+  SavedResults 
+} from "../../compositions/profile-content/profile-content"
+import styles from "./profile.module.css"
+
+import { mockData } from "../../models/mock-user-data"
+
+
 
 export default function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
+
+
+  const mockUser = mockData[0]
+
   return (
     <Layout>
       <DashboardHeader />
-      <ProfileNav currentItem={nav} selectNav={setNav} />
-      <div>placeholder</div>
+      <div className={styles.profileWrapper}>
+        <ProfileNav currentItem={nav} selectNav={setNav} />
+        
+        {nav===ProfileMenu.USER_INFO && (
+          <ProfileInfo userData={mockUser} />
+        )}
+        {nav===ProfileMenu.PROFILE_TYPE && (
+          <ProfileType userData={mockUser} />
+        )}
+        {nav===ProfileMenu.SAVED_SEARCHES && (
+          <SavedSearch userData={mockUser} />
+        )}
+        {nav===ProfileMenu.SAVED_RESULTS && (
+          <SavedResults userData={mockUser} />
+        )}
+
+        {/* {contentComponent(nav, mockUser)} */}
+        
+      </div>
     </Layout>
   )
+}
+
+
+const profileContent: { [key in ProfileMenu]: Function} = {
+  [ProfileMenu.USER_INFO]: ProfileInfo,
+  [ProfileMenu.PROFILE_TYPE]: ProfileType,
+  [ProfileMenu.SAVED_SEARCHES]: SavedSearch,
+  [ProfileMenu.SAVED_RESULTS]: SavedResults
+}
+
+function contentComponent(menu: ProfileMenu, userData: UserType) {
+  return profileContent[menu](userData)
 }
