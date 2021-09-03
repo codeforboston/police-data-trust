@@ -43,6 +43,31 @@
   margin-bottom: var(--size12);
 }
 
+.profileForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileForm button {
+  margin-right: var(--size10);
+  margin-top: var(--size32);
+  font-weight: 700;
+  font-size: var(--size14);
+  height: var(--size32);
+  width: var(--size80);
+  font-size: var(--size16);
+}
+
+.cancelButton {
+  background-color: #7caed7;
+  color: var(--darkBlue);
+}
+
+.submitButton {
+  background-color: var(--darkBlue);
+  color: white;
+}
+
 .profileTypeText {
   font-size: var(--size36);
   color: #3473a8;
@@ -58,4 +83,23 @@
   font-size: var(--size16);
   color: var(--linkBlue);
   text-decoration: underline;
+}
+
+.savedData {
+  border: 1px solid var(--darkBlue);
+  box-sizing: border-box;
+  box-shadow: -2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  border-radius: var(--size10);
+}
+
+.dataTitle {
+  font-size: var(--size16);
+  color: var(--lightBlue);
+  line-height: 1.4;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dataGrid {
+  display: block;
 }
