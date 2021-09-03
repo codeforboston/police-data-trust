@@ -9,7 +9,7 @@ import {
   ProfileType,
   SavedSearch, 
   SavedResults 
-} from "../../compositions/profile-content/profile-content"
+} from "../../compositions/profile-content"
 import styles from "./profile.module.css"
 
 import { mockData } from "../../models/mock-user-data"
