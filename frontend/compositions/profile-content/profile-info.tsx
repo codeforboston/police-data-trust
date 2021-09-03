@@ -39,8 +39,8 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
             <input type="password" id="confirmPassword" />
           </div>
           <div className={row}>
-            <button onClick={() => setEditMode(false)}>Cancel</button>
-            <input type="submit" value="Save Changes" />
+            <button className={styles.cancelButton} onClick={() => setEditMode(false)}>Cancel</button>
+            <input type="submit" className={styles.submitButton} value="Save Changes" />
           </div>
         </form>
       </div>
