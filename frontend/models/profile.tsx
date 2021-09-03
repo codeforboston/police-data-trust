@@ -1,3 +1,9 @@
+// User Profile models
+
+import { SavedResults, SavedSearch } from "../compositions/profile-content"
+import ProfileInfo from "../compositions/profile-content/profile-info"
+import ProfileType from "../compositions/profile-content/profile-type"
+
 export enum ProfileMenu {
   USER_INFO = 'info',
   PROFILE_TYPE = 'type',
@@ -7,7 +13,8 @@ export enum ProfileMenu {
 
 interface MenuText {
   item: ProfileMenu,
-  text: string
+  text: string,
+  component: Function
 }
 
 
@@ -16,20 +23,28 @@ export const menuContent: {
 } = {
   [ProfileMenu.USER_INFO]: {
     item: ProfileMenu.USER_INFO,
-    text: "User Information"
+    text: "User Information",
+    component: ProfileInfo
   },
   [ProfileMenu.PROFILE_TYPE]: {
     item: ProfileMenu.PROFILE_TYPE,
-    text: "Profile Type"
+    text: "Profile Type",
+    component: ProfileType
   },
   [ProfileMenu.SAVED_RESULTS]: {
     item: ProfileMenu.SAVED_RESULTS,
-    text: "Saved Results"
+    text: "Saved Results",
+    component: SavedResults
   },
   [ProfileMenu.SAVED_SEARCHES]: {
     item: ProfileMenu.SAVED_SEARCHES,
-    text: "Saved Searches"
+    text: "Saved Searches",
+    component: SavedSearch
   }
+}
+
+export interface UserProfileProps {
+  userData: UserType
 }
 
 
