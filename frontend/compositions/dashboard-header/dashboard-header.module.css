@@ -35,10 +35,6 @@
   display: none;
 }
 
-.desktopLogo {
-  display: none;
-}
-
 .titleContainer h2 {
   color: var(--darkBlue);
   font-weight: 700;
@@ -76,12 +72,7 @@
 }
 
 .backgroundBanner button {
-  margin-right: var(--size10);
-  margin-top: var(--size32);
-  font-weight: 700;
-  font-size: var(--size14);
-  height: var(--size32);
-  width: var(--size80);
+  display: none;
 }
 
 @media screen and (min-width: 32em) {
@@ -170,10 +161,13 @@
   }
 
   .backgroundBanner button {
-    margin: var(--size20) var(--size16) var(--size20) var(--size20);
+    display: flex;
     width: var(--size100);
     height: var(--size36);
+    margin: var(--size20) var(--size36) var(--size20) var(--size20);
     font-size: var(--size16);
+    font-weight: 700;
     line-height: var(--size20);
+    padding: var(--size10) var(--size12) var(--size10) var(--size16);
   }
 }
