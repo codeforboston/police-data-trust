@@ -11,8 +11,7 @@ export default function DashboardHeader() {
     wrapper,
     backgroundBanner,
     leftHeader,
-    mobileLogo,
-    desktopLogo,
+    logo,
     titleContainer,
     mobileTitle,
     desktopTitle
@@ -22,10 +21,7 @@ export default function DashboardHeader() {
     <header className={wrapper}>
       <div className={backgroundBanner}>
         <div className={leftHeader}>
-          <div className={mobileLogo}>
-            <NPDCLogo size={LogoSizes.SMALL} />
-          </div>
-          <div className={desktopLogo}>
+          <div className={logo}>
             <NPDCLogo size={LogoSizes.MEDIUM} />
           </div>
           <div className={titleContainer}>
