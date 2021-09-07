@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react"
 
 import { Layout } from "../shared-components"
 import { DashboardHeader } from "../compositions"
@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <Layout>
       <DashboardHeader />
-      <div className="aboutPage" style={{margin: "1rem 3rem", textAlign: "center"}}>
+      <div className="aboutPage" style={{ margin: "1rem 3rem", textAlign: "center" }}>
         <h1>About Page</h1>
       </div>
     </Layout>

@@ -7,7 +7,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 
 export default function DashboardHeader() {
-  const [nav, setNav] = React.useState('/dashboard')
+  const [nav, setNav] = React.useState("/dashboard")
   const {
     wrapper,
     backgroundBanner,

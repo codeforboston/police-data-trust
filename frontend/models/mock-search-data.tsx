@@ -130,9 +130,8 @@ export const resultsData = [
     subject: "unknown",
     source: "News Article",
     full: faAngleRight
-  },
+  }
 ]
-
 
 export const searchesColumns = [
   {
@@ -162,7 +161,7 @@ export const searchesColumns = [
   {
     Header: "View Results",
     accessor: "view" as const
-  },
+  }
 ]
 
 export const searchesData = [

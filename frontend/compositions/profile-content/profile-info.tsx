@@ -1,9 +1,8 @@
-import * as React from 'react'
-import styles from './profile-content.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as React from "react"
+import styles from "./profile-content.module.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEdit } from "@fortawesome/free-solid-svg-icons"
-import { UserProfileProps, emptyUser } from '../../models/profile'
-
+import { UserProfileProps, emptyUser } from "../../models/profile"
 
 export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) {
   const [editMode, setEditMode] = React.useState(false)
@@ -18,7 +17,7 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
     return (
       <div className={profileData}>
         <header className={sectionTitle}>Edit Your Account Information</header>
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <div className={row}>
             <label htmlFor="firstName">First name:</label>
             <input type="text" id="firstName" placeholder={firstName} />
@@ -38,7 +37,9 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
             <input type="password" id="confirmPassword" />
           </div>
           <div className={row}>
-            <button className={styles.cancelButton} onClick={() => setEditMode(false)}>Cancel</button>
+            <button className={styles.cancelButton} onClick={() => setEditMode(false)}>
+              Cancel
+            </button>
             <input type="submit" className={styles.submitButton} value="Save Changes" />
           </div>
         </form>
@@ -50,11 +51,12 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
       <div className={profileData}>
         <header className={sectionTitle}>
           Your Account Information
-          <FontAwesomeIcon 
-            icon={faEdit} 
-            size="1x" 
+          <FontAwesomeIcon
+            icon={faEdit}
+            size="1x"
             className={editButton}
-            onClick={() => setEditMode(true)} />
+            onClick={() => setEditMode(true)}
+          />
         </header>
         <div className={row}>
           <span className={label}>First name:</span>
@@ -72,9 +74,7 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
           <span className={label}>Password:</span>
           <div className={dataField}>********</div>
         </div>
-        
       </div>
     )
   }
-  
 }
