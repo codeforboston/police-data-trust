@@ -14,7 +14,7 @@ export default function DesktopNav() {
   }
 
   return (
-    <ul className={styles.rightHeader} onClick={handleNavChange}>
+    <ul onClick={handleNavChange}>
       <li className={setClassName("Search")}>
         <a href="#">Search</a>
       </li>

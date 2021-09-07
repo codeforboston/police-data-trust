@@ -13,8 +13,6 @@ export default function DashboardHeader() {
     leftHeader,
     logo,
     titleContainer,
-    mobileTitle,
-    desktopTitle
   } = styles
 
   return (
@@ -25,8 +23,7 @@ export default function DashboardHeader() {
             <NPDCLogo size={LogoSizes.MEDIUM} />
           </div>
           <div className={titleContainer}>
-            <h2 className={mobileTitle}>N.P.D.C.</h2>
-            <h2 className={desktopTitle}>National Police Data Coalition</h2>
+            <h2>National Police Data Coalition</h2>
             <p>The national index of police incidents</p>
           </div>
         </div>
