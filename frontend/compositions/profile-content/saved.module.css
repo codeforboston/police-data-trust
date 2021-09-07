@@ -1,0 +1,23 @@
+.tableWrapper {
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  box-shadow: -2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: var(--size10);
+}
+
+.tableTitle {
+  text-align: left;
+  margin-right: var(--size36);
+  color: #7caed7;
+  font-weight: bold;
+  font-size: var(--size18);
+}
+
+.editButton {
+  background-color: var(--darkBlue);
+  color: white;
+  font-size: var(--size12);
+  font-weight: bold;
+}
