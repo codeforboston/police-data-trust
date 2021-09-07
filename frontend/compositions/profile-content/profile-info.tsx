@@ -1,15 +1,14 @@
 import * as React from 'react'
-import Link from 'next/link'
 import styles from './profile-content.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from "@fortawesome/free-solid-svg-icons"
-import { UserType, UserProfileProps, emptyUser } from '../../models/profile'
+import { UserProfileProps, emptyUser } from '../../models/profile'
 
 
 export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) {
   const [editMode, setEditMode] = React.useState(false)
   const { profileData, sectionTitle, row } = styles
-  const { firstName, lastName, email, phone, pwHash } = userData
+  const { firstName, lastName, email, phone } = userData
 
   function handleSubmit(e: React.FormEvent) {
     // TODO: update user
