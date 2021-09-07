@@ -11,7 +11,6 @@ export default function DashboardHeader() {
     wrapper,
     backgroundBanner,
     leftHeader,
-    logo,
     titleContainer,
   } = styles
 

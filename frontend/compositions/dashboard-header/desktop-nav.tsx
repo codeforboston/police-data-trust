@@ -8,7 +8,7 @@ export default function DesktopNav() {
 
   const menu = [
     { title: 'Search', path: '/dashboard' },
-    { title: 'Profile', path: '/profile' },
+    { title: 'Profile', path: 'dashboard/profile' },
     { title: 'Sign Out', path: '#' },
   ]
 
