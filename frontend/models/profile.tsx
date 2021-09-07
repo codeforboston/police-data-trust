@@ -1,9 +1,5 @@
 // User Profile models
 
-import { SavedResults, SavedSearch } from "../compositions/profile-content"
-import ProfileInfo from "../compositions/profile-content/profile-info"
-import ProfileType from "../compositions/profile-content/profile-type"
-
 export enum ProfileMenu {
   USER_INFO = 'info',
   PROFILE_TYPE = 'type',
@@ -13,8 +9,7 @@ export enum ProfileMenu {
 
 interface MenuText {
   item: ProfileMenu,
-  text: string,
-  component: Function
+  text: string
 }
 
 
@@ -23,31 +18,31 @@ export const menuContent: {
 } = {
   [ProfileMenu.USER_INFO]: {
     item: ProfileMenu.USER_INFO,
-    text: "User Information",
-    component: ProfileInfo
+    text: "User Information"
   },
   [ProfileMenu.PROFILE_TYPE]: {
     item: ProfileMenu.PROFILE_TYPE,
-    text: "Profile Type",
-    component: ProfileType
+    text: "Profile Type"
   },
   [ProfileMenu.SAVED_RESULTS]: {
     item: ProfileMenu.SAVED_RESULTS,
-    text: "Saved Results",
-    component: SavedResults
+    text: "Saved Results"
   },
   [ProfileMenu.SAVED_SEARCHES]: {
     item: ProfileMenu.SAVED_SEARCHES,
-    text: "Saved Searches",
-    component: SavedSearch
+    text: "Saved Searches"
   }
 }
 
+
+// props for profile menu content
 export interface UserProfileProps {
   userData: UserType
 }
 
-
+/**
+ * from backend/database/models/user.py
+ */
 export enum UserRoles {
   NONE = 0,
   PASSPORT = 1,
@@ -56,6 +51,8 @@ export enum UserRoles {
   ADMIN = 4
 }
 
+
+// User Information
 export interface UserType {
   id: number,
   active: boolean,
@@ -76,10 +73,11 @@ export const emptyUser: UserType = {
   email: '',
   pwHash: '',
   phone: '',
-  role: UserRoles.NONE
+  role: 0
 }
 
 
+// Account Type
 interface ProfileTypeText {
   title: string,
   content: string,
