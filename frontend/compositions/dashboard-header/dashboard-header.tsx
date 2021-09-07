@@ -7,12 +7,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 
 export default function DashboardHeader() {
-  const {
-    wrapper,
-    backgroundBanner,
-    leftHeader,
-    titleContainer,
-  } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
 
   return (
     <header className={wrapper}>

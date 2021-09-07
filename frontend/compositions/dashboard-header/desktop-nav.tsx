@@ -1,15 +1,15 @@
 import * as React from "react"
 import styles from "./dashboard-header.module.css"
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Link from "next/link"
+import { useRouter } from "next/router"
 
 export default function DesktopNav() {
-  const router = useRouter();
+  const router = useRouter()
 
   const menu = [
-    { title: 'Search', path: '/dashboard' },
-    { title: 'Profile', path: 'dashboard/profile' },
-    { title: 'Sign Out', path: '#' },
+    { title: "Search", path: "/dashboard" },
+    { title: "Profile", path: "dashboard/profile" },
+    { title: "Sign Out", path: "#" }
   ]
 
   const setClassName = (pathname: string): string => {
@@ -22,9 +22,7 @@ export default function DesktopNav() {
         return (
           <li key={index} className={setClassName(item.path)}>
             <Link href={item.path}>
-              <a>
-                {item.title}
-              </a>
+              <a>{item.title}</a>
             </Link>
           </li>
         )
