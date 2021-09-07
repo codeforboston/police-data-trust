@@ -21,8 +21,8 @@ export default function DesktopNav() {
       <li className={setClassName("Profile")}>
         <a href="#">Profile</a>
       </li>
-      <li className={setClassName("About")}>
-        <a href="#">About</a>
+      <li className={setClassName("Sign Out")}>
+        <a href="#">Sign Out</a>
       </li>
     </ul>
   )

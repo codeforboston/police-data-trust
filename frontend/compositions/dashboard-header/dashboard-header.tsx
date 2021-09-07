@@ -19,9 +19,7 @@ export default function DashboardHeader() {
     <header className={wrapper}>
       <div className={backgroundBanner}>
         <div className={leftHeader}>
-          <div className={logo}>
-            <NPDCLogo size={LogoSizes.MEDIUM} />
-          </div>
+          <NPDCLogo size={LogoSizes.MEDIUM} />
           <div className={titleContainer}>
             <h2>National Police Data Coalition</h2>
             <p>The national index of police incidents</p>

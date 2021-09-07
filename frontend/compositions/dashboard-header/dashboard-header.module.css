@@ -21,7 +21,8 @@
 }
 
 .leftHeader img {
-  margin-top: var(--size20);
+  margin-top: var(--size16);
+  margin-left: var(--size36);
 }
 
 .titleContainer {
@@ -102,6 +103,7 @@
 
   .backgroundBanner ul {
     display: flex;
+    padding-right: var(--size28);
     margin-top: var(--size56);
   }
 
@@ -115,6 +117,7 @@
     padding: var(--size8) var(--size16) var(--size4) var(--size14);
     cursor: pointer;
     list-style: none;
+    white-space: nowrap;
   }
 
   .backgroundBanner a {
