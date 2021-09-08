@@ -1,0 +1,101 @@
+[
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["Dan Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 1
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 2
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["Ed Smith, Vince Gilligan"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 3
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 4
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 5
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 6
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 7
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["Dan Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 8
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 9
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["Ed Smith, Vince Gilligan"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 10
+  },
+  {
+    "searchDate": "2021/09/07",
+    "dates": "2003/01/01",
+    "incidentType": "Use of force",
+    "officersInvolved": ["John Smith"],
+    "subject": "unknown",
+    "source": "News Article",
+    "full": 11
+  }
+]
