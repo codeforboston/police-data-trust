@@ -1,5 +1,4 @@
 export enum AppRoutes {
-  ABOUT = "/about",
   DASHBOARD = "/dashboard",
   LOGIN = "/login",
   PASSPORT = "/passport",
