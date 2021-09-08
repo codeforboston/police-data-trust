@@ -15,9 +15,19 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
   const { useState, useMemo } = React
 
   const [editMode, setEditMode] = useState(false)
-  
-  const { tableWrapper, tableHeader, tableTitle, editButton, dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
-  
+
+  const {
+    tableWrapper,
+    tableHeader,
+    tableTitle,
+    editButton,
+    dataTable,
+    dataHeader,
+    dataFooter,
+    dataRowPage,
+    dataRows
+  } = styles
+
   const data = useMemo(() => mockData, [])
   const columns = useMemo(() => resultsColumns, [])
 
@@ -67,7 +77,9 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
     <div className={tableWrapper}>
       <header className={tableHeader}>
         <span className={tableTitle}>Saved Results</span>
-        <button className={editButton} onClick={toggleEditMode}>Edit Results</button>
+        <button className={editButton} onClick={toggleEditMode}>
+          Edit Results
+        </button>
       </header>
       <table {...getTableProps()} className={dataTable} aria-label="Saved Results">
         <thead className={dataHeader}>
@@ -91,9 +103,9 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
                   const { id } = cell.column
                   if (id === "full") {
                     return (
-                    <td>
-                      <FontAwesomeIcon icon={faAngleRight } />
-                    </td>
+                      <td>
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      </td>
                     )
                   }
                   // eslint-disable-next-line react/jsx-key

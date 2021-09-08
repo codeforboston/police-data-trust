@@ -16,9 +16,19 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
   const { useState, useMemo } = React
 
   const [editMode, setEditMode] = useState(false)
-  
-  const { tableWrapper, tableHeader, tableTitle, editButton, dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
-  
+
+  const {
+    tableWrapper,
+    tableHeader,
+    tableTitle,
+    editButton,
+    dataTable,
+    dataHeader,
+    dataFooter,
+    dataRowPage,
+    dataRows
+  } = styles
+
   const data = useMemo(() => mockData, [])
   const columns = useMemo(() => searchesColumns, [])
 
@@ -65,13 +75,14 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
   }
 
   return (
-
-      <div className={tableWrapper}>
-        <header className={tableHeader}>
-          <span className={tableTitle}>Saved Searches</span>
-          <button className={editButton} onClick={toggleEditMode}>Edit Searches</button>
-        </header>
-        <table {...getTableProps()} className={dataTable} aria-label="Saved Results">
+    <div className={tableWrapper}>
+      <header className={tableHeader}>
+        <span className={tableTitle}>Saved Searches</span>
+        <button className={editButton} onClick={toggleEditMode}>
+          Edit Searches
+        </button>
+      </header>
+      <table {...getTableProps()} className={dataTable} aria-label="Saved Results">
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
             // eslint-disable-next-line react/jsx-key
@@ -93,15 +104,14 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
                   const { id } = cell.column
                   if (id === "full") {
                     return (
-                    <td>
-                      <FontAwesomeIcon icon={faCaretRight } />
-                    </td>
+                      <td>
+                        <FontAwesomeIcon icon={faCaretRight} />
+                      </td>
                     )
                   }
                   // eslint-disable-next-line react/jsx-key
                   return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                 })}
-
               </tr>
             )
           })}
@@ -136,6 +146,6 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
           </tr>
         </tfoot>
       </table>
-      </div>
+    </div>
   )
 }

@@ -31,7 +31,6 @@ export const resultsColumns = [
   }
 ]
 
-
 export const searchesColumns = [
   {
     Header: "Search Date",
@@ -62,4 +61,3 @@ export const searchesColumns = [
     accessor: "view" as const
   }
 ]
-
