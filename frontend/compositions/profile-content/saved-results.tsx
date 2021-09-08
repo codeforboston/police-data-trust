@@ -8,7 +8,6 @@ import { UserProfileProps, emptyUser } from "../../models/profile"
 import { resultsColumns } from "../../models/mock-search-meta"
 
 import styles from "./saved.module.css"
-import tableStyles from "../../shared-components/data-table/data-table.module.css"
 
 import mockData from "../../models/__mocks__/saved-results.json"
 
@@ -17,8 +16,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
 
   const [editMode, setEditMode] = useState(false)
   
-  const { tableWrapper, tableTitle, editButton } = styles
-  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = tableStyles
+  const { tableWrapper, tableHeader, tableTitle, editButton, dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
   
   const data = useMemo(() => mockData, [])
   const columns = useMemo(() => resultsColumns, [])
@@ -67,7 +65,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
 
   return (
     <div className={tableWrapper}>
-      <header>
+      <header className={tableHeader}>
         <span className={tableTitle}>Saved Results</span>
         <button className={editButton} onClick={toggleEditMode}>Edit Results</button>
       </header>
