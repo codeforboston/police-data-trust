@@ -35,7 +35,7 @@ export const menuContent: {
 
 // props for profile menu content
 export interface UserProfileProps {
-  userData: UserType
+  userData: UserDataType
 }
 
 /**
@@ -50,25 +50,22 @@ export enum UserRoles {
 }
 
 // User Information
-export interface UserType {
+export interface UserDataType {
   id: number
   active: boolean
   firstName: string
   lastName: string
   email: string
-  emailConfirmedAt?: Date
   phone: string
-  pwHash: string
   role: UserRoles
 }
 
-export const emptyUser: UserType = {
+export const emptyUser: UserDataType = {
   id: 0,
   active: false,
   firstName: "",
   lastName: "",
   email: "",
-  pwHash: "",
   phone: "",
   role: 0
 }
