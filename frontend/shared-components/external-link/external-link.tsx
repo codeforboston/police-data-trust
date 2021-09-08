@@ -9,6 +9,7 @@ export default function ExternalLink ({ linkPath, linkText }: ExternalLinkProps)
   const {externalLink} = styles
   return (
     <a
+      aria-label={`${linkText} external`}
       className={externalLink} 
       href={linkPath}
     >
