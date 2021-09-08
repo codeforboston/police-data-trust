@@ -7,7 +7,6 @@ export const mockData = [
     firstName: "Bob",
     lastName: "Boberton",
     email: "bob1@email.com",
-    pwHash: "*****",
     phone: "9995559999",
     role: UserRoles.PUBLIC
   },
@@ -17,7 +16,6 @@ export const mockData = [
     firstName: "Alice",
     lastName: "Cooper",
     email: "alice@email.com",
-    pwHash: "alsdkjf",
     phone: "9995559990",
     role: UserRoles.PASSPORT
   }
