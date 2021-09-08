@@ -1,25 +1,29 @@
 import * as React from "react"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import styles from "./dashboard-header.module.css"
-import { headerTabs } from "../../models/header-nav"
 
 export default function DesktopNav() {
-  const router = useRouter()
+  const [selected, setSelected] = React.useState("Search")
 
-  const clsName = (loc: string): string => {
-    return loc === router.pathname ? styles.tab : ""
+  const handleNavChange = (e: React.MouseEvent<Element>): void => {
+    const value = (e.target as HTMLElement).innerText
+    setSelected(value)
+  }
+
+  const setClassName = (linkName: string): string => {
+    return linkName === selected ? styles.tab : ""
   }
 
   return (
-    <nav>
-      <ul className={styles.rightHeader}>
-        {headerTabs.map((tab) => (
-          <li key={tab.loc} className={clsName(tab.loc)}>
-            <Link href={tab.loc}>{tab.text}</Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <ul className={styles.rightHeader} onClick={handleNavChange}>
+      <li className={setClassName("Search")}>
+        <a href="#">Search</a>
+      </li>
+      <li className={setClassName("Profile")}>
+        <a href="#">Profile</a>
+      </li>
+      <li className={setClassName("About")}>
+        <a href="#">About</a>
+      </li>
+    </ul>
   )
 }
