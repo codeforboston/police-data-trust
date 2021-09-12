@@ -46,6 +46,8 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
 
+    FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
+
 
 class DevelopmentConfig(Config):
     ENV = "development"

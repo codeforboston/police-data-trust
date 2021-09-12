@@ -116,4 +116,4 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     legal_case: List[LegalCaseSchema]
 
 
-UserSchema = sqlalchemy_to_pydantic(User, exclude="role")
+UserSchema = sqlalchemy_to_pydantic(User, exclude=["role", "password", "id"])
