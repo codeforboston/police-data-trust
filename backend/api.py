@@ -3,6 +3,7 @@ from typing import Optional
 import click
 from flask import Flask
 from flask.testing import FlaskClient
+from flask_cors import CORS
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
@@ -35,6 +36,8 @@ def register_extensions(app: Flask):
     db.init_app(app)
     user_manager.init_app(app)
     jwt.init_app(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 
 def register_commands(app: Flask):
