@@ -1,0 +1,74 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true
+    },
+    "editor.wordWrap": "on",
+    "editor.formatOnSave": true,
+    "files.autoSave": "off",
+    "eslint.workingDirectories": ["./frontend"],
+    "githubPullRequests.remotes": ["upstream"]
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "stkb.rewrap",
+      "GitHub.vscode-pull-request-github",
+      "eamodio.gitlens"
+    ]
+  },
+  "launch": {
+    "configurations": [
+      {
+        "name": "Launch Frontend",
+        "request": "launch",
+        "type": "pwa-chrome",
+        "url": "http://localhost:3000/login",
+        "webRoot": "${workspaceFolder}/frontend",
+        "sourceMapPathOverrides": {
+          "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+          "webpack://?:*/*": "${workspaceFolder}/*"
+        }
+      },
+      {
+        "name": "Watch and Debug Jest Tests",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceRoot}/frontend",
+        "runtimeArgs": [
+          "--inspect-brk",
+          "${workspaceRoot}/frontend/node_modules/.bin/jest",
+          "--runInBand",
+          "--watch"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "port": 9229
+      },
+      {
+        "name": "Debug Current Jest Test",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceRoot}/frontend",
+        "runtimeArgs": [
+          "--inspect-brk",
+          "${workspaceRoot}/frontend/node_modules/.bin/jest",
+          "--runInBand",
+          "--watch",
+          "${file}"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "port": 9229
+      }
+    ],
+    "compounds": []
+  }
+}
