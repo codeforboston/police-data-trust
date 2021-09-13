@@ -5,3 +5,7 @@
   justify-content: space-between;
   height: var(--size16);
 }
+
+.responseArea {
+  font-family: inherit;
+}

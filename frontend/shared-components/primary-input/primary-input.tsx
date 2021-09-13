@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import React from "react"
 import { useFormContext } from "react-hook-form"
 import { FormLevelError } from ".."
@@ -29,11 +30,17 @@ export default function PrimaryInput({ inputName, isShown, size }: PrimaryInputP
   const isValid = !errors[inputName]
 
   return (
-    <div className={`defaultInputContainer ${inputContainer} ${!isValid && "hasError"}`}>
+    <div
+      className={classNames(
+        "defaultInputContainer",
+        inputContainer,
+        styles[size],
+        !isValid && "hasError"
+      )}>
       <label htmlFor={inputId}>{labelText}</label>
       <input
         id={inputId}
-        className={`${inputField} ${styles[size]}`}
+        className={inputField}
         name={inputName}
         type={displayType}
         aria-required="true"

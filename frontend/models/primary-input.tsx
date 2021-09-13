@@ -60,7 +60,7 @@ export const primaryInputValidation = {
   },
   [PrimaryInputNames.STREET_ADDRESS]: {
     errorMessage: "A street address is required",
-    pattern: /\d+\s[a-z'-]{2,}\s[a-z'-]{2,}\s?[a-z\d'\.\-\s#]*/i,
+    pattern: /.+/,
     inputType: "text"
   },
   [PrimaryInputNames.CITY_TOWN]: {

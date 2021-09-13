@@ -18,7 +18,6 @@
 .defaultInputContainer {
   display: flex;
   flex-direction: column;
-  width: var(--size192);
 }
 .defaultInputContainer label {
   font-size: var(--size16);

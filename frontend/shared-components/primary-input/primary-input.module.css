@@ -1,18 +1,18 @@
 .inputContainer {
-  margin: auto;
+  margin: 0 var(--size20);
+  width: var(--size192);
   min-height: var(--size80);
 }
 
 .inputField {
   height: var(--size40);
-  width: var(--size192);
 }
 
-.inputField.large {
+.inputContainer.large {
   width: var(--size424);
 }
 
-.inputField.small {
+.inputContainer.small {
   width: var(--size112);
 }
 
