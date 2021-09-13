@@ -1,5 +1,5 @@
 .inputContainer {
-  margin: 0 var(--size20);
+  margin: auto;
   min-height: var(--size80);
 }
 
