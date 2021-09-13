@@ -1,4 +1,4 @@
-import router, { useRouter } from "next/router"
+import { useRouter } from "next/router"
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import * as api from "./api"
 
@@ -33,10 +33,11 @@ export function requireAuth(Component: () => JSX.Element) {
   return function ProtectedRoute() {
     const { user } = useAuth()
     const router = useRouter()
+    const login = "/login"
 
     useEffect(() => {
-      if (!user) {
-        router.push("/login")
+      if (!user && router.pathname !== login) {
+        router.push(login)
       }
     })
 
@@ -47,8 +48,10 @@ export function requireAuth(Component: () => JSX.Element) {
 /** Redirects to the given route once the user is authenticated */
 export function useRedirectOnAuth(route: string) {
   const { user } = useAuth()
+  const router = useRouter()
+
   useEffect(() => {
-    if (user) {
+    if (user && router.pathname !== route) {
       router.push(route)
     }
   })
