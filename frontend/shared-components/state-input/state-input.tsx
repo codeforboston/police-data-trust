@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styles from "./state-input.module.css"
 import { FormLevelError } from "../index"
-import { capitalizeFirstChar } from "../../helpers/syntax-helper"
+import { capitalizeFirstChar } from "../../helpers"
 import { states } from "../../models"
 
 interface USAStateInputProps {

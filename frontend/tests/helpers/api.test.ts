@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { AccessToken, login, NewUser, register, whoami } from "../../helpers/api"
+import { login, register, whoami } from "../../helpers"
+import { AccessToken, NewUser } from "../../helpers/api"
 import { uniqueEmail } from "../test-utils"
 
 /** Must match alembic/dev_seeds.py */
