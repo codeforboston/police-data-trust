@@ -39,7 +39,6 @@ def register_extensions(app: Flask):
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
-
 def register_commands(app: Flask):
     """Register Click commands to the app instance."""
 

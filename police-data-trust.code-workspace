@@ -6,12 +6,10 @@
   ],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll": true
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.python"
     },
-    "editor.wordWrap": "on",
-    "editor.formatOnSave": true,
-    "files.autoSave": "off",
+    "python.formatting.provider": "black",
     "eslint.workingDirectories": ["./frontend"],
     "githubPullRequests.remotes": ["upstream"]
   },
@@ -21,7 +19,9 @@
       "esbenp.prettier-vscode",
       "stkb.rewrap",
       "GitHub.vscode-pull-request-github",
-      "eamodio.gitlens"
+      "eamodio.gitlens",
+      "ms-python.python",
+      "ms-python.vscode-pylance"
     ]
   },
   "launch": {
