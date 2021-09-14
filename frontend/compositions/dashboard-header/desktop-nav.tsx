@@ -9,7 +9,7 @@ export default function DesktopNav() {
   const menu = [
     { title: "Search", path: "/dashboard" },
     { title: "Profile", path: "dashboard/profile" },
-    { title: "Sign Out", path: "#" }
+    { title: "Sign Out", path: "/test" }
   ]
 
   const setClassName = (pathname: string): string => {
