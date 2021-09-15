@@ -22,6 +22,7 @@ from flask_sqlalchemy import SQLAlchemy
 import psycopg2.errors
 from psycopg2 import connect
 from psycopg2.extensions import connection
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from ..config import TestingConfig
 from ..utils import dev_only
@@ -82,13 +83,15 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
 @click.pass_context
 def db_cli(ctx: click.Context):
     """Collection of database commands."""
-    ctx.obj = connect(
+    conn = connect(
         user=current_app.config["POSTGRES_USER"],
         password=current_app.config["POSTGRES_PASSWORD"],
         host=current_app.config["POSTGRES_HOST"],
         port=current_app.config["POSTGRES_PORT"],
         dbname="postgres",
     )
+    conn.autocommit = True
+    ctx.obj = conn
 
 
 pass_psql_admin_connection = click.make_pass_decorator(connection)
@@ -103,11 +106,8 @@ pass_psql_admin_connection = click.make_pass_decorator(connection)
     help="If true, overwrite the database if it exists.",
 )
 @pass_psql_admin_connection
-@click.pass_context
 @dev_only
-def create_database(
-    ctx: click.Context, conn: connection, overwrite: bool = False
-):
+def create_database(conn: connection, overwrite: bool = False):
     """Create the database from nothing."""
     database = current_app.config["POSTGRES_DB"]
     cursor = conn.cursor()
