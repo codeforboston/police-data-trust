@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export FLASK_ENV=development
+export FLASK_ENV=${FLASK_ENV:-development}
 
 flask psql create
 flask psql init
