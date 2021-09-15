@@ -3,7 +3,7 @@ import * as React from "react"
 import { Layout } from "../../shared-components"
 import { DashboardHeader } from "../../compositions"
 import ProfileNav from "../../compositions/profile-nav/profile-nav"
-import { ProfileMenu, UserDataType } from "../../models/profile"
+import { ProfileMenu } from "../../models/profile"
 import {
   ProfileInfo,
   ProfileType,
@@ -13,7 +13,7 @@ import {
 import styles from "./profile.module.css"
 
 // TODO: replace with API call
-import users from "../../models/__mocks__/users.json"
+import {users} from "../../models/mockData/"
 
 export default function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
