@@ -11,35 +11,15 @@ exports[`renders Dashboard correctly 1`] = `
       <div
         className="leftHeader"
       >
-        <div
-          className="mobileLogo"
-        >
-          <img
-            alt="A blue circular logo design reads 'National Police Data Coalition'"
-            className="logo small"
-            src="/NPDCLogo.svg"
-          />
-        </div>
-        <div
-          className="desktopLogo"
-        >
-          <img
-            alt="A blue circular logo design reads 'National Police Data Coalition'"
-            className="logo medium"
-            src="/NPDCLogo.svg"
-          />
-        </div>
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          className="logo medium"
+          src="/NPDCLogo.svg"
+        />
         <div
           className="titleContainer"
         >
-          <h2
-            className="mobileTitle"
-          >
-            N.P.D.C.
-          </h2>
-          <h2
-            className="desktopTitle"
-          >
+          <h2>
             National Police Data Coalition
           </h2>
           <p>
@@ -65,15 +45,12 @@ exports[`renders Dashboard correctly 1`] = `
             style={Object {}}
           />
         </svg>
-        <ul
-          className="rightHeader"
-          onClick={[Function]}
-        >
+        <ul>
           <li
-            className="tab"
+            className=""
           >
             <a
-              href="#"
+              href="/dashboard"
             >
               Search
             </a>
@@ -82,7 +59,7 @@ exports[`renders Dashboard correctly 1`] = `
             className=""
           >
             <a
-              href="#"
+              href="/profile"
             >
               Profile
             </a>
@@ -91,9 +68,9 @@ exports[`renders Dashboard correctly 1`] = `
             className=""
           >
             <a
-              href="#"
+              href="/logout"
             >
-              About
+              Sign Out
             </a>
           </li>
         </ul>
