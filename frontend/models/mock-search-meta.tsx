@@ -1,4 +1,26 @@
-import { faCaretRight, faAngleRight, IconDefinition } from "@fortawesome/free-solid-svg-icons"
+export interface SavedResultsType {
+  searchDate: Date,
+  incidentDates: Date[],
+  incidentType: string,
+  offiersInvolved: string[],
+  subject: string,
+  source: string,
+  fullRecordId: number
+}
+
+export interface dataColumn {
+  Header: string,
+  accessor: string
+}
+
+export interface dataColumns {
+  columns: dataColumn[]
+}
+
+export interface SavedDataType {
+  searchDate: Date,
+  recordId: number
+}
 
 export const resultsColumns = [
   {
@@ -30,6 +52,16 @@ export const resultsColumns = [
     accessor: "full" as const
   }
 ]
+
+export interface SavedSearchType {
+  searchDate: Date,
+  who: string[],
+  what: string,
+  when: Date[],
+  where: string,
+  resultsCount: number,
+  view: number
+}
 
 export const searchesColumns = [
   {
