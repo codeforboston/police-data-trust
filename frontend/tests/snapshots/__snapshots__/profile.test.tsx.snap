@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Profile Page correctly 1`] = `
+<div>
+  <header
+    className="wrapper"
+  >
+    <div
+      className="backgroundBanner"
+    >
+      <div
+        className="leftHeader"
+      >
+        <div
+          className="mobileLogo"
+        >
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            className="logo small"
+            src="/NPDCLogo.svg"
+          />
+        </div>
+        <div
+          className="desktopLogo"
+        >
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            className="logo medium"
+            src="/NPDCLogo.svg"
+          />
+        </div>
+        <div
+          className="titleContainer"
+        >
+          <h2
+            className="mobileTitle"
+          >
+            N.P.D.C.
+          </h2>
+          <h2
+            className="desktopTitle"
+          >
+            National Police Data Coalition
+          </h2>
+          <p>
+            The national index of police incidents
+          </p>
+        </div>
+      </div>
+      <nav>
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-bars fa-w-14 fa-2x "
+          data-icon="bars"
+          data-prefix="fas"
+          focusable="false"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 448 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+        <ul
+          className="rightHeader"
+          onClick={[Function]}
+        >
+          <li
+            className="tab"
+          >
+            <a
+              href="#"
+            >
+              Search
+            </a>
+          </li>
+          <li
+            className=""
+          >
+            <a
+              href="#"
+            >
+              Profile
+            </a>
+          </li>
+          <li
+            className=""
+          >
+            <a
+              href="#"
+            >
+              About
+            </a>
+          </li>
+        </ul>
+        <button
+          className="primaryButton"
+          type="button"
+        >
+          DONATE
+        </button>
+      </nav>
+    </div>
+  </header>
+  <div
+    className="profileWrapper"
+  >
+    <nav
+      className="leftMenu"
+    >
+      <ul>
+        <li
+          className="selectedItem"
+          onClick={[Function]}
+        >
+          User Information
+        </li>
+        <li
+          className="menuItem"
+          onClick={[Function]}
+        >
+          Profile Type
+        </li>
+        <li
+          className="menuItem"
+          onClick={[Function]}
+        >
+          Saved Results
+        </li>
+        <li
+          className="menuItem"
+          onClick={[Function]}
+        >
+          Saved Searches
+        </li>
+      </ul>
+    </nav>
+    <div
+      className="profileData"
+    >
+      <header
+        className="sectionTitle"
+      >
+        Your Account Information
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-edit fa-w-18 fa-1x editButton"
+          data-icon="edit"
+          data-prefix="fas"
+          focusable="false"
+          onClick={[Function]}
+          role="img"
+          style={Object {}}
+          viewBox="0 0 576 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </header>
+      <div
+        className="row"
+      >
+        <span
+          className="label"
+        >
+          First name:
+        </span>
+        <div
+          className="dataField"
+        >
+          Bob
+        </div>
+        <span
+          className="label"
+        >
+          Last name:
+        </span>
+        <div
+          className="dataField"
+        >
+          Boberton
+        </div>
+      </div>
+      <div
+        className="row"
+      >
+        <span
+          className="label"
+        >
+          Email address:
+        </span>
+        <div
+          className="dataField"
+        >
+          bob1@email.com
+        </div>
+        <span
+          className="label"
+        >
+          Phone number:
+        </span>
+        <div
+          className="dataField"
+        >
+          9995559999
+        </div>
+      </div>
+      <div
+        className="row"
+      >
+        <span
+          className="label"
+        >
+          Password:
+        </span>
+        <div
+          className="dataField"
+        >
+          ********
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
