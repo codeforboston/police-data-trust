@@ -1,6 +1,5 @@
 .profileWrapper {
   width: 100%;
-  /* height: var(--size112); */
   z-index: -10000;
   margin-top: 2rem;
   display: flex;
