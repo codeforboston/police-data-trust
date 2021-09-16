@@ -434,7 +434,7 @@ exports[`renders correctly 1`] = `
       </p>
       <a
         className="callToActionLink"
-        href="/dashboard"
+        href="/search"
       >
         Return to dashboard
       </a>
