@@ -13,7 +13,7 @@ import {
 import styles from "./profile.module.css"
 
 // TODO: replace with API call
-import {users} from "../../models/mockData/"
+import {users} from "../../models/mock-data"
 
 export default function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
