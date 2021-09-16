@@ -1,5 +1,5 @@
 import * as React from "react"
-import Dashboard from "../../pages/dashboard"
+import Dashboard from "../../pages/search"
 import { render, router, setAuthForTest, userEvent, waitFor } from "../test-utils"
 
 beforeAll(() => setAuthForTest())

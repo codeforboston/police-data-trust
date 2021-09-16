@@ -424,7 +424,7 @@ exports[`renders Passport correctly 1`] = `
         </p>
         <a
           class="callToActionLink"
-          href="/dashboard"
+          href="/search"
         >
           Return to dashboard
         </a>
