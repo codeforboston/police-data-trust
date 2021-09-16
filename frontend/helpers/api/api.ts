@@ -30,8 +30,10 @@ export type RegisterRequest = NewUser
 export type LoginRequest = LoginCredentials
 export type WhoamiRequest = AuthenticatedRequest
 
+export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1"
+
 const axios = axiosModule.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1",
+  baseURL,
   timeout: 5000
 })
 

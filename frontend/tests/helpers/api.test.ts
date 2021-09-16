@@ -1,19 +1,18 @@
-import jwt, { JwtPayload } from "jsonwebtoken"
 import { login, register, whoami } from "../../helpers"
-import { AccessToken, NewUser } from "../../helpers/api"
+import { NewUser } from "../../helpers/api"
+import { EXISTING_TEST_USER } from "../../helpers/api/mocks/data"
 import { uniqueEmail } from "../test-utils"
-
-/** Must match alembic/dev_seeds.py */
-const EXISTING_TEST_USER = { email: "test@example.com", password: "password" }
-
-/** Must match backend/config.py  */
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "my-jwt-secret-key"
 
 describe("api", () => {
   describe("login", () => {
     it("authenticates", async () => {
       const token = await login(EXISTING_TEST_USER)
       expect(token).toBeTruthy()
+    })
+
+    it("fails if incorrect login", async () => {
+      const e = await login({ email: EXISTING_TEST_USER.email, password: "wrong" }).catch((e) => e)
+      expect(e.response.status).toEqual(401)
     })
   })
 
@@ -30,20 +29,9 @@ describe("api", () => {
       })
     })
 
-    it("fails if token is expired", async () => {
-      let accessToken = await login(EXISTING_TEST_USER)
-      accessToken = updateToken(accessToken, { exp: 0 })
-
-      const error = await whoami({ accessToken }).catch((e) => e)
-      expect(error.response.status).toEqual(401)
-    })
-
     it("fails if not authenticated", async () => {
       let error = await whoami({ accessToken: undefined }).catch((e) => e)
       expect(error.response.status).toEqual(401)
-
-      error = await whoami({ accessToken: "badtoken" }).catch((e) => e)
-      expect(error.response.status).toEqual(422)
     })
   })
 
@@ -64,15 +52,17 @@ describe("api", () => {
       expect(user.firstName).toEqual(newUser.firstName)
       expect(user.lastName).toEqual(newUser.lastName)
     })
+
+    it("rejects existing accounts", async () => {
+      const newUser: NewUser = {
+        email: EXISTING_TEST_USER.email,
+        password: "password",
+        firstName: "June",
+        lastName: "Grey"
+      }
+
+      let error = await register(newUser).catch((e) => e)
+      expect(error.response.status).toBe(400)
+    })
   })
 })
-
-/** Modifies the payload of a JWT token. */
-function updateToken(
-  accessToken: AccessToken,
-  update: Partial<JwtPayload>,
-  secret: string = JWT_SECRET_KEY
-): AccessToken {
-  const payload = jwt.verify(accessToken, secret) as JwtPayload
-  return jwt.sign({ ...payload, ...update }, secret)
-}

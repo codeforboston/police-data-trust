@@ -22,7 +22,7 @@ exports[`renders Login correctly 1`] = `
         class="centerContent"
       >
         <div
-          class="defaultInputContainer inputContainer false"
+          class="defaultInputContainer inputContainer undefined"
         >
           <label
             for="emailAddressInput"
@@ -33,14 +33,14 @@ exports[`renders Login correctly 1`] = `
             aria-describedby="emailAddressError"
             aria-invalid="false"
             aria-required="true"
-            class="inputField undefined"
+            class="inputField"
             id="emailAddressInput"
             name="emailAddress"
             type="email"
           />
         </div>
         <div
-          class="defaultInputContainer inputContainer false"
+          class="defaultInputContainer inputContainer undefined"
         >
           <label
             for="loginPasswordInput"
@@ -51,7 +51,7 @@ exports[`renders Login correctly 1`] = `
             aria-describedby="loginPasswordError"
             aria-invalid="false"
             aria-required="true"
-            class="inputField undefined"
+            class="inputField"
             id="loginPasswordInput"
             name="loginPassword"
             type="password"

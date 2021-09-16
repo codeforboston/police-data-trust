@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import * as api from "./api"
+import * as storage from "./storage"
 
 const STORAGE_KEYS = {
   ACCESS_TOKEN: "__pdt_access_token__",
@@ -118,24 +119,6 @@ function usePersistence<T>(storageKey: string) {
     value,
     set,
     clear
-  }
-}
-
-export const storage = {
-  setItem(key: string, value: any) {
-    localStorage.setItem(key, JSON.stringify({ value }))
-  },
-
-  getItem(key: string): any {
-    try {
-      return JSON.parse(localStorage.getItem(key)).value
-    } catch (e) {
-      return null
-    }
-  },
-
-  removeItem(key: string) {
-    localStorage.removeItem(key)
   }
 }
 

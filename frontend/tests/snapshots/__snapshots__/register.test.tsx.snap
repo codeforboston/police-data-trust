@@ -57,7 +57,7 @@ exports[`renders Register correctly 1`] = `
           class="inputLine"
         >
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="firstNameInput"
@@ -68,14 +68,14 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="firstNameError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="firstNameInput"
               name="firstName"
               type="text"
             />
           </div>
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="lastNameInput"
@@ -86,7 +86,7 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="lastNameError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="lastNameInput"
               name="lastName"
               type="text"
@@ -97,7 +97,7 @@ exports[`renders Register correctly 1`] = `
           class="inputLine"
         >
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="emailAddressInput"
@@ -108,14 +108,14 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="emailAddressError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="emailAddressInput"
               name="emailAddress"
               type="email"
             />
           </div>
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="phoneNumberInput"
@@ -126,7 +126,7 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="phoneNumberError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="phoneNumberInput"
               name="phoneNumber"
               type="tel"
@@ -138,7 +138,7 @@ exports[`renders Register correctly 1`] = `
           class="inputLine"
         >
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="createPasswordInput"
@@ -149,14 +149,14 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="createPasswordError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="createPasswordInput"
               name="createPassword"
               type="password"
             />
           </div>
           <div
-            class="defaultInputContainer inputContainer false"
+            class="defaultInputContainer inputContainer undefined"
           >
             <label
               for="confirmPasswordInput"
@@ -167,7 +167,7 @@ exports[`renders Register correctly 1`] = `
               aria-describedby="confirmPasswordError"
               aria-invalid="false"
               aria-required="true"
-              class="inputField undefined"
+              class="inputField"
               id="confirmPasswordInput"
               name="confirmPassword"
               type="password"

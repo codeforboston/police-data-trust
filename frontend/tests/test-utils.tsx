@@ -1,7 +1,6 @@
 import * as rtl from "@testing-library/react"
 import { Providers } from "../helpers"
 import { v4 as uuidv4 } from "uuid"
-export { setAuthForTest } from "../helpers/auth"
 import * as htl from "@testing-library/react-hooks"
 
 // re-export testing libraries
@@ -9,6 +8,8 @@ export * from "@testing-library/react"
 export * as hooks from "@testing-library/react-hooks"
 export { default as userEvent } from "@testing-library/user-event"
 export { default as router } from "next/router"
+export { setAuthForTest } from "../helpers/auth"
+export { server, rest } from "../helpers/api/mocks/server"
 
 /** Renders components with application providers. */
 export const render = (el: any, options?: any) => rtl.render(<Providers>{el}</Providers>, options)

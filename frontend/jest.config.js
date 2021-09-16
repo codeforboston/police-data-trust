@@ -14,7 +14,8 @@ const esmNodeModules = [
 
 module.exports = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
+  // Ignore e2e tests which require a running backend
+  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/", ".*e2e\\.test.*"],
   moduleNameMapper: {
     "\\.(scss|sass|css)$": "identity-obj-proxy"
   },

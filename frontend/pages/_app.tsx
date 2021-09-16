@@ -2,6 +2,7 @@ import "../styles/globals.css"
 import Head from "next/head"
 import { AppProps } from "next/app"
 import { Providers } from "../helpers"
+import { useMockServiceWorker } from "../helpers"
 
 const title = "NPDC Index"
 const description =
@@ -11,6 +12,8 @@ const keywords =
 export const logoAlt = "A blue circular logo design reads 'National Police Data Coalition'"
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  useMockServiceWorker()
+
   return (
     <>
       <Head>

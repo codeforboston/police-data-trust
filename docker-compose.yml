@@ -18,6 +18,8 @@ services:
       - ./frontend:/app
       # Prevents the host node_modules from clobbering the image's
       - /app/node_modules
+    environment:
+      NEXT_PUBLIC_API_MODE: real
     ports:
       - 3000:3000
   api:
