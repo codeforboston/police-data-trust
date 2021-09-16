@@ -1,3 +1,4 @@
+import { AppRoutes } from "../../models"
 import Login from "../../pages/login"
 import { render, router, userEvent, waitFor } from "../test-utils"
 
@@ -56,6 +57,6 @@ describe("behaviors", () => {
     userEvent.type(r.password, "password")
     userEvent.click(r.submit)
 
-    await waitFor(() => expect(router.pathname).toBe("/dashboard"))
+    await waitFor(() => expect(router.pathname).toBe(AppRoutes.DASHBOARD))
   })
 })

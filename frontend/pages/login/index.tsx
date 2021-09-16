@@ -2,14 +2,14 @@ import React, { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { EnrollmentCallToAction, EnrollmentHeader } from "../../compositions"
 import { useAuth, useRedirectOnAuth } from "../../helpers"
-import { CallToActionTypes, PrimaryInputNames } from "../../models"
+import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
 import { FormLevelError, Layout, PrimaryButton, PrimaryInput } from "../../shared-components"
 import sharedStyles from "../../styles/shared.module.css"
 
 const { EMAIL_ADDRESS, LOGIN_PASSWORD } = PrimaryInputNames
 
 export default function UserLogin() {
-  useRedirectOnAuth("/dashboard")
+  useRedirectOnAuth(AppRoutes.DASHBOARD)
   const { login } = useAuth()
   const form = useForm()
   const [loading, setLoading] = useState(false)

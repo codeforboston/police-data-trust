@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from "react"
 import styles from "./viewer-registration.module.css"
 
 import { EnrollmentCallToAction, EnrollmentHeader, PasswordAid } from "../../compositions"
-import { CallToActionTypes, PrimaryInputNames, TooltipTypes } from "../../models"
+import { AppRoutes, CallToActionTypes, PrimaryInputNames, TooltipTypes } from "../../models"
 import { Layout, PrimaryInput, PrimaryButton, FormLevelError } from "../../shared-components"
 import { useAuth, useRedirectOnAuth } from "../../helpers"
 import { FormProvider, useForm } from "react-hook-form"
@@ -14,7 +14,7 @@ const { inputLine } = styles
 const passwordAidId = "passwordAid"
 
 export default function ViewerRegistration() {
-  useRedirectOnAuth("/dashboard")
+  useRedirectOnAuth(AppRoutes.DASHBOARD)
   const { register } = useAuth()
   const form = useForm()
   const [loading, setLoading] = useState(false)

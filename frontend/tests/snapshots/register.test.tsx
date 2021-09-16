@@ -1,3 +1,4 @@
+import { AppRoutes } from "../../models"
 import Register from "../../pages/register"
 import { render, router, uniqueEmail, userEvent, waitFor } from "../test-utils"
 
@@ -97,7 +98,7 @@ describe("behaviors", () => {
     userEvent.type(r.confirmPassword, "aA1!asdfasdf")
 
     userEvent.click(r.submit)
-    await waitFor(() => expect(router.pathname).toBe("/dashboard"))
+    await waitFor(() => expect(router.pathname).toBe(AppRoutes.DASHBOARD))
   })
 
   it("should reject existing accounts", async () => {
