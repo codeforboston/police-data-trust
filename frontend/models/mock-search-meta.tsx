@@ -8,48 +8,48 @@ export interface SavedResultsType {
   fullRecordId: number
 }
 
-export interface dataColumn {
+export interface DataColumn {
   Header: string,
   accessor: string
 }
 
-export interface dataColumns {
-  columns: dataColumn[]
+export interface DataColumns {
+  columns: DataColumn[]
 }
 
 export interface SavedDataType {
   searchDate: Date,
-  recordId: number
+  fullRecordId: number
 }
 
 export const resultsColumns = [
   {
     Header: "Search Date",
-    accessor: "searchDate" as const
+    accessor: "searchDate"
   },
   {
     Header: "Incident Date(s)",
-    accessor: "dates" as const
+    accessor: "dates"
   },
   {
     Header: "Incident Type",
-    accessor: "incidentType" as const
+    accessor: "incidentType"
   },
   {
     Header: "Officer(s)",
-    accessor: "officersInvolved" as const
+    accessor: "officersInvolved"
   },
   {
     Header: "Subject",
-    accessor: "subject" as const
+    accessor: "subject"
   },
   {
     Header: "Source",
-    accessor: "source" as const
+    accessor: "source"
   },
   {
     Header: "View Record",
-    accessor: "full" as const
+    accessor: "full"
   }
 ]
 
@@ -66,30 +66,30 @@ export interface SavedSearchType {
 export const searchesColumns = [
   {
     Header: "Search Date",
-    accessor: "searchDate" as const
+    accessor: "searchDate"
   },
   {
     Header: "Who",
-    accessor: "who" as const
+    accessor: "who"
   },
   {
     Header: "What",
-    accessor: "what" as const
+    accessor: "what"
   },
   {
     Header: "When",
-    accessor: "when" as const
+    accessor: "when"
   },
   {
     Header: "Where",
-    accessor: "where" as const
+    accessor: "where"
   },
   {
     Header: "Results Total",
-    accessor: "results" as const
+    accessor: "results"
   },
   {
     Header: "View Results",
-    accessor: "view" as const
+    accessor: "view"
   }
 ]
