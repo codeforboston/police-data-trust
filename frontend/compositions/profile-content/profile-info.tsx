@@ -22,33 +22,40 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
   }
 
   if (editMode) {
+    const { inputLine, formControls, cancelButton, submitButton } = styles
     return (
       <div className={profileData}>
         <header className={sectionTitle}>Edit Your Account Information</header>
         <form>
-          <div className={row}>
+          <fieldset className={inputLine}>
             <PrimaryInput inputName={FIRST_NAME} isSubmitted={isSubmitted} />
             <PrimaryInput inputName={LAST_NAME} isSubmitted={isSubmitted} />
-          </div>
-          <div className={row}>
+          </fieldset>
+          <fieldset className={inputLine}>
             <PrimaryInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
             <PrimaryInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted} />
-          </div>
-          <div className={row}>
-            <PrimaryInput inputName={CREATE_PASSWORD} isSubmitted={isSubmitted} />
+          </fieldset>
+          <fieldset className={inputLine}>
+            <PrimaryInput
+              inputName={CREATE_PASSWORD}
+              isSubmitted={isSubmitted}
+            />
             <PrimaryInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted} />
-          </div>
-          <div className={row}>
-            <button className={styles.cancelButton} onClick={() => setEditMode(false)}>
+          </fieldset>
+          <div className={formControls}>
+            <button className={cancelButton} onClick={() => setEditMode(false)}>
               Cancel
             </button>
-            <button className={styles.submitButton} onClick={handleSubmit}>Save Changes</button>
+            <button className={submitButton} onClick={handleSubmit}>
+              Save Changes
+            </button>
           </div>
+         
         </form>
       </div>
     )
   } else {
-    const { editButton, label, dataField } = styles
+    const { editButton, dataView, dataCell, dataBreak, label, dataField } = styles
     return (
       <div className={profileData}>
         <header className={sectionTitle}>
@@ -60,20 +67,35 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
             onClick={() => setEditMode(true)}
           />
         </header>
-        <div className={row}>
-          <span className={label}>First name:</span>
-          <div className={dataField}>{firstName}</div>
-          <span className={label}>Last name:</span>
-          <div className={dataField}>{lastName}</div>
-        </div>
-        <div className={row}>
-          <span className={label}>Email address:</span>
-          <div className={dataField}>{email}</div>
-          <span className={label}>Phone number:</span>
-          <div className={dataField}>{phone}</div>
-        </div>
+        <main className={dataView}>
+          <div className={dataCell}>
+            <div className={label}>First name:</div>
+            <div className={dataField}>{firstName}</div>
+          </div>
+          <div className={dataCell}>
+            <div className={label}>Last name:</div>
+            <div className={dataField}>{lastName}</div>
+          </div>
+          <div className={dataBreak}></div>
+          <div className={dataCell}>
+            <div className={label}>Email address:</div>
+            <div className={dataField}>{email}</div>
+          </div>
+          <div className={dataCell}>
+            <div className={label}>Phone number:</div>
+            <div className={dataField}>{formatPhoneNumber(phone)}</div>
+          </div>
+        </main>
+        
         
       </div>
     )
   }
 }
+
+
+function formatPhoneNumber(rawPhoneNumber: string) {
+  const cleaned = ('' + rawPhoneNumber).replace(/\D/g, '')
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : '--'
+} 

@@ -1,13 +1,18 @@
 .profileData {
-  /* height: var(--size200); */
-
   padding: var(--size12);
   max-width: var(--size512);
 }
 
+.sectionTitle {
+  font-size: var(--size24);
+  font-weight: bold;
+  color: var(--darkBlue);
+  margin-bottom: var(--size16);
+}
+
 .row {
   display: block;
-  line-height: 1.5;
+  line-height: 2;
 }
 .row label {
   display: block;
@@ -16,27 +21,13 @@
 }
 
 .row input {
+  display: block;
   height: var(--size20);
 }
 
-.label {
-  font-size: var(--size10);
-  color: var(--grey);
-  margin-left: var(--size24);
-}
+/* Profile Info */
 
-.dataField {
-  display: inline-block;
-  font-size: var(--size12);
-  margin-left: var(--size10);
-}
-
-.sectionTitle {
-  font-size: var(--size28);
-  font-weight: bold;
-  color: var(--darkBlue);
-}
-
+/* View Mode */
 .editButton {
   vertical-align: text-top;
   margin-left: var(--size10);
@@ -44,32 +35,87 @@
   cursor: pointer;
 }
 
+.dataView {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  row-gap: 1rem;
+  column-gap: 2rem;
+}
+
+.dataCell {
+  display: inline-block;
+}
+
+.dataBreak {
+  width: 100%;
+  flex-basis: auto;
+}
+
+.label {
+  display: block;
+  font-size: var(--size10);
+  color: var(--grey);
+  margin-left: 0;
+}
+
+.dataField {
+  font-size: var(--size14);
+  margin-left: var(--size10);
+}
+
+/* Edit Mode */
+
 .profileForm {
   display: flex;
   flex-direction: column;
 }
 
-.profileForm button {
-  margin-right: var(--size10);
-  margin-top: var(--size32);
-  font-weight: 700;
-  font-size: var(--size14);
-  height: var(--size32);
-  width: var(--size80);
-  font-size: var(--size16);
+/* copied from "viewer-registration.module.css" */
+.inputLine {
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.cancelButton {
-  background-color: #7caed7;
-  color: var(--darkBlue);
+@media screen and (max-width: 32em) {
+  .inputLine {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.formControls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.formControls button {
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: none;
+  border-radius: var(--size4);
+  font-size: var(--size16);
+  font-weight: 500;
   cursor: pointer;
+}
+.formControls button:focus,
+.formControls button:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
 }
 
 .submitButton {
   background-color: var(--darkBlue);
   color: white;
-  cursor: pointer;
 }
+
+.cancelButton {
+  background-color: var(--lightBlue);
+  color: var(--darkBlue);
+}
+
+/* Profile Type */
 
 .profileTypeText {
   font-size: var(--size36);
@@ -78,8 +124,10 @@
 }
 
 .description {
+  line-height: 2;
   font-size: var(--size14);
   color: black;
+  margin-bottom: var(--size20);
 }
 
 .profileTypeLink {
@@ -87,6 +135,8 @@
   color: var(--linkBlue);
   text-decoration: underline;
 }
+
+/* Tables */
 
 .savedData {
   border: 1px solid var(--darkBlue);
