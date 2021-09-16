@@ -26,6 +26,7 @@ export default function Profile() {
       <div className={styles.profileWrapper}>
         <ProfileNav currentItem={nav} selectNav={setNav} />
 
+        {/* TODO: this is awful */}
         {nav === ProfileMenu.USER_INFO && <ProfileInfo userData={mockUser} />}
         {nav === ProfileMenu.PROFILE_TYPE && <ProfileType userData={mockUser} />}
         {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches userData={mockUser} />}
