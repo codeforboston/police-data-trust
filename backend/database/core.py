@@ -22,7 +22,6 @@ from flask_sqlalchemy import SQLAlchemy
 import psycopg2.errors
 from psycopg2 import connect
 from psycopg2.extensions import connection
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from ..config import TestingConfig
 from ..utils import dev_only
@@ -106,8 +105,11 @@ pass_psql_admin_connection = click.make_pass_decorator(connection)
     help="If true, overwrite the database if it exists.",
 )
 @pass_psql_admin_connection
+@click.pass_context
 @dev_only
-def create_database(conn: connection, overwrite: bool = False):
+def create_database(
+    ctx: click.Context, conn: connection, overwrite: bool = False
+):
     """Create the database from nothing."""
     database = current_app.config["POSTGRES_DB"]
     cursor = conn.cursor()
