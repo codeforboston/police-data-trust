@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ProfileType } from "../../compositions/profile-content"
 import renderer from "react-test-renderer"
-import {users} from "../../models/mockData/"
+import {users} from "../../models/mock-data"
 
 
 it("renders Profile: Account Type panel with regular Viewer user", () => {
