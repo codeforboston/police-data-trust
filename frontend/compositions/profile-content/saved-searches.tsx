@@ -9,7 +9,7 @@ import { searchesColumns } from "../../models/mock-search-meta"
 
 import styles from "./saved.module.css"
 
-import mockData from "../../models/__mocks__/saved-search.json"
+import { savedSearchesData } from "../../models/mock-data"
 
 // placeholders
 export default function SavedSearches({ userData = emptyUser }: UserProfileProps) {
@@ -29,7 +29,7 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
     dataRows
   } = styles
 
-  const data = useMemo(() => mockData, [])
+  const searchData = useMemo(() => savedSearchesData, [])
   const columns = useMemo(() => searchesColumns, [])
 
   const {
@@ -50,7 +50,7 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
   } = useTable(
     {
       columns,
-      data,
+      searchData,
       initialState: { pageIndex: 0 }
     },
     usePagination

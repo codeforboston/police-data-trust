@@ -9,7 +9,7 @@ import { resultsColumns } from "../../models/mock-search-meta"
 
 import styles from "./saved.module.css"
 
-import mockData from "../../models/__mocks__/saved-results.json"
+import { savedResults } from "../../models/mock-data/"
 
 export default function SavedResults({ userData = emptyUser }: UserProfileProps) {
   const { useState, useMemo } = React
@@ -28,7 +28,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
     dataRows
   } = styles
 
-  const data = useMemo(() => mockData, [])
+  const data = useMemo(() => savedResults, [])
   const columns = useMemo(() => resultsColumns, [])
 
   const {
