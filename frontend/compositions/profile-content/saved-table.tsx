@@ -13,7 +13,7 @@ interface SavedTableProps {
   expandIcon: IconDefinition
 }
 
-function SavedTable(props: SavedTableProps) {
+export default function SavedTable(props: SavedTableProps) {
   const { useState, useMemo } = React
   const [editMode, setEditMode] = useState(false)
   const { itemTitle, tableColumns, tableData, rowIdName, expandIcon } = props
