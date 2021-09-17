@@ -93,9 +93,9 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
   }
 }
 
-// format as 999 999 9999
+// format as (999) 999-9999
 function formatPhoneNumber(rawPhoneNumber: string) {
   const cleaned = ('' + rawPhoneNumber).replace(/\D/g, '')
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  return match ? `${match[1]} ${match[2]} ${match[3]}` : '--'
+  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : '--'
 } 
