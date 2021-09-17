@@ -49,7 +49,7 @@ export const resultsColumns = [
   },
   {
     Header: "View Record",
-    accessor: "full"
+    accessor: "recordId"
   }
 ]
 
@@ -86,10 +86,10 @@ export const searchesColumns = [
   },
   {
     Header: "Results Total",
-    accessor: "results"
+    accessor: "total"
   },
   {
     Header: "View Results",
-    accessor: "view"
+    accessor: "results"
   }
 ]
