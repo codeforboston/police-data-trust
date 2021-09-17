@@ -5,8 +5,8 @@
     "what": "n/a",
     "when": "n/a",
     "where": "New York (state)",
-    "results": 124,
-    "full": 1
+    "total": 124,
+    "results": 1
   },
   {
     "searchDate": "07/21/2021",
@@ -14,7 +14,7 @@
     "what": "Use of Force",
     "when": "03/14/2008",
     "where": "Chicago, Illinois",
-    "results": 1200,
-    "full": 2
+    "total": 1200,
+    "results": 2
   }
 ]

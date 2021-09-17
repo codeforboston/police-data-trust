@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 
 import { UserProfileProps, emptyUser } from "../../models/profile"
-import { resultsColumns } from "../../models/mock-search-meta"
+import { resultsColumns } from "../../models/search-meta"
+import { savedResultsData } from "../../models/mock-data/"
 
 import styles from "./saved.module.css"
 
-import { savedResults } from "../../models/mock-data/"
+
 
 export default function SavedResults({ userData = emptyUser }: UserProfileProps) {
   const { useState, useMemo } = React
@@ -28,7 +29,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
     dataRows
   } = styles
 
-  const data = useMemo(() => savedResults, [])
+  const data = useMemo(() => savedResultsData, [])
   const columns = useMemo(() => resultsColumns, [])
 
   const {
@@ -67,6 +68,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
 
   function viewRecord(recordId: number) {
     // TODO: view full record
+    console.log(`View Record # ${recordId}`)
   }
 
   function toggleEditMode() {
@@ -101,10 +103,10 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
                   const { id } = cell.column
-                  if (id === "full") {
+                  if (id === "recordId") {
                     return (
                       <td>
-                        <FontAwesomeIcon icon={faAngleRight} />
+                        <FontAwesomeIcon icon={faAngleRight} onClick={() => viewRecord(cell.value)} />
                       </td>
                     )
                   }

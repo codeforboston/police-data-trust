@@ -6,7 +6,7 @@
     "officersInvolved": ["Dan Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 1
+    "recordId": 1
   },
   {
     "searchDate": "2021/09/07",
@@ -15,7 +15,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 2
+    "recordId": 2
   },
   {
     "searchDate": "2021/09/07",
@@ -24,7 +24,7 @@
     "officersInvolved": ["Ed Smith, Vince Gilligan"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 3
+    "recordId": 3
   },
   {
     "searchDate": "2021/09/07",
@@ -33,7 +33,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 4
+    "recordId": 4
   },
   {
     "searchDate": "2021/09/07",
@@ -42,7 +42,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 5
+    "recordId": 5
   },
   {
     "searchDate": "2021/09/07",
@@ -51,7 +51,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 6
+    "recordId": 6
   },
   {
     "searchDate": "2021/09/07",
@@ -60,7 +60,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 7
+    "recordId": 7
   },
   {
     "searchDate": "2021/09/07",
@@ -69,7 +69,7 @@
     "officersInvolved": ["Dan Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 8
+    "recordId": 8
   },
   {
     "searchDate": "2021/09/07",
@@ -78,7 +78,7 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 9
+    "recordId": 9
   },
   {
     "searchDate": "2021/09/07",
@@ -87,7 +87,7 @@
     "officersInvolved": ["Ed Smith, Vince Gilligan"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 10
+    "recordId": 10
   },
   {
     "searchDate": "2021/09/07",
@@ -96,6 +96,6 @@
     "officersInvolved": ["John Smith"],
     "subject": "unknown",
     "source": "News Article",
-    "full": 11
+    "recordId": 11
   }
 ]

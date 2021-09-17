@@ -5,14 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons"
 
 import { UserProfileProps, emptyUser } from "../../models/profile"
-import { searchesColumns } from "../../models/mock-search-meta"
+import { searchesColumns } from "../../models/search-meta"
+import { savedSearchesData } from "../../models/mock-data"
 
 import styles from "./saved.module.css"
 
-import { savedSearchesData } from "../../models/mock-data"
+
 
 // placeholders
-export default function SavedSearches({ userData = emptyUser }: UserProfileProps) {
+export default function SavedSearches({ userData = emptyUser}: UserProfileProps) {
   const { useState, useMemo } = React
 
   const [editMode, setEditMode] = useState(false)
@@ -29,7 +30,7 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
     dataRows
   } = styles
 
-  const searchData = useMemo(() => savedSearchesData, [])
+  const data = useMemo(() => savedSearchesData, [])
   const columns = useMemo(() => searchesColumns, [])
 
   const {
@@ -50,7 +51,7 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
   } = useTable(
     {
       columns,
-      searchData,
+      data,
       initialState: { pageIndex: 0 }
     },
     usePagination
@@ -66,8 +67,9 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
     setPageSize(+e.target.value)
   }
 
-  function viewRecord(recordId: number) {
-    // TODO: view full record
+  function viewResults(results: number) {
+    // TODO: view results
+    console.log(`View results ${results}`)
   }
 
   function toggleEditMode() {
@@ -102,10 +104,10 @@ export default function SavedSearches({ userData = emptyUser }: UserProfileProps
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
                   const { id } = cell.column
-                  if (id === "full") {
+                  if (id === "results") {
                     return (
                       <td>
-                        <FontAwesomeIcon icon={faCaretRight} />
+                        <FontAwesomeIcon icon={faCaretRight} onClick={() => viewResults(cell.value)} />
                       </td>
                     )
                   }
