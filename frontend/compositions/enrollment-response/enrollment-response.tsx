@@ -3,9 +3,8 @@ import Link from "next/link"
 import styles from "./enrollment-response.module.css"
 import { Logo, ExternalLink } from "../../shared-components"
 import { EnrollmentTypes, enrollmentMessage, LogoSizes } from "../../models"
-
-interface EnrollmentResponseProps {
-  isSuccess?: boolean
+export interface ResponseProps {
+  success?: boolean
 }
 
 function failureResponseMessage(enrollmentType: EnrollmentTypes) {
@@ -32,12 +31,13 @@ function failureResponseMessage(enrollmentType: EnrollmentTypes) {
   )
 }
 
-export function RegistrationResponse({ isSuccess = false }: EnrollmentResponseProps) {
+export function RegistrationResponse(props: ResponseProps) {
   const { response, message, title, boldText } = styles
+  const { success } = props
   return (
     <div className={response}>
       <Logo size={LogoSizes.LARGE} />
-      {isSuccess ? (
+      {success ? (
         <div className={message}>
           <header className={title}>Success!</header>
           <p>You have been successfully registered as a Viewer</p>
@@ -56,13 +56,14 @@ export function RegistrationResponse({ isSuccess = false }: EnrollmentResponsePr
   )
 }
 
-export function PassportApplicationResponse({ isSuccess = false }: EnrollmentResponseProps) {
+export function PassportApplicationResponse(props: ResponseProps) {
   const { returnText, returnPath } = enrollmentMessage[EnrollmentTypes.PASSPORT]
   const { response, message, title, boldText } = styles
+  const { success } = props
   return (
     <div className={response}>
       <Logo size={LogoSizes.LARGE} />
-      {isSuccess ? (
+      {success ? (
         <div className={message}>
           <header className={title}>Success!</header>
           <p>You have successfully submitted an application for a Passport account</p>
