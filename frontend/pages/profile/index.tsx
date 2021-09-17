@@ -31,7 +31,6 @@ export default function Profile() {
         {nav === ProfileMenu.PROFILE_TYPE && <ProfileType userData={mockUser} />}
         {nav === ProfileMenu.SAVED_RESULTS && <SavedResults />}
         {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches />}
-        
       </div>
     </Layout>
   )

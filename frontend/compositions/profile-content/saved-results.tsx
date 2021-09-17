@@ -8,10 +8,10 @@ import { savedResultsData } from "../../models/mock-data"
 
 export default function SavedResults() {
   return SavedTable({
-    itemTitle: 'Results',
+    itemTitle: "Results",
     tableColumns: resultsColumns,
     tableData: savedResultsData,
-    rowIdName: 'recordId',
+    rowIdName: "recordId",
     expandIcon: faAngleRight
   })
 }

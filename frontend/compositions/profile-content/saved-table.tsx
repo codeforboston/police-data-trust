@@ -6,10 +6,10 @@ import { useTable, usePagination, Column } from "react-table"
 import styles from "./saved.module.css"
 
 interface SavedTableProps {
-  itemTitle: string,
-  tableColumns: Array<any>,
-  tableData: Array<any>,
-  rowIdName: string,
+  itemTitle: string
+  tableColumns: Array<any>
+  tableData: Array<any>
+  rowIdName: string
   expandIcon: IconDefinition
 }
 
@@ -80,18 +80,16 @@ export default function SavedTable(props: SavedTableProps) {
     <div className={tableWrapper}>
       <header className={tableHeader}>
         <span className={tableTitle}>Saved {itemTitle}</span>
-        <button 
-          className={editMode ? editButtonOn : editButton} 
-          onClick={toggleEditMode}>
-            Edit {itemTitle}
-          </button>
+        <button className={editMode ? editButtonOn : editButton} onClick={toggleEditMode}>
+          Edit {itemTitle}
+        </button>
       </header>
       <table {...getTableProps()} className={dataTable} aria-label={`Saved ${itemTitle}`}>
         <thead className={dataHeader}>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             // eslint-disable-next-line react/jsx-key
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
+              {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -99,30 +97,28 @@ export default function SavedTable(props: SavedTableProps) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map(row => {
+          {page.map((row) => {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
               <tr {...row.getRowProps()} className={dataRows}>
-                {row.cells.map(cell => {
+                {row.cells.map((cell) => {
                   const { id } = cell.column
                   if (id === rowIdName) {
                     return (
                       <td>
                         <FontAwesomeIcon
-                          className={expandRecordButton} 
-                          icon={expandIcon} 
+                          className={expandRecordButton}
+                          icon={expandIcon}
                           onClick={() => viewRecord(cell.value)}
                         />
                       </td>
                     )
                   }
-                  
+
                   return (
                     // eslint-disable-next-line react/jsx-key
-                    <td {...cell.getCellProps()}>
-                      {cell.render("Cell")}
-                    </td>
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                   )
                 })}
               </tr>
@@ -161,5 +157,4 @@ export default function SavedTable(props: SavedTableProps) {
       </table>
     </div>
   )
-
 }

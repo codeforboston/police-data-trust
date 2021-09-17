@@ -10,8 +10,9 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
   const [editMode, setEditMode] = React.useState(false)
   const [isSubmitted, setIsSubmitted] = React.useState(false)
 
-  const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } = PrimaryInputNames
-  
+  const { FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_NUMBER, CREATE_PASSWORD, CONFIRM_PASSWORD } =
+    PrimaryInputNames
+
   const { profileData, sectionTitle, row } = styles
   const { firstName, lastName, email, phone } = userData
 
@@ -36,10 +37,7 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
             <PrimaryInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted} />
           </fieldset>
           <fieldset className={inputLine}>
-            <PrimaryInput
-              inputName={CREATE_PASSWORD}
-              isSubmitted={isSubmitted}
-            />
+            <PrimaryInput inputName={CREATE_PASSWORD} isSubmitted={isSubmitted} />
             <PrimaryInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted} />
           </fieldset>
           <div className={formControls}>
@@ -50,7 +48,6 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
               Save Changes
             </button>
           </div>
-         
         </form>
       </div>
     )
@@ -86,8 +83,6 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
             <div className={dataField}>{formatPhoneNumber(phone)}</div>
           </div>
         </main>
-        
-        
       </div>
     )
   }
@@ -95,7 +90,7 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
 
 // format as (999) 999-9999
 function formatPhoneNumber(rawPhoneNumber: string) {
-  const cleaned = ('' + rawPhoneNumber).replace(/\D/g, '')
+  const cleaned = ("" + rawPhoneNumber).replace(/\D/g, "")
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : '--'
-} 
+  return match ? `(${match[1]}) ${match[2]}-${match[3]}` : "--"
+}
