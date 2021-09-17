@@ -28,10 +28,23 @@
   font-size: var(--size12);
   font-weight: bold;
 }
+.editButtonOn {
+  background-color: var(--lightBlue);
+  border: 2px solid #303463;
+  box-sizing: border-box;
+  border-radius: 4px;
+  color: black;
+  font-size: var(--size12);
+  font-weight: bold;
+}
 
 .dataTable {
   border-collapse: collapse;
   margin-top: var(--size36);
+}
+
+.expandRecordButton {
+  cursor: pointer;
 }
 
 .dataFooter,
