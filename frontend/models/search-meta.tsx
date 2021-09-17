@@ -1,25 +1,11 @@
 export interface SavedResultsType {
-  searchDate: Date,
-  incidentDates: Date[],
-  incidentType: string,
-  offiersInvolved: string[],
-  subject: string,
-  source: string,
-  fullRecordId: number
-}
-
-export interface DataColumn {
-  Header: string,
-  accessor: string
-}
-
-export interface DataColumns {
-  columns: DataColumn[]
-}
-
-export interface SavedDataType {
-  searchDate: Date,
-  fullRecordId: number
+  searchDate: Date
+  incidentDates: Date[]
+  incidentType: string
+  offiersInvolved: string[]
+  subject: string
+  source: string
+  recordId: number
 }
 
 export const resultsColumns = [
@@ -54,13 +40,13 @@ export const resultsColumns = [
 ]
 
 export interface SavedSearchType {
-  searchDate: Date,
-  who: string[],
-  what: string,
-  when: Date[],
-  where: string,
-  resultsCount: number,
-  view: number
+  searchDate: Date
+  who: string[]
+  what: string
+  when: Date[]
+  where: string
+  total: number
+  results: number
 }
 
 export const searchesColumns = [
