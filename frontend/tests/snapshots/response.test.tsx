@@ -6,7 +6,7 @@ import {
 } from "../../compositions/enrollment-response/enrollment-response"
 
 it("renders Register:Success correctly", () => {
-  const tree = renderer.create(<RegistrationResponse isSuccess />).toJSON()
+  const tree = renderer.create(<RegistrationResponse success />).toJSON()
   expect(tree).toMatchSnapshot()
 }),
   it("renders Register:Fail correctly", () => {
@@ -15,7 +15,7 @@ it("renders Register:Success correctly", () => {
   })
 
 it("renders Passport:Success correctly", () => {
-  const tree = renderer.create(<PassportApplicationResponse isSuccess />).toJSON()
+  const tree = renderer.create(<PassportApplicationResponse success />).toJSON()
   expect(tree).toMatchSnapshot()
 })
 
