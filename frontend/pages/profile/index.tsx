@@ -13,7 +13,7 @@ import {
 import styles from "./profile.module.css"
 
 // TODO: replace with API call
-import {users} from "../../models/mock-data"
+import { users } from "../../models/mock-data"
 
 export default function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
@@ -26,11 +26,12 @@ export default function Profile() {
       <div className={styles.profileWrapper}>
         <ProfileNav currentItem={nav} selectNav={setNav} />
 
-        {/* TODO: this is awful */}
+        {/* TODO: this looks awful */}
         {nav === ProfileMenu.USER_INFO && <ProfileInfo userData={mockUser} />}
         {nav === ProfileMenu.PROFILE_TYPE && <ProfileType userData={mockUser} />}
-        {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches userData={mockUser} />}
-        {nav === ProfileMenu.SAVED_RESULTS && <SavedResults userData={mockUser} />}
+        {nav === ProfileMenu.SAVED_RESULTS && <SavedResults />}
+        {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches />}
+        
       </div>
     </Layout>
   )
