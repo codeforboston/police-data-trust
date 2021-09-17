@@ -19,23 +19,22 @@
   font-size: var(--size18);
 }
 
-.editButton {
-  background-color: var(--darkBlue);
-  border: 2px solid #303463;
+.editButton,
+.editButtonOn {
   box-sizing: border-box;
   border-radius: 4px;
-  color: white;
+  border: 2px solid #303463;
   font-size: var(--size12);
   font-weight: bold;
+  cursor: pointer;
+}
+.editButton {
+  background-color: var(--darkBlue);
+  color: white;
 }
 .editButtonOn {
   background-color: var(--lightBlue);
-  border: 2px solid #303463;
-  box-sizing: border-box;
-  border-radius: 4px;
-  color: black;
-  font-size: var(--size12);
-  font-weight: bold;
+  color: var(--darkBlue);
 }
 
 .dataTable {
