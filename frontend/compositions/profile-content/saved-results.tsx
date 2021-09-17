@@ -4,15 +4,12 @@ import { useTable, usePagination } from "react-table"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 
-import { UserProfileProps, emptyUser } from "../../models/profile"
 import { resultsColumns } from "../../models/search-meta"
-import { savedResultsData } from "../../models/mock-data/"
+import { savedResultsData } from "../../models/mock-data"
 
 import styles from "./saved.module.css"
 
-
-
-export default function SavedResults({ userData = emptyUser }: UserProfileProps) {
+export default function SavedResults() {
   const { useState, useMemo } = React
 
   const [editMode, setEditMode] = useState(false)
@@ -22,6 +19,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
     tableHeader,
     tableTitle,
     editButton,
+    editButtonOn,
     dataTable,
     dataHeader,
     dataFooter,
@@ -31,6 +29,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
 
   const data = useMemo(() => savedResultsData, [])
   const columns = useMemo(() => resultsColumns, [])
+  
 
   const {
     getTableProps,
@@ -68,7 +67,6 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
 
   function viewRecord(recordId: number) {
     // TODO: view full record
-    console.log(`View Record # ${recordId}`)
   }
 
   function toggleEditMode() {
@@ -79,7 +77,7 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
     <div className={tableWrapper}>
       <header className={tableHeader}>
         <span className={tableTitle}>Saved Results</span>
-        <button className={editButton} onClick={toggleEditMode}>
+        <button className={editMode ? editButtonOn : editButton} onClick={toggleEditMode}>
           Edit Results
         </button>
       </header>
@@ -106,7 +104,11 @@ export default function SavedResults({ userData = emptyUser }: UserProfileProps)
                   if (id === "recordId") {
                     return (
                       <td>
-                        <FontAwesomeIcon icon={faAngleRight} onClick={() => viewRecord(cell.value)} />
+                        <FontAwesomeIcon 
+                          icon={faAngleRight} 
+                          onClick={() => viewRecord(cell.value)} 
+                          style={{cursor:'pointer'}}  
+                        />
                       </td>
                     )
                   }

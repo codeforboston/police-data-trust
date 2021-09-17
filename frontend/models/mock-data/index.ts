@@ -1,6 +1,6 @@
 import { mockData, tableColumns } from "./mock-table-data"
-import * as savedResultsData from "./saved-results.json"
-import * as savedSearchesData from "./saved-search.json"
+import { savedResultsData } from "./saved-results-data"
+import { savedSearchData} from "./saved-search-data"
 import * as users from "./users.json"
 
-export { mockData, savedResultsData, savedSearchesData, tableColumns, users }
+export { mockData, savedResultsData, savedSearchData, tableColumns, users }

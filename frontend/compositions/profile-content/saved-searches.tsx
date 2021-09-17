@@ -6,14 +6,12 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons"
 
 import { UserProfileProps, emptyUser } from "../../models/profile"
 import { searchesColumns } from "../../models/search-meta"
-import { savedSearchesData } from "../../models/mock-data"
+import { savedSearchData } from "../../models/mock-data"
 
 import styles from "./saved.module.css"
 
-
-
 // placeholders
-export default function SavedSearches({ userData = emptyUser}: UserProfileProps) {
+export default function SavedSearches({ userData = emptyUser }: UserProfileProps) {
   const { useState, useMemo } = React
 
   const [editMode, setEditMode] = useState(false)
@@ -30,7 +28,7 @@ export default function SavedSearches({ userData = emptyUser}: UserProfileProps)
     dataRows
   } = styles
 
-  const data = useMemo(() => savedSearchesData, [])
+  const data = useMemo(() => savedSearchData, [])
   const columns = useMemo(() => searchesColumns, [])
 
   const {
@@ -69,7 +67,6 @@ export default function SavedSearches({ userData = emptyUser}: UserProfileProps)
 
   function viewResults(results: number) {
     // TODO: view results
-    console.log(`View results ${results}`)
   }
 
   function toggleEditMode() {
@@ -107,7 +104,11 @@ export default function SavedSearches({ userData = emptyUser}: UserProfileProps)
                   if (id === "results") {
                     return (
                       <td>
-                        <FontAwesomeIcon icon={faCaretRight} onClick={() => viewResults(cell.value)} />
+                        <FontAwesomeIcon
+                          icon={faCaretRight}
+                          onClick={() => viewResults(cell.value)}
+                          style={{ cursor: "pointer" }}
+                        />
                       </td>
                     )
                   }
