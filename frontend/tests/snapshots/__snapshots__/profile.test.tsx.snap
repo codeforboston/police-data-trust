@@ -165,68 +165,69 @@ exports[`renders Profile Page correctly 1`] = `
           />
         </svg>
       </header>
-      <div
-        className="row"
+      <main
+        className="dataView"
       >
-        <span
-          className="label"
-        >
-          First name:
-        </span>
         <div
-          className="dataField"
+          className="dataCell"
         >
-          Bob
+          <div
+            className="label"
+          >
+            First name:
+          </div>
+          <div
+            className="dataField"
+          >
+            Bob
+          </div>
         </div>
-        <span
-          className="label"
-        >
-          Last name:
-        </span>
         <div
-          className="dataField"
+          className="dataCell"
         >
-          Boberton
+          <div
+            className="label"
+          >
+            Last name:
+          </div>
+          <div
+            className="dataField"
+          >
+            Boberton
+          </div>
         </div>
-      </div>
-      <div
-        className="row"
-      >
-        <span
-          className="label"
-        >
-          Email address:
-        </span>
         <div
-          className="dataField"
-        >
-          bob1@email.com
-        </div>
-        <span
-          className="label"
-        >
-          Phone number:
-        </span>
+          className="dataBreak"
+        />
         <div
-          className="dataField"
+          className="dataCell"
         >
-          9995559999
+          <div
+            className="label"
+          >
+            Email address:
+          </div>
+          <div
+            className="dataField"
+          >
+            bob1@email.com
+          </div>
         </div>
-      </div>
-      <div
-        className="row"
-      >
-        <span
-          className="label"
-        >
-          Password:
-        </span>
         <div
-          className="dataField"
+          className="dataCell"
         >
-          ********
+          <div
+            className="label"
+          >
+            Phone number:
+          </div>
+          <div
+            className="dataField"
+          >
+            (999) 555-9999
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </div>
