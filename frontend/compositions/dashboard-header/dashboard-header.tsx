@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
-import DesktopNav from "./desktop-nav"
+import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
@@ -24,10 +24,10 @@ export default function DashboardHeader() {
 
         <nav>
           <FontAwesomeIcon icon={faEllipsisV} size={"2x"} />
-          <DesktopNav />
-          <button className="primaryButton" type="button">
+          <Nav />
+          <PrimaryButton>
             DONATE
-          </button>
+          </PrimaryButton>
           <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
       </div>

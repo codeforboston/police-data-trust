@@ -3,13 +3,14 @@ import styles from "./dashboard-header.module.css"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-export default function DesktopNav() {
+export default function Nav() {
   const router = useRouter()
 
   const menu = [
     { title: "Search", path: "/search" },
     { title: "Profile", path: "/profile" },
-    { title: "Sign Out", path: "/logout" }
+    { title: "Sign Out", path: "/logout" },
+    { title: "DONATE", path: "#"}
   ]
 
   const setClassName = (pathname: string): string => {
@@ -17,16 +18,16 @@ export default function DesktopNav() {
   }
 
   return (
-    <ul>
-      {menu.map((item, index) => {
-        return (
-          <li key={index} className={setClassName(item.path)}>
-            <Link href={item.path}>
-              <a>{item.title}</a>
-            </Link>
-          </li>
-        )
-      })}
-    </ul>
+      <ul>
+        {menu.map((item, index) => {
+          return (
+            <li key={index} className={setClassName(item.path)}>
+              <Link href={item.path}>
+                <a>{item.title}</a>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
   )
 }

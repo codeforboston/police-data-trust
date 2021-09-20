@@ -35,14 +35,27 @@
   align-items: flex-end;
 }
 
+.backgroundBanner ul {
+  position: absolute;
+  margin-top: var(--size40);
+  margin-right: var(--size12);
+  width: var(--size112);
+  height: var(--size128);
+  padding: var(--size12);
+  border-radius: var(--size4);
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+  list-style: none;
+  background-color: var(--darkBlue);
+}
+
+.backgroundBanner a {
+  color: white;
+}
+
 .backgroundBanner svg {
   margin-top: var(--size24);
   margin-right: var(--size24);
   color: var(--darkBlue);
-}
-
-.backgroundBanner ul {
-  display: none;
 }
 
 .backgroundBanner button {
@@ -102,9 +115,17 @@
   }
 
   .backgroundBanner ul {
+    position: relative;
     display: flex;
+    flex-direction: row;
+    margin: 0;
+    width: var(--size256);
+    height: var(--size24);
+    background-color: transparent;
+    border-radius: none;
+    box-shadow: none;
     padding-right: var(--size28);
-    margin-top: var(--size56);
+    margin-top: var(--size44);
   }
 
   .backgroundBanner li {
@@ -118,6 +139,10 @@
     cursor: pointer;
     list-style: none;
     white-space: nowrap;
+  }
+
+  .backgroundBanner li:last-child {
+    display: none;
   }
 
   .backgroundBanner a {
