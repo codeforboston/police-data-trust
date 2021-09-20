@@ -1,11 +1,10 @@
-import * as React from "react"
-
 import { DataTable } from "../../shared-components/data-table/data-table"
 import { DashboardHeader } from "../../compositions"
 import { Map } from "../../compositions"
 import { Layout } from "../../shared-components"
+import { requireAuth } from "../../helpers"
 
-export default function Dashboard() {
+export default requireAuth(function Dashboard() {
   return (
     <Layout>
       <DashboardHeader />
@@ -13,4 +12,4 @@ export default function Dashboard() {
       <DataTable />
     </Layout>
   )
-}
+})

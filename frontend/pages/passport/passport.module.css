@@ -14,3 +14,8 @@
   display: flex;
   flex-flow: row wrap;
 }
+
+.submissionConfirmation {
+  max-width: var(--size424);
+  overflow: scroll;
+}
