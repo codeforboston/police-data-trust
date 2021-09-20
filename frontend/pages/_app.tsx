@@ -1,5 +1,8 @@
 import "../styles/globals.css"
 import Head from "next/head"
+import { AppProps } from "next/app"
+import { Providers } from "../helpers"
+import { useMockServiceWorker } from "../helpers"
 
 const title = "NPDC Index"
 const description =
@@ -8,7 +11,9 @@ const keywords =
   "police, policing, data, statistics, mapping, misconduct, incidents, violence, brutality, race, racism, united states, U.S.A., police unions, sheriff, militarization"
 export const logoAlt = "A blue circular logo design reads 'National Police Data Coalition'"
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }: AppProps) {
+  useMockServiceWorker()
+
   return (
     <>
       <Head>
@@ -24,7 +29,9 @@ export default function MyApp({ Component, pageProps }) {
         <meta property="og:image:height" content="400" />
         <meta property="og:image:alt" content={logoAlt} />
       </Head>
-      <Component {...pageProps} />
+      <Providers>
+        <Component {...pageProps} />
+      </Providers>
     </>
   )
 }

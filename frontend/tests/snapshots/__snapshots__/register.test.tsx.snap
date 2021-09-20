@@ -2,253 +2,231 @@
 
 exports[`renders Register correctly 1`] = `
 <div>
-  <section
-    className="enrollmentSection"
-  >
-    <div
-      className="header"
+  <div>
+    <section
+      class="enrollmentSection"
     >
-      <img
-        alt="A blue circular logo design reads 'National Police Data Coalition'"
-        className="logo medium"
-        src="/NPDCLogo.svg"
-      />
-      <h1>
-        Register: Viewer Account
-        <div
-          aria-describedby="viewerAccountsTooltip"
-          aria-label="Learn more about Viewer Accounts"
-          className="tooltipContainer"
-          role="tooltip"
-          tabIndex={0}
-        >
-          <svg
-            aria-hidden={true}
-            className="svg-inline--fa fa-question-circle fa-w-16 tooltipIcon"
-            data-icon="question-circle"
-            data-prefix="far"
-            focusable="false"
-            role="img"
-            style={Object {}}
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"
-              fill="currentColor"
-              style={Object {}}
-            />
-          </svg>
-          <div
-            className="tooltip"
-            id="viewerAccountsTooltip"
-          >
-            <p>
-              A Viewer account allows you to see data that is publically available.
-            </p>
-            <p>
-              Once registered, you may optionally apply to see legally protected data through a Passport account
-            </p>
-          </div>
-        </div>
-      </h1>
-    </div>
-    <form>
-      <fieldset
-        className="inputLine"
-      >
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="firstNameInput"
-          >
-            First Name:
-          </label>
-          <input
-            aria-describedby="firstNameError"
-            aria-required="true"
-            className="inputField undefined"
-            id="firstNameInput"
-            max={null}
-            min={null}
-            name="firstName"
-            onChange={[Function]}
-            type="text"
-            value=""
-          />
-        </div>
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="lastNameInput"
-          >
-            Last Name:
-          </label>
-          <input
-            aria-describedby="lastNameError"
-            aria-required="true"
-            className="inputField undefined"
-            id="lastNameInput"
-            max={null}
-            min={null}
-            name="lastName"
-            onChange={[Function]}
-            type="text"
-            value=""
-          />
-        </div>
-      </fieldset>
-      <fieldset
-        className="inputLine"
-      >
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="emailAddressInput"
-          >
-            Email Address:
-          </label>
-          <input
-            aria-describedby="emailAddressError"
-            aria-required="true"
-            className="inputField undefined"
-            id="emailAddressInput"
-            max={null}
-            min={null}
-            name="emailAddress"
-            onChange={[Function]}
-            type="email"
-            value=""
-          />
-        </div>
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="phoneNumberInput"
-          >
-            Phone Number:
-          </label>
-          <input
-            aria-describedby="phoneNumberError"
-            aria-required="true"
-            className="inputField undefined"
-            id="phoneNumberInput"
-            max={null}
-            min={null}
-            name="phoneNumber"
-            onChange={[Function]}
-            type="tel"
-            value=""
-          />
-        </div>
-      </fieldset>
-      <fieldset
-        aria-describedby="passwordAid"
-        className="inputLine"
-      >
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="createPasswordInput"
-          >
-            Create Password:
-          </label>
-          <input
-            aria-describedby="createPasswordError"
-            aria-required="true"
-            className="inputField undefined"
-            id="createPasswordInput"
-            max={null}
-            min={null}
-            name="createPassword"
-            onChange={[Function]}
-            type="password"
-            value=""
-          />
-        </div>
-        <div
-          className="defaultInputContainer inputContainer false"
-        >
-          <label
-            htmlFor="confirmPasswordInput"
-          >
-            Confirm Password:
-          </label>
-          <input
-            aria-describedby="confirmPasswordError"
-            aria-required="true"
-            className="inputField undefined"
-            id="confirmPasswordInput"
-            max={null}
-            min={null}
-            name="confirmPassword"
-            onChange={[Function]}
-            type="text"
-            value=""
-          />
-        </div>
-      </fieldset>
       <div
-        className="passwordAid"
+        class="header"
       >
-        <p
-          id="passwordAid"
-        >
-          Use eight or more characters with a mix of letters, numbers, and symbols
-        </p>
-        <button
-          aria-checked={true}
-          className="passwordToggle"
-          onClick={[Function]}
-          role="switch"
-        >
-          <svg
-            aria-hidden="true"
-            className="svg-inline--fa fa-eye fa-w-18 "
-            data-icon="eye"
-            data-prefix="fas"
-            focusable="false"
-            role="img"
-            style={Object {}}
-            viewBox="0 0 576 512"
-            xmlns="http://www.w3.org/2000/svg"
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          class="logo medium"
+          src="/NPDCLogo.svg"
+        />
+        <h1>
+          Register: Viewer Account
+          <div
+            aria-describedby="viewerAccountsTooltip"
+            aria-label="Learn more about Viewer Accounts"
+            class="tooltipContainer"
+            role="tooltip"
+            tabindex="0"
           >
-            <path
-              d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31 95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0 288 160z"
-              fill="currentColor"
-              style={Object {}}
-            />
-          </svg>
-           
-          Show password
-        </button>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-question-circle fa-w-16 tooltipIcon"
+              data-icon="question-circle"
+              data-prefix="far"
+              focusable="false"
+              role="img"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"
+                fill="currentColor"
+              />
+            </svg>
+            <div
+              class="tooltip"
+              id="viewerAccountsTooltip"
+            >
+              <p>
+                A Viewer account allows you to see data that is publically available.
+              </p>
+              <p>
+                Once registered, you may optionally apply to see legally protected data through a Passport account
+              </p>
+            </div>
+          </div>
+        </h1>
       </div>
-      <button
-        className="primaryButton"
-        onClick={[Function]}
-        type="submit"
+      <form>
+        <fieldset
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="firstNameInput"
+            >
+              First Name:
+            </label>
+            <input
+              aria-describedby="firstNameError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="firstNameInput"
+              name="firstName"
+              type="text"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="lastNameInput"
+            >
+              Last Name:
+            </label>
+            <input
+              aria-describedby="lastNameError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="lastNameInput"
+              name="lastName"
+              type="text"
+            />
+          </div>
+        </fieldset>
+        <fieldset
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="emailAddressInput"
+            >
+              Email Address:
+            </label>
+            <input
+              aria-describedby="emailAddressError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="emailAddressInput"
+              name="emailAddress"
+              type="email"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="phoneNumberInput"
+            >
+              Phone Number:
+            </label>
+            <input
+              aria-describedby="phoneNumberError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="phoneNumberInput"
+              name="phoneNumber"
+              type="tel"
+            />
+          </div>
+        </fieldset>
+        <fieldset
+          aria-describedby="passwordAid"
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="createPasswordInput"
+            >
+              Create Password:
+            </label>
+            <input
+              aria-describedby="createPasswordError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="createPasswordInput"
+              name="createPassword"
+              type="password"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="confirmPasswordInput"
+            >
+              Confirm Password:
+            </label>
+            <input
+              aria-describedby="confirmPasswordError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="confirmPasswordInput"
+              name="confirmPassword"
+              type="password"
+            />
+          </div>
+        </fieldset>
+        <div
+          class="passwordAid"
+        >
+          <p
+            id="passwordAid"
+          >
+            Use eight or more characters with a mix of letters, numbers, and symbols
+          </p>
+          <button
+            aria-checked="true"
+            class="passwordToggle"
+            role="switch"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-eye fa-w-18 "
+              data-icon="eye"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 576 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31 95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0 288 160z"
+                fill="currentColor"
+              />
+            </svg>
+             
+            Show password
+          </button>
+        </div>
+        <button
+          class="primaryButton"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+      <div
+        class="callToActionContainer"
       >
-        Submit
-      </button>
-    </form>
-    <div
-      className="callToActionContainer"
-    >
-      <p>
-        Do you already have an account with us?
-      </p>
-      <a
-        className="callToActionLink"
-        href="/login"
-      >
-        Login instead
-      </a>
-    </div>
-  </section>
+        <p>
+          Do you already have an account with us?
+        </p>
+        <a
+          class="callToActionLink"
+          href="/login"
+        >
+          Login instead
+        </a>
+      </div>
+    </section>
+  </div>
 </div>
 `;

@@ -1,4 +1,4 @@
-import { capitalizeFirstChar, getTitleCaseFromCamel } from "../../helpers/syntax-helper"
+import { capitalizeFirstChar, getTitleCaseFromCamel } from "../../helpers"
 
 test("handles empty string", () => {
   expect(capitalizeFirstChar("")).toBe("")

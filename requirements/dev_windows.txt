@@ -55,6 +55,8 @@ flake8==3.9.2
     # via -r requirements/_core.in
 flask-babelex==0.9.4
     # via -r requirements/_core.in
+flask-cors==3.0.10
+    # via -r requirements/_core.in
 flask-db==0.3.2
     # via -r requirements/_core.in
 flask-jwt-extended==4.2.3
@@ -85,6 +87,7 @@ flask==2.0.1
     # via
     #   -r requirements/_core.in
     #   flask-babelex
+    #   flask-cors
     #   flask-db
     #   flask-jwt-extended
     #   flask-login
@@ -214,6 +217,7 @@ six==1.16.0
     # via
     #   bcrypt
     #   click-repl
+    #   flask-cors
     #   python-dateutil
     #   sqlalchemy-utils
 speaklater==1.3
