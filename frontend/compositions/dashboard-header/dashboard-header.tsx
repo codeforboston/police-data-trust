@@ -3,7 +3,7 @@ import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import DesktopNav from "./desktop-nav"
 import styles from "./dashboard-header.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars } from "@fortawesome/free-solid-svg-icons"
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
 
@@ -23,7 +23,7 @@ export default function DashboardHeader() {
         </div>
 
         <nav>
-          <FontAwesomeIcon icon={faBars} size={"2x"} />
+          <FontAwesomeIcon icon={faEllipsisV} size={"2x"} />
           <DesktopNav />
           <button className="primaryButton" type="button">
             DONATE
