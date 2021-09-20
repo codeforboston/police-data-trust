@@ -7,7 +7,7 @@ export default function DesktopNav() {
   const router = useRouter()
 
   const menu = [
-    { title: "Search", path: "/dashboard" },
+    { title: "Search", path: "/search" },
     { title: "Profile", path: "/profile" },
     { title: "Sign Out", path: "/logout" }
   ]
