@@ -90,13 +90,14 @@ def test_auth_test_header(client, example_user):
         "api/v1/auth/test",
         headers={
             "Authorization": "Bearer {0}".format(login_res.json["access_token"])
-        }
+        },
     )
 
     assert test_res.status_code == 200
 
+
 def test_auth_test_cookie(client, example_user):
-    login_res = client.post(
+    client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
     )
