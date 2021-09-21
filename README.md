@@ -1,16 +1,33 @@
 # police-data-trust
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+To get started:
 
-## Installation
+1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account.
 
-1. Make sure that [Docker](https://www.docker.com) is installed on your machine. 
+2. Clone your fork: `git clone git@github.com:YOUR_GITHUB_NAME/police-data-trust.git`
 
-2. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) a copy of the main repo to your GitHub account. 
+3. Add the main repo to your remotes
 
-3. Clone this repository `git clone git@github.com:codeforboston/police-data-trust.git`
+```
+cd police-data-trust
+git remote add upstream https://github.com/codeforboston/police-data-trust.git
+git fetch upstream
+```
 
-4. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
+Now, whenever new code is merged you can pull in changes to your local repository:
+
+```
+git checkout main
+git pull upstream main
+```
+
+## Installation (Full Application)
+
+This method uses Docker to run the complete application stack.
+
+1. Make sure that [Docker](https://www.docker.com) is installed on your machine.
+
+2. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
 
 ```
 POSTGRES_USER=postgres
@@ -19,8 +36,14 @@ POSTGRES_DB=police_data
 POSTGRES_HOST=db
 ```
 
-5. Build and run the project with `docker-compose build; docker-compose up -d; docker-compose logs -f app`
+3. Build and run the project with `docker-compose build; docker-compose up -d; docker-compose logs -f app`
 
+## Installation (Frontend Only)
+
+This method runs the frontend natively on your computer and does not require a running backend, which can be convenient.
+
+1. Make sure that you have `node` and either `npm` or `yarn` installed.
+2. Follow the install instructions in the [frontend](./frontend/README.md) directory.
 
 # Documentation
 
@@ -30,7 +53,7 @@ POSTGRES_HOST=db
 
 ## Typescript Style Guide
 
-This style guide is intended to act as a quick reference for the most common scenarios 
+This style guide is intended to act as a quick reference for the most common scenarios
 
 ### Custom Types
 
@@ -46,7 +69,7 @@ For this codebase, we are using [interfaces](https://www.typescriptlang.org/docs
 
 ## Functions
 
-- Always use explicit typing in the case of function params and return types. 
+- Always use explicit typing in the case of function params and return types.
 
 - If function parameters don't get modified by the function, strongly consider making them `readonly` to prevent mutation and have clearer code.
 
@@ -76,21 +99,21 @@ For this codebase, we are using [interfaces](https://www.typescriptlang.org/docs
 
 - The React/TypeScript cheatsheet has a list of [specific event types](https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/forms_and_events#list-of-event-types).
 
-
-
-
 ## Organization of props and attributes
 
-Ordering of components — 
+Ordering of components —
+
 - Class definitions
 - Component / imports
 - Event handlers inside class
 
-HTML Props/attributes order: 
-- id, class, attributes 
+HTML Props/attributes order:
+
+- id, class, attributes
 - Like properties alphabetized (?)
 
-Directory structure: 
+Directory structure:
+
 - Pages: routable containers
 - Shared: components being used/planned to be used in multiple places
 - Compositions: components that have a single/limited specific context
