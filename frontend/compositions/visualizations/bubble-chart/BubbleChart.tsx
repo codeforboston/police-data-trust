@@ -1,7 +1,7 @@
 import { extent } from "d3"
 import React, { useEffect, useState } from "react"
 import { CityProperties, Data } from "../../../models/visualizations"
-import { DataPoint, formatSymbolData, parseProperties } from "../charts"
+import { DataPoint, formatDataToSymbolData, parseProperties } from "../charts"
 import useData from "../map/useData"
 import styles from "./bubble.module.css"
 import BubbleKey from "./bubbleKey"
@@ -10,16 +10,16 @@ import { Bubbles } from "./bubbles"
 export default function BubbleChart() {
   const rawData: Data = useData()
   const [data, setData] = useState<CityProperties[]>([])
-  const [shift, setShift] = useState(10)
+  const [shift, setShift] = useState(0)
   const [symbolProps, setSymbolProps] = useState<DataPoint[]>()
   const [filter, setFilter] = useState({
     property: "city",
     value: "all",
     sliceMin: 10,
-    sliceMax: 30
+    sliceMax: 50
   })
-  const [sliceMax, setSliceMax] = useState(20)
   const [sliceMin, setSliceMin] = useState(10)
+  const [sliceMax, setSliceMax] = useState(50)
 
   useEffect(() => {
     if (!rawData) return
@@ -31,7 +31,7 @@ export default function BubbleChart() {
 
   useEffect(() => {
     if (!data) return
-    setSymbolProps(formatSymbolData(data, shift).sort((a, b) => (a.value - b.value ? 0 : 1)))
+    setSymbolProps(formatDataToSymbolData(data, shift).sort((a, b) => (a.value - b.value ? 0 : 1)))
   }, [data, shift])
 
   return (
@@ -73,7 +73,7 @@ export default function BubbleChart() {
               </button>
             </div>
             <div style={{ position: "relative" }}>
-              <BubbleKey dataMaxMin={extent(data.map((d) => d.population))} />
+              <BubbleKey dataMaxMin={extent(data.map((d) => d.density))} title={"density"} />
             </div>
           </div>
         </div>

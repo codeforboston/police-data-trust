@@ -7,19 +7,14 @@ export function Bubbles(props: { data: DataPoint[] }) {
   useEffect(() => {
     if (!data) return
     const container = select("#chart-root g")
-
+    console.log(data)
     container.selectAll("g").data(data).join(joinEnter, joinUpdate, joinExit)
-
-    const fakeCircles = container.selectAll("path").nodes() as SVGPathElement[]
-
-    const longPath = fakeCircles.map((f) => f.hasAttribute("d") && f.getAttribute("d")).join(" ")
-    container.append("path").attr("d", longPath).attr("fill", "pink")
   }, [data])
 
   return (
-      <svg id="chart-root" viewBox="0 0 1200 700" width="80vw">
-        <g></g>
-      </svg>
+    <svg id="chart-root" viewBox="0 0 1200 700" width="80vw">
+      <g></g>
+    </svg>
   )
 }
 
@@ -42,7 +37,7 @@ function addCircleGroup(selection: JoinSelection) {
     .append("foreignObject")
     .call(setForeignObjectAttrs)
     .append("xhtml:div")
-    .html((d) => d.label)
+    .html((d) => d.label + "<br>" + d.value)
     .call(setTextAttrs)
   return selection
 }

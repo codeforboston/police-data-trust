@@ -7,7 +7,7 @@ import {ChartKey,
   SymbolKeyItem
 } from "../chart-key"
 import { DataPoint, JoinSelection, ChartSymbolProps } from "./chartTypes"
-import { parseProperties, formatSymbolData } from "./chartDataHandlers"
+import { parseProperties, formatDataToSymbolData } from "./chartDataHandlers"
 import {steppedGradient} from "./chartScales"
 
 export {
@@ -21,7 +21,7 @@ export {
   lightBlueGrey,
   lightDarkBlueTheme,
   parseProperties,
-  formatSymbolData,
+  formatDataToSymbolData,
   steppedGradient
 }
 export type { DataPoint, JoinSelection, ChartSymbolProps }

@@ -27,8 +27,8 @@ export default function useData(): Data {
     }
 
     const minimum = sliceMin || 0
-    const maximum = sliceMax && sliceMax < filteredFeatures.length ? sliceMax : filteredFeatures.length
-
+    const maximum =
+      sliceMax && sliceMax < filteredFeatures.length ? sliceMax : filteredFeatures.length
     return {
       features: filteredFeatures.slice(minimum, maximum),
       filter: filterProperties,

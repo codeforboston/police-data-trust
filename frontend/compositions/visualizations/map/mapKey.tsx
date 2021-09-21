@@ -8,12 +8,14 @@ export default function MapKey(props: {title: string}) {
   const chartKeyElements: JSX.Element[] = [
     <SymbolKeyItem
       label="Data Rich Cities"
+      key={title}
       labelPosition={"right"}
       color={"var(--darkBlue)"}
       symbol={"circle"}
       size={20}
     />,
     <SymbolKeyItem
+      key={title}
       label="Data Poor Cities"
       labelPosition={"right"}
       color={"var(--lightBlue)"}
@@ -21,6 +23,7 @@ export default function MapKey(props: {title: string}) {
       size={20}
     />,
     <GradientKeyItem
+      key={title}
       symbol="square"
       colorTheme={lightDarkBlueTheme}
       colorScale={colorScale}
@@ -29,6 +32,7 @@ export default function MapKey(props: {title: string}) {
       highLabel="More Data"
     />,
     <GradientKeyItem
+    key={title}
       symbol="circle"
       colorTheme={lightBlueGrey}
       colorScale={colorScale}

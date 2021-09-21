@@ -3,10 +3,9 @@ import { ChartKey, GradientKeyItem, scaleDataToColorTheme } from "../chart-key"
 import { lightDarkBlueTheme } from "../charts"
 import { Pair } from "../charts/chartTypes"
 
-export default function BubbleKey(props: { dataMaxMin: Pair<number> }) {
-  const { dataMaxMin } = props
+export default function BubbleKey(props: { dataMaxMin: Pair<number>, title: string }) {
+  const { dataMaxMin, title } = props
   const colorScale = scaleDataToColorTheme(0, 1000)
-  const title = "bubble-key"
 
   const dataMinMaxKey = (
     <GradientKeyItem
@@ -16,7 +15,7 @@ export default function BubbleKey(props: { dataMaxMin: Pair<number> }) {
       range={[0, 1000]}
       lowLabel={dataMaxMin[0] + ""}
       highLabel={dataMaxMin[1] + ""}
-      title="population"
+      title={title}
     />
   )
   const chartKeyElements: JSX.Element[] = [dataMinMaxKey]

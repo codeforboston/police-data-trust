@@ -1,4 +1,4 @@
-import { extent, hierarchy, HierarchyCircularNode, pack } from "d3"
+import { descending, extent, hierarchy, HierarchyCircularNode, pack } from "d3"
 import { Feature } from "geojson"
 import { CityProperties } from "../../../models/visualizations"
 import { createColorScale, createLogScale, lightDarkBlueTheme } from "./chartScales"
@@ -7,32 +7,33 @@ import { DataPoint, PackableObj } from "./chartTypes"
 export function parseProperties(feature: Feature) {
   const properties = feature.properties as CityProperties
   const numZips: number[] = (properties.zips as string).split(" ").map((i) => Number(i))
-  const boolMilitary: boolean = (properties.military as string).match(/true/i) !== null
-  const boolIncorporated: boolean = (properties.incorporated as string).match(/true/i) !== null
+  const isMilitary: boolean = (properties.military as string).match(/true/i) !== null
+  const isIncorporated: boolean = (properties.incorporated as string).match(/true/i) !== null
   return {
     ...properties,
     zips: numZips,
-    military: boolMilitary,
-    incorporated: boolIncorporated
+    military: isMilitary,
+    incorporated: isIncorporated
   }
 }
 
 export function packPop(data: PackableObj): HierarchyCircularNode<PackableObj> {
   return pack()
-    .size([1200 - 2, 700 - 2])
-    .padding(3)(
-    hierarchy(data).sum((d) => d.population)
+    .size([1000 - 2, 500 - 2])
+    .padding(10)(
+    hierarchy(data)
+    .sum((d) => d.density)
+    .sort((a, b) => a.value - b.value)
   )
 }
-export function formatSymbolData(data: CityProperties[], shift: number) {
+
+export function formatDataToSymbolData(data: CityProperties[], shift: number) {
   if (!data) return []
 
   const root = packPop(formatPackProperties(data.slice(shift)) as PackableObj)
 
   const minMax = extent(root.leaves().map((l) => l.value))
-
   const scaleColor = createColorScale(minMax)
-  const scaleLog = createLogScale(minMax)
 
   const symbolPropsArray: DataPoint[] = root.leaves().map((leaf) => {
     return {
