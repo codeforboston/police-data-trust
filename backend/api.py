@@ -78,8 +78,10 @@ def register_commands(app: Flask):
         This is a handy way to populate the database to start with publicly
         available data.
         """
-        pass
+        from backend.scraper.scrape_data_sources import make_all_tables
 
+        # TODO: load excel sheet into database
+        make_all_tables()
 
 def register_routes(app: Flask):
     app.register_blueprint(incident_routes)
