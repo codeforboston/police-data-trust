@@ -37,29 +37,57 @@
 
 .backgroundBanner ul {
   position: absolute;
-  margin-top: var(--size40);
-  margin-right: var(--size12);
+  top: 25%;
+  left: 80%;
   width: var(--size112);
   height: var(--size128);
-  padding: var(--size12);
+  padding: var(--size12) var(--size40) var(--size16) var(--size12);
   border-radius: var(--size4);
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
   list-style: none;
   background-color: var(--darkBlue);
+  transform: rotateX(-90deg) translateX(-50%);
+  transform-origin: top center;
+  opacity: 0.3;
+  visibility: hidden;
+  transition: 280ms all ease-out;
+}
+
+.backgroundBanner ul li {
+  width: var(--size64);
+  height: var(--size16);
+  margin-bottom: var(--size12);
 }
 
 .backgroundBanner a {
   color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--size12);
+  line-height: var(--size14);
 }
 
-.backgroundBanner svg {
-  margin-top: var(--size24);
+.backgroundBanner button:nth-child(n + 2) {
+  display: none;
+}
+
+.dropdownTitle {
+  background-color: transparent;
+  border: none;
+  font-family: inherit;
+  margin-top: var(--size16);
   margin-right: var(--size24);
   color: var(--darkBlue);
 }
 
-.backgroundBanner button {
-  display: none;
+.selected {
+  text-decoration: underline;
+}
+
+.dropdownTitle:focus-within + ul {
+  opacity: 1;
+  transform: rotateX(0) translateX(-50%);
+  visibility: visible;
 }
 
 @media screen and (min-width: 32em) {
@@ -110,7 +138,7 @@
     align-items: flex-start;
   }
 
-  .backgroundBanner svg {
+  .backgroundBanner .dropdownTitle {
     display: none;
   }
 
@@ -126,6 +154,9 @@
     box-shadow: none;
     padding-right: var(--size28);
     margin-top: var(--size44);
+    opacity: 1;
+    transform: rotateX(0) translateX(-50%);
+    visibility: visible;
   }
 
   .backgroundBanner li {
@@ -146,11 +177,11 @@
   }
 
   .backgroundBanner a {
-    text-decoration: none;
     color: var(--darkBlue);
   }
 
-  .tab {
+  .selected {
+    text-decoration: none;
     background-color: #ffffff;
     width: var(--size80);
     height: var(--size24);
@@ -158,7 +189,7 @@
     box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
-  .backgroundBanner button {
+  .backgroundBanner button:last-child {
     display: flex;
     width: var(--size100);
     height: var(--size36);

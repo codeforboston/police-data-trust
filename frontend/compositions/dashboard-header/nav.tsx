@@ -10,15 +10,15 @@ export default function Nav() {
     { title: "Search", path: "/search" },
     { title: "Profile", path: "/profile" },
     { title: "Sign Out", path: "/logout" },
-    { title: "DONATE", path: "#"}
+    { title: "DONATE", path: "#"} // tbd - external donation page
   ]
 
   const setClassName = (pathname: string): string => {
-    return router.pathname === pathname ? styles.tab : ""
+    return router.pathname === pathname ? styles.selected : ""
   }
 
   return (
-      <ul>
+      <ul id="navMenu">
         {menu.map((item, index) => {
           return (
             <li key={index} className={setClassName(item.path)}>

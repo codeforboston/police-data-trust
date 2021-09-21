@@ -8,7 +8,7 @@ import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
   const { logout } = useAuth()
 
   return (
@@ -22,8 +22,15 @@ export default function DashboardHeader() {
           </div>
         </div>
 
-        <nav>
-          <FontAwesomeIcon icon={faEllipsisV} size={"2x"} />
+        <nav aria-label="Main Navigation">
+          <button
+            type="button"
+            className={dropdownTitle}
+            aria-expanded="false"
+            aria-controls="navMenu"
+          >
+            <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
+          </button>
           <Nav />
           <PrimaryButton>
             DONATE
