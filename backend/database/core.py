@@ -82,13 +82,15 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
 @click.pass_context
 def db_cli(ctx: click.Context):
     """Collection of database commands."""
-    ctx.obj = connect(
+    conn = connect(
         user=current_app.config["POSTGRES_USER"],
         password=current_app.config["POSTGRES_PASSWORD"],
         host=current_app.config["POSTGRES_HOST"],
         port=current_app.config["POSTGRES_PORT"],
         dbname="postgres",
     )
+    conn.autocommit = True
+    ctx.obj = conn
 
 
 pass_psql_admin_connection = click.make_pass_decorator(connection)
