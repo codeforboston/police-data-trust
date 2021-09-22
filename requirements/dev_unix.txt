@@ -198,7 +198,7 @@ numpy==1.20.1
     # via
     #   -r requirements\_core.in
     #   pandas
-openpyxl==3.0.8
+openpyxl==3.0.7
     # via -r requirements\_core.in
 packaging==20.9
     # via
