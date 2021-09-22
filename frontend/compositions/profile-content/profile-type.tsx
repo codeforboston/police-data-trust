@@ -12,7 +12,9 @@ export default function ProfileType({ userData = emptyUser }: UserProfileProps) 
       <div className={profileTypeText}>{title}</div>
       <p className={description}>{content}</p>
       <div className={profileTypeLink}>
-        <Link href={linkPath}>{linkText}</Link>
+        <Link href={linkPath}>
+          <a>{linkText}</a>
+        </Link>
       </div>
     </div>
   )
