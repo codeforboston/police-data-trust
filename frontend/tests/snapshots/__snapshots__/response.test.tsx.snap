@@ -32,6 +32,8 @@ exports[`renders Passport:Fail correctly 1`] = `
         aria-label="alert our development team external"
         className="externalLink"
         href="https://github.com/codeforboston/police-data-trust"
+        rel="noopener noreferrer"
+        target="_blank"
       >
         alert our development team
         <svg
@@ -55,7 +57,7 @@ exports[`renders Passport:Fail correctly 1`] = `
     </p>
     <p>
       <a
-        href="/dashboard"
+        href="/search"
       >
         Return to dashboard
       </a>
@@ -94,7 +96,7 @@ exports[`renders Passport:Success correctly 1`] = `
     </p>
     <p>
       <a
-        href="/dashboard"
+        href="/search"
       >
         Return to dashboard
       </a>
@@ -135,6 +137,8 @@ exports[`renders Register:Fail correctly 1`] = `
         aria-label="alert our development team external"
         className="externalLink"
         href="https://github.com/codeforboston/police-data-trust"
+        rel="noopener noreferrer"
+        target="_blank"
       >
         alert our development team
         <svg
