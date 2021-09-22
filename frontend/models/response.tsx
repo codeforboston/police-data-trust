@@ -23,4 +23,3 @@ export const enrollmentMessage: { [key in EnrollmentTypes]: EnrollmentErrorText 
     returnPath: AppRoutes.DASHBOARD
   }
 }
-
