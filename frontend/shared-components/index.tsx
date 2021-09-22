@@ -6,6 +6,7 @@ import Logo from "./logo/logo"
 import PrimaryInput from "./primary-input/primary-input"
 import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
+import PrimaryButton from "./primary-button/primary-button"
 
 export {
   ExternalLink,
@@ -15,5 +16,5 @@ export {
   Logo,
   PrimaryInput,
   ResponseTextArea,
-  USAStateInput
+  PrimaryButton
 }
