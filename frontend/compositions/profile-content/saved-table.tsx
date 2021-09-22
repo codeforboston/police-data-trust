@@ -87,9 +87,11 @@ export default function SavedTable(props: SavedTableProps) {
       <table {...getTableProps()} className={dataTable} aria-label={`Saved ${itemTitle}`}>
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
-            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+            // eslint-disable-next-line react/jsx-key
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th key={column.id} {...column.getHeaderProps()}>{column.render("Header")}</th>
+                // eslint-disable-next-line react/jsx-key
+                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
             </tr>
           ))}
@@ -99,7 +101,7 @@ export default function SavedTable(props: SavedTableProps) {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
-              <tr key={row.id} {...row.getRowProps()} className={dataRows}>
+              <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
                   const { id } = cell.column
                   if (id === rowIdName) {
@@ -114,7 +116,8 @@ export default function SavedTable(props: SavedTableProps) {
                     )
                   }
                   return (
-                    <td key={id} {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    // eslint-disable-next-line react/jsx-key
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                   )
                 })}
               </tr>
