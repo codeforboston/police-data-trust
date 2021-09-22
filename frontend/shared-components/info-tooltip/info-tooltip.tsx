@@ -1,6 +1,6 @@
 import React from "react"
 import styles from "./info-tooltip.module.css"
-import { getTitleCaseFromCamel } from "../../helpers/syntax-helper"
+import { getTitleCaseFromCamel } from "../../helpers"
 import { tooltipContent, TooltipTypes } from "../../models"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons"
