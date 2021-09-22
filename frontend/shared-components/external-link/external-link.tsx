@@ -11,7 +11,12 @@ interface ExternalLinkProps {
 export default function ExternalLink({ linkPath, linkText }: ExternalLinkProps) {
   const { externalLink } = styles
   return (
-    <a aria-label={`${linkText} external`} rel="noopener noreferrer" target="_blank" className={externalLink} href={linkPath}>
+    <a
+      aria-label={`${linkText} external`}
+      rel="noopener noreferrer"
+      target="_blank"
+      className={externalLink}
+      href={linkPath}>
       {linkText}
       <FontAwesomeIcon aria-hidden="true" icon={faExternalLinkAlt} size="xs" />
     </a>
