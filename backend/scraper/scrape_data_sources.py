@@ -161,7 +161,7 @@ def make_all_tables():
 
     table_names = list(configs["tables"].keys())
     table_list = [pd.concat([d[t] for d in data_list]) for t in table_names]
-    table_dict = {table_names[i]: table_list[i] for i in range(len(table_list))}
+    table_dict = dict(zip(table_names, table_list))
     df_combine = pd.concat([table_dict["victim"], table_dict["incident"]])
     victim_indices = df_combine['victim_name_full'] != 'Name withheld by police'
     victim_indices_2 = df_combine['victim_name_full'] != ''
