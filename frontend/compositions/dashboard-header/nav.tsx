@@ -10,7 +10,7 @@ export default function Nav() {
     { title: "Search", path: "/search" },
     { title: "Profile", path: "/profile" },
     { title: "Sign Out", path: "/logout" },
-    { title: "DONATE", path: "#"} // tbd - external donation page
+    { title: "DONATE", path: "#" } // tbd - external donation page
   ]
 
   const setClassName = (pathname: string): string => {
@@ -18,16 +18,16 @@ export default function Nav() {
   }
 
   return (
-      <ul id="navMenu">
-        {menu.map((item, index) => {
-          return (
-            <li key={index} className={setClassName(item.path)}>
-              <Link href={item.path}>
-                <a>{item.title}</a>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
+    <ul id="navMenu">
+      {menu.map((item, index) => {
+        return (
+          <li key={index} className={setClassName(item.path)}>
+            <Link href={item.path}>
+              <a>{item.title}</a>
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
   )
 }

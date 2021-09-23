@@ -50,7 +50,7 @@
   transform-origin: top center;
   opacity: 0.3;
   visibility: hidden;
-  transition: 280ms all ease-out;
+  transition: 280ms all 120ms ease-out;
 }
 
 .backgroundBanner ul li {
@@ -84,7 +84,7 @@
   text-decoration: underline;
 }
 
-.dropdownTitle:focus-within + ul {
+.dropdownTitle:focus + ul {
   opacity: 1;
   transform: rotateX(0) translateX(-50%);
   visibility: visible;
@@ -144,22 +144,22 @@
 
   .backgroundBanner ul {
     position: relative;
+    top: 28%;
+    left: 10%;
     display: flex;
     flex-direction: row;
-    margin: 0;
-    width: var(--size256);
-    height: var(--size24);
+    width: fit-content;
+    height: fit-content;
+    padding: 0;
     background-color: transparent;
     border-radius: none;
     box-shadow: none;
-    padding-right: var(--size28);
-    margin-top: var(--size44);
     opacity: 1;
-    transform: rotateX(0) translateX(-50%);
     visibility: visible;
+    transform: rotateX(0) translateX(-50%);
   }
 
-  .backgroundBanner li {
+  .backgroundBanner ul li {
     font-style: normal;
     font-weight: 500;
     font-size: var(--size14);
@@ -178,25 +178,25 @@
 
   .backgroundBanner a {
     color: var(--darkBlue);
+    font-weight: 500;
   }
 
   .selected {
     text-decoration: none;
-    background-color: #ffffff;
-    width: var(--size80);
-    height: var(--size24);
+    background-color: white;
     border-radius: 0.19rem 0.19rem 0rem 0rem;
     box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
-  .backgroundBanner button:last-child {
+  .selected a {
+    font-weight: 700;
+  }
+
+  .backgroundBanner button:nth-child(n + 2) {
     display: flex;
-    width: var(--size100);
-    height: var(--size36);
-    margin: var(--size20) var(--size36) var(--size20) var(--size20);
     font-size: var(--size16);
     font-weight: 700;
-    line-height: var(--size20);
-    padding: var(--size10) var(--size12) var(--size10) var(--size16);
+    width: var(--size100);
+    margin: var(--size20) var(--size36) var(--size20);
   }
 }

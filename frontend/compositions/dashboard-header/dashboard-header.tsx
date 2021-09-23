@@ -27,14 +27,11 @@ export default function DashboardHeader() {
             type="button"
             className={dropdownTitle}
             aria-expanded="false"
-            aria-controls="navMenu"
-          >
+            aria-controls="navMenu">
             <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
           </button>
           <Nav />
-          <PrimaryButton>
-            DONATE
-          </PrimaryButton>
+          <PrimaryButton>DONATE</PrimaryButton>
           <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
       </div>
