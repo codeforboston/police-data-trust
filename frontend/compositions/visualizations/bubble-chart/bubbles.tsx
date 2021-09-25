@@ -1,6 +1,6 @@
 import { select } from "d3"
 import { useEffect } from "react"
-import { DataPoint, JoinSelection } from "../charts/chartTypes"
+import { DataPoint, JoinSelection } from "../utilities/chartTypes"
 
 export function Bubbles(props: { data: DataPoint[] }) {
   const { data } = props

@@ -1,4 +1,4 @@
-import { ChartSymbolProps } from "../charts"
+import { ChartSymbolProps } from "../utilities"
 
 
 export default function Square(props: ChartSymbolProps) {

@@ -1,7 +1,7 @@
 import { extent } from "d3"
 import React, { useEffect, useState } from "react"
 import { CityProperties, Data } from "../../../models/visualizations"
-import { DataPoint, formatDataToSymbolData, parseProperties } from "../charts"
+import { DataPoint, formatDataToSymbolData, parseProperties } from "../utilities"
 import useData from "../map/useData"
 import styles from "./bubble.module.css"
 import BubbleKey from "./bubbleKey"

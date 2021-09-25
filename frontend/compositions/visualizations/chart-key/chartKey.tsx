@@ -1,9 +1,9 @@
 import { scaleLinear } from "d3"
 import React from "react"
-import { Circle, Square } from "../charts"
+import { Circle, Square } from "../utilities"
 import styles from "./chartKey.module.css"
-import { steppedGradient } from "../charts/chartScales"
-import { GradientKeyItemProps, KeyItemProps, Position } from "../charts/chartTypes"
+import { steppedGradient } from "../utilities/chartScales"
+import { GradientKeyItemProps, KeyItemProps, Position } from "../utilities/chartTypes"
 
 export default function ChartKey(props: {
   title: string

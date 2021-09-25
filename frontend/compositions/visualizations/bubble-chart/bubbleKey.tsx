@@ -1,7 +1,7 @@
 import React from "react"
 import { ChartKey, GradientKeyItem, scaleDataToColorTheme } from "../chart-key"
-import { lightDarkBlueTheme } from "../charts"
-import { Pair } from "../charts/chartTypes"
+import { lightDarkBlueTheme } from "../utilities"
+import { Pair } from "../utilities/chartTypes"
 
 export default function BubbleKey(props: { dataMaxMin: Pair<number>, title: string }) {
   const { dataMaxMin, title } = props

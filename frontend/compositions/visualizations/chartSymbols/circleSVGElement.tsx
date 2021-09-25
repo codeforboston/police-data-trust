@@ -1,4 +1,4 @@
-import { DataPoint } from "../charts/chartTypes"
+import { DataPoint } from "../utilities/chartTypes"
 
 
 export function Bubble(props: DataPoint) {

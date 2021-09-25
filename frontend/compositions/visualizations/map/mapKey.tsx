@@ -1,5 +1,5 @@
 import React from "react"
-import { lightBlueGrey, lightDarkBlueTheme } from "../charts"
+import { lightBlueGrey, lightDarkBlueTheme } from "../utilities"
 import { ChartKey, GradientKeyItem, scaleDataToColorTheme, SymbolKeyItem } from "../chart-key"
 
 export default function MapKey(props: {title: string}) {

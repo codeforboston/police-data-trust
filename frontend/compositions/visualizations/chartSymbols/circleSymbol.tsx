@@ -1,4 +1,4 @@
-import { ChartSymbolProps } from "../charts/chartTypes"
+import { ChartSymbolProps } from "../utilities/chartTypes"
 
 export default function Circle(props: ChartSymbolProps) {
   const { location, size, color } = props
