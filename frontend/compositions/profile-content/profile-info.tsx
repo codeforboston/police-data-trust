@@ -29,16 +29,16 @@ export default function ProfileInfo({ userData = emptyUser }: UserProfileProps) 
         <header className={sectionTitle}>Edit Your Account Information</header>
         <form>
           <fieldset className={inputLine}>
-            <PrimaryInput inputName={FIRST_NAME} isSubmitted={isSubmitted} />
-            <PrimaryInput inputName={LAST_NAME} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={FIRST_NAME} />
+            <PrimaryInput inputName={LAST_NAME} />
           </fieldset>
           <fieldset className={inputLine}>
-            <PrimaryInput inputName={EMAIL_ADDRESS} isSubmitted={isSubmitted} />
-            <PrimaryInput inputName={PHONE_NUMBER} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={EMAIL_ADDRESS} />
+            <PrimaryInput inputName={PHONE_NUMBER} />
           </fieldset>
           <fieldset className={inputLine}>
-            <PrimaryInput inputName={CREATE_PASSWORD} isSubmitted={isSubmitted} />
-            <PrimaryInput inputName={CONFIRM_PASSWORD} isSubmitted={isSubmitted} />
+            <PrimaryInput inputName={CREATE_PASSWORD} />
+            <PrimaryInput inputName={CONFIRM_PASSWORD} />
           </fieldset>
           <div className={formControls}>
             <button className={cancelButton} onClick={() => setEditMode(false)}>

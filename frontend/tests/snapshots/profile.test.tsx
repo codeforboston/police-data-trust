@@ -1,8 +1,7 @@
-import * as React from "react"
 import Profile from "../../pages/profile"
-import renderer from "react-test-renderer"
+import { render } from "../test-utils"
 
 it("renders Profile Page correctly", () => {
-  const tree = renderer.create(<Profile />).toJSON()
-  expect(tree).toMatchSnapshot()
+  const { container } = render(<Profile />)
+  expect(container).toMatchSnapshot()
 })
