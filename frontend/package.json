@@ -12,7 +12,8 @@
     "test": "jest",
     "test:update-snapshots": "jest --updateSnapshot",
     "watch": "jest --watch",
-    "fix": "next lint --fix; prettier --write ."
+    "fix": "next lint --fix; prettier --write .",
+    "check-types": "tsc --noEmit"
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
