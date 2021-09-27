@@ -1,11 +1,10 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { Logo } from '..'
-import { LogoSizes } from '../../models'
-
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { Logo } from ".."
+import { LogoSizes } from "../../models"
 
 export default {
-  title: 'Shared Components/Logo',
+  title: "Shared Components/Logo",
   component: Logo
 } as ComponentMeta<typeof Logo>
 

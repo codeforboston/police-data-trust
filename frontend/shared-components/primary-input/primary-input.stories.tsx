@@ -1,10 +1,10 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { PrimaryInput } from '..'
-import { PrimaryInputNames } from '../../models'
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { PrimaryInput } from ".."
+import { PrimaryInputNames } from "../../models"
 
 export default {
-  title: 'Shared Components/Primary Input',
+  title: "Shared Components/Primary Input",
   component: PrimaryInput
 } as ComponentMeta<typeof PrimaryInput>
 

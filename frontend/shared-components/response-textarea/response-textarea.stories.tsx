@@ -1,9 +1,9 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { ResponseTextArea } from '..'
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { ResponseTextArea } from ".."
 
 export default {
-  title: 'Shared Components/Response Text Area',
+  title: "Shared Components/Response Text Area",
   component: ResponseTextArea
 } as ComponentMeta<typeof ResponseTextArea>
 

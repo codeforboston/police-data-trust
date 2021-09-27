@@ -1,9 +1,9 @@
-import React from 'react'
-import { Story, Meta } from '@storybook/react'
-import { RegistrationResponse } from '..'
+import React from "react"
+import { Story, Meta } from "@storybook/react"
+import { RegistrationResponse } from ".."
 
 export default {
-  title: 'Compositions/Registration Response',
+  title: "Compositions/Registration Response",
   component: RegistrationResponse
 } as Meta<typeof RegistrationResponse>
 

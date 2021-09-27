@@ -1,9 +1,9 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { USAStateInput } from '..'
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { USAStateInput } from ".."
 
 export default {
-  title: 'Shared Components/State Input',
+  title: "Shared Components/State Input",
   component: USAStateInput
 } as ComponentMeta<typeof USAStateInput>
 

@@ -1,15 +1,13 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { PasswordAid } from '..'
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { PasswordAid } from ".."
 
 export default {
-  title: 'Compositions/Password Aid',
+  title: "Compositions/Password Aid",
   component: PasswordAid
 } as ComponentMeta<typeof PasswordAid>
 
 const Template: ComponentStory<typeof PasswordAid> = (args) => <PasswordAid {...args} />
 
 export const ShowPassword = Template.bind({})
-ShowPassword.args = {
-  
-}
+ShowPassword.args = {}

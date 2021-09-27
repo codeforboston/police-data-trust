@@ -2,7 +2,6 @@ import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import ExternalLink from "./external-link"
 
-
 export default {
   title: "Shared Components/External LInk",
   component: ExternalLink

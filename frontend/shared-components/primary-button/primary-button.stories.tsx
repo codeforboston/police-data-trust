@@ -12,10 +12,5 @@ const Template: ComponentStory<typeof PrimaryButton> = (args) => <PrimaryButton 
 export const Button = Template.bind({})
 Button.args = {
   loading: false,
-  children: <span>Button</span>
-}
-
-export const LoadingButton = Template.bind({})
-LoadingButton.args = {
-  loading: true
+  children: "Button"
 }

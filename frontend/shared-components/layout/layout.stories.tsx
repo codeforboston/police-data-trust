@@ -1,9 +1,9 @@
-import React from 'react'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { Layout } from '..'
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+import { Layout } from ".."
 
 export default {
-  title: 'Shared Components/Layout',
+  title: "Shared Components/Layout",
   component: Layout
 } as ComponentMeta<typeof Layout>
 
