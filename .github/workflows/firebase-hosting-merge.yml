@@ -11,18 +11,15 @@ env:
 
 jobs:
   build_and_deploy:
-    defaults:
-      run:
-        working-directory: frontend
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
+        working-directory: frontend
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_POLICE_DATA_TRUST_DEV }}"
           channelId: live
           projectId: police-data-trust-dev
-          # entryPoint: ./frontend
+          entryPoint: ./frontend
