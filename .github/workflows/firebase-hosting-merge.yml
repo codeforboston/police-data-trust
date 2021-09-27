@@ -21,3 +21,4 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_POLICE_DATA_TRUST_DEV }}"
           channelId: live
           projectId: police-data-trust-dev
+          entryPoint: ./frontend
