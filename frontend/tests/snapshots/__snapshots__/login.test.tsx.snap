@@ -2,85 +2,82 @@
 
 exports[`renders Login correctly 1`] = `
 <div>
-  <section
-    className="enrollmentSection"
-  >
-    <div
-      className="header"
+  <div>
+    <section
+      class="enrollmentSection"
     >
-      <img
-        alt="A blue circular logo design reads 'National Police Data Coalition'"
-        className="logo medium"
-        src="/NPDCLogo.svg"
-      />
-      <h1>
-        Login
-      </h1>
-    </div>
-    <form>
       <div
-        className="defaultInputContainer inputContainer false"
+        class="header"
       >
-        <label
-          htmlFor="emailAddressInput"
-        >
-          Email Address:
-        </label>
-        <input
-          aria-describedby="emailAddressError"
-          aria-required="true"
-          className="inputField undefined"
-          id="emailAddressInput"
-          max={null}
-          min={null}
-          name="emailAddress"
-          onChange={[Function]}
-          type="email"
-          value=""
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          class="logo medium"
+          src="/NPDCLogo.svg"
         />
+        <h1>
+          Login
+        </h1>
       </div>
+      <form
+        class="centerContent"
+      >
+        <div
+          class="defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="emailAddressInput"
+          >
+            Email Address:
+          </label>
+          <input
+            aria-describedby="emailAddressError"
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="emailAddressInput"
+            name="emailAddress"
+            type="email"
+          />
+        </div>
+        <div
+          class="defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="loginPasswordInput"
+          >
+            Login Password:
+          </label>
+          <input
+            aria-describedby="loginPasswordError"
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="loginPasswordInput"
+            name="loginPassword"
+            type="password"
+          />
+        </div>
+        <button
+          class="primaryButton"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
       <div
-        className="defaultInputContainer inputContainer false"
+        class="callToActionContainer"
       >
-        <label
-          htmlFor="loginPasswordInput"
+        <p>
+          New to the National Police Data Coalition?
+        </p>
+        <a
+          class="callToActionLink"
+          href="/register"
         >
-          Login Password:
-        </label>
-        <input
-          aria-describedby="loginPasswordError"
-          aria-required="true"
-          className="inputField undefined"
-          id="loginPasswordInput"
-          max={null}
-          min={null}
-          name="loginPassword"
-          onChange={[Function]}
-          type="password"
-          value=""
-        />
+          Register for an account
+        </a>
       </div>
-      <button
-        className="primaryButton"
-        onClick={[Function]}
-        type="submit"
-      >
-        Submit
-      </button>
-    </form>
-    <div
-      className="callToActionContainer"
-    >
-      <p>
-        New to the National Police Data Coalition?
-      </p>
-      <a
-        className="callToActionLink"
-        href="/register"
-      >
-        Register for an account
-      </a>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>
 `;

@@ -76,7 +76,7 @@ export function DataTable() {
                   const { id } = cell.column
                   if (icons.includes(id)) {
                     return (
-                      <td>
+                      <td key={cell.getCellProps().key}>
                         <FontAwesomeIcon icon={cell.value} />
                       </td>
                     )
