@@ -12,35 +12,15 @@ exports[`renders Dashboard correctly 1`] = `
         <div
           class="leftHeader"
         >
-          <div
-            class="mobileLogo"
-          >
-            <img
-              alt="A blue circular logo design reads 'National Police Data Coalition'"
-              class="logo small"
-              src="/NPDCLogo.svg"
-            />
-          </div>
-          <div
-            class="desktopLogo"
-          >
-            <img
-              alt="A blue circular logo design reads 'National Police Data Coalition'"
-              class="logo medium"
-              src="/NPDCLogo.svg"
-            />
-          </div>
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            class="logo medium"
+            src="/NPDCLogo.svg"
+          />
           <div
             class="titleContainer"
           >
-            <h2
-              class="mobileTitle"
-            >
-              N.P.D.C.
-            </h2>
-            <h2
-              class="desktopTitle"
-            >
+            <h2>
               National Police Data Coalition
             </h2>
             <p>
@@ -48,30 +28,39 @@ exports[`renders Dashboard correctly 1`] = `
             </p>
           </div>
         </div>
-        <nav>
-          <svg
-            aria-hidden="true"
-            class="svg-inline--fa fa-bars fa-w-14 fa-2x "
-            data-icon="bars"
-            data-prefix="fas"
-            focusable="false"
-            role="img"
-            viewBox="0 0 448 512"
-            xmlns="http://www.w3.org/2000/svg"
+        <nav
+          aria-label="Main Navigation"
+        >
+          <button
+            aria-controls="navMenu"
+            aria-expanded="false"
+            class="dropdownTitle"
+            type="button"
           >
-            <path
-              d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
-              fill="currentColor"
-            />
-          </svg>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
+              data-icon="ellipsis-v"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 192 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
           <ul
-            class="rightHeader"
+            id="navMenu"
           >
             <li
-              class="tab"
+              class=""
             >
               <a
-                href="#"
+                href="/search"
               >
                 Search
               </a>
@@ -80,7 +69,7 @@ exports[`renders Dashboard correctly 1`] = `
               class=""
             >
               <a
-                href="#"
+                href="/profile"
               >
                 Profile
               </a>
@@ -89,15 +78,24 @@ exports[`renders Dashboard correctly 1`] = `
               class=""
             >
               <a
+                href="/logout"
+              >
+                Sign Out
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
                 href="#"
               >
-                About
+                DONATE
               </a>
             </li>
           </ul>
           <button
             class="primaryButton"
-            type="button"
+            type="submit"
           >
             DONATE
           </button>
