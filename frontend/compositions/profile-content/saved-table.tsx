@@ -1,21 +1,38 @@
-import * as React from "react"
-
-import { useTable, usePagination } from "react-table"
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import * as React from "react"
+import { useTable, usePagination, Column } from "react-table"
 
-import { mockData, tableColumns } from "../../models/mock-data/mock-table-data"
-import styles from "./data-table.module.css"
+import styles from "./saved.module.css"
 
-export function DataTable() {
-  const icons = ["full", "save"]
-  const { useMemo, useState } = React
-  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
+interface SavedTableProps {
+  itemTitle: string
+  tableColumns: Array<any>
+  tableData: Array<any>
+  rowIdName: string
+  expandIcon: IconDefinition
+}
 
-  // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
-  // 'save' values will be appended to each item dynamically
-  const data = useMemo(() => mockData, [])
+export default function SavedTable(props: SavedTableProps) {
+  const { useState, useMemo } = React
+  const [editMode, setEditMode] = useState(false)
+  const { itemTitle, tableColumns, tableData, rowIdName, expandIcon } = props
+  const {
+    tableWrapper,
+    tableHeader,
+    tableTitle,
+    editButton,
+    editButtonOn,
+    dataTable,
+    dataHeader,
+    dataFooter,
+    dataRowPage,
+    dataRows,
+    expandRecordButton
+  } = styles
 
-  const columns = React.useMemo(() => tableColumns, [])
+  const data = useMemo(() => tableData, [tableData])
+  const columns = useMemo(() => tableColumns, [tableColumns])
 
   const {
     getTableProps,
@@ -51,12 +68,25 @@ export function DataTable() {
     setPageSize(+e.target.value)
   }
 
+  function viewRecord(recordId: number) {
+    // TODO: view full record
+  }
+
+  function toggleEditMode() {
+    setEditMode(!editMode)
+  }
+
   return (
-    <div>
-      <table {...getTableProps()} className={dataTable} aria-label="Search Results Table">
+    <div className={tableWrapper}>
+      <header className={tableHeader}>
+        <span className={tableTitle}>Saved {itemTitle}</span>
+        <button className={editMode ? editButtonOn : editButton} onClick={toggleEditMode}>
+          Edit {itemTitle}
+        </button>
+      </header>
+      <table {...getTableProps()} className={dataTable} aria-label={`Saved ${itemTitle}`}>
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
-            // react-table prop types include keys, but eslint can't tell that
             // eslint-disable-next-line react/jsx-key
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -67,22 +97,28 @@ export function DataTable() {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row) => {
             prepareRow(row)
             return (
               // eslint-disable-next-line react/jsx-key
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
                   const { id } = cell.column
-                  if (icons.includes(id)) {
+                  if (id === rowIdName) {
                     return (
-                      <td key={cell.getCellProps().key}>
-                        <FontAwesomeIcon icon={cell.value} />
+                      <td>
+                        <FontAwesomeIcon
+                          className={expandRecordButton}
+                          icon={expandIcon}
+                          onClick={() => viewRecord(cell.value)}
+                        />
                       </td>
                     )
                   }
-                  // eslint-disable-next-line react/jsx-key
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  return (
+                    // eslint-disable-next-line react/jsx-key
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  )
                 })}
               </tr>
             )

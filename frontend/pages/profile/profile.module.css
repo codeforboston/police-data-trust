@@ -1,0 +1,14 @@
+.profileWrapper {
+  width: 80%;
+  z-index: -10000;
+  margin-top: 2rem;
+  margin-left: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.rightContent {
+  display: inline-block;
+  text-align: left;
+}
