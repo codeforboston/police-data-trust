@@ -9,8 +9,8 @@ export default {
 
 const Template: ComponentStory<typeof ExternalLink> = (args) => <ExternalLink {...args} />
 
-export const CodeForBostonLink = Template.bind({})
-CodeForBostonLink.args = {
-  linkPath: "https://codeforboston.org",
+export const CfbLink = Template.bind({})
+CfbLink.args = {
+  linkPath: "http://codeforboston.org",
   linkText: "Code for Boston"
 }
