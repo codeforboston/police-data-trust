@@ -1,3 +1,7 @@
 export default function Home() {
-  return <div>I am the Police Data Trust Application!</div>
+  return (
+    <div>
+      <h1>NPDC Home page</h1>
+    </div>
+  )
 }

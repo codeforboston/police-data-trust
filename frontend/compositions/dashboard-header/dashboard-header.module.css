@@ -1,0 +1,202 @@
+.wrapper {
+  width: 100%;
+  height: var(--size112);
+}
+
+.backgroundBanner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-width: 100%;
+  position: absolute;
+  background-image: url("/BannerMobile.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: var(--size80);
+  filter: drop-shadow(0 var(--size4) var(--size4) rgba(0, 0, 0, var(--size4)));
+}
+
+.leftHeader {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.leftHeader img {
+  margin-top: var(--size16);
+  margin-left: var(--size36);
+}
+
+.titleContainer {
+  display: none;
+}
+
+.backgroundBanner nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.backgroundBanner ul {
+  position: absolute;
+  top: 25%;
+  left: 80%;
+  width: var(--size112);
+  height: var(--size128);
+  padding: var(--size12) var(--size40) var(--size16) var(--size12);
+  border-radius: var(--size4);
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+  list-style: none;
+  background-color: var(--darkBlue);
+  transform: rotateX(-90deg) translateX(-50%);
+  transform-origin: top center;
+  opacity: 0.3;
+  visibility: hidden;
+  transition: 280ms all 120ms ease-out;
+}
+
+.backgroundBanner ul li {
+  width: var(--size64);
+  height: var(--size16);
+  margin-bottom: var(--size12);
+}
+
+.backgroundBanner a {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--size12);
+  line-height: var(--size14);
+}
+
+.backgroundBanner button:nth-child(n + 2) {
+  display: none;
+}
+
+.dropdownTitle {
+  background-color: transparent;
+  border: none;
+  font-family: inherit;
+  margin-top: var(--size16);
+  margin-right: var(--size24);
+  color: var(--darkBlue);
+}
+
+.selected {
+  text-decoration: underline;
+}
+
+.dropdownTitle:focus + ul {
+  opacity: 1;
+  transform: rotateX(0) translateX(-50%);
+  visibility: visible;
+}
+
+@media screen and (min-width: 32em) {
+  .wrapper {
+    height: var(--size128);
+  }
+
+  .backgroundBanner {
+    background-image: url("/Banner.svg");
+    filter: none;
+  }
+
+  .leftHeader {
+    margin-left: var(--size64);
+  }
+
+  .titleContainer {
+    display: flex;
+    flex-direction: column;
+    width: var(--size424);
+    margin-top: var(--size48);
+    margin-left: var(--size4);
+  }
+
+  .titleContainer h2 {
+    color: var(--darkBlue);
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--size28);
+    line-height: var(--size32);
+    letter-spacing: -0.02rem;
+  }
+
+  .titleContainer p {
+    width: var(--size512);
+    height: var(--size24);
+    color: var(--black);
+    line-height: var(--size16);
+    letter-spacing: -0.02rem;
+    font-size: var(--size14);
+    font-weight: normal;
+    margin-top: var(--size6);
+  }
+
+  .backgroundBanner nav {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  .backgroundBanner .dropdownTitle {
+    display: none;
+  }
+
+  .backgroundBanner ul {
+    position: relative;
+    top: 28%;
+    left: 10%;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    height: fit-content;
+    padding: 0;
+    background-color: transparent;
+    border-radius: none;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: rotateX(0) translateX(-50%);
+  }
+
+  .backgroundBanner ul li {
+    font-style: normal;
+    font-weight: 500;
+    font-size: var(--size14);
+    height: var(--size24);
+    text-align: center;
+    line-height: var(--size12);
+    padding: var(--size8) var(--size16) var(--size4) var(--size14);
+    cursor: pointer;
+    list-style: none;
+    white-space: nowrap;
+  }
+
+  .backgroundBanner li:last-child {
+    display: none;
+  }
+
+  .backgroundBanner a {
+    color: var(--darkBlue);
+    font-weight: 500;
+  }
+
+  .selected {
+    text-decoration: none;
+    background-color: white;
+    border-radius: 0.19rem 0.19rem 0rem 0rem;
+    box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
+  }
+
+  .selected a {
+    font-weight: 700;
+  }
+
+  .backgroundBanner button:nth-child(n + 2) {
+    display: flex;
+    font-size: var(--size16);
+    font-weight: 700;
+    width: var(--size100);
+    margin: var(--size20) var(--size36) var(--size20);
+  }
+}

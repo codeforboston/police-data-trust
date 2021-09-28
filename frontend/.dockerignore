@@ -1,0 +1,3 @@
+# Files that shouldn't be copied into the web image
+node_modules
+.next

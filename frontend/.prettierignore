@@ -1,2 +1,5 @@
 build
 node_modules    
+.next
+uscities.json
+public

@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Login correctly 1`] = `
+<div>
+  <div>
+    <section
+      class="enrollmentSection"
+    >
+      <div
+        class="header"
+      >
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          class="logo medium"
+          src="/NPDCLogo.svg"
+        />
+        <h1>
+          Login
+        </h1>
+      </div>
+      <form
+        class="centerContent"
+      >
+        <div
+          class="defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="emailAddressInput"
+          >
+            Email Address:
+          </label>
+          <input
+            aria-describedby="emailAddressError"
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="emailAddressInput"
+            name="emailAddress"
+            type="email"
+          />
+        </div>
+        <div
+          class="defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="loginPasswordInput"
+          >
+            Login Password:
+          </label>
+          <input
+            aria-describedby="loginPasswordError"
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="loginPasswordInput"
+            name="loginPassword"
+            type="password"
+          />
+        </div>
+        <button
+          class="primaryButton"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+      <div
+        class="callToActionContainer"
+      >
+        <p>
+          New to the National Police Data Coalition?
+        </p>
+        <a
+          class="callToActionLink"
+          href="/register"
+        >
+          Register for an account
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
+`;

@@ -1,9 +1,14 @@
 import os
+from dotenv import load_dotenv
+
+
+if os.environ.get("FLASK_ENV") != "production":
+    load_dotenv()
 
 
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(32))
-
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(64))
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
@@ -39,10 +44,16 @@ class Config(object):
         )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
+
+    FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
 
 
 class DevelopmentConfig(Config):
     ENV = "development"
+    # Use fixed secrets in development so tokens work across server restarts
+    SECRET_KEY = os.environ.get("SECRET_KEY", "my-secret-key")
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-jwt-secret-key")
 
 
 class ProductionConfig(Config):
@@ -59,6 +70,8 @@ class TestingConfig(Config):
     ENV = "testing"
     TESTING = True
     POSTGRES_DB = "police_data_test"
+    SECRET_KEY = "my-secret-key"
+    JWT_SECRET_KEY = "my-jwt-secret-key"
 
 
 def get_config_from_env(env: str) -> Config:

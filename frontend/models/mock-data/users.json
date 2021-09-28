@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "active": true,
+    "firstName": "Bob",
+    "lastName": "Boberton",
+    "email": "bob1@email.com",
+    "phone": "9995559999",
+    "role": 2
+  },
+  {
+    "id": 2,
+    "active": true,
+    "firstName": "Alice",
+    "lastName": "Cooper",
+    "email": "alice@email.com",
+    "phone": "9995559990",
+    "role": 1
+  }
+]
