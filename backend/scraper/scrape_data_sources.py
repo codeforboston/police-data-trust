@@ -187,7 +187,7 @@ def make_all_tables():
     # Write each dataframe to a different worksheet.
     for key in table_dict:
         sub_data = table_dict[key]
-        sub_data.iloc[final_indices].to_excel(writer, sheet_name=key)
+        sub_data.loc[final_indices].to_excel(writer, sheet_name=key)
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
