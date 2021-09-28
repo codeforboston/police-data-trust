@@ -14,4 +14,3 @@ export const PublicUser = Template.bind({})
 PublicUser.args = {
   userData: users[0]
 }
-

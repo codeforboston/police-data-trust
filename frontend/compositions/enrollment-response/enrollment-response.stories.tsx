@@ -20,7 +20,7 @@ PassportResponse.args = {
   success: true
 }
 
-export const RegistraterResponse  = RegisterTemplate.bind({})
+export const RegistraterResponse = RegisterTemplate.bind({})
 RegistraterResponse.args = {
   success: true
 }
