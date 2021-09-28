@@ -15,7 +15,3 @@ PublicUser.args = {
   userData: users[0]
 }
 
-export const PassportUser = Template.bind({})
-PassportUser.args = {
-  userData: users[1]
-}
