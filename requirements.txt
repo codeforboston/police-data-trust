@@ -17,7 +17,7 @@ click-repl==0.1.6
 coverage==5.5
 cryptography==3.4.7
 dnspython==2.1.0
-email-validator==2.1.0
+#email-validator==2.1.0
 wtforms[email]==2.3.1
 flake8==3.8.4
 Flask==1.1.2
@@ -73,4 +73,4 @@ urllib3==1.26.4
 vine==5.0.0
 wcwidth==0.2.5
 Werkzeug==1.0.1
-WTForms==2.1.0
+WTForms==2.3.1
