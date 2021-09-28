@@ -83,6 +83,7 @@ def register_commands(app: Flask):
         # TODO: load excel sheet into database
         make_all_tables()
 
+
 def register_routes(app: Flask):
     app.register_blueprint(incident_routes)
 
