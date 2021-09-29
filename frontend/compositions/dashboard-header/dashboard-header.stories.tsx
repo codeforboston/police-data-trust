@@ -9,5 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof DashboardHeader> = (args) => <DashboardHeader {...args} />
 
-export const Header = Template.bind({})
-Header.args = {}
+export const Default = Template.bind({})

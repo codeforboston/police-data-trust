@@ -9,5 +9,5 @@ export default {
 
 const Template: ComponentStory<typeof Map> = (args) => <Map {...args} />
 
-export const USMap = Template.bind({})
-USMap.args = {}
+export const Default = Template.bind({})
+Default.args = {}

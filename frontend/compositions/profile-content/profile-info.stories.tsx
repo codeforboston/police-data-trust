@@ -10,7 +10,7 @@ export default {
 
 const Template: ComponentStory<typeof ProfileInfo> = (args) => <ProfileInfo {...args} />
 
-export const PublicUser = Template.bind({})
-PublicUser.args = {
+export const Default = Template.bind({})
+Default.args = {
   userData: users[0]
 }

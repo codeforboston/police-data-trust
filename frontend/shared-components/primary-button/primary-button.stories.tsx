@@ -9,8 +9,8 @@ export default {
 
 const Template: ComponentStory<typeof PrimaryButton> = (args) => <PrimaryButton {...args} />
 
-export const Button = Template.bind({})
-Button.args = {
+export const Default = Template.bind({})
+Default.args = {
   loading: false,
   children: "Button"
 }

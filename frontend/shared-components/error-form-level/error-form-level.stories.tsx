@@ -9,8 +9,8 @@ export default {
 
 const Template: ComponentStory<typeof FormLevelError> = (args) => <FormLevelError {...args} />
 
-export const BasicError = Template.bind({})
-BasicError.args = {
+export const Default = Template.bind({})
+Default.args = {
   errorId: 1,
   errorMessage: "An error has occurred"
 }

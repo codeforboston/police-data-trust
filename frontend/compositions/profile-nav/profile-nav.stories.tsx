@@ -9,5 +9,5 @@ export default {
 
 const Template: ComponentStory<typeof ProfileNav> = (args) => <ProfileNav {...args} />
 
-export const ProfileNavMenu = Template.bind({})
-ProfileNavMenu.args = {}
+export const Default = Template.bind({})
+Default.args = {}

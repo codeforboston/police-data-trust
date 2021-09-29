@@ -9,4 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof USAStateInput> = (args) => <USAStateInput {...args} />
 
-export const StateInput = Template.bind({})
+export const Default = Template.bind({})

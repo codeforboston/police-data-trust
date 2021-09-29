@@ -9,5 +9,5 @@ export default {
 
 const Template: ComponentStory<typeof PasswordAid> = (args) => <PasswordAid {...args} />
 
-export const ShowPassword = Template.bind({})
-ShowPassword.args = {}
+export const Default = Template.bind({})
+Default.args = {}

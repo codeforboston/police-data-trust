@@ -9,6 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof ResponseTextArea> = (args) => <ResponseTextArea {...args} />
 
-export const BasicTextArea = Template.bind({
-  isSubmitted: false
-})
+export const Default = Template.bind({})

@@ -9,5 +9,5 @@ export default {
 
 const Template: ComponentStory<typeof DataTable> = (args) => <DataTable {...args} />
 
-export const BasicTable = Template.bind({})
-BasicTable.args = {}
+export const Default = Template.bind({})
+Default.args = {}
