@@ -2,10 +2,9 @@ import * as React from "react"
 import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
+import Dropdown from "./dropdown"
 
 export default function DashboardHeader() {
   const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
@@ -21,19 +20,12 @@ export default function DashboardHeader() {
             <p>The national index of police incidents</p>
           </div>
         </div>
-
         <nav aria-label="Main Navigation">
-          <button
-            type="button"
-            className={dropdownTitle}
-            aria-expanded="false"
-            aria-controls="navMenu">
-            <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
-          </button>
-          <Nav />
+          <Dropdown />
           <PrimaryButton>DONATE</PrimaryButton>
           <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
+
       </div>
     </header>
   )
