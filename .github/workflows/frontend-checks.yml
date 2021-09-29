@@ -9,7 +9,7 @@ on:
       - frontend/**
 
 env:
-  NODE_VERSION: 16.x
+  NODE_VERSION: 14.x
 
 jobs:
   build:
