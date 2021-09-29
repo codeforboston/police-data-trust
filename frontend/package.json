@@ -38,6 +38,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@storybook/addon-actions": "^6.3.8",
+    "@storybook/addon-contexts": "^5.3.21",
     "@storybook/addon-essentials": "^6.3.8",
     "@storybook/addon-links": "^6.3.8",
     "@storybook/preset-scss": "^1.0.3",

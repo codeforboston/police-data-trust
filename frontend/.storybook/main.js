@@ -5,6 +5,7 @@ module.exports = {
     "../pages/**/*.stories.tsx"
   ],
   addons: [
+    "@storybook/addon-contexts/register",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "storybook-css-modules-preset",
