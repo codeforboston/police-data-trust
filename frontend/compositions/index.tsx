@@ -16,5 +16,6 @@ export {
   PassportApplicationResponse,
   PasswordAid,
   RegistrationResponse,
-  Map
+  Map,
+  LandingPage
 }

@@ -1,13 +1,10 @@
-.logo {
-  position: absolute;
-  top: 8px;
-  left: 16px;
-  font-size: 18px;
-  }
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+ }
 
-.donate {
-	position: absolute;
-  top: 8px;
-  right: 16px;
-  font-size: 18px;
-}
+ .text {
+   display: center;
+ }
+
