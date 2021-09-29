@@ -3,5 +3,6 @@ import EnrollmentCallToAction from "./enrollment-call-to-action/enrollment-call-
 import EnrollmentHeader from "./enrollment-header/enrollment-header"
 import PasswordAid from "./password-aid/password-aid"
 import Map from "./map"
+import LandingPage from "./landingpage/landing"
 
-export { DashboardHeader, EnrollmentCallToAction, EnrollmentHeader, PasswordAid, Map }
+export { DashboardHeader, EnrollmentCallToAction, EnrollmentHeader, PasswordAid, Map, LandingPage }

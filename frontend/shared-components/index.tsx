@@ -6,6 +6,7 @@ import PrimaryInput from "./primary-input/primary-input"
 import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
+import DonateButton from "./donate-button/donate-button"
 
 export {
   FormLevelError,
@@ -15,5 +16,6 @@ export {
   PrimaryInput,
   ResponseTextArea,
   USAStateInput,
-  PrimaryButton
+  PrimaryButton,
+  DonateButton
 }
