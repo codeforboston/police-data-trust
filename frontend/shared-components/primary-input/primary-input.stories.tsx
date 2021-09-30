@@ -2,10 +2,22 @@ import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { PrimaryInput } from ".."
 import { PrimaryInputNames } from "../../models"
+import { FormProvider, useForm } from "react-hook-form"
+
 
 export default {
   title: "Shared Components/Primary Input",
-  component: PrimaryInput
+  component: PrimaryInput,
+  decorators: [
+    (Story) => {
+      const methods = useForm()
+      return (
+        <FormProvider {...methods}>
+          <Story />
+        </FormProvider>
+      )
+    }
+  ]
 } as ComponentMeta<typeof PrimaryInput>
 
 const Template: ComponentStory<typeof PrimaryInput> = (args) => <PrimaryInput {...args} />
