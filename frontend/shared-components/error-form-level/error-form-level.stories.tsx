@@ -14,3 +14,9 @@ Default.args = {
   errorId: 1,
   errorMessage: "An error has occurred"
 }
+
+export const AnotherError = Template.bind({})
+AnotherError.args = {
+  errorId: 2,
+  errorMessage: "A different error has occurred"
+}
