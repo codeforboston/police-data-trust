@@ -15,12 +15,22 @@ const RegisterTemplate: ComponentStory<typeof RegistrationResponse> = (args) => 
   <RegistrationResponse {...args} />
 )
 
-export const PassportResponse = PassportTemplate.bind({})
-PassportResponse.args = {
+export const PassportSuccess = PassportTemplate.bind({})
+PassportSuccess.args = {
   success: true
 }
 
-export const RegistraterResponse = RegisterTemplate.bind({})
-RegistraterResponse.args = {
+export const PassportFail = PassportTemplate.bind({})
+PassportFail.args = {
+  success: false
+}
+
+export const RegistrationSuccess = RegisterTemplate.bind({})
+RegistrationSuccess.args = {
   success: true
+}
+
+export const RegistrationFail = RegisterTemplate.bind({})
+RegistrationFail.args = {
+  success: false
 }
