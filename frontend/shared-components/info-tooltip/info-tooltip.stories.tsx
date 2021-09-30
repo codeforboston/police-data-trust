@@ -5,7 +5,14 @@ import { TooltipTypes } from "../../models"
 
 export default {
   title: "Shared Components/Info Tooltip",
-  component: InfoTooltip
+  component: InfoTooltip,
+  decorators: [
+    (Story) => (
+      <div style={{margin:"8rem 0 0 4rem"}}>
+        <Story />
+      </div>
+    )
+  ]
 } as ComponentMeta<typeof InfoTooltip>
 
 const Template: ComponentStory<typeof InfoTooltip> = (args) => <InfoTooltip {...args} />
