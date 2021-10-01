@@ -25,8 +25,8 @@ export default requireAuth(function ProfileType() {
 })
 
 // can be whoever
-export function MockProfileType(userData: UserDataType) {
-  const { title, content, linkText, linkPath } = profileTypeContent[userData.role]
+export function MockProfileType({ role }: UserDataType) {
+  const { title, content, linkText, linkPath } = profileTypeContent[role]
   const { profileData, sectionTitle, profileTypeText, profileTypeLink, description } = styles
   return (
     <div className={profileData}>

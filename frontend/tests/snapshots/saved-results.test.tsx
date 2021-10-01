@@ -1,8 +1,8 @@
 import * as React from "react"
-import { SavedResults } from "../../compositions/profile-content"
-import renderer from "react-test-renderer"
+import { SavedResults } from "../../compositions"
+import { render } from "../test-utils"
 
 it("renders Saved Results page correctly", () => {
-  const tree = renderer.create(<SavedResults />).toJSON()
-  expect(tree).toMatchSnapshot()
+  const { container } = render(<SavedResults />)
+  expect(container).toMatchSnapshot()
 })
