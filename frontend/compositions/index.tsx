@@ -7,6 +7,12 @@ import {
 } from "./enrollment-response/enrollment-response"
 import PasswordAid from "./password-aid/password-aid"
 import Map from "./map"
+import ProfileNav from "./profile-nav"
+import ProfileInfo from "./profile-info"
+import ProfileType from "./profile-type"
+import EditProfileInfo from "./profile-edit"
+import SavedResults from "./profile-saved-tables/saved-results"
+import SavedSearches from "./profile-saved-tables/saved-searches"
 
 export {
   DashboardHeader,
@@ -15,5 +21,11 @@ export {
   PassportApplicationResponse,
   PasswordAid,
   RegistrationResponse,
-  Map
+  Map,
+  ProfileNav,
+  ProfileInfo,
+  EditProfileInfo,
+  ProfileType,
+  SavedResults,
+  SavedSearches
 }
