@@ -3,7 +3,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import ExternalLink from "./external-link"
 
 export default {
-  title: "Shared Components/External LInk",
+  title: "Shared Components/External Link",
   component: ExternalLink
 } as ComponentMeta<typeof ExternalLink>
 
