@@ -18,3 +18,6 @@ export default {
 const Template: ComponentStory<typeof DashboardHeader> = (args) => <DashboardHeader {...args} />
 
 export const Default = Template.bind({})
+Default.parameters = {
+  controls: { hideNoControlsWarning: true }
+}
