@@ -1,5 +1,5 @@
 import React from "react"
-import { Meta } from "@storybook/react"
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { FormProvider, useForm } from "react-hook-form"
 import { AuthProvider } from "../../helpers"
 import Passport from "."
@@ -19,6 +19,10 @@ export default {
       )
     }
   ],
-} as Meta<typeof Passport>
+} as ComponentMeta<typeof Passport>
 
-export const PassportRegistration = <Passport />
+const Template: ComponentStory<typeof Passport> = (args) => <Passport {...args} />
+export const PassportRegistration = Template.bind({})
+PassportRegistration.parameters = {
+  controls: { hideNoControlsWarning: true }
+}

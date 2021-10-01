@@ -1,12 +1,11 @@
 import React from "react"
-import { Meta } from "@storybook/react"
-import ViewerRegistration from "./"
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import { FormProvider, useForm } from "react-hook-form"
 import { AuthProvider } from "../../helpers"
-
+import ViewerRegistration from "."
 
 export default {
-  title: "Pages/Viewer Registration",
+  title: "Pages/Registration",
   component: ViewerRegistration,
   decorators: [
     (Story) => {
@@ -19,7 +18,13 @@ export default {
         </AuthProvider>
       )
     }
-  ],
-} as Meta<typeof ViewerRegistration>
+  ]
+} as ComponentMeta<typeof ViewerRegistration>
 
-export const Registration = <ViewerRegistration />
+const Template: ComponentStory<typeof ViewerRegistration> = (args) => <ViewerRegistration {...args} />
+
+export const Register = Template.bind({})
+Register.parameters = {
+  controls: { hideNoControlsWarning: true }
+}
+

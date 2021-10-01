@@ -1,18 +1,28 @@
 import React from "react"
-import { Meta } from "@storybook/react"
-import Profile from "./"
+import { ComponentMeta, ComponentStory } from "@storybook/react"
+import Profile from "."
 import { AuthProvider } from "../../helpers"
+import { FormProvider, useForm } from "react-hook-form"
 
 export default {
-  title: "Pages/Profile",
+  title: "Pages/ProfilePage",
   component: Profile,
   decorators: [
-    (Story) => (
+    (Story) => {
+      const methods = useForm()
+      return (
       <AuthProvider>
-        <Story />
+        <FormProvider {...methods}>
+          <Story />
+        </FormProvider>
       </AuthProvider>
-    )
+      )
+    }
   ]
-} as Meta<typeof Profile>
+} as ComponentMeta<typeof Profile>
 
-export const ProfilePage = <Profile />
+const Template: ComponentStory<typeof Profile> = (args) => <Profile {...args} />
+export const ProfilePage = Template.bind({})
+ProfilePage.parameters = {
+  controls: { hideNoControlsWarning: true }
+}
