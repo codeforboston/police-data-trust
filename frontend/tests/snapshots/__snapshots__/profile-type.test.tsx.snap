@@ -1,63 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders Profile: Account Type panel with Passport user 1`] = `
-<div
-  className="profileData"
->
-  <header
-    className="sectionTitle"
-  >
-    Your Profile Type
-  </header>
+<div>
   <div
-    className="profileTypeText"
+    class="profileData"
   >
-    Passport Account
-  </div>
-  <p
-    className="description"
-  >
-    A Passport account allows you to see legally protected data. If the publicly available data is sufficient for your needs...
-  </p>
-  <div
-    className="profileTypeLink"
-  >
-    <a
-      href="/register"
+    <header
+      class="sectionTitle"
     >
-      Revert to a Viewer Account
-    </a>
+      Your Profile Type
+    </header>
+    <div
+      class="profileTypeText"
+    >
+      Passport Account
+    </div>
+    <p
+      class="description"
+    >
+      A Passport account allows you to see legally protected data. If the publicly available data is sufficient for your needs...
+    </p>
+    <div
+      class="profileTypeLink"
+    >
+      <a
+        href="/register"
+      >
+        Revert to a Viewer Account
+      </a>
+    </div>
   </div>
 </div>
 `;
 
-exports[`renders Profile: Account Type panel with regular Viewer user 1`] = `
-<div
-  className="profileData"
->
-  <header
-    className="sectionTitle"
-  >
-    Your Profile Type
-  </header>
-  <div
-    className="profileTypeText"
-  >
-    Viewer Account
-  </div>
-  <p
-    className="description"
-  >
-    A Viewer account allows you to see data that is publicly available. To apply to see legally protected data...
-  </p>
-  <div
-    className="profileTypeLink"
-  >
-    <a
-      href="/passport"
-    >
-      Register for a Passport Account
-    </a>
-  </div>
-</div>
-`;
+exports[`renders Profile: Account Type panel with current user 1`] = `<div />`;

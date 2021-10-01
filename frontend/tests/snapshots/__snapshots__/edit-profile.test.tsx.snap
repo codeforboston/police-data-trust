@@ -1,0 +1,154 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Edit Profile Info section correctly 1`] = `
+<div>
+  <div>
+    <div
+      class="profileData"
+    >
+      <header
+        class="sectionTitle"
+      >
+        Edit Your Account Information
+      </header>
+      <form>
+        <fieldset
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="firstNameInput"
+            >
+              First Name:
+            </label>
+            <input
+              aria-describedby="firstNameError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="firstNameInput"
+              name="firstName"
+              type="text"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="lastNameInput"
+            >
+              Last Name:
+            </label>
+            <input
+              aria-describedby="lastNameError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="lastNameInput"
+              name="lastName"
+              type="text"
+            />
+          </div>
+        </fieldset>
+        <fieldset
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="emailAddressInput"
+            >
+              Email Address:
+            </label>
+            <input
+              aria-describedby="emailAddressError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="emailAddressInput"
+              name="emailAddress"
+              type="email"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="phoneNumberInput"
+            >
+              Phone Number:
+            </label>
+            <input
+              aria-describedby="phoneNumberError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="phoneNumberInput"
+              name="phoneNumber"
+              type="tel"
+            />
+          </div>
+        </fieldset>
+        <fieldset
+          class="inputLine"
+        >
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="createPasswordInput"
+            >
+              Create Password:
+            </label>
+            <input
+              aria-describedby="createPasswordError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="createPasswordInput"
+              name="createPassword"
+              type="password"
+            />
+          </div>
+          <div
+            class="defaultInputContainer inputContainer undefined"
+          >
+            <label
+              for="confirmPasswordInput"
+            >
+              Confirm Password:
+            </label>
+            <input
+              aria-describedby="confirmPasswordError"
+              aria-invalid="false"
+              aria-required="true"
+              class="inputField"
+              id="confirmPasswordInput"
+              name="confirmPassword"
+              type="password"
+            />
+          </div>
+        </fieldset>
+        <div
+          class="formControls"
+        >
+          <button
+            class="cancelButton"
+          >
+            Cancel
+          </button>
+          <button
+            class="primaryButton submitButton"
+            type="submit"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

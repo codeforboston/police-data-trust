@@ -6,7 +6,6 @@ import { requireAuth, useAuth } from "../../helpers"
 import EditProfileInfo from "../profile-edit"
 import { publicUser } from "../../models/profile"
 
-
 export default requireAuth(function ProfileInfo() {
   const [editMode, setEditMode] = React.useState(false)
 

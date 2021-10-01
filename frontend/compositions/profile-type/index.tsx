@@ -4,7 +4,6 @@ import { profileTypeContent, publicUser, UserDataType } from "../../models/profi
 import { useAuth, requireAuth } from "../../helpers"
 import styles from "./profile-type.module.css"
 
-
 export default requireAuth(function ProfileType() {
   const { user } = useAuth()
   const userData = publicUser(user)

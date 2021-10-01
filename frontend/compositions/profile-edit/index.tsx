@@ -5,7 +5,6 @@ import { Layout, PrimaryInput, PrimaryButton, FormLevelError } from "../../share
 import { useAuth } from "../../helpers"
 import { FormProvider, useForm } from "react-hook-form"
 
-
 interface EditProfileProps {
   cancelEditMode: any
 }
@@ -16,7 +15,7 @@ export default function EditProfileInfo({ cancelEditMode }: EditProfileProps) {
 
   const form = useForm()
   const { user } = useAuth()
-  
+
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [submitSuccess, setSubmitSuccess] = useState(null)
@@ -47,7 +46,7 @@ export default function EditProfileInfo({ cancelEditMode }: EditProfileProps) {
 
   return (
     <Layout>
-       <div className={profileData}>
+      <div className={profileData}>
         <header className={sectionTitle}>Edit Your Account Information</header>
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onError)}>
