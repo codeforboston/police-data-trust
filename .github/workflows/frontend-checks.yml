@@ -54,6 +54,6 @@ jobs:
         if: always()
         run: npm run test
 
-      - name: Types and Production Build
+      - name: Types
         if: always()
-        run: npm run build -- --no-lint
+        run: npm run check-types
