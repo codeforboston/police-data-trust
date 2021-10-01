@@ -4,7 +4,6 @@ import { PrimaryInput } from ".."
 import { PrimaryInputNames } from "../../models"
 import { FormProvider, useForm } from "react-hook-form"
 
-
 export default {
   title: "Shared Components/Primary Input",
   component: PrimaryInput,

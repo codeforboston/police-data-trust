@@ -8,7 +8,7 @@ export default {
   component: InfoTooltip,
   decorators: [
     (Story) => (
-      <div style={{margin:"8rem 0 0 4rem"}}>
+      <div style={{ margin: "8rem 0 0 4rem" }}>
         <Story />
       </div>
     )

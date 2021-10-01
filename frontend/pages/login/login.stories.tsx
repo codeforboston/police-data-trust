@@ -27,4 +27,3 @@ export const Login = Template.bind({})
 Login.parameters = {
   controls: { hideNoControlsWarning: true }
 }
-

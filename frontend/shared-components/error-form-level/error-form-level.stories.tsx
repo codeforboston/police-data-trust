@@ -7,10 +7,10 @@ export default {
   component: FormLevelError,
   argTypes: {
     errorId: {
-      control: { type: 'number' }
+      control: { type: "number" }
     },
     errorMessage: {
-      control: { type: 'text' }
+      control: { type: "text" }
     }
   }
 } as ComponentMeta<typeof FormLevelError>

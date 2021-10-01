@@ -21,10 +21,11 @@ export default {
   ]
 } as ComponentMeta<typeof ViewerRegistration>
 
-const Template: ComponentStory<typeof ViewerRegistration> = (args) => <ViewerRegistration {...args} />
+const Template: ComponentStory<typeof ViewerRegistration> = (args) => (
+  <ViewerRegistration {...args} />
+)
 
 export const Register = Template.bind({})
 Register.parameters = {
   controls: { hideNoControlsWarning: true }
 }
-

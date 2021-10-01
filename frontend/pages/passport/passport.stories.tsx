@@ -18,7 +18,7 @@ export default {
         </AuthProvider>
       )
     }
-  ],
+  ]
 } as ComponentMeta<typeof Passport>
 
 const Template: ComponentStory<typeof Passport> = (args) => <Passport {...args} />

@@ -11,11 +11,11 @@ export default {
     (Story) => {
       const methods = useForm()
       return (
-      <AuthProvider>
-        <FormProvider {...methods}>
-          <Story />
-        </FormProvider>
-      </AuthProvider>
+        <AuthProvider>
+          <FormProvider {...methods}>
+            <Story />
+          </FormProvider>
+        </AuthProvider>
       )
     }
   ]

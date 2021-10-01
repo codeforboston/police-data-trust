@@ -4,7 +4,6 @@ import { ProfileInfo } from "."
 import { FormProvider, useForm } from "react-hook-form"
 import users from "../../models/mock-data/users.json"
 
-
 export default {
   title: "Compositions/Profile Info",
   component: ProfileInfo,
