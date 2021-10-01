@@ -4,7 +4,15 @@ import { FormLevelError } from ".."
 
 export default {
   title: "Shared Components/Form Error",
-  component: FormLevelError
+  component: FormLevelError,
+  argTypes: {
+    errorId: {
+      control: { type: 'number' }
+    },
+    errorMessage: {
+      control: { type: 'text' }
+    }
+  }
 } as ComponentMeta<typeof FormLevelError>
 
 const Template: ComponentStory<typeof FormLevelError> = (args) => <FormLevelError {...args} />
