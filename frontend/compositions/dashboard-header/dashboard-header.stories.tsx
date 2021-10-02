@@ -1,16 +1,16 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { DashboardHeader } from ".."
-import { AuthProvider } from "../../helpers"
+import { Providers } from "../../helpers"
 
 export default {
   title: "Compositions/Header",
   component: DashboardHeader,
   decorators: [
     (Story) => (
-      <AuthProvider>
+      <Providers>
         <Story />
-      </AuthProvider>
+      </Providers>
     )
   ]
 } as ComponentMeta<typeof DashboardHeader>

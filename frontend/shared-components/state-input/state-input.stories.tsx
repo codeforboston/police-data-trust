@@ -1,20 +1,17 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { USAStateInput } from ".."
-import { FormProvider, useForm } from "react-hook-form"
+import { Providers } from "../../helpers"
 
 export default {
   title: "Shared Components/State Input",
   component: USAStateInput,
   decorators: [
-    (Story) => {
-      const methods = useForm()
-      return (
-        <FormProvider {...methods}>
-          <Story />
-        </FormProvider>
-      )
-    }
+    (Story) => (
+      <Providers>
+        <Story />
+      </Providers>
+    )
   ]
 } as ComponentMeta<typeof USAStateInput>
 

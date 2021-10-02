@@ -1,20 +1,17 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { ResponseTextArea } from ".."
-import { FormProvider, useForm } from "react-hook-form"
+import { Providers } from "../../helpers"
 
 export default {
   title: "Shared Components/Response Text Area",
   component: ResponseTextArea,
   decorators: [
-    (Story) => {
-      const methods = useForm()
-      return (
-        <FormProvider {...methods}>
+    (Story) => (
+        <Providers>
           <Story />
-        </FormProvider>
+        </Providers>
       )
-    }
   ]
 } as ComponentMeta<typeof ResponseTextArea>
 

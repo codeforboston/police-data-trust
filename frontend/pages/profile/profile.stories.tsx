@@ -1,23 +1,17 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import Profile from "."
-import { AuthProvider } from "../../helpers"
-import { FormProvider, useForm } from "react-hook-form"
+import { Providers } from "../../helpers"
 
 export default {
   title: "Pages/ProfilePage",
   component: Profile,
   decorators: [
-    (Story) => {
-      const methods = useForm()
-      return (
-        <AuthProvider>
-          <FormProvider {...methods}>
-            <Story />
-          </FormProvider>
-        </AuthProvider>
-      )
-    }
+    (Story) => (
+      <Providers>
+        <Story />
+      </Providers>
+    )
   ]
 } as ComponentMeta<typeof Profile>
 
