@@ -8,10 +8,10 @@ export default {
   component: ResponseTextArea,
   decorators: [
     (Story) => (
-        <Providers>
-          <Story />
-        </Providers>
-      )
+      <Providers>
+        <Story />
+      </Providers>
+    )
   ]
 } as ComponentMeta<typeof ResponseTextArea>
 

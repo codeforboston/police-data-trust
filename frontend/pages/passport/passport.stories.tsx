@@ -21,5 +21,3 @@ export const Register = Template.bind({})
 Register.parameters = {
   controls: { hideNoControlsWarning: true }
 }
-
-

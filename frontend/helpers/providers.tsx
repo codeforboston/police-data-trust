@@ -7,8 +7,6 @@ import { FormProvider, useForm } from "react-hook-form"
  */
 export const Providers: React.FC = ({ children }) => (
   <AuthProvider>
-    <FormProvider {...useForm()}>
-      {children}
-    </FormProvider>
+    <FormProvider {...useForm()}>{children}</FormProvider>
   </AuthProvider>
 )
