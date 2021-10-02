@@ -56,3 +56,22 @@
   -webkit-box-shadow: var(--insetShadow);
   box-shadow: var(--insetShadow);
 }
+
+.secondaryButton {
+  display: block;
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: thin solid var(--darkBlue);
+  border-radius: var(--size4);
+  background-color: white;
+  color: var(--darkBlue);
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+}
+.secondaryButton:focus,
+.secondaryButton:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
+}
