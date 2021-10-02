@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build:ui": "NEXT_PUBLIC_API_MODE=mock next build && next export",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
