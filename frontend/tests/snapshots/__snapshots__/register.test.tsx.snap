@@ -72,6 +72,7 @@ exports[`renders Register correctly 1`] = `
               id="firstNameInput"
               name="firstName"
               type="text"
+              value=""
             />
           </div>
           <div
@@ -90,6 +91,7 @@ exports[`renders Register correctly 1`] = `
               id="lastNameInput"
               name="lastName"
               type="text"
+              value=""
             />
           </div>
         </fieldset>
@@ -112,6 +114,7 @@ exports[`renders Register correctly 1`] = `
               id="emailAddressInput"
               name="emailAddress"
               type="email"
+              value=""
             />
           </div>
           <div
@@ -130,6 +133,7 @@ exports[`renders Register correctly 1`] = `
               id="phoneNumberInput"
               name="phoneNumber"
               type="tel"
+              value=""
             />
           </div>
         </fieldset>
@@ -153,6 +157,7 @@ exports[`renders Register correctly 1`] = `
               id="createPasswordInput"
               name="createPassword"
               type="password"
+              value=""
             />
           </div>
           <div
@@ -171,6 +176,7 @@ exports[`renders Register correctly 1`] = `
               id="confirmPasswordInput"
               name="confirmPassword"
               type="password"
+              value=""
             />
           </div>
         </fieldset>
