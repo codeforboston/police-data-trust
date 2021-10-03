@@ -7,6 +7,7 @@ import {
 } from "./enrollment-response/enrollment-response"
 import PasswordAid from "./password-aid/password-aid"
 import Map from "./map"
+import LandingPage from "./landingpage/landing"
 
 export {
   DashboardHeader,
@@ -15,5 +16,6 @@ export {
   PassportApplicationResponse,
   PasswordAid,
   RegistrationResponse,
-  Map
+  Map,
+  LandingPage
 }
