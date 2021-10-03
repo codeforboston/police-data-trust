@@ -1,5 +1,5 @@
 import * as React from "react"
-import { LandingPage} from "../../compositions/"
+import { LandingPage } from "../../compositions/"
 import renderer from "react-test-renderer"
 
 it("renders Saved Searches page correctly", () => {

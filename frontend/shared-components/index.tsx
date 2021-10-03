@@ -8,7 +8,6 @@ import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
 
-
 export {
   ExternalLink,
   FormLevelError,
@@ -18,6 +17,5 @@ export {
   PrimaryButton,
   PrimaryInput,
   ResponseTextArea,
-  USAStateInput,
- 
+  USAStateInput
 }
