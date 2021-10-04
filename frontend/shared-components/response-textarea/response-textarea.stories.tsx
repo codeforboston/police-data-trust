@@ -5,14 +5,7 @@ import { Providers } from "../../helpers"
 
 export default {
   title: "Shared Components/Response Text Area",
-  component: ResponseTextArea,
-  decorators: [
-    (Story) => (
-      <Providers>
-        <Story />
-      </Providers>
-    )
-  ]
+  component: ResponseTextArea
 } as ComponentMeta<typeof ResponseTextArea>
 
 const Template: ComponentStory<typeof ResponseTextArea> = (args) => <ResponseTextArea {...args} />
