@@ -1,5 +1,5 @@
 import React from "react"
-import styles from "./primary-button.module.scss"
+import styles from "./primary-button.module.css"
 import classnames from "classnames"
 
 export interface Props extends React.HTMLProps<HTMLButtonElement> {
