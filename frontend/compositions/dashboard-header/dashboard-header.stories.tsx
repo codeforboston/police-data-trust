@@ -1,18 +1,10 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { DashboardHeader } from ".."
-import { Providers } from "../../helpers"
 
 export default {
   title: "Compositions/Header",
-  component: DashboardHeader,
-  decorators: [
-    (Story) => (
-      <Providers>
-        <Story />
-      </Providers>
-    )
-  ]
+  component: DashboardHeader
 } as ComponentMeta<typeof DashboardHeader>
 
 const Template: ComponentStory<typeof DashboardHeader> = (args) => <DashboardHeader {...args} />

@@ -13,8 +13,8 @@
     "watch": "jest --watch",
     "fix": "next lint --fix; prettier --write .",
     "check-types": "tsc --noEmit",
-    "storybook": "start-storybook -s ./public -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook": "start-storybook -s public -p 6006",
+    "build-storybook": "build-storybook -s public"
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"

@@ -1,18 +1,10 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import Profile from "."
-import { Providers } from "../../helpers"
 
 export default {
   title: "Pages/ProfilePage",
-  component: Profile,
-  decorators: [
-    (Story) => (
-      <Providers>
-        <Story />
-      </Providers>
-    )
-  ]
+  component: Profile
 } as ComponentMeta<typeof Profile>
 
 const Template: ComponentStory<typeof Profile> = (args) => <Profile {...args} />

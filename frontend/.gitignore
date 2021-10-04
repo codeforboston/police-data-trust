@@ -38,3 +38,6 @@ yarn-error.log*
 
 # firebase
 .firebase
+
+# storybook
+storybook-static

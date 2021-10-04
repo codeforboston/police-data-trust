@@ -1,18 +1,11 @@
-import React from "react"
-import { ComponentMeta } from "@storybook/react"
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import Dashboard from "."
-import { Providers } from "../../helpers"
 
 export default {
   title: "Pages/Dashboard",
-  component: Dashboard,
-  decorators: [
-    (Story) => (
-      <Providers>
-        <Story />
-      </Providers>
-    )
-  ]
+  component: Dashboard
 } as ComponentMeta<typeof Dashboard>
 
-export const Default = <Dashboard />
+const Template: ComponentStory<typeof Dashboard> = (args) => <Dashboard {...args} />
+
+export const Default = Template.bind({})
