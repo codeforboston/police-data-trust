@@ -28,6 +28,6 @@ export {
   EditProfileInfo,
   ProfileType,
   SavedResults,
-  SavedSearches
+  SavedSearches,
   LandingPage
 }
