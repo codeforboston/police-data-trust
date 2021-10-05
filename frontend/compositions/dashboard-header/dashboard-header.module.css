@@ -145,7 +145,7 @@
   .backgroundBanner ul {
     position: relative;
     top: 28%;
-    left: 10%;
+    left: 0;
     display: flex;
     flex-direction: row;
     width: fit-content;

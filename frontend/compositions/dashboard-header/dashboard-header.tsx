@@ -1,15 +1,13 @@
 import * as React from "react"
-import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
+import { Logo as NPDCLogo } from "../../shared-components"
 import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
-import { useAuth } from "../../helpers/auth"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
-  const { logout } = useAuth()
+  const { wrapper, backgroundBanner, leftHeader, dropdownTitle, titleContainer } = styles
 
   return (
     <header className={wrapper}>
@@ -31,8 +29,6 @@ export default function DashboardHeader() {
             <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
           </button>
           <Nav />
-          <PrimaryButton>DONATE</PrimaryButton>
-          <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
       </div>
     </header>
