@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Layout } from "../../shared-components"
 import { ProfileMenu } from "../../models/profile"
+import { requireAuth } from "../../helpers"
 import {
   DashboardHeader,
   ProfileInfo,
@@ -12,7 +13,7 @@ import {
 import styles from "./profile.module.css"
 // import { useAuth, requireAuth } from "../../helpers"
 
-export default function Profile() {
+export default requireAuth(function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
 
   return (
@@ -29,4 +30,4 @@ export default function Profile() {
       </div>
     </Layout>
   )
-}
+})
