@@ -44,6 +44,10 @@ Once completed the steps above then to run tests: `yarn test`. You can use `yarn
 
 Bare minimum each incoming PR changes updating the UI must have UI snapshot tests. We expect tests only for project important logic but must reside in the `tests/` directory.
 
+## Storybook
+
+Besides testing with Jest, we also use Storybook to view UI components in isolation. Stories can be written for any visual component, and having a story for your component is a good way to show that it works. More information on how we're using it in this project can be found [here](./.storybook/USAGE.md).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

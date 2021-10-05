@@ -13,6 +13,7 @@ import ProfileType from "./profile-type"
 import EditProfileInfo from "./profile-edit"
 import SavedResults from "./profile-saved-tables/saved-results"
 import SavedSearches from "./profile-saved-tables/saved-searches"
+import LandingPage from "./landingpage/landing"
 
 export {
   DashboardHeader,
@@ -28,4 +29,5 @@ export {
   ProfileType,
   SavedResults,
   SavedSearches
+  LandingPage
 }
