@@ -1,0 +1,37 @@
+.leftMenu {
+  display: flex;
+
+  flex-direction: row;
+  align-items: flex-start;
+  font-weight: bold;
+  text-align: left;
+
+  border: 1px solid var(--darkBlue);
+  box-sizing: border-box;
+  box-shadow: -2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  border-radius: var(--size10);
+
+  margin-left: var(--size10);
+  margin-right: var(--size24);
+  margin-top: var(--size20);
+  width: var(--size192);
+
+  line-height: 2.5;
+  height: var(--size200);
+}
+
+.leftMenu li {
+  list-style-type: none;
+}
+
+.menuItem {
+  text-decoration: none;
+  color: #3473a8;
+  cursor: pointer;
+}
+
+.selectedItem {
+  text-decoration: underline;
+  color: var(--darkBlue);
+  cursor: default;
+}

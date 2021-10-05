@@ -1,0 +1,7 @@
+.externalLink {
+  padding: var(--size4);
+}
+
+.externalLink svg {
+  margin-left: var(--size4);
+}

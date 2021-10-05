@@ -1,3 +1,4 @@
+import ExternalLink from "./external-link/external-link"
 import FormLevelError from "./error-form-level/error-form-level"
 import InfoTooltip from "./info-tooltip/info-tooltip"
 import Layout from "./layout/layout"
@@ -8,12 +9,13 @@ import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
 
 export {
+  ExternalLink,
   FormLevelError,
   InfoTooltip,
   Layout,
   Logo,
+  PrimaryButton,
   PrimaryInput,
   ResponseTextArea,
-  USAStateInput,
-  PrimaryButton
+  USAStateInput
 }
