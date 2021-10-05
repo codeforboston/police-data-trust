@@ -7,7 +7,7 @@ import { DataTable } from "../../shared-components/data-table/data-table"
 type ChartType = "bubble" | "map"
 
 export default requireAuth(function Dashboard() {
-  const [whichChart, setWhichChart] = useState<ChartType>("bubble")
+  const [whichChart, setWhichChart] = useState<ChartType>("map")
 
   const buttonStyle = {
     PointerEvents: "all",
