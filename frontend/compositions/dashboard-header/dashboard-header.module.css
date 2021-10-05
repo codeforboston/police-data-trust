@@ -8,7 +8,7 @@
   grid-template-columns: 1fr 1fr;
   min-width: 100%;
   position: absolute;
-  background-image: url("/BannerMobile.svg");
+  background-color: var(--lightBlue);
   background-repeat: no-repeat;
   background-size: cover;
   height: var(--size80);
@@ -21,73 +21,23 @@
 }
 
 .leftHeader img {
-  margin-top: var(--size16);
-  margin-left: var(--size36);
+  margin: var(--size16) 0 0 var(--size36);
 }
 
 .titleContainer {
   display: none;
 }
 
-.backgroundBanner nav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.backgroundBanner ul {
-  position: absolute;
-  top: 25%;
-  left: 80%;
-  width: var(--size112);
-  height: var(--size128);
-  padding: var(--size12) var(--size40) var(--size16) var(--size12);
-  border-radius: var(--size4);
-  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
-  list-style: none;
-  background-color: var(--darkBlue);
-  transform: rotateX(-90deg) translateX(-50%);
-  transform-origin: top center;
-  opacity: 0.3;
-  visibility: hidden;
-  transition: 280ms all 120ms ease-out;
-}
-
-.backgroundBanner ul li {
-  width: var(--size64);
-  height: var(--size16);
-  margin-bottom: var(--size12);
-}
-
-.backgroundBanner a {
-  color: white;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: var(--size12);
-  line-height: var(--size14);
+.backgroundBanner ul:nth-child(n + 2) {
+  display: none;
 }
 
 .backgroundBanner button:nth-child(n + 2) {
   display: none;
 }
 
-.dropdownTitle {
-  background-color: transparent;
-  border: none;
-  font-family: inherit;
-  margin-top: var(--size16);
-  margin-right: var(--size24);
-  color: var(--darkBlue);
-}
-
 .selected {
   text-decoration: underline;
-}
-
-.dropdownTitle:focus + ul {
-  opacity: 1;
-  transform: rotateX(0) translateX(-50%);
-  visibility: visible;
 }
 
 @media screen and (min-width: 32em) {
@@ -133,42 +83,40 @@
   }
 
   .backgroundBanner nav {
+    display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-start;
   }
 
-  .backgroundBanner .dropdownTitle {
+  .backgroundBanner nav div {
     display: none;
   }
 
-  .backgroundBanner ul {
-    position: relative;
-    top: 28%;
-    left: 10%;
+  .backgroundBanner ul:nth-child(n + 2) {
     display: flex;
     flex-direction: row;
-    width: fit-content;
-    height: fit-content;
-    padding: 0;
-    background-color: transparent;
-    border-radius: none;
-    box-shadow: none;
-    opacity: 1;
-    visibility: visible;
-    transform: rotateX(0) translateX(-50%);
+    justify-content: space-between;
+    list-style: none;
+    margin-top: var(--size48);
   }
 
-  .backgroundBanner ul li {
+  .backgroundBanner a {
+    background-color: transparent;
+    text-decoration: none;
+    color: var(--darkBlue);
+    font-weight: 500;
+  }
+
+  .backgroundBanner li {
     font-style: normal;
     font-weight: 500;
     font-size: var(--size14);
-    height: var(--size24);
+    height: var(--size14);
     text-align: center;
     line-height: var(--size12);
-    padding: var(--size8) var(--size16) var(--size4) var(--size14);
+    padding: var(--size16);
     cursor: pointer;
-    list-style: none;
     white-space: nowrap;
   }
 
@@ -176,20 +124,16 @@
     display: none;
   }
 
-  .backgroundBanner a {
-    color: var(--darkBlue);
-    font-weight: 500;
-  }
-
   .selected {
     text-decoration: none;
-    background-color: white;
-    border-radius: 0.19rem 0.19rem 0rem 0rem;
-    box-shadow: 0rem -0.125rem 0.25rem rgba(48, 52, 99, 0.25);
   }
 
   .selected a {
     font-weight: 700;
+    background-color: white;
+    padding: var(--size6) var(--size14) var(--size4) var(--size14);
+    border-radius: var(--size4) var(--size4) 0 0;
+    box-shadow: 0px -2px 4px rgb(48 52 99 / 25%);
   }
 
   .backgroundBanner button:nth-child(n + 2) {

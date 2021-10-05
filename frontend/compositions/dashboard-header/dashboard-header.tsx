@@ -1,13 +1,15 @@
 import * as React from "react"
+import useDropdownMenu from "react-accessible-dropdown-menu-hook"
 import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
 import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
-import Dropdown from "./dropdown"
+import MobileDropdown from "./mobile-dropdown"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
   const { logout } = useAuth()
 
   return (
@@ -21,11 +23,11 @@ export default function DashboardHeader() {
           </div>
         </div>
         <nav aria-label="Main Navigation">
-          <Dropdown />
+          <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+          <Nav itemProps={itemProps} />
           <PrimaryButton>DONATE</PrimaryButton>
           <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
-
       </div>
     </header>
   )
