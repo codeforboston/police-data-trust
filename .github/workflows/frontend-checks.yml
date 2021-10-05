@@ -9,7 +9,7 @@ on:
       - frontend/**
 
 env:
-  NODE_VERSION: 14.x
+  NODE_VERSION: 16.x
 
 jobs:
   build:
@@ -54,6 +54,6 @@ jobs:
         if: always()
         run: npm run test
 
-      - name: Types and Production Build
+      - name: Types
         if: always()
-        run: npm run build -- --no-lint
+        run: npm run check-types

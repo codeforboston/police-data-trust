@@ -3,7 +3,7 @@ import * as React from "react"
 import { useTable, usePagination } from "react-table"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-import { mockData, tableColumns } from "../../models/mock-table-data"
+import { mockData, tableColumns } from "../../models/mock-data/mock-table-data"
 import styles from "./data-table.module.css"
 
 export function DataTable() {
@@ -76,7 +76,7 @@ export function DataTable() {
                   const { id } = cell.column
                   if (icons.includes(id)) {
                     return (
-                      <td>
+                      <td key={cell.getCellProps().key}>
                         <FontAwesomeIcon icon={cell.value} />
                       </td>
                     )

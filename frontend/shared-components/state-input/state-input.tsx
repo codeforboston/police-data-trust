@@ -1,34 +1,19 @@
-import React, { ChangeEvent, useEffect, useState } from "react"
-import styles from "./state-input.module.css"
-import { FormLevelError } from "../index"
-import { capitalizeFirstChar } from "../../helpers/syntax-helper"
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import { capitalizeFirstChar } from "../../helpers"
 import { states } from "../../models"
+import { FormLevelError } from "../index"
+import styles from "./state-input.module.css"
 
-interface USAStateInputProps {
-  isSubmitted: boolean
-}
-export default function USAStateInput({ isSubmitted }: USAStateInputProps) {
+export default function USAStateInput() {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
+  const inputName = USAStateInput.inputName
   const { stateSelect, hasError } = styles
   const [inputId, listId, errorId] = ["stateSelectInput", "stateSelectList", "stateSelectError"]
-
-  const [inputValue, setInputValue] = useState("")
-  const [isValid, setIsValid] = useState(checkIsValid(""))
-
-  function checkIsValid(value: string): boolean {
-    const matchingState = !!states.find(({ initials, name }) => {
-      return value.toUpperCase() === initials || capitalizeFirstChar(value) === name
-    })
-    return !isSubmitted || !!matchingState
-  }
-
-  function handleInputChange({ target: { value } }: ChangeEvent<HTMLInputElement>): void {
-    if (isSubmitted) setIsValid(checkIsValid(value))
-    setInputValue(value)
-  }
-
-  useEffect(() => {
-    if (isSubmitted) setIsValid(checkIsValid(inputValue))
-  }, [isSubmitted])
+  const isValid = !errors[inputName]
 
   return (
     <div className={`defaultInputContainer ${!isValid && "hasError"}`}>
@@ -40,7 +25,8 @@ export default function USAStateInput({ isSubmitted }: USAStateInputProps) {
         name={inputId}
         type="text"
         aria-required="true"
-        onChange={handleInputChange}></input>
+        {...register(inputName, { required: true, validate: validateState })}
+      />
       <datalist id={listId}>
         {states.map(({ initials, name }) => (
           <option key={initials} value={initials}>
@@ -48,7 +34,20 @@ export default function USAStateInput({ isSubmitted }: USAStateInputProps) {
           </option>
         ))}
       </datalist>
-      {!isValid && <FormLevelError errorId={errorId} errorMessage="Invalid" />}
+      {!isValid && (
+        <FormLevelError errorId={errorId} errorMessage={errors[inputName].message || "Invalid"} />
+      )}
     </div>
   )
+}
+
+USAStateInput.inputName = "state"
+
+function validateState(value: string) {
+  const valid = !!states.find(
+    ({ initials, name }) => value.toUpperCase() === initials || capitalizeFirstChar(value) === name
+  )
+  if (!valid) {
+    return "Please enter a state like IL or Illinois"
+  }
 }

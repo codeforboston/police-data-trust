@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Saved Searches page correctly 1`] = `
+<div
+  className="wrapper"
+>
+  <div
+    className="header"
+  >
+    <img
+      alt="A blue circular logo design reads 'National Police Data Coalition'"
+      className="logo medium"
+      src="/NPDCLogo.svg"
+    />
+    <button
+      className="primaryButton"
+      style={
+        Object {
+          "backgroundColor": "white",
+          "border": "#303463 thin solid",
+          "color": "#303463",
+          "fontWeight": "bold",
+          "margin": "2rem 2rem 0 0",
+        }
+      }
+    >
+      Donate
+    </button>
+  </div>
+  <div
+    className="content"
+  >
+    <h1
+      className="title"
+    >
+      Data to keep our communities safer
+    </h1>
+    <p
+      className="text"
+    >
+      Police brutality thrives in anonymity.
+    </p>
+    <p
+      className="text"
+    >
+      For too long, records of police violence have been obscure, inacessible, and incomplete.
+    </p>
+    <p
+      className="emphasis"
+    >
+      We're Changing That.
+    </p>
+  </div>
+  <button
+    className="primaryButton"
+    onClick={[Function]}
+    type="submit"
+  >
+    Join Us
+  </button>
+  <a
+    href="#"
+  >
+    Learn More
+  </a>
+</div>
+`;

@@ -1,0 +1,53 @@
+.primaryButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: none;
+  border-radius: var(--size4);
+  background-color: var(--darkBlue);
+  color: white;
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+}
+.primaryButton:focus,
+.primaryButton:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
+}
+
+.spinner {
+  animation: rotate 2s linear infinite;
+  z-index: 2;
+  margin: auto;
+  height: 80%;
+}
+.spinner .path {
+  stroke: white;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
