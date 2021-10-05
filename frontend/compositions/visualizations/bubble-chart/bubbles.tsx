@@ -12,7 +12,7 @@ export function Bubbles(props: { data: DataPoint[] }) {
   }, [data])
 
   return (
-    <svg id="chart-root" viewBox="0 0 1200 700" width="80vw">
+    <svg id="chart-root" viewBox="0 0 1200 700" width="1200" height="700">
       <g></g>
     </svg>
   )
@@ -23,7 +23,10 @@ function joinEnter(enter: JoinSelection) {
 }
 
 function joinUpdate(update: JoinSelection) {
-  return update.call(transitionGroupAttrs).select("circle").call(transitionCircleAttrs)
+  update.call(transitionGroupAttrs)
+  update.select("circle").call(transitionCircleAttrs)
+  update.select("text").call(setTextAttrs)
+  return update
 }
 
 function joinExit(exit: JoinSelection) {
@@ -66,12 +69,17 @@ function setTextAttrs(selection: JoinSelection) {
   selection
     .style("text-align", "center")
     .style("color", "white")
+    .style("width", "fit-content")
+    .style("margin", "auto")
     .style("transform", (d) => `translate(0, ${d.r}px) translate(0, -50%)`)
     .style("opacity", 0)
     .transition()
     .duration(800)
     .delay(200)
-    .style("opacity", 1)
+    .style("opacity", function (d) {
+      console.log(this.clientWidth, d.r * 2)
+      return this.clientWidth > d.r * 2? 0 : 1
+    })
 }
 
 function transitionCircleAttrs(selection: JoinSelection) {
