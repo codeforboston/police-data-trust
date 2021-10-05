@@ -5,7 +5,7 @@ import styles from "./dashboard-header.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
-import { useAuth } from "../../helpers"
+import { useAuth } from "../../helpers/auth"
 
 export default function DashboardHeader() {
   const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
