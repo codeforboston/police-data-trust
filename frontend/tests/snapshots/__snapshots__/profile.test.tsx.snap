@@ -31,28 +31,85 @@ exports[`renders Profile Page correctly 1`] = `
         <nav
           aria-label="Main Navigation"
         >
-          <button
-            aria-controls="navMenu"
-            aria-expanded="false"
-            class="dropdownTitle"
-            type="button"
+          <div
+            class="dropdown"
           >
-            <svg
-              aria-hidden="true"
-              class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
-              data-icon="ellipsis-v"
-              data-prefix="fas"
-              focusable="false"
-              role="img"
-              viewBox="0 0 192 512"
-              xmlns="http://www.w3.org/2000/svg"
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              role="button"
+              tabindex="0"
             >
-              <path
-                d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
+                data-icon="ellipsis-v"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                viewBox="0 0 192 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+            <div
+              class="hidden"
+              role="menu"
+            >
+              <ul
+                id="navMenu"
+              >
+                <li
+                  class=""
+                >
+                  <a
+                    href="/search"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Search
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/profile"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Profile
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/logout"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Sign Out
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    DONATE
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
           <ul
             id="navMenu"
           >
@@ -61,6 +118,8 @@ exports[`renders Profile Page correctly 1`] = `
             >
               <a
                 href="/search"
+                role="menuitem"
+                tabindex="-1"
               >
                 Search
               </a>
@@ -70,6 +129,8 @@ exports[`renders Profile Page correctly 1`] = `
             >
               <a
                 href="/profile"
+                role="menuitem"
+                tabindex="-1"
               >
                 Profile
               </a>
@@ -79,6 +140,8 @@ exports[`renders Profile Page correctly 1`] = `
             >
               <a
                 href="/logout"
+                role="menuitem"
+                tabindex="-1"
               >
                 Sign Out
               </a>
@@ -87,7 +150,9 @@ exports[`renders Profile Page correctly 1`] = `
               class=""
             >
               <a
-                href="#"
+                href="/"
+                role="menuitem"
+                tabindex="-1"
               >
                 DONATE
               </a>
