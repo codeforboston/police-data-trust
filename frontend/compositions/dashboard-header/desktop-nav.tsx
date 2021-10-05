@@ -24,6 +24,9 @@ export default function DesktopNav() {
       <li className={setClassName("About")}>
         <a href="#">About</a>
       </li>
+      <li className={setClassName("Logout")}>
+        <a href="/logout">Logout</a>
+      </li>
     </ul>
   )
 }
