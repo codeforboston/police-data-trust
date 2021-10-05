@@ -8,7 +8,10 @@ import { useAuth } from "../../helpers"
 
 export default function Logout() {
   const { leftHeader, mobileLogo, desktopLogo, titleContainer, mobileTitle, desktopTitle } = styles
-
+  const { logout } = useAuth()
+  React.useEffect(() => {
+    logout()
+  }, [])
   return (
     <Layout>
       <section className="enrollmentSection">
