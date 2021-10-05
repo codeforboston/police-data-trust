@@ -2,11 +2,11 @@ import * as React from "react"
 import styles from "./view-info.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEdit } from "@fortawesome/free-solid-svg-icons"
-import { requireAuth, useAuth } from "../../helpers"
+import { useAuth } from "../../helpers"
 import EditProfileInfo from "../profile-edit"
 import { publicUser } from "../../models/profile"
 
-export default requireAuth(function ProfileInfo() {
+export default function ProfileInfo() {
   const [editMode, setEditMode] = React.useState(false)
 
   const { profileData, sectionTitle } = styles
@@ -52,7 +52,7 @@ export default requireAuth(function ProfileInfo() {
       </div>
     )
   }
-})
+}
 
 // format as (999) 999-9999
 function formatPhoneNumber(rawPhoneNumber: string) {

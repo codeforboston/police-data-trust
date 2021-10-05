@@ -1,10 +1,10 @@
 import * as React from "react"
 import Link from "next/link"
 import { profileTypeContent, publicUser, UserDataType } from "../../models/profile"
-import { useAuth, requireAuth } from "../../helpers"
+import { useAuth } from "../../helpers"
 import styles from "./profile-type.module.css"
 
-export default requireAuth(function ProfileType() {
+export default function ProfileType() {
   const { user } = useAuth()
   const userData = publicUser(user)
   const { title, content, linkText, linkPath } = profileTypeContent[userData.role]
@@ -21,7 +21,7 @@ export default requireAuth(function ProfileType() {
       </div>
     </div>
   )
-})
+}
 
 // can be whoever
 export function MockProfileType({ role }: UserDataType) {
