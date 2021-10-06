@@ -1,0 +1,62 @@
+.profileData {
+  padding: var(--size12);
+  max-width: var(--size512);
+}
+
+.sectionTitle {
+  font-size: var(--size24);
+  font-weight: bold;
+  color: var(--darkBlue);
+  margin-bottom: var(--size16);
+}
+
+/* Edit Mode */
+
+.profileForm {
+  display: flex;
+  flex-direction: column;
+}
+
+/* copied from "viewer-registration.module.css" */
+.inputLine {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+@media screen and (max-width: 32em) {
+  .inputLine {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.formControls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.formControls button {
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: none;
+  border-radius: var(--size4);
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+}
+.formControls button:focus,
+.formControls button:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
+}
+
+.submitButton {
+  background-color: var(--darkBlue);
+  color: white;
+}
+
+.cancelButton {
+  background-color: var(--lightBlue);
+  color: var(--darkBlue);
+}

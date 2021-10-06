@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { ProfileType } from "."
+import ProfileType from "."
 import users from "../../models/mock-data/users.json"
 
 export default {
