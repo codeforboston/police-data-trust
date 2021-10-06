@@ -7,7 +7,7 @@ import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
 
 export default function Logout() {
-  const { leftHeader, mobileLogo, desktopLogo, titleContainer, mobileTitle, desktopTitle } = styles
+  const { leftHeader, titleContainer, mobileTitle, desktopTitle } = styles
   const { logout } = useAuth()
   React.useEffect(() => {
     logout()
@@ -16,12 +16,7 @@ export default function Logout() {
     <Layout>
       <section className="enrollmentSection">
         <div className={leftHeader}>
-          <div className={mobileLogo}>
-            <NPDCLogo size={LogoSizes.SMALL} />
-          </div>
-          <div className={desktopLogo}>
-            <NPDCLogo size={LogoSizes.MEDIUM} />
-          </div>
+          <NPDCLogo size={LogoSizes.MEDIUM} />
           <div className={titleContainer}>
             <h2 className={mobileTitle}>N.P.D.C.</h2>
             <h2 className={desktopTitle}>National Police Data Coalition</h2>
