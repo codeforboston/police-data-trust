@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import UserLogin from "."
+import UserLogin from "../pages/login"
 
 export default {
   title: "Pages/Login",

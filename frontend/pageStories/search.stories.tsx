@@ -1,5 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import Dashboard from "."
+import Dashboard from "../pages/search"
 
 export default {
   title: "Pages/Dashboard",

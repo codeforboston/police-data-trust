@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build --no-lint && next export",
+    "build": "next build && next export",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
