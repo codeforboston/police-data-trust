@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import Passport from "../pages/passport"
+import Passport from "."
 
 export default {
   title: "Pages/Passport Registration",
