@@ -1,8 +1,4 @@
-from flask import abort
 from flask import Blueprint
-from flask import current_app
-
-from flask_pydantic import validate
 
 
 bp = Blueprint("healthcheck", __name__,)
