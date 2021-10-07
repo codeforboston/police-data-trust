@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build:development": "env-cmd -f .env.development next build && next export",
+    "build:staging": "env-cmd -f .env.staging next build && next export",
+    "build:production": "env-cmd -f .env.production next build && next export",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",

@@ -153,8 +153,7 @@ prompt-toolkit==3.0.18
     # via click-repl
 psutil==5.8.0
     # via mirakuru
-psycopg2==2.8.6
-    # via -r requirements/prod.in
+psycopg2-binary==2.8.6
 py==1.10.0
     # via pytest
 pycodestyle==2.7.0
