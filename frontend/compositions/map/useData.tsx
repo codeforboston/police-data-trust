@@ -1,6 +1,5 @@
 import { Feature } from "geojson"
 import { useMemo, useState } from "react"
-import uscities from "./uscities.json"
 
 export interface GeoJson {
   type: string
@@ -20,7 +19,7 @@ export interface Data {
 
 export default function useData(): Data {
   // using temp dummy data set
-  const data: GeoJson = uscities as GeoJson
+  const data: GeoJson = { type: "fake", features: [] }
 
   const [filterProperties, setFilterProperties] = useState<Filter>({
     property: "state_name",
