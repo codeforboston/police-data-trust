@@ -9,11 +9,12 @@ if os.environ.get("FLASK_ENV") != "production":
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(32))
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(64))
-    JWT_TOKEN_LOCATION = os.environ.get("JWT_TOKEN_LOCATION", [
-        "headers",
-        "cookies"
-    ])
-    TOKEN_EXPIRATION_MINUTES = int(os.environ.get("TOKEN_EXPIRATION_MINUTES", 30))
+    JWT_TOKEN_LOCATION = os.environ.get(
+        "JWT_TOKEN_LOCATION", ["headers", "cookies"]
+    )
+    TOKEN_EXPIRATION_MINUTES = int(
+        os.environ.get("TOKEN_EXPIRATION_MINUTES", 30)
+    )
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")

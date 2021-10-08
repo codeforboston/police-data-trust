@@ -17,7 +17,10 @@ def refresh_token(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=current_app.config["TOKEN_EXPIRATION_MINUTES"]))
+        target_timestamp = datetime.timestamp(
+            now
+            + timedelta(minutes=current_app.config["TOKEN_EXPIRATION_MINUTES"])
+        )
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
