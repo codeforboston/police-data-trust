@@ -8,6 +8,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     set_access_cookies,
 )
+from flask import current_app
 
 user_manager = UserManager(SQLAlchemyAdapter(db, User))
 
@@ -15,9 +16,8 @@ user_manager = UserManager(SQLAlchemyAdapter(db, User))
 def refresh_token(response):
     try:
         exp_timestamp = get_jwt()["exp"]
-        print("exp timestamp", exp_timestamp)
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=current_app.config["TOKEN_EXPIRATION_MINUTES"]))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
