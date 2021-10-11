@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run build
+      - uses: ./.github/actions/setup-frontend
+      - run: npm run build
         working-directory: frontend
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
