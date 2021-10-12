@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Deploy Mock Frontend
-        uses: alexjball/action-hosting-deploy@workflow_run
+        uses: alexjball/action-hosting-deploy@v1
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_DEV_SERVICE_ACCOUNT }}"

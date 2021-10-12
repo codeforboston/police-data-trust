@@ -10,7 +10,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: npm ci && npm run build:ui
+      - uses: ./.github/actions/setup-frontend
+      - run: npm run build:ui
         working-directory: frontend
       - name: Export Mock Frontend
         uses: actions/upload-artifact@v2
