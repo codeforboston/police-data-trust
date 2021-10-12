@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build --no-lint && next export",
+    "build": "next build && next export",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
@@ -18,6 +18,10 @@
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   },
   "dependencies": {
     "axios": "^0.21.1",

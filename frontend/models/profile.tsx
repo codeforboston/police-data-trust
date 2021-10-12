@@ -1,4 +1,5 @@
 // User Profile models
+import { User } from "../helpers/api"
 
 export enum ProfileMenu {
   USER_INFO = "info",
@@ -51,7 +52,6 @@ export enum UserRoles {
 
 // User Information
 export interface UserDataType {
-  id: number
   active: boolean
   firstName: string
   lastName: string
@@ -61,7 +61,6 @@ export interface UserDataType {
 }
 
 export const emptyUser: UserDataType = {
-  id: 0,
   active: false,
   firstName: "",
   lastName: "",
@@ -69,6 +68,51 @@ export const emptyUser: UserDataType = {
   phone: "",
   role: 0
 }
+
+export const publicUser = (user: User): UserDataType => ({
+  firstName: user.firstName || "",
+  lastName: user.lastName || "",
+  email: user.email,
+  phone: fakePhoneNumber,
+  active: user.active,
+  role: UserRoles.PUBLIC
+})
+
+export const passportUser = (user: User): UserDataType => ({
+  firstName: user.firstName || "",
+  lastName: user.lastName || "",
+  email: user.email,
+  phone: fakePhoneNumber,
+  active: user.active,
+  role: UserRoles.PASSPORT
+})
+
+export const contributorUser = (user: User): UserDataType => ({
+  firstName: user.firstName || "",
+  lastName: user.lastName || "",
+  email: user.email,
+  phone: fakePhoneNumber,
+  active: user.active,
+  role: UserRoles.CONTRIBUTOR
+})
+
+export const adminUser = (user: User): UserDataType => ({
+  firstName: user.firstName || "",
+  lastName: user.lastName || "",
+  email: user.email,
+  phone: fakePhoneNumber,
+  active: user.active,
+  role: UserRoles.ADMIN
+})
+
+export const someUser = (user: User, role: UserRoles): UserDataType => ({
+  firstName: user.firstName || "",
+  lastName: user.lastName || "",
+  email: user.email,
+  phone: fakePhoneNumber,
+  active: user.active,
+  role: role
+})
 
 // Account Type
 interface ProfileTypeText {
@@ -108,3 +152,6 @@ export const profileTypeContent: { [key in UserRoles]: ProfileTypeText } = {
     content: ""
   }
 }
+
+// not currently part of API data
+export const fakePhoneNumber = "9995550123"
