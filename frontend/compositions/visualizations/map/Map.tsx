@@ -1,17 +1,29 @@
-import * as d3 from "d3"
+import {
+  D3ZoomEvent,
+  extent,
+  pointer,
+  scaleLinear,
+  select,
+  Selection,
+  zoom,
+  zoomIdentity,
+  ZoomTransform
+} from "d3"
+import { geoAlbersUsa, geoPath } from "d3-geo"
 import { Feature, Point } from "geojson"
 import { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
 import BaseMap from "./BaseMap"
+import styles from "./map.module.css"
+import MapKey from "./mapKey"
 import { MarkerDescription, MarkerLayer } from "./marker-layer"
 import useData from "./useData"
-import styles from "./map.module.css"
 
 export type Pair<T> = [T, T]
 export type PointCoord = Pair<number>
 export type BoundingType = [PointCoord, PointCoord]
-export type D3CallableSelectionType = d3.Selection<Element, unknown, any, any>
-export type D3ZoomEventType = d3.D3ZoomEvent<Element, any>
+export type D3CallableSelectionType = Selection<Element, unknown, any, any>
+export type D3ZoomEventType = D3ZoomEvent<Element, any>
 
 export default function Map() {
   const data = useData()
@@ -22,23 +34,23 @@ export default function Map() {
   const [focusedState, setFocusedState] = useState<D3CallableSelectionType | null>(null)
 
   useEffect(() => {
-    const path = d3.geoPath(projection)
+    const path = geoPath(projection)
 
-    const svgElement = d3.select("#map-svg") as D3CallableSelectionType
-    const gZoomable = d3.select("#zoom-container") as D3CallableSelectionType
+    const svgElement = select("#map-svg") as D3CallableSelectionType
+    const gZoomable = select("#zoom-container") as D3CallableSelectionType
 
     function zoomed(event: D3ZoomEventType) {
       const { transform } = event
       moveMap(transform, false)
     }
 
-    const zoom = d3.zoom().on("zoom", zoomed)
-    svgElement.call(zoom)
+    const zoomZoom = zoom().on("zoom", zoomed)
+    svgElement.call(zoomZoom)
 
-    const zoomResetButton = d3.select("#zoom-reset")
+    const zoomResetButton = select("#zoom-reset")
 
     const resetZoom = () => {
-      const transform = d3.zoomIdentity
+      const transform = zoomIdentity
       moveMap(transform)
       setFocusedState(null)
 
@@ -48,7 +60,7 @@ export default function Map() {
 
     zoomResetButton.on("click", resetZoom)
 
-    function moveMap(transform: d3.ZoomTransform, transition = true, pointer?: PointCoord) {
+    function moveMap(transform: ZoomTransform, transition = true, pointer?: PointCoord) {
       const transformStr = transform.toString()
       if (transformStr.includes("NaN")) return
       const mover = transition ? gZoomable.transition().duration(500) : gZoomable
@@ -62,8 +74,8 @@ export default function Map() {
 
       if (target.classList.contains("state")) {
         const clickTransform = calcFitFeatureToWindow(width, height, d)
-        const pointer = d3.pointer(event, gZoomable.node())
-        moveMap(clickTransform || d3.zoomIdentity, true, pointer)
+        const d3Pointer = pointer(event, gZoomable.node())
+        moveMap(clickTransform || zoomIdentity, true, d3Pointer)
         setFocusedState(d.properties.name)
 
         data.filter.value = d.properties.name
@@ -75,7 +87,7 @@ export default function Map() {
 
     function calcFitFeatureToWindow(width: number, height: number, d: Feature): d3.ZoomTransform {
       const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
-      return d3.zoomIdentity
+      return zoomIdentity
         .translate(width / 2, height / 2)
         .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
@@ -83,22 +95,22 @@ export default function Map() {
 
     return () => {
       zoomResetButton.on(".click", resetZoom)
-      zoom.on(".zoom", zoomed)
+      zoomZoom.on(".zoom", zoomed)
       svgElement.on(".click", onMapClick)
     }
   }, [width, height])
 
-  const projection = d3
-    .geoAlbersUsa()
+  const projection = geoAlbersUsa()
     .scale(1300)
     .translate([487.5 + 112, 305 + 50])
 
   useEffect(() => {
     if (!data) return
 
-    const populationScale = d3
-      .scaleLinear()
-      .domain(d3.extent(data.features, (d) => d.properties.population))
+    const populationScale = scaleLinear()
+      .domain(
+        extent(data.features as Feature[], (features: Feature) => features.properties.population)
+      )
       .range([1, 25])
 
     const getMarkerParamsFromFeature = (d: Feature) => {
@@ -110,7 +122,7 @@ export default function Map() {
       return markerParams
     }
 
-    setMarkerParams(data.features.map((feature) => getMarkerParamsFromFeature(feature)))
+    setMarkerParams(data.features.map((feature: Feature) => getMarkerParamsFromFeature(feature)))
   }, [data])
 
   return (
@@ -129,6 +141,7 @@ export default function Map() {
           Reset Zoom
         </button>
       </div>
+      <MapKey title={"map-key"} />
     </div>
   )
 }
