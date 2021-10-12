@@ -17,6 +17,6 @@
     "strict": false,
     "sourceMap": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "compositions/visualizations/bubble-chart/BubbleCharttsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
