@@ -1,9 +1,18 @@
 import { useEffect } from "react"
 
-let apiMode = process.env.NEXT_PUBLIC_API_MODE
-if (!apiMode) {
-  apiMode = process.env.NODE_ENV === "development" ? "mock" : "real"
-}
+export const apiMode = (() => {
+  const apiMode = process.env.NEXT_PUBLIC_API_MODE
+  switch (apiMode) {
+    case "real":
+      return "real"
+    case "mock":
+      return "mock"
+    case undefined:
+      return process.env.NODE_ENV === "development" ? "mock" : "real"
+    default:
+      throw Error("Invalid api mode " + apiMode)
+  }
+})()
 
 export function useMockServiceWorker() {
   useEffect(() => {

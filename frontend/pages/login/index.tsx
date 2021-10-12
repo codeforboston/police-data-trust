@@ -2,11 +2,15 @@ import React, { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { EnrollmentCallToAction, EnrollmentHeader } from "../../compositions"
 import { useAuth, useRedirectOnAuth } from "../../helpers"
+import { apiMode } from "../../helpers/api"
 import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
 import { FormLevelError, Layout, PrimaryButton, PrimaryInput } from "../../shared-components"
 import sharedStyles from "../../styles/shared.module.css"
 
 const { EMAIL_ADDRESS, LOGIN_PASSWORD } = PrimaryInputNames
+
+const defaultEmail = apiMode === "mock" ? "test@example.com" : undefined
+const defaultPassword = apiMode === "mock" ? "password" : undefined
 
 export default function UserLogin() {
   useRedirectOnAuth(AppRoutes.DASHBOARD)
@@ -40,8 +44,8 @@ export default function UserLogin() {
         <EnrollmentHeader headerText="Login" />
         <FormProvider {...form}>
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
-            <PrimaryInput inputName={EMAIL_ADDRESS} />
-            <PrimaryInput inputName={LOGIN_PASSWORD} />
+            <PrimaryInput inputName={EMAIL_ADDRESS} defaultValue={defaultEmail} />
+            <PrimaryInput inputName={LOGIN_PASSWORD} defaultValue={defaultPassword} />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <PrimaryButton loading={loading} type="submit">
               Submit
