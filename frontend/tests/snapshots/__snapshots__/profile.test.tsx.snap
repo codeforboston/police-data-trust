@@ -239,7 +239,7 @@ exports[`renders Profile Page correctly 1`] = `
             <div
               class="dataField"
             >
-              Bob
+              FirstTest
             </div>
           </div>
           <div
@@ -253,7 +253,7 @@ exports[`renders Profile Page correctly 1`] = `
             <div
               class="dataField"
             >
-              Boberton
+              LastTest
             </div>
           </div>
           <div
@@ -270,7 +270,7 @@ exports[`renders Profile Page correctly 1`] = `
             <div
               class="dataField"
             >
-              bob1@email.com
+              testemail@example.com
             </div>
           </div>
           <div
@@ -284,7 +284,7 @@ exports[`renders Profile Page correctly 1`] = `
             <div
               class="dataField"
             >
-              (999) 555-9999
+              (999) 555-0123
             </div>
           </div>
         </main>
