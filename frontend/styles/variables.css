@@ -4,6 +4,7 @@
   --grey: #666666;
   --red: #bf1212;
   --linkBlue: #0645ad;
+  --white: #ffffff;
 
   --insetShadow: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.5);
 
@@ -27,6 +28,7 @@
   --size40: 2.5rem;
   --size44: 2.75rem;
   --size48: 3rem;
+  --size52: 3.25rem;
   --size56: 3.5rem;
   --size64: 4rem;
   --size72: 4.5rem;

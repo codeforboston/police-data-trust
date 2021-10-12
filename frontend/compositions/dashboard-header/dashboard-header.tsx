@@ -1,14 +1,15 @@
 import * as React from "react"
+import useDropdownMenu from "react-accessible-dropdown-menu-hook"
 import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
 import { LogoSizes } from "../../models"
 import { useAuth } from "../../helpers"
+import MobileDropdown from "./mobile-dropdown"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
   const { logout } = useAuth()
 
   return (
@@ -21,16 +22,9 @@ export default function DashboardHeader() {
             <p>The national index of police incidents</p>
           </div>
         </div>
-
         <nav aria-label="Main Navigation">
-          <button
-            type="button"
-            className={dropdownTitle}
-            aria-expanded="false"
-            aria-controls="navMenu">
-            <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
-          </button>
-          <Nav />
+          <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+          <Nav itemProps={itemProps} />
           <PrimaryButton>DONATE</PrimaryButton>
           <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
