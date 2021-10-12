@@ -50,6 +50,7 @@ exports[`renders Passport correctly 1`] = `
               id="streetAddressInput"
               name="streetAddress"
               type="text"
+              value=""
             />
           </div>
           <div
@@ -68,6 +69,7 @@ exports[`renders Passport correctly 1`] = `
               id="cityOrTownInput"
               name="cityOrTown"
               type="text"
+              value=""
             />
           </div>
           <div
@@ -377,6 +379,7 @@ exports[`renders Passport correctly 1`] = `
               id="zipCodeInput"
               name="zipCode"
               type="number"
+              value=""
             />
           </div>
         </fieldset>

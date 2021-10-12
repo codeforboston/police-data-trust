@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import { ProfileInfo } from "."
+import ProfileInfo from "."
 import users from "../../models/mock-data/users.json"
 
 export default {

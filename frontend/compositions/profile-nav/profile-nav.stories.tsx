@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import ProfileNav from "./profile-nav"
+import ProfileNav from "."
 
 export default {
   title: "Compositions/Profile Nav",

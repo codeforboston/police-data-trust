@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import ViewerRegistration from "."
+import ViewerRegistration from "../pages/register"
 
 export default {
   title: "Pages/Registration",
