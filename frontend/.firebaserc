@@ -1,7 +1,5 @@
 {
   "projects": {
-    "default": "aball-pdt",
-    "aball": "aball-pdt"
-  },
-  "targets": {}
+    "default": "police-data-trust-dev"
+  }
 }

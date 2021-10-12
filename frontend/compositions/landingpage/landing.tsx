@@ -22,7 +22,7 @@ export default function LandingPage() {
         </button>
       </div>
       <div className={styles.content}>
-        <h1 className={styles.title}>Test Data to keep our communities safer</h1>
+        <h1 className={styles.title}>Data to keep our communities safer</h1>
         <p className={styles.text}>Police brutality thrives in anonymity.</p>
         <p className={styles.text}>
           For too long, records of police violence have been obscure, inacessible, and incomplete.
