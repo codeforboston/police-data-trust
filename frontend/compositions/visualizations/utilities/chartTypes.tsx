@@ -68,7 +68,7 @@ export interface GradientKeyItemProps {
   colorTheme: ColorTheme
   colorScale: ColorScale
   range: Range
-  symbol: "circle" | "square",
+  symbol: "circle" | "square"
   title?: string
 }
 

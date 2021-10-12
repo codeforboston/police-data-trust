@@ -3,7 +3,7 @@ import { ChartKey, GradientKeyItem, scaleDataToColorTheme } from "../chart-key"
 import { lightDarkBlueTheme } from "../utilities"
 import { Pair } from "../utilities/chartTypes"
 
-export default function BubbleKey(props: { dataMaxMin: Pair<number>, title: string }) {
+export default function BubbleKey(props: { dataMaxMin: Pair<number>; title: string }) {
   const { dataMaxMin, title } = props
   const colorScale = scaleDataToColorTheme(0, 1000)
 

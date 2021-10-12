@@ -10,7 +10,6 @@ export function steppedGradient(
   colorTheme: ColorTheme,
   colorScale: ColorScale
 ): string[] {
-
   const colorSteps: string[] = []
   if (typeof dataSteps === "number") {
     for (let i = 0; i <= dataSteps; i++) {

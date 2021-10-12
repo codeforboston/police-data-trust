@@ -22,8 +22,8 @@ export function packPop(data: PackableObj): HierarchyCircularNode<PackableObj> {
     .size([1000 - 2, 500 - 2])
     .padding(10)(
     hierarchy(data)
-    .sum((d) => d.density)
-    .sort((a, b) => a.value - b.value)
+      .sum((d) => d.density)
+      .sort((a, b) => a.value - b.value)
   )
 }
 

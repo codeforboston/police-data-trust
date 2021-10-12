@@ -20,11 +20,6 @@ export {
   primaryInputValidation,
   states,
   tooltipContent,
-  TooltipTypes,
+  TooltipTypes
 }
-export type {
-  GeoJson,
-  Filter,
-  Data,
-  CityProperties
-}
+export type { GeoJson, Filter, Data, CityProperties }

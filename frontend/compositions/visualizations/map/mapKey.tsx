@@ -2,9 +2,9 @@ import React from "react"
 import { lightBlueGrey, lightDarkBlueTheme } from "../utilities"
 import { ChartKey, GradientKeyItem, scaleDataToColorTheme, SymbolKeyItem } from "../chart-key"
 
-export default function MapKey(props: {title: string}) {
+export default function MapKey(props: { title: string }) {
   const colorScale = scaleDataToColorTheme(0, 1000)
-  const {title} = props
+  const { title } = props
   const chartKeyElements: JSX.Element[] = [
     <SymbolKeyItem
       label="Data Rich Cities"
@@ -32,7 +32,7 @@ export default function MapKey(props: {title: string}) {
       highLabel="More Data"
     />,
     <GradientKeyItem
-    key={title}
+      key={title}
       symbol="circle"
       colorTheme={lightBlueGrey}
       colorScale={colorScale}
@@ -42,7 +42,9 @@ export default function MapKey(props: {title: string}) {
     />
   ]
 
-  return <div style={{position: "absolute", right: 0, bottom: 0}}>
-    <ChartKey title={title} entries={chartKeyElements} position={"none"} />
-  </div>
+  return (
+    <div style={{ position: "absolute", right: 0, bottom: 0 }}>
+      <ChartKey title={title} entries={chartKeyElements} position={"none"} />
+    </div>
+  )
 }

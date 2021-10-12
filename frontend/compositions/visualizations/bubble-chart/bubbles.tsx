@@ -78,7 +78,7 @@ function setTextAttrs(selection: JoinSelection) {
     .delay(200)
     .style("opacity", function (d) {
       console.log(this.clientWidth, d.r * 2)
-      return this.clientWidth > d.r * 2? 0 : 1
+      return this.clientWidth > d.r * 2 ? 0 : 1
     })
 }
 

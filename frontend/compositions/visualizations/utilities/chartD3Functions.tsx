@@ -1,5 +1,5 @@
-import { select } from "d3";
-import { DataPoint } from "./chartTypes";
+import { select } from "d3"
+import { DataPoint } from "./chartTypes"
 
 export function addLabel(d: DataPoint, i: number) {
   return select("#chart-root g")

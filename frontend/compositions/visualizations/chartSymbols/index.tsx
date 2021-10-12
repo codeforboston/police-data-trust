@@ -1,7 +1,4 @@
-import  Square  from "./squareSymbol"
-import  Circle  from "./circleSymbol"
+import Square from "./squareSymbol"
+import Circle from "./circleSymbol"
 
-export {
-    Square,
-    Circle
-}
+export { Square, Circle }

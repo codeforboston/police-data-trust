@@ -7,7 +7,7 @@ import {
   Selection,
   zoom,
   zoomIdentity,
-  ZoomTransform,
+  ZoomTransform
 } from "d3"
 import { geoAlbersUsa, geoPath } from "d3-geo"
 import { Feature, Point } from "geojson"
@@ -108,7 +108,9 @@ export default function Map() {
     if (!data) return
 
     const populationScale = scaleLinear()
-      .domain(extent((data.features as Feature[]), (features: Feature) => features.properties.population))
+      .domain(
+        extent(data.features as Feature[], (features: Feature) => features.properties.population)
+      )
       .range([1, 25])
 
     const getMarkerParamsFromFeature = (d: Feature) => {
@@ -139,7 +141,7 @@ export default function Map() {
           Reset Zoom
         </button>
       </div>
-      <MapKey title={"map-key"}/>
+      <MapKey title={"map-key"} />
     </div>
   )
 }
