@@ -1,2 +1,2 @@
 export * from "./api"
-export { useMockServiceWorker } from "./mocks/browser.setup"
+export { useMockServiceWorker, apiMode } from "./mocks/browser.setup"

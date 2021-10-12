@@ -6,7 +6,14 @@ import {
   RegistrationResponse
 } from "./enrollment-response/enrollment-response"
 import PasswordAid from "./password-aid/password-aid"
-import Map from "./map"
+import { Map, BubbleChart } from "./visualizations"
+import ProfileNav from "./profile-nav"
+import ProfileInfo from "./profile-info"
+import ProfileType from "./profile-type"
+import EditProfileInfo from "./profile-edit"
+import SavedResults from "./profile-saved-tables/saved-results"
+import SavedSearches from "./profile-saved-tables/saved-searches"
+import LandingPage from "./landingpage/landing"
 
 export {
   DashboardHeader,
@@ -15,5 +22,13 @@ export {
   PassportApplicationResponse,
   PasswordAid,
   RegistrationResponse,
-  Map
+  Map,
+  BubbleChart,
+  ProfileNav,
+  ProfileInfo,
+  EditProfileInfo,
+  ProfileType,
+  SavedResults,
+  SavedSearches,
+  LandingPage
 }
