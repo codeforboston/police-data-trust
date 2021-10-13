@@ -4,14 +4,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as topojson from "topojson-client"
 import { simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
-import { PointCoord } from "./Map"
+import { PointCoord } from "../utilities/chartTypes"
 import styles from "./map.module.css"
 
-type StateID = number
+type StateID = string
 
 type FakeData = {
-  UID: string
-  location: PointCoord | string | StateID
+  UID: number
+  location: PointCoord | StateID
   value: number
 }
 export interface BaseMapProps {
@@ -22,28 +22,53 @@ export interface BaseMapProps {
 export const getFakeData = () => {
   let data: FakeData[] = [
     {
-      UID: "01",
-      location: 4,
+      UID: 1,
+      location: "04",
       value: 10
     },
     {
-      UID: "02",
-      location: 5,
+      UID: 2,
+      location: "05",
       value: 30
     },
     {
-      UID: "03",
-      location: 6,
+      UID: 3,
+      location: "06",
       value: 100
     },
     {
-      UID: "04",
-      location: 7,
+      UID: 4,
+      location: "09",
       value: 70
     },
     {
-      UID: "05",
-      location: 8,
+      UID: 5,
+      location: "10",
+      value: 20
+    },
+        {
+      UID: 6,
+      location: "11",
+      value: 10
+    },
+    {
+      UID: 7,
+      location: "12",
+      value: 30
+    },
+    {
+      UID: 8,
+      location: "13",
+      value: 100
+    },
+    {
+      UID: 9,
+      location: "14",
+      value: 70
+    },
+    {
+      UID: 10,
+      location: "15",
       value: 20
     }
   ]
@@ -54,7 +79,9 @@ export default function BaseMap(props: BaseMapProps) {
   const baseMapRef = useRef(null)
   const { projection, data } = props
   const link: string = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
-  const dataPromise = fetch(link)
+  const stateOnlyLink = "https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/states-10m.json"
+
+  const dataPromise = fetch(stateOnlyLink)
 
   const path = d3.geoPath().projection(projection)
 
@@ -79,8 +106,11 @@ export default function BaseMap(props: BaseMapProps) {
           .attr("id", (d) => d.properties.name)
           .classed("state", true)
           .attr("d", path)
-          .attr("fill-opacity", (d) => opacityScale(Number(d.id)))
-      })
+          .attr("fill-opacity", (d) => {
+            const datum = data.find((i) => d.id === i.location)
+            return datum ? opacityScale(Number(datum.value)) : 0.05
+          })
+      })  
   }, [data, dataPromise, opacityScale, path])
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>

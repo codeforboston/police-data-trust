@@ -1,4 +1,4 @@
-import { BaseType, ScaleLinear, Selection, Transition } from "d3"
+import { BaseType, D3ZoomEvent, ScaleLinear, Selection, Transition } from "d3"
 import { CityProperties } from "../../../models/visualizations"
 
 export interface Coord {
@@ -6,6 +6,11 @@ export interface Coord {
   y: number
 }
 export type Pair<T> = [T, T]
+export type PointCoord = Pair<number>
+export type BoundingType = [PointCoord, PointCoord]
+export type D3CallableSelectionType = Selection<Element, unknown, any, any>
+export type D3ZoomEventType = D3ZoomEvent<Element, any>
+
 export type Path = string
 
 export type Range = Pair<number>
