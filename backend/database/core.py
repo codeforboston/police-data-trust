@@ -4,18 +4,17 @@ setting up and tearing down the database.
 Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
-from typing import Optional
+from typing import Optional, Any
 import os
 
 import pandas as pd
 import click
 
 from flask import current_app
+from flask import abort
 from flask.cli import AppGroup
 from flask.cli import with_appcontext
 from werkzeug.utils import secure_filename
-
-from flask_migrate import Migrate
 
 from sqlalchemy.exc import ResourceClosedError
 from flask_sqlalchemy import SQLAlchemy
@@ -28,7 +27,31 @@ from ..config import TestingConfig
 from ..utils import dev_only
 
 db = SQLAlchemy()
-migrate = Migrate(db=db)
+
+
+class CrudMixin:
+    """Mix me into a database model whose CRUD operations you want to expose in
+    a convenient manner.
+    """
+
+    def create(self, refresh: bool = True):
+        db.session.add(self)
+        db.session.commit()
+        if refresh:
+            db.session.refresh(self)
+        return self
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def get(cls, id: Any, abort_if_null: bool = True):
+        obj = db.session.query(cls).get(id)
+        if obj is None and abort_if_null:
+            abort(404)
+        return obj
+
 
 QUERIES_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "queries")
@@ -59,13 +82,15 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
 @click.pass_context
 def db_cli(ctx: click.Context):
     """Collection of database commands."""
-    ctx.obj = connect(
+    conn = connect(
         user=current_app.config["POSTGRES_USER"],
         password=current_app.config["POSTGRES_PASSWORD"],
         host=current_app.config["POSTGRES_HOST"],
         port=current_app.config["POSTGRES_PORT"],
         dbname="postgres",
     )
+    conn.autocommit = True
+    ctx.obj = conn
 
 
 pass_psql_admin_connection = click.make_pass_decorator(connection)
@@ -88,7 +113,6 @@ def create_database(
     """Create the database from nothing."""
     database = current_app.config["POSTGRES_DB"]
     cursor = conn.cursor()
-    cursor.execute("ROLLBACK")
 
     if overwrite:
         cursor.execute(
@@ -102,7 +126,6 @@ def create_database(
         cursor.execute(f"CREATE DATABASE {database};")
     except psycopg2.errors.lookup("42P04"):
         click.echo(f"Database {database!r} already exists.")
-        cursor.execute("ROLLBACK")
     else:
         click.echo(f"Created database {database!r}.")
 
@@ -143,7 +166,6 @@ def delete_database(conn: connection, test_db: bool):
         database = current_app.config["POSTGRES_DB"]
 
     cursor = conn.cursor()
-    cursor.execute("ROLLBACK")
 
     # Don't validate name for `police_data_test`.
     if database != TestingConfig.POSTGRES_DB:
@@ -165,6 +187,5 @@ def delete_database(conn: connection, test_db: bool):
         cursor.execute(f"DROP DATABASE {database};")
     except psycopg2.errors.lookup("3D000"):
         click.echo(f"Database {database!r} does not exist.")
-        cursor.execute("ROLLBACK")
     else:
         click.echo(f"Database {database!r} was deleted.")

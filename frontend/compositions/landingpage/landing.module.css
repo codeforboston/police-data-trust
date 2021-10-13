@@ -1,0 +1,30 @@
+.wrapper {
+  text-align: center;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.content {
+  margin: 0 auto 2rem auto;
+  width: var(--size512);
+}
+.content > * {
+  text-align: left;
+  margin: var(--size20) 0;
+}
+.text {
+  font-size: var(--size18);
+  color: black;
+}
+.title {
+  font-size: var(--size56);
+  color: var(--darkBlue);
+  font-weight: bold;
+}
+.content .emphasis {
+  font-size: var(--size24);
+  color: var(--darkBlue);
+  font-weight: bold;
+  font-style: italic;
+}

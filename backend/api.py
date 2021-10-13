@@ -2,16 +2,14 @@ from typing import Optional
 
 import click
 from flask import Flask
-from flask import redirect
-from flask import request
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import logout_user
-
+from flask.testing import FlaskClient
+from flask_cors import CORS
 from .config import get_config_from_env
-from .database import db, db_cli, migrate
-from .database.models.users import Users, login_manager, user_manager
-from .routes.incidents import incident_routes
+from .database import db
+from .database import db_cli
+from .auth import user_manager, jwt
+from .routes.incidents import bp as incidents_bp
+from .routes.auth import bp as auth_bp
 from .utils import dev_only
 
 
@@ -27,14 +25,18 @@ def create_app(config: Optional[str] = None):
         register_routes(app)
         register_misc(app)
 
+    # @app.before_first_request
+    # def _():
+    #     db.create_all()
+
     return app
 
 
 def register_extensions(app: Flask):
     db.init_app(app)
-    migrate.init_app(app)
-    login_manager.init_app(app)
     user_manager.init_app(app)
+    jwt.init_app(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 def register_commands(app: Flask):
@@ -85,106 +87,12 @@ def register_commands(app: Flask):
 
 
 def register_routes(app: Flask):
-    app.register_blueprint(incident_routes)
+    app.register_blueprint(incidents_bp)
+    app.register_blueprint(auth_bp)
 
     @app.route("/")
     def hello_world():
         return "Hello, world!"
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return Users.query.get(int(user_id))
-
-    @app.route("/login", methods=["POST"])
-    def login():
-        """Login Page."""
-        if request.method == "POST":
-            form = request.form
-            # Verify user
-            if (
-                form.get("password") is not None
-                and form.get("email") is not None
-            ):
-                user = Users.query.filter_by(email=form.get("email")).first()
-                if user is not None and user.verify_password(
-                    form.get("password")
-                ):
-                    login_user(user, form.get("remember_me"))
-                    return {
-                        "status": "ok",
-                        "message": "Successfully logged in.",
-                        "user": {"email": form.get("email")},
-                    }
-                else:
-                    return {
-                        "status": "ok",
-                        "message": "Error. Email or Password invalid.",
-                    }
-            # In case of missing fields, return error message indicating
-            # required fields.
-            missing_fields = []
-            required_keys = ["email", "password"]
-            for key in required_keys:
-                if key not in form.keys() or form.get(key) is None:
-                    missing_fields.append(key)
-            return {
-                "status": "ok",
-                "message": "Failed to log in. Please include the following"
-                           " fields: " + ", ".join(missing_fields),
-            }
-        else:
-            return {"status": 400, "message:": "Error: Bad Request."}
-
-    @app.route("/logout")
-    @login_required
-    def logout():
-        """Logout Page."""
-        logout_user()
-        return redirect("/login")
-
-    @app.route("/register", methods=["POST"])
-    def register():
-        if request.method == "POST":
-            form = request.form
-            # Check to see if user already exists
-            user = Users.query.filter_by(email=form.get("email")).first()
-            if user is not None and user.verify_password(form.get("password")):
-                return {
-                    "status": "ok",
-                    "message": "Error. Email matches existing account.",
-                }
-            # Verify all fields included and create user
-            if (
-                form.get("password") is not None
-                and form.get("email") is not None
-            ):
-                user = Users(
-                    email=form.get("email"),
-                    password=user_manager.hash_password(form.get("password")),
-                    first_name=form.get("firstName"),
-                    last_name=form.get("lastName"),
-                )
-                db.session.add(user)
-                db.session.commit()
-                return {
-                    "status": "ok",
-                    "message": "Successfully registered.",
-                    "user": {"email": form.get("email")},
-                }
-            # In case of missing fields, return error message indicating
-            # required fields.
-            missing_fields = []
-            required_keys = ["email", "password"]
-            for key in required_keys:
-                if key not in form.keys() or form.get(key) is None:
-                    missing_fields.append(key)
-            return {
-                "status": "ok",
-                "message": "Failed to register. Please include the following"
-                           " fields: " + ", ".join(missing_fields),
-            }
-        else:
-            return {"status": 400, "message:": "Error: Bad Request."}
 
 
 def register_misc(app: Flask):
@@ -201,7 +109,17 @@ def register_misc(app: Flask):
         from .database import db  # noqa: F401
 
         client = app.test_client()
+
         return locals()
+
+    # Client that makes testing a bit easier.
+
+    class FlaskClientWithDefaultHeaders(FlaskClient):
+        def post(self, *args, **kwargs):
+            kwargs.setdefault("headers", {"Content-Type": "application/json"})
+            return super().post(*args, **kwargs)
+
+    app.test_client_class = FlaskClientWithDefaultHeaders
 
 
 if __name__ == "__main__":

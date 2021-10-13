@@ -102,6 +102,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
 
 # mkdocs documentation
 /site
@@ -110,3 +111,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# In case one gets installed by accident
+/node_modules

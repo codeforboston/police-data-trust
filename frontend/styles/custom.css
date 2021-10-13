@@ -1,0 +1,77 @@
+.enrollmentSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-width: var(--size512);
+  max-width: 90vw;
+  margin: 0 auto var(--size24);
+  font-size: var(--size12);
+}
+@media screen and (max-width: 32em) {
+  .enrollmentSection {
+    justify-content: end;
+  }
+}
+
+.defaultInputContainer {
+  display: flex;
+  flex-direction: column;
+}
+.defaultInputContainer label {
+  font-size: var(--size16);
+  font-weight: 600;
+  margin-left: var(--size4);
+}
+.defaultInputContainer input,
+.defaultInputContainer select,
+.defaultInputContainer textarea {
+  border: 1px solid black;
+  border-radius: var(--size4);
+  text-indent: var(--size8);
+  font-size: var(--size14);
+}
+.defaultInputContainer.hasError input,
+.defaultInputContainer.hasError select,
+.defaultInputContainer.hasError textarea {
+  border: 2px solid var(--red);
+}
+
+.primaryButton {
+  display: block;
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: none;
+  border-radius: var(--size4);
+  background-color: var(--darkBlue);
+  color: white;
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+}
+.primaryButton:focus,
+.primaryButton:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
+}
+
+.secondaryButton {
+  display: block;
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: thin solid var(--darkBlue);
+  border-radius: var(--size4);
+  background-color: white;
+  color: var(--darkBlue);
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+}
+.secondaryButton:focus,
+.secondaryButton:hover {
+  -webkit-box-shadow: var(--insetShadow);
+  box-shadow: var(--insetShadow);
+}

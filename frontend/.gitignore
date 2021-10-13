@@ -32,3 +32,12 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Non-UI frontend code
+!lib
+
+# firebase
+.firebase
+
+# storybook
+storybook-static

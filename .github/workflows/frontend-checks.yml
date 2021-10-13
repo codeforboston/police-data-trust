@@ -1,0 +1,38 @@
+name: Frontend Checks
+
+on:
+  push:
+    paths:
+      - frontend/**
+  pull_request:
+    paths:
+      - frontend/**
+
+jobs:
+  build:
+    name: Checks
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-frontend
+
+      - name: Linting
+        if: always()
+        run: npm run lint
+
+      - name: Formatting
+        if: always()
+        run: npm run check-formatting
+
+      - name: Jest Tests
+        if: always()
+        run: npm run test
+
+      - name: Types
+        if: always()
+        run: npm run check-types

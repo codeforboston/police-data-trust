@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Logo correctly 1`] = `
+<img
+  alt="A blue circular logo design reads 'National Police Data Coalition'"
+  className="logo medium"
+  src="/NPDCLogo.svg"
+/>
+`;

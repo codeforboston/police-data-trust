@@ -1,0 +1,21 @@
+.passportIntro {
+  width: var(--size384);
+  margin-bottom: var(--size8);
+}
+
+.passportForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--size424);
+}
+
+.passportForm fieldset {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.submissionConfirmation {
+  max-width: var(--size424);
+  overflow: scroll;
+}
