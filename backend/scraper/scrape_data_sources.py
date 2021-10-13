@@ -6,6 +6,9 @@ import zipfile
 import io
 import os
 import sys
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 next_index = 0
 
