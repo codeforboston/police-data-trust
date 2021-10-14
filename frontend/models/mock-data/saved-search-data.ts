@@ -1,12 +1,12 @@
 // SAVED SEARCH DATA TABLE
 export interface SavedSearchType {
-  searchDate: number, // UNIX timestamp
-  who: string[],
-  what: string,
-  when: number, // UNIX timestamp
-  where: string,
-  total: number,
-  results: number,
+  searchDate: number // UNIX timestamp
+  who: string[]
+  what: string
+  when: number // UNIX timestamp
+  where: string
+  total: number
+  results: number
 }
 
 const formatDate = (unixDate: number): string => new Date(unixDate).toLocaleDateString()
@@ -43,8 +43,6 @@ export const searchesColumns = [
     accessor: "results"
   }
 ]
-
-
 
 export const savedSearchData = [
   {

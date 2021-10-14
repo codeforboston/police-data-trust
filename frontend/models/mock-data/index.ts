@@ -6,4 +6,13 @@ import mockSaved from "./saved-results.json"
 import mockIncident from "./incidents.json"
 import mockIncidentG from "./grammy.json"
 
-export { mockData, mockIncident, mockIncidentG, mockSaved, savedResultsData, savedSearchData, tableColumns, users }
+export {
+  mockData,
+  mockIncident,
+  mockIncidentG,
+  mockSaved,
+  savedResultsData,
+  savedSearchData,
+  tableColumns,
+  users
+}

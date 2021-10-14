@@ -1,9 +1,16 @@
-[{
+[
+  {
     "id": 1,
     "occurred": 1313471121000,
     "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
     "incidentType": "Harassment",
-    "useOfForce": ["Injurious restraint", "Electric weaponry", "Armed presence", "Verbalization", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Injurious restraint",
+      "Electric weaponry",
+      "Armed presence",
+      "Verbalization",
+      "Unarmed blunt impact"
+    ],
     "source": "Police report"
   },
   {
@@ -11,7 +18,13 @@
     "occurred": 1538984637000,
     "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Electric weaponry", "Unarmed presence", "Armed presence", "Unarmed blunt impact", "Verbalization"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Unarmed presence",
+      "Armed presence",
+      "Unarmed blunt impact",
+      "Verbalization"
+    ],
     "source": "Police report"
   },
   {
@@ -35,7 +48,13 @@
     "occurred": 1417759257000,
     "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Armed presence", "Verbalization", "Unarmed blunt impact", "Injurious restraint", "Unarmed presence"],
+    "useOfForce": [
+      "Armed presence",
+      "Verbalization",
+      "Unarmed blunt impact",
+      "Injurious restraint",
+      "Unarmed presence"
+    ],
     "source": "News report"
   },
   {
@@ -91,7 +110,13 @@
     "occurred": 949134977000,
     "officers": ["B.Codner", "L.MacAlpine", "S.Flieg", "M.Syplus", "C.Kleisle"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Armed presence", "Injurious restraint", "Unarmed blunt impact", "Verbalization", "Unarmed presence"],
+    "useOfForce": [
+      "Armed presence",
+      "Injurious restraint",
+      "Unarmed blunt impact",
+      "Verbalization",
+      "Unarmed presence"
+    ],
     "source": "Court record"
   },
   {
@@ -131,7 +156,13 @@
     "occurred": 1441673229000,
     "officers": ["C.Spieght", "H.Hissett", "W.Riccio", "M.Fookes", "B.Ricciardelli"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Unarmed blunt impact", "Verbalization", "Injurious restraint", "Armed presence", "Unarmed presence"],
+    "useOfForce": [
+      "Unarmed blunt impact",
+      "Verbalization",
+      "Injurious restraint",
+      "Armed presence",
+      "Unarmed presence"
+    ],
     "source": "Court record"
   },
   {
@@ -147,7 +178,13 @@
     "occurred": 1595707672000,
     "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Verbalization", "Armed presence", "Electric weaponry", "Injurious restraint", "Unarmed presence"],
+    "useOfForce": [
+      "Verbalization",
+      "Armed presence",
+      "Electric weaponry",
+      "Injurious restraint",
+      "Unarmed presence"
+    ],
     "source": "Police report"
   },
   {
@@ -179,7 +216,13 @@
     "occurred": 1507822037000,
     "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Unarmed presence", "Verbalization", "Injurious restraint", "Unarmed blunt impact", "Electric weaponry"],
+    "useOfForce": [
+      "Unarmed presence",
+      "Verbalization",
+      "Injurious restraint",
+      "Unarmed blunt impact",
+      "Electric weaponry"
+    ],
     "source": "Police report"
   },
   {
@@ -187,7 +230,13 @@
     "occurred": 1035961368000,
     "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Unarmed blunt impact", "Verbalization", "Unarmed presence", "Electric weaponry", "Injurious restraint"],
+    "useOfForce": [
+      "Unarmed blunt impact",
+      "Verbalization",
+      "Unarmed presence",
+      "Electric weaponry",
+      "Injurious restraint"
+    ],
     "source": "News report"
   },
   {
@@ -195,7 +244,12 @@
     "occurred": 1003011072000,
     "officers": ["T.Pfleger", "T.Domoney", "D.Spatig", "G.Cainey", "L.Chalcraft"],
     "incidentType": "Robbery",
-    "useOfForce": ["Electric weaponry", "Injurious restraint", "Armed presence", "Unarmed presence"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Injurious restraint",
+      "Armed presence",
+      "Unarmed presence"
+    ],
     "source": "Court record"
   },
   {
@@ -219,7 +273,12 @@
     "occurred": 1550632519000,
     "officers": ["Ailbert de Savery", "L.Rannald", "L.Killik", "M.Riccelli", "A.Keilty"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Unarmed blunt impact", "Unarmed presence", "Armed presence", "Electric weaponry"],
+    "useOfForce": [
+      "Unarmed blunt impact",
+      "Unarmed presence",
+      "Armed presence",
+      "Electric weaponry"
+    ],
     "source": "News report"
   },
   {
@@ -227,7 +286,13 @@
     "occurred": 1624012506000,
     "officers": ["S.Bunclark", "Z.Cardis", "J.Crosdill"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Electric weaponry", "Unarmed presence", "Injurious restraint", "Verbalization", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Unarmed presence",
+      "Injurious restraint",
+      "Verbalization",
+      "Unarmed blunt impact"
+    ],
     "source": "Police report"
   },
   {
@@ -235,7 +300,13 @@
     "occurred": 1309312190000,
     "officers": ["J.Byforth", "C.McAvaddy", "P.Fivey", "T.Beecraft"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Electric weaponry", "Injurious restraint", "Unarmed presence", "Armed presence", "Verbalization"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Injurious restraint",
+      "Unarmed presence",
+      "Armed presence",
+      "Verbalization"
+    ],
     "source": "Police report"
   },
   {
@@ -243,7 +314,13 @@
     "occurred": 1370269468000,
     "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Unarmed presence", "Verbalization", "Injurious restraint", "Armed presence", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Unarmed presence",
+      "Verbalization",
+      "Injurious restraint",
+      "Armed presence",
+      "Unarmed blunt impact"
+    ],
     "source": "News report"
   },
   {
@@ -291,7 +368,13 @@
     "occurred": 1393531116000,
     "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Electric weaponry", "Armed presence", "Injurious restraint", "Verbalization", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Armed presence",
+      "Injurious restraint",
+      "Verbalization",
+      "Unarmed blunt impact"
+    ],
     "source": "Police report"
   },
   {
@@ -299,7 +382,12 @@
     "occurred": 1253169695000,
     "officers": ["J.Welchman", "D.Hardison", "L.Dolle", "D.Gresch", "A.Ivanyukov"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Electric weaponry", "Unarmed blunt impact", "Verbalization", "Unarmed presence"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Unarmed blunt impact",
+      "Verbalization",
+      "Unarmed presence"
+    ],
     "source": "News report"
   },
   {
@@ -379,7 +467,12 @@
     "occurred": 1233953502000,
     "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Electric weaponry", "Armed presence", "Unarmed blunt impact", "Injurious restraint"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Armed presence",
+      "Unarmed blunt impact",
+      "Injurious restraint"
+    ],
     "source": "Police report"
   },
   {
@@ -387,7 +480,12 @@
     "occurred": 1078876405000,
     "officers": ["D.Kenrack", "H.Rivalant", "L.Deener", "P.Howship"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Unarmed presence", "Injurious restraint", "Electric weaponry", "Armed presence"],
+    "useOfForce": [
+      "Unarmed presence",
+      "Injurious restraint",
+      "Electric weaponry",
+      "Armed presence"
+    ],
     "source": "News report"
   },
   {
@@ -403,7 +501,13 @@
     "occurred": 1130675484000,
     "officers": ["A.Rofe", "F.Lias"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Unarmed presence", "Electric weaponry", "Armed presence", "Verbalization", "Injurious restraint"],
+    "useOfForce": [
+      "Unarmed presence",
+      "Electric weaponry",
+      "Armed presence",
+      "Verbalization",
+      "Injurious restraint"
+    ],
     "source": "Police report"
   },
   {
@@ -491,7 +595,12 @@
     "occurred": 1101858287000,
     "officers": ["R.Hubbocks"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Injurious restraint", "Unarmed blunt impact", "Armed presence", "Verbalization"],
+    "useOfForce": [
+      "Injurious restraint",
+      "Unarmed blunt impact",
+      "Armed presence",
+      "Verbalization"
+    ],
     "source": "News report"
   },
   {
@@ -523,7 +632,13 @@
     "occurred": 1513635915000,
     "officers": ["C.Maryman", "J.Grute"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Verbalization", "Electric weaponry", "Injurious restraint", "Armed presence", "Unarmed presence"],
+    "useOfForce": [
+      "Verbalization",
+      "Electric weaponry",
+      "Injurious restraint",
+      "Armed presence",
+      "Unarmed presence"
+    ],
     "source": "Police report"
   },
   {
@@ -547,7 +662,13 @@
     "occurred": 1051626343000,
     "officers": ["R.Wiltshaw", "P.Boyford", "S.Abberley", "R.Hemerijk", "L.Pitt"],
     "incidentType": "Robbery",
-    "useOfForce": ["Electric weaponry", "Injurious restraint", "Armed presence", "Verbalization", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Electric weaponry",
+      "Injurious restraint",
+      "Armed presence",
+      "Verbalization",
+      "Unarmed blunt impact"
+    ],
     "source": "Court record"
   },
   {
@@ -555,7 +676,12 @@
     "occurred": 1165325365000,
     "officers": ["O.Northern"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Unarmed blunt impact", "Armed presence", "Electric weaponry", "Injurious restraint"],
+    "useOfForce": [
+      "Unarmed blunt impact",
+      "Armed presence",
+      "Electric weaponry",
+      "Injurious restraint"
+    ],
     "source": "News report"
   },
   {
@@ -593,7 +719,13 @@
   {
     "id": 75,
     "occurred": 1523252681000,
-    "officers": ["P.Krishtopaittis", "R.Kubista", "Helen-elizabeth Hoffman", "S.Hinnerk", "S.Gason"],
+    "officers": [
+      "P.Krishtopaittis",
+      "R.Kubista",
+      "Helen-elizabeth Hoffman",
+      "S.Hinnerk",
+      "S.Gason"
+    ],
     "incidentType": "Noise complaint",
     "useOfForce": ["Unarmed blunt impact"],
     "source": "News report"
@@ -643,7 +775,13 @@
     "occurred": 976491916000,
     "officers": ["S.Mumbeson", "S.Brundale", "F.Farington", "D.Derrell", "T.Oxbrough"],
     "incidentType": "Domestic disturbance",
-    "useOfForce": ["Injurious restraint", "Unarmed blunt impact", "Unarmed presence", "Verbalization", "Armed presence"],
+    "useOfForce": [
+      "Injurious restraint",
+      "Unarmed blunt impact",
+      "Unarmed presence",
+      "Verbalization",
+      "Armed presence"
+    ],
     "source": "Police report"
   },
   {
@@ -667,7 +805,13 @@
     "occurred": 1617429002000,
     "officers": ["A.Spriggen"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Unarmed blunt impact", "Unarmed presence", "Armed presence", "Verbalization", "Injurious restraint"],
+    "useOfForce": [
+      "Unarmed blunt impact",
+      "Unarmed presence",
+      "Armed presence",
+      "Verbalization",
+      "Injurious restraint"
+    ],
     "source": "Police report"
   },
   {
@@ -675,7 +819,12 @@
     "occurred": 1385387993000,
     "officers": ["F.Rodbourne", "L.Sabatini", "G.Dartnall", "C.Seymer"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Armed presence", "Unarmed blunt impact", "Unarmed presence", "Injurious restraint"],
+    "useOfForce": [
+      "Armed presence",
+      "Unarmed blunt impact",
+      "Unarmed presence",
+      "Injurious restraint"
+    ],
     "source": "Police report"
   },
   {
@@ -683,7 +832,12 @@
     "occurred": 1078607243000,
     "officers": ["F.Ramel", "L.Cossington"],
     "incidentType": "Noise complaint",
-    "useOfForce": ["Injurious restraint", "Unarmed blunt impact", "Electric weaponry", "Armed presence"],
+    "useOfForce": [
+      "Injurious restraint",
+      "Unarmed blunt impact",
+      "Electric weaponry",
+      "Armed presence"
+    ],
     "source": "News report"
   },
   {
@@ -699,7 +853,13 @@
     "occurred": 954816353000,
     "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
     "incidentType": "Harassment",
-    "useOfForce": ["Verbalization", "Injurious restraint", "Armed presence", "Electric weaponry", "Unarmed blunt impact"],
+    "useOfForce": [
+      "Verbalization",
+      "Injurious restraint",
+      "Armed presence",
+      "Electric weaponry",
+      "Unarmed blunt impact"
+    ],
     "source": "Police report"
   },
   {
@@ -787,7 +947,12 @@
     "occurred": 1206630719000,
     "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Injurious restraint", "Electric weaponry", "Unarmed blunt impact", "Armed presence"],
+    "useOfForce": [
+      "Injurious restraint",
+      "Electric weaponry",
+      "Unarmed blunt impact",
+      "Armed presence"
+    ],
     "source": "Court record"
   },
   {
@@ -795,7 +960,13 @@
     "occurred": 1079754874000,
     "officers": ["Velvet St. Hill", "H.Dodgshon"],
     "incidentType": "Traffic stop",
-    "useOfForce": ["Armed presence", "Unarmed blunt impact", "Unarmed presence", "Electric weaponry", "Injurious restraint"],
+    "useOfForce": [
+      "Armed presence",
+      "Unarmed blunt impact",
+      "Unarmed presence",
+      "Electric weaponry",
+      "Injurious restraint"
+    ],
     "source": "News report"
   }
 ]

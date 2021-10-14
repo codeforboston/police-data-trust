@@ -1,9 +1,9 @@
-import { IncidentTableData } from "./incidents";
+import { IncidentTableData } from "./incidents"
 
 export interface DepartmentType {
-  departmentName: string,
-  deptImage: string,
-  deptAddress: string,
+  departmentName: string
+  deptImage: string
+  deptAddress: string
   webAddress: string
 }
 
@@ -26,30 +26,26 @@ export const departmentColumns = [
   }
 ]
 
-
 export interface EmploymentType {
-  department: DepartmentType,
-  status: string,
-  startDate: Date,
-  endDate: Date,
+  department: DepartmentType
+  status: string
+  startDate: Date
+  endDate: Date
 }
 
-
-
-
 export interface OfficerRecordType {
-  recordId: number,
-  firstName: string,
-  lastName: string,
-  badgeNo: string,
-  status: string,
-  department: string,
-  birthDate?: Date,
-  gender?: string,
-  race?: string,
-  ethnicity?: string,
-  incomeBracket?: string,
-  workHistory: EmploymentType[],
-  affiliations?: string[],
+  recordId: number
+  firstName: string
+  lastName: string
+  badgeNo: string
+  status: string
+  department: string
+  birthDate?: Date
+  gender?: string
+  race?: string
+  ethnicity?: string
+  incomeBracket?: string
+  workHistory: EmploymentType[]
+  affiliations?: string[]
   incidents?: IncidentTableData[]
 }

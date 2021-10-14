@@ -1,34 +1,32 @@
-import { DepartmentType , OfficerRecordType } from "./officer"
+import { DepartmentType, OfficerRecordType } from "./officer"
 
 /**
  * Data to appear in Incidents table
  * full record will be superset
  */
- export interface IncidentTableData {
-  id: number,
-  occurred: number, // UNIX timestamp
-  officers: string[],   // officer names, "F.Last" (first initial, last name)
-  incidentType: string,
-  useOfForce: string[],
+export interface IncidentTableData {
+  id: number
+  occurred: number // UNIX timestamp
+  officers: string[] // officer names, "F.Last" (first initial, last name)
+  incidentType: string
+  useOfForce: string[]
   source: string
 }
-
 
 /**
  * Expanded Incident Record
  */
 export interface IncidentDetailType extends IncidentTableData {
-  outcome: string[],
-  location: string,
-  locationType: string,
-  locationGeo: number[],
-  summary: string,
-  deptsInvolved: Array<DepartmentType>,
-  officersInvolved: Array<OfficerRecordType>,
-  incidentReportLink: string,
+  outcome: string[]
+  location: string
+  locationType: string
+  locationGeo: number[]
+  summary: string
+  deptsInvolved: Array<DepartmentType>
+  officersInvolved: Array<OfficerRecordType>
+  incidentReportLink: string
   passportItems: string[]
 }
-
 
 // Incident Table Data
 export const incidentsColumns = [
@@ -59,19 +57,17 @@ export const incidentsColumns = [
     Header: "#",
     accessor: "id",
     disableSortBy: true
-  },
+  }
 ]
 
 // convert ["First Last", "First Last"] to ["F.Last, F.Last"]
 export const formatOfficerNames = (officerNames: string[]): string => {
   const rx = /^(?<first>[A-Z])[a-z]+ (?<last>[A-Za-z]+)/
-  const oNames = officerNames.map(str => {
+  const oNames = officerNames.map((str) => {
     const o = str.match(rx)
     return `${o.groups.first}.${o.groups.last}`
   })
   return oNames.join(", ")
 }
-
-
 
 export const formatDate = (unixTime: number): string => new Date(unixTime).toLocaleDateString()

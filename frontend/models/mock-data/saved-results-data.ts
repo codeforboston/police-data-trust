@@ -5,7 +5,6 @@ export interface SavedResultsType extends IncidentTableData {
   searchDate: number // UNIX timestamp
 }
 
-
 export const resultsColumns = [
   {
     Header: "Search Date",
@@ -15,9 +14,9 @@ export const resultsColumns = [
   ...incidentsColumns
 ]
 
-
 // OLD FORMAT - here to avoid breaking existing components
-export const savedResultsData = [{
+export const savedResultsData = [
+  {
     searchDate: "2021/09/07",
     dates: "2003/01/01",
     incidentType: "Use of force",
