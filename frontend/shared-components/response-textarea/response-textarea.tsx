@@ -1,52 +1,57 @@
 import styles from "./response-textarea.module.css"
 import { FormLevelError } from "../index"
 import { ChangeEvent, useEffect, useState } from "react"
+import { useFormContext } from "react-hook-form"
 
-interface ResponseTextAreaProps {
-  isSubmitted: boolean
-}
-
-export default function ResponseTextArea({ isSubmitted }: ResponseTextAreaProps) {
+export default function ResponseTextArea() {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
   const [textareaId, counterId, errorId] = ["responseTextArea", "responseCounter", "responseError"]
   const [charMax, charMin] = [500, 150]
-
-  const errorMessage: string = `Please provide a response of at least ${charMin} characters`
+  const inputName = ResponseTextArea.inputName
+  const defaultErrorMessage = `Please provide a response of at least ${charMin} characters`
 
   const [charCount, setCharCount] = useState(0)
-  const [isValid, setIsValid] = useState(checkIsValid())
+  const isValid = !errors[inputName]
 
-  function checkIsValid(newCharCount?: number): boolean {
-    const currCharCount = newCharCount || charCount
-    return !isSubmitted || currCharCount >= charMin
+  const { onChange: formOnChange, ...inputAttributes } = register(inputName, {
+    required: true,
+    minLength: charMin,
+    maxLength: charMax
+  })
+  const onChange = (e: any) => {
+    setCharCount(e.target.value.length)
+    formOnChange(e)
   }
-
-  function handleTextareaChange({ target: { value } }: ChangeEvent<HTMLTextAreaElement>): void {
-    setIsValid(checkIsValid(value.length))
-    setCharCount(value.length)
-  }
-
-  useEffect(() => {
-    setIsValid(checkIsValid())
-  }, [isSubmitted])
 
   return (
     <div className={`defaultInputContainer ${!isValid && "hasError"}`}>
       <label htmlFor={textareaId}>Why are you signing up to the NPDC?:</label>
       <textarea
+        className={styles.responseArea}
         id={textareaId}
         cols={52}
         rows={7}
-        maxLength={charMax}
         aria-required="true"
         aria-describedby={`${counterId} ${!isValid ? errorId : null}`}
-        onChange={handleTextareaChange}
+        onChange={onChange}
+        {...inputAttributes}
       />
       <div className={styles.responseSubtext}>
         <p id={counterId}>
           {charCount}/{charMax}
         </p>
-        {!isValid && <FormLevelError errorId={errorId} errorMessage={errorMessage} />}
+        {!isValid && (
+          <FormLevelError
+            errorId={errorId}
+            errorMessage={errors[inputName].message || defaultErrorMessage}
+          />
+        )}
       </div>
     </div>
   )
 }
+
+ResponseTextArea.inputName = "reponseText"

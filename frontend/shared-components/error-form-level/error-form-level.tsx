@@ -9,7 +9,7 @@ interface FormLevelErrorProps {
 }
 export default function FormLevelError({ errorId, errorMessage }: FormLevelErrorProps) {
   return (
-    <p id={errorId} className={styles.error}>
+    <p id={errorId} className={styles.error} role="alert">
       <FontAwesomeIcon aria-hidden="true" icon={faExclamationCircle} />
       &nbsp;{errorMessage}
     </p>

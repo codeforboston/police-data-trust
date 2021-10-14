@@ -2,10 +2,23 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First install dependencies
-`npm i` || `yarn install`
+Change to the frontend directory and run all commands from here:
 
-if you run into an error such as
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+If you are using Windows, configure NPM to use Git Bash when running scripts. Follow [these](https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows/46006249#46006249) instructions.
+
+**Note:** if you run into an error such as
 
 ```
 /police-data-trust/frontend/node_modules/husky/lib/index.js:20
@@ -17,7 +30,7 @@ Error: .git can't be found
 
 you can copy the .git/ directory in the root of the project and move it to the frontend/ and try the install again and it should succeed. try the install again and remember do not commit this .git/ you may want to delete it afterwards until figured out alternative.
 
-Second, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
@@ -25,19 +38,17 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000/login in your browser to view the login page. Login using the test account `test@example.com` / `password`. You can start editing the page by modifying `pages/search/index.js`. The page auto-updates as you edit the file.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Testing
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-# TESTING
-
-Once completed the steps above then to run tests: `yarn test`
+Once completed the steps above then to run tests: `yarn test`. You can use `yarn watch` to automatically run your tests as you edit files.
 
 Bare minimum each incoming PR changes updating the UI must have UI snapshot tests. We expect tests only for project important logic but must reside in the `tests/` directory.
+
+## Storybook
+
+Besides testing with Jest, we also use Storybook to view UI components in isolation. Stories can be written for any visual component, and having a story for your component is a good way to show that it works. More information on how we're using it in this project can be found [here](./.storybook/USAGE.md).
 
 ## Learn More
 
