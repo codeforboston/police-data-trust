@@ -1,12 +1,14 @@
 from flask import Blueprint
+from flask import jsonify
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import unset_access_cookies
 
 from ..database import db
 from ..database import User
 from ..database import UserRole
-from ..database import login_manager
 from ..auth import role_required
 from ..auth import user_manager
 from ..schemas import UserSchema
@@ -18,7 +20,6 @@ from flask_pydantic import validate
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
-# TODO: Place cookie on users browser with JWT token
 @bp.route("/login", methods=["POST"])
 @validate()
 def login(body: LoginUserDTO):
@@ -26,10 +27,15 @@ def login(body: LoginUserDTO):
     if body.password is not None and body.email is not None:
         user = User.query.filter_by(email=body.email).first()
         if user is not None and user.verify_password(body.password):
-            return {
-                "message": "Successfully logged in.",
-                "access_token": create_access_token(identity=user.id),
-            }, 200
+            token = create_access_token(identity=user.id)
+            resp = jsonify(
+                {
+                    "message": "Successfully logged in.",
+                    "access_token": token,
+                }
+            )
+            set_access_cookies(resp, token)
+            return resp, 200
         else:
             return {
                 "message": "Error. Email or Password invalid.",
@@ -47,7 +53,6 @@ def login(body: LoginUserDTO):
     }, 400
 
 
-# TODO: place cookie on users browser
 @bp.route("/register", methods=["POST"])
 @validate()
 def register(body: RegisterUserDTO):
@@ -69,11 +74,16 @@ def register(body: RegisterUserDTO):
         )
         db.session.add(user)
         db.session.commit()
-        return {
-            "status": "ok",
-            "message": "Successfully registered.",
-            "access_token": create_access_token(identity=user.id),
-        }, 200
+        token = create_access_token(identity=user.id)
+        resp = jsonify(
+            {
+                "status": "ok",
+                "message": "Successfully registered.",
+                "access_token": token,
+            }
+        )
+        set_access_cookies(resp, token)
+        return resp, 200
     # In case of missing fields, return error message indicating
     # required fields.
     missing_fields = []
@@ -88,9 +98,25 @@ def register(body: RegisterUserDTO):
     }, 400
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+@bp.route("/refresh", methods=["POST"])
+@jwt_required()
+def refresh_token():
+    access_token = create_access_token(identity=get_jwt_identity())
+    resp = jsonify(
+        {
+            "message": "token refreshed successfully",
+            "access_token": access_token,
+        }
+    )
+    set_access_cookies(resp, access_token)
+    return resp, 200
+
+
+@bp.route("/logout", methods=["POST"])
+def logout():
+    resp = jsonify({"message": "successfully logged out"})
+    unset_access_cookies(resp)
+    return resp, 200
 
 
 @bp.route("/test", methods=["GET"])
