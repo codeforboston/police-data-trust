@@ -59,19 +59,13 @@ def register_commands(app: Flask):
 
         This command is for development purposes only.
         """
-        import subprocess
+        import sys
 
-        if len(ctx.args) == 1 and ctx.args[0] == "--help":
-            subprocess.call(["pip-compile", "--help"])
-        else:
-            req_files = [
-                "requirements/dev_unix.in",
-                "requirements/dev_windows.in",
-                "requirements/prod.in",
-                "requirements/docs.in",
-            ]
-            for filename in req_files:
-                subprocess.call(["pip-compile", filename, *ctx.args])
+        sys.path.append("..")
+
+        from requirements import update
+
+        update.run()
 
     @app.cli.command("scrape")
     def scrape_command():
@@ -80,7 +74,10 @@ def register_commands(app: Flask):
         This is a handy way to populate the database to start with publicly
         available data.
         """
-        pass
+        from backend.scraper.scrape_data_sources import make_all_tables
+
+        # TODO: load excel sheet into database
+        make_all_tables()
 
 
 def register_routes(app: Flask):
