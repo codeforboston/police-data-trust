@@ -16,15 +16,26 @@ def test_simple_routes(client, page, expected_status_code):
 def test_create_incident(client, db_session):
     res = client.post(
         "/api/v1/incidents/create",
-        json={"time_of_incident": "2021-03-14 01:05:09"},
+        json={
+            "time_of_incident": "2021-03-14 01:05:09",
+            "stop_type": "Domestic disturbance",
+            "officers": [
+                {"first_name": "Susie", "last_name": "Suserson"},
+                {"first_name": "Lisa", "last_name": "Wong"},
+            ],
+            "use_of_force": [{"item": "Injurious restraint"}],
+        },
     )
-    incident_id = res.json["id"]
+    data = res.json
 
     incident_obj = (
-        db_session.query(Incident).filter(Incident.id == incident_id).first()
+        db_session.query(Incident).filter(Incident.id == data["id"]).first()
     )
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
+    for i in [0, 1]:
+        assert incident_obj.officers[i].id == data["officers"][i]["id"]
+    assert incident_obj.use_of_force[0].id == data["use_of_force"][0]["id"]
 
 
 def test_get_incident(app, client, db_session):
