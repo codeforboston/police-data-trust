@@ -1,8 +1,25 @@
-The mapping_police_violence.py script should be able to run by itself, independent of the server and database.
-The required modules can be downloaded with the pip install command below:
+# Data Source Scraper
 
-pip install <location of police-data-trust directory>\requirements.txt
+The `scrape_data_sources.py` script extracts incidents from external data sources. It should be able to run by itself, independent of the server and database.
 
-To run, call the script from the head of the repository. You may see several warnings about mixed types. The script could also take several minutes.
+## Setup
+
+Follow the instructions [here](../../requirements/README.md) to install requirements.
+
+## Usage
+
+Run the scraper using `flask scrape` from the base of the repository.
+
+You can also run the scraper in Docker:
+
+```bash
+# From the base of the repository
+docker-compose build api
+docker-compose run -u $(id -u) api flask scrape
+# Stop the database service
+docker-compose down
+```
+
+You may see several warnings about mixed types. The script could also take several minutes.
 
 If the script finishes successfully, there should be a full_database.xlsx file in the head of your repository. This should hold all the data that the scraper was able to get. There should be four tabs: report, incident, victim, and death

@@ -7,6 +7,7 @@ import io
 import os
 import sys
 import ssl
+from os.path import join
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -77,7 +78,6 @@ def make_single_table(table, dat, configs):
 def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
     if os.path.isdir(head_directory):
         for filename in os.listdir(head_directory):
-            print(filename)
             if (
                 configs["sources"][data_source]["subdirectory"] not in filename
                 and configs["sources"][data_source]["subdirectory"] != "None"
@@ -85,7 +85,7 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
                 continue
             if dat is None or len(dat) == 0:
                 dat = extract_all_subfolders(
-                    head_directory + "/" + filename,
+                    join(head_directory, filename),
                     data_source,
                     xwalk,
                     dat,
@@ -94,7 +94,7 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
             else:
                 dat = dat.append(
                     extract_all_subfolders(
-                        head_directory + "/" + filename,
+                        join(head_directory, filename),
                         data_source,
                         xwalk,
                         dat,
@@ -116,19 +116,20 @@ def extract_all_subfolders(head_directory, data_source, xwalk, dat, configs):
 
 
 def make_tables_data_source(data_source, xwalk, configs):
+    print("Processing data source " + data_source)
     if configs["sources"][data_source]["url"].endswith(".xlsx"):
         dat_raw = pd.read_excel(configs["sources"][data_source]["url"])
-        dat_raw.to_excel(output_dir + "/" + data_source + "_raw.xlsx")
+        dat_raw.to_excel(join(output_dir, data_source + "_raw.xlsx"))
         dat = map_varnames(dat_raw, data_source, xwalk, configs)
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".zip"):
         r = requests.get(configs["sources"][data_source]["url"])
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(
-            output_dir + "/" + configs["sources"][data_source]["location"]
+            join(output_dir, configs["sources"][data_source]["location"])
         )
         dat_raw = extract_all_subfolders(
-            configs["sources"][data_source]["headdirectory"],
+            join(output_dir, configs["sources"][data_source]["headdirectory"]),
             data_source,
             xwalk,
             [],
@@ -143,7 +144,7 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat = gen_ids(dat, data_source)
     elif configs["sources"][data_source]["url"].endswith(".csv"):
         dat_raw = pd.read_csv(configs["sources"][data_source]["url"])
-        dat_raw.to_excel(output_dir + "/" + data_source + "_raw.xlsx")
+        dat_raw.to_excel(join(output_dir, data_source + "_raw.xlsx"))
         for i in range(xwalk.shape[0]):
             if xwalk[data_source][i] not in dat_raw.columns:
                 dat_raw[xwalk[data_source][i]] = ""
@@ -155,7 +156,7 @@ def make_tables_data_source(data_source, xwalk, configs):
         dat = gen_ids(dat, data_source)
 
     dat = dat.loc[~dat.index.duplicated(keep="first")]
-    dat.to_csv(output_dir + "/" + data_source + ".csv", index=True, header=True)
+    dat.to_csv(join(output_dir, data_source + ".csv"), index=True, header=True)
     table_names = list(configs["tables"].keys())
     table_list = [make_single_table(x, dat, configs) for x in table_names]
 
@@ -208,10 +209,10 @@ def make_all_tables():
     df_filtered = df_filtered[~df_filtered.index.duplicated(keep="first")]
     final_indices = df_filtered.index
 
-    writer = pd.ExcelWriter(
-        output_dir + "/full_database.xlsx", engine="xlsxwriter"
-    )
+    dest_path = join(output_dir, "full_database.xlsx")
+    writer = pd.ExcelWriter(dest_path, engine="xlsxwriter")
 
+    print("Exporting results to " + dest_path)
     # Write each dataframe to a different worksheet.
     for key in table_dict:
         sub_data = table_dict[key]
