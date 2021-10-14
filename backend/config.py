@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+from datetime import timedelta
 
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
@@ -12,8 +12,9 @@ class Config(object):
     JWT_TOKEN_LOCATION = os.environ.get(
         "JWT_TOKEN_LOCATION", ["headers", "cookies"]
     )
-    TOKEN_EXPIRATION_MINUTES = int(
-        os.environ.get("TOKEN_EXPIRATION_MINUTES", 30)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+    TOKEN_EXPIRATION = timedelta(
+        hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
