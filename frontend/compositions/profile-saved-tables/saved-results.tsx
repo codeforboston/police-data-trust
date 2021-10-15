@@ -4,6 +4,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
 import { SavedResultsType, resultsColumns } from "../../models/saved-table"
 import { mockSavedResults } from "../../models/mock-data"
 
+
 interface SavedResultsProps {
   data?: Array<SavedResultsType>
 }
