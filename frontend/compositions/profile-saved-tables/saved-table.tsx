@@ -145,23 +145,30 @@ export default function SavedTable(props: SavedTableProps) {
         <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
-        <span className={pageCnt}>Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}</span>
+        <span className={pageCnt}>
+          Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}
+        </span>
         <button className={styles.pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
           <FontAwesomeIcon icon={faAngleRight} />
         </button>
-        <button className={pageBtn} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} >
+        <button className={pageBtn} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
           <FontAwesomeIcon icon={faAngleDoubleRight} />
         </button>
-        <span className={goto}>Go to page:{" "}
-          <input type="number" className={dataRowPage} defaultValue={pageIndex + 1} 
-            onChange={e => {
+        <span className={goto}>
+          Go to page:{" "}
+          <input
+            type="number"
+            className={dataRowPage}
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               gotoPage(page)
-            }} 
-            style={{ width: "50px", textAlign: "right" }} />
+            }}
+            style={{ width: "50px", textAlign: "right" }}
+          />
         </span>{" "}
-        <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
-          {[10, 20, 30, 40, 50].map(pageSize => (
+        <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+          {[10, 20, 30, 40, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

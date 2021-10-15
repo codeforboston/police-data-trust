@@ -6,17 +6,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons"
 import { faInfoCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons"
 
-
 function getTipIcon(icon: TooltipIcons): IconDefinition {
-  return (icon === TooltipIcons.INFO) ? faInfoCircle : faQuestionCircle
+  return icon === TooltipIcons.INFO ? faInfoCircle : faQuestionCircle
 }
 
 interface InfoTooltipProps {
-  type: TooltipTypes,
-  icon?: TooltipIcons,
+  type: TooltipTypes
+  icon?: TooltipIcons
   iconSize?: any
 }
-export default function InfoTooltip({ type, icon = TooltipIcons.QUESTION, iconSize = "sm" }: InfoTooltipProps) {
+export default function InfoTooltip({
+  type,
+  icon = TooltipIcons.QUESTION,
+  iconSize = "sm"
+}: InfoTooltipProps) {
   const { tooltipContainer, tooltipIcon, tooltip } = styles
 
   const ariaLabel: string = `Learn more about ${getTitleCaseFromCamel(type)}`
