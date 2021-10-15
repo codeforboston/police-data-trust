@@ -10,7 +10,7 @@ from flask_jwt_extended.view_decorators import jwt_required
 from flask_pydantic import validate
 from pydantic import BaseModel
 
-from ..database import Incident
+from ..database import Incident, db
 from ..schemas import CreateIncidentSchema, IncidentSchema
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
@@ -80,4 +80,25 @@ class SearchIncidentsSchema(BaseModel):
 @jwt_required()
 @role_required(UserRole.PUBLIC)
 def search_incidents(body: SearchIncidentsSchema):
-    return body.dict()
+    query = db.session.query(Incident)
+
+    if body.location:
+        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text search
+        # TODO: eventually replace with geosearch. Geocode records and integrate PostGIS
+        query = query.filter(Incident.location.ilike(f"%{body.location}%"))
+    if body.start_time:
+        query = query.filter(Incident.time_of_incident >= body.start_time)
+    if body.end_time:
+        query = query.filter(Incident.time_of_incident <= body.end_time)
+    if body.incident_type:
+        query = query.filter(
+            Incident.stop_type.ilike(f"%{body.incident_type}%")
+        )
+
+    search_results = query.limit(100).all()
+
+    return {
+        "results": [
+            IncidentSchema.from_orm(result).dict() for result in search_results
+        ]
+    }

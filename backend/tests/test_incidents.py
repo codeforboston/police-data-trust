@@ -3,9 +3,8 @@ from datetime import datetime
 import pytest
 from backend.database import Incident
 
-
-def test_create_incident(client, db_session, access_token):
-    expected = {
+mock_incidents = {
+    "domestic": {
         "time_of_incident": "2021-03-14 01:05:09",
         "stop_type": "Domestic disturbance",
         "officers": [
@@ -13,25 +12,58 @@ def test_create_incident(client, db_session, access_token):
             {"first_name": "Lisa", "last_name": "Wong"},
         ],
         "use_of_force": [{"item": "Injurious restraint"}],
-        "source": "clkpdp",
-    }
-    res = client.post(
-        "/api/v1/incidents/create",
-        json=expected,
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
+        "source": "cpdp",
+        "location": "123 Right St Chicago, IL",
+    },
+    "traffic": {
+        "time_of_incident": "2021-10-01 00:00:00",
+        "stop_type": "Traffic stop",
+        "officers": [
+            {"first_name": "Ronda", "last_name": "Sousa"},
+        ],
+        "use_of_force": [{"item": "verbalization"}],
+        "source": "mpv",
+        "location": "Park St and Boylston Boston",
+    },
+    "firearm": {
+        "time_of_incident": "2021-10-05 00:00:00",
+        "stop_type": "Robbery",
+        "officers": [
+            {"first_name": "Dale", "last_name": "Green"},
+        ],
+        "use_of_force": [{"item": "indirect firearm"}],
+        "source": "cpdp",
+        "location": "CHICAGO ILLINOIS",
+    },
+}
 
-    assert res.status_code == 200
-    data = res.json
+
+@pytest.fixture
+def example_incidents(client, access_token):
+    created = {}
+    for name, mock in mock_incidents.items():
+        res = client.post(
+            "/api/v1/incidents/create",
+            json=mock,
+            headers={"Authorization": "Bearer {0}".format(access_token)},
+        )
+        assert res.status_code == 200
+        created[name] = res.json
+    return created
+
+
+def test_create_incident(db_session, example_incidents):
+    expected = mock_incidents["domestic"]
+    created = example_incidents["domestic"]
 
     incident_obj = (
-        db_session.query(Incident).filter(Incident.id == data["id"]).first()
+        db_session.query(Incident).filter(Incident.id == created["id"]).first()
     )
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
     for i in [0, 1]:
-        assert incident_obj.officers[i].id == data["officers"][i]["id"]
-    assert incident_obj.use_of_force[0].id == data["use_of_force"][0]["id"]
+        assert incident_obj.officers[i].id == created["officers"][i]["id"]
+    assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
     assert incident_obj.source == expected["source"]
 
 
@@ -49,24 +81,49 @@ def test_get_incident(app, client, db_session, access_token):
     assert res.json["time_of_incident"] == incident_date_str
 
 
-def test_search_incidents(client, access_token):
+@pytest.mark.parametrize(
+    ("query", "expected_incident_names"),
+    [
+        (
+            {},
+            ["domestic", "traffic", "firearm"],
+        ),
+        (
+            {"location": "Chicago"},
+            ["domestic", "firearm"],
+        ),
+        (
+            {
+                "start_time": "2021-09-30 00:00:00",
+                "end_time": "2021-10-02 00:00:00",
+            },
+            ["traffic"],
+        ),
+        (
+            {
+                "incident_type": "traffic",
+            },
+            ["traffic"],
+        ),
+    ],
+)
+def test_search_incidents(
+    client, example_incidents, access_token, query, expected_incident_names
+):
     res = client.get(
         "/api/v1/incidents/search",
-        json={
-            "location": "boston",
-            "start_time": "2021-03-14 01:05:09",
-            "end_time": "2021-03-14 01:05:09",
-            "incident_type": "traffic",
-        },
+        json=query,
     )
-
     assert res.status_code == 200
-    assert res.json["location"] == "boston"
 
-
-@pytest.fixture
-def example_incidents(db_session):
-    incident = Incident()
-    db_session.add(incident)
-    db_session.commit()
-    return incident
+    # Match the results to the known dataset and assert that all the expected
+    # results are present
+    actual_incidents = res.json["results"]
+    incident_name = lambda incident: next(
+        (k for k, v in example_incidents.items() if v["id"] == incident["id"]),
+        None,
+    )
+    actual_incident_names = list(
+        filter(None, map(incident_name, actual_incidents))
+    )
+    assert set(actual_incident_names) == set(expected_incident_names)
