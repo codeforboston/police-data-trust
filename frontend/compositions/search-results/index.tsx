@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useTable, usePagination, useSortBy, useFilters } from "react-table"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlusCircle, faSlidersH, faSave, faArrowUp, faArrowDown, faArrowCircleRight, faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons"
+import { faPlusCircle, faSlidersH, faSave, faArrowUp, faArrowDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft } from "@fortawesome/free-solid-svg-icons"
 import { InfoTooltip } from "../../shared-components"
 import { TooltipIcons, TooltipTypes, IncidentTableData } from "../../models"
 
@@ -10,9 +10,6 @@ import styles from "./search-results.module.css"
 // TODO: get API
 let mockData: Array<IncidentTableData> = require("../../models/mock-data/grammy.json")
 
-interface SearchResultsProps {
-  incidents?: Array<IncidentTableData>
-}
 
 const resultsColumns = [
   {
@@ -59,13 +56,20 @@ const resultsColumns = [
   },
 ]  
 
-
-
+interface SearchResultsProps {
+  incidents?: Array<IncidentTableData>
+}
 export default function SearchResultsTable({ incidents = mockData }: SearchResultsProps) {
   const { useState, useMemo } = React
+  
+  const [showFilters, setShowFilters] = useState(false)
 
   // TODO: display full record
   const fullRecord = (id: number) => { }
+  
+  // TODO: save record
+  const saveRecord = (id: number) => { }
+
 
   const {
     dataTable,
@@ -73,7 +77,12 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
     dataFooter,
     dataRowPage,
     dataRows,
-    expandRecordButton
+    actionBtn,
+    pageBtn,
+    sortArrow,
+    recordCount, 
+    pageCnt,
+    goto
   } = styles
 
   const data = useMemo(() => incidents, [incidents])
@@ -100,23 +109,14 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
       data,
       initialState: { pageIndex: 0 }
     },
+    useFilters,
     useSortBy,
     usePagination
     
   )
 
-  const [pageSizeValue, setPageSizeValue] = useState(pageSize)
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPageSizeValue(+e.target.value)
-  }
-
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
-    setPageSize(+e.target.value)
-  }
-
-
   return (
+    <>
     <table {...getTableProps()} className={dataTable} aria-label="Search Results">
       <thead className={dataHeader}>
         {headerGroups.map((headerGroup) => (
@@ -126,14 +126,19 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
               // eslint-disable-next-line react/jsx-key
               <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                 {column.render("Header")}
-                <span>
+                <span className={sortArrow} >
                   {column.isSorted 
                     ? column.isSortedDesc
                       ? <FontAwesomeIcon icon={faArrowDown} />
                       : <FontAwesomeIcon icon={faArrowUp} />
-                    : ''
+                    : ' '
                     }
                 </span>
+                {showFilters && (
+                  <div className={styles.colFilter}>
+                    {column.canFilter ? column.render("Filter") : null}
+                  </div>
+                )}
               </th>
             ))}
           </tr>
@@ -146,14 +151,14 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
             // eslint-disable-next-line react/jsx-key
             <tr {...row.getRowProps()} className={dataRows}>
               {row.cells.map((cell) => {
-                const { id } = cell.column
-                if (id === "id") {
+                if (cell.column.id === "id") {
                   return (
                     <td>
                       <FontAwesomeIcon
-                        className={expandRecordButton}
+                        className={actionBtn}
+                        title="Save Record"
                         icon={faPlusCircle}
-                        onClick={() => fullRecord(cell.value)}
+                        onClick={() => saveRecord(cell.value)}
                       />
                     </td>
                   )
@@ -167,36 +172,40 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
           )
         })}
       </tbody>
-      <tfoot className={dataFooter}>
-        <tr>
-          <td>{data.length.toLocaleString()} records found</td>
-          <td colSpan={4}></td>
-          <td>
-            Show{" "}
-            <input
-              className={dataRowPage}
-              min={1}
-              max={10}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="number"
-              value={pageSizeValue}
-            />{" "}
-            rows
-          </td>
-          <td>
-            {" "}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />
-            </button>{" "}
-            {pageIndex + 1} of {pageOptions.length}{" "}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              <FontAwesomeIcon icon={faArrowCircleRight} />
-            </button>{" "}
-          </td>
-        </tr>
-      </tfoot>
     </table>
+
+    <div className={dataFooter}>
+      <span className={recordCount}>Found {data.length.toLocaleString()} records</span>
+      <button className={pageBtn} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+        <FontAwesomeIcon icon={faAngleDoubleLeft} />
+      </button>
+      <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
+        <FontAwesomeIcon icon={faAngleLeft} />
+      </button>
+      <span className={pageCnt}>Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}</span>
+      <button className={styles.pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
+        <FontAwesomeIcon icon={faAngleRight} />
+      </button>
+      <button className={pageBtn} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} >
+        <FontAwesomeIcon icon={faAngleDoubleRight} />
+      </button>
+      <span className={goto}>Go to page:{" "}
+        <input type="number" className={dataRowPage} defaultValue={pageIndex + 1} 
+          onChange={e => {
+            const page = e.target.value ? Number(e.target.value) - 1 : 0
+            gotoPage(page)
+          }} 
+          style={{ width: "50px", textAlign: "right" }} />
+      </span>{" "}
+      <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+        {[10, 20, 30, 40, 50].map(pageSize => (
+          <option key={pageSize} value={pageSize}>
+            Show {pageSize}
+          </option>
+        ))}
+      </select>
+    </div>
+    </>
   )
 
 }
