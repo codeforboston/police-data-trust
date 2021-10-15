@@ -54,7 +54,7 @@ export const incidentsColumns = [
     accessor: "source"
   },
   {
-    Header: "#",
+    Header: "ID",
     accessor: "id",
     disableSortBy: true
   }
