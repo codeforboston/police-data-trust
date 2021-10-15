@@ -13,6 +13,7 @@ import ProfileType from "./profile-type"
 import EditProfileInfo from "./profile-edit"
 import SavedResults from "./profile-saved-tables/saved-results"
 import SavedSearches from "./profile-saved-tables/saved-searches"
+import SearchResultsTable from "./search-results"
 import LandingPage from "./landingpage/landing"
 
 export {
@@ -28,6 +29,7 @@ export {
   ProfileInfo,
   EditProfileInfo,
   ProfileType,
+  SearchResultsTable,
   SavedResults,
   SavedSearches,
   LandingPage
