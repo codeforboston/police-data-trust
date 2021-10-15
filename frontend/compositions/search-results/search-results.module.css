@@ -1,7 +1,7 @@
 .dataTable {
   border-collapse: collapse;
   margin-top: var(--size36);
-  width: 100vw;
+  width: 100%;
 }
 
 .dataFooter,
@@ -13,7 +13,8 @@
 }
 
 .dataFooter,
-.dataHeader {
+.dataHeader,
+.pagination {
   background-color: var(--lightBlue);
 }
 
@@ -21,15 +22,14 @@
   background-color: #b1cfe7;
 }
 
-/* The below webkit rules are to remove the number input arrows */
-.dataRowPage {
-  -moz-appearance: textfield;
-  padding: var(--size4);
-  border: none;
+.actionBtn {
+  cursor: pointer;
 }
 
-.dataRowPage::-webkit-outer-spin-button,
-.dataRowPage::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.sortArrow {
+  margin-left: 0.3rem;
+}
+
+.pageBtn {
+  margin: 0 1rem;
 }
