@@ -121,85 +121,84 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
   )
 
   return (
-      <table {...getTableProps()} className={dataTable} aria-label="Search Results">
-        <thead className={dataHeader}>
-          {headerGroups.map((headerGroup) => (
-            // eslint-disable-next-line react/jsx-key
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                // eslint-disable-next-line react/jsx-key
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render("Header")}
-                  <span className={sortArrow}>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      ) : (
-                        <FontAwesomeIcon icon={faArrowUp} />
-                      )
-                    ) : (
-                      "  "
-                    )}
-                  </span>
-                  {showFilters && (
-                    <div className={styles.colFilter}>
-                      {column.canFilter ? column.render("Filter") : null}
-                    </div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row)
-            return (
+    <table {...getTableProps()} className={dataTable} aria-label="Search Results">
+      <thead className={dataHeader}>
+        {headerGroups.map((headerGroup) => (
+          // eslint-disable-next-line react/jsx-key
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
               // eslint-disable-next-line react/jsx-key
-              <tr {...row.getRowProps()} className={dataRows}>
-                {row.cells.map((cell) => {
-                  if (cell.column.id === "id") {
-                    return (
-                      <td>
-                        <FontAwesomeIcon
-                          className={actionBtn}
-                          title="Save Record"
-                          icon={faPlusCircle}
-                          onClick={() => saveRecord(cell.value)}
-                        />
-                      </td>
+              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render("Header")}
+                <span className={sortArrow}>
+                  {column.isSorted ? (
+                    column.isSortedDesc ? (
+                      <FontAwesomeIcon icon={faArrowDown} />
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowUp} />
                     )
-                  }
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-        <tfoot className={dataFooter}>
-          <tr>
-            <td className={recordCount}>
-              <strong>{data.length.toLocaleString()} records found</strong>
-            </td>
-            <td colSpan={2} />
-            <td colSpan={2}>
-              <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </button>
-              <span className={pageCnt}>
-                {pageIndex + 1} of {pageOptions.length}
-              </span>
-              <button className={pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
-                <FontAwesomeIcon icon={faAngleRight} />
-              </button>
-            </td>
-            <td />
+                  ) : (
+                    "  "
+                  )}
+                </span>
+                {showFilters && (
+                  <div className={styles.colFilter}>
+                    {column.canFilter ? column.render("Filter") : null}
+                  </div>
+                )}
+              </th>
+            ))}
           </tr>
-        </tfoot>
-
-      </table>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {page.map((row) => {
+          prepareRow(row)
+          return (
+            // eslint-disable-next-line react/jsx-key
+            <tr {...row.getRowProps()} className={dataRows}>
+              {row.cells.map((cell) => {
+                if (cell.column.id === "id") {
+                  return (
+                    <td>
+                      <FontAwesomeIcon
+                        className={actionBtn}
+                        title="Save Record"
+                        icon={faPlusCircle}
+                        onClick={() => saveRecord(cell.value)}
+                      />
+                    </td>
+                  )
+                }
+                return (
+                  // eslint-disable-next-line react/jsx-key
+                  <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                )
+              })}
+            </tr>
+          )
+        })}
+      </tbody>
+      <tfoot className={dataFooter}>
+        <tr>
+          <td className={recordCount}>
+            <strong>{data.length.toLocaleString()} records found</strong>
+          </td>
+          <td colSpan={2} />
+          <td colSpan={2}>
+            <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
+              <FontAwesomeIcon icon={faAngleLeft} />
+            </button>
+            <span className={pageCnt}>
+              {pageIndex + 1} of {pageOptions.length}
+            </span>
+            <button className={pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
+              <FontAwesomeIcon icon={faAngleRight} />
+            </button>
+          </td>
+          <td />
+        </tr>
+      </tfoot>
+    </table>
   )
 }
