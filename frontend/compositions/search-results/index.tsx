@@ -8,9 +8,7 @@ import {
   faArrowUp,
   faArrowDown,
   faAngleRight,
-  faAngleLeft,
-  faAngleDoubleRight,
-  faAngleDoubleLeft
+  faAngleLeft
 } from "@fortawesome/free-solid-svg-icons"
 import { InfoTooltip } from "../../shared-components"
 import { TooltipIcons, TooltipTypes, IncidentTableData } from "../../models"
@@ -22,6 +20,11 @@ let mockData: Array<IncidentTableData> = require("../../models/mock-data/grammy.
 
 const resultsColumns = [
   {
+    Header: "Officer(s) Involved",
+    accessor: (row: any) => row["officers"].join(", "),
+    id: "officers"
+  },
+  {
     Header: () => (
       <span className="columnHead">
         Date/Time
@@ -30,11 +33,6 @@ const resultsColumns = [
     ),
     accessor: (row: any) => new Date(row["occurred"]).toLocaleDateString(),
     id: "occurred"
-  },
-  {
-    Header: "Officer(s)",
-    accessor: (row: any) => row["officers"].join(", "),
-    id: "officers"
   },
   {
     Header: "Incident Type",
@@ -123,7 +121,6 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
   )
 
   return (
-    <>
       <table {...getTableProps()} className={dataTable} aria-label="Search Results">
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
@@ -141,7 +138,7 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
                         <FontAwesomeIcon icon={faArrowUp} />
                       )
                     ) : (
-                      " "
+                      "  "
                     )}
                   </span>
                   {showFilters && (
@@ -182,46 +179,27 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
             )
           })}
         </tbody>
-      </table>
+        <tfoot className={dataFooter}>
+          <tr>
+            <td className={recordCount}>
+              <strong>{data.length.toLocaleString()} records found</strong>
+            </td>
+            <td colSpan={2} />
+            <td colSpan={2}>
+              <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </button>
+              <span className={pageCnt}>
+                {pageIndex + 1} of {pageOptions.length}
+              </span>
+              <button className={pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </button>
+            </td>
+            <td />
+          </tr>
+        </tfoot>
 
-      <div className={dataFooter}>
-        <span className={recordCount}>Found {data.length.toLocaleString()} records</span>
-        <button className={pageBtn} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          <FontAwesomeIcon icon={faAngleDoubleLeft} />
-        </button>
-        <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </button>
-        <span className={pageCnt}>
-          Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}
-        </span>
-        <button className={styles.pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
-          <FontAwesomeIcon icon={faAngleRight} />
-        </button>
-        <button className={pageBtn} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          <FontAwesomeIcon icon={faAngleDoubleRight} />
-        </button>
-        <span className={goto}>
-          Go to page:{" "}
-          <input
-            type="number"
-            className={dataRowPage}
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: "50px", textAlign: "right" }}
-          />
-        </span>{" "}
-        <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-    </>
+      </table>
   )
 }
