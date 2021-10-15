@@ -1,7 +1,7 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { InfoTooltip } from ".."
-import { TooltipTypes } from "../../models"
+import { TooltipIcons, TooltipTypes } from "../../models"
 
 export default {
   title: "Shared Components/Info Tooltip",
@@ -19,10 +19,25 @@ const Template: ComponentStory<typeof InfoTooltip> = (args) => <InfoTooltip {...
 
 export const ViewerTooltip = Template.bind({})
 ViewerTooltip.args = {
-  type: TooltipTypes.VIEWER
+  type: TooltipTypes.VIEWER,
+  icon: TooltipIcons.QUESTION
 }
 
 export const IncidentTooltip = Template.bind({})
 IncidentTooltip.args = {
-  type: TooltipTypes.INCIDENTS
+  type: TooltipTypes.INCIDENTS,
+  icon: TooltipIcons.QUESTION
+}
+
+export const DateTimeTooltip = Template.bind({})
+DateTimeTooltip.args = {
+  type: TooltipTypes.DATETIME,
+  icon: TooltipIcons.INFO
+}
+
+export const UseOfForceTooltip = Template.bind({})
+UseOfForceTooltip.args = {
+  type: TooltipTypes.USEFORCE,
+  icon: TooltipIcons.INFO,
+  iconSize: "2x"
 }
