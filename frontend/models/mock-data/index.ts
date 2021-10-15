@@ -4,10 +4,4 @@ import mockSavedResults from "./saved-results.json"
 import mockSavedSearches from "./saved-searches.json"
 import mockUsers from "./users.json"
 
-export {
-  mockIncident,
-  mockIncidentG,
-  mockSavedResults,
-  mockSavedSearches,
-  mockUsers
-}
+export { mockIncident, mockIncidentG, mockSavedResults, mockSavedSearches, mockUsers }

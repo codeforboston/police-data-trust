@@ -4,7 +4,6 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons"
 import { searchesColumns, SavedSearchType } from "../../models/saved-table"
 import { mockSavedSearches } from "../../models/mock-data"
 
-
 // TODO: retrieve user saved searches from API
 
 interface SavedSearchProps {

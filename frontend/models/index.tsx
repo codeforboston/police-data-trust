@@ -28,4 +28,13 @@ export {
   alertContent,
   TooltipIcons
 }
-export type { GeoJson, Filter, Data, CityProperties, IncidentTableData, IncidentDetailType, SavedResultsType, SavedSearchType }
+export type {
+  GeoJson,
+  Filter,
+  Data,
+  CityProperties,
+  IncidentTableData,
+  IncidentDetailType,
+  SavedResultsType,
+  SavedSearchType
+}
