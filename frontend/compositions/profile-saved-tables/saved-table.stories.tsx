@@ -3,8 +3,8 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import SavedTable from "./saved-table"
 import { faAngleRight, faCaretRight } from "@fortawesome/free-solid-svg-icons"
 
-import { resultsColumns, searchesColumns } from "../../models/search-meta"
-import { savedResultsData, savedSearchData } from "../../models/mock-data"
+import { resultsColumns, searchesColumns } from "../../models/saved-table"
+import { mockSavedSearches, mockSavedResults } from "../../models/mock-data"
 
 export default {
   title: "Compositions/Saved Table",
@@ -17,7 +17,7 @@ export const SavedResultsTable = Template.bind({})
 SavedResultsTable.args = {
   itemTitle: "Results",
   tableColumns: resultsColumns,
-  tableData: savedResultsData,
+  tableData: mockSavedResults,
   rowIdName: "recordId",
   expandIcon: faAngleRight
 }
@@ -26,7 +26,7 @@ export const SavedSearchTable = Template.bind({})
 SavedSearchTable.args = {
   itemTitle: "Searches",
   tableColumns: searchesColumns,
-  tableData: savedSearchData,
+  tableData: mockSavedSearches,
   rowIdName: "results",
   expandIcon: faCaretRight
 }
