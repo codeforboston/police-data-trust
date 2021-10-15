@@ -8,13 +8,14 @@ export default {
   component: SearchResultsTable
 } as ComponentMeta<typeof SearchResultsTable>
 
-const Template: ComponentStory<typeof SearchResultsTable> = (args) => <SearchResultsTable {...args} />
+const Template: ComponentStory<typeof SearchResultsTable> = (args) => (
+  <SearchResultsTable {...args} />
+)
 
 export const Incidents = Template.bind({})
 Incidents.args = {
   incidents: require("../../models/mock-data/incidents.json")
 }
-
 
 export const Grammies = Template.bind({})
 Grammies.args = {
