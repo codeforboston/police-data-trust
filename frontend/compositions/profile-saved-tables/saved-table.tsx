@@ -1,5 +1,6 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowUp, faArrowDown, faAngleRight, faAngleLeft, faAngleDoubleRight, faAngleDoubleLeft } from "@fortawesome/free-solid-svg-icons"
 import * as React from "react"
 import { useTable, usePagination, Column } from "react-table"
 
@@ -28,7 +29,12 @@ export default function SavedTable(props: SavedTableProps) {
     dataFooter,
     dataRowPage,
     dataRows,
-    expandRecordButton
+    pageBtn,
+    actionBtn,
+    sortArrow,
+    recordCount, 
+    pageCnt,
+    goto
   } = styles
 
   const data = useMemo(() => tableData, [tableData])
@@ -103,12 +109,11 @@ export default function SavedTable(props: SavedTableProps) {
               // eslint-disable-next-line react/jsx-key
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
-                  const { id } = cell.column
-                  if (id === rowIdName) {
+                  if (cell.column.id === rowIdName) {
                     return (
                       <td>
                         <FontAwesomeIcon
-                          className={expandRecordButton}
+                          className={actionBtn}
                           icon={expandIcon}
                           onClick={() => viewRecord(cell.value)}
                         />
@@ -124,36 +129,38 @@ export default function SavedTable(props: SavedTableProps) {
             )
           })}
         </tbody>
-        <tfoot className={dataFooter}>
-          <tr>
-            <td>{data.length.toLocaleString()} records found</td>
-            <td colSpan={4}></td>
-            <td>
-              Show{" "}
-              <input
-                className={dataRowPage}
-                min={1}
-                max={10}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                type="number"
-                value={pageSizeValue}
-              />{" "}
-              rows
-            </td>
-            <td>
-              {" "}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {"<"}
-              </button>{" "}
-              {pageIndex + 1} of {pageOptions.length}{" "}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {">"}
-              </button>{" "}
-            </td>
-          </tr>
-        </tfoot>
       </table>
+      <div className={dataFooter}>
+        <span className={recordCount}>Found {data.length.toLocaleString()} records</span>
+        <button className={pageBtn} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          <FontAwesomeIcon icon={faAngleDoubleLeft} />
+        </button>
+        <button className={pageBtn} onClick={() => previousPage()} disabled={!canPreviousPage}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </button>
+        <span className={pageCnt}>Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}</span>
+        <button className={styles.pageBtn} onClick={() => nextPage()} disabled={!canNextPage}>
+          <FontAwesomeIcon icon={faAngleRight} />
+        </button>
+        <button className={pageBtn} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} >
+          <FontAwesomeIcon icon={faAngleDoubleRight} />
+        </button>
+        <span className={goto}>Go to page:{" "}
+          <input type="number" className={dataRowPage} defaultValue={pageIndex + 1} 
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(page)
+            }} 
+            style={{ width: "50px", textAlign: "right" }} />
+        </span>{" "}
+        <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+          {[10, 20, 30, 40, 50].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }
