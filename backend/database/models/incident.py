@@ -63,6 +63,7 @@ class Incident(db.Model, CrudMixin):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
+    source = db.Column(db.Text)
     location = db.Column(db.Text)  # TODO: location object
     # TODO: neighborhood seems like a weird identifier that may not always
     #  apply in consistent ways across municipalities.

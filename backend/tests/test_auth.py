@@ -4,20 +4,6 @@ from backend.auth import user_manager
 from flask_jwt_extended import decode_token
 
 
-@pytest.fixture
-def example_user(db_session):
-    user = User(
-        email="test@email.com",
-        password=user_manager.hash_password("my_password"),
-        role=UserRole.PUBLIC,
-        first_name="first",
-        last_name="last",
-    )
-    db_session.add(user)
-    db_session.commit()
-    return user
-
-
 @pytest.mark.parametrize(
     ("email", "password", "expected_status_code"),
     [
@@ -107,3 +93,7 @@ def test_auth_test_cookie(client, example_user):
     )
 
     assert test_res.status_code == 200
+
+
+def test_access_token_fixture(access_token):
+    assert len(access_token) > 0

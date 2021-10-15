@@ -1,27 +1,32 @@
-from flask import abort
-from flask import Blueprint
-from flask import current_app
+from datetime import datetime
+from typing import Optional
 
-from flask_pydantic import validate
-
+from backend.auth.jwt import role_required
 from backend.database.models.officer import Officer
 from backend.database.models.use_of_force import UseOfForce
+from backend.database.models.user import UserRole
+from flask import Blueprint, abort, current_app
+from flask_jwt_extended.view_decorators import jwt_required
+from flask_pydantic import validate
+from pydantic import BaseModel
 
-from ..schemas import IncidentSchema
-from ..schemas import CreateIncidentSchema
 from ..database import Incident
-
+from ..schemas import CreateIncidentSchema, IncidentSchema
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 
 
 @bp.route("/get/<int:incident_id>", methods=["GET"])
+@jwt_required()
+@role_required(UserRole.PUBLIC)
 def get_incidents(incident_id: int):
     return IncidentSchema.from_orm(Incident.get(incident_id)).dict()
 
 
 @bp.route("/create", methods=["POST"])
 @validate()
+@jwt_required()
+@role_required(UserRole.PUBLIC)
 def create_incident(body: CreateIncidentSchema):
     if current_app.env == "production":
         abort(418)
@@ -39,7 +44,14 @@ def create_incident(body: CreateIncidentSchema):
 
     is_empty = lambda d: d is None or (isinstance(d, list) and len(d) == 0)
     supported_fields = set(
-        ("time_of_incident", "stop_type", "use_of_force", "officers")
+        (
+            "time_of_incident",
+            "source",
+            "stop_type",
+            "use_of_force",
+            "officers",
+            "location",
+        )
     )
     any_unsupported_fields = not all(
         [
@@ -52,7 +64,20 @@ def create_incident(body: CreateIncidentSchema):
     if any_unsupported_fields:
         abort(400)
 
-    # <-- Add stuff here
     obj = Incident(**data).create()
-    # <-- Add more stuff here
     return IncidentSchema.from_orm(obj).dict()
+
+
+class SearchIncidentsSchema(BaseModel):
+    location: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    incident_type: Optional[str] = None
+
+
+@bp.route("/search", methods=["GET"])
+@validate()
+@jwt_required()
+@role_required(UserRole.PUBLIC)
+def search_incidents(body: SearchIncidentsSchema):
+    return body.dict()
