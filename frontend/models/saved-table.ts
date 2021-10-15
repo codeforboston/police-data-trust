@@ -58,7 +58,6 @@ export interface SavedSearchType {
   results: number
 }
 
-
 export const searchesColumns = [
   {
     Header: "Search Date",
