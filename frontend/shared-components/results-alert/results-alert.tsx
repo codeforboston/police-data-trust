@@ -21,7 +21,7 @@ export default function ResultsAlert({ type, returnHandler }: ResultsAlertProps)
           <p>Please revise search or explore map</p>
         </div>
       </div>
-      
+
       <PrimaryButton onClick={returnHandler}>Return</PrimaryButton>
     </div>
   )
