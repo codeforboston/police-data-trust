@@ -160,7 +160,7 @@ export default function SearchResultsTable({ incidents = mockData }: SearchResul
               {row.cells.map((cell) => {
                 if (cell.column.id === "id") {
                   return (
-                    <td>
+                    <td key={cell.getCellProps().key}>
                       <FontAwesomeIcon
                         className={actionBtn}
                         title="Save Record"

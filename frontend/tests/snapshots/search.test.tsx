@@ -7,8 +7,11 @@ jest.mock("../../compositions/visualizations/map")
 beforeAll(() => setAuthForTest())
 
 it("renders Dashboard correctly", async () => {
+  // Ensure consistent title id's for fontawesome
+  jest.spyOn(global.Math, "random").mockImplementation(() => 0)
   const { container } = render(<Dashboard />)
   expect(container).toMatchSnapshot()
+  jest.clearAllMocks
 })
 
 it("navigates to logout page", async () => {
