@@ -6,7 +6,7 @@ from backend.database import Incident
 mock_incidents = {
     "domestic": {
         "time_of_incident": "2021-03-14 01:05:09",
-        "stop_type": "Domestic disturbance",
+        "description": "Domestic disturbance",
         "officers": [
             {"first_name": "Susie", "last_name": "Suserson"},
             {"first_name": "Lisa", "last_name": "Wong"},
@@ -17,7 +17,7 @@ mock_incidents = {
     },
     "traffic": {
         "time_of_incident": "2021-10-01 00:00:00",
-        "stop_type": "Traffic stop",
+        "description": "Traffic stop",
         "officers": [
             {"first_name": "Ronda", "last_name": "Sousa"},
         ],
@@ -27,7 +27,7 @@ mock_incidents = {
     },
     "firearm": {
         "time_of_incident": "2021-10-05 00:00:00",
-        "stop_type": "Robbery",
+        "description": "Robbery",
         "officers": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
@@ -101,7 +101,7 @@ def test_get_incident(app, client, db_session, access_token):
         ),
         (
             {
-                "incident_type": "traffic",
+                "description": "traffic",
             },
             ["traffic"],
         ),

@@ -11,7 +11,11 @@ from flask_pydantic import validate
 from pydantic import BaseModel
 
 from ..database import Incident, db
-from ..schemas import CreateIncidentSchema, IncidentSchema
+from ..schemas import (
+    CreateIncidentSchema,
+    incident_to_orm,
+    incident_orm_to_json,
+)
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 
@@ -20,59 +24,32 @@ bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 @jwt_required()
 @role_required(UserRole.PUBLIC)
 def get_incidents(incident_id: int):
-    return IncidentSchema.from_orm(Incident.get(incident_id)).dict()
+    return incident_orm_to_json(Incident.get(incident_id))
 
 
 @bp.route("/create", methods=["POST"])
 @validate()
 @jwt_required()
+# TODO: Require CONTRIBUTOR role
 @role_required(UserRole.PUBLIC)
 def create_incident(body: CreateIncidentSchema):
     if current_app.env == "production":
         abort(418)
 
-    # pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way around.
-    # sqlalchemy won't convert nested dictionaries into the corresponding ORM types, so we
-    # need to manually perform the JSON -> ORM conversion. We can roll our own recursive
-    # conversion if we can get the ORM model class associated with a schema instance.
-
-    data = body.dict()
-    data["officers"] = [Officer(**record) for record in data["officers"]]
-    data["use_of_force"] = [
-        UseOfForce(**record) for record in data["use_of_force"]
-    ]
-
-    is_empty = lambda d: d is None or (isinstance(d, list) and len(d) == 0)
-    supported_fields = set(
-        (
-            "time_of_incident",
-            "source",
-            "stop_type",
-            "use_of_force",
-            "officers",
-            "location",
-        )
-    )
-    any_unsupported_fields = not all(
-        [
-            is_empty(value)
-            for field, value in data.items()
-            if field not in supported_fields
-        ]
-    )
-
-    if any_unsupported_fields:
+    try:
+        incident = incident_to_orm(body)
+    except:
         abort(400)
 
-    obj = Incident(**data).create()
-    return IncidentSchema.from_orm(obj).dict()
+    created = incident.create()
+    return incident_orm_to_json(created)
 
 
 class SearchIncidentsSchema(BaseModel):
     location: Optional[str] = None
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
-    incident_type: Optional[str] = None
+    description: Optional[str] = None
 
 
 @bp.route("/search", methods=["GET"])
@@ -90,15 +67,13 @@ def search_incidents(body: SearchIncidentsSchema):
         query = query.filter(Incident.time_of_incident >= body.start_time)
     if body.end_time:
         query = query.filter(Incident.time_of_incident <= body.end_time)
-    if body.incident_type:
+    if body.description:
         query = query.filter(
-            Incident.stop_type.ilike(f"%{body.incident_type}%")
+            Incident.description.ilike(f"%{body.description}%")
         )
 
     search_results = query.limit(100).all()
 
     return {
-        "results": [
-            IncidentSchema.from_orm(result).dict() for result in search_results
-        ]
+        "results": [incident_orm_to_json(result) for result in search_results]
     }

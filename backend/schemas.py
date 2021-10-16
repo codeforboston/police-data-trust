@@ -33,7 +33,7 @@ _incident_list_attrs = [
     "results_of_stop",
     "actions",
     "use_of_force",
-    "legal_case"
+    "legal_case",
 ]
 
 
@@ -115,3 +115,42 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 UserSchema = sqlalchemy_to_pydantic(User, exclude=["role", "password", "id"])
+
+
+def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
+    """Convert the JSON incident into an ORM instance
+
+    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
+    around. sqlalchemy won't convert nested dictionaries into the corresponding
+    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
+    roll our own recursive conversion if we can get the ORM model class
+    associated with a schema instance.
+    """
+
+    converters = {"officers": Officer, "use_of_force": UseOfForce}
+    orm_attrs = incident.dict()
+    for k, v in orm_attrs.items():
+        is_dict = isinstance(v, dict)
+        is_list = isinstance(v, list)
+        if is_dict:
+            orm_attrs[k] = converters[k](**v)
+        elif is_list and len(v) > 0:
+            orm_attrs[k] = [converters[k](**d) for d in v]
+    return Incident(**orm_attrs)
+
+
+def incident_orm_to_json(incident: Incident) -> dict:
+    return IncidentSchema.from_orm(incident).dict(
+        exclude_none=True,
+        # Exclude a bunch of unused empty lists
+        exclude={
+            "actions",
+            "investigations",
+            "multimedias",
+            "legal_case",
+            "participants",
+            "results_of_stop",
+            "tags",
+            "victims",
+        },
+    )
