@@ -5,8 +5,11 @@ import { render, router, setAuthForTest, userEvent, waitFor } from "../test-util
 beforeAll(() => setAuthForTest())
 
 it("renders Dashboard correctly", async () => {
+  // Ensure consistent title id's for fontawesome
+  jest.spyOn(global.Math, "random").mockImplementation(() => 0)
   const { container } = render(<Dashboard />)
   expect(container).toMatchSnapshot()
+  jest.clearAllMocks
 })
 
 it("redirects to login on logout", async () => {
