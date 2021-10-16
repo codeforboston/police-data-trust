@@ -9,6 +9,7 @@
     "check-formatting": "prettier --check .",
     "prepare": "cd ${HOOKS_DIR:-..} && husky install frontend/.husky",
     "test": "jest",
+    "test:e2e": "jest -c jest.e2e.config.js ",
     "test:update-snapshots": "jest --updateSnapshot",
     "watch": "jest --watch",
     "fix": "next lint --fix; prettier --write .",
