@@ -73,7 +73,6 @@ CreateLegalCaseSchema = schema_create(LegalCase)
 class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     victims: Optional[List[CreateVictimSchema]]
     officers: Optional[List[CreateOfficerSchema]]
-    descriptions: Optional[List[CreateDescriptionSchema]]
     tags: Optional[List[CreateTagSchema]]
     participants: Optional[List[CreateParticipantSchema]]
     multimedias: Optional[List[CreateMultimediaSchema]]
@@ -105,7 +104,6 @@ LegalCaseSchema = schema_get(LegalCase)
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     victims: List[VictimSchema]
     officers: List[OfficerSchema]
-    descriptions: List[DescriptionSchema]
     tags: List[TagSchema]
     participants: List[ParticipantSchema]
     multimedias: List[MultimediaSchema]
