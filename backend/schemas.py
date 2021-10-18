@@ -142,7 +142,7 @@ def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
 def incident_orm_to_json(incident: Incident) -> dict:
     return IncidentSchema.from_orm(incident).dict(
         exclude_none=True,
-        # Exclude a bunch of unused empty lists
+        # Exclude a bunch of currently-unused empty lists
         exclude={
             "actions",
             "investigations",

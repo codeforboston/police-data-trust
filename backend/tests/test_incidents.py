@@ -35,6 +35,13 @@ mock_incidents = {
         "source": "cpdp",
         "location": "CHICAGO ILLINOIS",
     },
+    "missing_fields": {
+        "description": "Robbery",
+        "officers": [
+            {"first_name": "Dale", "last_name": "Green"},
+        ],
+        "source": "cpdp",
+    },
 }
 
 
@@ -86,7 +93,7 @@ def test_get_incident(app, client, db_session, access_token):
     [
         (
             {},
-            ["domestic", "traffic", "firearm"],
+            ["domestic", "traffic", "firearm", "missing_fields"],
         ),
         (
             {"location": "Chicago"},
@@ -94,8 +101,8 @@ def test_get_incident(app, client, db_session, access_token):
         ),
         (
             {
-                "start_time": "2021-09-30 00:00:00",
-                "end_time": "2021-10-02 00:00:00",
+                "startTime": "2021-09-30 00:00:00",
+                "endTime": "2021-10-02 00:00:00",
             },
             ["traffic"],
         ),
@@ -110,9 +117,10 @@ def test_get_incident(app, client, db_session, access_token):
 def test_search_incidents(
     client, example_incidents, access_token, query, expected_incident_names
 ):
-    res = client.get(
+    res = client.post(
         "/api/v1/incidents/search",
         json=query,
+        headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200
 

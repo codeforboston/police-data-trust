@@ -45,14 +45,14 @@ def create_incident(body: CreateIncidentSchema):
     return incident_orm_to_json(created)
 
 
-class SearchIncidentsSchema(BaseModel):
+class SearchIncidentsSchema(BaseModel, extra="forbid"):
     location: Optional[str] = None
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
+    startTime: Optional[datetime] = None
+    endTime: Optional[datetime] = None
     description: Optional[str] = None
 
 
-@bp.route("/search", methods=["GET"])
+@bp.route("/search", methods=["POST"])
 @validate()
 @jwt_required()
 @role_required(UserRole.PUBLIC)
@@ -63,10 +63,10 @@ def search_incidents(body: SearchIncidentsSchema):
         # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text search
         # TODO: eventually replace with geosearch. Geocode records and integrate PostGIS
         query = query.filter(Incident.location.ilike(f"%{body.location}%"))
-    if body.start_time:
-        query = query.filter(Incident.time_of_incident >= body.start_time)
-    if body.end_time:
-        query = query.filter(Incident.time_of_incident <= body.end_time)
+    if body.startTime:
+        query = query.filter(Incident.time_of_incident >= body.startTime)
+    if body.endTime:
+        query = query.filter(Incident.time_of_incident <= body.endTime)
     if body.description:
         query = query.filter(
             Incident.description.ilike(f"%{body.description}%")
