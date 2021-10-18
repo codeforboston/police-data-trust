@@ -135,3 +135,37 @@ def test_search_incidents(
         filter(None, map(incident_name, actual_incidents))
     )
     assert set(actual_incident_names) == set(expected_incident_names)
+
+    assert res.json["page"] == 1
+    assert res.json["totalPages"] == 1
+    assert res.json["totalResults"] == len(expected_incident_names)
+
+
+def test_pagination(client, example_incidents, access_token):
+    per_page = 1
+    expected_total_pages = len(example_incidents)
+    actual_ids = set()
+    for page in range(1, expected_total_pages + 1):
+        res = client.post(
+            "/api/v1/incidents/search",
+            json={"perPage": per_page, "page": page},
+            headers={"Authorization": "Bearer {0}".format(access_token)},
+        )
+
+        assert res.status_code == 200
+        assert res.json["page"] == page
+        assert res.json["totalPages"] == expected_total_pages
+        assert res.json["totalResults"] == expected_total_pages
+
+        incidents = res.json["results"]
+        assert len(incidents) == per_page
+        actual_ids.add(incidents[0]["id"])
+
+    assert actual_ids == set(i["id"] for i in example_incidents.values())
+
+    res = client.post(
+        "/api/v1/incidents/search",
+        json={"perPage": per_page, "page": expected_total_pages + 1},
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 404

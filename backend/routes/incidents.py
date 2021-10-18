@@ -50,6 +50,8 @@ class SearchIncidentsSchema(BaseModel, extra="forbid"):
     startTime: Optional[datetime] = None
     endTime: Optional[datetime] = None
     description: Optional[str] = None
+    page: Optional[int] = 1
+    perPage: Optional[int] = 20
 
 
 @bp.route("/search", methods=["POST"])
@@ -72,8 +74,13 @@ def search_incidents(body: SearchIncidentsSchema):
             Incident.description.ilike(f"%{body.description}%")
         )
 
-    search_results = query.limit(100).all()
+    results = query.paginate(
+        page=body.page, per_page=body.perPage, max_per_page=100
+    )
 
     return {
-        "results": [incident_orm_to_json(result) for result in search_results]
+        "results": [incident_orm_to_json(result) for result in results.items],
+        "page": results.page,
+        "totalPages": results.pages,
+        "totalResults": results.total,
     }
