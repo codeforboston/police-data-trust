@@ -209,17 +209,24 @@ def make_all_tables():
     df_filtered = df_filtered[~df_filtered.index.duplicated(keep="first")]
     final_indices = df_filtered.index
 
-    dest_path = join(output_dir, "full_database.xlsx")
-    writer = pd.ExcelWriter(dest_path, engine="xlsxwriter")
-
-    print("Exporting results to " + dest_path)
     # Write each dataframe to a different worksheet.
+    excel_path = join(output_dir, "full_database.xlsx")
+    writer = pd.ExcelWriter(excel_path, engine="xlsxwriter")
+    print("Exporting results to " + excel_path)
+    sheets = []
     for key in table_dict:
-        sub_data = table_dict[key]
-        sub_data.loc[final_indices].to_excel(writer, sheet_name=key)
-
+        sheet = table_dict[key].loc[final_indices]
+        sheet.to_excel(writer, sheet_name=key)
+        sheets.append(sheet)
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
+
+    # Write all sheets to a single pickled dataframe, which loads faster than
+    # xlsx.
+    pickle_path = join(output_dir, "full_database.pkl.zip")
+    print("Exporting to " + pickle_path)
+    pd.concat(sheets, axis=1).to_pickle(pickle_path)
+
     return table_dict
 
 
