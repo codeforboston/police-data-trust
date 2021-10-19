@@ -4,9 +4,9 @@ import { Logo as NPDCLogo } from "../../shared-components"
 import styles from "../../compositions/dashboard-header/dashboard-header.module.css"
 
 import { LogoSizes } from "../../models"
-import { useAuth } from "../../helpers"
+import { requireAuth, useAuth } from "../../helpers"
 
-export default function Logout() {
+export default requireAuth(function Logout() {
   const { leftHeader, titleContainer, mobileTitle, desktopTitle } = styles
   const { logout } = useAuth()
   React.useEffect(() => {
@@ -26,4 +26,4 @@ export default function Logout() {
       </section>
     </Layout>
   )
-}
+})
