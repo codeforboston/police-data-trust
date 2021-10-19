@@ -1,24 +1,20 @@
 import * as React from "react"
-
 import { Layout } from "../../shared-components"
-import { DashboardHeader } from "../../compositions"
-import ProfileNav from "../../compositions/profile-nav/profile-nav"
 import { ProfileMenu } from "../../models/profile"
+import { requireAuth } from "../../helpers"
 import {
+  DashboardHeader,
   ProfileInfo,
+  ProfileNav,
   ProfileType,
   SavedSearches,
   SavedResults
-} from "../../compositions/profile-content"
+} from "../../compositions"
 import styles from "./profile.module.css"
+// import { useAuth, requireAuth } from "../../helpers"
 
-// TODO: replace with API call
-import { users } from "../../models/mock-data"
-
-export default function Profile() {
+export default requireAuth(function Profile() {
   const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
-
-  const mockUser = users[0]
 
   return (
     <Layout>
@@ -27,11 +23,11 @@ export default function Profile() {
         <ProfileNav currentItem={nav} selectNav={setNav} />
 
         {/* TODO: this looks awful */}
-        {nav === ProfileMenu.USER_INFO && <ProfileInfo userData={mockUser} />}
-        {nav === ProfileMenu.PROFILE_TYPE && <ProfileType userData={mockUser} />}
+        {nav === ProfileMenu.USER_INFO && <ProfileInfo />}
+        {nav === ProfileMenu.PROFILE_TYPE && <ProfileType />}
         {nav === ProfileMenu.SAVED_RESULTS && <SavedResults />}
         {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches />}
       </div>
     </Layout>
   )
-}
+})

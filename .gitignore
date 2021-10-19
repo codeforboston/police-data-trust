@@ -2,6 +2,7 @@
 .vscode/
 .history/
 .idea/
+excel_outputs/
 
 # MacOS
 .DS_Store

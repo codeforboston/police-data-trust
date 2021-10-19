@@ -29,3 +29,6 @@ Flask-DB
 Flask-JWT-Extended
 email-validator
 flask_cors
+openpyxl
+xlsxwriter
+numpy

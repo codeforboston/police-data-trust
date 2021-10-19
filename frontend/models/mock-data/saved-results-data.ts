@@ -1,3 +1,20 @@
+import { IncidentTableData, incidentsColumns, formatDate } from "../incidents"
+
+// SAVED RESULTS DATA TABLE
+export interface SavedResultsType extends IncidentTableData {
+  searchDate: number // UNIX timestamp
+}
+
+export const resultsColumns = [
+  {
+    Header: "Search Date",
+    accessor: (row: any) => formatDate(row["searchDate"]),
+    id: "searchDate"
+  },
+  ...incidentsColumns
+]
+
+// OLD FORMAT - here to avoid breaking existing components
 export const savedResultsData = [
   {
     searchDate: "2021/09/07",

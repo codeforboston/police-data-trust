@@ -1,0 +1,32 @@
+.profileData {
+  padding: var(--size12);
+  max-width: var(--size512);
+}
+
+.sectionTitle {
+  font-size: var(--size24);
+  font-weight: bold;
+  color: var(--darkBlue);
+  margin-bottom: var(--size16);
+}
+
+/* Profile Type */
+
+.profileTypeText {
+  font-size: var(--size36);
+  color: #3473a8;
+  font-weight: bold;
+}
+
+.description {
+  line-height: 2;
+  font-size: var(--size14);
+  color: black;
+  margin-bottom: var(--size20);
+}
+
+.profileTypeLink {
+  font-size: var(--size16);
+  color: var(--linkBlue);
+  text-decoration: underline;
+}
