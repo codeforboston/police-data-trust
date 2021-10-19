@@ -14,7 +14,12 @@ export enum PrimaryInputNames {
   LOGIN_PASSWORD = "loginPassword",
   STREET_ADDRESS = "streetAddress",
   CITY_TOWN = "cityOrTown",
-  ZIP_CODE = "zipCode"
+  ZIP_CODE = "zipCode",
+  OFFICER_NAME = "officerName",
+  LOCATION = "location",
+  BADGE_NUMBER = "badgeNumber",
+  INCIDENT_TYPE = "incidentType",
+  DATE_TIME = "dateTime"
 }
 
 const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/
@@ -72,5 +77,30 @@ export const primaryInputValidation = {
     errorMessage: "5 digits required",
     pattern: new RegExp("^[0-9]{5}$"),
     inputType: "number"
+  },
+  [PrimaryInputNames.OFFICER_NAME]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.LOCATION]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.BADGE_NUMBER]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.INCIDENT_TYPE]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.DATE_TIME]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
   }
 }
