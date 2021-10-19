@@ -3,43 +3,18 @@ import { lightBlueGrey, lightDarkBlueTheme } from "../utilities"
 import { ChartKey, GradientKeyItem, scaleDataToColorTheme, SymbolKeyItem } from "../chart-key"
 
 export default function MapKey(props: { title: string }) {
-  const colorScale = scaleDataToColorTheme(0, 1000)
+  const colorScale = scaleDataToColorTheme(0, 100)
   const { title } = props
   const chartKeyElements: JSX.Element[] = [
-    <SymbolKeyItem
-      label="Data Rich Cities"
-      key={title}
-      labelPosition={"right"}
-      color={"var(--darkBlue)"}
-      symbol={"circle"}
-      size={20}
-    />,
-    <SymbolKeyItem
-      key={title}
-      label="Data Poor Cities"
-      labelPosition={"right"}
-      color={"var(--lightBlue)"}
-      symbol={"square"}
-      size={20}
-    />,
     <GradientKeyItem
       key={title}
       symbol="square"
       colorTheme={lightDarkBlueTheme}
       colorScale={colorScale}
       range={[0, 1000]}
-      lowLabel="Less Data"
-      highLabel="More Data"
+      lowLabel="minimum value"
+      highLabel="maximum value"
     />,
-    <GradientKeyItem
-      key={title}
-      symbol="circle"
-      colorTheme={lightBlueGrey}
-      colorScale={colorScale}
-      range={[0, 1000]}
-      lowLabel="Blue"
-      highLabel="Grey"
-    />
   ]
 
   return (
