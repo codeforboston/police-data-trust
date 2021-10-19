@@ -1,42 +1,33 @@
-import d3, {
-  D3ZoomEvent,
-  extent,
-  pointer,
-  scaleLinear,
-  select,
-  Selection,
-  zoom,
-  zoomIdentity,
-  ZoomTransform
-} from "d3"
+import { select, selectAll, zoom, zoomIdentity, ZoomTransform } from "d3"
 import { geoAlbersUsa, geoPath } from "d3-geo"
-import { Feature, Point } from "geojson"
+import { Feature } from "geojson"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
-import BaseMap, { getFakeData } from "./BaseMap"
-import styles from "./map.module.css"
-import MapKey from "./mapKey"
-import { MarkerDescription, MarkerLayer } from "./marker-layer"
-import useData from "./useData"
 import {
-  PointCoord,
   BoundingType,
   D3CallableSelectionType,
-  D3ZoomEventType
+  D3ZoomEventType,
+  PointCoord,
+  TargetWithData
 } from "../utilities/chartTypes"
+import BaseMap from "./BaseMap"
+import styles from "./map.module.css"
+import MapKey from "./mapKey"
+import { MarkerDescription } from "./marker-layer"
+import useData from "./useData"
 
 export default function Map() {
   const data = useData()
   const mapRef = useRef<HTMLDivElement>()
   const zoomRef = useRef<ReturnType<typeof zoom>>()
   const { width, height } = useResizeObserver({ ref: mapRef })
-  const [markerParams, setMarkerParams] = useState<MarkerDescription[]>([])
 
   const projection = useMemo(() => {
     return geoAlbersUsa()
       .scale(1300)
       .translate([487.5 + 112, 305 + 50])
   }, [])
+
   const path = useMemo(() => geoPath(projection), [projection])
 
   const svgElement = select("#map-svg") as D3CallableSelectionType
@@ -72,31 +63,76 @@ export default function Map() {
     (action: (transform: ZoomTransform, transition?: Boolean, pointer?: PointCoord) => void) => {
       const transform = zoomIdentity
       moveMap(transform)
-      data.filter.value = null
-      data.setFilterProperties({ ...data.filter })
     },
-    [data, moveMap]
+    [moveMap]
   )
 
-  const getFeatureFromTarget = (target: any): Feature => target.__data__ as Feature
-
-  const onMapClick = useCallback(
-    (event: MouseEvent) => {
+  const handleMapClick = useCallback(
+    (event) => {
       event.stopPropagation()
-      const target = event.target as any
-
+      const target = event.target as TargetWithData
+      const d = target.__data__
       if (target.classList.contains("state")) {
-        const d: Feature = getFeatureFromTarget(target)
         const clickTransform = calcFitFeatureToWindow(width, height, d) as ZoomTransform
-
         zoomRef.current?.transform(svgElement.transition(), clickTransform)
-
-        data.filter.value = d.properties.name
-        data.setFilterProperties({ ...data.filter })
       }
     },
-    [calcFitFeatureToWindow, data, height, svgElement, width]
+    [calcFitFeatureToWindow, height, svgElement, width]
   )
+
+  const addToolTip = useCallback(() => {
+    const tooltip = svgElement
+      .append("foreignObject")
+      .attr("x", "100px")
+      .attr("y", "100px")
+      .attr("width", "1200px")
+      .attr("height", "700px")
+      .classed("tooltip", true)
+
+    const tooltipdiv = tooltip
+      .append("xhtml:div")
+      .style("width", "200px")
+      .style("background-color", "#ffffff")
+      .style("border", "2px solid #777")
+      .style("border-radius", "6px")
+      .style("visibility", "visible")
+
+    tooltipdiv
+      .append("xhtml:p")
+      .classed("tooltiptext", true)
+      .style("text-align", "center")
+      .style("text-anchor", "center")
+      .style("margin", "1em 0")
+      .html("a simple tooltip")
+  }, [svgElement])
+
+  const handleMouseEnter = useCallback(() => addToolTip(), [addToolTip])
+
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    event.stopPropagation()
+    const target = event.target as TargetWithData
+    const d = target.__data__
+
+    if (target.classList.contains("state") && select(".tooltip")) {
+      const mousePos = { x: event.clientX, y: event.clientY }
+      select(".tooltip")
+        .style("visibility", "visible")
+        .attr("x", mousePos.x + "px")
+        .attr("y", mousePos.y + "px")
+
+        const datum = data.find((i) => d.id === i.state)
+        const value = datum ? datum.value : "no value"
+
+      select(".tooltiptext").html(`stateId: ${d.id} <br>
+           mouse position: <br> 
+           {x: ${mousePos.x}, y: ${mousePos.y}} <br>
+           value = ${value}`)
+    }
+  }, [data])
+
+  const handleMouseOut = useCallback(() => {
+    selectAll(".tooltip").remove()
+  }, [])
 
   const zoomed = useCallback(
     (event: D3ZoomEventType) => {
@@ -108,18 +144,18 @@ export default function Map() {
 
   useEffect(() => {
     zoomRef.current = zoom().on("zoom", zoomed)
-    // const zoomZoom = zoomRef.current.on("zoom", zoomed)
-    // svgElement.call(zoomZoom)
     svgElement.call(zoomRef.current)
 
     const zoomResetButton = select("#zoom-reset")
     zoomResetButton.on("click", resetZoom)
-    svgElement.on("click", onMapClick)
-
+    svgElement.on("click", handleMapClick)
+    svgElement.on("mouseenter", handleMouseEnter)
+    svgElement.on("mousemove", handleMouseMove)
+    svgElement.on("mouseleave", handleMouseOut)
     return () => {
-      zoomResetButton.on(".click", null)
-      // zoomZoom.on(".zoom", null)
-      gZoomable.on(".click", null)
+      zoomResetButton.on("click", null)
+      gZoomable.on("click", null)
+      svgElement.on("click", null)
       zoomRef.current = null
     }
   }, [
@@ -130,35 +166,21 @@ export default function Map() {
     resetZoom,
     calcFitFeatureToWindow,
     svgElement,
-    onMapClick,
+    handleMapClick,
     moveMap,
     zoomed,
-    gZoomable
+    gZoomable,
+    handleMouseMove,
+    handleMouseOut,
+    handleMouseEnter
   ])
-
-  const valueScale = scaleLinear()
-    .domain(extent(data.features as Feature[], (features: Feature) => features.properties.value))
-    .range([1, 25])
-
-  const getMarkerParamsFromFeature = useCallback(
-    (d: Feature) => {
-      const markerParams: MarkerDescription = {
-        geoCenter: projection((d.geometry as Point).coordinates as PointCoord),
-        dataPoint: valueScale(d.properties.value),
-        label: d.properties.label
-      }
-      return markerParams
-    },
-    [valueScale, projection]
-  )
 
   return (
     <div id="map-container" className={styles.mapContainer} ref={mapRef}>
       <div className={styles.mapWrapper}>
         <svg id="map-svg" className={styles.mapData} viewBox={`0, 0, 1200, 700`}>
           <g id="zoom-container">
-            <BaseMap projection={projection} data={getFakeData()} />
-            <MarkerLayer markersData={markerParams} />
+            <BaseMap projection={projection} data={data} />
           </g>
         </svg>
       </div>

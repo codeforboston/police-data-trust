@@ -1,4 +1,5 @@
 import { BaseType, D3ZoomEvent, ScaleLinear, Selection, Transition } from "d3"
+import { Feature } from "geojson"
 import { CityProperties } from "../../../models/visualizations"
 
 export interface Coord {
@@ -30,6 +31,19 @@ export type Position =
   | "bottom left"
   | "none"
 
+export type StateID = string
+
+export type FakeData = {
+  UID: number
+  location?: PointCoord
+  state?: StateID
+  label?: string
+  value?: number
+}
+export type NodeData = {
+  __data__: Feature
+}
+export type TargetWithData = EventTarget & NodeData & SVGElement
 export interface ChartSymbolAttributes {
   label: string
   labelPosition: string
