@@ -45,6 +45,7 @@ export default function Map() {
   const calcFitFeatureToWindow = useCallback(
     (width: number, height: number, d: Feature) => {
       const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
+      const [x, y] = path.centroid(d)
       const dWidth = x1 - x0
       const dHeight = y1 - y0
       const maxBound = Math.max(dWidth / width, dHeight / height)
@@ -59,7 +60,6 @@ export default function Map() {
   const moveMap = useCallback(
     (transform: ZoomTransform, transition = true, pointer?: PointCoord) => {
       const transformStr = transform.toString()
-      console.log(transformStr)
       if (transformStr.includes("NaN")) return
       transition
         ? gZoomable.transition().duration(500).attr("transform", transformStr)
@@ -101,7 +101,6 @@ export default function Map() {
   const zoomed = useCallback(
     (event: D3ZoomEventType) => {
       const { transform } = event
-      console.log("inzoommd", transform.k)
       moveMap(transform, false)
     },
     [moveMap]

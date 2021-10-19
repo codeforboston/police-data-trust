@@ -1,11 +1,18 @@
 import * as d3 from "d3"
 import { Feature, FeatureCollection } from "geojson"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import * as topojson from "topojson-client"
-import { simplify } from "topojson-simplify"
+import { presimplify, simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
 import { PointCoord } from "../utilities/chartTypes"
-import styles from "./map.module.css"
+
+// colors:
+// --darkBlue: #303463;
+// --lightBlue: #7caed7;
+// --grey: #666666;
+// --red: #bf1212;
+// --linkBlue: #0645ad;
+// --white: #ffffff;
 
 type StateID = string
 
@@ -46,7 +53,7 @@ export const getFakeData = () => {
       location: "10",
       value: 20
     },
-        {
+    {
       UID: 6,
       location: "11",
       value: 10
@@ -85,7 +92,8 @@ export default function BaseMap(props: BaseMapProps) {
 
   const path = d3.geoPath().projection(projection)
 
-  const opacityScale = d3.scaleLinear().domain([0, 50]).range([0, 1])
+  const valueScale = d3.scaleLinear().domain([0, 100]).range([0, 1])
+  const colorGradient = d3.interpolate("#7caed7", "#303463")
 
   useEffect(() => {
     if (!dataPromise) return
@@ -93,25 +101,57 @@ export default function BaseMap(props: BaseMapProps) {
       .then((res) => res.json())
       .then((topology: Topology) => {
         if (!topology) return
-        const svg = d3
-          .select(baseMapRef.current)
-          .classed(styles.mapGeoShape, true)
-          .classed(styles.state, true)
+        // topology = presimplify(topology)
+
+        const svg = d3.select(baseMapRef.current)
+
+        // topology = simplify(topology, 0.05)
+
         const statesTopo = topojson.feature(topology, topology.objects.states) as FeatureCollection
-        svg
+
+        const defs = svg.append("defs")
+
+        const erodeFilter = defs.append("filter").attr("id", "erode")
+
+        erodeFilter
+          .append("feMorphology")
+          .attr("operator", "erode")
+          .attr("result", "ERODE")
+          .attr("radius", "3")
+
+        const statePaths = defs
+          .append("svg")
+          .attr("id", "statePaths")
+          .attr("width", "1200")
+          .attr("height", "700")
+
+        statePaths
           .selectAll("path")
           .data(statesTopo.features)
           .enter()
           .append("path")
           .attr("id", (d) => d.properties.name)
-          .classed("state", true)
           .attr("d", path)
-          .attr("fill-opacity", (d) => {
+          .attr("fill", (d: Feature) => {
             const datum = data.find((i) => d.id === i.location)
-            return datum ? opacityScale(Number(datum.value)) : 0.05
+            return datum ? colorGradient(valueScale(Number(datum.value))) : "#7caed7"
           })
-      })  
-  }, [data, dataPromise, opacityScale, path])
+          .attr("vector-effect", "non-scalling-stroke")
+          .attr("filter", "url(#erode)")
+
+        svg
+          .append("use")
+          .attr("href", "#statePaths")
+          .attr("pointer-events", "all")
+          .attr("cursor", "pointer")
+
+        svg.append("use").attr("href", "#statePaths")
+          .attr("stroke", "#66666")
+          .attr("stroke-width", 2)
+          .attr("stroke-join", "round")
+          .attr("stroke-opacity", 1)
+      })
+  }, [data, dataPromise, valueScale, path, colorGradient])
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }
