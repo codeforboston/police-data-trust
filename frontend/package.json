@@ -66,6 +66,7 @@
     "babel-plugin-transform-dynamic-import": "^2.1.0",
     "css-loader": "^6.3.0",
     "dom-storage": "^2.1.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.0",
     "eslint-config-prettier": "^8.3.0",

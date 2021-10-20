@@ -9,7 +9,6 @@ ARG ENV
 
 COPY package*.json ./
 RUN npm ci --no-optional --quiet 1>/dev/null
-RUN npm install --global env-cmd
 
 COPY . .
 
@@ -17,4 +16,5 @@ RUN npm run build:${ENV}
 
 FROM nginx:1.21.3
 COPY --from=builder /app/out /usr/share/nginx/html
+COPY --from=builder ./nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
