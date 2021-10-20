@@ -36,7 +36,7 @@ def test_register(client, db_session, email, password, expected_status_code):
     )
 
     db_user = db_session.query(User).filter(email == User.email).first()
-
+    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
     assert (db_user is not None) == (expected_status_code == 200)
     assert res.status_code == expected_status_code
 
@@ -56,6 +56,7 @@ def test_login(
         },
     )
 
+    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
     assert res.status_code == expected_status_code
 
 
@@ -77,17 +78,32 @@ def test_jwt(client, db_session, example_user):
     assert res.status_code == 200
 
 
-def test_auth_test(client, example_user):
+def test_auth_test_header(client, example_user):
     login_res = client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
     )
+
+    client.set_cookie("localhost", "access_token_cookie", value="")
 
     test_res = client.get(
         "api/v1/auth/test",
         headers={
             "Authorization": "Bearer {0}".format(login_res.json["access_token"])
         },
+    )
+
+    assert test_res.status_code == 200
+
+
+def test_auth_test_cookie(client, example_user):
+    client.post(
+        "api/v1/auth/login",
+        json={"email": example_user.email, "password": "my_password"},
+    )
+
+    test_res = client.get(
+        "api/v1/auth/test",
     )
 
     assert test_res.status_code == 200

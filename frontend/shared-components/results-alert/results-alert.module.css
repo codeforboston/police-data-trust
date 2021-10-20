@@ -1,0 +1,30 @@
+.outerBox {
+  position: relative;
+  width: 24rem;
+  height: 10rem;
+  z-index: 100;
+  margin: 16rem auto;
+  background: #ffffff;
+  border: 0.25rem solid #000000;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.innerBox {
+  display: flex;
+  font-size: 0.75rem;
+  color: red;
+  padding: 0.5rem;
+  margin: 1rem 2rem 1.5rem 2rem;
+  border: 2px solid #bf1212;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+
+.alertMessage {
+  font-weight: bold;
+}
+
+.innerBox svg {
+  margin: 0.1rem 0.5rem;
+}

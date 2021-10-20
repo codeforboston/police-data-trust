@@ -1,0 +1,49 @@
+.chartKeyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.KeyEntry {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: var(--size32);
+  padding: var(--size8);
+  align-items: center;
+  background-color: white;
+}
+
+.keyGradientEntry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyGradientEntry > * + * {
+  margin-left: var(--size4);
+}
+
+.keySymbolEntry {
+  display: flex;
+  flex-direction: row;
+}
+.keySymbolEntry > .label {
+  margin-left: var(--size4);
+}
+
+.label {
+  font-size: var(--size14);
+  width: fit-content;
+}
+
+.label.right {
+  margin-left: var(--size8);
+}
+
+.label.left {
+  margin-right: var(--size8);
+}

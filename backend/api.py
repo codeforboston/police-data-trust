@@ -7,7 +7,7 @@ from flask_cors import CORS
 from .config import get_config_from_env
 from .database import db
 from .database import db_cli
-from .auth import user_manager, jwt
+from .auth import user_manager, jwt, refresh_token
 from .routes.incidents import bp as incidents_bp
 from .routes.auth import bp as auth_bp
 from .routes.healthcheck import bp as healthcheck_bp
@@ -60,19 +60,13 @@ def register_commands(app: Flask):
 
         This command is for development purposes only.
         """
-        import subprocess
+        import sys
 
-        if len(ctx.args) == 1 and ctx.args[0] == "--help":
-            subprocess.call(["pip-compile", "--help"])
-        else:
-            req_files = [
-                "requirements/dev_unix.in",
-                "requirements/dev_windows.in",
-                "requirements/prod.in",
-                "requirements/docs.in",
-            ]
-            for filename in req_files:
-                subprocess.call(["pip-compile", filename, *ctx.args])
+        sys.path.append("..")
+
+        from requirements import update
+
+        update.run()
 
     @app.cli.command("scrape")
     def scrape_command():
@@ -81,7 +75,10 @@ def register_commands(app: Flask):
         This is a handy way to populate the database to start with publicly
         available data.
         """
-        pass
+        from backend.scraper.scrape_data_sources import make_all_tables
+
+        # TODO: load excel sheet into database
+        make_all_tables()
 
 
 def register_routes(app: Flask):
@@ -92,6 +89,11 @@ def register_routes(app: Flask):
     @app.route("/")
     def hello_world():
         return "Hello, world!"
+
+    @app.after_request
+    def after_request(response):
+        response = refresh_token(response)
+        return response
 
 
 def register_misc(app: Flask):

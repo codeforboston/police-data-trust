@@ -1,3 +1,295 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Profile Page correctly 1`] = `<div />`;
+exports[`renders Profile Page correctly 1`] = `
+<div>
+  <div>
+    <header
+      class="wrapper"
+    >
+      <div
+        class="backgroundBanner"
+      >
+        <div
+          class="leftHeader"
+        >
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            class="logo medium"
+            src="/NPDCLogo.svg"
+          />
+          <div
+            class="titleContainer"
+          >
+            <h2>
+              National Police Data Coalition
+            </h2>
+            <p>
+              The national index of police incidents
+            </p>
+          </div>
+        </div>
+        <nav
+          aria-label="Main Navigation"
+        >
+          <div
+            class="dropdown"
+          >
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              role="button"
+              tabindex="0"
+            >
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
+                data-icon="ellipsis-v"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                viewBox="0 0 192 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+            <div
+              class="hidden"
+              role="menu"
+            >
+              <ul
+                id="navMenu"
+              >
+                <li
+                  class=""
+                >
+                  <a
+                    href="/search"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Search
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/profile"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Profile
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/logout"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Sign Out
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    DONATE
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <ul
+            id="navMenu"
+          >
+            <li
+              class=""
+            >
+              <a
+                href="/search"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Search
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/profile"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Profile
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/logout"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Sign Out
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/"
+                role="menuitem"
+                tabindex="-1"
+              >
+                DONATE
+              </a>
+            </li>
+          </ul>
+          <button
+            class="primaryButton"
+            type="submit"
+          >
+            DONATE
+          </button>
+          <button
+            class="primaryButton"
+            type="submit"
+          >
+            LOGOUT
+          </button>
+        </nav>
+      </div>
+    </header>
+    <div
+      class="profileWrapper"
+    >
+      <nav
+        class="leftMenu"
+      >
+        <ul>
+          <li
+            class="selectedItem"
+          >
+            User Information
+          </li>
+          <li
+            class="menuItem"
+          >
+            Profile Type
+          </li>
+          <li
+            class="menuItem"
+          >
+            Saved Results
+          </li>
+          <li
+            class="menuItem"
+          >
+            Saved Searches
+          </li>
+        </ul>
+      </nav>
+      <div
+        class="profileData"
+      >
+        <header
+          class="sectionTitle"
+        >
+          Your Account Information
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-edit fa-w-18 fa-1x editButton"
+            data-icon="edit"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 576 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+              fill="currentColor"
+            />
+          </svg>
+        </header>
+        <main
+          class="dataView"
+        >
+          <div
+            class="dataCell"
+          >
+            <div
+              class="label"
+            >
+              First name:
+            </div>
+            <div
+              class="dataField"
+            >
+              FirstTest
+            </div>
+          </div>
+          <div
+            class="dataCell"
+          >
+            <div
+              class="label"
+            >
+              Last name:
+            </div>
+            <div
+              class="dataField"
+            >
+              LastTest
+            </div>
+          </div>
+          <div
+            class="dataBreak"
+          />
+          <div
+            class="dataCell"
+          >
+            <div
+              class="label"
+            >
+              Email address:
+            </div>
+            <div
+              class="dataField"
+            >
+              testemail@example.com
+            </div>
+          </div>
+          <div
+            class="dataCell"
+          >
+            <div
+              class="label"
+            >
+              Phone number:
+            </div>
+            <div
+              class="dataField"
+            >
+              (999) 555-0123
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>
+`;

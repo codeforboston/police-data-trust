@@ -1,0 +1,902 @@
+[
+  {
+    "searchDate": 1614936347000,
+    "id": 1,
+    "occurred": 1441332206000,
+    "officers": ["L.Staines", "M.Nairn", "M.Yeend"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Verbalization", "Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1630576350000,
+    "id": 2,
+    "occurred": 1018402310000,
+    "officers": ["L.Terzza", "D.Bachelar"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Verbalization", "Armed presence", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1632185156000,
+    "id": 3,
+    "occurred": 1017750105000,
+    "officers": ["R.Dulwitch"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Electric weaponry", "Injurious restraint"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1609771016000,
+    "id": 4,
+    "occurred": 980015721000,
+    "officers": ["D.Snassell", "R.Poulglais", "R.Verchambre"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Armed presence", "Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1610123046000,
+    "id": 5,
+    "occurred": 1492107037000,
+    "officers": ["G.Gulliver", "A.Larcombe"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1629412900000,
+    "id": 6,
+    "occurred": 1143068447000,
+    "officers": ["S.Cardoso", "N.Stoodley"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1621352305000,
+    "id": 7,
+    "occurred": 1144410510000,
+    "officers": ["J.Butrimovich", "R.Miner", "A.Eckert"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Electric weaponry", "Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1626489779000,
+    "id": 8,
+    "occurred": 962273803000,
+    "officers": ["S.Widocks"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1605983137000,
+    "id": 9,
+    "occurred": 1152895230000,
+    "officers": ["S.Aspland", "L.Stickney", "G.Rohan"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1618953630000,
+    "id": 10,
+    "occurred": 1624832392000,
+    "officers": ["T.Archibould", "O.Shivell", "C.Rainsbury"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1612718519000,
+    "id": 11,
+    "occurred": 1237053470000,
+    "officers": ["A.Ausiello", "D.Stallwood"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1605127306000,
+    "id": 12,
+    "occurred": 1187268402000,
+    "officers": ["C.Rookesby", "R.Fleeming", "S.Rock"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Electric weaponry", "Unarmed presence", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1618832449000,
+    "id": 13,
+    "occurred": 1420246645000,
+    "officers": ["J.Middlemass", "W.Mogford", "S.Pudner", "J.Nucciotti", "K.Pietranek"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1621131426000,
+    "id": 14,
+    "occurred": 1115999030000,
+    "officers": ["T.Milksop"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Armed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1623537480000,
+    "id": 15,
+    "occurred": 1155292895000,
+    "officers": ["G.Bremner", "E.Hallett", "S.Pooke"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1605762215000,
+    "id": 16,
+    "occurred": 1450446513000,
+    "officers": ["A.Tackes", "Y.Kopman", "W.Dunbobbin", "A.Cackett"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1607602510000,
+    "id": 17,
+    "occurred": 1492854696000,
+    "officers": ["N.Gulland", "L.Osgar"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Electric weaponry", "Injurious restraint", "Unarmed blunt impact"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1608598139000,
+    "id": 18,
+    "occurred": 1039471342000,
+    "officers": ["B.Somerfield"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Verbalization", "Armed presence", "Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1625362713000,
+    "id": 19,
+    "occurred": 1334542468000,
+    "officers": ["E.Menault", "K.Dansie", "C.Adamiak"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1614963354000,
+    "id": 20,
+    "occurred": 1313196706000,
+    "officers": ["G.Wickie", "K.McIndoe", "H.MacEnelly", "C.Shimwell"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Injurious restraint", "Unarmed blunt impact", "Unarmed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1626559884000,
+    "id": 21,
+    "occurred": 1494635140000,
+    "officers": ["S.Seefus", "N.Wibrow", "B.Haycroft"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Unarmed blunt impact", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1632847356000,
+    "id": 22,
+    "occurred": 1396877638000,
+    "officers": ["V.Corrington", "T.Rechert", "V.Winslett", "E.Knivett", "E.Mattiuzzi"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1603695951000,
+    "id": 23,
+    "occurred": 1421109665000,
+    "officers": ["B.Hardi", "K.Shoorbrooke", "L.Abbes", "D.Albury", "L.Linton"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1627360284000,
+    "id": 24,
+    "occurred": 1168583319000,
+    "officers": ["B.Cunde", "M.Raoux", "B.Faveryear"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Verbalization", "Unarmed blunt impact", "Injurious restraint"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1622645461000,
+    "id": 25,
+    "occurred": 1284212107000,
+    "officers": ["B.Joslow", "C.Helleckas", "S.Dahl", "G.Burgh"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1627169620000,
+    "id": 26,
+    "occurred": 1101560582000,
+    "officers": ["A.Ivell"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1616707105000,
+    "id": 27,
+    "occurred": 1191944025000,
+    "officers": ["A.Stollberger", "D.Frantsev", "E.Thurner", "B.Ekins", "F.Duckhouse"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Injurious restraint", "Armed presence", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1621486277000,
+    "id": 28,
+    "occurred": 1445453486000,
+    "officers": ["A.Lownds", "R.Feragh", "T.Chasles"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Verbalization", "Armed presence", "Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1618071848000,
+    "id": 29,
+    "occurred": 1433461109000,
+    "officers": ["M.Bootyman", "S.Balm", "S.Allcott", "A.Kendall", "A.Ferry"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Electric weaponry", "Unarmed presence", "Unarmed blunt impact"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1604845744000,
+    "id": 30,
+    "occurred": 1313729967000,
+    "officers": ["M.Dunsmuir", "N.Rozec"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1624617368000,
+    "id": 31,
+    "occurred": 993856327000,
+    "officers": ["C.Lathleiffure", "B.Speeks"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Verbalization", "Armed presence", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1608659588000,
+    "id": 32,
+    "occurred": 1443176576000,
+    "officers": ["J.Sambath"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Verbalization", "Unarmed presence", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1622207278000,
+    "id": 33,
+    "occurred": 1517973013000,
+    "officers": ["T.Coltart", "W.Clutram", "P.Foan", "T.Giacopini"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1608758208000,
+    "id": 34,
+    "occurred": 1276318715000,
+    "officers": ["I.Beddall", "N.Seaking", "V.Olenin"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1616679423000,
+    "id": 35,
+    "occurred": 1039166220000,
+    "officers": ["W.Jobson", "J.Legat", "K.Murden"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Armed presence", "Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1615584084000,
+    "id": 36,
+    "occurred": 1036489504000,
+    "officers": ["C.Orford", "J.Debenham", "I.McClaren", "M.Krebs", "H.Noraway"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Electric weaponry", "Unarmed blunt impact"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1620481769000,
+    "id": 37,
+    "occurred": 1520732412000,
+    "officers": ["S.Montrose", "T.Danilewicz", "Z.Swatton", "U.MacVaugh"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Armed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1619756246000,
+    "id": 38,
+    "occurred": 1586304169000,
+    "officers": ["S.Digger", "A.McSkeagan"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1616220826000,
+    "id": 39,
+    "occurred": 1042716339000,
+    "officers": ["G.Balch"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Injurious restraint", "Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1603049374000,
+    "id": 40,
+    "occurred": 1182546707000,
+    "officers": ["D.Feary", "W.Tattershall", "N.Uttridge", "W.Dunton"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1632927256000,
+    "id": 41,
+    "occurred": 1566318232000,
+    "officers": ["E.Kenford"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Unarmed presence", "Electric weaponry", "Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1618867000000,
+    "id": 42,
+    "occurred": 1312888040000,
+    "officers": ["D.Fairbrother", "T.Tabbernor", "G.Stendell", "C.Linney", "Y.Beadon"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Verbalization", "Electric weaponry", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1620761198000,
+    "id": 43,
+    "occurred": 1123008601000,
+    "officers": ["B.Heinish", "M.Blakeley", "S.Minci", "J.Billson"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Unarmed presence", "Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1615065769000,
+    "id": 44,
+    "occurred": 1542552039000,
+    "officers": ["C.Woodwing", "A.Inglesant", "J.Noone", "S.Samweyes"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1630103699000,
+    "id": 45,
+    "occurred": 1552186921000,
+    "officers": ["L.Rubroe", "L.Filde", "A.Kelsell"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1626301800000,
+    "id": 46,
+    "occurred": 1563044219000,
+    "officers": ["A.Eldritt", "E.Juste"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1613837549000,
+    "id": 47,
+    "occurred": 1413095291000,
+    "officers": ["V.Soares"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Verbalization", "Unarmed presence", "Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1620546897000,
+    "id": 48,
+    "occurred": 1323394859000,
+    "officers": ["P.Mateev", "B.Gribben", "F.Gisburne", "N.Binning", "T.Walthall"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1623439694000,
+    "id": 49,
+    "occurred": 1317467123000,
+    "officers": ["C.Sidery", "M.Slatten"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed blunt impact", "Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1634090570000,
+    "id": 50,
+    "occurred": 1330780703000,
+    "officers": ["D.Shorte", "D.Jouen", "A.Marder"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed presence", "Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1622803733000,
+    "id": 51,
+    "occurred": 1510209753000,
+    "officers": ["D.Pickett"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Unarmed presence", "Electric weaponry", "Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1608936034000,
+    "id": 52,
+    "occurred": 1071201332000,
+    "officers": ["R.Morfield", "B.Dear", "P.Liverock"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Injurious restraint"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1608551492000,
+    "id": 53,
+    "occurred": 1083184122000,
+    "officers": ["L.Torpie", "G.Crockford"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1613436546000,
+    "id": 54,
+    "occurred": 1249541687000,
+    "officers": ["D.Cordaroy"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Armed presence", "Verbalization", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1630766922000,
+    "id": 55,
+    "occurred": 1349360241000,
+    "officers": ["C.Callf", "T.Kitter", "D.Kennally", "E.Prendeville"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed presence", "Armed presence", "Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1603952109000,
+    "id": 56,
+    "occurred": 1293548967000,
+    "officers": ["D.Wordsworth", "G.Hagger", "R.Cruce", "E.Pagan"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed blunt impact", "Unarmed presence", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1612132279000,
+    "id": 57,
+    "occurred": 1078277599000,
+    "officers": ["B.Hauxley", "R.Ledgister", "M.Zeale", "T.Beresfore"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Unarmed presence", "Electric weaponry", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1606986713000,
+    "id": 58,
+    "occurred": 1032759957000,
+    "officers": ["F.Room"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Unarmed presence", "Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1616737104000,
+    "id": 59,
+    "occurred": 1487882985000,
+    "officers": ["Elana Le Sarr", "P.Bodleigh"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1633257318000,
+    "id": 60,
+    "occurred": 1326424842000,
+    "officers": ["L.Keilty", "L.Goodburn", "C.Djorvic", "H.Byard"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Verbalization", "Unarmed blunt impact"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1630885117000,
+    "id": 61,
+    "occurred": 1615531774000,
+    "officers": ["Chelsey De Carolis", "M.Raatz"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1626006477000,
+    "id": 62,
+    "occurred": 1268965610000,
+    "officers": ["G.Domerc"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Electric weaponry", "Armed presence", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1628825948000,
+    "id": 63,
+    "occurred": 1110394124000,
+    "officers": ["B.Astling"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed presence", "Electric weaponry", "Injurious restraint"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1617055696000,
+    "id": 64,
+    "occurred": 1089725478000,
+    "officers": ["B.Iveagh", "R.Domenge", "G.Nieass"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1606436795000,
+    "id": 65,
+    "occurred": 1054000797000,
+    "officers": ["Kevyn O'Heffernan", "J.Feria", "H.Pennino", "B.Mewitt"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Electric weaponry", "Armed presence", "Unarmed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1610902611000,
+    "id": 66,
+    "occurred": 1056270857000,
+    "officers": ["R.Delamaine"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Injurious restraint", "Unarmed blunt impact", "Verbalization"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1616827185000,
+    "id": 67,
+    "occurred": 1361792187000,
+    "officers": ["C.Viegas", "Y.Millom", "K.Lainge", "T.Lurcock", "D.Gerding"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Verbalization", "Injurious restraint", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1621849183000,
+    "id": 68,
+    "occurred": 1030044517000,
+    "officers": ["A.Fedder", "D.Casella", "A.Dawdary", "Z.Geraldo", "W.Pohl"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Verbalization", "Unarmed blunt impact", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1604483147000,
+    "id": 69,
+    "occurred": 1379891661000,
+    "officers": ["P.Loxley", "B.Frayne"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Armed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1626879470000,
+    "id": 70,
+    "occurred": 1334969357000,
+    "officers": ["D.Eads", "B.Petschel"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Verbalization"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1620643022000,
+    "id": 71,
+    "occurred": 1338390323000,
+    "officers": ["G.Lunck"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Armed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1632606011000,
+    "id": 72,
+    "occurred": 1087165162000,
+    "officers": ["K.Sterzaker", "B.Martinek", "K.Mazzia", "L.Gostridge"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed blunt impact"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1605795313000,
+    "id": 73,
+    "occurred": 1117288363000,
+    "officers": ["F.Riby", "R.Birk"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1626507156000,
+    "id": 74,
+    "occurred": 984463177000,
+    "officers": ["C.Schlagtmans", "L.Sheerman", "S.Jellard", "S.Coffin", "E.Chastey"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Electric weaponry", "Armed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1610076099000,
+    "id": 75,
+    "occurred": 1090267969000,
+    "officers": ["W.MacRierie", "B.Tremblot", "L.Casement", "W.Long"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Electric weaponry", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1622115136000,
+    "id": 76,
+    "occurred": 1309311546000,
+    "officers": ["R.Shingler", "S.Stillman", "D.Vial", "R.Clopton", "D.Kirkland"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1604318563000,
+    "id": 77,
+    "occurred": 1231422731000,
+    "officers": ["K.Bastable", "C.Kalisz"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Injurious restraint", "Verbalization"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1633904155000,
+    "id": 78,
+    "occurred": 1308826973000,
+    "officers": ["O.McIlvaney", "B.Maddison", "D.Dorbin", "C.Benettolo"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed presence", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1607145531000,
+    "id": 79,
+    "occurred": 1419209018000,
+    "officers": ["G.Mault", "R.Biford", "R.Bolletti", "O.Czadla", "K.Adamolli"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Injurious restraint", "Electric weaponry"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1627895003000,
+    "id": 80,
+    "occurred": 1336971298000,
+    "officers": ["B.Belford", "G.Pendle", "F.Mila", "J.Betjes", "B.Masters"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Verbalization", "Electric weaponry"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1603250641000,
+    "id": 81,
+    "occurred": 1297319721000,
+    "officers": ["E.Cotterell", "S.Gemeau", "V.Boullin"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Verbalization", "Unarmed presence", "Unarmed blunt impact"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1609520477000,
+    "id": 82,
+    "occurred": 1284275196000,
+    "officers": ["W.Clougher", "B.Cisar", "K.Lindell", "J.Norfolk"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Electric weaponry", "Verbalization"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1634080417000,
+    "id": 83,
+    "occurred": 1385925210000,
+    "officers": ["G.Fretson", "C.Stambridge", "M.Terbrugge", "S.Goodered", "R.Hauxwell"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1614411962000,
+    "id": 84,
+    "occurred": 1611186459000,
+    "officers": ["W.Rugge"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Electric weaponry"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1611749399000,
+    "id": 85,
+    "occurred": 1073624229000,
+    "officers": ["J.Andrivel", "M.Stoad"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Electric weaponry", "Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1623283843000,
+    "id": 86,
+    "occurred": 1393991643000,
+    "officers": ["C.Wagerfield"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1613037996000,
+    "id": 87,
+    "occurred": 1243313800000,
+    "officers": ["P.Stainbridge"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1621504350000,
+    "id": 88,
+    "occurred": 1560361790000,
+    "officers": ["E.Keddy", "A.Ponceford"],
+    "incidentType": "Noise complaint",
+    "useOfForce": ["Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1620411157000,
+    "id": 89,
+    "occurred": 1597651603000,
+    "officers": ["E.Cuesta", "T.Spyby"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1632656200000,
+    "id": 90,
+    "occurred": 1279645796000,
+    "officers": ["B.Pulford", "S.Sowthcote", "F.Strowthers", "C.Dressel"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Verbalization", "Unarmed blunt impact"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1610395911000,
+    "id": 91,
+    "occurred": 994541964000,
+    "officers": ["Gothart De la Yglesia", "I.Henden", "Donni O' Scallan", "M.Froment"],
+    "incidentType": "Domestic disturbance",
+    "useOfForce": ["Injurious restraint", "Armed presence", "Unarmed blunt impact"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1631164085000,
+    "id": 92,
+    "occurred": 1349031708000,
+    "officers": ["J.Bedburrow"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Verbalization", "Unarmed blunt impact", "Armed presence"],
+    "source": "News report"
+  },
+  {
+    "searchDate": 1604108436000,
+    "id": 93,
+    "occurred": 1296945865000,
+    "officers": ["R.York", "K.Emmett", "B.Scaice"],
+    "incidentType": "Robbery",
+    "useOfForce": ["Armed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1604194674000,
+    "id": 94,
+    "occurred": 1506167878000,
+    "officers": ["K.Dooly", "T.Haslum", "D.Joerning", "A.Sherer"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Unarmed presence"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1633406415000,
+    "id": 95,
+    "occurred": 1584751000000,
+    "officers": ["L.Kibble", "G.Androck", "Z.Cripps", "J.Wilkie", "W.Iveson"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1609776983000,
+    "id": 96,
+    "occurred": 1386887322000,
+    "officers": ["A.Kringe", "G.Dibdale", "J.Hogbin", "J.Corkill", "E.Dodsworth"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed blunt impact", "Verbalization"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1606749490000,
+    "id": 97,
+    "occurred": 1568677168000,
+    "officers": ["H.Moland"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Verbalization", "Injurious restraint", "Armed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1619043505000,
+    "id": 98,
+    "occurred": 1437876667000,
+    "officers": ["A.Simonyi", "B.McWard", "C.Ellery", "C.Prestner"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Injurious restraint", "Armed presence"],
+    "source": "Court record"
+  },
+  {
+    "searchDate": 1618629639000,
+    "id": 99,
+    "occurred": 1440452567000,
+    "officers": ["K.Messier", "R.Durnian", "H.Scholtis"],
+    "incidentType": "Harassment",
+    "useOfForce": ["Electric weaponry", "Unarmed blunt impact", "Injurious restraint"],
+    "source": "Police report"
+  },
+  {
+    "searchDate": 1634157987000,
+    "id": 100,
+    "occurred": 1100707380000,
+    "officers": ["K.Stut", "B.Martignoni", "C.Fronczak"],
+    "incidentType": "Traffic stop",
+    "useOfForce": ["Unarmed presence"],
+    "source": "Court record"
+  }
+]

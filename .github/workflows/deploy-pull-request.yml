@@ -1,0 +1,25 @@
+name: Deploy Pull Request
+
+on:
+  workflow_run:
+    workflows: ["Build Pull Request"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy Pull Request
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy Mock Frontend
+        uses: alexjball/action-hosting-deploy@v1
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_DEV_SERVICE_ACCOUNT }}"
+          projectId: "${{ secrets.FIREBASE_DEV_PROJECT_ID }}"
+          entryPoint: ./frontend
+          artifactName: mock-frontend

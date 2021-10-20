@@ -6,7 +6,7 @@ import {
   RegistrationResponse
 } from "./enrollment-response/enrollment-response"
 import PasswordAid from "./password-aid/password-aid"
-import Map from "./map"
+import { Map, BubbleChart } from "./visualizations"
 import ProfileNav from "./profile-nav"
 import ProfileInfo from "./profile-info"
 import ProfileType from "./profile-type"
@@ -23,6 +23,7 @@ export {
   PasswordAid,
   RegistrationResponse,
   Map,
+  BubbleChart,
   ProfileNav,
   ProfileInfo,
   EditProfileInfo,

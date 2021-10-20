@@ -2,3 +2,5 @@
 node_modules
 .next
 Dockerfile*
+out
+storybook-static

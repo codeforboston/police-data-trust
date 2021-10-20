@@ -3,9 +3,7 @@
   height: 70vh;
   width: 80vw;
   pointer-events: none;
-  z-index: 10;
   margin: auto;
-  top: 10vh;
 }
 
 .mapWrapper {
@@ -42,7 +40,6 @@
   cursor: pointer;
   fill: var(--lightBlue);
   fill-opacity: 0.9;
-  mix-blend-mode: color-dodge;
   transform: scale(1);
   transition: transform 500ms 500ms ease;
 }
@@ -53,13 +50,4 @@
   cursor: pointer;
   grid-column: 2;
   grid-row: 3;
-}
-
-.mapClickZone {
-  fill: green;
-  fill-opacity: 0;
-  pointer-events: all;
-  cursor: grab;
-  height: 100%;
-  width: 100%;
 }
