@@ -70,9 +70,9 @@ class ProductionConfig(Config):
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_CSRF_PROTECT = True
 
-    @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        return os.environ.get("DATABASE_URL")
+    # @property
+    # def SQLALCHEMY_DATABASE_URI(self):
+    #     return os.environ.get("DATABASE_URL")
 
 
 class TestingConfig(Config):

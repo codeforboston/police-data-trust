@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build:development": "env-cmd -f .env.development next build && next export",
-    "build:staging": "env-cmd -f .env.staging next build && next export",
-    "build:production": "env-cmd -f .env.production next build && next export",
+    "build:dev": "env-cmd -f .env.development next build && next export",
+    "build:stage": "env-cmd -f .env.staging next build && next export",
+    "build:prod": "env-cmd -f .env.production next build && next export",
     "build:ui": "NEXT_PUBLIC_API_MODE=mock next build && next export",
     "lint": "next lint",
     "check-formatting": "prettier --check .",
