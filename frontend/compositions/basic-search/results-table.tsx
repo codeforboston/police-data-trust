@@ -10,14 +10,14 @@ const JsonDump = ({ json }: any) => (
   <section
     style={{
       maxWidth: "500px",
-      maxHeight: "500px",
-      margin: "1em auto",
-      overflowY: "scroll"
+      margin: "1em auto"
     }}>
     <h1>Search Results</h1>
     <pre
       style={{
-        whiteSpace: "pre-wrap"
+        whiteSpace: "pre-wrap",
+        maxHeight: "500px",
+        overflowY: "scroll"
       }}>
       {JSON.stringify(json, null, 2)}
     </pre>
