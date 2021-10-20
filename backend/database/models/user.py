@@ -8,7 +8,7 @@ from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
-import enum
+from enum import Enum
 
 
 fs_mixin = FlaskSerialize(db)
@@ -44,11 +44,11 @@ def compile_ci_string(element, compiler, **kwargs):
         return base_visit
 
 
-class UserRole(enum.Enum):
-    PASSPORT = 1
-    PUBLIC = 2
-    CONTRIBUTOR = 3
-    ADMIN = 4
+class UserRole(str, Enum):
+    PASSPORT = "Passport"
+    PUBLIC = "Public"
+    CONTRIBUTOR = "Contributor"
+    ADMIN = "Admin"
 
 
 # Define the User data-model.
