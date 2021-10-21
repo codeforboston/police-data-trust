@@ -11160,6 +11160,11 @@
     "loader-utils" "^2.0.0"
     "schema-utils" "^3.0.0"
 
+"react-accessible-dropdown-menu-hook@^3.1.0":
+  "integrity" "sha512-XOvct2l9Q1V5u29gdGHZhBYh3hUX3+syIwWC/uqBmmzJDttFMZKPug+Ut/oAsXTCeGn3+HcT1iqzLAFRtVrrJg=="
+  "resolved" "https://registry.npmjs.org/react-accessible-dropdown-menu-hook/-/react-accessible-dropdown-menu-hook-3.1.0.tgz"
+  "version" "3.1.0"
+
 "react-colorful@^5.1.2":
   "integrity" "sha512-BuzrlrM0ylg7coPkXOrRqlf2BgHLw5L44sybbr9Lg4xy7w9e5N7fGYbojOO0s8J0nvrM3PERN2rVFkvSa24lnQ=="
   "resolved" "https://registry.npmjs.org/react-colorful/-/react-colorful-5.5.0.tgz"

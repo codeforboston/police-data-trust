@@ -2,7 +2,7 @@ import { Feature } from "geojson"
 import { useMemo, useState } from "react"
 import { GeoJson, Filter, Data } from "../../../models/visualizations"
 
-const emptyFakeData: GeoJson = { type: "fake", features: [] }
+const emptyFakeData: GeoJson = { "type": "FeatureCollection", "features": [] }
 
 export default function useData(): Data {
   // using temp dummy data set

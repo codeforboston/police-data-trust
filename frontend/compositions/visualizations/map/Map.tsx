@@ -13,7 +13,7 @@ import { geoAlbersUsa, geoPath } from "d3-geo"
 import { Feature, Point } from "geojson"
 import { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
-import BaseMap from "./BaseMap"
+import BaseMap, {getFakeData} from "./BaseMap"
 import styles from "./map.module.css"
 import MapKey from "./mapKey"
 import { MarkerDescription, MarkerLayer } from "./marker-layer"
@@ -32,6 +32,10 @@ export default function Map() {
   const { width, height } = useResizeObserver({ ref: mapRef })
   const [markerParams, setMarkerParams] = useState<MarkerDescription[]>([])
   const [focusedState, setFocusedState] = useState<D3CallableSelectionType | null>(null)
+
+  const projection = geoAlbersUsa()
+    .scale(1300)
+    .translate([487.5 + 112, 305 + 50])
 
   useEffect(() => {
     const path = geoPath(projection)
@@ -98,11 +102,7 @@ export default function Map() {
       zoomZoom.on(".zoom", zoomed)
       svgElement.on(".click", onMapClick)
     }
-  }, [width, height])
-
-  const projection = geoAlbersUsa()
-    .scale(1300)
-    .translate([487.5 + 112, 305 + 50])
+  }, [width, height, projection, data])
 
   useEffect(() => {
     if (!data) return
@@ -115,7 +115,7 @@ export default function Map() {
 
     const getMarkerParamsFromFeature = (d: Feature) => {
       const markerParams: MarkerDescription = {
-        geoCenter: projection((d.geometry as Point).coordinates as [number, number]),
+        geoCenter: projection((d.geometry as Point).coordinates as PointCoord),
         dataPoint: populationScale(d.properties.population),
         label: d.properties.city
       }
@@ -123,14 +123,14 @@ export default function Map() {
     }
 
     setMarkerParams(data.features.map((feature: Feature) => getMarkerParamsFromFeature(feature)))
-  }, [data])
+  }, [data, projection])
 
   return (
     <div id="map-container" className={styles.mapContainer} ref={mapRef}>
       <div className={styles.mapWrapper}>
         <svg id="map-svg" className={styles.mapData} viewBox={`0, 0, 1200, 700`}>
           <g ref={zoomRef} id="zoom-container">
-            <BaseMap projection={projection} />
+            <BaseMap projection={projection} data={getFakeData()}/>
             <MarkerLayer markersData={markerParams} />
           </g>
         </svg>
