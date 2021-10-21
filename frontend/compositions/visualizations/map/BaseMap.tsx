@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react"
 import * as topojson from "topojson-client"
 import { presimplify, simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
-import { FakeData, PointCoord } from "../utilities/chartTypes"
+import { FakeData } from "../utilities/chartTypes"
 
 // colors:
 // --darkBlue: #303463;
@@ -22,20 +22,22 @@ export interface BaseMapProps {
 export default function BaseMap(props: BaseMapProps) {
   const baseMapRef = useRef(null)
   const { projection, data } = props
+
   const wholeTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
   const stateOnlyTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/states-10m.json"
 
-  const dataPromise = fetch(stateOnlyTopo)
+  const geoDataPromise = fetch(stateOnlyTopo)
 
   const path = d3.geoPath().projection(projection)
 
-  const valueScale = d3.scaleLinear().domain([0, 100]).range([0, 1])
+  const valueScale = d3.scaleLinear().domain([0, 5]).range([0, 1])
   const colorGradient = d3.interpolate("#7caed7", "#303463")
 
-  useEffect(() => {
-    if (!dataPromise) return
 
-    dataPromise
+  useEffect(() => {
+    if (!geoDataPromise) return
+
+    geoDataPromise
       .then((res) => res.json())
       .then((topology: Topology) => {
         if (!topology) return
@@ -47,6 +49,7 @@ export default function BaseMap(props: BaseMapProps) {
 
         const statesTopo = topojson.feature(topology, topology.objects.states) as FeatureCollection
 
+        /* Definitions */
         const defs = svg.append("defs")
 
         const erodeFilter = defs.append("filter").attr("id", "erode")
@@ -73,18 +76,19 @@ export default function BaseMap(props: BaseMapProps) {
           .attr("d", path)
           .attr("fill", "transparent")
 
-        const dataPaths = svg
+        /* SVG Body */
+        svg
           .append("g")
           .selectAll("path")
           .data(statesTopo.features)
           .enter()
           .append("path")
           .classed("state", true)
-          .attr("title", d => d.id)
+          .attr("title", (d) => d.id)
           .attr("d", path)
           .attr("fill", (d: Feature) => {
-            const datum = data.find((i) => d.id === i.state)
-            return datum ? colorGradient(valueScale(Number(datum.value))) : "#7caed7"
+            const countIncidents = data.filter(i => d.id === i.state).length
+            return colorGradient(valueScale(countIncidents))
           })
           .attr("pointer-events", "all")
           .attr("cursor", "pointer")
@@ -96,10 +100,8 @@ export default function BaseMap(props: BaseMapProps) {
           .attr("stroke-width", 6)
           .attr("stroke-join", "round")
           .attr("stroke-opacity", 1)
-
-        
       })
-  }, [data, dataPromise, valueScale, path, colorGradient])
+  }, [data, geoDataPromise, valueScale, path, colorGradient])
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }

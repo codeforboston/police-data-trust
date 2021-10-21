@@ -1,12 +1,16 @@
-import { GeoJson } from "../../../models/visualizations"
+import Incidents from "../../../public/incidents.json"
 import { PointCoord } from "../utilities/chartTypes"
-
-const emptyFakeData: GeoJson = { type: "FeatureCollection", features: [] }
 
 type StateID = string
 
 type FakeData = {
-  UID: number
+  UID?: number
+  id?: number
+  occurred?: number
+  officers?: string[]
+  incidentType?: string
+  useOfForce?: string[]
+  source?: string
   location?: PointCoord
   state?: StateID
   label?: string
@@ -14,91 +18,18 @@ type FakeData = {
 }
 
 export default function useData() {
-  // using temp dummy data set
-  // const data = emptyFakeData
+  // using mock data set
 
-  const data: FakeData[] = [
-    {
-      UID: 1,
-      state: "04",
-      value: 10
-    },
-    {
-      UID: 2,
-      state: "05",
-      value: 30
-    },
-    {
-      UID: 3,
-      state: "06",
-      value: 100
-    },
-    {
-      UID: 4,
-      state: "09",
-      value: 70
-    },
-    {
-      UID: 5,
-      state: "10",
-      value: 20
-    },
-    {
-      UID: 6,
-      state: "11",
-      value: 10
-    },
-    {
-      UID: 7,
-      state: "12",
-      value: 30
-    },
-    {
-      UID: 8,
-      state: "13",
-      value: 100
-    },
-    {
-      UID: 9,
-      state: "14",
-      value: 70
-    },
-    {
-      UID: 10,
-      state: "15",
-      value: 20
-    }
-  ]
+  const addStateCode = () => {
+    const idToStateNumber = Math.floor(Math.random() * 51)
+    const stateCode = idToStateNumber < 10 ? "0" + idToStateNumber : idToStateNumber.toString()
+    return stateCode
+  }
 
-  return data
+  const fakeData = Incidents.map(i => {
+      const stateCode = addStateCode()
+      return {...i, "state": stateCode, "value": i.officers.length} as FakeData
+    })
+
+  return fakeData
 }
-
-// const [filterProperties, setFilterProperties] = useState<Filter>({
-//   property: "state_name",
-//   value: "",
-//   sliceMin: 0,
-//   sliceMax: 100
-// })
-
-// return useMemo(() => {
-//   const { property, value, sliceMin, sliceMax } = filterProperties
-
-//   let filteredFeatures: Feature[]
-//   if (value === "") {
-//     filteredFeatures = [] as Feature[]
-//   } else if (value === "all") {
-//     filteredFeatures = data.features
-//   } else {
-//     filteredFeatures = data.features.filter((d: Feature) => d.properties[property] === value)
-//   }
-
-//   const minimum = sliceMin || 0
-//   const maximum =
-//     sliceMax && sliceMax < filteredFeatures.length ? sliceMax : filteredFeatures.length
-//   return {
-//     features: filteredFeatures.slice(minimum, maximum),
-//     filter: filterProperties,
-//     setFilterProperties
-//   }
-// }, [data.features, filterProperties])
-// }

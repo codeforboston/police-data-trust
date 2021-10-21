@@ -34,12 +34,19 @@ export type Position =
 export type StateID = string
 
 export type FakeData = {
-  UID: number
+  UID?: number
+  id?: number
+  occurred?: number
+  officers?: string[]
+  incidentType?: string
+  useOfForce?: string[]
+  source?: string
   location?: PointCoord
   state?: StateID
   label?: string
   value?: number
 }
+
 export type NodeData = {
   __data__: Feature
 }

@@ -1,19 +1,17 @@
 import { select, selectAll, zoom, zoomIdentity, ZoomTransform } from "d3"
 import { geoAlbersUsa, geoPath } from "d3-geo"
 import { Feature } from "geojson"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import useResizeObserver from "use-resize-observer"
 import {
   BoundingType,
   D3CallableSelectionType,
-  D3ZoomEventType,
-  PointCoord,
+  D3ZoomEventType, PointCoord,
   TargetWithData
 } from "../utilities/chartTypes"
 import BaseMap from "./BaseMap"
 import styles from "./map.module.css"
 import MapKey from "./mapKey"
-import { MarkerDescription } from "./marker-layer"
 import useData from "./useData"
 
 export default function Map() {
@@ -36,7 +34,6 @@ export default function Map() {
   const calcFitFeatureToWindow = useCallback(
     (width: number, height: number, d: Feature) => {
       const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
-      const [x, y] = path.centroid(d)
       const dWidth = x1 - x0
       const dHeight = y1 - y0
       const maxBound = Math.max(dWidth / width, dHeight / height)
@@ -83,17 +80,17 @@ export default function Map() {
   const addToolTip = useCallback(() => {
     const tooltip = svgElement
       .append("foreignObject")
-      .attr("x", "100px")
-      .attr("y", "100px")
-      .attr("width", "1200px")
-      .attr("height", "700px")
+      .attr("x", "0")
+      .attr("y", "0")
+      .attr("width", "100vw")
+      .attr("height", "100vh")
       .classed("tooltip", true)
 
     const tooltipdiv = tooltip
       .append("xhtml:div")
       .style("width", "200px")
       .style("background-color", "#ffffff")
-      .style("border", "2px solid #777")
+      .style("border", "2px solid #666")
       .style("border-radius", "6px")
       .style("visibility", "visible")
 
@@ -108,27 +105,34 @@ export default function Map() {
 
   const handleMouseEnter = useCallback(() => addToolTip(), [addToolTip])
 
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    event.stopPropagation()
-    const target = event.target as TargetWithData
-    const d = target.__data__
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      event.stopPropagation()
+      const target = event.target as TargetWithData
+      const currentTarget = event.currentTarget as SVGElement
+      const d = target.__data__
 
-    if (target.classList.contains("state") && select(".tooltip")) {
-      const mousePos = { x: event.clientX, y: event.clientY }
-      select(".tooltip")
-        .style("visibility", "visible")
-        .attr("x", mousePos.x + "px")
-        .attr("y", mousePos.y + "px")
+      if (target.classList.contains("state") && select(".tooltip")) {
+        const mousePos = {
+          x: event.offsetX - currentTarget.clientLeft,
+          y: event.offsetY
+        }
+        select(".tooltip")
+          .attr("x", mousePos.x + "px")
+          .attr("y", mousePos.y + "px")
+          .style("visibility", "visible")
 
-        const datum = data.find((i) => d.id === i.state)
-        const value = datum ? datum.value : "no value"
+        const stateData = data.filter((i) => d.id === i.state)
+        const value = stateData ? stateData.length : "no value"
 
-      select(".tooltiptext").html(`stateId: ${d.id} <br>
-           mouse position: <br> 
-           {x: ${mousePos.x}, y: ${mousePos.y}} <br>
-           value = ${value}`)
-    }
-  }, [data])
+        select(".tooltiptext").html(`stateId: ${d.id} <br>
+           incidents: ${value} <br>
+          types of violence: ${stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")} 
+            `)
+      }
+    },
+    [data]
+  )
 
   const handleMouseOut = useCallback(() => {
     selectAll(".tooltip").remove()
@@ -143,15 +147,18 @@ export default function Map() {
   )
 
   useEffect(() => {
+    if (!data) return
     zoomRef.current = zoom().on("zoom", zoomed)
     svgElement.call(zoomRef.current)
 
     const zoomResetButton = select("#zoom-reset")
     zoomResetButton.on("click", resetZoom)
+
     svgElement.on("click", handleMapClick)
     svgElement.on("mouseenter", handleMouseEnter)
     svgElement.on("mousemove", handleMouseMove)
     svgElement.on("mouseleave", handleMouseOut)
+
     return () => {
       zoomResetButton.on("click", null)
       gZoomable.on("click", null)
@@ -175,7 +182,7 @@ export default function Map() {
     handleMouseEnter
   ])
 
-  return (
+  return data ? (
     <div id="map-container" className={styles.mapContainer} ref={mapRef}>
       <div className={styles.mapWrapper}>
         <svg id="map-svg" className={styles.mapData} viewBox={`0, 0, 1200, 700`}>
@@ -183,13 +190,15 @@ export default function Map() {
             <BaseMap projection={projection} data={data} />
           </g>
         </svg>
+        <MapKey title={"map-key"} />
       </div>
       <div className={styles.mapButton}>
         <button className="primaryButton" id="zoom-reset">
           Reset Zoom
         </button>
       </div>
-      <MapKey title={"map-key"} />
     </div>
+  ) : (
+    <div></div>
   )
 }
