@@ -1,4 +1,5 @@
 from typing import List, Any, Dict, Optional
+from spectree.models import Server
 
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from pydantic.main import ModelMetaclass
@@ -23,6 +24,34 @@ from .database import User
 
 spec = SpecTree(
     "flask",
+    title="National Police Data Collaborative Index",
+    # The version of the API. 0.X.Y is initial development with breaking changes
+    # allowed on minor version changes.
+    version="0.1.0",
+    # Version of the `/apidoc/openapi.json` format https://swagger.io/specification/
+    openapi_version="3.0.3",
+    # Only document routes decorated with validators
+    mode="strict",
+    # By default, all routes require either cookie or bearer auth
+    security={"cookieAuth": [], "bearerAuth": []},
+    servers=[
+        Server(
+            url="",
+            description="This Origin",
+        ),
+        Server(
+            url="https://dev-api.nationalpolicedata.org",
+            description="Development environment",
+        ),
+        Server(
+            url="https://stage-api.nationalpolicedata.org",
+            description="Staging environment",
+        ),
+        Server(
+            url="https://api.nationalpolicedata.org",
+            description="Production environment",
+        ),
+    ],
     security_schemes=[
         # Cookie auth is used by browsers for GET requests
         SecurityScheme(
@@ -43,8 +72,6 @@ spec = SpecTree(
             },
         ),
     ],
-    # By default, all routes require either cookie or bearer auth
-    security={"cookieAuth": [], "bearerAuth": []},
 )
 
 _incident_list_attrs = [

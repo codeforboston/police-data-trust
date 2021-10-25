@@ -98,6 +98,7 @@ def register():
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required()
+@spec.validate()
 def refresh_token():
     access_token = create_access_token(identity=get_jwt_identity())
     resp = jsonify(
@@ -111,6 +112,7 @@ def refresh_token():
 
 
 @bp.route("/logout", methods=["POST"])
+@spec.validate()
 def logout():
     resp = jsonify({"message": "successfully logged out"})
     unset_access_cookies(resp)
@@ -120,6 +122,7 @@ def logout():
 @bp.route("/test", methods=["GET"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
+@spec.validate()
 def test_auth():
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()

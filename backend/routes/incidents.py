@@ -21,6 +21,7 @@ bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 @bp.route("/get/<int:incident_id>", methods=["GET"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
+@spec.validate()
 def get_incidents(incident_id: int):
     return incident_orm_to_json(Incident.get(incident_id))
 
