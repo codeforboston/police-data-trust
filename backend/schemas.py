@@ -5,7 +5,7 @@ from pydantic.main import ModelMetaclass
 from pydantic import root_validator
 from pydantic import BaseModel
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-
+from spectree import SpecTree
 
 from .database.models.incident import Incident
 from .database.models.victim import Victim
@@ -21,6 +21,7 @@ from .database.models.legal_case import LegalCase
 from .database.models.officer import Officer
 from .database import User
 
+spec = SpecTree("flask")
 
 _incident_list_attrs = [
     "victims",

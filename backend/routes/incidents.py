@@ -2,19 +2,17 @@ from datetime import datetime
 from typing import Optional
 
 from backend.auth.jwt import role_required
-from backend.database.models.officer import Officer
-from backend.database.models.use_of_force import UseOfForce
 from backend.database.models.user import UserRole
-from flask import Blueprint, abort, current_app
+from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
-from flask_pydantic import validate
 from pydantic import BaseModel
 
 from ..database import Incident, db
 from ..schemas import (
     CreateIncidentSchema,
-    incident_to_orm,
     incident_orm_to_json,
+    incident_to_orm,
+    spec,
 )
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
@@ -28,16 +26,16 @@ def get_incidents(incident_id: int):
 
 
 @bp.route("/create", methods=["POST"])
-@validate()
 @jwt_required()
 # TODO: Require CONTRIBUTOR role
 @role_required(UserRole.PUBLIC)
-def create_incident(body: CreateIncidentSchema):
+@spec.validate(json=CreateIncidentSchema)
+def create_incident():
     if current_app.env == "production":
         abort(418)
 
     try:
-        incident = incident_to_orm(body)
+        incident = incident_to_orm(request.context.json)
     except:
         abort(400)
 
@@ -55,10 +53,11 @@ class SearchIncidentsSchema(BaseModel, extra="forbid"):
 
 
 @bp.route("/search", methods=["POST"])
-@validate()
 @jwt_required()
 @role_required(UserRole.PUBLIC)
-def search_incidents(body: SearchIncidentsSchema):
+@spec.validate(json=SearchIncidentsSchema)
+def search_incidents():
+    body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
 
     if body.location:
