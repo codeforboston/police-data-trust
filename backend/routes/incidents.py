@@ -23,6 +23,8 @@ bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 @role_required(UserRole.PUBLIC)
 @validate()
 def get_incidents(incident_id: int):
+    """Get a single incident by ID."""
+
     return incident_orm_to_json(Incident.get(incident_id))
 
 
@@ -32,6 +34,10 @@ def get_incidents(incident_id: int):
 @role_required(UserRole.PUBLIC)
 @validate(json=CreateIncidentSchema)
 def create_incident():
+    """Create a single incident.
+
+    Cannot be called in production environments
+    """
     if current_app.env == "production":
         abort(418)
 
@@ -44,7 +50,7 @@ def create_incident():
     return incident_orm_to_json(created)
 
 
-class SearchIncidentsSchema(BaseModel, extra="forbid"):
+class SearchIncidentsSchema(BaseModel):
     location: Optional[str] = None
     startTime: Optional[datetime] = None
     endTime: Optional[datetime] = None
@@ -52,12 +58,24 @@ class SearchIncidentsSchema(BaseModel, extra="forbid"):
     page: Optional[int] = 1
     perPage: Optional[int] = 20
 
+    class Config:
+        extra = "forbid"
+        schema_extra = {
+            "example": {
+                "description": "Test description",
+                "endTime": "2019-12-01 00:00:00",
+                "location": "Location 1",
+                "startTime": "2019-09-01 00:00:00",
+            }
+        }
+
 
 @bp.route("/search", methods=["POST"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
 @validate(json=SearchIncidentsSchema)
 def search_incidents():
+    """Search Incidents."""
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
 

@@ -17,6 +17,11 @@ bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 @bp.route("/login", methods=["POST"])
 @validate(auth=False, json=LoginUserDTO)
 def login():
+    """Sign in with email and password.
+
+    Returns an access token and sets cookies.
+    """
+
     body: LoginUserDTO = request.context.json
 
     # Verify user
@@ -52,6 +57,11 @@ def login():
 @bp.route("/register", methods=["POST"])
 @validate(auth=False, json=RegisterUserDTO)
 def register():
+    """Register for a new public account.
+
+    If successful, also performs login.
+    """
+
     body: RegisterUserDTO = request.context.json
 
     # Check to see if user already exists
@@ -100,6 +110,8 @@ def register():
 @jwt_required()
 @validate()
 def refresh_token():
+    """Refreshes the currently-authenticated user's access token."""
+
     access_token = create_access_token(identity=get_jwt_identity())
     resp = jsonify(
         {
@@ -114,6 +126,7 @@ def refresh_token():
 @bp.route("/logout", methods=["POST"])
 @validate(auth=False)
 def logout():
+    """Unsets access cookies."""
     resp = jsonify({"message": "successfully logged out"})
     unset_access_cookies(resp)
     return resp, 200
@@ -124,5 +137,6 @@ def logout():
 @role_required(UserRole.PUBLIC)
 @validate()
 def test_auth():
+    """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
