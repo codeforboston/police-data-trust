@@ -4,13 +4,11 @@ import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import Nav from "./nav"
 import styles from "./dashboard-header.module.css"
 import { LogoSizes } from "../../models"
-import { useAuth } from "../../helpers"
 import MobileDropdown from "./mobile-dropdown"
 
 export default function DashboardHeader() {
   const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
-  const { logout } = useAuth()
 
   return (
     <header className={wrapper}>
@@ -25,8 +23,6 @@ export default function DashboardHeader() {
         <nav aria-label="Main Navigation">
           <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
           <Nav itemProps={itemProps} />
-          <PrimaryButton>DONATE</PrimaryButton>
-          <PrimaryButton onClick={logout}>LOGOUT</PrimaryButton>
         </nav>
       </div>
     </header>
