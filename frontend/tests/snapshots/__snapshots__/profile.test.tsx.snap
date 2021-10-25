@@ -158,18 +158,6 @@ exports[`renders Profile Page correctly 1`] = `
               </a>
             </li>
           </ul>
-          <button
-            class="primaryButton"
-            type="submit"
-          >
-            DONATE
-          </button>
-          <button
-            class="primaryButton"
-            type="submit"
-          >
-            LOGOUT
-          </button>
         </nav>
       </div>
     </header>

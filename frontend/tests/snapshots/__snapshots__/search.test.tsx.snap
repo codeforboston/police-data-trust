@@ -162,24 +162,6 @@ exports[`renders Dashboard correctly 1`] = `
       </div>
     </header>
     <div
-      style="display: flex; flex-direction: row; justify-content: center;"
-    >
-      <button
-        class="primaryButton"
-        style="cursor: pointer; margin: 2em 1em 1em 1em;"
-        type="button"
-      >
-        bubble
-      </button>
-      <button
-        class="primaryButton"
-        style="cursor: pointer; margin: 2em 1em 1em 1em;"
-        type="button"
-      >
-        map
-      </button>
-    </div>
-    <div
       class="mapContainer"
       id="map-container"
     >
