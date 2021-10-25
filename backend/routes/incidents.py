@@ -12,7 +12,7 @@ from ..schemas import (
     CreateIncidentSchema,
     incident_orm_to_json,
     incident_to_orm,
-    spec,
+    validate,
 )
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
@@ -21,7 +21,7 @@ bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 @bp.route("/get/<int:incident_id>", methods=["GET"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
-@spec.validate()
+@validate()
 def get_incidents(incident_id: int):
     return incident_orm_to_json(Incident.get(incident_id))
 
@@ -30,7 +30,7 @@ def get_incidents(incident_id: int):
 @jwt_required()
 # TODO: Require CONTRIBUTOR role
 @role_required(UserRole.PUBLIC)
-@spec.validate(json=CreateIncidentSchema)
+@validate(json=CreateIncidentSchema)
 def create_incident():
     if current_app.env == "production":
         abort(418)
@@ -56,7 +56,7 @@ class SearchIncidentsSchema(BaseModel, extra="forbid"):
 @bp.route("/search", methods=["POST"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
-@spec.validate(json=SearchIncidentsSchema)
+@validate(json=SearchIncidentsSchema)
 def search_incidents():
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)

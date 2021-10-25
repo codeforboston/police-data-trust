@@ -74,6 +74,15 @@ spec = SpecTree(
     ],
 )
 
+
+def validate(auth=True, **kwargs):
+    if not auth:
+        # Disable security for the route
+        kwargs["security"] = {}
+
+    return spec.validate(**kwargs)
+
+
 _incident_list_attrs = [
     "victims",
     "officers",

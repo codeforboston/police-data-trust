@@ -9,13 +9,13 @@ from flask_jwt_extended import (
 from ..auth import role_required, user_manager
 from ..database import User, UserRole, db
 from ..dto import LoginUserDTO, RegisterUserDTO
-from ..schemas import UserSchema, spec
+from ..schemas import UserSchema, spec, validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
 @bp.route("/login", methods=["POST"])
-@spec.validate(json=LoginUserDTO)
+@validate(auth=False, json=LoginUserDTO)
 def login():
     body: LoginUserDTO = request.context.json
 
@@ -50,7 +50,7 @@ def login():
 
 
 @bp.route("/register", methods=["POST"])
-@spec.validate(json=RegisterUserDTO)
+@validate(auth=False, json=RegisterUserDTO)
 def register():
     body: RegisterUserDTO = request.context.json
 
@@ -98,7 +98,7 @@ def register():
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required()
-@spec.validate()
+@validate()
 def refresh_token():
     access_token = create_access_token(identity=get_jwt_identity())
     resp = jsonify(
@@ -112,7 +112,7 @@ def refresh_token():
 
 
 @bp.route("/logout", methods=["POST"])
-@spec.validate()
+@validate(auth=False)
 def logout():
     resp = jsonify({"message": "successfully logged out"})
     unset_access_cookies(resp)
@@ -122,7 +122,7 @@ def logout():
 @bp.route("/test", methods=["GET"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
-@spec.validate()
+@validate()
 def test_auth():
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
