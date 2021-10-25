@@ -68,6 +68,7 @@ def register_commands(app: Flask):
         update.run()
 
     @app.cli.command("scrape")
+    @dev_only
     def scrape_command():
         """Scrape from public data into the database.
 
@@ -75,9 +76,10 @@ def register_commands(app: Flask):
         available data.
         """
         from backend.scraper.scrape_data_sources import make_all_tables
+        from backend.scraper.load_full_database import load_full_database
 
-        # TODO: load excel sheet into database
         make_all_tables()
+        load_full_database()
 
 
 def register_routes(app: Flask):
