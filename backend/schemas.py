@@ -5,7 +5,7 @@ from pydantic.main import ModelMetaclass
 from pydantic import root_validator
 from pydantic import BaseModel
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
-from spectree import SpecTree
+from spectree import SpecTree, SecurityScheme
 
 from .database.models.incident import Incident
 from .database.models.victim import Victim
@@ -21,7 +21,31 @@ from .database.models.legal_case import LegalCase
 from .database.models.officer import Officer
 from .database import User
 
-spec = SpecTree("flask")
+spec = SpecTree(
+    "flask",
+    security_schemes=[
+        # Cookie auth is used by browsers for GET requests
+        SecurityScheme(
+            name="cookieAuth",
+            data={
+                "type": "apiKey",
+                "name": "access_token_cookie",
+                "in": "cookie",
+            },
+        ),
+        # Bearer auth is used by other API consumers
+        SecurityScheme(
+            name="bearerAuth",
+            data={
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": {"JWT": []},
+            },
+        ),
+    ],
+    # By default, all routes require either cookie or bearer auth
+    security={"cookieAuth": [], "bearerAuth": []},
+)
 
 _incident_list_attrs = [
     "victims",
