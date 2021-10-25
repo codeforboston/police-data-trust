@@ -26,7 +26,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./backend/Dockerfile.cloud
+      dockerfile: ./backend/Dockerfile
     volumes:
       - .:/app
     depends_on:
