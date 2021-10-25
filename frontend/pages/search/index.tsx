@@ -8,7 +8,6 @@ import { DataTable } from "../../shared-components/data-table/data-table"
 type ChartType = "bubble" | "map"
 
 export default requireAuth(function Dashboard() {
-
   return (
     <Layout>
       <DashboardHeader />

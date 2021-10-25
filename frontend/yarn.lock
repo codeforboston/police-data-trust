@@ -13088,12 +13088,20 @@
   "resolved" "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.0.tgz"
   "version" "1.0.0"
 
-"topojson-client@^3.1.0":
+"topojson-client@^3.1.0", "topojson-client@3":
   "integrity" "sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw=="
   "resolved" "https://registry.npmjs.org/topojson-client/-/topojson-client-3.1.0.tgz"
   "version" "3.1.0"
   dependencies:
     "commander" "2"
+
+"topojson-simplify@^3.0.3":
+  "integrity" "sha512-V+pBjLVzSQ3+hSOxBiV01OVXgFiCmMO8ia3huxKEyIMTC1ApQHBcdXdOqcQ6U2JJJD31TZduwY6KyF15R8sUgg=="
+  "resolved" "https://registry.npmjs.org/topojson-simplify/-/topojson-simplify-3.0.3.tgz"
+  "version" "3.0.3"
+  dependencies:
+    "commander" "2"
+    "topojson-client" "3"
 
 "tough-cookie@^4.0.0":
   "integrity" "sha512-tHdtEpQCMrc1YLrMaqXXcj6AxhYi/xgit6mZu1+EDWUn+qhUf8wMQoFIy9NXuq23zAwtcB0t/MjACGR18pcRbg=="
