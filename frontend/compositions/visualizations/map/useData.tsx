@@ -26,10 +26,10 @@ export default function useData() {
     return stateCode
   }
 
-  const fakeData = Incidents.map(i => {
-      const stateCode = addStateCode()
-      return {...i, "state": stateCode, "value": i.officers.length} as FakeData
-    })
+  const fakeData = Incidents.map((i) => {
+    const stateCode = addStateCode()
+    return { ...i, state: stateCode, value: i.officers.length } as FakeData
+  })
 
   return fakeData
 }

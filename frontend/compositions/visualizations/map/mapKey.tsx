@@ -14,7 +14,7 @@ export default function MapKey(props: { title: string }) {
       range={[0, 1000]}
       lowLabel="minimum value"
       highLabel="maximum value"
-    />,
+    />
   ]
 
   return (

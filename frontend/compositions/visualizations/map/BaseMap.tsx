@@ -33,7 +33,6 @@ export default function BaseMap(props: BaseMapProps) {
   const valueScale = d3.scaleLinear().domain([0, 5]).range([0, 1])
   const colorGradient = d3.interpolate("#7caed7", "#303463")
 
-
   useEffect(() => {
     if (!geoDataPromise) return
 
@@ -87,7 +86,7 @@ export default function BaseMap(props: BaseMapProps) {
           .attr("title", (d) => d.id)
           .attr("d", path)
           .attr("fill", (d: Feature) => {
-            const countIncidents = data.filter(i => d.id === i.state).length
+            const countIncidents = data.filter((i) => d.id === i.state).length
             return colorGradient(valueScale(countIncidents))
           })
           .attr("pointer-events", "all")

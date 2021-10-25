@@ -6,7 +6,8 @@ import useResizeObserver from "use-resize-observer"
 import {
   BoundingType,
   D3CallableSelectionType,
-  D3ZoomEventType, PointCoord,
+  D3ZoomEventType,
+  PointCoord,
   TargetWithData
 } from "../utilities/chartTypes"
 import BaseMap from "./BaseMap"
@@ -127,7 +128,9 @@ export default function Map() {
 
         select(".tooltiptext").html(`stateId: ${d.id} <br>
            incidents: ${value} <br>
-          types of violence: ${stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")} 
+          types of violence: ${
+            stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")
+          } 
             `)
       }
     },
