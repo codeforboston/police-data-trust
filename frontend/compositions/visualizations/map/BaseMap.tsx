@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react"
 import * as topojson from "topojson-client"
 import { presimplify, simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
+import { deflateSync } from "zlib"
 import { FakeData } from "../utilities/chartTypes"
 
 // colors:
@@ -69,61 +70,93 @@ export default function BaseMap(props: BaseMapProps) {
     /* Definitions */
     const defs = svg.append("defs")
 
-    const erodeFilter = defs.append("filter").attr("id", "erode")
+    const borderSoftenFilter = defs.append("filter").attr("id", "blur")
 
-    erodeFilter
+    borderSoftenFilter
       .append("feMorphology")
       .attr("operator", "erode")
-      .attr("result", "ERODE")
-      .attr("radius", "2")
+      .attr("radius", 3)
+      .attr("result", "erode")
 
-    const statePaths = defs
-      .append("svg")
-      .attr("id", "statePaths")
-      .attr("width", "1200")
-      .attr("height", "700")
+    borderSoftenFilter
+      .append("feGaussianBlur")
+      .attr("in", "SourceGraphic")
+      .attr("stdDeviation", "3")
+      .attr("result", "blurFilter")
 
-    statePaths
-      .selectAll("path")
-      .data(geoData.features)
-      .enter()
-      .append("path")
-      .classed("state", true)
-      .attr("id", (d) => d.properties.name)
-      .attr("d", path)
-      .attr("fill", "transparent")
+    borderSoftenFilter
+      .append("feColorMatrix")
+      .attr("id", "colorMatrix")
+      .attr("in", "blurFilter")
+      .attr("mode", "matrix")
+      .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -15")
+      .attr("result", "colorMatrix")
 
-    /* SVG Body */
-    const paths = svg
-      .append("g")
-      .selectAll("path")
-      .data(geoData.features)
-      .enter()
-      .append("path")
-      .classed("state", true)
-      .attr("title", (d) => d.id)
-      .attr("d", path)
-      .attr("fill", (d: Feature) => {
-        const countIncidents = data.filter((i) => d.id === i.state).length
-        return colorGradient(valueScale(countIncidents))
-      })
-      .attr("pointer-events", "all")
-      .attr("cursor", "pointer")
+    const strokeShape = defs.append("filter").attr("id", "strokeShape")
 
-    svg
-      .append("use")
-      .attr("id", "statePaths")
-      .attr("href", "#statePaths")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 2)
-      .attr("stroke-join", "round")
-      .attr("stroke-opacity", 1)
+    strokeShape
+      .append("feMorphology")
+      .attr("operator", "erode")
+      .attr("radius", 1)
+      .attr("result", "erode")
+
+    strokeShape
+      .append("feGaussianBlur")
+      .attr("in", "erode")
+      .attr("stdDeviation", "3")
+      .attr("result", "blurFilter")
+
+    strokeShape
+      .append("feColorMatrix")
+      .attr("id", "colorMatrix2")
+      .attr("in", "blurFilter")
+      .attr("mode", "matrix")
+      .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -7")
+      .attr("result", "colorMatrix2")
+
+    strokeShape
+      .append("feGaussianBlur")
+      .attr("in", "erode")
+      .attr("stdDeviation", "2")
+      .attr("result", "blurFilter2")
+
+    strokeShape
+      .append("feComposite")
+      .attr("in", "colorMatrix2")
+      .attr("in2", "blurFilter2")
+      .attr("operator", "out")
+      .attr("result", "compositedStroke")
+
+    strokeShape
+      .append("feBlend")
+      .attr("in", "colorMatrix2")
+      .attr("in2", "compositedStroke")
+      .attr("mode", "multiply")
+
+    const paths = svg.append("g").attr("id", "paths")
+
+        /* SVG Body */
+        paths
+          .selectAll("path")
+          .data(geoData.features)
+          .enter()
+          .append("path")
+          .classed("state", true)
+          .attr("title", (d) => d.id)
+          .attr("d", path)
+          .attr("filter", "url(#strokeShape)")
+          .attr("fill", (d: Feature) => {
+            const countIncidents = data.filter((i) => d.id === i.state).length
+            return colorGradient(valueScale(countIncidents))
+          })
+          .attr("pointer-events", "all")
+          .attr("cursor", "pointer")
 
     return () => {
+      defs.remove()
       paths.remove()
-      statePaths.remove()
     }
-  }, [data, geoData, valueScale, path, colorGradient, svg])
+  }, [data, valueScale, path, colorGradient, geoData, svg])
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }
