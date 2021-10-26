@@ -22,7 +22,7 @@ export default function useData() {
 
   let nextStateNumber = 0
   const addStateCode = () => {
-    const stateNumber = (nextStateNumber++ % 50) + 1; 
+    const stateNumber = (nextStateNumber++ % 50) + 1
     const stateCode = stateNumber < 10 ? "0" + stateNumber : stateNumber.toString()
     return stateCode
   }

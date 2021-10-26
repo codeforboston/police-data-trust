@@ -2,7 +2,7 @@ import * as React from "react"
 import Dashboard from "../../pages/search"
 import { render, router, setAuthForTest, userEvent, waitFor } from "../test-utils"
 
-jest.mock('../../compositions/visualizations/map')
+jest.mock("../../compositions/visualizations/map")
 
 beforeAll(() => setAuthForTest())
 
