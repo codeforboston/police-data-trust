@@ -1,17 +1,22 @@
 import os
 import math
 import pandas as pd
-import requests
 from dateutil import parser
 
 from ..api import db
 from ..database import UseOfForce, Incident, Officer
 
-isnan = lambda x: isinstance(x, float) and math.isnan(x)
-nan_to_none = lambda x: None if isnan(x) else x
-parse_date = (
-    lambda s: parser.parse(s) if isinstance(s, str) and len(s) > 0 else None
-)
+
+def isnan(x):
+    return isinstance(x, float) and math.isnan(x)
+
+
+def nan_to_none(x):
+    return None if isnan(x) else x
+
+
+def parse_date(s):
+    return parser.parse(s) if isinstance(s, str) and len(s) > 0 else None
 
 
 def load_spreadsheet():
@@ -19,7 +24,10 @@ def load_spreadsheet():
     if os.path.exists(pickle):
         return pd.read_pickle(pickle)
     else:
-        raise f"No dataset found at {pickle}. Make sure to run the scraper first"
+        raise (
+            f"No dataset found at {pickle}."
+            + " Make sure to run the scraper first"
+        )
 
 
 def orm_location(row):

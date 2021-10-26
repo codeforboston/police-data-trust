@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from backend.auth.jwt import role_required
-from backend.database.models.officer import Officer
-from backend.database.models.use_of_force import UseOfForce
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app
 from flask_jwt_extended.view_decorators import jwt_required
@@ -13,8 +11,8 @@ from pydantic import BaseModel
 from ..database import Incident, db
 from ..schemas import (
     CreateIncidentSchema,
-    incident_to_orm,
     incident_orm_to_json,
+    incident_to_orm,
 )
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
@@ -38,7 +36,7 @@ def create_incident(body: CreateIncidentSchema):
 
     try:
         incident = incident_to_orm(body)
-    except:
+    except Exception:
         abort(400)
 
     created = incident.create()
@@ -62,8 +60,11 @@ def search_incidents(body: SearchIncidentsSchema):
     query = db.session.query(Incident)
 
     if body.location:
-        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text search
-        # TODO: eventually replace with geosearch. Geocode records and integrate PostGIS
+        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text
+        # search
+        #
+        # TODO: eventually replace with geosearch. Geocode records and integrate
+        # PostGIS
         query = query.filter(Incident.location.ilike(f"%{body.location}%"))
     if body.startTime:
         query = query.filter(Incident.time_of_incident >= body.startTime)

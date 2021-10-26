@@ -127,10 +127,17 @@ def test_search_incidents(
     # Match the results to the known dataset and assert that all the expected
     # results are present
     actual_incidents = res.json["results"]
-    incident_name = lambda incident: next(
-        (k for k, v in example_incidents.items() if v["id"] == incident["id"]),
-        None,
-    )
+
+    def incident_name(incident):
+        return next(
+            (
+                k
+                for k, v in example_incidents.items()
+                if v["id"] == incident["id"]
+            ),
+            None,
+        )
+
     actual_incident_names = list(
         filter(None, map(incident_name, actual_incidents))
     )
