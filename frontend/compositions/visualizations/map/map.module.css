@@ -1,21 +1,23 @@
 .mapContainer {
-  position: relative;
-  height: 100vh;
-  width: 100vw;
+  /* position: relative; */
+  height: 100%;
+  width: 100%;
   pointer-events: none;
   margin: auto;
+  outline: 1px solid yellow;
 }
 
 .mapWrapper {
-  position: absolute;
+  position: relative;
   height: 100%;
   width: 100%;
+  margin: auto;
+  outline: 1px solid blue;
 }
 
 .mapData {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  /* width: 100%; */
+  /* height: 100%; */
 }
 
 .mapCityPoint {
@@ -47,8 +49,8 @@
 
 .mapButton {
   position: absolute;
+  top: 4em;
+  left: 3em;
   pointer-events: all;
   cursor: pointer;
-  grid-column: 2;
-  grid-row: 3;
 }

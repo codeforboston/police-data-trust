@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react"
 import * as topojson from "topojson-client"
 import { presimplify, simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
-import { deflateSync } from "zlib"
 import { FakeData } from "../utilities/chartTypes"
 
 // colors:
@@ -70,28 +69,6 @@ export default function BaseMap(props: BaseMapProps) {
     /* Definitions */
     const defs = svg.append("defs")
 
-    const borderSoftenFilter = defs.append("filter").attr("id", "blur")
-
-    borderSoftenFilter
-      .append("feMorphology")
-      .attr("operator", "erode")
-      .attr("radius", 3)
-      .attr("result", "erode")
-
-    borderSoftenFilter
-      .append("feGaussianBlur")
-      .attr("in", "SourceGraphic")
-      .attr("stdDeviation", "3")
-      .attr("result", "blurFilter")
-
-    borderSoftenFilter
-      .append("feColorMatrix")
-      .attr("id", "colorMatrix")
-      .attr("in", "blurFilter")
-      .attr("mode", "matrix")
-      .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -15")
-      .attr("result", "colorMatrix")
-
     const strokeShape = defs.append("filter").attr("id", "strokeShape")
 
     strokeShape
@@ -134,7 +111,6 @@ export default function BaseMap(props: BaseMapProps) {
       .attr("mode", "multiply")
 
     const paths = svg.append("g").attr("id", "paths")
-
         /* SVG Body */
         paths
           .selectAll("path")
@@ -142,7 +118,7 @@ export default function BaseMap(props: BaseMapProps) {
           .enter()
           .append("path")
           .classed("state", true)
-          .attr("title", (d) => d.id)
+          .attr("title", (d) => d.properties.name)
           .attr("d", path)
           .attr("filter", "url(#strokeShape)")
           .attr("fill", (d: Feature) => {
