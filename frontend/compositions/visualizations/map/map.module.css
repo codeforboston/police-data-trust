@@ -1,7 +1,7 @@
 .mapContainer {
   position: relative;
-  height: 70vh;
-  width: 80vw;
+  height: 100vh;
+  width: 100vw;
   pointer-events: none;
   margin: auto;
 }
@@ -28,9 +28,10 @@
 }
 
 .mapGeoShape.state {
+  fill: var(--darkBlue);
   stroke: var(--lightBlue);
-  fill: var(--lightBlue);
-  stroke-width: 1;
+  stroke-width: 7;
+  stroke-linejoin: round;
   cursor: pointer;
   pointer-events: all;
 }

@@ -1,6 +1,14 @@
 # Files that shouldn't be copied into the api image
+.github
 frontend
+aws_terraform_infra
 .vscode
 .pytest_cache
 .env
+LICENSE
+yarn.lock
+package-lock.json
+app.json
+CONTRIBUTING.md
+heroku.yml
 **/__pycache__
