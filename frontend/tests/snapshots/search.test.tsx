@@ -9,11 +9,11 @@ it("renders Dashboard correctly", async () => {
   expect(container).toMatchSnapshot()
 })
 
-it("redirects to login on logout", async () => {
+it("navigates to logout page", async () => {
   const { getByRole } = render(<Dashboard />)
-  const logout = getByRole("button", { name: /logout/i })
+  const logout = getByRole("menuitem", { name: /sign out/i })
 
   userEvent.click(logout)
 
-  await waitFor(() => expect(router.pathname).toBe("/login"))
+  await waitFor(() => expect(router.pathname).toBe("/logout"))
 })

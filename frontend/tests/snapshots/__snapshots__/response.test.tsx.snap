@@ -58,6 +58,8 @@ exports[`renders Passport:Fail correctly 1`] = `
     <p>
       <a
         href="/search"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
       >
         Return to dashboard
       </a>
@@ -97,6 +99,8 @@ exports[`renders Passport:Success correctly 1`] = `
     <p>
       <a
         href="/search"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
       >
         Return to dashboard
       </a>
@@ -163,6 +167,8 @@ exports[`renders Register:Fail correctly 1`] = `
     <p>
       <a
         href="/login"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
       >
         Return to login
       </a>
