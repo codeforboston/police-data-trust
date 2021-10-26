@@ -1,6 +1,5 @@
 import pytest
-from backend.database import User, UserRole
-from backend.auth import user_manager
+from backend.database import User
 from flask_jwt_extended import decode_token
 
 

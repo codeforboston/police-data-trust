@@ -43,7 +43,7 @@ def create_incident():
 
     try:
         incident = incident_to_orm(request.context.json)
-    except:
+    except Exception:
         abort(400)
 
     created = incident.create()
@@ -80,8 +80,11 @@ def search_incidents():
     query = db.session.query(Incident)
 
     if body.location:
-        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text search
-        # TODO: eventually replace with geosearch. Geocode records and integrate PostGIS
+        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text
+        # search
+        #
+        # TODO: eventually replace with geosearch. Geocode records and integrate
+        # PostGIS
         query = query.filter(Incident.location.ilike(f"%{body.location}%"))
     if body.startTime:
         query = query.filter(Incident.time_of_incident >= body.startTime)
