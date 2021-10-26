@@ -9,7 +9,7 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
 import enum
-
+from .types.enums import UserRole
 
 fs_mixin = FlaskSerialize(db)
 
@@ -42,13 +42,6 @@ def compile_ci_string(element, compiler, **kwargs):
         return "%s COLLATE %s" % (base_visit, element.collation)
     else:
         return base_visit
-
-
-class UserRole(enum.Enum):
-    PASSPORT = 1
-    PUBLIC = 2
-    CONTRIBUTOR = 3
-    ADMIN = 4
 
 
 # Define the User data-model.

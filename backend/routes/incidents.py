@@ -11,7 +11,6 @@ from ..database import Incident
 
 bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 
-
 @bp.route("/get/<int:incident_id>", methods=["GET"])
 def get_incidents(incident_id: int):
     return IncidentSchema.from_orm(Incident.get(incident_id)).dict()

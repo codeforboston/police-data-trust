@@ -20,6 +20,7 @@ from .database.models.use_of_force import UseOfForce
 from .database.models.legal_case import LegalCase
 from .database.models.officer import Officer
 from .database import User
+from .database import PassportRequest
 
 
 _incident_list_attrs = [
@@ -117,3 +118,4 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 UserSchema = sqlalchemy_to_pydantic(User, exclude="role")
+PassportRequestSchema = sqlalchemy_to_pydantic(PassportRequest)
