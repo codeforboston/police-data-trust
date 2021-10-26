@@ -1,4 +1,4 @@
-import Incidents from "../../../public/incidents.json"
+import { mockIncident as incidents} from "../../../models/mock-data"
 import { PointCoord } from "../utilities/chartTypes"
 
 type StateID = string
@@ -26,7 +26,7 @@ export default function useData() {
     return stateCode
   }
 
-  const fakeData = Incidents.map((i) => {
+  const fakeData = incidents.map((i) => {
     const stateCode = addStateCode()
     return { ...i, state: stateCode, value: i.officers.length } as FakeData
   })
