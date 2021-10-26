@@ -1,4 +1,4 @@
-import { mockIncident as incidents} from "../../../models/mock-data"
+import { mockIncident as incidents } from "../../../models/mock-data"
 import { PointCoord } from "../utilities/chartTypes"
 
 type StateID = string

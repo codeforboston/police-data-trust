@@ -117,15 +117,11 @@ export default function BaseMap(props: BaseMapProps) {
       .attr("stroke-join", "round")
       .attr("stroke-opacity", 1)
 
-      return () => {
-        paths.remove()
-        statePaths.remove()
-      }
-      
+    return () => {
+      paths.remove()
+      statePaths.remove()
+    }
   }, [data, geoData, valueScale, path, colorGradient, svg])
-
-
-
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }
