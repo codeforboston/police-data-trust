@@ -1,10 +1,16 @@
 from flask import Blueprint
 
+from ..database import db, Incident
 
 bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
 
 
-# TODO: Add checks to validate backing services or dependencies
+def check_db():
+    """Verifies that we can read the incidents table"""
+    db.session.query(Incident).count()
+
+
 @bp.route("/healthcheck", methods=["GET"])
 def healthcheck():
-    return ('', 200)
+    check_db()
+    return ("", 200)
