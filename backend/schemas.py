@@ -31,13 +31,14 @@ spec = SpecTree(
         for search and aggregation. NPDC partners contribute to the index while
         maintaining ownership over the full record. Partners can use the API to
         authorize users to access the full records on their systems. This thus
-        facilitates federated access control and data ownership.   
+        facilitates federated access control and data ownership.
         """
     ),
     # The version of the API. 0.X.Y is initial development with breaking changes
     # allowed on minor version changes.
     version="0.1.0",
-    # Version of the `/apidoc/openapi.json` format https://swagger.io/specification/
+    # Version of the `/apidoc/openapi.json` format
+    # https://swagger.io/specification/
     openapi_version="3.0.3",
     # Only document routes decorated with validators
     mode="strict",
