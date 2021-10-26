@@ -1,28 +1,29 @@
-from flask import Blueprint
-from flask import jsonify
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import set_access_cookies
-from flask_jwt_extended import unset_access_cookies
-
-from ..database import db
-from ..database import User
-from ..database import UserRole
-from ..auth import role_required
-from ..auth import user_manager
-from ..schemas import UserSchema
-from ..dto import RegisterUserDTO
-from ..dto import LoginUserDTO
-from flask_pydantic import validate
-
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import (
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+    set_access_cookies,
+    unset_access_cookies,
+)
+from ..auth import role_required, user_manager
+from ..database import User, UserRole, db
+from ..dto import LoginUserDTO, RegisterUserDTO
+from ..schemas import UserSchema, validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
 @bp.route("/login", methods=["POST"])
-@validate()
-def login(body: LoginUserDTO):
+@validate(auth=False, json=LoginUserDTO)
+def login():
+    """Sign in with email and password.
+
+    Returns an access token and sets cookies.
+    """
+
+    body: LoginUserDTO = request.context.json
+
     # Verify user
     if body.password is not None and body.email is not None:
         user = User.query.filter_by(email=body.email).first()
@@ -54,8 +55,15 @@ def login(body: LoginUserDTO):
 
 
 @bp.route("/register", methods=["POST"])
-@validate()
-def register(body: RegisterUserDTO):
+@validate(auth=False, json=RegisterUserDTO)
+def register():
+    """Register for a new public account.
+
+    If successful, also performs login.
+    """
+
+    body: RegisterUserDTO = request.context.json
+
     # Check to see if user already exists
     user = User.query.filter_by(email=body.email).first()
     if user is not None:
@@ -100,7 +108,10 @@ def register(body: RegisterUserDTO):
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required()
+@validate()
 def refresh_token():
+    """Refreshes the currently-authenticated user's access token."""
+
     access_token = create_access_token(identity=get_jwt_identity())
     resp = jsonify(
         {
@@ -113,7 +124,9 @@ def refresh_token():
 
 
 @bp.route("/logout", methods=["POST"])
+@validate(auth=False)
 def logout():
+    """Unsets access cookies."""
     resp = jsonify({"message": "successfully logged out"})
     unset_access_cookies(resp)
     return resp, 200
@@ -122,6 +135,8 @@ def logout():
 @bp.route("/test", methods=["GET"])
 @jwt_required()
 @role_required(UserRole.PUBLIC)
+@validate()
 def test_auth():
+    """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()

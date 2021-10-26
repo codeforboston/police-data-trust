@@ -3,7 +3,6 @@ celery
 flake8
 flask
 flask-sqlalchemy
-flask_pydantic
 gunicorn
 pandas
 pip-tools
@@ -32,3 +31,4 @@ flask_cors
 openpyxl
 xlsxwriter
 numpy
+spectree
