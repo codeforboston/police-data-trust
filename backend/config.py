@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+from datetime import timedelta
 
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
@@ -12,8 +12,9 @@ class Config(object):
     JWT_TOKEN_LOCATION = os.environ.get(
         "JWT_TOKEN_LOCATION", ["headers", "cookies"]
     )
-    TOKEN_EXPIRATION_MINUTES = int(
-        os.environ.get("TOKEN_EXPIRATION_MINUTES", 30)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+    TOKEN_EXPIRATION = timedelta(
+        hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
@@ -50,7 +51,9 @@ class Config(object):
         )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
+
+    FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
 
 
 class DevelopmentConfig(Config):
@@ -67,15 +70,17 @@ class ProductionConfig(Config):
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_CSRF_PROTECT = True
 
-    @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        return os.environ.get("DATABASE_URL")
+    # @property
+    # def SQLALCHEMY_DATABASE_URI(self):
+    #     return os.environ.get("DATABASE_URL")
 
 
 class TestingConfig(Config):
     ENV = "testing"
     TESTING = True
     POSTGRES_DB = "police_data_test"
+    SECRET_KEY = "my-secret-key"
+    JWT_SECRET_KEY = "my-jwt-secret-key"
 
 
 def get_config_from_env(env: str) -> Config:

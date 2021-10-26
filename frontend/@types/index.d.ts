@@ -4,3 +4,6 @@ declare module "*.svg" {
   const src: string
   export default src
 }
+
+declare module "dom-storage"
+declare module "jest-next-dynamic"

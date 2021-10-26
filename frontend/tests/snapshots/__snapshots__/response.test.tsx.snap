@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Passport:Fail correctly 1`] = `
+<div
+  className="response"
+>
+  <img
+    alt="A blue circular logo design reads 'National Police Data Coalition'"
+    className="logo large"
+    src="/NPDCLogo.svg"
+  />
+  <div
+    className="message"
+  >
+    <header
+      className="title"
+    >
+      Something went wrong...
+    </header>
+    <p>
+      We weren't able to 
+      submit your application
+    </p>
+    <p
+      className="boldText"
+    >
+      Please come back and try again later
+    </p>
+    <p>
+      If the problem perists, please
+      <a
+        aria-label="alert our development team external"
+        className="externalLink"
+        href="https://github.com/codeforboston/police-data-trust"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        alert our development team
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-external-link-alt fa-w-16 fa-xs "
+          data-icon="external-link-alt"
+          data-prefix="fas"
+          focusable="false"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 512 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </a>
+    </p>
+    <p>
+      <a
+        href="/search"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      >
+        Return to dashboard
+      </a>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`renders Passport:Success correctly 1`] = `
+<div
+  className="response"
+>
+  <img
+    alt="A blue circular logo design reads 'National Police Data Coalition'"
+    className="logo large"
+    src="/NPDCLogo.svg"
+  />
+  <div
+    className="message"
+  >
+    <header
+      className="title"
+    >
+      Success!
+    </header>
+    <p>
+      You have successfully submitted an application for a Passport account
+    </p>
+    <p
+      className="boldText"
+    >
+      Please check your email to confirm your registration
+    </p>
+    <p>
+      You can expect to receive a decision in XX days with further instructions. In the meantime, you may continue to explore all public data.
+    </p>
+    <p>
+      <a
+        href="/search"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      >
+        Return to dashboard
+      </a>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`renders Register:Fail correctly 1`] = `
+<div
+  className="response"
+>
+  <img
+    alt="A blue circular logo design reads 'National Police Data Coalition'"
+    className="logo large"
+    src="/NPDCLogo.svg"
+  />
+  <div
+    className="message"
+  >
+    <header
+      className="title"
+    >
+      Something went wrong...
+    </header>
+    <p>
+      We weren't able to 
+      complete your registration
+    </p>
+    <p
+      className="boldText"
+    >
+      Please come back and try again later
+    </p>
+    <p>
+      If the problem perists, please
+      <a
+        aria-label="alert our development team external"
+        className="externalLink"
+        href="https://github.com/codeforboston/police-data-trust"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        alert our development team
+        <svg
+          aria-hidden="true"
+          className="svg-inline--fa fa-external-link-alt fa-w-16 fa-xs "
+          data-icon="external-link-alt"
+          data-prefix="fas"
+          focusable="false"
+          role="img"
+          style={Object {}}
+          viewBox="0 0 512 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
+            fill="currentColor"
+            style={Object {}}
+          />
+        </svg>
+      </a>
+    </p>
+    <p>
+      <a
+        href="/login"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      >
+        Return to login
+      </a>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`renders Register:Success correctly 1`] = `
+<div
+  className="response"
+>
+  <img
+    alt="A blue circular logo design reads 'National Police Data Coalition'"
+    className="logo large"
+    src="/NPDCLogo.svg"
+  />
+  <div
+    className="message"
+  >
+    <header
+      className="title"
+    >
+      Success!
+    </header>
+    <p>
+      You have been successfully registered as a Viewer
+    </p>
+    <p
+      className="boldText"
+    >
+      Please check your email to confirm your registration
+    </p>
+    <p>
+      The confirmation email will direct you to a new login screen
+    </p>
+    <p>
+      <span
+        className="boldText"
+      >
+        If you need access to legally protected data,
+      </span>
+       you are also invited to apply for a 
+      <span
+        className="boldText"
+      >
+        Passport Account
+      </span>
+       upon login.
+    </p>
+  </div>
+</div>
+`;

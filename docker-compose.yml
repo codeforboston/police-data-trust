@@ -1,7 +1,7 @@
 version: "3"
 services:
   db:
-    image: postgres
+    image: postgres:13.2 #AWS RDS latest version
     restart: always
     env_file:
       - ".env"
@@ -18,6 +18,8 @@ services:
       - ./frontend:/app
       # Prevents the host node_modules from clobbering the image's
       - /app/node_modules
+    environment:
+      NEXT_PUBLIC_API_MODE: real
     ports:
       - 3000:3000
   api:
@@ -31,7 +33,7 @@ services:
       - db
     environment:
       POSTGRES_HOST: db
-      FLASK_ENV: development
+      FLASK_ENV: ${FLASK_ENV:-development}
       WAIT_HOSTS: db:5432
     ports:
       - 5000:5000

@@ -2,6 +2,7 @@
 .vscode/
 .history/
 .idea/
+excel_outputs/
 
 # MacOS
 .DS_Store
@@ -101,6 +102,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
 
 # mkdocs documentation
 /site

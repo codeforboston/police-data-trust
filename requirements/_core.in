@@ -3,7 +3,6 @@ celery
 flake8
 flask
 flask-sqlalchemy
-flask_pydantic
 gunicorn
 pandas
 pip-tools
@@ -28,3 +27,8 @@ flask-serialize
 Flask-DB
 Flask-JWT-Extended
 email-validator
+flask_cors
+openpyxl
+xlsxwriter
+numpy
+spectree

@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Dashboard correctly 1`] = `
+<div>
+  <div>
+    <header
+      class="wrapper"
+    >
+      <div
+        class="backgroundBanner"
+      >
+        <div
+          class="leftHeader"
+        >
+          <img
+            alt="A blue circular logo design reads 'National Police Data Coalition'"
+            class="logo medium"
+            src="/NPDCLogo.svg"
+          />
+          <div
+            class="titleContainer"
+          >
+            <h2>
+              National Police Data Coalition
+            </h2>
+            <p>
+              The national index of police incidents
+            </p>
+          </div>
+        </div>
+        <nav
+          aria-label="Main Navigation"
+        >
+          <ul
+            id="navMenu"
+          >
+            <li
+              class=""
+            >
+              <a
+                href="/search"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Search
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/profile"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Profile
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/logout"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Sign Out
+              </a>
+            </li>
+            <li
+              class=""
+            >
+              <a
+                href="/"
+                role="menuitem"
+                tabindex="-1"
+              >
+                DONATE
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div>
+      FakeMap
+    </div>
+    <section
+      style="max-width: 500px; margin: 1em auto;"
+    >
+      <h1>
+        Search Incidents
+      </h1>
+      <form
+        class="centerContent"
+      >
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Location
+          </label>
+          <input
+            name="Location"
+            placeholder="Location keyword"
+            style="margin: 10px; flex-basis: auto;"
+            type="text"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Start Date
+          </label>
+          <input
+            name="Start Date"
+            style="margin: 10px; flex-basis: auto;"
+            type="date"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            End Date
+          </label>
+          <input
+            name="End Date"
+            style="margin: 10px; flex-basis: auto;"
+            type="date"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Description
+          </label>
+          <input
+            name="Description"
+            placeholder="Description keyword"
+            style="margin: 10px; flex-basis: auto;"
+            type="text"
+          />
+        </fieldset>
+        <button
+          class="primaryButton"
+          type="submit"
+        >
+          Search
+        </button>
+      </form>
+    </section>
+  </div>
+</div>
+`;

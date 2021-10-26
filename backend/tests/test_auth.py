@@ -1,29 +1,14 @@
 import pytest
-from backend.database import User, UserRole
-from backend.auth import user_manager
+from backend.database import User
 from flask_jwt_extended import decode_token
-
-
-@pytest.fixture
-def example_user(db_session):
-    user = User(
-        email="test@email.com",
-        password=user_manager.hash_password("my_password"),
-        role=UserRole.PUBLIC,
-        first_name="first",
-        last_name="last",
-    )
-    db_session.add(user)
-    db_session.commit()
-    return user
 
 
 @pytest.mark.parametrize(
     ("email", "password", "expected_status_code"),
     [
         ("test@email.com", "my_password", 200),
-        ("bad_email", "bad_password", 400),
-        (None, None, 400),
+        ("bad_email", "bad_password", 422),
+        (None, None, 422),
     ],
 )
 def test_register(client, db_session, email, password, expected_status_code):
@@ -43,7 +28,7 @@ def test_register(client, db_session, email, password, expected_status_code):
 
 @pytest.mark.parametrize(
     ("password", "expected_status_code"),
-    [("my_password", 200), ("bad_password", 401), (None, 400)],
+    [("my_password", 200), ("bad_password", 401), (None, 422)],
 )
 def test_login(
     client, example_user, db_session, password, expected_status_code
@@ -107,3 +92,7 @@ def test_auth_test_cookie(client, example_user):
     )
 
     assert test_res.status_code == 200
+
+
+def test_access_token_fixture(access_token):
+    assert len(access_token) > 0
