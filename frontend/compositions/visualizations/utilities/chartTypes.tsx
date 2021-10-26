@@ -1,4 +1,5 @@
-import { BaseType, ScaleLinear, Selection, Transition } from "d3"
+import { BaseType, D3ZoomEvent, ScaleLinear, Selection, Transition } from "d3"
+import { Feature } from "geojson"
 import { CityProperties } from "../../../models/visualizations"
 
 export interface Coord {
@@ -6,6 +7,11 @@ export interface Coord {
   y: number
 }
 export type Pair<T> = [T, T]
+export type PointCoord = Pair<number>
+export type BoundingType = [PointCoord, PointCoord]
+export type D3CallableSelectionType = Selection<Element, unknown, any, any>
+export type D3ZoomEventType = D3ZoomEvent<Element, any>
+
 export type Path = string
 
 export type Range = Pair<number>
@@ -25,6 +31,26 @@ export type Position =
   | "bottom left"
   | "none"
 
+export type StateID = string
+
+export type FakeData = {
+  UID?: number
+  id?: number
+  occurred?: number
+  officers?: string[]
+  incidentType?: string
+  useOfForce?: string[]
+  source?: string
+  location?: PointCoord
+  state?: StateID
+  label?: string
+  value?: number
+}
+
+export type NodeData = {
+  __data__: Feature
+}
+export type TargetWithData = EventTarget & NodeData & SVGElement
 export interface ChartSymbolAttributes {
   label: string
   labelPosition: string

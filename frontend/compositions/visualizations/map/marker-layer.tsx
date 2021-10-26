@@ -1,8 +1,8 @@
-import { Pair } from "./Map"
+import { Coord } from "../utilities/chartTypes"
 import styles from "./map.module.css"
 
 export interface MarkerDescription {
-  geoCenter: Pair<number>
+  geoCenter: Coord
   dataPoint: number
   label: string
 }
@@ -32,8 +32,8 @@ export function CircleMarker(props: CircleMarkerProps) {
   return (
     <circle
       className={styles.circleMarker}
-      cx={c.geoCenter[0]}
-      cy={c.geoCenter[1]}
+      cx={c.geoCenter.x}
+      cy={c.geoCenter.y}
       r={c.dataPoint}
       onClick={() => console.log(c.label)}
     />
