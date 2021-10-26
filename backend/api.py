@@ -10,6 +10,7 @@ from .database import db_cli
 from .auth import user_manager, jwt, refresh_token
 from .routes.incidents import bp as incidents_bp
 from .routes.auth import bp as auth_bp
+from .routes.healthcheck import bp as healthcheck_bp
 from .utils import dev_only
 
 
@@ -85,6 +86,7 @@ def register_commands(app: Flask):
 def register_routes(app: Flask):
     app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(healthcheck_bp)
 
     @app.route("/")
     def hello_world():
