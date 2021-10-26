@@ -20,9 +20,10 @@ type FakeData = {
 export default function useData() {
   // using mock data set
 
+  let nextStateNumber = 0
   const addStateCode = () => {
-    const idToStateNumber = Math.floor(Math.random() * 51)
-    const stateCode = idToStateNumber < 10 ? "0" + idToStateNumber : idToStateNumber.toString()
+    const stateNumber = (nextStateNumber++ % 50) + 1; 
+    const stateCode = stateNumber < 10 ? "0" + stateNumber : stateNumber.toString()
     return stateCode
   }
 

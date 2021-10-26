@@ -63,6 +63,9 @@ export default function BaseMap(props: BaseMapProps) {
   useEffect(() => {
     if (!geoData) return
 
+    // Set the title after loading data to facilitate testing
+    svg.attr("title", "US Map")
+
     /* Definitions */
     const defs = svg.append("defs")
 
