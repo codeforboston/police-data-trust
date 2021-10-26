@@ -2,7 +2,6 @@ import * as d3 from "d3"
 import { Feature, FeatureCollection } from "geojson"
 import React, { useEffect, useRef, useState } from "react"
 import * as topojson from "topojson-client"
-import { topology } from "topojson-server"
 import { presimplify, simplify } from "topojson-simplify"
 import { Topology } from "topojson-specification"
 import { FakeData } from "../utilities/chartTypes"
@@ -20,7 +19,7 @@ export interface BaseMapProps {
   data: FakeData[]
 }
 
-function useBoundaryPaths() {
+function useBoundaryPaths(): FeatureCollection {
   const wholeTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
   const stateOnlyTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/states-10m.json"
 
