@@ -79,83 +79,51 @@ export default function Map() {
   )
 
   const addToolTip = useCallback(() => {
-    const tooltip = svgElement.append("g").classed("tooltip", true).attr("visibility", "hidden")
-
-    tooltip
-      .append("rect")
-      .classed("tooltip-backing", true)
-      .attr("rx", "6")
-      .attr("ry", "6")
-      .attr("fill", "white")
-      .attr("stroke", "white")
-      .attr("stroke-width", "1em")
-      .attr("width", "100%")
-      .attr("height", "100%")
-
-
-    const tooltipobject = tooltip
-      .append("foreignObject")
-      .attr("x", "0")
-      .attr("y", "0")
-      .attr("width", "100%")
-      .attr("height", "100%")
-
-    const tooltipdiv = tooltipobject
-      .append("xhtml:div")
+    const tooltip = select("#map-wrapper")
+      .append("div")
+      .classed(styles.tooltipDiv, true)
       .classed("tooltip-div", true)
-      .style("width", "200px")
-      .style("height", "fit-content")
+      .style("visibility", "hidden")
 
-    tooltipobject
-      .append("xhtml:p")
-      .classed("tooltip-text", true)
-      .style("text-align", "center")
-      .style("text-anchor", "center")
-      .style("width", "20em")
-      .html("a simple tooltip")
-  }, [svgElement])
+    tooltip.append("p").classed(styles.tooltipText, true).classed("tooltip-text", true)
+  }, [])
 
-  const handleMouseEnter = useCallback(() => addToolTip(), [addToolTip])
+  const handleMouseEnter = useCallback(() => {
+    addToolTip()
+  }, [addToolTip])
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      event.stopPropagation()
       const target = event.target as TargetWithData
       const d = target.__data__
 
       if (target.classList.contains("state") && select(".tooltip")) {
         const stateData = data.filter((i) => d.id === i.state)
         const value = stateData ? stateData.length : "no value"
-        select(".tooltip-text").html(`${d.properties.name} <br>
-           incidents: ${value} <br>
-          types of violence: ${
-            stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")
-          } `)
 
-        const tooltipdiv = select(".tooltip-text")
-
-        const stateBounds = target.getBoundingClientRect()
-        const toolTipBounds = (tooltipdiv.node() as SVGElement).getBoundingClientRect()
-
-        const statePos = {
-          x: stateBounds.x + stateBounds.width / 2,
-          y: stateBounds.y + stateBounds.height / 2
+        const tooltipPos = {
+          x: event.offsetX,
+          y: event.offsetY
         }
 
-        // select(".tooltip-backing")
-        //   .attr("height", toolTipBounds.height)
-        //   .attr("width", toolTipBounds.width)
+        select(".tooltip-text").html(`${d.properties.name} <br>
+          incidents: ${value} <br>
+          types of violence: ${
+            stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")
+          } <br>  `)
 
-        select(".tooltip")
-          .attr("transform", `translate(${statePos.x}, ${statePos.y})`)
+        select(".tooltip-div")
+          .style("transform", `translate(${tooltipPos.x}px, ${tooltipPos.y}px)`)
           .style("visibility", "visible")
+      } else {
+        select(".tooltip-div").style("visibility", "hidden")
       }
     },
     [data]
   )
 
-  const handleMouseOut = useCallback(() => {
-    selectAll(".tooltip").remove()
+  const handleMouseOut = useCallback((event: MouseEvent) => {
+    selectAll(".tooltip-div").remove()
   }, [])
 
   const zoomed = useCallback(
@@ -175,6 +143,7 @@ export default function Map() {
     zoomResetButton.on("click", resetZoom)
 
     svgElement.on("click", handleMapClick)
+
     svgElement.on("mouseenter", handleMouseEnter)
     svgElement.on("mousemove", handleMouseMove)
     svgElement.on("mouseleave", handleMouseOut)

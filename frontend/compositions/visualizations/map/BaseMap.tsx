@@ -125,7 +125,7 @@ export default function BaseMap(props: BaseMapProps) {
             const countIncidents = data.filter((i) => d.id === i.state).length
             return colorGradient(valueScale(countIncidents))
           })
-          .attr("pointer-events", "all")
+          // .attr("pointer-events", "all")
           .attr("cursor", "pointer")
 
     return () => {
