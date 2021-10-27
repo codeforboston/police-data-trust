@@ -111,22 +111,22 @@ export default function BaseMap(props: BaseMapProps) {
       .attr("mode", "multiply")
 
     const paths = svg.append("g").attr("id", "paths")
-        /* SVG Body */
-        paths
-          .selectAll("path")
-          .data(geoData.features)
-          .enter()
-          .append("path")
-          .classed("state", true)
-          .attr("title", (d) => d.properties.name)
-          .attr("d", path)
-          .attr("filter", "url(#strokeShape)")
-          .attr("fill", (d: Feature) => {
-            const countIncidents = data.filter((i) => d.id === i.state).length
-            return colorGradient(valueScale(countIncidents))
-          })
-          // .attr("pointer-events", "all")
-          .attr("cursor", "pointer")
+    /* SVG Body */
+    paths
+      .selectAll("path")
+      .data(geoData.features)
+      .enter()
+      .append("path")
+      .classed("state", true)
+      .attr("title", (d) => d.properties.name)
+      .attr("d", path)
+      .attr("filter", "url(#strokeShape)")
+      .attr("fill", (d: Feature) => {
+        const countIncidents = data.filter((i) => d.id === i.state).length
+        return colorGradient(valueScale(countIncidents))
+      })
+      // .attr("pointer-events", "all")
+      .attr("cursor", "pointer")
 
     return () => {
       defs.remove()
