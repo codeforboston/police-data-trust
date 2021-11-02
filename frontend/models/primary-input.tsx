@@ -18,13 +18,16 @@ export enum PrimaryInputNames {
   OFFICER_NAME = "officerName",
   LOCATION = "location",
   BADGE_NUMBER = "badgeNumber",
-  INCIDENT_TYPE = "incidentType",
-  DATE_TIME = "dateTime"
+  KEY_WORDS = "keyWords",
+  DATE = "date"
 }
 
 const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/
 
 const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", "i")
+const numberRgx: RegExp = new RegExp("^[0-9]$")
+// Since all input fields are required, we need a way to accept any string
+const anyString: RegExp = new RegExp("[sS]*")
 
 export const primaryInputValidation = {
   [PrimaryInputNames.FIRST_NAME]: {
@@ -84,23 +87,23 @@ export const primaryInputValidation = {
     inputType: "text"
   },
   [PrimaryInputNames.LOCATION]: {
-    errorMessage: "A name requires 2+ letters",
+    errorMessage: "A location requires 2+ letters",
     pattern: nameRgx,
     inputType: "text"
   },
   [PrimaryInputNames.BADGE_NUMBER]: {
-    errorMessage: "A name requires 2+ letters",
-    pattern: nameRgx,
+    errorMessage: "A badge number requires 2+ letters",
+    pattern: anyString,
     inputType: "text"
   },
-  [PrimaryInputNames.INCIDENT_TYPE]: {
-    errorMessage: "A name requires 2+ letters",
-    pattern: nameRgx,
+  [PrimaryInputNames.KEY_WORDS]: {
+    errorMessage: "Enter a valid term",
+    pattern: anyString,
     inputType: "text"
   },
-  [PrimaryInputNames.DATE_TIME]: {
+  [PrimaryInputNames.DATE]: {
     errorMessage: "A name requires 2+ letters",
     pattern: nameRgx,
-    inputType: "text"
+    inputType: "date"
   }
 }
