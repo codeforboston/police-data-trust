@@ -7,10 +7,10 @@ import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
 import { FormLevelError, Layout, PrimaryButton, PrimaryInput } from "../../shared-components"
 import sharedStyles from "../../styles/shared.module.css"
 
-const { EMAIL_ADDRESS, LOGIN_PASSWORD } = PrimaryInputNames
+const { EMAIL_ADDRESS, PHONE_NUMBER } = PrimaryInputNames
 
 const defaultEmail = apiMode === "mock" ? "test@example.com" : undefined
-const defaultPassword = apiMode === "mock" ? "password" : undefined
+const defaultPhoneNumber = apiMode === "mock" ? "555 867 5309" : undefined
 
 export default function UserLogin() {
   useRedirectOnAuth(AppRoutes.DASHBOARD)
@@ -41,19 +41,20 @@ export default function UserLogin() {
   return (
     <Layout>
       <section className="enrollmentSection">
-        <EnrollmentHeader headerText="Login" />
+        <EnrollmentHeader headerText="Forgot your password?" />
         <FormProvider {...form}>
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
             <PrimaryInput inputName={EMAIL_ADDRESS} defaultValue={defaultEmail} />
-            <PrimaryInput inputName={LOGIN_PASSWORD} defaultValue={defaultPassword} />
-            <EnrollmentCallToAction callToActionType={CallToActionTypes.FORGOT} />
+            <PrimaryInput inputName={PHONE_NUMBER} defaultValue={defaultPhoneNumber} />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <PrimaryButton loading={loading} type="submit">
               Submit
             </PrimaryButton>
+            Forgot your Email? <br/>
+            Provide Email instead
           </form>
         </FormProvider>
-        <EnrollmentCallToAction callToActionType={CallToActionTypes.REGISTER} />
+        <EnrollmentCallToAction callToActionType={CallToActionTypes.REMEMBER} />
       </section>
     </Layout>
   )

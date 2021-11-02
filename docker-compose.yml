@@ -27,8 +27,8 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app
     depends_on:
       - db
     environment:
