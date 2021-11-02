@@ -7,6 +7,7 @@ import PrimaryInput from "./primary-input/primary-input"
 import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
+import ResultsAlert from "./results-alert/results-alert"
 
 export {
   ExternalLink,
@@ -17,5 +18,6 @@ export {
   PrimaryButton,
   PrimaryInput,
   ResponseTextArea,
-  USAStateInput
+  USAStateInput,
+  ResultsAlert
 }

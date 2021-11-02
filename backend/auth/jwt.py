@@ -8,7 +8,6 @@ jwt = JWTManager()
 
 
 def verify_roles_or_abort(roles):
-    print("verify roles or abort")
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])

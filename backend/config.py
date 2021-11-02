@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+from datetime import timedelta
 
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
@@ -9,6 +9,13 @@ if os.environ.get("FLASK_ENV") != "production":
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(32))
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(64))
+    JWT_TOKEN_LOCATION = os.environ.get(
+        "JWT_TOKEN_LOCATION", ["headers", "cookies"]
+    )
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+    TOKEN_EXPIRATION = timedelta(
+        hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
+    )
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
@@ -44,7 +51,7 @@ class Config(object):
         )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
     FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
 
@@ -60,10 +67,12 @@ class ProductionConfig(Config):
     """Config designed for Heroku CLI deployment."""
 
     ENV = "production"
+    JWT_COOKIE_SECURE = True
+    JWT_COOKIE_CSRF_PROTECT = True
 
-    @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        return os.environ.get("DATABASE_URL")
+    # @property
+    # def SQLALCHEMY_DATABASE_URI(self):
+    #     return os.environ.get("DATABASE_URL")
 
 
 class TestingConfig(Config):

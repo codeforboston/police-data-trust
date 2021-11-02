@@ -5,9 +5,5 @@ module.exports = {
     "storybook-addon-next-router",
     "storybook-css-modules-preset"
   ],
-  stories: [
-    "../compositions/**/*.stories.tsx",
-    "../shared-components/**/*.stories.tsx",
-    "../pages/**/*.stories.tsx"
-  ]
+  stories: ["../**/*.stories.tsx"]
 }

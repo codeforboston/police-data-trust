@@ -1,5 +1,4 @@
-FROM node:lts-buster
-RUN npm install --global npm@latest
+FROM node:16.12.0-buster
 
 WORKDIR /app/
 

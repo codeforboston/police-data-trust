@@ -1,0 +1,16 @@
+# docker build command:
+# docker build -t police-data-trust-backend-dev -f backend/Dockerfile.cloud .
+FROM python:3.8-slim-buster
+
+WORKDIR /app/
+
+COPY requirements/prod.txt .
+RUN pip install -r prod.txt
+
+COPY . .
+
+EXPOSE 5000
+
+ENTRYPOINT [ "./run_cloud.sh" ]
+# ENV FLASK_ENV=${FLASK_ENV:-development}
+# CMD flask run --host=0.0.0.0

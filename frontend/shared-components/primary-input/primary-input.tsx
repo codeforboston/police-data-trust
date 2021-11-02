@@ -10,9 +10,15 @@ interface PrimaryInputProps {
   inputName: PrimaryInputNames
   isShown?: boolean
   size?: string
+  defaultValue?: string
 }
 
-export default function PrimaryInput({ inputName, isShown, size }: PrimaryInputProps) {
+export default function PrimaryInput({
+  inputName,
+  isShown,
+  size,
+  defaultValue
+}: PrimaryInputProps) {
   const {
     register,
     formState: { errors }
@@ -46,6 +52,7 @@ export default function PrimaryInput({ inputName, isShown, size }: PrimaryInputP
         aria-required="true"
         aria-describedby={errorId}
         aria-invalid={!isValid}
+        defaultValue={defaultValue}
         {...register(inputName, { required: true, pattern })}
       />
       {!isValid && (

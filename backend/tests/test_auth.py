@@ -1,29 +1,14 @@
 import pytest
-from backend.database import User, UserRole
-from backend.auth import user_manager
+from backend.database import User
 from flask_jwt_extended import decode_token
-
-
-@pytest.fixture
-def example_user(db_session):
-    user = User(
-        email="test@email.com",
-        password=user_manager.hash_password("my_password"),
-        role=UserRole.PUBLIC,
-        first_name="first",
-        last_name="last",
-    )
-    db_session.add(user)
-    db_session.commit()
-    return user
 
 
 @pytest.mark.parametrize(
     ("email", "password", "expected_status_code"),
     [
         ("test@email.com", "my_password", 200),
-        ("bad_email", "bad_password", 400),
-        (None, None, 400),
+        ("bad_email", "bad_password", 422),
+        (None, None, 422),
     ],
 )
 def test_register(client, db_session, email, password, expected_status_code):
@@ -36,14 +21,14 @@ def test_register(client, db_session, email, password, expected_status_code):
     )
 
     db_user = db_session.query(User).filter(email == User.email).first()
-
+    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
     assert (db_user is not None) == (expected_status_code == 200)
     assert res.status_code == expected_status_code
 
 
 @pytest.mark.parametrize(
     ("password", "expected_status_code"),
-    [("my_password", 200), ("bad_password", 401), (None, 400)],
+    [("my_password", 200), ("bad_password", 401), (None, 422)],
 )
 def test_login(
     client, example_user, db_session, password, expected_status_code
@@ -56,6 +41,7 @@ def test_login(
         },
     )
 
+    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
     assert res.status_code == expected_status_code
 
 
@@ -77,11 +63,13 @@ def test_jwt(client, db_session, example_user):
     assert res.status_code == 200
 
 
-def test_auth_test(client, example_user):
+def test_auth_test_header(client, example_user):
     login_res = client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
     )
+
+    client.set_cookie("localhost", "access_token_cookie", value="")
 
     test_res = client.get(
         "api/v1/auth/test",
@@ -91,3 +79,20 @@ def test_auth_test(client, example_user):
     )
 
     assert test_res.status_code == 200
+
+
+def test_auth_test_cookie(client, example_user):
+    client.post(
+        "api/v1/auth/login",
+        json={"email": example_user.email, "password": "my_password"},
+    )
+
+    test_res = client.get(
+        "api/v1/auth/test",
+    )
+
+    assert test_res.status_code == 200
+
+
+def test_access_token_fixture(access_token):
+    assert len(access_token) > 0

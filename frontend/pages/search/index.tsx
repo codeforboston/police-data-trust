@@ -1,72 +1,12 @@
 import React from "react"
-import { DataTable } from "../../shared-components/data-table/data-table"
-import { DashboardHeader } from "../../compositions"
-import { Map } from "../../compositions"
-import { Layout, PrimaryInput } from "../../shared-components"
+import { DashboardHeader, Map } from "../../compositions"
 import { requireAuth } from "../../helpers"
-import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
-import { FormProvider, useForm } from "react-hook-form"
-const { INCIDENT_TYPE, DATE_TIME, OFFICER_NAME, LOCATION, BADGE_NUMBER } = PrimaryInputNames
+import { Layout } from "../../shared-components"
+import { InputForm, ResultsTable } from "../../compositions/basic-search"
+import { DataTable } from "../../shared-components/data-table/data-table"
+import { SearchPanel } from "./search-panel"
 
-const SearchPanel = () => {
-  const [incidentMode, setIncidentMode] = React.useState(false)
-  const form = useForm()
-  const toIncident = () => {
-    setIncidentMode(true)
-  }
-
-  const toOfficer = () => {
-    setIncidentMode(false)
-  }
-
-  async function onSubmit(formValues: any) {}
-  return (
-    <div style={{ border: "2px solid black" }}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          SearchPanel
-          <div>
-            <button
-              onClick={toIncident}
-              className={`${incidentMode ? "primaryButton" : "secondaryButton"}`}>
-              Incident
-            </button>
-            <button
-              onClick={toOfficer}
-              className={`${incidentMode ? "secondaryButton" : "primaryButton"}`}>
-              Officer
-            </button>
-          </div>
-          {incidentMode ? (
-            <div>
-              <div>
-                <PrimaryInput inputName={LOCATION} />
-              </div>
-              <div>
-                <PrimaryInput inputName={INCIDENT_TYPE} />
-              </div>
-              <div>
-                <PrimaryInput inputName={DATE_TIME} />
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div>
-                <PrimaryInput inputName={OFFICER_NAME} />
-              </div>
-              <div>
-                <PrimaryInput inputName={LOCATION} />
-              </div>
-              <div>
-                <PrimaryInput inputName={BADGE_NUMBER} />
-              </div>
-            </div>
-          )}
-        </form>
-      </FormProvider>
-    </div>
-  )
-}
+type ChartType = "bubble" | "map"
 
 export default requireAuth(function Dashboard() {
   return (
@@ -74,7 +14,8 @@ export default requireAuth(function Dashboard() {
       <DashboardHeader />
       <SearchPanel />
       <Map />
-      <DataTable />
+      <InputForm />
+      <ResultsTable />
     </Layout>
   )
 })

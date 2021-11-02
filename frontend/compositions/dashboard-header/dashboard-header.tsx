@@ -1,13 +1,16 @@
 import * as React from "react"
-import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
-import Nav from "./nav"
-import styles from "./dashboard-header.module.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons"
+import useDropdownMenu from "react-accessible-dropdown-menu-hook"
+import { useMediaQuery } from "react-responsive"
 import { LogoSizes } from "../../models"
+import { Logo as NPDCLogo } from "../../shared-components"
+import styles from "./dashboard-header.module.css"
+import MobileDropdown from "./mobile-dropdown"
+import Nav from "./nav"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer, dropdownTitle } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
+  const mobile = useMediaQuery({ query: "screen and (max-width: 32em)" })
 
   return (
     <header className={wrapper}>
@@ -19,17 +22,12 @@ export default function DashboardHeader() {
             <p>The national index of police incidents</p>
           </div>
         </div>
-
         <nav aria-label="Main Navigation">
-          <button
-            type="button"
-            className={dropdownTitle}
-            aria-expanded="false"
-            aria-controls="navMenu">
-            <FontAwesomeIcon icon={faEllipsisV} size={"3x"} />
-          </button>
-          <Nav />
-          <PrimaryButton>DONATE</PrimaryButton>
+          {mobile ? (
+            <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+          ) : (
+            <Nav itemProps={itemProps} />
+          )}
         </nav>
       </div>
     </header>
