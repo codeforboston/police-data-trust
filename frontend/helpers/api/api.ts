@@ -92,12 +92,13 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
     url: "/auth/test",
     method: "GET",
     accessToken
-  }).then(({ active, email, email_confirmed_at, first_name, last_name }) => ({
+  }).then(({ active, email, email_confirmed_at, first_name, last_name, phone_number }) => ({
     active,
     email,
     emailConfirmedAt: email_confirmed_at,
     firstName: first_name,
     lastName: last_name
+    phoneNumber: phone_number
   }))
 }
 
