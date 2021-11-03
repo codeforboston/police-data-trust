@@ -97,7 +97,7 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
     email,
     emailConfirmedAt: email_confirmed_at,
     firstName: first_name,
-    lastName: last_name
+    lastName: last_name,
     phoneNumber: phone_number
   }))
 }
