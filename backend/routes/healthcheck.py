@@ -10,7 +10,7 @@ bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
 
 def check_db():
     """Verifies that we can read the incidents table"""
-    db.session.query(Incident).count()
+    db.session.query(Incident).first()
 
 
 class Resp(BaseModel):
