@@ -63,10 +63,12 @@ class Incident(db.Model, CrudMixin):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
+    source = db.Column(db.Text)
     location = db.Column(db.Text)  # TODO: location object
     # TODO: neighborhood seems like a weird identifier that may not always
     #  apply in consistent ways across municipalities.
     neighborhood = db.Column(db.Text)
+    description = db.Column(db.Text)
     stop_type = db.Column(db.Text)  # TODO: enum
     call_type = db.Column(db.Text)  # TODO: enum
     has_multimedia = db.Column(db.Boolean)
@@ -79,7 +81,8 @@ class Incident(db.Model, CrudMixin):
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
     victims = db.relationship("Victim", backref="incident")
     officers = db.relationship("Officer", backref="incident")
-    descriptions = db.relationship("Description", backref="incident")
+    department = db.Column(db.Text)
+    # descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", backref="incident")
     participants = db.relationship("Participant", backref="incident")
     multimedias = db.relationship("Multimedia", backref="incident")

@@ -16,6 +16,8 @@ npm install
 yarn install
 ```
 
+If you are using Windows, configure NPM to use Git Bash when running scripts. Follow [these](https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows/46006249#46006249) instructions.
+
 **Note:** if you run into an error such as
 
 ```
