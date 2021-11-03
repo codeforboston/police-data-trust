@@ -69,61 +69,70 @@ export default function BaseMap(props: BaseMapProps) {
     /* Definitions */
     const defs = svg.append("defs")
 
-    const erodeFilter = defs.append("filter").attr("id", "erode")
+    const strokeShape = defs.append("filter").attr("id", "strokeShape")
 
-    erodeFilter
+    strokeShape
       .append("feMorphology")
       .attr("operator", "erode")
-      .attr("result", "ERODE")
-      .attr("radius", "2")
+      .attr("radius", 1)
+      .attr("result", "erode")
 
-    const statePaths = defs
-      .append("svg")
-      .attr("id", "statePaths")
-      .attr("width", "1200")
-      .attr("height", "700")
+    strokeShape
+      .append("feGaussianBlur")
+      .attr("in", "erode")
+      .attr("stdDeviation", "3")
+      .attr("result", "blurFilter")
 
-    statePaths
-      .selectAll("path")
-      .data(geoData.features)
-      .enter()
-      .append("path")
-      .classed("state", true)
-      .attr("id", (d) => d.properties.name)
-      .attr("d", path)
-      .attr("fill", "transparent")
+    strokeShape
+      .append("feColorMatrix")
+      .attr("id", "colorMatrix2")
+      .attr("in", "blurFilter")
+      .attr("mode", "matrix")
+      .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -7")
+      .attr("result", "colorMatrix2")
 
+    strokeShape
+      .append("feGaussianBlur")
+      .attr("in", "erode")
+      .attr("stdDeviation", "2")
+      .attr("result", "blurFilter2")
+
+    strokeShape
+      .append("feComposite")
+      .attr("in", "colorMatrix2")
+      .attr("in2", "blurFilter2")
+      .attr("operator", "out")
+      .attr("result", "compositedStroke")
+
+    strokeShape
+      .append("feBlend")
+      .attr("in", "colorMatrix2")
+      .attr("in2", "compositedStroke")
+      .attr("mode", "multiply")
+
+    const paths = svg.append("g").attr("id", "paths")
     /* SVG Body */
-    const paths = svg
-      .append("g")
+    paths
       .selectAll("path")
       .data(geoData.features)
       .enter()
       .append("path")
       .classed("state", true)
-      .attr("title", (d) => d.id)
+      .attr("title", (d) => d.properties.name)
       .attr("d", path)
+      .attr("filter", "url(#strokeShape)")
       .attr("fill", (d: Feature) => {
         const countIncidents = data.filter((i) => d.id === i.state).length
         return colorGradient(valueScale(countIncidents))
       })
-      .attr("pointer-events", "all")
+      // .attr("pointer-events", "all")
       .attr("cursor", "pointer")
 
-    svg
-      .append("use")
-      .attr("id", "statePaths")
-      .attr("href", "#statePaths")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 2)
-      .attr("stroke-join", "round")
-      .attr("stroke-opacity", 1)
-
     return () => {
+      defs.remove()
       paths.remove()
-      statePaths.remove()
     }
-  }, [data, geoData, valueScale, path, colorGradient, svg])
+  }, [data, valueScale, path, colorGradient, geoData, svg])
 
   return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }

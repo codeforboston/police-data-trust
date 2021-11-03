@@ -1,25 +1,96 @@
-from typing import List, Any, Dict, Optional
+import textwrap
+from typing import Any, Dict, List, Optional
 
-from sqlalchemy.ext.declarative.api import DeclarativeMeta
+from pydantic import BaseModel, root_validator
 from pydantic.main import ModelMetaclass
-from pydantic import root_validator
-from pydantic import BaseModel
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from spectree import SecurityScheme, SpecTree
+from spectree.models import Server
+from sqlalchemy.ext.declarative.api import DeclarativeMeta
 
-
-from .database.models.incident import Incident
-from .database.models.victim import Victim
-from .database.models.incident import Description
-from .database.models.tag import Tag
-from .database.models.participant import Participant
-from .database.models.multimedia import Multimedia
-from .database.models.investigation import Investigation
-from .database.models.result_of_stop import ResultOfStop
-from .database.models.action import Action
-from .database.models.use_of_force import UseOfForce
-from .database.models.legal_case import LegalCase
-from .database.models.officer import Officer
 from .database import User
+from .database.models.action import Action
+from .database.models.incident import Description, Incident
+from .database.models.investigation import Investigation
+from .database.models.legal_case import LegalCase
+from .database.models.multimedia import Multimedia
+from .database.models.officer import Officer
+from .database.models.participant import Participant
+from .database.models.result_of_stop import ResultOfStop
+from .database.models.tag import Tag
+from .database.models.use_of_force import UseOfForce
+from .database.models.victim import Victim
+
+spec = SpecTree(
+    "flask",
+    title="National Police Data Collaborative Index",
+    description=textwrap.dedent(
+        """
+        This API provides federated sharing of police data using a searchable
+        index of police records. The index only contains information necessary
+        for search and aggregation. NPDC partners contribute to the index while
+        maintaining ownership over the full record. Partners can use the API to
+        authorize users to access the full records on their systems. This thus
+        facilitates federated access control and data ownership.
+        """
+    ),
+    # The version of the API. 0.X.Y is initial development with breaking changes
+    # allowed on minor version changes.
+    version="0.1.0",
+    # Version of the `/apidoc/openapi.json` format
+    # https://swagger.io/specification/
+    openapi_version="3.0.3",
+    # Only document routes decorated with validators
+    mode="strict",
+    # By default, all routes require either cookie or bearer auth
+    security={"cookieAuth": [], "bearerAuth": []},
+    servers=[
+        Server(
+            url="",
+            description="This Origin",
+        ),
+        Server(
+            url="https://dev-api.nationalpolicedata.org",
+            description="Development environment",
+        ),
+        Server(
+            url="https://stage-api.nationalpolicedata.org",
+            description="Staging environment",
+        ),
+        Server(
+            url="https://api.nationalpolicedata.org",
+            description="Production environment",
+        ),
+    ],
+    security_schemes=[
+        # Cookie auth is used by browsers for GET requests
+        SecurityScheme(
+            name="cookieAuth",
+            data={
+                "type": "apiKey",
+                "name": "access_token_cookie",
+                "in": "cookie",
+            },
+        ),
+        # Bearer auth is used by other API consumers
+        SecurityScheme(
+            name="bearerAuth",
+            data={
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": {"JWT": []},
+            },
+        ),
+    ],
+)
+
+
+def validate(auth=True, **kwargs):
+    if not auth:
+        # Disable security for the route
+        kwargs["security"] = {}
+
+    return spec.validate(**kwargs)
 
 
 _incident_list_attrs = [

@@ -10,7 +10,7 @@ import Nav from "./nav"
 export default function DashboardHeader() {
   const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
-  const mobile = useMediaQuery({ query: "screen and (max-width: 32em)" })
+  const desktop = useMediaQuery({ query: "screen and (min-width: 32em)" })
 
   return (
     <header className={wrapper}>
@@ -23,10 +23,10 @@ export default function DashboardHeader() {
           </div>
         </div>
         <nav aria-label="Main Navigation">
-          {mobile ? (
-            <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
-          ) : (
+          {desktop ? (
             <Nav itemProps={itemProps} />
+          ) : (
+            <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
           )}
         </nav>
       </div>
