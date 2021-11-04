@@ -11,7 +11,8 @@ class RequestStatus(enum.Enum):
 
 class PassportRequest(db.Model, CrudMixin):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  user = db.relationship("User", backref="request")
+  user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+  user = db.relationship("User", uselist=False, foreign_keys=[user_id])
   request_role = db.Enum(UserRole)
   status = db.Enum(RequestStatus)
   admin = db.relationship("User")

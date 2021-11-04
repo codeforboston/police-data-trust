@@ -20,6 +20,7 @@ from .database.models.result_of_stop import ResultOfStop
 from .database.models.tag import Tag
 from .database.models.use_of_force import UseOfForce
 from .database.models.victim import Victim
+from .database.models.passport_request import PassportRequest
 
 spec = SpecTree(
     "flask",
@@ -170,6 +171,7 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+PassportRequestSchema = schema_get(PassportRequest)
 
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
