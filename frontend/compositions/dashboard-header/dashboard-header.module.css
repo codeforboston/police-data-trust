@@ -28,16 +28,12 @@
   display: none;
 }
 
-.backgroundBanner ul:nth-child(n + 2) {
-  display: none;
-}
-
-.backgroundBanner button:nth-child(n + 2) {
-  display: none;
-}
-
 .selected {
   text-decoration: underline;
+}
+
+.backgroundBanner li:last-child {
+  display: none;
 }
 
 @media screen and (min-width: 32em) {
@@ -93,7 +89,7 @@
     display: none;
   }
 
-  .backgroundBanner ul:nth-child(n + 2) {
+  .backgroundBanner ul {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -120,10 +116,6 @@
     white-space: nowrap;
   }
 
-  .backgroundBanner li:last-child {
-    display: none;
-  }
-
   .selected {
     text-decoration: none;
   }
@@ -134,13 +126,5 @@
     padding: var(--size6) var(--size14) var(--size4) var(--size14);
     border-radius: var(--size4) var(--size4) 0 0;
     box-shadow: 0px -2px 4px rgb(48 52 99 / 25%);
-  }
-
-  .backgroundBanner button:nth-child(n + 2) {
-    display: flex;
-    font-size: var(--size16);
-    font-weight: 700;
-    width: var(--size100);
-    margin: var(--size20) var(--size36) var(--size20);
   }
 }
