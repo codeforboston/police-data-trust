@@ -8,15 +8,17 @@ from pydantic import BaseModel
 
 bp = Blueprint("user", __name__, url_prefix="/api/v1/users")
 
+
 class RoleUpdateDTO(BaseModel):
-  role: UserRole
+    role: UserRole
+
 
 @bp.route("/<userId>/role", methods=["PUT"])
 @role_required(UserRole.ADMIN)
 @validate(json=RoleUpdateDTO)
 def update_role(userId: int):
-  updatedRole: RoleUpdateDTO = request.context.json;
-  user = User.get(userId);
-  user.role = updatedRole.role;
-  db.session.commit()
-  return user;
+    updatedRole: RoleUpdateDTO = request.context.json
+    user = User.get(userId)
+    user.role = updatedRole.role
+    db.session.commit()
+    return user
