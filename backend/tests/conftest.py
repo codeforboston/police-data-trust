@@ -7,6 +7,7 @@ from backend.database import User, UserRole, db
 from pytest_postgresql.janitor import DatabaseJanitor
 
 example_email = "test@email.com"
+admin_email = "admin@email.com"
 example_password = "my_password"
 
 
@@ -59,6 +60,32 @@ def example_user(db_session):
     )
     db_session.add(user)
     db_session.commit()
+    return user
+
+@pytest.fixture
+def access_token(client, admin_user):
+    res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": admin_email,
+            "password": example_password,
+        },
+    )
+
+    return res.access_token
+
+@pytest.fixture
+def admin_user(db_session):
+    user = User(
+        email=admin_email,
+        password=user_manager.hash_password(example_password),
+        role=UserRole.ADMIN,
+        first_name="admin",
+        last_name="last",
+    )
+    db_session.add(user)
+    db_session.commit()
+
     return user
 
 

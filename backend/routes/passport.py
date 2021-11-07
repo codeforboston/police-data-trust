@@ -23,7 +23,7 @@ class StatusUpdateDTO(BaseModel):
 
 # NOTE: Should users only be able to make requests for themselves? If so, then we can get the user_id
 # ... from the token
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @validate(json=PassportRequestDTO)
 def request_upgrade():
     body: PassportRequestDTO = request.context.json
@@ -39,14 +39,14 @@ def request_upgrade():
     passportRequest = PassportRequest(
         user=User.get(body.user_id),
         status=RequestStatus.PENDING,
-        request_role=body.role,
+        role=body.role,
     )
     passportRequest = passportRequest.create()
     response = PassportRequestSchema.from_orm(passportRequest).dict()
     return response, 200
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @role_required(UserRole.ADMIN)
 def list_requests():
     query = db.session.query(PassportRequest)
@@ -73,14 +73,14 @@ def update_status(requestId: int):
     passportRequest = PassportRequest.get(requestId)
     if statusUpdate.status == RequestStatus.APPROVED:
         user = passportRequest.user
-        user.role = passportRequest.request_role
+        user.role = passportRequest.role
     passportRequest.status = statusUpdate.status
     passportRequest.admin_id = get_jwt_identity()
     db.session.commit()
     return PassportRequestSchema.from_orm(passportRequest).dict()
 
 
-@bp.route("/<requestId>")
+@bp.route("/<requestId>", methods=["GET"])
 @role_required(UserRole.ADMIN)
 def get_single_request(requestId: int):
     return PassportRequestSchema.from_orm(PassportRequest.get(requestId)).dict()
