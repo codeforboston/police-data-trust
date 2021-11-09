@@ -1,9 +1,8 @@
 """Define the SQL classes for Users."""
 import enum
 
-from ..core import db
-from ..core import CrudMixin
 
+from ..core import CrudMixin, SourceMixin, db
 
 # Question: Should we be doing string enums?
 
@@ -58,12 +57,13 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-class Incident(db.Model, CrudMixin):
+class Incident(db.Model, CrudMixin, SourceMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
-    source = db.Column(db.Text)
+    complaint_date = db.Column(db.Date)
+    closed_date = db.Column(db.Date)
     location = db.Column(db.Text)  # TODO: location object
     # TODO: neighborhood seems like a weird identifier that may not always
     #  apply in consistent ways across municipalities.
