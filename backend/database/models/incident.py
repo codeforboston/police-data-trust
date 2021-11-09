@@ -1,9 +1,8 @@
 """Define the SQL classes for Users."""
 import enum
 
-from ..core import db
-from ..core import CrudMixin
 
+from ..core import CrudMixin, SourceMixin, db
 
 # Question: Should we be doing string enums?
 
@@ -58,12 +57,13 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-class Incident(db.Model, CrudMixin):
+class Incident(db.Model, CrudMixin, SourceMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     time_of_incident = db.Column(db.DateTime)
-    source = db.Column(db.Text)
+    complaint_date = db.Column(db.Date)
+    closed_date = db.Column(db.Date)
     location = db.Column(db.Text)  # TODO: location object
     # TODO: neighborhood seems like a weird identifier that may not always
     #  apply in consistent ways across municipalities.
@@ -80,6 +80,8 @@ class Incident(db.Model, CrudMixin):
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
     victims = db.relationship("Victim", backref="incident")
+    # TODO: Remove this. incident-officer relationship is many-many using
+    # accusation as the join table.
     officers = db.relationship("Officer", backref="incident")
     department = db.Column(db.Text)
     # descriptions = db.relationship("Description", backref="incident")
@@ -91,6 +93,7 @@ class Incident(db.Model, CrudMixin):
     actions = db.relationship("Action", backref="incident")
     use_of_force = db.relationship("UseOfForce", backref="incident")
     legal_case = db.relationship("LegalCase", backref="incident")
+    accusations = db.relationship("Accusation", backref="incident")
 
 
 class Description(db.Model):
