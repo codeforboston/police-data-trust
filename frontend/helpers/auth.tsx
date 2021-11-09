@@ -32,17 +32,17 @@ export function useAuth() {
  */
 export function requireAuth(Component: () => JSX.Element) {
   return function ProtectedRoute() {
-    const auth = useAuth()
+    const { user } = useAuth()
     const router = useRouter()
     const login = "/login"
 
     useEffect(() => {
-      if (!auth?.user && router.pathname !== login) {
+      if (!user && router.pathname !== login) {
         router.push(login)
       }
     })
 
-    return auth?.user ? <Component /> : null
+    return user ? <Component /> : null
   }
 }
 
