@@ -21,7 +21,7 @@ let mockData: Array<IncidentTableData> = require("../../models/mock-data/grammy.
 const resultsColumns = [
   {
     Header: "Officer(s) Involved",
-    accessor: (row: any) => row["officers"].join(", "),
+    accessor: "officers", //(row: any) => row["officers"].join(", "),
     id: "officers"
   },
   {
@@ -45,7 +45,7 @@ const resultsColumns = [
         <InfoTooltip type={TooltipTypes.USEFORCE} icon={TooltipIcons.INFO} iconSize="xs" />
       </span>
     ),
-    accessor: (row: any) => row["useOfForce"].join(", "),
+    accessor: "useOfForce", //(row: any) => row["useOfForce"].join(", "),
     id: "useOfForce"
   },
   {

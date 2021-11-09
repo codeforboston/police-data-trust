@@ -1,6 +1,6 @@
 import React from "react"
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import SearchResultsTable from "./"
+import SearchResultsTable from "."
 // import { IncidentTableData } from "../../models"
 
 export default {

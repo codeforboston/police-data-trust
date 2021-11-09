@@ -1,20 +1,24 @@
-import { faArrowDown, faArrowUp, faPlusCircle, faSave } from "@fortawesome/free-solid-svg-icons"
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useMemo, useState } from "react"
 import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
+import { IncidentTableData, SavedResultsType, SavedSearchType } from "../../models"
+import { EditButton, PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
-import { InfoTooltip } from "../../shared-components"
-import { TooltipIcons, TooltipTypes, IncidentTableData } from "../../models"
 
 interface DataTableProps {
-  tableTitle: string
+  tableName: string
   tableColumns: Column<any>[]
-  tableData: IncidentTableData[]
+  tableData: IncidentTableData[] | SavedSearchType[] | SavedResultsType[]
 }
 
 export function DataTable(props: DataTableProps) {
-  const { tableData, tableColumns } = props
-  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
+  const { tableName, tableData, tableColumns } = props
+  const { dataTable, dataHeader, dataRows } = styles
+
+  const [editMode, setEditMode] = useState(false)
+
+  const { tableWrapper, tableHeader, tableTitle, sortArrow, colFilter} = styles
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
   // 'save' values will be appended to each item dynamically
@@ -48,95 +52,89 @@ export function DataTable(props: DataTableProps) {
     usePagination
   )
 
-  const [pageSizeValue, setPageSizeValue] = useState(pageSize)
-
   const [showFilters, setShowFilters] = useState(false)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPageSizeValue(+e.target.value)
+    setPageSize(+e.target.value)
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     setPageSize(+e.target.value)
   }
 
+  function viewRecord(recordId: number) {
+    // TODO: view full record
+  }
+
+  function toggleEditMode() {
+    setEditMode(!editMode)
+  }
   return (
-    // <div>
-    <table {...getTableProps()} className={dataTable} aria-label="Data Table">
-      <thead className={dataHeader}>
-        {headerGroups.map((headerGroup) => (
-          // react-table prop types include keys, but eslint can't tell that
-          // eslint-disable-next-line react/jsx-key
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              // eslint-disable-next-line react/jsx-key
-              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                {column.render("Header")}
-                <span className={styles.sortArrow}>
-                  {column.isSorted ? (
-                    column.isSortedDesc ? (
-                      <FontAwesomeIcon icon={faArrowDown} />
-                    ) : (
-                      <FontAwesomeIcon icon={faArrowUp} />
-                    )
-                  ) : (
-                    "  "
-                  )}
-                </span>
-                {showFilters && (
-                  <div className={styles.colFilter}>
-                    {column.canFilter ? column.render("Filter") : null}
-                  </div>
-                )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {page.map((row, i) => {
-          prepareRow(row)
-          return (
+    <div className={tableWrapper}>
+      <header className={tableHeader}>
+        <span className={tableTitle}>{tableName}</span>
+        <EditButton inEditMode={editMode} onclick={toggleEditMode} />
+      </header>
+      <table {...getTableProps()} className={dataTable} aria-label="Data Table">
+        <thead className={dataHeader}>
+          {headerGroups.map((headerGroup) => (
+            // react-table prop types include keys, but eslint can't tell that
             // eslint-disable-next-line react/jsx-key
-            <tr {...row.getRowProps()} className={dataRows}>
-              {row.cells.map((cell) => {
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-              })}
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render("Header")}
+                  <span className={sortArrow}>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <FontAwesomeIcon icon={faArrowDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faArrowUp} />
+                      )
+                    ) : (
+                      "  "
+                    )}
+                  </span>
+                  {showFilters && (
+                    <div className={colFilter}>
+                      {column.canFilter ? column.render("Filter") : null}
+                    </div>
+                  )}
+                </th>
+              ))}
             </tr>
-          )
-        })}
-      </tbody>
-      <tfoot className={dataFooter}>
-        <tr>
-          <td>{data.length.toLocaleString()} records found</td>
-          <td colSpan={4}></td>
-          <td>
-            Show{" "}
-            <input
-              className={dataRowPage}
-              min={1}
-              max={10}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="number"
-              value={pageSizeValue}
-            />{" "}
-            rows
-          </td>
-          <td>
-            {" "}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              {"<"}
-            </button>{" "}
-            {pageIndex + 1} of {pageOptions.length}{" "}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              {">"}
-            </button>{" "}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-    // </div>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row)
+            return (
+              // eslint-disable-next-line react/jsx-key
+              <tr {...row.getRowProps()} className={dataRows}>
+                {row.cells.map((cell) => {
+                  // eslint-disable-next-line react/jsx-key
+                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+      <PageNavigator
+        data={tableData}
+        pageIndex={pageIndex}
+        pageCount={pageCount}
+        pageSize={pageSize}
+        pageOptions={pageOptions}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        gotoPage={gotoPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        setPageSize={setPageSize}
+      />
+    </div>
   )
 }

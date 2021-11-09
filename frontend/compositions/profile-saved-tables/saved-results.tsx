@@ -1,19 +1,16 @@
-import SavedTable from "./saved-table"
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
-
-import { SavedResultsType, resultsColumns } from "../../models/saved-table"
-import { mockSavedResults } from "../../models/mock-data"
+import React, { useMemo } from "react"
+import { Column } from "react-table"
+import { resultsColumns, SavedResultsType } from "../../models/saved-table"
+import { DataTable } from "../../shared-components/data-table/data-table"
 
 interface SavedResultsProps {
-  data?: Array<SavedResultsType>
+  tableData?: SavedResultsType[]
 }
 
-export default function SavedResults({ data = mockSavedResults }: SavedResultsProps) {
-  return SavedTable({
-    itemTitle: "Results",
-    tableColumns: resultsColumns,
-    tableData: data,
-    rowIdName: "id",
-    expandIcon: faAngleRight
-  })
+export default function SavedResults(props: SavedResultsProps) {
+  const { tableData } = props
+  const data = useMemo(() => tableData, [])
+  const columns = useMemo(() => resultsColumns, []) as Column<any>[]
+
+  return <DataTable tableName={"Saved Records"} tableColumns={columns} tableData={data} />
 }

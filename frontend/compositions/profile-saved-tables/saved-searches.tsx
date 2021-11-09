@@ -1,21 +1,17 @@
-import SavedTable from "./saved-table"
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons"
-
-import { searchesColumns, SavedSearchType } from "../../models/saved-table"
-import { mockSavedSearches } from "../../models/mock-data"
+import React, { useMemo } from "react"
+import { Column } from "react-table"
+import { SavedSearchType, searchesColumns } from "../../models/saved-table"
+import { DataTable } from "../../shared-components/data-table/data-table"
 
 // TODO: retrieve user saved searches from API
 
 interface SavedSearchProps {
-  data?: Array<SavedSearchType>
+  tableData?: SavedSearchType[]
 }
 
-export default function SavedSearches({ data = mockSavedSearches }: SavedSearchProps) {
-  return SavedTable({
-    itemTitle: "Searches",
-    tableColumns: searchesColumns,
-    tableData: data,
-    rowIdName: "results",
-    expandIcon: faCaretRight
-  })
+export default function SavedSearches(props: SavedSearchProps) {
+  const { tableData } = props
+  const data = useMemo(() => tableData, [])
+  const columns = useMemo(() => searchesColumns, []) as Column<any>[]
+  return <DataTable tableName={"Saved Searches"} tableColumns={columns} tableData={data} />
 }

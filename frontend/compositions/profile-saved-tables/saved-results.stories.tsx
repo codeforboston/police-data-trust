@@ -1,11 +1,18 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { ComponentMeta } from "@storybook/react"
-import SavedResults from "./saved-results"
+import { SavedResultsType } from "../../models"
 import { mockSavedResults } from "../../models/mock-data"
+import SavedResults from "./saved-results"
 
 export default {
   title: "Compositions/Saved Results",
   component: SavedResults
 } as ComponentMeta<typeof SavedResults>
 
-export const Default = <SavedResults data={mockSavedResults} />
+const Template: ComponentStory<typeof SavedResults> = (args) => <SavedResults {...args} />
+
+export const Default = Template.bind({})
+
+Default.args = {
+  tableData: mockSavedResults
+}

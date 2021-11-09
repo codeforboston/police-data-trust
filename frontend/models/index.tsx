@@ -2,7 +2,7 @@ import { AppRoutes } from "./app-routes"
 import { CallToActionTypes, enrollmentCallToActionText } from "./enrollment-cta"
 import { enrollmentMessage, EnrollmentTypes } from "./response"
 import { IncidentTableData, IncidentDetailType } from "./incidents"
-import { SavedResultsType, SavedSearchType } from "./saved-table"
+import { SavedResultsType, SavedSearchType, resultsColumns } from "./saved-table"
 import { tooltipContent, TooltipTypes, TooltipIcons } from "./info-tooltip"
 import { LogoSizes } from "./logo-sizes"
 import { passwordToggleViews } from "./password-aid"
@@ -21,6 +21,7 @@ export {
   passwordToggleViews,
   PrimaryInputNames,
   primaryInputValidation,
+  resultsColumns,
   states,
   tooltipContent,
   TooltipTypes,

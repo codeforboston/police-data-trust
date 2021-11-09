@@ -1,12 +1,8 @@
+import { IncidentDetailType, IncidentTableData } from "."
+
 // SAVED RESULTS DATA TABLE
-export interface SavedResultsType {
+export interface SavedResultsType extends IncidentTableData{
   searchDate: number // UNIX timestamp
-  id: number
-  occurred: number // UNIX timestamp
-  officers: string[] // officer names, "F.Last" (first initial, last name)
-  incidentType: string
-  useOfForce: string[]
-  source: string
 }
 
 export const resultsColumns = [
@@ -41,7 +37,7 @@ export const resultsColumns = [
   {
     Header: "View",
     accessor: "id",
-    disableSortBy: true
+    disableSortBy: true,
   }
 ]
 
@@ -66,7 +62,7 @@ export const searchesColumns = [
   },
   {
     Header: "Who",
-    accessor: (row: any) => row["who"].join(", "),
+    accessor: (row: any) => { row["who"].join(", ")  },
     id: "who"
   },
   {
@@ -75,7 +71,7 @@ export const searchesColumns = [
   },
   {
     Header: "When",
-    accessor: (row: any) => formatDate(row["when"]),
+    accessor: (row: any) => formatDate(row["when"]) || "when",
     id: "when"
   },
   {
