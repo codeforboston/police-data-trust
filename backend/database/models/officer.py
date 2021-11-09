@@ -31,4 +31,4 @@ class Officer(db.Model):
     rank = db.Column(db.Text)  # type?
     star = db.Column(db.Text)  # type?
     date_of_birth = db.Column(db.Date)
-    # TODO: Age changes over time. Might we use birth year?
+    accusations = db.relationship("Accusation", backref="officer")
