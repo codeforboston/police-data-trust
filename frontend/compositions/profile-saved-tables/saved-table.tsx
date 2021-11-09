@@ -12,6 +12,7 @@ import * as React from "react"
 import { useTable, usePagination, Column } from "react-table"
 
 import styles from "./saved.module.css"
+import { DataTable } from "../../shared-components/data-table/data-table"
 
 interface SavedTableProps {
   itemTitle: string
@@ -97,46 +98,7 @@ export default function SavedTable(props: SavedTableProps) {
           Edit {itemTitle}
         </button>
       </header>
-      <table {...getTableProps()} className={dataTable} aria-label={`Saved ${itemTitle}`}>
-        <thead className={dataHeader}>
-          {headerGroups.map((headerGroup) => (
-            // eslint-disable-next-line react/jsx-key
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                // eslint-disable-next-line react/jsx-key
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row)
-            return (
-              // eslint-disable-next-line react/jsx-key
-              <tr {...row.getRowProps()} className={dataRows}>
-                {row.cells.map((cell) => {
-                  if (cell.column.id === rowIdName) {
-                    return (
-                      <td>
-                        <FontAwesomeIcon
-                          className={actionBtn}
-                          icon={expandIcon}
-                          onClick={() => viewRecord(cell.value)}
-                        />
-                      </td>
-                    )
-                  }
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <DataTable tableTitle={tableTitle} tableColumns={tableData} tableData={tableColumns} />
       <div className={dataFooter}>
         <span className={recordCount}>Found {data.length.toLocaleString()} records</span>
         <button className={pageBtn} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>

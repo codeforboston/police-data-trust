@@ -33,3 +33,15 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+.actionBtn {
+  cursor: pointer;
+}
+
+.sortArrow {
+  margin-left: 0.3rem;
+}
+
+.colFliter {
+  margin: 0.1rem;
+}
