@@ -1,9 +1,8 @@
-import React from "react"
 import { DashboardHeader, Map } from "../../compositions"
 import { requireAuth } from "../../helpers"
 import { Layout } from "../../shared-components"
 import { InputForm, ResultsTable } from "../../compositions/basic-search"
-import { SearchPanel } from "./search-panel"
+import { SearchPanel } from "../../compositions/search/search-panel"
 
 type ChartType = "bubble" | "map"
 
