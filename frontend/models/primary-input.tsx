@@ -19,7 +19,8 @@ export enum PrimaryInputNames {
   LOCATION = "location",
   BADGE_NUMBER = "badgeNumber",
   KEY_WORDS = "keyWords",
-  DATE = "date"
+  DATE_START = "dateStart",
+  DATE_END = "dateEnd"
 }
 
 const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/
@@ -101,9 +102,14 @@ export const primaryInputValidation = {
     pattern: anyString,
     inputType: "text"
   },
-  [PrimaryInputNames.DATE]: {
-    errorMessage: "A name requires 2+ letters",
-    pattern: nameRgx,
+  [PrimaryInputNames.DATE_START]: {
+    errorMessage: "Enter a date",
+    pattern: anyString,
+    inputType: "date"
+  },
+  [PrimaryInputNames.DATE_END]: {
+    errorMessage: "Enter a date",
+    pattern: anyString,
     inputType: "date"
   }
 }

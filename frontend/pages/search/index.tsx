@@ -11,8 +11,10 @@ export default requireAuth(function Dashboard() {
   return (
     <Layout>
       <DashboardHeader />
-      <SearchPanel />
-      <Map />
+      <div style={{ display: "flex" }}>
+        <SearchPanel />
+        <Map />
+      </div>
       <InputForm />
       <ResultsTable />
     </Layout>

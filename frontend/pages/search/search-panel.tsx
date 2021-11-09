@@ -1,18 +1,19 @@
 import React from "react"
-import { DataTable } from "../../shared-components/data-table/data-table"
-import { DashboardHeader } from "../../compositions"
-import { Map } from "../../compositions"
-import { Layout, PrimaryButton, PrimaryInput } from "../../shared-components"
-import { requireAuth } from "../../helpers"
-import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
 import { FormProvider, useForm } from "react-hook-form"
+import { useAuth, useSearch } from "../../helpers"
+import { PrimaryInputNames } from "../../models"
+import { FormLevelError, PrimaryButton, PrimaryInput } from "../../shared-components"
 import styles from "./search.module.css"
-const { KEY_WORDS, DATE, OFFICER_NAME, LOCATION, BADGE_NUMBER } = PrimaryInputNames
+const { KEY_WORDS, DATE_START, DATE_END, OFFICER_NAME, LOCATION, BADGE_NUMBER } = PrimaryInputNames
 
 const { searchToggle, selectedSearch, searchChoices, searchPanelContainer, searchForm } = styles
 
 export const SearchPanel = () => {
   const form = useForm()
+  const { searchIncidents } = useSearch()
+  const { accessToken } = useAuth()
+  const [submitError, setSubmitError] = React.useState(null)
+
   const [incidentSearch, setIncidentSearch] = React.useState(true)
   const [loading, setLoading] = React.useState(false)
   const toIncident = () => {
@@ -26,11 +27,17 @@ export const SearchPanel = () => {
   async function onSubmit(formValues: any) {
     setLoading(true)
     try {
-      // TODO
+      await searchIncidents({
+        accessToken,
+        location: formValues[LOCATION],
+        startTime: formValues[DATE_START],
+        endTime: formValues[DATE_END],
+        description: formValues[KEY_WORDS]
+      })
     } catch (e) {
-      console.error("Unexpected login error", e)
+      console.error("Unexpected search error", e)
+      setSubmitError("Something went wrong. Please try again.")
     }
-    console.log(formValues)
     setLoading(false)
   }
   return (
@@ -57,7 +64,10 @@ export const SearchPanel = () => {
                 <PrimaryInput inputName={KEY_WORDS} />
               </div>
               <div>
-                <PrimaryInput inputName={DATE} />
+                <PrimaryInput inputName={DATE_START} />
+              </div>
+              <div>
+                <PrimaryInput inputName={DATE_END} />
               </div>
             </div>
           ) : (
@@ -73,6 +83,8 @@ export const SearchPanel = () => {
               </div>
             </div>
           )}
+          {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
+
           <PrimaryButton loading={loading} type="submit">
             Search
           </PrimaryButton>
