@@ -114,3 +114,6 @@ dmypy.json
 
 # In case one gets installed by accident
 /node_modules
+
+# Data scraper
+/chicago-police-data
