@@ -43,7 +43,8 @@ describe("api", () => {
         email: uniqueEmail(),
         password: "password",
         firstName: "June",
-        lastName: "Grey"
+        lastName: "Grey",
+        phoneNumber: "(555) 555-5555"
       }
 
       const accessToken = await api.register(newUser)
@@ -53,6 +54,7 @@ describe("api", () => {
       expect(user.email).toEqual(newUser.email)
       expect(user.firstName).toEqual(newUser.firstName)
       expect(user.lastName).toEqual(newUser.lastName)
+      expect(user.phoneNumber).toEqual(newUser.phoneNumber)
     })
 
     it("rejects existing accounts", async () => {
