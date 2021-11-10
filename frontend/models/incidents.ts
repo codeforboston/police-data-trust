@@ -1,7 +1,6 @@
 import { Incident } from "../helpers/api"
 import { DepartmentType, OfficerRecordType } from "./officer"
 
-
 /**
  * Expanded Incident Record
  */

@@ -9,7 +9,6 @@ import { DataTable } from "../../shared-components/data-table/data-table"
 
 // TODO: retrieve user saved searches from API
 
-
 export const searchesColumns: Column<any>[] = [
   {
     Header: "Search Date",

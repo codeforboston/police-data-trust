@@ -1,7 +1,7 @@
 import { Incident } from "../helpers/api"
 
 // SAVED RESULTS DATA TABLE
-export interface SavedResultsType extends Incident{
+export interface SavedResultsType extends Incident {
   searchDate: number // UNIX timestamp
 }
 

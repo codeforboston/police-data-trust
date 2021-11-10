@@ -13,5 +13,4 @@ function getTitleCaseFromCamel(camelCase: string): string {
 
 export { capitalizeFirstChar, getTitleCaseFromCamel }
 
-
 export const formatDate = (unixDate: number): string => new Date(unixDate).toLocaleDateString()

@@ -28,4 +28,3 @@ SavedResults.args = {
   columns: savedResultsColumns,
   data: EXISTING_TEST_INCIDENTS
 }
-

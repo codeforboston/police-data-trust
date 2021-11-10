@@ -14,9 +14,7 @@ export const GreaterThanButton = (props: { title?: string; onclick?: () => void 
   )
 }
 
-
-export const CirclePlusButton =(props: { title?: string; onclick?: () => void }) => {
-
+export const CirclePlusButton = (props: { title?: string; onclick?: () => void }) => {
   return (
     <FontAwesomeIcon
       className={styles.actionBtn}

@@ -37,4 +37,3 @@ export type {
   SavedResultsType,
   SavedSearchType
 }
-
