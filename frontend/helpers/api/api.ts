@@ -16,6 +16,7 @@ export interface NewUser {
   password: string
   firstName?: string
   lastName?: string
+  phoneNumber?: string
 }
 
 export interface LoginCredentials {
