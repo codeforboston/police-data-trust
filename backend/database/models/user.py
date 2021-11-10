@@ -78,9 +78,7 @@ class User(db.Model, UserMixin, CrudMixin):
 
     role = db.Column(db.Enum(UserRole))
 
-    phone_number = db.Column(
-        CI_String(14, collate="NOCASE"), nullable=False, server_default=""
-    )
+    phone_number = db.Column(db.Text)
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))

@@ -26,7 +26,8 @@ describe("api", () => {
         email: "test@example.com",
         emailConfirmedAt: null,
         firstName: "Test",
-        lastName: "Example"
+        lastName: "Example",
+        phoneNumber: "(123) 456-7890"
       })
     })
 

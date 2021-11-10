@@ -39,6 +39,7 @@ export default function ViewerRegistration() {
         lastName: formValues[LAST_NAME],
         email: formValues[EMAIL_ADDRESS],
         password: formValues[CREATE_PASSWORD]
+        phoneNumber: formValues[PHONE_NUMBER]
       })
     } catch (e) {
       if (existingAccount(e)) {
