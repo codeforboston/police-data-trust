@@ -130,7 +130,8 @@ export function setAuthForTest(
     active: true,
     email: "testemail@example.com",
     firstName: "FirstTest",
-    lastName: "LastTest"
+    lastName: "LastTest",
+    role: "Public"
   },
   accessToken: api.AccessToken = "faketoken"
 ) {
