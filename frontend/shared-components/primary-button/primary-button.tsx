@@ -5,12 +5,24 @@ import classnames from "classnames"
 export interface Props extends React.HTMLProps<HTMLButtonElement> {
   loading?: boolean
 }
-export default function PrimaryButton({ className, loading, children, ...rest }: Props) {
+function BaseButton({ className, loading, children, ...rest }: Props) {
   return (
-    <button {...rest} className={classnames(styles.primaryButton, className)} type="submit">
+    <button {...rest} className={classnames(className, styles.baseButton)}>
       {loading ? <Spinner /> : children}
     </button>
   )
+}
+export default function PrimaryButton({ className, loading, children, ...rest }: Props) {
+  return(
+    <BaseButton className={classnames(styles.primaryButton, className)} loading={loading} children={children} {...rest} />
+    )
+}
+
+//a button disguised as a link
+export function LinkButton({ className, loading, children, ...rest }: Props) {
+  return(
+   <BaseButton className={classnames(styles.linkButton, className)} loading={loading} children={children} {...rest} />
+    )
 }
 
 const Spinner = () => (

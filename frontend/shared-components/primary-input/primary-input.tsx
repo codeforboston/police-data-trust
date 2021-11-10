@@ -11,13 +11,15 @@ interface PrimaryInputProps {
   isShown?: boolean
   size?: string
   defaultValue?: string
+  className?: string
 }
 
 export default function PrimaryInput({
   inputName,
   isShown,
   size,
-  defaultValue
+  defaultValue,
+  className
 }: PrimaryInputProps) {
   const {
     register,
@@ -38,6 +40,7 @@ export default function PrimaryInput({
   return (
     <div
       className={classNames(
+        className,
         "defaultInputContainer",
         inputContainer,
         styles[size],

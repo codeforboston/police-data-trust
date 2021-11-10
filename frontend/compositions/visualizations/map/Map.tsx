@@ -79,66 +79,51 @@ export default function Map() {
   )
 
   const addToolTip = useCallback(() => {
-    const tooltip = svgElement
-      .append("foreignObject")
-      .attr("x", "0")
-      .attr("y", "0")
-      .attr("width", "100vw")
-      .attr("height", "100vh")
-      .classed("tooltip", true)
+    const tooltip = select("#map-wrapper")
+      .append("div")
+      .classed(styles.tooltipDiv, true)
+      .classed("tooltip-div", true)
+      .style("visibility", "hidden")
 
-    const tooltipdiv = tooltip
-      .append("xhtml:div")
-      .style("width", "200px")
-      .style("background-color", "#ffffff")
-      .style("border", "2px solid #666")
-      .style("border-radius", "6px")
-      .style("visibility", "visible")
+    tooltip.append("p").classed(styles.tooltipText, true).classed("tooltip-text", true)
+  }, [])
 
-    tooltipdiv
-      .append("xhtml:p")
-      .classed("tooltiptext", true)
-      .style("text-align", "center")
-      .style("text-anchor", "center")
-      .style("margin", "1em 0")
-      .html("a simple tooltip")
-  }, [svgElement])
-
-  const handleMouseEnter = useCallback(() => addToolTip(), [addToolTip])
+  const handleMouseEnter = useCallback(() => {
+    addToolTip()
+  }, [addToolTip])
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      event.stopPropagation()
       const target = event.target as TargetWithData
-      const currentTarget = event.currentTarget as SVGElement
       const d = target.__data__
 
       if (target.classList.contains("state") && select(".tooltip")) {
-        const mousePos = {
-          x: event.offsetX - currentTarget.clientLeft,
-          y: event.offsetY
-        }
-        select(".tooltip")
-          .attr("x", mousePos.x + "px")
-          .attr("y", mousePos.y + "px")
-          .style("visibility", "visible")
-
         const stateData = data.filter((i) => d.id === i.state)
         const value = stateData ? stateData.length : "no value"
 
-        select(".tooltiptext").html(`stateId: ${d.id} <br>
-           incidents: ${value} <br>
+        const tooltipPos = {
+          x: event.offsetX,
+          y: event.offsetY
+        }
+
+        select(".tooltip-text").html(`${d.properties.name} <br>
+          incidents: ${value} <br>
           types of violence: ${
             stateData && stateData.map((d) => d.useOfForce.join(", ")).join(", ")
-          } 
-            `)
+          } <br>  `)
+
+        select(".tooltip-div")
+          .style("transform", `translate(${tooltipPos.x}px, ${tooltipPos.y}px)`)
+          .style("visibility", "visible")
+      } else {
+        select(".tooltip-div").style("visibility", "hidden")
       }
     },
     [data]
   )
 
-  const handleMouseOut = useCallback(() => {
-    selectAll(".tooltip").remove()
+  const handleMouseOut = useCallback((event: MouseEvent) => {
+    selectAll(".tooltip-div").remove()
   }, [])
 
   const zoomed = useCallback(
@@ -158,6 +143,7 @@ export default function Map() {
     zoomResetButton.on("click", resetZoom)
 
     svgElement.on("click", handleMapClick)
+
     svgElement.on("mouseenter", handleMouseEnter)
     svgElement.on("mousemove", handleMouseMove)
     svgElement.on("mouseleave", handleMouseOut)
@@ -187,18 +173,25 @@ export default function Map() {
 
   return data ? (
     <div id="map-container" className={styles.mapContainer} ref={mapRef}>
-      <div className={styles.mapWrapper}>
-        <svg id="map-svg" className={styles.mapData} viewBox={`0, 0, 1200, 700`}>
+      <div id="map-wrapper" className={styles.mapWrapper}>
+        <svg
+          id="map-svg"
+          role="img"
+          aria-labelledby="title desc"
+          className={styles.mapData}
+          viewBox={`0, 0, 1200, 700`}>
+          <title>US Map Graphic</title>
+          <desc>A data graphic showing incidents of poice violence by state.</desc>
           <g id="zoom-container">
             <BaseMap projection={projection} data={data} />
           </g>
         </svg>
         <MapKey title={"map-key"} />
-      </div>
-      <div className={styles.mapButton}>
-        <button className="primaryButton" id="zoom-reset">
-          Reset Zoom
-        </button>
+        <div className={styles.mapButton}>
+          <button className="primaryButton" id="zoom-reset">
+            Reset Zoom
+          </button>
+        </div>
       </div>
     </div>
   ) : (

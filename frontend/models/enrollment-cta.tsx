@@ -1,7 +1,7 @@
 import { AppRoutes } from "../models"
 
 interface CallToActionText {
-  description: string
+  description?: string
   linkText: string
   linkPath: AppRoutes
 }
@@ -12,7 +12,7 @@ export enum CallToActionTypes {
   DASHBOARD = "dashboard",
   FORGOT = "forgot",
   REMEMBER = "remember"
-
+  
 }
 
 export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToActionText } = {
@@ -37,8 +37,8 @@ export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToAct
     linkPath: AppRoutes.FORGOT
   },
   [CallToActionTypes.REMEMBER]: {
-    description: "OR do you remember you log in credentials?",
-    linkText: "Return to Login", //note that both "log in" and "login" are used. This is how it is shown in the FIGMA, probably pick one
+    description: "OR do you remember you login credentials?",
+    linkText: "Return to login", 
     linkPath: AppRoutes.LOGIN
   }
 }
