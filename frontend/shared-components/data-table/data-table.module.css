@@ -90,11 +90,6 @@
   color: var(--darkBlue);
 }
 
-.dataTable {
-  border-collapse: collapse;
-  margin-top: var(--size36);
-}
-
 .expandRecordButton {
   cursor: pointer;
 }

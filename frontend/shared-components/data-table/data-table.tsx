@@ -1,7 +1,7 @@
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useState } from "react"
-import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
+import { Column, defaultColumn, useFilters, usePagination, useSortBy, useTable } from "react-table"
 import { Incident } from "../../helpers/api/api"
 import { SavedResultsType, SavedSearchType } from "../../models"
 import { EditButton, PageNavigator } from "./data-table-subcomps"
@@ -18,6 +18,7 @@ export function DataTable(props: DataTableProps) {
   const { dataTable, dataHeader, dataRows } = styles
 
   const [editMode, setEditMode] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
   const { tableWrapper, tableHeader, tableTitle, sortArrow, colFilter } = styles
 
@@ -50,16 +51,6 @@ export function DataTable(props: DataTableProps) {
     usePagination
   )
 
-  const [showFilters, setShowFilters] = useState(false)
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPageSize(+e.target.value)
-  }
-
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
-    setPageSize(+e.target.value)
-  }
-
   function viewRecord(recordId: number) {
     // TODO: view full record
   }
@@ -67,6 +58,7 @@ export function DataTable(props: DataTableProps) {
   function toggleEditMode() {
     setEditMode(!editMode)
   }
+
   return (
     <div className={tableWrapper}>
       <header className={tableHeader}>

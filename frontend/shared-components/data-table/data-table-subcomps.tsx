@@ -1,14 +1,9 @@
-import styles from "./data-table.module.css"
-import savedStyles from "../../compositions/profile-saved-tables/saved.module.css"
 import {
-  faEdit,
-  faAngleLeft,
-  faAngleRight,
-  faAngleDoubleRight,
-  faAngleDoubleLeft,
-  IconDefinition
+  faAngleDoubleLeft, faAngleDoubleRight, faAngleLeft,
+  faAngleRight, faEdit, IconDefinition
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import styles from "./data-table.module.css"
 
 type EditButtonProps = {
   inEditMode: Boolean
@@ -58,23 +53,12 @@ type PageNavigatorProps = {
 
 const PageNavigator = (props: PageNavigatorProps) => {
   const {
-    tableWrapper,
-    tableHeader,
-    tableTitle,
-    editButton,
-    editButtonOn,
-    dataTable,
-    dataHeader,
     dataFooter,
     dataRowPage,
-    dataRows,
-    pageBtn,
-    actionBtn,
-    sortArrow,
     recordCount,
     pageCnt,
     goto
-  } = savedStyles
+  } = styles
   const {
     data,
     gotoPage,
@@ -127,3 +111,4 @@ const PageNavigator = (props: PageNavigatorProps) => {
 
 export type { EditButtonProps, PageNavigatorProps }
 export { EditButton, PageNavigator }
+
