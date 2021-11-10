@@ -1,30 +1,28 @@
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React, { useMemo, useState } from "react"
+import React, { useState } from "react"
 import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
-import { IncidentTableData, SavedResultsType, SavedSearchType } from "../../models"
+import { Incident } from "../../helpers/api/api"
+import { SavedResultsType, SavedSearchType } from "../../models"
 import { EditButton, PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
 
 interface DataTableProps {
   tableName: string
-  tableColumns: Column<any>[]
-  tableData: IncidentTableData[] | SavedSearchType[] | SavedResultsType[]
+  columns: Column<any>[]
+  data: Incident[] | SavedSearchType[] | SavedResultsType[] | undefined
 }
 
 export function DataTable(props: DataTableProps) {
-  const { tableName, tableData, tableColumns } = props
+  const { tableName, data, columns } = props
   const { dataTable, dataHeader, dataRows } = styles
 
   const [editMode, setEditMode] = useState(false)
 
-  const { tableWrapper, tableHeader, tableTitle, sortArrow, colFilter} = styles
+  const { tableWrapper, tableHeader, tableTitle, sortArrow, colFilter } = styles
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
   // 'save' values will be appended to each item dynamically
-  const data = useMemo(() => tableData, [])
-
-  const columns = useMemo(() => tableColumns, [])
 
   const {
     getTableProps,
@@ -123,7 +121,7 @@ export function DataTable(props: DataTableProps) {
       </table>
 
       <PageNavigator
-        data={tableData}
+        data={data}
         pageIndex={pageIndex}
         pageCount={pageCount}
         pageSize={pageSize}

@@ -1,19 +1,11 @@
-import React from "react"
+import * as React from "react"
 import { Column } from "react-table"
 import { useSearch } from "../../helpers"
 import { Officer } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
 import { DataTable } from "../../shared-components/data-table/data-table"
 
-// TODO: retrieve user saved searches from API
-
-
-const searchesColumns: Column<any>[] = [
-  {
-    Header: "Search Date",
-    accessor: (row: any) => formatDate(row["searchDate"]),
-    id: "searchDate"
-  },
+const resultsColumns: Column<any>[] = [
   {
     Header: "Date/Time",
     accessor: (row: any) => formatDate(row["time_of_incident"]),
@@ -45,17 +37,17 @@ const searchesColumns: Column<any>[] = [
     disableSortBy: true
   }
 ]
-export default function SavedSearches() {
+
+export default function SearchResultsTable() {
   const { incidentResults } = useSearch()
-  // data will come from profile when that is built
 
   if (!incidentResults) return null
   if (incidentResults.results.length === 0) return <div>No results</div>
 
   return (
     <DataTable
-      tableName={"Saved Searches"}
-      columns={searchesColumns}
+      tableName={"Search Results"}
+      columns={resultsColumns}
       data={incidentResults.results}
     />
   )

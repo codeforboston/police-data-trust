@@ -1,6 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { SavedResultsType } from "../../models"
 import { mockSavedResults } from "../../models/mock-data"
 import SavedResults from "./saved-results"
 

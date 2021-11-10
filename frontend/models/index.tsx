@@ -1,15 +1,15 @@
 import { AppRoutes } from "./app-routes"
 import { CallToActionTypes, enrollmentCallToActionText } from "./enrollment-cta"
-import { enrollmentMessage, EnrollmentTypes } from "./response"
-import { IncidentTableData, IncidentDetailType } from "./incidents"
-import { SavedResultsType, SavedSearchType, resultsColumns } from "./saved-table"
-import { tooltipContent, TooltipTypes, TooltipIcons } from "./info-tooltip"
+import { IncidentDetailType } from "./incidents"
+import { tooltipContent, TooltipIcons, TooltipTypes } from "./info-tooltip"
 import { LogoSizes } from "./logo-sizes"
 import { passwordToggleViews } from "./password-aid"
 import { PrimaryInputNames, primaryInputValidation } from "./primary-input"
+import { enrollmentMessage, EnrollmentTypes } from "./response"
+import { alertContent, SearchResultsTypes } from "./results-alert"
+import { SavedResultsType, SavedSearchType } from "./saved-table"
 import { states } from "./state-select"
-import { GeoJson, Filter, Data, CityProperties } from "./visualizations"
-import { SearchResultsTypes, alertContent } from "./results-alert"
+import { CityProperties, Data, Filter, GeoJson } from "./visualizations"
 
 export {
   AppRoutes,
@@ -21,7 +21,6 @@ export {
   passwordToggleViews,
   PrimaryInputNames,
   primaryInputValidation,
-  resultsColumns,
   states,
   tooltipContent,
   TooltipTypes,
@@ -34,8 +33,8 @@ export type {
   Filter,
   Data,
   CityProperties,
-  IncidentTableData,
   IncidentDetailType,
   SavedResultsType,
   SavedSearchType
 }
+
