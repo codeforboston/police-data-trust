@@ -52,10 +52,10 @@ export default function ForgotPassword() {
               Submit
             </PrimaryButton>
           </form>
-          <LinkButton loading={loading} type="forgot_toPhone" className={useEmail ? "" : "hidden"} onClick={() =>{setEmailState(false)}}>
+          <LinkButton loading={loading} className={useEmail ? "" : "hidden"} onClick={() =>{setEmailState(false)}}>
             Forgot your Email?
           </LinkButton>
-          <LinkButton loading={loading} type="forgot_toEmail" className={useEmail ? "hidden" : ""} onClick={() =>{setEmailState(true)}}>
+          <LinkButton loading={loading} className={useEmail ? "hidden" : ""} onClick={() =>{setEmailState(true)}}>
             Provide Email instead
           </LinkButton>
         </FormProvider>

@@ -7,22 +7,26 @@ export interface Props extends React.HTMLProps<HTMLButtonElement> {
 }
 function BaseButton({ className, loading, children, ...rest }: Props) {
   return (
-    <button {...rest} className={classnames(className, styles.baseButton)}>
+    <button {...rest} className={classnames(className, styles.baseButton)} type="submit">
       {loading ? <Spinner /> : children}
     </button>
   )
 }
 export default function PrimaryButton({ className, loading, children, ...rest }: Props) {
   return(
-    <BaseButton className={classnames(styles.primaryButton, className)} loading={loading} children={children} {...rest} />
-    )
+    <BaseButton className={classnames(styles.primaryButton, className)} loading={loading} {...rest} >
+      {children}
+    </BaseButton>
+  )
 }
 
 //a button disguised as a link
 export function LinkButton({ className, loading, children, ...rest }: Props) {
   return(
-   <BaseButton className={classnames(styles.linkButton, className)} loading={loading} children={children} {...rest} />
-    )
+    <BaseButton className={classnames(styles.linkButton, className)} loading={loading} {...rest} >
+      {children}
+    </BaseButton>
+  )
 }
 
 const Spinner = () => (
