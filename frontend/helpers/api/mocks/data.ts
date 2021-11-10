@@ -9,7 +9,7 @@ export const EXISTING_TEST_USER: TestUser = {
   email: "test@example.com",
   password: "password",
   firstName: "Test",
-  lastName: "Example"
+  lastName: "Example",
   phoneNumber: "(123) 456-7890"
 }
 
