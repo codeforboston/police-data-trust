@@ -41,7 +41,8 @@ export const handlers = [
         email_confirmed_at: user.emailConfirmedAt,
         first_name: user.firstName,
         last_name: user.lastName,
-        phone_number: user.phoneNumber
+        phone_number: user.phoneNumber,
+        role: user.role
       })
     )
   }),

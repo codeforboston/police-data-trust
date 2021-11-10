@@ -10,7 +10,8 @@ export const EXISTING_TEST_USER: TestUser = {
   password: "password",
   firstName: "Test",
   lastName: "Example",
-  phoneNumber: "(123) 456-7890"
+  phoneNumber: "(123) 456-7890",
+  role: "Public"
 }
 
 /** Matches alembic/dev_seeds.py */

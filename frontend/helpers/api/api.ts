@@ -4,6 +4,7 @@ export type AccessToken = string
 
 export interface User {
   active: boolean
+  role: string
   email: string
   emailConfirmedAt?: string
   firstName?: string
@@ -94,13 +95,14 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
     url: "/auth/test",
     method: "GET",
     accessToken
-  }).then(({ active, email, email_confirmed_at, first_name, last_name, phone_number }) => ({
+  }).then(({ active, email, email_confirmed_at, first_name, last_name, phone_number, role }) => ({
     active,
     email,
     emailConfirmedAt: email_confirmed_at,
     firstName: first_name,
     lastName: last_name,
-    phoneNumber: phone_number
+    phoneNumber: phone_number,
+    role: role
   }))
 }
 
