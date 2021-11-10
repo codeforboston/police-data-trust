@@ -1,0 +1,37 @@
+.searchPanelContainer {
+  margin-top: 40px;
+  width: var(--size384);
+  border-right: 2px solid black;
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--size384);
+}
+
+.searchToggle {
+  box-shadow: var(--boxShadow);
+  width: var(--size200);
+  margin: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #ebf1f5;
+  color: var(--grey);
+}
+
+.searchChoices {
+  cursor: pointer;
+  margin-top: var(--size8);
+  color: var(--darkBlue);
+  display: flex;
+  gap: var(--size16);
+}
+
+.selectedSearch {
+  font-weight: 700;
+  cursor: auto;
+  text-decoration: underline;
+}
