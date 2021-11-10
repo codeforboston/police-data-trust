@@ -24,7 +24,8 @@ export default class FakeAuth {
     this.users.push({
       ...newUser,
       emailConfirmedAt: null,
-      active: true
+      active: true,
+      role: "Public"
     })
 
     return this.login(newUser)
