@@ -19,7 +19,7 @@ export default function ForgotPassword() {
   const form = useForm()
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
-  const [useEmail, setEmailState] = useState(true)
+  const [useEmail, setEmailState] = useState(true) //true when using email, false when using phone number
 
   async function onSubmit(formValues: any) {
     setLoading(true)
@@ -27,9 +27,11 @@ export default function ForgotPassword() {
     try {
       if(useEmail){
         //find password using email
+        setSubmitError("Email not connected to back end")
       }
       else{
         //find password using phone number
+        setSubmitError("Phone number not connected to back end")
       }
     } catch (e) {
 
