@@ -1,4 +1,4 @@
-.baseButton {
+.primaryButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,26 +7,12 @@
   width: var(--size96);
   border: none;
   border-radius: var(--size4);
+  background-color: var(--darkBlue);
   color: white;
   font-size: var(--size16);
   font-weight: 500;
   cursor: pointer;
 }
-
-.primaryButton {
-  background-color: var(--darkBlue);
-}
-
-.linkButton {
-  background-color: transparent;
-  color: var(--linkBlue);
-  text-decoration: underline;
-  font-weight: 400;
-  font-size: var(--size14);
-  width: auto;
-  height: auto;
-}
-
 .primaryButton:focus,
 .primaryButton:hover {
   -webkit-box-shadow: var(--insetShadow);

@@ -7,7 +7,7 @@ import PrimaryInput from "./primary-input/primary-input"
 import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
-import {LinkButton} from "./primary-button/primary-button"
+import LinkButton from "./link-button/link-button"
 import ResultsAlert from "./results-alert/results-alert"
 
 export {

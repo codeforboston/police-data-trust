@@ -1,13 +1,13 @@
 import React from "react"
-import styles from "./primary-button.module.css"
+import styles from "./link-button.module.css"
 import classnames from "classnames"
 
 export interface Props extends React.HTMLProps<HTMLButtonElement> {
   loading?: boolean
 }
-export default function PrimaryButton({ className, loading, children, ...rest }: Props) {
+export default function LinkButton({ className, loading, children, ...rest }: Props) {
   return (
-    <button {...rest} className={classnames(styles.primaryButton, className)} type="submit">
+    <button {...rest} className={classnames(className, styles.linkButton)} type="submit">
       {loading ? <Spinner /> : children}
     </button>
   )

@@ -59,6 +59,17 @@ exports[`renders Login correctly 1`] = `
             value=""
           />
         </div>
+        <div
+          class="callToActionContainer"
+        >
+          <p />
+          <a
+            class="callToActionLink"
+            href="/forgot"
+          >
+            Forgot your login data?
+          </a>
+        </div>
         <button
           class="primaryButton"
           type="submit"

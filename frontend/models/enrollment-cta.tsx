@@ -12,7 +12,6 @@ export enum CallToActionTypes {
   DASHBOARD = "dashboard",
   FORGOT = "forgot",
   REMEMBER = "remember"
-  
 }
 
 export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToActionText } = {
@@ -38,7 +37,7 @@ export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToAct
   },
   [CallToActionTypes.REMEMBER]: {
     description: "OR do you remember you login credentials?",
-    linkText: "Return to login", 
+    linkText: "Return to login",
     linkPath: AppRoutes.LOGIN
   }
 }
