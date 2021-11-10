@@ -38,7 +38,7 @@ export default function ViewerRegistration() {
         firstName: formValues[FIRST_NAME],
         lastName: formValues[LAST_NAME],
         email: formValues[EMAIL_ADDRESS],
-        password: formValues[CREATE_PASSWORD]
+        password: formValues[CREATE_PASSWORD],
         phoneNumber: formValues[PHONE_NUMBER]
       })
     } catch (e) {
