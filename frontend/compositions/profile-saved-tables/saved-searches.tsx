@@ -3,12 +3,14 @@ import { Column } from "react-table"
 import { useSearch } from "../../helpers"
 import { Officer } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
+import { TooltipIcons, TooltipTypes } from "../../models"
+import { InfoTooltip } from "../../shared-components"
 import { DataTable } from "../../shared-components/data-table/data-table"
 
 // TODO: retrieve user saved searches from API
 
 
-const searchesColumns: Column<any>[] = [
+export const searchesColumns: Column<any>[] = [
   {
     Header: "Search Date",
     accessor: (row: any) => formatDate(row["searchDate"]),
@@ -30,7 +32,12 @@ const searchesColumns: Column<any>[] = [
     accessor: "department"
   },
   {
-    Header: "Use of Force",
+    Header: () => (
+      <span className="columnHead">
+        Use of Force
+        <InfoTooltip type={TooltipTypes.USEFORCE} icon={TooltipIcons.INFO} iconSize="xs" />
+      </span>
+    ),
     accessor: (row: any) =>
       row["use_of_force"].map((items: string) => Object.values(items).join(", ")).join(", "),
     id: "use_of_force"

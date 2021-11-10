@@ -5,12 +5,7 @@ import { Officer } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
 import { DataTable } from "../../shared-components/data-table/data-table"
 
-const resultsColumns: Column<any>[] = [
-  {
-    Header: "Date/Time",
-    accessor: (row: any) => formatDate(row["time_of_incident"]),
-    id: "time_of_incident"
-  },
+export const resultsColumns: Column<any>[] = [
   {
     Header: "Officer(s)",
     accessor: (row: any) =>
