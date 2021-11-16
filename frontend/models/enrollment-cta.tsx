@@ -32,11 +32,11 @@ export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToAct
   },
   [CallToActionTypes.FORGOT]: {
     //description: "New to the National Police Data Coalition?",
-    linkText: "Forgot your login data?",
+    linkText: "Forgot your password?",
     linkPath: AppRoutes.FORGOT
   },
   [CallToActionTypes.REMEMBER]: {
-    description: "OR do you remember you login credentials?",
+    description: "Do you remember you login credentials?",
     linkText: "Return to login",
     linkPath: AppRoutes.LOGIN
   }

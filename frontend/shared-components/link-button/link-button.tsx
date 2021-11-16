@@ -8,7 +8,7 @@ export interface Props extends React.HTMLProps<HTMLButtonElement> {
 export default function LinkButton({ className, loading, children, ...rest }: Props) {
   return (
     <button {...rest} className={classnames(className, styles.linkButton)} type="submit">
-      {loading ? <Spinner /> : children}
+      {children}
     </button>
   )
 }

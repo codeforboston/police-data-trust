@@ -67,7 +67,7 @@ exports[`renders Login correctly 1`] = `
             class="callToActionLink"
             href="/forgot"
           >
-            Forgot your login data?
+            Forgot your password?
           </a>
         </div>
         <button
