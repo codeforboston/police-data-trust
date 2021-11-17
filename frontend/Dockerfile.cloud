@@ -1,0 +1,20 @@
+# Example build command
+# From repository root folder
+# docker build --build-arg ENV=development -t police-data-trust-frontend-dev -f frontend/Dockerfile.cloud ./frontend
+
+FROM node:16.12.0-buster as builder
+
+WORKDIR /app/
+ARG ENV
+
+COPY package*.json ./
+RUN npm ci --no-optional --quiet 1>/dev/null
+
+COPY . .
+
+RUN npm run build:${ENV}
+
+FROM nginx:1.21.3
+COPY --from=builder /app/out /usr/share/nginx/html
+COPY --from=builder /app/nginx/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80

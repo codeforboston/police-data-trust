@@ -1,10 +1,12 @@
 import { MockedRequest, rest } from "msw"
-import { baseURL, LoginCredentials, NewUser } from ".."
+import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser } from ".."
 import FakeAuth from "./fake-auth"
+import FakeSearch from "./fake-search"
 
 type Json = Record<string, any>
 
 const auth = new FakeAuth()
+const search = new FakeSearch()
 
 export const handlers = [
   rest.post<Json>(routePath("/auth/login"), (req, res, ctx) => {
@@ -38,9 +40,16 @@ export const handlers = [
         email: user.email,
         email_confirmed_at: user.emailConfirmedAt,
         first_name: user.firstName,
-        last_name: user.lastName
+        last_name: user.lastName,
+        phone_number: user.phoneNumber,
+        role: user.role
       })
     )
+  }),
+
+  rest.post<Json>(routePath("/incidents/search"), (req, res, ctx) => {
+    const query = req.body as IncidentSearchRequest
+    return res(ctx.status(200), ctx.json(search.search(query)))
   })
 ]
 
@@ -48,7 +57,7 @@ export const handlers = [
 export function rejectUnhandledApiRequests(req: MockedRequest) {
   const url = req.url.href
   if (url.startsWith(baseURL)) {
-    throw new Error("Unhandled API request! " + url)
+    throw new Error("Unhandled API request in mock service worker handlers! " + url)
   }
 }
 

@@ -110,1084 +110,204 @@ exports[`renders Dashboard correctly 1`] = `
               </ul>
             </div>
           </div>
-          <ul
-            id="navMenu"
-          >
-            <li
-              class=""
-            >
-              <a
-                href="/search"
-                role="menuitem"
-                tabindex="-1"
-              >
-                Search
-              </a>
-            </li>
-            <li
-              class=""
-            >
-              <a
-                href="/profile"
-                role="menuitem"
-                tabindex="-1"
-              >
-                Profile
-              </a>
-            </li>
-            <li
-              class=""
-            >
-              <a
-                href="/logout"
-                role="menuitem"
-                tabindex="-1"
-              >
-                Sign Out
-              </a>
-            </li>
-            <li
-              class=""
-            >
-              <a
-                href="/"
-                role="menuitem"
-                tabindex="-1"
-              >
-                DONATE
-              </a>
-            </li>
-          </ul>
-          <button
-            class="primaryButton"
-            type="submit"
-          >
-            DONATE
-          </button>
-          <button
-            class="primaryButton"
-            type="submit"
-          >
-            LOGOUT
-          </button>
         </nav>
       </div>
     </header>
     <div
-      style="display: flex; flex-direction: row; justify-content: center;"
-    >
-      <button
-        class="primaryButton"
-        style="cursor: pointer; margin: 2em 1em 1em 1em;"
-        type="button"
-      >
-        bubble
-      </button>
-      <button
-        class="primaryButton"
-        style="cursor: pointer; margin: 2em 1em 1em 1em;"
-        type="button"
-      >
-        map
-      </button>
-    </div>
-    <div
-      class="mapContainer"
-      id="map-container"
+      style="display: flex;"
     >
       <div
-        class="mapWrapper"
+        class="searchPanelContainer"
       >
-        <svg
-          class="mapData"
-          id="map-svg"
-          viewBox="0, 0, 1200, 700"
+        <form
+          class="searchForm"
         >
-          <g
-            id="zoom-container"
+          <div
+            class="searchToggle"
           >
-            <svg
-              id="map"
-              viewBox="0, 0, 1200, 700"
-            />
-            <svg
-              class="markerLayer"
-              height="100%"
-              viewBox="0, 0, 1200, 700"
-              width="100%"
-            />
-          </g>
-        </svg>
+            <div>
+              I am searching for...
+            </div>
+            <div
+              class="searchChoices"
+            >
+              <div
+                class="selectedSearch"
+              >
+                Incident(s)
+              </div>
+              <div
+                class=""
+              >
+                Officer(s)
+              </div>
+            </div>
+          </div>
+          <div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="locationInput"
+                >
+                  Location:
+                </label>
+                <input
+                  aria-describedby="locationError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="locationInput"
+                  name="location"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="keyWordsInput"
+                >
+                  Key Words:
+                </label>
+                <input
+                  aria-describedby="keyWordsError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="keyWordsInput"
+                  name="keyWords"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="dateStartInput"
+                >
+                  Date Start:
+                </label>
+                <input
+                  aria-describedby="dateStartError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="dateStartInput"
+                  name="dateStart"
+                  type="date"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="dateEndInput"
+                >
+                  Date End:
+                </label>
+                <input
+                  aria-describedby="dateEndError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="dateEndInput"
+                  name="dateEnd"
+                  type="date"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+          <button
+            class="primaryButton"
+            type="submit"
+          >
+            Search
+          </button>
+        </form>
       </div>
-      <div
-        class="mapButton"
+      <div>
+        FakeMap
+      </div>
+    </div>
+    <section
+      style="max-width: 500px; margin: 1em auto;"
+    >
+      <h1>
+        Search Incidents
+      </h1>
+      <form
+        class="centerContent"
       >
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Location
+          </label>
+          <input
+            name="Location"
+            placeholder="Location keyword"
+            style="margin: 10px; flex-basis: auto;"
+            type="text"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Start Date
+          </label>
+          <input
+            name="Start Date"
+            style="margin: 10px; flex-basis: auto;"
+            type="date"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            End Date
+          </label>
+          <input
+            name="End Date"
+            style="margin: 10px; flex-basis: auto;"
+            type="date"
+          />
+        </fieldset>
+        <fieldset
+          style="display: flex; align-items: center;"
+        >
+          <label>
+            Description
+          </label>
+          <input
+            name="Description"
+            placeholder="Description keyword"
+            style="margin: 10px; flex-basis: auto;"
+            type="text"
+          />
+        </fieldset>
         <button
           class="primaryButton"
-          id="zoom-reset"
+          type="submit"
         >
-          Reset Zoom
+          Search
         </button>
-      </div>
-      <div
-        style="position: absolute; right: 0px; bottom: 0px;"
-      >
-        <div
-          class="chartKeyContainer"
-          id="map-key"
-        >
-          <div
-            class="KeyEntry"
-          >
-            <div
-              class="keySymbolEntry"
-            >
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="var(--darkBlue)"
-                  r="10"
-                />
-              </svg>
-              <label
-                class="label"
-                for="Data Rich Cities"
-              >
-                Data Rich Cities
-              </label>
-            </div>
-          </div>
-          <div
-            class="KeyEntry"
-          >
-            <div
-              class="keySymbolEntry"
-            >
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="var(--lightBlue)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <label
-                class="label"
-                for="Data Poor Cities"
-              >
-                Data Poor Cities
-              </label>
-            </div>
-          </div>
-          <div
-            class="KeyEntry"
-          >
-            <div />
-            <div
-              class="keyGradientEntry"
-            >
-              <label
-                class="label"
-              >
-                Less Data
-              </label>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="rgb(124, 174, 215)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="rgb(105, 144, 186)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="rgb(86, 113, 157)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="rgb(67, 83, 128)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <rect
-                  fill="rgb(48, 52, 99)"
-                  height="20"
-                  width="20"
-                />
-              </svg>
-              <label
-                class="label"
-              >
-                More Data
-              </label>
-            </div>
-          </div>
-          <div
-            class="KeyEntry"
-          >
-            <div />
-            <div
-              class="keyGradientEntry"
-            >
-              <label
-                class="label"
-              >
-                Blue
-              </label>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="rgb(124, 174, 215)"
-                  r="10"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="rgb(119, 156, 187)"
-                  r="10"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="rgb(113, 138, 159)"
-                  r="10"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="rgb(108, 120, 130)"
-                  r="10"
-                />
-              </svg>
-              <svg
-                height="20"
-                viewBox="0 0 20 20"
-                width="20"
-              >
-                <circle
-                  cx="10"
-                  cy="10"
-                  fill="rgb(102, 102, 102)"
-                  r="10"
-                />
-              </svg>
-              <label
-                class="label"
-              >
-                Grey
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <table
-        aria-label="Search Results Table"
-        class="dataTable"
-        role="table"
-      >
-        <thead
-          class="dataHeader"
-        >
-          <tr
-            role="row"
-          >
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Date(s)
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Incident Type
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Officer(s) Involved
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Subject
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Source
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Full Record
-            </th>
-            <th
-              colspan="1"
-              role="columnheader"
-            >
-              Save Record
-            </th>
-          </tr>
-        </thead>
-        <tbody
-          role="rowgroup"
-        >
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              Dan Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              Ed Smith, Vince Gilligan
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              Dan Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              John Smith
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-          <tr
-            class="dataRows"
-            role="row"
-          >
-            <td
-              role="cell"
-            >
-              2003/01/01
-            </td>
-            <td
-              role="cell"
-            >
-              Use of force
-            </td>
-            <td
-              role="cell"
-            >
-              Ed Smith, Vince Gilligan
-            </td>
-            <td
-              role="cell"
-            >
-              unknown
-            </td>
-            <td
-              role="cell"
-            >
-              News Article
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-greater-than fa-w-12 "
-                data-icon="greater-than"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 384 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-            <td>
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-plus-circle fa-w-16 "
-                data-icon="plus-circle"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                  fill="currentColor"
-                />
-              </svg>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot
-          class="dataFooter"
-        >
-          <tr>
-            <td>
-              14
-               records found
-            </td>
-            <td
-              colspan="4"
-            />
-            <td>
-              Show
-               
-              <input
-                class="dataRowPage"
-                max="10"
-                min="1"
-                type="number"
-                value="10"
-              />
-               
-              rows
-            </td>
-            <td>
-               
-              <button
-                disabled=""
-              >
-                &lt;
-              </button>
-               
-              1
-               of 
-              2
-               
-              <button>
-                &gt;
-              </button>
-               
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+      </form>
+    </section>
   </div>
 </div>
 `;

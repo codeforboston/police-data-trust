@@ -1,7 +1,8 @@
-from .. import db
-from .types.enums import Gender
-from .types.enums import Race
 import enum
+
+from backend.database.core import SourceMixin
+
+from .. import db
 
 
 class Rank(str, enum.Enum):
@@ -17,13 +18,13 @@ class Rank(str, enum.Enum):
     CHIEF = "CHIEF"
 
 
-class Officer(db.Model):
+class Officer(db.Model, SourceMixin):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
-    race = db.Column(db.Enum(Race))
-    gender = db.Column(db.Enum(Gender))
+    race = db.Column(db.Text)
+    gender = db.Column(db.Text)
     appointed_date = db.Column(db.DateTime)
     badge = db.Column(db.Text)
     unit = db.Column(db.Text)  # type?
@@ -31,4 +32,4 @@ class Officer(db.Model):
     rank = db.Column(db.Text)  # type?
     star = db.Column(db.Text)  # type?
     date_of_birth = db.Column(db.Date)
-    # TODO: Age changes over time. Might we use birth year?
+    accusations = db.relationship("Accusation", backref="officer")

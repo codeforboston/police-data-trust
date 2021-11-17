@@ -1,2 +1,2 @@
 -r _core.in
-psycopg2
+psycopg2-binary==2.8.6

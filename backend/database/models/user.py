@@ -8,7 +8,7 @@ from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
-import enum
+from enum import Enum
 
 
 fs_mixin = FlaskSerialize(db)
@@ -44,11 +44,21 @@ def compile_ci_string(element, compiler, **kwargs):
         return base_visit
 
 
-class UserRole(enum.Enum):
-    PUBLIC = 1
-    PASSPORT = 2
-    CONTRIBUTOR = 3
-    ADMIN = 4
+class UserRole(str, Enum):
+    PUBLIC = "Public"
+    PASSPORT = "Passport"
+    CONTRIBUTOR = "Contributor"
+    ADMIN = "Admin"
+
+    def get_value(self):
+        if self == UserRole.PUBLIC:
+            return 1
+        elif self == UserRole.PASSPORT:
+            return 2
+        elif self == UserRole.CONTRIBUTOR:
+            return 3
+        else:
+            return 4
 
 
 # Define the User data-model.
@@ -77,6 +87,8 @@ class User(db.Model, UserMixin, CrudMixin):
     )
 
     role = db.Column(db.Enum(UserRole))
+
+    phone_number = db.Column(db.Text)
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))

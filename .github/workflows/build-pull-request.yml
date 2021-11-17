@@ -1,0 +1,22 @@
+name: Build Pull Request
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-frontend
+      - run: npm run build:ui
+        working-directory: frontend
+      - name: Export Mock Frontend
+        uses: actions/upload-artifact@v2
+        if: github.event_name == 'pull_request'
+        with:
+          name: mock-frontend
+          path: frontend/out
+          retention-days: 1

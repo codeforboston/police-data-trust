@@ -1,11 +1,13 @@
-import pytest
-
 import psycopg2.errors
+import pytest
+from backend.api import create_app
+from backend.auth import user_manager
+from backend.config import TestingConfig
+from backend.database import User, UserRole, db
 from pytest_postgresql.janitor import DatabaseJanitor
 
-from backend.api import create_app
-from backend.config import TestingConfig
-from backend.database import db
+example_email = "test@email.com"
+example_password = "my_password"
 
 
 @pytest.fixture(scope="session")
@@ -44,6 +46,34 @@ def app(database):
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture
+def example_user(db_session):
+    user = User(
+        email=example_email,
+        password=user_manager.hash_password(example_password),
+        role=UserRole.PUBLIC,
+        first_name="first",
+        last_name="last",
+        phone_number="(012) 345-6789",
+    )
+    db_session.add(user)
+    db_session.commit()
+    return user
+
+
+@pytest.fixture
+def access_token(client, example_user):
+    res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_email,
+            "password": example_password,
+        },
+    )
+    assert res.status_code == 200
+    return res.json["access_token"]
 
 
 @pytest.fixture

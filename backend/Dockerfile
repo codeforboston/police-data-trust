@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster AS base
+FROM python:3.8.11-slim-buster AS base
 
 RUN apt-get update && apt-get install curl -y
 
@@ -8,7 +8,6 @@ RUN chmod +x /wait
 FROM base
 WORKDIR /app/
 
-COPY requirements.txt requirements.txt
 COPY requirements/ requirements/
 
 RUN pip3 install -r requirements/dev_unix.txt
