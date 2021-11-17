@@ -1,4 +1,4 @@
-import { DashboardHeader, Map } from "../../compositions"
+import { DashboardHeader, Map, SearchResultsTable } from "../../compositions"
 import { requireAuth } from "../../helpers"
 import { Layout } from "../../shared-components"
 import { InputForm, ResultsTable } from "../../compositions/basic-search"
@@ -15,6 +15,7 @@ export default requireAuth(function Dashboard() {
         <Map />
       </div>
       <InputForm />
+      <SearchResultsTable />
       <ResultsTable />
     </Layout>
   )

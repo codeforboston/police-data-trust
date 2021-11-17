@@ -1,0 +1,35 @@
+.dataTable {
+  border-collapse: collapse;
+  margin-top: var(--size36);
+  width: 100%;
+}
+
+.dataFooter,
+.dataHeader,
+.dataRows {
+  border-bottom: 3px solid black;
+  height: var(--size36);
+  text-align: center;
+}
+
+.dataFooter,
+.dataHeader,
+.pagination {
+  background-color: var(--lightBlue);
+}
+
+.dataRows:nth-child(odd) {
+  background-color: #b1cfe7;
+}
+
+.actionBtn {
+  cursor: pointer;
+}
+
+.sortArrow {
+  margin-left: 0.3rem;
+}
+
+.pageBtn {
+  margin: 0 1rem;
+}

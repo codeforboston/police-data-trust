@@ -1,0 +1,272 @@
+[
+  {
+    "searchDate": 1606441701000,
+    "who": ["P.Ditter", "Wanda de Broke", "E.Kienl"],
+    "what": "Verbalization",
+    "where": "Washington, DC",
+    "when": 1582299082000,
+    "total": 191,
+    "results": 1
+  },
+  {
+    "searchDate": 1614542333000,
+    "who": ["I.Pikhno"],
+    "what": "Use of Force",
+    "where": "Chicago, IL",
+    "when": 1558285745000,
+    "total": 474,
+    "results": 2
+  },
+  {
+    "searchDate": 1626134359000,
+    "who": ["R.Duckerin"],
+    "what": "Use of Force",
+    "where": "New York, NY",
+    "when": 989385039000,
+    "total": 472,
+    "results": 3
+  },
+  {
+    "searchDate": 1608556937000,
+    "who": ["P.Prahm", "N.MacEnelly", "Z.Chritchley"],
+    "what": "Verbalization",
+    "where": "Detroit, MI",
+    "when": 1192937440000,
+    "total": 416,
+    "results": 4
+  },
+  {
+    "searchDate": 1604405469000,
+    "who": ["L.Hubball", "L.Nickell"],
+    "what": "Verbalization",
+    "where": "Duluth, MN",
+    "when": 1403258383000,
+    "total": 70,
+    "results": 5
+  },
+  {
+    "searchDate": 1613940632000,
+    "who": ["M.Billany"],
+    "what": "Traffic stop",
+    "where": "Newark, NJ",
+    "when": 1605816171000,
+    "total": 493,
+    "results": 6
+  },
+  {
+    "searchDate": 1607696135000,
+    "who": ["K.Stare", "D.Dann", "M.Tickel"],
+    "what": "Use of Force",
+    "where": "Portland, ME",
+    "when": 1527784120000,
+    "total": 159,
+    "results": 7
+  },
+  {
+    "searchDate": 1633912328000,
+    "who": ["N.De Cruz"],
+    "what": "Traffic stop",
+    "where": "Boston, MA",
+    "when": 1567314398000,
+    "total": 402,
+    "results": 8
+  },
+  {
+    "searchDate": 1633931701000,
+    "who": ["K.Dalgety", "J.Btham"],
+    "what": "Harassment",
+    "where": "San Jose, CA",
+    "when": 1427344668000,
+    "total": 150,
+    "results": 9
+  },
+  {
+    "searchDate": 1604350367000,
+    "who": ["B.Fripps", "G.Cowburn"],
+    "what": "Traffic stop",
+    "where": "Los Angeles, CA",
+    "when": 1176983276000,
+    "total": 403,
+    "results": 10
+  },
+  {
+    "searchDate": 1630750914000,
+    "who": ["N.Theodore", "N.Bryers", "D.Habgood"],
+    "what": "Harassment",
+    "where": "Worcester, MA",
+    "when": 1027001286000,
+    "total": 278,
+    "results": 11
+  },
+  {
+    "searchDate": 1611911494000,
+    "who": ["K.Portal"],
+    "what": "Traffic stop",
+    "where": "Atlanta, GA",
+    "when": 1568118335000,
+    "total": 28,
+    "results": 12
+  },
+  {
+    "searchDate": 1616831007000,
+    "who": ["J.Newcomb", "N.Sawforde"],
+    "what": "Harassment",
+    "where": "San Jose, CA",
+    "when": 1492109821000,
+    "total": 310,
+    "results": 13
+  },
+  {
+    "searchDate": 1608387994000,
+    "who": ["B.Courtois"],
+    "what": "Use of Force",
+    "where": "Miami, FL",
+    "when": 1594690950000,
+    "total": 383,
+    "results": 14
+  },
+  {
+    "searchDate": 1610233368000,
+    "who": ["R.Lukesch", "W.Pellingar"],
+    "what": "Traffic stop",
+    "where": "Manchester, NH",
+    "when": 1524580632000,
+    "total": 111,
+    "results": 15
+  },
+  {
+    "searchDate": 1617960206000,
+    "who": ["B.Guyonneau", "O.Jellybrand", "T.Gosdin"],
+    "what": "Harassment",
+    "where": "Cleveland, OH",
+    "when": 1533718681000,
+    "total": 190,
+    "results": 16
+  },
+  {
+    "searchDate": 1607085676000,
+    "who": ["C.Dingivan", "M.Cuss"],
+    "what": "Verbalization",
+    "where": "St. Louis, MO",
+    "when": 1422207218000,
+    "total": 280,
+    "results": 17
+  },
+  {
+    "searchDate": 1611364915000,
+    "who": ["O.Cornuau"],
+    "what": "Verbalization",
+    "where": "New Orleans, LA",
+    "when": 998969696000,
+    "total": 203,
+    "results": 18
+  },
+  {
+    "searchDate": 1623495187000,
+    "who": ["S.Plail", "B.Volkers", "D.Carsberg"],
+    "what": "Verbalization",
+    "where": "Paterson, NJ",
+    "when": 1564055218000,
+    "total": 287,
+    "results": 19
+  },
+  {
+    "searchDate": 1620874135000,
+    "who": ["L.Deville"],
+    "what": "Verbalization",
+    "where": "Charleston, SC",
+    "when": 1171726988000,
+    "total": 307,
+    "results": 20
+  },
+  {
+    "searchDate": 1609271574000,
+    "who": ["C.Pitceathly", "T.Jennrich", "G.Birdsey"],
+    "what": "Traffic stop",
+    "where": "San Diego, CA",
+    "when": 1437770122000,
+    "total": 62,
+    "results": 21
+  },
+  {
+    "searchDate": 1605742823000,
+    "who": ["J.Kachel", "S.Bellelli", "F.Ferrari"],
+    "what": "Harassment",
+    "where": "Seattle, WA",
+    "when": 1407570685000,
+    "total": 181,
+    "results": 22
+  },
+  {
+    "searchDate": 1621964505000,
+    "who": ["D.Finlayson", "J.Sterrick"],
+    "what": "Harassment",
+    "where": "Tampa, FL",
+    "when": 1304003275000,
+    "total": 172,
+    "results": 23
+  },
+  {
+    "searchDate": 1612247157000,
+    "who": ["U.Rounding", "C.Folland"],
+    "what": "Traffic stop",
+    "where": "Baltimore, MD",
+    "when": 1103883395000,
+    "total": 105,
+    "results": 24
+  },
+  {
+    "searchDate": 1629974616000,
+    "who": ["A.Dyhouse"],
+    "what": "Harassment",
+    "where": "Phoenix, AZ",
+    "when": 1323622953000,
+    "total": 487,
+    "results": 25
+  },
+  {
+    "searchDate": 1602755936000,
+    "who": ["H.Brea", "J.Baud", "K.Toothill"],
+    "what": "Traffic stop",
+    "where": "Albuquerque, NM",
+    "when": 996549877000,
+    "total": 105,
+    "results": 26
+  },
+  {
+    "searchDate": 1608892757000,
+    "who": ["A.Oxbie"],
+    "what": "Verbalization",
+    "where": "Cincinnati, OH",
+    "when": 1198825438000,
+    "total": 19,
+    "results": 27
+  },
+  {
+    "searchDate": 1609944316000,
+    "who": ["M.Worthing"],
+    "what": "Use of Force",
+    "where": "Oakland, CA",
+    "when": 1475567611000,
+    "total": 229,
+    "results": 28
+  },
+  {
+    "searchDate": 1620710445000,
+    "who": ["K.Chater", "G.Dillow"],
+    "what": "Traffic stop",
+    "where": "Portland, OR",
+    "when": 1513257146000,
+    "total": 321,
+    "results": 29
+  },
+  {
+    "searchDate": 1609427398000,
+    "who": ["G.Beesley"],
+    "what": "Use of Force",
+    "where": "Dallas, TX",
+    "when": 1164685625000,
+    "total": 266,
+    "results": 30
+  }
+]

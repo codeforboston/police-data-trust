@@ -1,4 +1,4 @@
-import { IncidentTableData } from "./incidents"
+import { Incident } from "../helpers/api"
 
 export interface DepartmentType {
   departmentName: string
@@ -47,5 +47,5 @@ export interface OfficerRecordType {
   incomeBracket?: string
   workHistory: EmploymentType[]
   affiliations?: string[]
-  incidents?: IncidentTableData[]
+  incidents?: Incident[]
 }
