@@ -45,8 +45,8 @@ def compile_ci_string(element, compiler, **kwargs):
 
 
 class UserRole(enum.Enum):
-    PASSPORT = 1
-    PUBLIC = 2
+    PUBLIC = 1
+    PASSPORT = 2
     CONTRIBUTOR = 3
     ADMIN = 4
 

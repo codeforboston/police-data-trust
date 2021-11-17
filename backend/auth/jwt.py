@@ -7,12 +7,11 @@ from flask import abort
 jwt = JWTManager()
 
 
-def verify_roles_or_abort(roles):
-    print("verify roles or abort")
+def verify_roles_or_abort(min_role):
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
-    if current_user is None or current_user.role not in roles:
+    if current_user is None or current_user.role.value < min_role[0].value:
         abort(403)
         return False
     return True
@@ -33,7 +32,7 @@ creates a decorator for routes that need verification of a user role
 """
 
 
-def role_required(*roles):
+def min_role_required(*roles):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):

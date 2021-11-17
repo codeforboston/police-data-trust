@@ -7,7 +7,7 @@ from ..database import db
 from ..database import User
 from ..database import UserRole
 from ..database import login_manager
-from ..auth import role_required
+from ..auth import min_role_required
 from ..auth import user_manager
 from ..schemas import UserSchema
 from ..dto import RegisterUserDTO
@@ -95,7 +95,7 @@ def load_user(user_id):
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()
-@role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.PUBLIC)
 def test_auth():
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
