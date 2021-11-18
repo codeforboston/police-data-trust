@@ -1,0 +1,21 @@
+.linkButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--size16) auto;
+  height: var(--size40);
+  width: var(--size96);
+  border: none;
+  border-radius: var(--size4);
+  color: white;
+  font-size: var(--size16);
+  font-weight: 500;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--linkBlue);
+  text-decoration: underline;
+  font-weight: 400;
+  font-size: var(--size14);
+  width: auto;
+  height: auto;
+}

@@ -1,7 +1,7 @@
 import { AppRoutes } from "../models"
 
 interface CallToActionText {
-  description: string
+  description?: string
   linkText: string
   linkPath: AppRoutes
 }
@@ -9,7 +9,9 @@ interface CallToActionText {
 export enum CallToActionTypes {
   LOGIN = "login",
   REGISTER = "register",
-  DASHBOARD = "dashboard"
+  DASHBOARD = "dashboard",
+  FORGOT = "forgot",
+  REMEMBER = "remember"
 }
 
 export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToActionText } = {
@@ -27,5 +29,15 @@ export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToAct
     description: "Is the publically available data sufficient for your needs?",
     linkText: "Return to dashboard",
     linkPath: AppRoutes.DASHBOARD
+  },
+  [CallToActionTypes.FORGOT]: {
+    //description: "New to the National Police Data Coalition?",
+    linkText: "Forgot your password?",
+    linkPath: AppRoutes.FORGOT
+  },
+  [CallToActionTypes.REMEMBER]: {
+    description: "Do you remember you login credentials?",
+    linkText: "Return to login",
+    linkPath: AppRoutes.LOGIN
   }
 }
