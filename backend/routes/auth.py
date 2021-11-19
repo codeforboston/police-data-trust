@@ -132,6 +132,14 @@ def logout():
     unset_access_cookies(resp)
     return resp, 200
 
+@bp.route("/reset", methods=["POST"])
+@jwt_required()
+def send_reset_email():
+    current_identity = get_jwt_identity()
+    user = User.get(current_identity);
+    user_manager.send_reset_password_email(user.email);
+    return {}, 200
+
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()

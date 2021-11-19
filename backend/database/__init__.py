@@ -25,8 +25,5 @@ from .models.action import *
 from .models.use_of_force import *
 from .models.user import *
 from .models.victim import *
-<<<<<<< HEAD
 from .models.passport_request import *
-=======
 from .models.accusation import *
->>>>>>> e5074f2d0670d058f66d49ea8fa83d6542ac1165

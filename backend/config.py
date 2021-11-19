@@ -23,13 +23,13 @@ class Config(object):
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
 
     # Flask-Mail SMTP server settings
-    MAIL_SERVER = "smtp.gmail.com"
-    MAIL_PORT = 465
-    MAIL_USE_SSL = True
-    MAIL_USE_TLS = False
-    MAIL_USERNAME = "email@example.com"
-    MAIL_PASSWORD = "password"
-    MAIL_DEFAULT_SENDER = '"MyApp" <noreply@example.com>'
+    MAIL_SERVER = os.environ.get("MAIL_SERVER")
+    MAIL_PORT = os.environ.get("MAIL_PORT")
+    MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL"))
+    MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "National Police Data Coalition <%s>".format(MAIL_USERNAME))
 
     # Flask-User settings
     USER_APP_NAME = (
