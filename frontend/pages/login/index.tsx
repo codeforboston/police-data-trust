@@ -46,6 +46,7 @@ export default function UserLogin() {
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
             <PrimaryInput inputName={EMAIL_ADDRESS} defaultValue={defaultEmail} />
             <PrimaryInput inputName={LOGIN_PASSWORD} defaultValue={defaultPassword} />
+            <EnrollmentCallToAction callToActionType={CallToActionTypes.FORGOT} />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <PrimaryButton loading={loading} type="submit">
               Submit

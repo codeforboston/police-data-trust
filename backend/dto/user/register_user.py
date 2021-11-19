@@ -7,3 +7,4 @@ class RegisterUserDTO(BaseModel):
     password: str
     firstName: Optional[str]
     lastName: Optional[str]
+    phoneNumber: Optional[str]

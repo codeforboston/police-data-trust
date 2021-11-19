@@ -57,6 +57,7 @@ def example_user(db_session):
         role=UserRole.PUBLIC,
         first_name="first",
         last_name="last",
+        phone_number="(012) 345-6789",
     )
     db_session.add(user)
     db_session.commit()

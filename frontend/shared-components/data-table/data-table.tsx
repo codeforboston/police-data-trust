@@ -1,21 +1,29 @@
-import * as React from "react"
-
-import { useTable, usePagination } from "react-table"
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-
-import { mockData, tableColumns } from "../../models/mock-data/mock-table-data"
+import React, { useState } from "react"
+import { Column, defaultColumn, useFilters, usePagination, useSortBy, useTable } from "react-table"
+import { Incident } from "../../helpers/api/api"
+import { SavedResultsType, SavedSearchType } from "../../models"
+import { EditButton, PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
 
-export function DataTable() {
-  const icons = ["full", "save"]
-  const { useMemo, useState } = React
-  const { dataTable, dataHeader, dataFooter, dataRowPage, dataRows } = styles
+interface DataTableProps {
+  tableName: string
+  columns: Column<any>[]
+  data: Incident[] | SavedSearchType[] | SavedResultsType[] | undefined
+}
+
+export function DataTable(props: DataTableProps) {
+  const { tableName, data, columns } = props
+  const { dataTable, dataHeader, dataRows } = styles
+
+  const [editMode, setEditMode] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+
+  const { tableWrapper, tableHeader, tableTitle, sortArrow, colFilter } = styles
 
   // TODO: When this gets changed from mocking to fetching the data from an api call, the 'full'
   // 'save' values will be appended to each item dynamically
-  const data = useMemo(() => mockData, [])
-
-  const columns = React.useMemo(() => tableColumns, [])
 
   const {
     getTableProps,
@@ -38,22 +46,26 @@ export function DataTable() {
       data,
       initialState: { pageIndex: 0 }
     },
+    useFilters,
+    useSortBy,
     usePagination
   )
 
-  const [pageSizeValue, setPageSizeValue] = useState(pageSize)
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPageSizeValue(+e.target.value)
+  function viewRecord(recordId: number) {
+    // TODO: view full record
   }
 
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
-    setPageSize(+e.target.value)
+  function toggleEditMode() {
+    setEditMode(!editMode)
   }
 
   return (
-    <div>
-      <table {...getTableProps()} className={dataTable} aria-label="Search Results Table">
+    <div className={tableWrapper}>
+      <header className={tableHeader}>
+        <span className={tableTitle}>{tableName}</span>
+        <EditButton inEditMode={editMode} onclick={toggleEditMode} />
+      </header>
+      <table {...getTableProps()} className={dataTable} aria-label="Data Table">
         <thead className={dataHeader}>
           {headerGroups.map((headerGroup) => (
             // react-table prop types include keys, but eslint can't tell that
@@ -61,7 +73,25 @@ export function DataTable() {
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render("Header")}
+                  <span className={sortArrow}>
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <FontAwesomeIcon icon={faArrowDown} />
+                      ) : (
+                        <FontAwesomeIcon icon={faArrowUp} />
+                      )
+                    ) : (
+                      "  "
+                    )}
+                  </span>
+                  {showFilters && (
+                    <div className={colFilter}>
+                      {column.canFilter ? column.render("Filter") : null}
+                    </div>
+                  )}
+                </th>
               ))}
             </tr>
           ))}
@@ -73,14 +103,6 @@ export function DataTable() {
               // eslint-disable-next-line react/jsx-key
               <tr {...row.getRowProps()} className={dataRows}>
                 {row.cells.map((cell) => {
-                  const { id } = cell.column
-                  if (icons.includes(id)) {
-                    return (
-                      <td key={cell.getCellProps().key}>
-                        <FontAwesomeIcon icon={cell.value} />
-                      </td>
-                    )
-                  }
                   // eslint-disable-next-line react/jsx-key
                   return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                 })}
@@ -88,36 +110,21 @@ export function DataTable() {
             )
           })}
         </tbody>
-        <tfoot className={dataFooter}>
-          <tr>
-            <td>{data.length.toLocaleString()} records found</td>
-            <td colSpan={4}></td>
-            <td>
-              Show{" "}
-              <input
-                className={dataRowPage}
-                min={1}
-                max={10}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                type="number"
-                value={pageSizeValue}
-              />{" "}
-              rows
-            </td>
-            <td>
-              {" "}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {"<"}
-              </button>{" "}
-              {pageIndex + 1} of {pageOptions.length}{" "}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {">"}
-              </button>{" "}
-            </td>
-          </tr>
-        </tfoot>
       </table>
+
+      <PageNavigator
+        data={data}
+        pageIndex={pageIndex}
+        pageCount={pageCount}
+        pageSize={pageSize}
+        pageOptions={pageOptions}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        gotoPage={gotoPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        setPageSize={setPageSize}
+      />
     </div>
   )
 }

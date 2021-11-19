@@ -113,8 +113,133 @@ exports[`renders Dashboard correctly 1`] = `
         </nav>
       </div>
     </header>
-    <div>
-      FakeMap
+    <div
+      style="display: flex;"
+    >
+      <div
+        class="searchPanelContainer"
+      >
+        <form
+          class="searchForm"
+        >
+          <div
+            class="searchToggle"
+          >
+            <div>
+              I am searching for...
+            </div>
+            <div
+              class="searchChoices"
+            >
+              <div
+                class="selectedSearch"
+              >
+                Incident(s)
+              </div>
+              <div
+                class=""
+              >
+                Officer(s)
+              </div>
+            </div>
+          </div>
+          <div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="locationInput"
+                >
+                  Location:
+                </label>
+                <input
+                  aria-describedby="locationError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="locationInput"
+                  name="location"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="keyWordsInput"
+                >
+                  Key Words:
+                </label>
+                <input
+                  aria-describedby="keyWordsError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="keyWordsInput"
+                  name="keyWords"
+                  type="text"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="dateStartInput"
+                >
+                  Date Start:
+                </label>
+                <input
+                  aria-describedby="dateStartError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="dateStartInput"
+                  name="dateStart"
+                  type="date"
+                  value=""
+                />
+              </div>
+            </div>
+            <div>
+              <div
+                class="defaultInputContainer inputContainer undefined"
+              >
+                <label
+                  for="dateEndInput"
+                >
+                  Date End:
+                </label>
+                <input
+                  aria-describedby="dateEndError"
+                  aria-invalid="false"
+                  aria-required="true"
+                  class="inputField"
+                  id="dateEndInput"
+                  name="dateEnd"
+                  type="date"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+          <button
+            class="primaryButton"
+            type="submit"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+      <div>
+        FakeMap
+      </div>
     </div>
     <section
       style="max-width: 500px; margin: 1em auto;"

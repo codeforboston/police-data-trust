@@ -6,5 +6,7 @@ set FLASK_ENV=development
 
 flask psql create
 flask psql init
-
+set PYTHONPATH=.
+flask db seed
+set PYTHONPATH=
 flask run

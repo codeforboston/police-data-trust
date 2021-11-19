@@ -1,7 +1,6 @@
 import React from "react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import ProfileType from "."
-import users from "../../models/mock-data/users.json"
 
 export default {
   title: "Compositions/Profile Type",
@@ -10,12 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof ProfileType> = (args) => <ProfileType {...args} />
 
-export const PublicProfile = Template.bind({})
-PublicProfile.args = {
-  userData: users[0]
-}
-
-export const PassportProfile = Template.bind({})
-PassportProfile.args = {
-  userData: users[1]
-}
+export const Default = Template.bind({})

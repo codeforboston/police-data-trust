@@ -86,6 +86,25 @@ def register_commands(app: Flask):
         make_all_tables()
         load_full_database()
 
+    @app.cli.command("scrape-cpdp")
+    @dev_only
+    def scrape_cpdp():
+        """Scrape CPDP data using a Jupyter notebook."""
+        import subprocess
+
+        subprocess.call(
+            [
+                "jupyter",
+                "nbconvert",
+                "--to",
+                "notebook",
+                "--execute",
+                "backend/scraper/cpdp.ipynb",
+                "--output",
+                "cpdp",
+            ]
+        )
+
 
 def register_routes(app: Flask):
     app.register_blueprint(incidents_bp)

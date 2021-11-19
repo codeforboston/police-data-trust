@@ -79,6 +79,7 @@ def register():
             first_name=body.firstName,
             last_name=body.lastName,
             role=UserRole.PUBLIC,
+            phone_number=body.phoneNumber,
         )
         db.session.add(user)
         db.session.commit()

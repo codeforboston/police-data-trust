@@ -22,6 +22,7 @@ create_user(
         role=UserRole.PUBLIC,
         first_name="Test",
         last_name="Example",
+        phone_number="(123) 456-7890"
     )
 )
 
@@ -32,6 +33,7 @@ create_user(
         role=UserRole.CONTRIBUTOR,
         first_name="Contributor",
         last_name="Example",
+        phone_number="(123) 456-7890"
     )
 )
 
@@ -42,6 +44,7 @@ create_user(
         role=UserRole.ADMIN,
         first_name="Admin",
         last_name="Example",
+        phone_number="(012) 345-6789",
     )
 )
 
@@ -52,6 +55,7 @@ create_user(
         role=UserRole.PASSPORT,
         first_name="Passport",
         last_name="Example",
+        phone_number="(012) 345-6789",
     )
 )
 

@@ -11,7 +11,8 @@
     },
     "python.formatting.provider": "black",
     "eslint.workingDirectories": ["./frontend"],
-    "githubPullRequests.remotes": ["upstream"]
+    "githubPullRequests.remotes": ["upstream"],
+    "jupyter.notebookFileRoot": "${workspaceRoot}"
   },
   "extensions": {
     "recommendations": [

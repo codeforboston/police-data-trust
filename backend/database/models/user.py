@@ -10,6 +10,7 @@ from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
 from .types.enums import UserRole
 
+
 fs_mixin = FlaskSerialize(db)
 
 login_manager = LoginManager()
@@ -69,6 +70,8 @@ class User(db.Model, UserMixin, CrudMixin):
     )
 
     role = db.Column(db.Enum(UserRole))
+
+    phone_number = db.Column(db.Text)
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
