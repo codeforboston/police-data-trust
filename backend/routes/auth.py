@@ -132,12 +132,14 @@ def logout():
     unset_access_cookies(resp)
     return resp, 200
 
+class EmailDTO:
+    email: str
+
 @bp.route("/reset", methods=["POST"])
-@jwt_required()
+@validate(auth=False, json=EmailDTO)
 def send_reset_email():
-    current_identity = get_jwt_identity()
-    user = User.get(current_identity);
-    user_manager.send_reset_password_email(user.email);
+    body: EmailDTO = request.context.json
+    user_manager.send_reset_password_email(body.email);
     return {}, 200
 
 
