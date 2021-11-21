@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_access_cookies,
 )
+from pydantic.main import BaseModel
 from ..auth import role_required, user_manager
 from ..database import User, UserRole, db
 from ..dto import LoginUserDTO, RegisterUserDTO
@@ -131,17 +132,6 @@ def logout():
     resp = jsonify({"message": "successfully logged out"})
     unset_access_cookies(resp)
     return resp, 200
-
-class EmailDTO:
-    email: str
-
-@bp.route("/reset", methods=["POST"])
-@validate(auth=False, json=EmailDTO)
-def send_reset_email():
-    body: EmailDTO = request.context.json
-    user_manager.send_reset_password_email(body.email);
-    return {}, 200
-
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()
