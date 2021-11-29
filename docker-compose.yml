@@ -20,6 +20,7 @@ services:
       - /app/node_modules
     environment:
       NEXT_PUBLIC_API_MODE: real
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:5000/api/v1
     ports:
       - 3000:3000
   api:

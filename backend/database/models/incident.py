@@ -65,6 +65,9 @@ class Incident(db.Model, CrudMixin, SourceMixin):
     complaint_date = db.Column(db.Date)
     closed_date = db.Column(db.Date)
     location = db.Column(db.Text)  # TODO: location object
+    # Float is double precision (8 bytes) by default in Postgres
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
     # TODO: neighborhood seems like a weird identifier that may not always
     #  apply in consistent ways across municipalities.
     neighborhood = db.Column(db.Text)
