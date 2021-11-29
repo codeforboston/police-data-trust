@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from backend.auth.jwt import role_required
+from backend.auth.jwt import min_role_required
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -20,7 +20,7 @@ bp = Blueprint("incident_routes", __name__, url_prefix="/api/v1/incidents")
 
 @bp.route("/get/<int:incident_id>", methods=["GET"])
 @jwt_required()
-@role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.PUBLIC)
 @validate()
 def get_incidents(incident_id: int):
     """Get a single incident by ID."""
@@ -31,7 +31,7 @@ def get_incidents(incident_id: int):
 @bp.route("/create", methods=["POST"])
 @jwt_required()
 # TODO: Require CONTRIBUTOR role
-@role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.PUBLIC)
 @validate(json=CreateIncidentSchema)
 def create_incident():
     """Create a single incident.
@@ -72,7 +72,7 @@ class SearchIncidentsSchema(BaseModel):
 
 @bp.route("/search", methods=["POST"])
 @jwt_required()
-@role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.PUBLIC)
 @validate(json=SearchIncidentsSchema)
 def search_incidents():
     """Search Incidents."""

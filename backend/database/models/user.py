@@ -45,10 +45,20 @@ def compile_ci_string(element, compiler, **kwargs):
 
 
 class UserRole(str, Enum):
-    PASSPORT = "Passport"
     PUBLIC = "Public"
+    PASSPORT = "Passport"
     CONTRIBUTOR = "Contributor"
     ADMIN = "Admin"
+
+    def get_value(self):
+        if self == UserRole.PUBLIC:
+            return 1
+        elif self == UserRole.PASSPORT:
+            return 2
+        elif self == UserRole.CONTRIBUTOR:
+            return 3
+        else:
+            return 4
 
 
 # Define the User data-model.
