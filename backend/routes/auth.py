@@ -141,3 +141,13 @@ def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
+
+class EmailDTO(BaseModel):
+    email: str
+
+@bp.route("/forgot-password", methods=["POST"])
+@validate(auth=False, json=EmailDTO)
+def send_reset_email():
+    body: EmailDTO = request.context.json
+    user_manager.send_reset_password_email(body.email);
+    return {}, 200
