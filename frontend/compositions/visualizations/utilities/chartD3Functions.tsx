@@ -11,3 +11,7 @@ export function addLabel(d: DataPoint, i: number) {
     .attr("y", d.coord.y)
     .attr("z-index", 1000)
 }
+
+export function subtractTimes(date1: Date, date2: Date) {
+  return date2?.getTime() - date1?.getTime()
+}

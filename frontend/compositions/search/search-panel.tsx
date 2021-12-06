@@ -40,8 +40,9 @@ export const SearchPanel = () => {
     }
     setLoading(false)
   }
+
   return (
-    <div className={searchPanelContainer}>
+    <div className={searchPanelContainer} >
       <FormProvider {...form}>
         <form className={searchForm} onSubmit={form.handleSubmit(onSubmit)}>
           <div className={searchToggle}>
