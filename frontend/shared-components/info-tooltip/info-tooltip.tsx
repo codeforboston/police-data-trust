@@ -43,9 +43,7 @@ export default function InfoTooltip({
         size={iconSize}
       />
       <div id={tooltipBodyId} className={tooltip}>
-        {content.map((contentItem) => (
-          display(contentItem)
-        ))}
+        {content.map((contentItem) => display(contentItem))}
       </div>
     </div>
   )
