@@ -1,7 +1,7 @@
 import React from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useAuth, useSearch } from "../../helpers"
-import { PrimaryInputNames } from "../../models"
+import { PrimaryInputNames, TooltipIcons, TooltipTypes } from "../../models"
 import { FormLevelError, PrimaryButton, PrimaryInput } from "../../shared-components"
 import styles from "./search.module.css"
 const { KEY_WORDS, DATE_START, DATE_END, OFFICER_NAME, LOCATION, BADGE_NUMBER } = PrimaryInputNames
@@ -42,7 +42,7 @@ export const SearchPanel = () => {
   }
 
   return (
-    <div className={searchPanelContainer} >
+    <div className={searchPanelContainer}>
       <FormProvider {...form}>
         <form className={searchForm} onSubmit={form.handleSubmit(onSubmit)}>
           <div className={searchToggle}>
@@ -59,10 +59,23 @@ export const SearchPanel = () => {
           {incidentSearch ? (
             <div>
               <div>
-                <PrimaryInput inputName={LOCATION} />
+                <PrimaryInput
+                  inputName={LOCATION}
+                  tooltipProps={{
+                    type: TooltipTypes.USEFORCE,
+                    icon: TooltipIcons.INFO,
+                    iconSize: "xs"
+                  }}
+                />
               </div>
               <div>
-                <PrimaryInput inputName={KEY_WORDS} />
+                <PrimaryInput inputName={KEY_WORDS} 
+                  tooltipProps={{
+                    type: TooltipTypes.KEYWORD,
+                    icon: TooltipIcons.INFO,
+                    iconSize: "xs"
+                  }}
+                  />
               </div>
               <div>
                 <PrimaryInput inputName={DATE_START} />
@@ -74,7 +87,9 @@ export const SearchPanel = () => {
           ) : (
             <div>
               <div>
-                <PrimaryInput inputName={OFFICER_NAME} />
+                <PrimaryInput
+                  inputName={OFFICER_NAME}
+                />
               </div>
               <div>
                 <PrimaryInput inputName={LOCATION} />

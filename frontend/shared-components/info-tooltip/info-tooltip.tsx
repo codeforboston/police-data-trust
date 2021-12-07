@@ -10,7 +10,7 @@ function getTipIcon(icon: TooltipIcons): IconDefinition {
   return icon === TooltipIcons.INFO ? faInfoCircle : faQuestionCircle
 }
 
-interface InfoTooltipProps {
+export interface InfoTooltipProps {
   type: TooltipTypes
   icon?: TooltipIcons
   iconSize?: any
@@ -21,7 +21,7 @@ export default function InfoTooltip({
   iconSize = "sm"
 }: InfoTooltipProps) {
   const { tooltipContainer, tooltipIcon, tooltip } = styles
-
+console.log(type)
   const ariaLabel: string = `Learn more about ${getTitleCaseFromCamel(type)}`
   const tooltipBodyId: string = `${type}Tooltip`
   const { content } = tooltipContent[type]
