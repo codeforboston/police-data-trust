@@ -69,13 +69,14 @@ export const SearchPanel = () => {
                 />
               </div>
               <div>
-                <PrimaryInput inputName={KEY_WORDS} 
+                <PrimaryInput
+                  inputName={KEY_WORDS}
                   tooltipProps={{
                     type: TooltipTypes.KEYWORD,
                     icon: TooltipIcons.INFO,
                     iconSize: "xs"
                   }}
-                  />
+                />
               </div>
               <div>
                 <PrimaryInput inputName={DATE_START} />
@@ -87,9 +88,7 @@ export const SearchPanel = () => {
           ) : (
             <div>
               <div>
-                <PrimaryInput
-                  inputName={OFFICER_NAME}
-                />
+                <PrimaryInput inputName={OFFICER_NAME} />
               </div>
               <div>
                 <PrimaryInput inputName={LOCATION} />

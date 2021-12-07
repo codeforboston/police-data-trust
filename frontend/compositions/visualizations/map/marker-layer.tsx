@@ -15,7 +15,7 @@ export interface MarkerLayerProps {
 }
 
 export function MarkerLayer(props: MarkerLayerProps) {
-  const { markersData} = props
+  const { markersData } = props
 
   const handleMouseOver = (event: MouseEvent, markerDescription: MarkerDescription) => {
     console.log("moue enter marker")
@@ -37,7 +37,6 @@ export function MarkerLayer(props: MarkerLayerProps) {
     console.log("mosue leave makrer")
     // popup.hide()
   }
-
 
   return (
     <svg
@@ -76,7 +75,14 @@ export interface MarkerProps {
 }
 
 export function Marker(props: MarkerProps) {
-  const { type, markerDescription, handleMouseLeave, handleMouseMove, handleMouseOver, transformScale } = props
+  const {
+    type,
+    markerDescription,
+    handleMouseLeave,
+    handleMouseMove,
+    handleMouseOver,
+    transformScale
+  } = props
 
   const coordinate: Coord = markerDescription.geoCenter
 

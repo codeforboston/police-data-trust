@@ -21,7 +21,6 @@ export default function InfoTooltip({
   iconSize = "sm"
 }: InfoTooltipProps) {
   const { tooltipContainer, tooltipIcon, tooltip } = styles
-console.log(type)
   const ariaLabel: string = `Learn more about ${getTitleCaseFromCamel(type)}`
   const tooltipBodyId: string = `${type}Tooltip`
   const { content } = tooltipContent[type]

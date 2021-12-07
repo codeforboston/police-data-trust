@@ -16,7 +16,6 @@ export interface BaseMapProps {
 }
 
 export default function BaseMap(props: BaseMapProps) {
-  
   const baseMapRef = useRef(null)
   const { projection, geoData } = props
   const [reload, setReload] = useState(1)
@@ -105,7 +104,10 @@ export default function BaseMap(props: BaseMapProps) {
         x={100}
         y={100}
         fill={"yellow"}
-        onClick={() => { console.log(reload); setReload(reload + 1)}}
+        onClick={() => {
+          console.log(reload)
+          setReload(reload + 1)
+        }}
       />
     </svg>
   )

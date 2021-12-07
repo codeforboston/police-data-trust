@@ -8,7 +8,10 @@ export function useBoundaryPaths(): FeatureCollection {
   const wholeTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
   const stateOnlyTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/states-10m.json"
 
-  const [geoData, setGeoData] = useState<FeatureCollection>({type: "FeatureCollection", features: []})
+  const [geoData, setGeoData] = useState<FeatureCollection>({
+    type: "FeatureCollection",
+    features: []
+  })
 
   useEffect(
     () =>

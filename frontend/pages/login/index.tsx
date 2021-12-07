@@ -13,7 +13,6 @@ const defaultEmail = apiMode === "mock" ? "test@example.com" : undefined
 const defaultPassword = apiMode === "mock" ? "password" : undefined
 
 export default function UserLogin() {
-  console.log('asdf')
   useRedirectOnAuth(AppRoutes.DASHBOARD)
   const { login } = useAuth()
   const form = useForm()

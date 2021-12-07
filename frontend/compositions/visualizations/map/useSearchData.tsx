@@ -17,13 +17,12 @@ export default function useSearchData() {
     }
     return feature
   }
-  
+
   const features: Feature[] = incidentResults?.results
     ? incidentResults.results.map((incident) => {
         return createFeature(incident)
       })
     : []
-
 
   return {
     type: "FeatureCollection",
