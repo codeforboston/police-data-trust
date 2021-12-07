@@ -1,5 +1,7 @@
+import { ReactElement } from "react"
+
 interface Tooltips {
-  content: string[]
+  content: (string | (() => ReactElement))[]
 }
 
 export enum TooltipTypes {

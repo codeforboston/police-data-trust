@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactElement } from "react"
 import styles from "./info-tooltip.module.css"
 import { getTitleCaseFromCamel } from "../../helpers"
 import { tooltipContent, TooltipTypes, TooltipIcons } from "../../models"
@@ -25,6 +25,10 @@ export default function InfoTooltip({
   const tooltipBodyId: string = `${type}Tooltip`
   const { content } = tooltipContent[type]
 
+  const display = (x: string | (() => ReactElement)) => {
+    return typeof x === "string" ? <p key={x.slice(0, 5)}>{x}</p> : x()
+  }
+
   return (
     <div
       className={tooltipContainer}
@@ -39,8 +43,8 @@ export default function InfoTooltip({
         size={iconSize}
       />
       <div id={tooltipBodyId} className={tooltip}>
-        {content.map((sentence) => (
-          <p key={sentence.slice(0, 5)}>{sentence}</p>
+        {content.map((contentItem) => (
+          display(contentItem)
         ))}
       </div>
     </div>
