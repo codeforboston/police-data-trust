@@ -145,7 +145,7 @@ def test_auth():
 class EmailDTO(BaseModel):
     email: str
 
-@bp.route("/forgot-password", methods=["POST"])
+@bp.route("/forgotPassword", methods=["POST"])
 @validate(auth=False, json=EmailDTO)
 def send_reset_email():
     body: EmailDTO = request.context.json
