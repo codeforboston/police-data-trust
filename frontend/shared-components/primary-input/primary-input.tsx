@@ -56,7 +56,7 @@ export default function PrimaryInput({
         aria-describedby={errorId}
         aria-invalid={!isValid}
         defaultValue={defaultValue}
-        {...register(inputName, { required: true, pattern })}
+        {...register(inputName, { required: isShown, pattern })}
       />
       {!isValid && (
         <FormLevelError
