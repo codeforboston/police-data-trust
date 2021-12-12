@@ -12,36 +12,22 @@
     "ethnicity": "Asian",
     "incomeBracket": "Not over $9,950",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 95,
         "occurred": 1051961034000,
-        "officers": [
-          "Y.Trowle",
-          "P.Beange",
-          "R.Grebner",
-          "R.Heaviside"
-        ],
+        "officers": ["Y.Trowle", "P.Beange", "R.Grebner", "R.Heaviside"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       },
       {
         "id": 41,
         "occurred": 1139441954000,
-        "officers": [
-          "F.Gilli",
-          "J.Osban"
-        ],
+        "officers": ["F.Gilli", "J.Osban"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "News report"
       }
     ]
@@ -59,16 +45,12 @@
     "ethnicity": "White",
     "incomeBracket": "Not over $9,950",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 62,
         "occurred": 1101858287000,
-        "officers": [
-          "R.Hubbocks"
-        ],
+        "officers": ["R.Hubbocks"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Injurious restraint",
@@ -111,9 +93,7 @@
     "ethnicity": "Black or African American",
     "incomeBracket": "Over $523,600",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 78,
@@ -176,11 +156,7 @@
       {
         "id": 79,
         "occurred": 1421248509000,
-        "officers": [
-          "K.Desforges",
-          "F.Presman",
-          "E.Endrizzi"
-        ],
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Injurious restraint",
@@ -193,12 +169,7 @@
       {
         "id": 64,
         "occurred": 1064191433000,
-        "officers": [
-          "C.Rossant",
-          "C.Lansly",
-          "K.Drain",
-          "S.Rutter"
-        ],
+        "officers": ["C.Rossant", "C.Lansly", "K.Drain", "S.Rutter"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Verbalization",
@@ -211,13 +182,9 @@
       {
         "id": 39,
         "occurred": 998541593000,
-        "officers": [
-          "H.Caslane"
-        ],
+        "officers": ["H.Caslane"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Court record"
       }
     ]
@@ -265,12 +232,7 @@
       {
         "id": 2,
         "occurred": 1538984637000,
-        "officers": [
-          "P.Attwooll",
-          "H.La Padula",
-          "B.Godain",
-          "C.Churm"
-        ],
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -284,12 +246,7 @@
       {
         "id": 5,
         "occurred": 1417759257000,
-        "officers": [
-          "L.Ellerbeck",
-          "H.Goldthorp",
-          "C.Morcombe",
-          "D.Moncrefe"
-        ],
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Armed presence",
@@ -303,10 +260,7 @@
       {
         "id": 86,
         "occurred": 1078607243000,
-        "officers": [
-          "F.Ramel",
-          "L.Cossington"
-        ],
+        "officers": ["F.Ramel", "L.Cossington"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -344,9 +298,7 @@
       {
         "id": 90,
         "occurred": 1614739621000,
-        "officers": [
-          "N.Stonehewer"
-        ],
+        "officers": ["N.Stonehewer"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Electric weaponry",
@@ -421,25 +373,15 @@
       {
         "id": 34,
         "occurred": 1335573338000,
-        "officers": [
-          "D.Sprigings",
-          "R.Scobie"
-        ],
+        "officers": ["D.Sprigings", "R.Scobie"],
         "incidentType": "Domestic disturbance",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       },
       {
         "id": 8,
         "occurred": 1424274711000,
-        "officers": [
-          "M.Kikke",
-          "A.Halshaw",
-          "L.Van Dale",
-          "C.Blondel"
-        ],
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -499,10 +441,7 @@
           "J.Sessuns"
         ],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Armed presence",
-          "Verbalization"
-        ],
+        "useOfForce": ["Armed presence", "Verbalization"],
         "source": "Court record"
       },
       {
@@ -555,19 +494,12 @@
         "deptAddress": "6316 Pine Ave, Springfield, IL 90345"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 37,
         "occurred": 1393531116000,
-        "officers": [
-          "H.Elphick",
-          "D.Dunleavy",
-          "V.Fetter",
-          "C.Linford"
-        ],
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -682,27 +614,17 @@
       {
         "id": 18,
         "occurred": 1358319194000,
-        "officers": [
-          "D.Liger",
-          "T.Eppson"
-        ],
+        "officers": ["D.Liger", "T.Eppson"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization",
-          "Injurious restraint"
-        ],
+        "useOfForce": ["Verbalization", "Injurious restraint"],
         "source": "News report"
       },
       {
         "id": 54,
         "occurred": 1152962172000,
-        "officers": [
-          "F.Keaves"
-        ],
+        "officers": ["F.Keaves"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Police report"
       }
     ]
@@ -747,16 +669,9 @@
       {
         "id": 65,
         "occurred": 1394883023000,
-        "officers": [
-          "H.Cranshaw",
-          "B.Trebbett",
-          "G.Chilvers",
-          "A.Docwra"
-        ],
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -782,18 +697,12 @@
         "deptAddress": "3289 Lemon Way, Springfield, WA 23877"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": [
       {
         "id": 23,
         "occurred": 1507822037000,
-        "officers": [
-          "C.Mattingly",
-          "R.Chaudret",
-          "I.Middup"
-        ],
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Unarmed presence",
@@ -836,12 +745,7 @@
       {
         "id": 2,
         "occurred": 1538984637000,
-        "officers": [
-          "P.Attwooll",
-          "H.La Padula",
-          "B.Godain",
-          "C.Churm"
-        ],
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -889,16 +793,12 @@
         "deptAddress": "5960 Apple Ct, Springfield, CO 32456"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 16,
         "occurred": 1082408708000,
-        "officers": [
-          "F.Sarson"
-        ],
+        "officers": ["F.Sarson"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Electric weaponry",
@@ -910,25 +810,15 @@
       {
         "id": 7,
         "occurred": 1328178379000,
-        "officers": [
-          "I.Riccardini",
-          "E.Sizeland"
-        ],
+        "officers": ["I.Riccardini", "E.Sizeland"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Injurious restraint",
-          "Armed presence"
-        ],
+        "useOfForce": ["Injurious restraint", "Armed presence"],
         "source": "Court record"
       },
       {
         "id": 23,
         "occurred": 1507822037000,
-        "officers": [
-          "C.Mattingly",
-          "R.Chaudret",
-          "I.Middup"
-        ],
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Unarmed presence",
@@ -970,11 +860,7 @@
       {
         "id": 88,
         "occurred": 954816353000,
-        "officers": [
-          "S.Bartolomeo",
-          "H.Sakins",
-          "C.Dabourne"
-        ],
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Verbalization",
@@ -988,29 +874,17 @@
       {
         "id": 4,
         "occurred": 1149591684000,
-        "officers": [
-          "R.Heaysman",
-          "H.Cornelisse"
-        ],
+        "officers": ["R.Heaysman", "H.Cornelisse"],
         "incidentType": "Domestic disturbance",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "News report"
       },
       {
         "id": 65,
         "occurred": 1394883023000,
-        "officers": [
-          "H.Cranshaw",
-          "B.Trebbett",
-          "G.Chilvers",
-          "A.Docwra"
-        ],
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -1041,44 +915,25 @@
       {
         "id": 77,
         "occurred": 1235475821000,
-        "officers": [
-          "V.Sealove",
-          "T.Buyers",
-          "L.Spenton"
-        ],
+        "officers": ["V.Sealove", "T.Buyers", "L.Spenton"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
         "source": "Police report"
       },
       {
         "id": 44,
         "occurred": 1328006783000,
-        "officers": [
-          "A.Albers",
-          "L.Simonett",
-          "A.Llewellyn"
-        ],
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 32,
         "occurred": 1513409896000,
-        "officers": [
-          "H.Sturley",
-          "C.Daborne"
-        ],
+        "officers": ["H.Sturley", "C.Daborne"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
         "source": "Police report"
       }
     ]
@@ -1147,9 +1002,7 @@
       {
         "id": 92,
         "occurred": 1011094838000,
-        "officers": [
-          "M.Ewestace"
-        ],
+        "officers": ["M.Ewestace"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Unarmed presence",
@@ -1162,25 +1015,15 @@
       {
         "id": 41,
         "occurred": 1139441954000,
-        "officers": [
-          "F.Gilli",
-          "J.Osban"
-        ],
+        "officers": ["F.Gilli", "J.Osban"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "News report"
       },
       {
         "id": 21,
         "occurred": 1491666066000,
-        "officers": [
-          "S.Rendbaek",
-          "F.Fewless",
-          "Jo ann Queyeiro",
-          "R.Gilson"
-        ],
+        "officers": ["S.Rendbaek", "F.Fewless", "Jo ann Queyeiro", "R.Gilson"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -1230,16 +1073,9 @@
       {
         "id": 56,
         "occurred": 1383705886000,
-        "officers": [
-          "C.Almond",
-          "T.Pride",
-          "A.Antram",
-          "J.Doore"
-        ],
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       }
     ]
@@ -1285,16 +1121,9 @@
       {
         "id": 83,
         "occurred": 1372743342000,
-        "officers": [
-          "D.Gatherer",
-          "H.Sollitt",
-          "K.Clyant"
-        ],
+        "officers": ["D.Gatherer", "H.Sollitt", "K.Clyant"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Injurious restraint"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Injurious restraint"],
         "source": "News report"
       }
     ]
@@ -1361,19 +1190,12 @@
         "deptAddress": "1941 Elm Way, Lynn, WV 99030"
       }
     ],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 42,
         "occurred": 1479604775000,
-        "officers": [
-          "D.Mateescu",
-          "Stacie O'Dowd",
-          "W.Durtnell",
-          "J.Hamon"
-        ],
+        "officers": ["D.Mateescu", "Stacie O'Dowd", "W.Durtnell", "J.Hamon"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Verbalization",
@@ -1413,15 +1235,9 @@
       {
         "id": 67,
         "occurred": 1007582943000,
-        "officers": [
-          "A.Rigeby",
-          "Y.Missen"
-        ],
+        "officers": ["A.Rigeby", "Y.Missen"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -1447,31 +1263,20 @@
         "deptAddress": "7582 Boston Ct, Quincy, IN 14985"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": [
       {
         "id": 3,
         "occurred": 965934788000,
-        "officers": [
-          "F.Eakly"
-        ],
+        "officers": ["F.Eakly"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "Police report"
       },
       {
         "id": 8,
         "occurred": 1424274711000,
-        "officers": [
-          "M.Kikke",
-          "A.Halshaw",
-          "L.Van Dale",
-          "C.Blondel"
-        ],
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -1512,16 +1317,9 @@
       {
         "id": 87,
         "occurred": 1565023348000,
-        "officers": [
-          "R.Sarson",
-          "Ellis O'Mullally",
-          "M.Ianno",
-          "L.Galgey"
-        ],
+        "officers": ["R.Sarson", "Ellis O'Mullally", "M.Ianno", "L.Galgey"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Injurious restraint"
-        ],
+        "useOfForce": ["Injurious restraint"],
         "source": "News report"
       }
     ]
@@ -1569,37 +1367,23 @@
       {
         "id": 46,
         "occurred": 1254530615000,
-        "officers": [
-          "C.Coils"
-        ],
+        "officers": ["C.Coils"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
         "source": "News report"
       },
       {
         "id": 47,
         "occurred": 1348427978000,
-        "officers": [
-          "M.Cranmere",
-          "V.Giraldo",
-          "C.Whitley"
-        ],
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "Court record"
       },
       {
         "id": 58,
         "occurred": 1045534153000,
-        "officers": [
-          "B.Colmer",
-          "G.Chieze"
-        ],
+        "officers": ["B.Colmer", "G.Chieze"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Verbalization",
@@ -1623,18 +1407,12 @@
     "ethnicity": "Asian",
     "incomeBracket": "Over $164,925 but not over $209,425",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 6,
         "occurred": 1416237781000,
-        "officers": [
-          "K.Warrack",
-          "M.Quare",
-          "B.Rivett"
-        ],
+        "officers": ["K.Warrack", "M.Quare", "B.Rivett"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Electric weaponry",
@@ -1647,11 +1425,7 @@
       {
         "id": 88,
         "occurred": 954816353000,
-        "officers": [
-          "S.Bartolomeo",
-          "H.Sakins",
-          "C.Dabourne"
-        ],
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Verbalization",
@@ -1694,16 +1468,9 @@
       {
         "id": 65,
         "occurred": 1394883023000,
-        "officers": [
-          "H.Cranshaw",
-          "B.Trebbett",
-          "G.Chilvers",
-          "A.Docwra"
-        ],
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -1798,9 +1565,7 @@
           "M.Barter"
         ],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       }
     ]
@@ -1827,10 +1592,7 @@
       {
         "id": 66,
         "occurred": 1513635915000,
-        "officers": [
-          "C.Maryman",
-          "J.Grute"
-        ],
+        "officers": ["C.Maryman", "J.Grute"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Verbalization",
@@ -1903,15 +1665,9 @@
       {
         "id": 93,
         "occurred": 1287520675000,
-        "officers": [
-          "E.Morando",
-          "D.Massie"
-        ],
+        "officers": ["E.Morando", "D.Massie"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Unarmed presence",
-          "Verbalization"
-        ],
+        "useOfForce": ["Unarmed presence", "Verbalization"],
         "source": "News report"
       }
     ]
@@ -1929,33 +1685,20 @@
     "ethnicity": "Hispanic or Latino",
     "incomeBracket": "Over $164,925 but not over $209,425",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 56,
         "occurred": 1383705886000,
-        "officers": [
-          "C.Almond",
-          "T.Pride",
-          "A.Antram",
-          "J.Doore"
-        ],
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 13,
         "occurred": 1234544062000,
-        "officers": [
-          "B.Colquitt",
-          "A.Lightoller",
-          "W.Andreini"
-        ],
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Electric weaponry",
@@ -1967,15 +1710,9 @@
       {
         "id": 44,
         "occurred": 1328006783000,
-        "officers": [
-          "A.Albers",
-          "L.Simonett",
-          "A.Llewellyn"
-        ],
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       }
     ]
@@ -2024,25 +1761,15 @@
       {
         "id": 47,
         "occurred": 1348427978000,
-        "officers": [
-          "M.Cranmere",
-          "V.Giraldo",
-          "C.Whitley"
-        ],
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "Court record"
       },
       {
         "id": 23,
         "occurred": 1507822037000,
-        "officers": [
-          "C.Mattingly",
-          "R.Chaudret",
-          "I.Middup"
-        ],
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Unarmed presence",
@@ -2056,12 +1783,7 @@
       {
         "id": 37,
         "occurred": 1393531116000,
-        "officers": [
-          "H.Elphick",
-          "D.Dunleavy",
-          "V.Fetter",
-          "C.Linford"
-        ],
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -2100,14 +1822,9 @@
       {
         "id": 96,
         "occurred": 1421225817000,
-        "officers": [
-          "R.Randals",
-          "T.Parzizek"
-        ],
+        "officers": ["R.Randals", "T.Parzizek"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "News report"
       }
     ]
@@ -2133,9 +1850,7 @@
         "deptAddress": "7744 Apple Ave, Fall River, VA 60063"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": []
   },
   {
@@ -2174,10 +1889,7 @@
       {
         "id": 100,
         "occurred": 1079754874000,
-        "officers": [
-          "Velvet St. Hill",
-          "H.Dodgshon"
-        ],
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Armed presence",
@@ -2233,14 +1945,9 @@
       {
         "id": 94,
         "occurred": 989017907000,
-        "officers": [
-          "I.Rentelll",
-          "M.Stienham"
-        ],
+        "officers": ["I.Rentelll", "M.Stienham"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Court record"
       }
     ]
@@ -2281,9 +1988,7 @@
       {
         "id": 55,
         "occurred": 1495421822000,
-        "officers": [
-          "L.Redsall"
-        ],
+        "officers": ["L.Redsall"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Verbalization",
@@ -2371,12 +2076,7 @@
       {
         "id": 72,
         "occurred": 964298106000,
-        "officers": [
-          "S.Parren",
-          "G.Alben",
-          "F.Geane",
-          "L.Olczyk"
-        ],
+        "officers": ["S.Parren", "G.Alben", "F.Geane", "L.Olczyk"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Verbalization",
@@ -2389,16 +2089,9 @@
       {
         "id": 95,
         "occurred": 1051961034000,
-        "officers": [
-          "Y.Trowle",
-          "P.Beange",
-          "R.Grebner",
-          "R.Heaviside"
-        ],
+        "officers": ["Y.Trowle", "P.Beange", "R.Grebner", "R.Heaviside"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       }
     ]
@@ -2424,21 +2117,14 @@
         "deptAddress": "3759 Oak Ln, Brockton, MN 67102"
       }
     ],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 73,
         "occurred": 1395829499000,
-        "officers": [
-          "L.Lappine",
-          "A.Naul"
-        ],
+        "officers": ["L.Lappine", "A.Naul"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "Police report"
       }
     ]
@@ -2464,9 +2150,7 @@
         "deptAddress": "14299 Washington Sq, Boston, NV 93787"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": []
   },
   {
@@ -2482,9 +2166,7 @@
     "ethnicity": "Native Hawaiian or Other Pacific Islander",
     "incomeBracket": "Over $209,425 but not over $523,600",
     "workHistory": [],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": []
   },
   {
@@ -2516,25 +2198,15 @@
       {
         "id": 68,
         "occurred": 1184409948000,
-        "officers": [
-          "D.Maine",
-          "C.Reinhart",
-          "D.McPherson"
-        ],
+        "officers": ["D.Maine", "C.Reinhart", "D.McPherson"],
         "incidentType": "Domestic disturbance",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "Court record"
       },
       {
         "id": 79,
         "occurred": 1421248509000,
-        "officers": [
-          "K.Desforges",
-          "F.Presman",
-          "E.Endrizzi"
-        ],
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Injurious restraint",
@@ -2572,11 +2244,7 @@
       {
         "id": 29,
         "occurred": 1624012506000,
-        "officers": [
-          "S.Bunclark",
-          "Z.Cardis",
-          "J.Crosdill"
-        ],
+        "officers": ["S.Bunclark", "Z.Cardis", "J.Crosdill"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Electric weaponry",
@@ -2652,14 +2320,9 @@
       {
         "id": 98,
         "occurred": 1328486358000,
-        "officers": [
-          "J.Cluett"
-        ],
+        "officers": ["J.Cluett"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Injurious restraint",
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Injurious restraint", "Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -2686,28 +2349,17 @@
       {
         "id": 46,
         "occurred": 1254530615000,
-        "officers": [
-          "C.Coils"
-        ],
+        "officers": ["C.Coils"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
         "source": "News report"
       },
       {
         "id": 67,
         "occurred": 1007582943000,
-        "officers": [
-          "A.Rigeby",
-          "Y.Missen"
-        ],
+        "officers": ["A.Rigeby", "Y.Missen"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -2740,9 +2392,7 @@
         "deptAddress": "13930 Cedar Ct, Lowell, WY 22153"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": []
   },
   {
@@ -2773,47 +2423,28 @@
         "deptAddress": "12275 Pear St, Boston, ID 15544"
       }
     ],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 56,
         "occurred": 1383705886000,
-        "officers": [
-          "C.Almond",
-          "T.Pride",
-          "A.Antram",
-          "J.Doore"
-        ],
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 94,
         "occurred": 989017907000,
-        "officers": [
-          "I.Rentelll",
-          "M.Stienham"
-        ],
+        "officers": ["I.Rentelll", "M.Stienham"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Court record"
       },
       {
         "id": 49,
         "occurred": 1078876405000,
-        "officers": [
-          "D.Kenrack",
-          "H.Rivalant",
-          "L.Deener",
-          "P.Howship"
-        ],
+        "officers": ["D.Kenrack", "H.Rivalant", "L.Deener", "P.Howship"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Unarmed presence",
@@ -2861,31 +2492,17 @@
       {
         "id": 40,
         "occurred": 1577175828000,
-        "officers": [
-          "J.Haslegrave",
-          "A.Domleo",
-          "I.Baldazzi"
-        ],
+        "officers": ["J.Haslegrave", "A.Domleo", "I.Baldazzi"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
         "source": "Court record"
       },
       {
         "id": 63,
         "occurred": 1127976186000,
-        "officers": [
-          "W.Winfrey",
-          "M.Mountain",
-          "K.Cullnean"
-        ],
+        "officers": ["W.Winfrey", "M.Mountain", "K.Cullnean"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Electric weaponry",
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Electric weaponry", "Unarmed blunt impact"],
         "source": "Court record"
       }
     ]
@@ -2938,9 +2555,7 @@
           "S.Gason"
         ],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "News report"
       }
     ]
@@ -3028,9 +2643,7 @@
           "S.Gason"
         ],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "News report"
       }
     ]
@@ -3063,9 +2676,7 @@
         "deptAddress": "5666 Washington St, Boston, KS 88774"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": []
   },
   {
@@ -3081,22 +2692,14 @@
     "ethnicity": "Hispanic or Latino",
     "incomeBracket": "Over $164,925 but not over $209,425",
     "workHistory": [],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 91,
         "occurred": 1519495314000,
-        "officers": [
-          "D.Truswell",
-          "G.Ferrara",
-          "L.Driutti"
-        ],
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       }
     ]
@@ -3129,16 +2732,12 @@
         "deptAddress": "9221 California Ct, Cambridge, IN 28412"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 55,
         "occurred": 1495421822000,
-        "officers": [
-          "L.Redsall"
-        ],
+        "officers": ["L.Redsall"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Verbalization",
@@ -3150,9 +2749,7 @@
       {
         "id": 84,
         "occurred": 1617429002000,
-        "officers": [
-          "A.Spriggen"
-        ],
+        "officers": ["A.Spriggen"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Unarmed blunt impact",
@@ -3166,11 +2763,7 @@
       {
         "id": 13,
         "occurred": 1234544062000,
-        "officers": [
-          "B.Colquitt",
-          "A.Lightoller",
-          "W.Andreini"
-        ],
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Electric weaponry",
@@ -3209,31 +2802,20 @@
         "deptAddress": "5983 Oak Ct, Brockton, SC 13666"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 67,
         "occurred": 1007582943000,
-        "officers": [
-          "A.Rigeby",
-          "Y.Missen"
-        ],
+        "officers": ["A.Rigeby", "Y.Missen"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
         "source": "Court record"
       },
       {
         "id": 66,
         "occurred": 1513635915000,
-        "officers": [
-          "C.Maryman",
-          "J.Grute"
-        ],
+        "officers": ["C.Maryman", "J.Grute"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Verbalization",
@@ -3294,9 +2876,7 @@
         "deptAddress": "10406 Elm Ave, Fall River, OH 35932"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": []
   },
   {
@@ -3355,18 +2935,12 @@
         "deptAddress": "5567 Boston Rd, Cambridge, RI 40210"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 88,
         "occurred": 954816353000,
-        "officers": [
-          "S.Bartolomeo",
-          "H.Sakins",
-          "C.Dabourne"
-        ],
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Verbalization",
@@ -3380,11 +2954,7 @@
       {
         "id": 23,
         "occurred": 1507822037000,
-        "officers": [
-          "C.Mattingly",
-          "R.Chaudret",
-          "I.Middup"
-        ],
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Unarmed presence",
@@ -3398,9 +2968,7 @@
       {
         "id": 27,
         "occurred": 1098943489000,
-        "officers": [
-          "Abigale Pond-Jones"
-        ],
+        "officers": ["Abigale Pond-Jones"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Injurious restraint",
@@ -3438,10 +3006,7 @@
       {
         "id": 86,
         "occurred": 1078607243000,
-        "officers": [
-          "F.Ramel",
-          "L.Cossington"
-        ],
+        "officers": ["F.Ramel", "L.Cossington"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -3482,12 +3047,7 @@
       {
         "id": 30,
         "occurred": 1309312190000,
-        "officers": [
-          "J.Byforth",
-          "C.McAvaddy",
-          "P.Fivey",
-          "T.Beecraft"
-        ],
+        "officers": ["J.Byforth", "C.McAvaddy", "P.Fivey", "T.Beecraft"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -3501,24 +3061,15 @@
       {
         "id": 91,
         "occurred": 1519495314000,
-        "officers": [
-          "D.Truswell",
-          "G.Ferrara",
-          "L.Driutti"
-        ],
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 86,
         "occurred": 1078607243000,
-        "officers": [
-          "F.Ramel",
-          "L.Cossington"
-        ],
+        "officers": ["F.Ramel", "L.Cossington"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -3574,9 +3125,7 @@
       {
         "id": 16,
         "occurred": 1082408708000,
-        "officers": [
-          "F.Sarson"
-        ],
+        "officers": ["F.Sarson"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Electric weaponry",
@@ -3606,12 +3155,7 @@
       {
         "id": 5,
         "occurred": 1417759257000,
-        "officers": [
-          "L.Ellerbeck",
-          "H.Goldthorp",
-          "C.Morcombe",
-          "D.Moncrefe"
-        ],
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Armed presence",
@@ -3637,18 +3181,12 @@
     "ethnicity": "White",
     "incomeBracket": "Over $164,925 but not over $209,425",
     "workHistory": [],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 24,
         "occurred": 1035961368000,
-        "officers": [
-          "T.Stalley",
-          "D.Heber",
-          "H.Mutch"
-        ],
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Unarmed blunt impact",
@@ -3662,12 +3200,7 @@
       {
         "id": 19,
         "occurred": 1595707672000,
-        "officers": [
-          "B.Swann",
-          "W.Poe",
-          "H.Pimlott",
-          "T.Ingleby"
-        ],
+        "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Verbalization",
@@ -3717,9 +3250,7 @@
       {
         "id": 16,
         "occurred": 1082408708000,
-        "officers": [
-          "F.Sarson"
-        ],
+        "officers": ["F.Sarson"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Electric weaponry",
@@ -3751,28 +3282,17 @@
       {
         "id": 56,
         "occurred": 1383705886000,
-        "officers": [
-          "C.Almond",
-          "T.Pride",
-          "A.Antram",
-          "J.Doore"
-        ],
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 59,
         "occurred": 1584498726000,
-        "officers": [
-          "S.Cudbertson"
-        ],
+        "officers": ["S.Cudbertson"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Police report"
       }
     ]
@@ -3817,11 +3337,7 @@
       {
         "id": 1,
         "occurred": 1313471121000,
-        "officers": [
-          "C.Charlwood",
-          "I.Esterbrook",
-          "D.Foddy"
-        ],
+        "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Injurious restraint",
@@ -3835,12 +3351,7 @@
       {
         "id": 37,
         "occurred": 1393531116000,
-        "officers": [
-          "H.Elphick",
-          "D.Dunleavy",
-          "V.Fetter",
-          "C.Linford"
-        ],
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -3910,10 +3421,7 @@
       {
         "id": 35,
         "occurred": 1293957746000,
-        "officers": [
-          "S.Giacometti",
-          "E.Maureen"
-        ],
+        "officers": ["S.Giacometti", "E.Maureen"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Unarmed blunt impact",
@@ -3925,11 +3433,7 @@
       {
         "id": 88,
         "occurred": 954816353000,
-        "officers": [
-          "S.Bartolomeo",
-          "H.Sakins",
-          "C.Dabourne"
-        ],
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Verbalization",
@@ -3972,12 +3476,7 @@
       {
         "id": 72,
         "occurred": 964298106000,
-        "officers": [
-          "S.Parren",
-          "G.Alben",
-          "F.Geane",
-          "L.Olczyk"
-        ],
+        "officers": ["S.Parren", "G.Alben", "F.Geane", "L.Olczyk"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Verbalization",
@@ -4052,15 +3551,9 @@
       {
         "id": 18,
         "occurred": 1358319194000,
-        "officers": [
-          "D.Liger",
-          "T.Eppson"
-        ],
+        "officers": ["D.Liger", "T.Eppson"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Verbalization",
-          "Injurious restraint"
-        ],
+        "useOfForce": ["Verbalization", "Injurious restraint"],
         "source": "News report"
       }
     ]
@@ -4087,12 +3580,7 @@
       {
         "id": 5,
         "occurred": 1417759257000,
-        "officers": [
-          "L.Ellerbeck",
-          "H.Goldthorp",
-          "C.Morcombe",
-          "D.Moncrefe"
-        ],
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Armed presence",
@@ -4106,11 +3594,7 @@
       {
         "id": 88,
         "occurred": 954816353000,
-        "officers": [
-          "S.Bartolomeo",
-          "H.Sakins",
-          "C.Dabourne"
-        ],
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Verbalization",
@@ -4164,36 +3648,23 @@
           "S.Gason"
         ],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "News report"
       },
       {
         "id": 41,
         "occurred": 1139441954000,
-        "officers": [
-          "F.Gilli",
-          "J.Osban"
-        ],
+        "officers": ["F.Gilli", "J.Osban"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "News report"
       },
       {
         "id": 67,
         "occurred": 1007582943000,
-        "officers": [
-          "A.Rigeby",
-          "Y.Missen"
-        ],
+        "officers": ["A.Rigeby", "Y.Missen"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Unarmed presence"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
         "source": "Court record"
       }
     ]
@@ -4233,9 +3704,7 @@
         "deptAddress": "8020 Elm Ct, Lowell, FL 71920"
       }
     ],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": []
   },
   {
@@ -4251,9 +3720,7 @@
     "ethnicity": "Native Hawaiian or Other Pacific Islander",
     "incomeBracket": "Over $523,600",
     "workHistory": [],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 71,
@@ -4266,21 +3733,13 @@
           "M.Maus"
         ],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Verbalization",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Verbalization", "Electric weaponry"],
         "source": "Police report"
       },
       {
         "id": 19,
         "occurred": 1595707672000,
-        "officers": [
-          "B.Swann",
-          "W.Poe",
-          "H.Pimlott",
-          "T.Ingleby"
-        ],
+        "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Verbalization",
@@ -4294,10 +3753,7 @@
       {
         "id": 33,
         "occurred": 1001823902000,
-        "officers": [
-          "D.Wafer",
-          "B.Wotherspoon"
-        ],
+        "officers": ["D.Wafer", "B.Wotherspoon"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Injurious restraint",
@@ -4329,19 +3785,12 @@
         "deptAddress": "9525 Pear Rd, Cambridge, AK 75119"
       }
     ],
-    "affiliations": [
-      "National Association of Police Organizations"
-    ],
+    "affiliations": ["National Association of Police Organizations"],
     "incidents": [
       {
         "id": 48,
         "occurred": 1233953502000,
-        "officers": [
-          "C.Melville",
-          "I.Sherston",
-          "R.Cornuau",
-          "K.Rigts"
-        ],
+        "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -4394,16 +3843,9 @@
       {
         "id": 83,
         "occurred": 1372743342000,
-        "officers": [
-          "D.Gatherer",
-          "H.Sollitt",
-          "K.Clyant"
-        ],
+        "officers": ["D.Gatherer", "H.Sollitt", "K.Clyant"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed blunt impact",
-          "Injurious restraint"
-        ],
+        "useOfForce": ["Unarmed blunt impact", "Injurious restraint"],
         "source": "News report"
       },
       {
@@ -4417,20 +3859,13 @@
           "M.Barter"
         ],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       },
       {
         "id": 2,
         "occurred": 1538984637000,
-        "officers": [
-          "P.Attwooll",
-          "H.La Padula",
-          "B.Godain",
-          "C.Churm"
-        ],
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -4472,23 +3907,15 @@
       {
         "id": 44,
         "occurred": 1328006783000,
-        "officers": [
-          "A.Albers",
-          "L.Simonett",
-          "A.Llewellyn"
-        ],
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Verbalization"
-        ],
+        "useOfForce": ["Verbalization"],
         "source": "News report"
       },
       {
         "id": 84,
         "occurred": 1617429002000,
-        "officers": [
-          "A.Spriggen"
-        ],
+        "officers": ["A.Spriggen"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Unarmed blunt impact",
@@ -4562,16 +3989,9 @@
       {
         "id": 40,
         "occurred": 1577175828000,
-        "officers": [
-          "J.Haslegrave",
-          "A.Domleo",
-          "I.Baldazzi"
-        ],
+        "officers": ["J.Haslegrave", "A.Domleo", "I.Baldazzi"],
         "incidentType": "Harassment",
-        "useOfForce": [
-          "Unarmed presence",
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
         "source": "Court record"
       }
     ]
@@ -4604,9 +4024,7 @@
         "deptAddress": "5758 Elm Ct, Lowell, VI 16598"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": []
   },
   {
@@ -4637,30 +4055,20 @@
         "deptAddress": "2890 California Way, Cambridge, ND 93250"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 57,
         "occurred": 1426617030000,
-        "officers": [
-          "D.Allenson",
-          "E.Caddock"
-        ],
+        "officers": ["D.Allenson", "E.Caddock"],
         "incidentType": "Noise complaint",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Police report"
       },
       {
         "id": 86,
         "occurred": 1078607243000,
-        "officers": [
-          "F.Ramel",
-          "L.Cossington"
-        ],
+        "officers": ["F.Ramel", "L.Cossington"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -4721,9 +4129,7 @@
           "M.Shedd"
         ],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Unarmed blunt impact"
-        ],
+        "useOfForce": ["Unarmed blunt impact"],
         "source": "News report"
       }
     ]
@@ -4756,9 +4162,7 @@
         "deptAddress": "5564 California Ct, New Bedford, OK 49060"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": []
   },
   {
@@ -4790,12 +4194,7 @@
       {
         "id": 48,
         "occurred": 1233953502000,
-        "officers": [
-          "C.Melville",
-          "I.Sherston",
-          "R.Cornuau",
-          "K.Rigts"
-        ],
+        "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -4844,12 +4243,7 @@
       {
         "id": 37,
         "occurred": 1393531116000,
-        "officers": [
-          "H.Elphick",
-          "D.Dunleavy",
-          "V.Fetter",
-          "C.Linford"
-        ],
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -4902,22 +4296,15 @@
       {
         "id": 54,
         "occurred": 1152962172000,
-        "officers": [
-          "F.Keaves"
-        ],
+        "officers": ["F.Keaves"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Police report"
       },
       {
         "id": 86,
         "occurred": 1078607243000,
-        "officers": [
-          "F.Ramel",
-          "L.Cossington"
-        ],
+        "officers": ["F.Ramel", "L.Cossington"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -4930,10 +4317,7 @@
       {
         "id": 58,
         "occurred": 1045534153000,
-        "officers": [
-          "B.Colmer",
-          "G.Chieze"
-        ],
+        "officers": ["B.Colmer", "G.Chieze"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Verbalization",
@@ -4977,23 +4361,15 @@
       {
         "id": 94,
         "occurred": 989017907000,
-        "officers": [
-          "I.Rentelll",
-          "M.Stienham"
-        ],
+        "officers": ["I.Rentelll", "M.Stienham"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Court record"
       },
       {
         "id": 100,
         "occurred": 1079754874000,
-        "officers": [
-          "Velvet St. Hill",
-          "H.Dodgshon"
-        ],
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Armed presence",
@@ -5007,14 +4383,9 @@
       {
         "id": 34,
         "occurred": 1335573338000,
-        "officers": [
-          "D.Sprigings",
-          "R.Scobie"
-        ],
+        "officers": ["D.Sprigings", "R.Scobie"],
         "incidentType": "Domestic disturbance",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "News report"
       }
     ]
@@ -5070,19 +4441,12 @@
         "deptAddress": "3153 Lemon Sq, Lynn, WA 92091"
       }
     ],
-    "affiliations": [
-      "Fraternal Order of Police"
-    ],
+    "affiliations": ["Fraternal Order of Police"],
     "incidents": [
       {
         "id": 8,
         "occurred": 1424274711000,
-        "officers": [
-          "M.Kikke",
-          "A.Halshaw",
-          "L.Van Dale",
-          "C.Blondel"
-        ],
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Electric weaponry",
@@ -5095,13 +4459,9 @@
       {
         "id": 54,
         "occurred": 1152962172000,
-        "officers": [
-          "F.Keaves"
-        ],
+        "officers": ["F.Keaves"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Police report"
       },
       {
@@ -5168,11 +4528,7 @@
       {
         "id": 13,
         "occurred": 1234544062000,
-        "officers": [
-          "B.Colquitt",
-          "A.Lightoller",
-          "W.Andreini"
-        ],
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
         "incidentType": "Robbery",
         "useOfForce": [
           "Electric weaponry",
@@ -5202,14 +4558,9 @@
       {
         "id": 94,
         "occurred": 989017907000,
-        "officers": [
-          "I.Rentelll",
-          "M.Stienham"
-        ],
+        "officers": ["I.Rentelll", "M.Stienham"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "Court record"
       }
     ]
@@ -5254,9 +4605,7 @@
       {
         "id": 92,
         "occurred": 1011094838000,
-        "officers": [
-          "M.Ewestace"
-        ],
+        "officers": ["M.Ewestace"],
         "incidentType": "Domestic disturbance",
         "useOfForce": [
           "Unarmed presence",
@@ -5269,14 +4618,9 @@
       {
         "id": 60,
         "occurred": 1138166348000,
-        "officers": [
-          "B.Burwell",
-          "M.Benedidick"
-        ],
+        "officers": ["B.Burwell", "M.Benedidick"],
         "incidentType": "Domestic disturbance",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Police report"
       }
     ]
@@ -5309,20 +4653,14 @@
         "deptAddress": "1510 Lemon Ave, Cambridge, MA 14745"
       }
     ],
-    "affiliations": [
-      "International Union of Police Associations"
-    ],
+    "affiliations": ["International Union of Police Associations"],
     "incidents": [
       {
         "id": 54,
         "occurred": 1152962172000,
-        "officers": [
-          "F.Keaves"
-        ],
+        "officers": ["F.Keaves"],
         "incidentType": "Robbery",
-        "useOfForce": [
-          "Armed presence"
-        ],
+        "useOfForce": ["Armed presence"],
         "source": "Police report"
       }
     ]
@@ -5370,9 +4708,7 @@
       {
         "id": 16,
         "occurred": 1082408708000,
-        "officers": [
-          "F.Sarson"
-        ],
+        "officers": ["F.Sarson"],
         "incidentType": "Harassment",
         "useOfForce": [
           "Electric weaponry",
@@ -5409,10 +4745,7 @@
       {
         "id": 61,
         "occurred": 978823892000,
-        "officers": [
-          "C.Nabbs",
-          "J.Roseburgh"
-        ],
+        "officers": ["C.Nabbs", "J.Roseburgh"],
         "incidentType": "Noise complaint",
         "useOfForce": [
           "Injurious restraint",
@@ -5452,10 +4785,7 @@
       {
         "id": 100,
         "occurred": 1079754874000,
-        "officers": [
-          "Velvet St. Hill",
-          "H.Dodgshon"
-        ],
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
         "incidentType": "Traffic stop",
         "useOfForce": [
           "Armed presence",
@@ -5469,14 +4799,9 @@
       {
         "id": 96,
         "occurred": 1421225817000,
-        "officers": [
-          "R.Randals",
-          "T.Parzizek"
-        ],
+        "officers": ["R.Randals", "T.Parzizek"],
         "incidentType": "Traffic stop",
-        "useOfForce": [
-          "Electric weaponry"
-        ],
+        "useOfForce": ["Electric weaponry"],
         "source": "News report"
       }
     ]
