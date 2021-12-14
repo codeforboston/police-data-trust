@@ -13,6 +13,7 @@ pytest-env
 pytest-cov
 pytest-postgresql
 pytest-flask-sqlalchemy
+pytest-mock
 python-dotenv
 flask-user<0.7
 wtforms

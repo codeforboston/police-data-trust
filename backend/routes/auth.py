@@ -149,7 +149,9 @@ class EmailDTO(BaseModel):
 @validate(auth=False, json=EmailDTO)
 def send_reset_email():
     body: EmailDTO = request.context.json
+    print(user_manager.find_user_by_email(body.email))
     user_manager.send_reset_password_email(body.email);
+    # hide failures/successes so users can't deduce what emails we have and do not have
     return {}, 200
 
 class PasswordDTO(BaseModel):

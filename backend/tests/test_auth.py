@@ -1,6 +1,8 @@
+import flask_user
 import pytest
 from backend.database import User
 from flask_jwt_extended import decode_token
+from unittest import mock
 
 
 @pytest.mark.parametrize(
@@ -93,6 +95,32 @@ def test_auth_test_cookie(client, example_user):
 
     assert test_res.status_code == 200
 
+@pytest.mark.parametrize(("use_correct_email"), [(True), (False)])
+def test_forgot_email(mocker, client, example_user, use_correct_email):
+    mock_send_reset_password_email = mocker.spy(flask_user.UserManager, "send_reset_password_email")
+    mock_send_forgot_password_email = mocker.spy(flask_user.emails, "send_forgot_password_email")
+    email: str;
+    if use_correct_email:
+        email = example_user.email
+    else:
+        email = "fake@email.com"
+    res = client.post(
+        "api/v1/auth/forgotPassword",
+        json={"email": email}
+    )
+    mock_send_reset_password_email.assert_called_once_with(mock.ANY, email)
+    if use_correct_email:
+        mock_send_forgot_password_email.assert_called_once_with(example_user, mock.ANY, mock.ANY);
+    else:
+        mock_send_forgot_password_email.assert_not_called()
+    assert res.status_code == 200
+
+@pytest.mark.parametrize(("use_correct_token"), [(True), (False)])
+def test_reset_password(client, example_user, use_correct_token):
+    client.post(
+        "api/v1/auth/resetPassword",
+        json={"password": "newPassword"}
+    )
 
 def test_access_token_fixture(access_token):
     assert len(access_token) > 0
