@@ -4,6 +4,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { EnrollmentCallToAction, EnrollmentHeader } from "../../compositions"
 import { useAuth, useRedirectOnAuth } from "../../helpers"
 import { apiMode } from "../../helpers/api"
+import { forgotPassowrd } from "../../helpers/api"
 import { AppRoutes, CallToActionTypes, PrimaryInputNames } from "../../models"
 import {
   FormLevelError,
@@ -29,7 +30,7 @@ export default function ForgotPassword() {
     setSubmitError(null)
     try {
       if (useEmail) {
-        setSubmitError("Email not connected to back end")
+        forgotPassowrd({ email: formValues.emailAddress });
       } else {
         setSubmitError("Phone number not connected to back end")
       }
@@ -43,8 +44,8 @@ export default function ForgotPassword() {
         <EnrollmentHeader headerText="Forgot your password?" />
         <FormProvider {...form}>
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
-            <PrimaryInput inputName={EMAIL_ADDRESS} className={useEmail ? "" : "hidden"} />
-            <PrimaryInput inputName={PHONE_NUMBER} className={useEmail ? "hidden" : ""} />
+            <PrimaryInput inputName={EMAIL_ADDRESS} isShown={useEmail} className={useEmail ? "" : "hidden"} />
+            <PrimaryInput inputName={PHONE_NUMBER} isShown={!useEmail} className={useEmail ? "hidden" : ""} />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <LinkButton
               loading={loading}

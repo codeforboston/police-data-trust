@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -151,3 +151,25 @@ def send_reset_email():
     body: EmailDTO = request.context.json
     user_manager.send_reset_password_email(body.email);
     return {}, 200
+
+class PasswordDTO(BaseModel):
+    password: str
+
+@bp.route("/resetPassword/<token>", methods=["POST"])
+@validate(auth=False, json=PasswordDTO)
+def reset_password(token: str):
+    body: PasswordDTO = request.context.json
+    # NOTE: Should this be the same expiration time as a normal token, or shorter?
+    expiration_seconds = current_app.config.get("TOKEN_EXPIRATION").total_seconds()
+    is_valid, is_expired, user_id = user_manager.verify_token(token, expiration_seconds);
+    print(is_valid, is_expired, user_id)
+    if (not is_valid):
+        return "Token is not valid, please request another reset token.", 400
+    elif (is_expired):
+        return "Token has expired, please request another reset token.", 400
+    else:
+        user = User.get(user_id)
+        user.password = user_manager.hash_password(body.password),
+        db.session.commit()
+    return "Password successfully changed", 200
+    # user_manager.reset_password_form()

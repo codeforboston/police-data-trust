@@ -1,5 +1,5 @@
 import { MockedRequest, rest } from "msw"
-import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser } from ".."
+import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser, ForgotPassword } from ".."
 import FakeAuth from "./fake-auth"
 import FakeSearch from "./fake-search"
 
@@ -23,6 +23,19 @@ export const handlers = [
       return res(ctx.status(400), ctx.json({ message: "email matches existing account" }))
     }
     return res(ctx.status(200), ctx.json({ access_token: token }))
+  }),
+
+  // TODO: How can these be faked better
+  rest.post<Json>(routePath("/auth/forgotPassword"), (req, res, ctx) => {
+    if (req.body.email) {
+      return res(ctx.status(200));
+    } else {
+      return res(ctx.status(422));
+    }
+  }),
+
+  rest.post<Json>(routePath("/auth/reset-password/:token"), (req, res, ctx) => {
+    return res(ctx.status(200));
   }),
 
   rest.get(routePath("/auth/test"), (req, res, ctx) => {

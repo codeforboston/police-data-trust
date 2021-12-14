@@ -25,6 +25,15 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface ForgotPassword {
+  email: string
+}
+
+export interface ResetPassword {
+  token: string,
+  password: string
+}
+
 export interface Officer {
   first_name?: string
   last_name?: string
@@ -88,6 +97,23 @@ export function register(data: RegisterRequest): Promise<AccessToken> {
     method: "POST",
     data
   }).then(({ access_token }) => access_token)
+}
+
+export function forgotPassowrd(data: ForgotPassword): Promise<void> {
+  
+  return request({
+    url: "/auth/forgotPassword",
+    method: "POST",
+    data
+  })
+}
+
+export function resetPassword(data: ResetPassword): Promise<void> {
+  return request({
+    url: `/auth/resetPassword/${data.token}`,
+    method: "POST",
+    data,
+  })
 }
 
 export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
