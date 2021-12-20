@@ -1,0 +1,4551 @@
+[
+  {
+    "id": 1,
+    "firstName": "Margaret",
+    "lastName": "Slate",
+    "badgeNo": "805810111",
+    "status": "Technician",
+    "department": "Worcester Police Department",
+    "birthDate": "12/28/1988",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Asian",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 95,
+        "occurred": 1051961034000,
+        "officers": ["Y.Trowle", "P.Beange", "R.Grebner", "R.Heaviside"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 41,
+        "occurred": 1139441954000,
+        "officers": ["F.Gilli", "J.Osban"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "firstName": "Kenneth",
+    "lastName": "Rose",
+    "badgeNo": "574706008",
+    "status": "Technician",
+    "department": "Cambridge Police Department",
+    "birthDate": "02/07/1986",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "White",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 62,
+        "occurred": 1101858287000,
+        "officers": ["R.Hubbocks"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 53,
+        "occurred": 1257558421000,
+        "officers": ["L.Aitkenhead", "X.Klousner", "C.Abbatt", "B.Mewis", "O.De Simoni"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Armed presence", "Verbalization", "Injurious restraint"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "firstName": "Dennis",
+    "lastName": "Shoemake",
+    "badgeNo": "681334849",
+    "status": "Chief",
+    "department": "Cambridge Police Department",
+    "birthDate": "08/28/1985",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 78,
+        "occurred": 1505217751000,
+        "officers": ["S.Seakes", "M.MacCarroll", "L.Gymlett", "R.Jacob", "O.Withams"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "firstName": "Dennis",
+    "lastName": "House",
+    "badgeNo": "893060384",
+    "status": "Chief",
+    "department": "Fall River Police Department",
+    "birthDate": "05/15/1969",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Detective",
+        "dates": "2/15/1998 - 12/10/1979",
+        "deptImage": "string",
+        "deptAddress": "12879 Pear St, Boston, NH 89401"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Chief",
+        "dates": "4/3/1981 - 12/11/1982",
+        "deptImage": "string",
+        "deptAddress": "4029 Pear Ln, Brockton, DE 85897"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Lieutenant",
+        "dates": "9/26/2007 - 9/10/2008",
+        "deptImage": "string",
+        "deptAddress": "14473 Oak Way, Worcester, AZ 74763"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 79,
+        "occurred": 1421248509000,
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 64,
+        "occurred": 1064191433000,
+        "officers": ["C.Rossant", "C.Lansly", "K.Drain", "S.Rutter"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Verbalization",
+          "Armed presence",
+          "Injurious restraint",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 39,
+        "occurred": 998541593000,
+        "officers": ["H.Caslane"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "firstName": "George",
+    "lastName": "Rogers",
+    "badgeNo": "241354407",
+    "status": "Sergeant",
+    "department": "Lowell Police Department",
+    "birthDate": "11/11/1972",
+    "gender": "Male",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Chief",
+        "dates": "7/0/1983 - 5/20/1992",
+        "deptImage": "string",
+        "deptAddress": "3037 Lemon Sq, Cambridge, NE 37290"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Corporal",
+        "dates": "8/14/2019 - 4/19/1998",
+        "deptImage": "string",
+        "deptAddress": "13228 Oak Rd, Quincy, MO 28226"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Lieutenant",
+        "dates": "9/18/2021 - 8/10/1973",
+        "deptImage": "string",
+        "deptAddress": "12282 Pear Sq, Springfield, WI 44567"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 2,
+        "occurred": 1538984637000,
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed presence",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 5,
+        "occurred": 1417759257000,
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "firstName": "Reginald",
+    "lastName": "Serrano",
+    "badgeNo": "556907162",
+    "status": "Detective",
+    "department": "Lynn Police Department",
+    "birthDate": "02/28/1963",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Officer",
+        "dates": "8/17/1975 - 3/13/1989",
+        "deptImage": "string",
+        "deptAddress": "13044 Maple Ave, Lynn, MA 98571"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 90,
+        "occurred": 1614739621000,
+        "officers": ["N.Stonehewer"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Unarmed presence", "Unarmed blunt impact"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "firstName": "Olivia",
+    "lastName": "Stanley",
+    "badgeNo": "258301667",
+    "status": "Technician",
+    "department": "Lowell Police Department",
+    "birthDate": "06/07/1967",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "White",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 8,
+    "firstName": "Daisy",
+    "lastName": "Harris",
+    "badgeNo": "789210976",
+    "status": "Technician",
+    "department": "Lynn Police Department",
+    "birthDate": "10/17/1958",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Officer",
+        "dates": "0/20/1973 - 4/16/2004",
+        "deptImage": "string",
+        "deptAddress": "7998 Pine Rd, Quincy, AZ 33108"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Corporal",
+        "dates": "9/30/2005 - 6/24/1999",
+        "deptImage": "string",
+        "deptAddress": "13472 Cedar Rd, Boston, CZ 59608"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Detective",
+        "dates": "9/27/2020 - 10/27/2016",
+        "deptImage": "string",
+        "deptAddress": "10130 Pine Rd, Worcester, WI 56577"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 34,
+        "occurred": 1335573338000,
+        "officers": ["D.Sprigings", "R.Scobie"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 8,
+        "occurred": 1424274711000,
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "firstName": "Charles",
+    "lastName": "Abrams",
+    "badgeNo": "451121807",
+    "status": "Detective",
+    "department": "Lynn Police Department",
+    "birthDate": "03/11/1952",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Lieutenant",
+        "dates": "9/16/1992 - 11/24/1988",
+        "deptImage": "string",
+        "deptAddress": "9957 Elm Rd, Boston, RI 38143"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Detective",
+        "dates": "1/26/1974 - 0/6/1997",
+        "deptImage": "string",
+        "deptAddress": "2113 Elm Ave, New Bedford, MA 89885"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Corporal",
+        "dates": "1/20/1996 - 2/13/2000",
+        "deptImage": "string",
+        "deptAddress": "2727 Pine Way, Lynn, VA 15680"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 52,
+        "occurred": 1088693790000,
+        "officers": ["S.Mealing", "M.Peery", "H.Danilyuk", "D.Farndon", "J.Sessuns"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Armed presence", "Verbalization"],
+        "source": "Court record"
+      },
+      {
+        "id": 12,
+        "occurred": 949134977000,
+        "officers": ["B.Codner", "L.MacAlpine", "S.Flieg", "M.Syplus", "C.Kleisle"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "firstName": "Lillian",
+    "lastName": "Ochoa",
+    "badgeNo": "563858686",
+    "status": "Sergeant",
+    "department": "Boston Police Department",
+    "birthDate": "05/07/1959",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Officer",
+        "dates": "3/26/1998 - 9/13/2020",
+        "deptImage": "string",
+        "deptAddress": "8470 Lemon Ln, New Bedford, IL 85796"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Captain",
+        "dates": "11/21/1970 - 7/16/2002",
+        "deptImage": "string",
+        "deptAddress": "6316 Pine Ave, Springfield, IL 90345"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 37,
+        "occurred": 1393531116000,
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "firstName": "Michael",
+    "lastName": "Budreau",
+    "badgeNo": "222355531",
+    "status": "Lieutenant",
+    "department": "New Bedford Police Department",
+    "birthDate": "12/05/1973",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Technician",
+        "dates": "2/21/1982 - 6/17/2000",
+        "deptImage": "string",
+        "deptAddress": "9759 Pine Sq, Quincy, MN 91772"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Sergeant",
+        "dates": "10/16/1983 - 11/26/2009",
+        "deptImage": "string",
+        "deptAddress": "2189 Lemon St, Cambridge, CZ 71820"
+      },
+      {
+        "deptName": "Boston Police Department",
+        "status": "Lieutenant",
+        "dates": "8/20/2020 - 0/23/1995",
+        "deptImage": "string",
+        "deptAddress": "14907 Lemon Way, Quincy, IA 31536"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 12,
+    "firstName": "Jane",
+    "lastName": "Aragon",
+    "badgeNo": "626010022",
+    "status": "Chief",
+    "department": "Springfield Police Department",
+    "birthDate": "09/11/1970",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 13,
+    "firstName": "Judith",
+    "lastName": "Metz",
+    "badgeNo": "95164325",
+    "status": "Sergeant",
+    "department": "New Bedford Police Department",
+    "birthDate": "11/28/1976",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police", "National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 69,
+        "occurred": 1051626343000,
+        "officers": ["R.Wiltshaw", "P.Boyford", "S.Abberley", "R.Hemerijk", "L.Pitt"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 18,
+        "occurred": 1358319194000,
+        "officers": ["D.Liger", "T.Eppson"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Injurious restraint"],
+        "source": "News report"
+      },
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "firstName": "Marva",
+    "lastName": "Whitlock",
+    "badgeNo": "139065301",
+    "status": "Corporal",
+    "department": "Lowell Police Department",
+    "birthDate": "08/21/1956",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "White",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police", "National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 65,
+        "occurred": 1394883023000,
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "firstName": "Jim",
+    "lastName": "Suarez",
+    "badgeNo": "867265844",
+    "status": "Officer",
+    "department": "Springfield Police Department",
+    "birthDate": "11/29/1978",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "White",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Sergeant",
+        "dates": "3/16/1974 - 0/11/1984",
+        "deptImage": "string",
+        "deptAddress": "3289 Lemon Way, Springfield, WA 23877"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "firstName": "Larry",
+    "lastName": "Harlan",
+    "badgeNo": "56117391",
+    "status": "Officer",
+    "department": "Lowell Police Department",
+    "birthDate": "07/25/1981",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Corporal",
+        "dates": "12/25/1981 - 10/24/1982",
+        "deptImage": "string",
+        "deptAddress": "3235 Washington Rd, Cambridge, KY 16953"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 2,
+        "occurred": 1538984637000,
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed presence",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "firstName": "Carolyn",
+    "lastName": "Jones",
+    "badgeNo": "486397542",
+    "status": "Technician",
+    "department": "Springfield Police Department",
+    "birthDate": "10/01/1978",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Captain",
+        "dates": "5/0/1984 - 0/1/2011",
+        "deptImage": "string",
+        "deptAddress": "4683 Pear Rd, Worcester, OR 35743"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Officer",
+        "dates": "1/11/1975 - 6/14/1988",
+        "deptImage": "string",
+        "deptAddress": "14038 Pear Ln, Worcester, WV 41561"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Lieutenant",
+        "dates": "10/6/1996 - 8/3/1999",
+        "deptImage": "string",
+        "deptAddress": "5960 Apple Ct, Springfield, CO 32456"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 7,
+        "occurred": 1328178379000,
+        "officers": ["I.Riccardini", "E.Sizeland"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Injurious restraint", "Armed presence"],
+        "source": "Court record"
+      },
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "firstName": "Bonnie",
+    "lastName": "Ugalde",
+    "badgeNo": "553910258",
+    "status": "Detective",
+    "department": "Boston Police Department",
+    "birthDate": "11/26/1965",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "White",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Lieutenant",
+        "dates": "10/23/2015 - 3/13/1996",
+        "deptImage": "string",
+        "deptAddress": "8565 Elm St, Quincy, NV 12503"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 88,
+        "occurred": 954816353000,
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Electric weaponry",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 4,
+        "occurred": 1149591684000,
+        "officers": ["R.Heaysman", "H.Cornelisse"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 65,
+        "occurred": 1394883023000,
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "firstName": "Micha",
+    "lastName": "Guidry",
+    "badgeNo": "865605140",
+    "status": "Chief",
+    "department": "Springfield Police Department",
+    "birthDate": "05/10/1954",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Captain",
+        "dates": "7/17/1981 - 4/0/1990",
+        "deptImage": "string",
+        "deptAddress": "9039 Elm Ln, Worcester, VA 44134"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 77,
+        "occurred": 1235475821000,
+        "officers": ["V.Sealove", "T.Buyers", "L.Spenton"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 44,
+        "occurred": 1328006783000,
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 32,
+        "occurred": 1513409896000,
+        "officers": ["H.Sturley", "C.Daborne"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "firstName": "Elaine",
+    "lastName": "Julius",
+    "badgeNo": "860072018",
+    "status": "Deputy",
+    "department": "New Bedford Police Department",
+    "birthDate": "01/30/1956",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Chief",
+        "dates": "5/0/2013 - 11/3/2013",
+        "deptImage": "string",
+        "deptAddress": "5493 Cedar Ct, Cambridge, MT 42917"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Deputy",
+        "dates": "6/12/2011 - 4/1/1975",
+        "deptImage": "string",
+        "deptAddress": "9851 Apple St, Worcester, OK 51315"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 21,
+    "firstName": "Courtney",
+    "lastName": "Osborne",
+    "badgeNo": "18630230",
+    "status": "Detective",
+    "department": "Brockton Police Department",
+    "birthDate": "10/16/1983",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Sergeant",
+        "dates": "12/11/2004 - 11/11/2019",
+        "deptImage": "string",
+        "deptAddress": "11543 California Ave, Lowell, NE 11493"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 92,
+        "occurred": 1011094838000,
+        "officers": ["M.Ewestace"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 41,
+        "occurred": 1139441954000,
+        "officers": ["F.Gilli", "J.Osban"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 21,
+        "occurred": 1491666066000,
+        "officers": ["S.Rendbaek", "F.Fewless", "Jo ann Queyeiro", "R.Gilson"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "firstName": "Chad",
+    "lastName": "Killeen",
+    "badgeNo": "667422810",
+    "status": "Deputy",
+    "department": "Lynn Police Department",
+    "birthDate": "04/06/1972",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 23,
+    "firstName": "John",
+    "lastName": "Eaton",
+    "badgeNo": "243835083",
+    "status": "Corporal",
+    "department": "Boston Police Department",
+    "birthDate": "11/06/1981",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 56,
+        "occurred": 1383705886000,
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "firstName": "Roger",
+    "lastName": "Farley",
+    "badgeNo": "885651515",
+    "status": "Lieutenant",
+    "department": "Springfield Police Department",
+    "birthDate": "05/22/1974",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police", "National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 31,
+        "occurred": 1370269468000,
+        "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed blunt impact"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 83,
+        "occurred": 1372743342000,
+        "officers": ["D.Gatherer", "H.Sollitt", "K.Clyant"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed blunt impact", "Injurious restraint"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "firstName": "Melissa",
+    "lastName": "Stclair",
+    "badgeNo": "415886789",
+    "status": "Officer",
+    "department": "Quincy Police Department",
+    "birthDate": "08/26/1985",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Captain",
+        "dates": "1/14/2019 - 4/10/1983",
+        "deptImage": "string",
+        "deptAddress": "10099 California Sq, Cambridge, DE 77110"
+      },
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Technician",
+        "dates": "7/22/1978 - 11/13/1992",
+        "deptImage": "string",
+        "deptAddress": "12195 Apple Ln, Cambridge, CA 44340"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Lieutenant",
+        "dates": "0/13/1981 - 5/4/1980",
+        "deptImage": "string",
+        "deptAddress": "7043 Pear Way, Worcester, ME 51775"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 26,
+    "firstName": "Jan",
+    "lastName": "Daley",
+    "badgeNo": "727983352",
+    "status": "Deputy",
+    "department": "Brockton Police Department",
+    "birthDate": "12/08/1962",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "Asian",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Deputy",
+        "dates": "5/10/1976 - 1/19/2015",
+        "deptImage": "string",
+        "deptAddress": "1941 Elm Way, Lynn, WV 99030"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 42,
+        "occurred": 1479604775000,
+        "officers": ["D.Mateescu", "Stacie O'Dowd", "W.Durtnell", "J.Hamon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Unarmed blunt impact", "Injurious restraint"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "firstName": "Linda",
+    "lastName": "Koenig",
+    "badgeNo": "284049462",
+    "status": "Chief",
+    "department": "Lynn Police Department",
+    "birthDate": "09/30/1982",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Technician",
+        "dates": "8/13/2005 - 2/5/2021",
+        "deptImage": "string",
+        "deptAddress": "6578 Washington Sq, Boston, WA 27830"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "firstName": "Ralph",
+    "lastName": "Bell",
+    "badgeNo": "247935455",
+    "status": "Detective",
+    "department": "Cambridge Police Department",
+    "birthDate": "12/08/1968",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Captain",
+        "dates": "3/16/1979 - 6/9/2007",
+        "deptImage": "string",
+        "deptAddress": "7582 Boston Ct, Quincy, IN 14985"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 3,
+        "occurred": 965934788000,
+        "officers": ["F.Eakly"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "Police report"
+      },
+      {
+        "id": 8,
+        "occurred": 1424274711000,
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "firstName": "Michael",
+    "lastName": "Serrano",
+    "badgeNo": "287122240",
+    "status": "Officer",
+    "department": "Boston Police Department",
+    "birthDate": "08/07/1974",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Corporal",
+        "dates": "5/2/1996 - 8/27/1972",
+        "deptImage": "string",
+        "deptAddress": "1019 Maple Ct, Boston, ID 93184"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police", "International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 87,
+        "occurred": 1565023348000,
+        "officers": ["R.Sarson", "Ellis O'Mullally", "M.Ianno", "L.Galgey"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Injurious restraint"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "firstName": "Sharon",
+    "lastName": "Clark",
+    "badgeNo": "798297304",
+    "status": "Detective",
+    "department": "Brockton Police Department",
+    "birthDate": "01/24/1958",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Chief",
+        "dates": "5/29/2021 - 6/25/2003",
+        "deptImage": "string",
+        "deptAddress": "11510 Apple St, Cambridge, KS 22441"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Lieutenant",
+        "dates": "2/27/1985 - 0/10/1976",
+        "deptImage": "string",
+        "deptAddress": "7363 Pine Ave, Lynn, MO 46006"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Detective",
+        "dates": "4/2/2002 - 2/21/1973",
+        "deptImage": "string",
+        "deptAddress": "11606 Boston Ave, New Bedford, PR 49591"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 46,
+        "occurred": 1254530615000,
+        "officers": ["C.Coils"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      },
+      {
+        "id": 58,
+        "occurred": 1045534153000,
+        "officers": ["B.Colmer", "G.Chieze"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Verbalization", "Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "firstName": "Paula",
+    "lastName": "Tickle",
+    "badgeNo": "783258334",
+    "status": "Captain",
+    "department": "Worcester Police Department",
+    "birthDate": "10/22/1977",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 6,
+        "occurred": 1416237781000,
+        "officers": ["K.Warrack", "M.Quare", "B.Rivett"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 88,
+        "occurred": 954816353000,
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Electric weaponry",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "firstName": "Gary",
+    "lastName": "Tolliver",
+    "badgeNo": "809702307",
+    "status": "Captain",
+    "department": "Quincy Police Department",
+    "birthDate": "01/07/1951",
+    "gender": "Male",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Corporal",
+        "dates": "0/5/2016 - 12/11/1974",
+        "deptImage": "string",
+        "deptAddress": "12225 California St, Fall River, NE 44178"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 65,
+        "occurred": 1394883023000,
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "firstName": "Mary",
+    "lastName": "Houghton",
+    "badgeNo": "907533866",
+    "status": "Technician",
+    "department": "Quincy Police Department",
+    "birthDate": "04/30/1988",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Chief",
+        "dates": "9/3/1974 - 3/3/2000",
+        "deptImage": "string",
+        "deptAddress": "13166 Boston St, Quincy, PR 36516"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Detective",
+        "dates": "0/8/2009 - 2/11/1996",
+        "deptImage": "string",
+        "deptAddress": "4899 Boston Sq, Lynn, AL 25775"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Technician",
+        "dates": "3/28/2016 - 8/18/1985",
+        "deptImage": "string",
+        "deptAddress": "12442 Cedar Sq, Cambridge, RI 18002"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 34,
+    "firstName": "Joseph",
+    "lastName": "Loyd",
+    "badgeNo": "733939777",
+    "status": "Detective",
+    "department": "Boston Police Department",
+    "birthDate": "02/21/1980",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "White",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 50,
+        "occurred": 1523325774000,
+        "officers": ["K.Wulfinger", "E.Hannaway", "D.Coton", "R.Larenson", "M.Barter"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "firstName": "Ernest",
+    "lastName": "Price",
+    "badgeNo": "988977769",
+    "status": "Detective",
+    "department": "New Bedford Police Department",
+    "birthDate": "03/09/1955",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 66,
+        "occurred": 1513635915000,
+        "officers": ["C.Maryman", "J.Grute"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Verbalization",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 31,
+        "occurred": 1370269468000,
+        "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed blunt impact"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "firstName": "Carlos",
+    "lastName": "Lockett",
+    "badgeNo": "829370487",
+    "status": "Deputy",
+    "department": "Quincy Police Department",
+    "birthDate": "02/10/1966",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Deputy",
+        "dates": "6/5/2015 - 3/28/1987",
+        "deptImage": "string",
+        "deptAddress": "8900 Boston Rd, Worcester, HI 57751"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Chief",
+        "dates": "7/29/2009 - 10/23/1998",
+        "deptImage": "string",
+        "deptAddress": "14177 Pear Ln, Brockton, CO 61065"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Corporal",
+        "dates": "9/9/1984 - 0/15/2001",
+        "deptImage": "string",
+        "deptAddress": "9055 Maple Way, Brockton, KY 98676"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 93,
+        "occurred": 1287520675000,
+        "officers": ["E.Morando", "D.Massie"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Unarmed presence", "Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "firstName": "James",
+    "lastName": "Takacs",
+    "badgeNo": "574072899",
+    "status": "Captain",
+    "department": "Worcester Police Department",
+    "birthDate": "04/22/1952",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 56,
+        "occurred": 1383705886000,
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 13,
+        "occurred": 1234544062000,
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Injurious restraint"],
+        "source": "Court record"
+      },
+      {
+        "id": 44,
+        "occurred": 1328006783000,
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "firstName": "Linda",
+    "lastName": "Conorich",
+    "badgeNo": "624309053",
+    "status": "Deputy",
+    "department": "Springfield Police Department",
+    "birthDate": "04/07/1952",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Chief",
+        "dates": "0/29/1994 - 9/23/2017",
+        "deptImage": "string",
+        "deptAddress": "12354 Washington Way, New Bedford, SD 67190"
+      },
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Chief",
+        "dates": "11/8/2004 - 12/20/1980",
+        "deptImage": "string",
+        "deptAddress": "12279 Oak Ave, Boston, FL 22448"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Lieutenant",
+        "dates": "9/1/1991 - 7/26/1988",
+        "deptImage": "string",
+        "deptAddress": "10932 California Sq, Worcester, WY 56872"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      },
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 37,
+        "occurred": 1393531116000,
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "firstName": "Bessie",
+    "lastName": "Reynolds",
+    "badgeNo": "866934846",
+    "status": "Lieutenant",
+    "department": "New Bedford Police Department",
+    "birthDate": "08/15/1952",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Corporal",
+        "dates": "7/7/1980 - 3/15/2010",
+        "deptImage": "string",
+        "deptAddress": "4364 Elm Way, Lynn, CT 46578"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 96,
+        "occurred": 1421225817000,
+        "officers": ["R.Randals", "T.Parzizek"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "firstName": "Marcos",
+    "lastName": "Smith",
+    "badgeNo": "213969327",
+    "status": "Detective",
+    "department": "Worcester Police Department",
+    "birthDate": "06/09/1971",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Lieutenant",
+        "dates": "2/23/1975 - 5/8/2005",
+        "deptImage": "string",
+        "deptAddress": "7744 Apple Ave, Fall River, VA 60063"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 41,
+    "firstName": "Paris",
+    "lastName": "Breeding",
+    "badgeNo": "113083544",
+    "status": "Captain",
+    "department": "Springfield Police Department",
+    "birthDate": "01/16/1977",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Chief",
+        "dates": "7/19/1976 - 9/19/2004",
+        "deptImage": "string",
+        "deptAddress": "6092 Pine St, Lowell, CO 18006"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Sergeant",
+        "dates": "12/10/2005 - 12/25/1982",
+        "deptImage": "string",
+        "deptAddress": "3085 Lemon Ln, Boston, DC 27953"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 100,
+        "occurred": 1079754874000,
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "firstName": "Rachel",
+    "lastName": "Cooper",
+    "badgeNo": "77055951",
+    "status": "Captain",
+    "department": "Lynn Police Department",
+    "birthDate": "04/17/1968",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Officer",
+        "dates": "10/28/1999 - 0/2/1981",
+        "deptImage": "string",
+        "deptAddress": "5940 Oak St, Boston, LA 26568"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Corporal",
+        "dates": "10/4/2019 - 6/14/1985",
+        "deptImage": "string",
+        "deptAddress": "1311 Apple St, Brockton, WY 29167"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Technician",
+        "dates": "9/2/2018 - 9/28/2016",
+        "deptImage": "string",
+        "deptAddress": "12772 Pine Ln, Brockton, GU 46360"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "firstName": "Carlos",
+    "lastName": "Seman",
+    "badgeNo": "980843645",
+    "status": "Deputy",
+    "department": "Worcester Police Department",
+    "birthDate": "10/16/1950",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Detective",
+        "dates": "3/26/1985 - 3/5/2011",
+        "deptImage": "string",
+        "deptAddress": "12409 Pear Rd, Quincy, CO 31628"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Sergeant",
+        "dates": "8/10/1996 - 5/3/2001",
+        "deptImage": "string",
+        "deptAddress": "6567 Maple Ct, Lynn, NY 25389"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police", "International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 55,
+        "occurred": 1495421822000,
+        "officers": ["L.Redsall"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization", "Unarmed presence", "Unarmed blunt impact"],
+        "source": "Court record"
+      },
+      {
+        "id": 31,
+        "occurred": 1370269468000,
+        "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed blunt impact"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "firstName": "Ken",
+    "lastName": "Isaman",
+    "badgeNo": "752017053",
+    "status": "Captain",
+    "department": "Worcester Police Department",
+    "birthDate": "11/20/1981",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "White",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Deputy",
+        "dates": "6/23/1976 - 8/2/1996",
+        "deptImage": "string",
+        "deptAddress": "12342 Washington Rd, New Bedford, GU 12802"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 45,
+    "firstName": "Denise",
+    "lastName": "Mekee",
+    "badgeNo": "121046334",
+    "status": "Detective",
+    "department": "Worcester Police Department",
+    "birthDate": "02/21/1950",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Captain",
+        "dates": "0/2/1974 - 10/3/2001",
+        "deptImage": "string",
+        "deptAddress": "11209 Lemon St, Brockton, AR 93845"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police", "International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 72,
+        "occurred": 964298106000,
+        "officers": ["S.Parren", "G.Alben", "F.Geane", "L.Olczyk"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 95,
+        "occurred": 1051961034000,
+        "officers": ["Y.Trowle", "P.Beange", "R.Grebner", "R.Heaviside"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "firstName": "Karen",
+    "lastName": "Shoaf",
+    "badgeNo": "472307648",
+    "status": "Officer",
+    "department": "Lynn Police Department",
+    "birthDate": "04/14/1963",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Corporal",
+        "dates": "3/6/1990 - 4/4/1983",
+        "deptImage": "string",
+        "deptAddress": "3759 Oak Ln, Brockton, MN 67102"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 73,
+        "occurred": 1395829499000,
+        "officers": ["L.Lappine", "A.Naul"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "firstName": "Josie",
+    "lastName": "Vanmeter",
+    "badgeNo": "38204400",
+    "status": "Captain",
+    "department": "Boston Police Department",
+    "birthDate": "06/18/1971",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Detective",
+        "dates": "9/22/2015 - 5/28/2000",
+        "deptImage": "string",
+        "deptAddress": "14299 Washington Sq, Boston, NV 93787"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 48,
+    "firstName": "Carlos",
+    "lastName": "Capello",
+    "badgeNo": "646837272",
+    "status": "Lieutenant",
+    "department": "Springfield Police Department",
+    "birthDate": "10/27/1958",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 49,
+    "firstName": "Erin",
+    "lastName": "Floyd",
+    "badgeNo": "185606456",
+    "status": "Lieutenant",
+    "department": "Lowell Police Department",
+    "birthDate": "02/09/1984",
+    "gender": "Male",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Sergeant",
+        "dates": "7/25/1997 - 4/8/1998",
+        "deptImage": "string",
+        "deptAddress": "8610 Elm Ct, Lowell, DE 63142"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 68,
+        "occurred": 1184409948000,
+        "officers": ["D.Maine", "C.Reinhart", "D.McPherson"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "Court record"
+      },
+      {
+        "id": 79,
+        "occurred": 1421248509000,
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "firstName": "Elizabeth",
+    "lastName": "Silva",
+    "badgeNo": "366617433",
+    "status": "Technician",
+    "department": "Boston Police Department",
+    "birthDate": "04/14/1971",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Asian",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Lieutenant",
+        "dates": "1/11/1972 - 8/17/1995",
+        "deptImage": "string",
+        "deptAddress": "8369 Cedar Ct, Springfield, NH 45610"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 29,
+        "occurred": 1624012506000,
+        "officers": ["S.Bunclark", "Z.Cardis", "J.Crosdill"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 28,
+        "occurred": 1550632519000,
+        "officers": ["Ailbert de Savery", "L.Rannald", "L.Killik", "M.Riccelli", "A.Keilty"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Electric weaponry"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "firstName": "John",
+    "lastName": "Adami",
+    "badgeNo": "21187387",
+    "status": "Officer",
+    "department": "Boston Police Department",
+    "birthDate": "06/27/1957",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Technician",
+        "dates": "2/22/1999 - 11/11/1990",
+        "deptImage": "string",
+        "deptAddress": "5236 Lemon Ct, New Bedford, DE 66266"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Sergeant",
+        "dates": "2/28/2005 - 8/26/1991",
+        "deptImage": "string",
+        "deptAddress": "9834 Oak Ave, Quincy, KS 58893"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Chief",
+        "dates": "4/9/2010 - 12/11/1999",
+        "deptImage": "string",
+        "deptAddress": "5412 Lemon Sq, Springfield, VI 29023"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 98,
+        "occurred": 1328486358000,
+        "officers": ["J.Cluett"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Injurious restraint", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "firstName": "Sabrina",
+    "lastName": "Herron",
+    "badgeNo": "855741406",
+    "status": "Chief",
+    "department": "Cambridge Police Department",
+    "birthDate": "11/19/1984",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 46,
+        "occurred": 1254530615000,
+        "officers": ["C.Coils"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "firstName": "Joseph",
+    "lastName": "Mark",
+    "badgeNo": "502818335",
+    "status": "Technician",
+    "department": "Fall River Police Department",
+    "birthDate": "01/12/1950",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Corporal",
+        "dates": "8/22/2012 - 7/14/1974",
+        "deptImage": "string",
+        "deptAddress": "2107 Washington Ave, Worcester, WA 75089"
+      },
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Technician",
+        "dates": "9/0/2009 - 6/27/1989",
+        "deptImage": "string",
+        "deptAddress": "13930 Cedar Ct, Lowell, WY 22153"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 54,
+    "firstName": "Mary",
+    "lastName": "Jones",
+    "badgeNo": "486975022",
+    "status": "Captain",
+    "department": "Worcester Police Department",
+    "birthDate": "05/28/1984",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Chief",
+        "dates": "5/8/2002 - 10/21/2007",
+        "deptImage": "string",
+        "deptAddress": "13039 Pear Ln, Quincy, DC 71077"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Technician",
+        "dates": "5/21/2018 - 12/19/1987",
+        "deptImage": "string",
+        "deptAddress": "12275 Pear St, Boston, ID 15544"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 56,
+        "occurred": 1383705886000,
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      },
+      {
+        "id": 49,
+        "occurred": 1078876405000,
+        "officers": ["D.Kenrack", "H.Rivalant", "L.Deener", "P.Howship"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "firstName": "Christy",
+    "lastName": "Mullikin",
+    "badgeNo": "166884456",
+    "status": "Deputy",
+    "department": "Springfield Police Department",
+    "birthDate": "09/13/1958",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Chief",
+        "dates": "1/6/1981 - 2/22/2001",
+        "deptImage": "string",
+        "deptAddress": "9394 Pear Ave, Springfield, CZ 65192"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Officer",
+        "dates": "8/1/2014 - 11/6/1999",
+        "deptImage": "string",
+        "deptAddress": "12239 Boston Ct, Cambridge, AL 37682"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 40,
+        "occurred": 1577175828000,
+        "officers": ["J.Haslegrave", "A.Domleo", "I.Baldazzi"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
+        "source": "Court record"
+      },
+      {
+        "id": 63,
+        "occurred": 1127976186000,
+        "officers": ["W.Winfrey", "M.Mountain", "K.Cullnean"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry", "Unarmed blunt impact"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "firstName": "Rolando",
+    "lastName": "Moore",
+    "badgeNo": "865003072",
+    "status": "Officer",
+    "department": "Boston Police Department",
+    "birthDate": "05/09/1971",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Deputy",
+        "dates": "9/11/1992 - 6/9/2017",
+        "deptImage": "string",
+        "deptAddress": "6388 Washington Way, Springfield, ME 82918"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Sergeant",
+        "dates": "11/3/2020 - 8/28/1991",
+        "deptImage": "string",
+        "deptAddress": "8125 Pine Sq, Brockton, CA 16844"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Detective",
+        "dates": "1/5/2011 - 4/22/2003",
+        "deptImage": "string",
+        "deptAddress": "3210 Cedar Sq, New Bedford, TN 87115"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 75,
+        "occurred": 1523252681000,
+        "officers": [
+          "P.Krishtopaittis",
+          "R.Kubista",
+          "Helen-elizabeth Hoffman",
+          "S.Hinnerk",
+          "S.Gason"
+        ],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "firstName": "Sara",
+    "lastName": "Martin",
+    "badgeNo": "951608687",
+    "status": "Corporal",
+    "department": "New Bedford Police Department",
+    "birthDate": "10/28/1967",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Lieutenant",
+        "dates": "9/30/1975 - 1/21/1991",
+        "deptImage": "string",
+        "deptAddress": "14690 Pear Ln, Boston, GA 68914"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Technician",
+        "dates": "1/18/1980 - 9/8/2002",
+        "deptImage": "string",
+        "deptAddress": "13148 Cedar Way, Brockton, NE 83099"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Lieutenant",
+        "dates": "2/12/2003 - 2/14/1988",
+        "deptImage": "string",
+        "deptAddress": "2429 Maple Sq, Lowell, VI 48363"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 58,
+    "firstName": "Sandra",
+    "lastName": "Taylor",
+    "badgeNo": "58154560",
+    "status": "Officer",
+    "department": "Brockton Police Department",
+    "birthDate": "01/20/1975",
+    "gender": "Male",
+    "race": "Hispanic or Latino",
+    "ethnicity": "White",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Deputy",
+        "dates": "5/0/1988 - 9/14/1987",
+        "deptImage": "string",
+        "deptAddress": "13646 Lemon Rd, Boston, DC 35132"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Chief",
+        "dates": "7/7/2005 - 2/13/2008",
+        "deptImage": "string",
+        "deptAddress": "7564 Oak Ln, Brockton, TN 78976"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 75,
+        "occurred": 1523252681000,
+        "officers": [
+          "P.Krishtopaittis",
+          "R.Kubista",
+          "Helen-elizabeth Hoffman",
+          "S.Hinnerk",
+          "S.Gason"
+        ],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "firstName": "Lisa",
+    "lastName": "Yee",
+    "badgeNo": "787724479",
+    "status": "Deputy",
+    "department": "Lynn Police Department",
+    "birthDate": "12/23/1989",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Chief",
+        "dates": "11/30/2004 - 7/8/2003",
+        "deptImage": "string",
+        "deptAddress": "13120 Washington Sq, Fall River, LA 87874"
+      },
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Chief",
+        "dates": "10/27/1996 - 6/10/1970",
+        "deptImage": "string",
+        "deptAddress": "5666 Washington St, Boston, KS 88774"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 60,
+    "firstName": "Jason",
+    "lastName": "Walker",
+    "badgeNo": "647264934",
+    "status": "Corporal",
+    "department": "Fall River Police Department",
+    "birthDate": "08/24/1972",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 91,
+        "occurred": 1519495314000,
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "firstName": "Timothy",
+    "lastName": "Garcia",
+    "badgeNo": "801723241",
+    "status": "Corporal",
+    "department": "Brockton Police Department",
+    "birthDate": "05/18/1963",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "White",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Detective",
+        "dates": "3/14/1974 - 4/12/1979",
+        "deptImage": "string",
+        "deptAddress": "1264 Pear Ct, Fall River, WI 76540"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Chief",
+        "dates": "11/7/2015 - 7/13/2004",
+        "deptImage": "string",
+        "deptAddress": "9221 California Ct, Cambridge, IN 28412"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 55,
+        "occurred": 1495421822000,
+        "officers": ["L.Redsall"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization", "Unarmed presence", "Unarmed blunt impact"],
+        "source": "Court record"
+      },
+      {
+        "id": 84,
+        "occurred": 1617429002000,
+        "officers": ["A.Spriggen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 13,
+        "occurred": 1234544062000,
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Injurious restraint"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "firstName": "Sondra",
+    "lastName": "Bashir",
+    "badgeNo": "885554698",
+    "status": "Technician",
+    "department": "Brockton Police Department",
+    "birthDate": "12/27/1976",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Chief",
+        "dates": "7/21/1974 - 1/15/1974",
+        "deptImage": "string",
+        "deptAddress": "3700 Cedar Rd, Quincy, TN 27650"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Detective",
+        "dates": "9/14/1975 - 0/27/1977",
+        "deptImage": "string",
+        "deptAddress": "5983 Oak Ct, Brockton, SC 13666"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      },
+      {
+        "id": 66,
+        "occurred": 1513635915000,
+        "officers": ["C.Maryman", "J.Grute"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Verbalization",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 81,
+        "occurred": 976491916000,
+        "officers": ["S.Mumbeson", "S.Brundale", "F.Farington", "D.Derrell", "T.Oxbrough"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Verbalization",
+          "Armed presence"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "firstName": "William",
+    "lastName": "Stanton",
+    "badgeNo": "710482990",
+    "status": "Technician",
+    "department": "Brockton Police Department",
+    "birthDate": "03/01/1959",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Asian",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Officer",
+        "dates": "11/4/1989 - 9/4/1995",
+        "deptImage": "string",
+        "deptAddress": "12605 Lemon Ln, New Bedford, UT 39703"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Officer",
+        "dates": "2/0/2003 - 6/30/1977",
+        "deptImage": "string",
+        "deptAddress": "10406 Elm Ave, Fall River, OH 35932"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 64,
+    "firstName": "David",
+    "lastName": "Zelkin",
+    "badgeNo": "622304838",
+    "status": "Deputy",
+    "department": "Worcester Police Department",
+    "birthDate": "11/14/1986",
+    "gender": "Female",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Technician",
+        "dates": "8/22/2010 - 9/13/2002",
+        "deptImage": "string",
+        "deptAddress": "2131 Boston Ave, Fall River, MD 65094"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Technician",
+        "dates": "12/6/1992 - 0/21/2007",
+        "deptImage": "string",
+        "deptAddress": "5030 California Ave, Boston, CZ 71760"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 65,
+    "firstName": "Monika",
+    "lastName": "Batts",
+    "badgeNo": "138528903",
+    "status": "Chief",
+    "department": "Worcester Police Department",
+    "birthDate": "05/30/1959",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Deputy",
+        "dates": "12/20/2005 - 3/26/2019",
+        "deptImage": "string",
+        "deptAddress": "5567 Boston Rd, Cambridge, RI 40210"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 88,
+        "occurred": 954816353000,
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Electric weaponry",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 27,
+        "occurred": 1098943489000,
+        "officers": ["Abigale Pond-Jones"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "firstName": "Jean",
+    "lastName": "Humphrey",
+    "badgeNo": "652429674",
+    "status": "Detective",
+    "department": "Boston Police Department",
+    "birthDate": "04/02/1973",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Detective",
+        "dates": "6/8/2009 - 7/18/2019",
+        "deptImage": "string",
+        "deptAddress": "9223 Washington Sq, Cambridge, ME 13673"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "firstName": "Eric",
+    "lastName": "Martin",
+    "badgeNo": "367938190",
+    "status": "Chief",
+    "department": "Brockton Police Department",
+    "birthDate": "04/29/1980",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Lieutenant",
+        "dates": "1/22/2006 - 1/16/2001",
+        "deptImage": "string",
+        "deptAddress": "4424 Cedar Ave, Cambridge, AR 68113"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 30,
+        "occurred": 1309312190000,
+        "officers": ["J.Byforth", "C.McAvaddy", "P.Fivey", "T.Beecraft"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 91,
+        "occurred": 1519495314000,
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "firstName": "Jose",
+    "lastName": "Pengelly",
+    "badgeNo": "568688127",
+    "status": "Deputy",
+    "department": "Brockton Police Department",
+    "birthDate": "10/27/1981",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Deputy",
+        "dates": "12/7/2012 - 6/24/2002",
+        "deptImage": "string",
+        "deptAddress": "12908 Apple Rd, Fall River, KS 56799"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Deputy",
+        "dates": "6/27/2011 - 2/9/2002",
+        "deptImage": "string",
+        "deptAddress": "3927 Cedar Ln, New Bedford, ID 15690"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Captain",
+        "dates": "4/19/2018 - 9/30/2014",
+        "deptImage": "string",
+        "deptAddress": "9547 Pear Sq, Boston, ME 75969"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 15,
+        "occurred": 1126800848000,
+        "officers": ["T.Streetfield", "R.McClinton", "C.McCloid", "P.Mc Giffin"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 5,
+        "occurred": 1417759257000,
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "firstName": "Leroy",
+    "lastName": "Fernandez",
+    "badgeNo": "47300296",
+    "status": "Captain",
+    "department": "Lynn Police Department",
+    "birthDate": "03/18/1964",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "White",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 24,
+        "occurred": 1035961368000,
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 19,
+        "occurred": 1595707672000,
+        "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Verbalization",
+          "Armed presence",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "firstName": "Joseph",
+    "lastName": "Newstead",
+    "badgeNo": "90453933",
+    "status": "Deputy",
+    "department": "Springfield Police Department",
+    "birthDate": "05/12/1957",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Chief",
+        "dates": "4/26/2010 - 5/6/1996",
+        "deptImage": "string",
+        "deptAddress": "11513 Oak Ct, Boston, KY 19025"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Detective",
+        "dates": "4/24/1970 - 11/4/2021",
+        "deptImage": "string",
+        "deptAddress": "7370 Cedar Ln, Fall River, NJ 59216"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "firstName": "Jeremy",
+    "lastName": "Hernandez",
+    "badgeNo": "40467402",
+    "status": "Captain",
+    "department": "Cambridge Police Department",
+    "birthDate": "10/25/1962",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "White",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 56,
+        "occurred": 1383705886000,
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 59,
+        "occurred": 1584498726000,
+        "officers": ["S.Cudbertson"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "firstName": "Larry",
+    "lastName": "Cobb",
+    "badgeNo": "383147370",
+    "status": "Officer",
+    "department": "Worcester Police Department",
+    "birthDate": "03/23/1982",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Captain",
+        "dates": "4/3/2000 - 3/13/1989",
+        "deptImage": "string",
+        "deptAddress": "10485 Lemon Ln, Cambridge, MD 29515"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Detective",
+        "dates": "1/14/2012 - 8/28/2020",
+        "deptImage": "string",
+        "deptAddress": "9680 California Ln, New Bedford, MO 69001"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Officer",
+        "dates": "0/1/2003 - 5/22/1983",
+        "deptImage": "string",
+        "deptAddress": "5335 Elm Ct, Cambridge, VT 40972"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 1,
+        "occurred": 1313471121000,
+        "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 37,
+        "occurred": 1393531116000,
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 31,
+        "occurred": 1370269468000,
+        "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed blunt impact"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "firstName": "Emily",
+    "lastName": "Guillaume",
+    "badgeNo": "2234106",
+    "status": "Technician",
+    "department": "Lynn Police Department",
+    "birthDate": "09/20/1964",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Lieutenant",
+        "dates": "6/6/2010 - 8/14/1974",
+        "deptImage": "string",
+        "deptAddress": "4921 California Way, Quincy, AR 14297"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Officer",
+        "dates": "10/30/2004 - 6/23/1995",
+        "deptImage": "string",
+        "deptAddress": "7708 Maple St, Lowell, MI 84094"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 35,
+        "occurred": 1293957746000,
+        "officers": ["S.Giacometti", "E.Maureen"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Unarmed blunt impact", "Verbalization", "Unarmed presence"],
+        "source": "Police report"
+      },
+      {
+        "id": 88,
+        "occurred": 954816353000,
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Electric weaponry",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "firstName": "Gina",
+    "lastName": "Bashore",
+    "badgeNo": "100876586",
+    "status": "Deputy",
+    "department": "Lynn Police Department",
+    "birthDate": "02/19/1986",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Captain",
+        "dates": "2/7/2009 - 4/17/2010",
+        "deptImage": "string",
+        "deptAddress": "7569 Washington Way, Worcester, IL 74715"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 72,
+        "occurred": 964298106000,
+        "officers": ["S.Parren", "G.Alben", "F.Geane", "L.Olczyk"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 17,
+        "occurred": 1441673229000,
+        "officers": ["C.Spieght", "H.Hissett", "W.Riccio", "M.Fookes", "B.Ricciardelli"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "firstName": "Jacqueline",
+    "lastName": "Lohrenz",
+    "badgeNo": "211412321",
+    "status": "Detective",
+    "department": "Boston Police Department",
+    "birthDate": "06/18/1989",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Captain",
+        "dates": "0/23/1981 - 1/8/2010",
+        "deptImage": "string",
+        "deptAddress": "4252 Lemon Way, Brockton, IA 43225"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Corporal",
+        "dates": "9/23/1991 - 9/10/1999",
+        "deptImage": "string",
+        "deptAddress": "8474 Cedar St, Lowell, MI 83069"
+      },
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Technician",
+        "dates": "0/15/1974 - 8/15/1974",
+        "deptImage": "string",
+        "deptAddress": "4066 Maple Rd, Quincy, OK 71424"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 18,
+        "occurred": 1358319194000,
+        "officers": ["D.Liger", "T.Eppson"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Injurious restraint"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "firstName": "Stephen",
+    "lastName": "Elliot",
+    "badgeNo": "360205070",
+    "status": "Lieutenant",
+    "department": "Springfield Police Department",
+    "birthDate": "07/15/1958",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 5,
+        "occurred": 1417759257000,
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 88,
+        "occurred": 954816353000,
+        "officers": ["S.Bartolomeo", "H.Sakins", "C.Dabourne"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Electric weaponry",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "firstName": "Thomas",
+    "lastName": "Mcknight",
+    "badgeNo": "960650639",
+    "status": "Officer",
+    "department": "New Bedford Police Department",
+    "birthDate": "06/28/1959",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Captain",
+        "dates": "10/23/2003 - 2/16/2017",
+        "deptImage": "string",
+        "deptAddress": "12179 Cedar Way, Worcester, NE 62639"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Lieutenant",
+        "dates": "5/12/1997 - 0/18/1988",
+        "deptImage": "string",
+        "deptAddress": "7398 Pine Way, Lowell, AR 76986"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 75,
+        "occurred": 1523252681000,
+        "officers": [
+          "P.Krishtopaittis",
+          "R.Kubista",
+          "Helen-elizabeth Hoffman",
+          "S.Hinnerk",
+          "S.Gason"
+        ],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 41,
+        "occurred": 1139441954000,
+        "officers": ["F.Gilli", "J.Osban"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "firstName": "Paula",
+    "lastName": "Glidewell",
+    "badgeNo": "42691884",
+    "status": "Chief",
+    "department": "Lowell Police Department",
+    "birthDate": "06/29/1950",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Captain",
+        "dates": "5/4/1979 - 2/12/1998",
+        "deptImage": "string",
+        "deptAddress": "12461 Boston Ave, New Bedford, MA 95624"
+      },
+      {
+        "deptName": "Boston Police Department",
+        "status": "Corporal",
+        "dates": "5/7/2001 - 6/30/1970",
+        "deptImage": "string",
+        "deptAddress": "9103 Washington St, Cambridge, OH 76458"
+      },
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Detective",
+        "dates": "8/24/1976 - 3/11/2013",
+        "deptImage": "string",
+        "deptAddress": "8020 Elm Ct, Lowell, FL 71920"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 79,
+    "firstName": "Monica",
+    "lastName": "Converse",
+    "badgeNo": "824240756",
+    "status": "Deputy",
+    "department": "Lynn Police Department",
+    "birthDate": "06/22/1968",
+    "gender": "Male",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 71,
+        "occurred": 1193830644000,
+        "officers": ["B.Elderbrant", "B.Brassington", "I.Porrett", "M.Vallack", "M.Maus"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 19,
+        "occurred": 1595707672000,
+        "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Verbalization",
+          "Armed presence",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 33,
+        "occurred": 1001823902000,
+        "officers": ["D.Wafer", "B.Wotherspoon"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Injurious restraint", "Electric weaponry", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "firstName": "Robert",
+    "lastName": "Delatorre",
+    "badgeNo": "15246581",
+    "status": "Detective",
+    "department": "Boston Police Department",
+    "birthDate": "08/28/1974",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "White",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Corporal",
+        "dates": "10/3/2013 - 7/14/1980",
+        "deptImage": "string",
+        "deptAddress": "9525 Pear Rd, Cambridge, AK 75119"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 48,
+        "occurred": 1233953502000,
+        "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "firstName": "Graciela",
+    "lastName": "Ritter",
+    "badgeNo": "278277257",
+    "status": "Captain",
+    "department": "Lowell Police Department",
+    "birthDate": "03/04/1980",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 83,
+        "occurred": 1372743342000,
+        "officers": ["D.Gatherer", "H.Sollitt", "K.Clyant"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed blunt impact", "Injurious restraint"],
+        "source": "News report"
+      },
+      {
+        "id": 50,
+        "occurred": 1523325774000,
+        "officers": ["K.Wulfinger", "E.Hannaway", "D.Coton", "R.Larenson", "M.Barter"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 2,
+        "occurred": 1538984637000,
+        "officers": ["P.Attwooll", "H.La Padula", "B.Godain", "C.Churm"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed presence",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "firstName": "Julia",
+    "lastName": "Caplan",
+    "badgeNo": "302599392",
+    "status": "Sergeant",
+    "department": "Lowell Police Department",
+    "birthDate": "01/16/1981",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "White",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Boston Police Department",
+        "status": "Detective",
+        "dates": "1/28/1983 - 4/29/2006",
+        "deptImage": "string",
+        "deptAddress": "8099 California Way, Cambridge, CZ 80043"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 44,
+        "occurred": 1328006783000,
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 84,
+        "occurred": 1617429002000,
+        "officers": ["A.Spriggen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "firstName": "David",
+    "lastName": "Reiss",
+    "badgeNo": "431171771",
+    "status": "Chief",
+    "department": "Worcester Police Department",
+    "birthDate": "06/18/1950",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Corporal",
+        "dates": "9/5/2016 - 8/16/2010",
+        "deptImage": "string",
+        "deptAddress": "8378 Boston Rd, Springfield, MS 46405"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Sergeant",
+        "dates": "7/3/2000 - 2/18/1997",
+        "deptImage": "string",
+        "deptAddress": "6582 Elm Ct, Boston, HI 56621"
+      }
+    ],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 84,
+    "firstName": "Megan",
+    "lastName": "Weathers",
+    "badgeNo": "501670188",
+    "status": "Technician",
+    "department": "Quincy Police Department",
+    "birthDate": "10/02/1988",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "White",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Chief",
+        "dates": "12/9/2020 - 3/21/2009",
+        "deptImage": "string",
+        "deptAddress": "13286 Cedar Ln, Lynn, TX 59982"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 40,
+        "occurred": 1577175828000,
+        "officers": ["J.Haslegrave", "A.Domleo", "I.Baldazzi"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "firstName": "John",
+    "lastName": "Whirry",
+    "badgeNo": "507418701",
+    "status": "Technician",
+    "department": "New Bedford Police Department",
+    "birthDate": "01/15/1985",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "White",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Chief",
+        "dates": "9/5/1982 - 5/14/2000",
+        "deptImage": "string",
+        "deptAddress": "1901 Oak Ln, Lowell, FL 25545"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Sergeant",
+        "dates": "8/30/2004 - 10/2/2012",
+        "deptImage": "string",
+        "deptAddress": "5758 Elm Ct, Lowell, VI 16598"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 86,
+    "firstName": "Alice",
+    "lastName": "Simpson",
+    "badgeNo": "483131151",
+    "status": "Corporal",
+    "department": "Worcester Police Department",
+    "birthDate": "02/17/1971",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "White",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Lieutenant",
+        "dates": "2/4/2005 - 4/4/1974",
+        "deptImage": "string",
+        "deptAddress": "7732 California St, Springfield, IA 13141"
+      },
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Captain",
+        "dates": "1/28/2012 - 5/23/1997",
+        "deptImage": "string",
+        "deptAddress": "2890 California Way, Cambridge, ND 93250"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 57,
+        "occurred": 1426617030000,
+        "officers": ["D.Allenson", "E.Caddock"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "firstName": "Amber",
+    "lastName": "Booth",
+    "badgeNo": "119966676",
+    "status": "Deputy",
+    "department": "Worcester Police Department",
+    "birthDate": "03/20/1984",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 20,
+        "occurred": 1145369169000,
+        "officers": ["I.Gainforth", "G.Trustrie", "S.Kliche", "S.Fitzer", "M.Shedd"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "firstName": "Cynthia",
+    "lastName": "Leffew",
+    "badgeNo": "148559515",
+    "status": "Deputy",
+    "department": "Cambridge Police Department",
+    "birthDate": "11/17/1962",
+    "gender": "Nonbinary",
+    "race": "Hispanic or Latino",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Lieutenant",
+        "dates": "3/19/1993 - 0/29/2002",
+        "deptImage": "string",
+        "deptAddress": "13960 Washington Ct, Lynn, NE 11496"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Deputy",
+        "dates": "10/17/1975 - 11/1/2002",
+        "deptImage": "string",
+        "deptAddress": "5564 California Ct, New Bedford, OK 49060"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 89,
+    "firstName": "Janis",
+    "lastName": "Cox",
+    "badgeNo": "350934315",
+    "status": "Lieutenant",
+    "department": "Springfield Police Department",
+    "birthDate": "02/29/1967",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "White",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Officer",
+        "dates": "11/25/1994 - 3/27/1971",
+        "deptImage": "string",
+        "deptAddress": "8773 California Ave, Lynn, VI 86508"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 48,
+        "occurred": 1233953502000,
+        "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "firstName": "Sheila",
+    "lastName": "Reisner",
+    "badgeNo": "867039999",
+    "status": "Chief",
+    "department": "Cambridge Police Department",
+    "birthDate": "06/25/1969",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Sergeant",
+        "dates": "11/5/2012 - 9/2/1980",
+        "deptImage": "string",
+        "deptAddress": "8726 Cedar Sq, Quincy, WI 21596"
+      },
+      {
+        "deptName": "New Bedford Police Department",
+        "status": "Captain",
+        "dates": "10/10/1992 - 6/6/2019",
+        "deptImage": "string",
+        "deptAddress": "10246 Washington Ave, Fall River, RI 59845"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 37,
+        "occurred": 1393531116000,
+        "officers": ["H.Elphick", "D.Dunleavy", "V.Fetter", "C.Linford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 38,
+        "occurred": 1253169695000,
+        "officers": ["J.Welchman", "D.Hardison", "L.Dolle", "D.Gresch", "A.Ivanyukov"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "firstName": "Edward",
+    "lastName": "Peterson",
+    "badgeNo": "318238218",
+    "status": "Chief",
+    "department": "Lowell Police Department",
+    "birthDate": "11/08/1952",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 58,
+        "occurred": 1045534153000,
+        "officers": ["B.Colmer", "G.Chieze"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Verbalization", "Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "firstName": "Dawn",
+    "lastName": "Basta",
+    "badgeNo": "286813713",
+    "status": "Sergeant",
+    "department": "Boston Police Department",
+    "birthDate": "12/25/1977",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Springfield Police Department",
+        "status": "Lieutenant",
+        "dates": "2/26/2007 - 0/22/1997",
+        "deptImage": "string",
+        "deptAddress": "8655 Lemon Way, Cambridge, MI 19326"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Corporal",
+        "dates": "8/14/1992 - 8/9/2014",
+        "deptImage": "string",
+        "deptAddress": "10576 Oak Ave, Lynn, AZ 79076"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      },
+      {
+        "id": 100,
+        "occurred": 1079754874000,
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 34,
+        "occurred": 1335573338000,
+        "officers": ["D.Sprigings", "R.Scobie"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "firstName": "Claude",
+    "lastName": "Bos",
+    "badgeNo": "878165750",
+    "status": "Technician",
+    "department": "Worcester Police Department",
+    "birthDate": "05/18/1956",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 94,
+    "firstName": "Michele",
+    "lastName": "Wilson",
+    "badgeNo": "402258637",
+    "status": "Chief",
+    "department": "Lowell Police Department",
+    "birthDate": "07/27/1970",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Asian",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Captain",
+        "dates": "2/8/1978 - 1/21/2000",
+        "deptImage": "string",
+        "deptAddress": "6486 California Sq, Lowell, WV 52387"
+      },
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Captain",
+        "dates": "9/17/1989 - 7/15/1994",
+        "deptImage": "string",
+        "deptAddress": "8378 Washington Ln, Worcester, GU 65386"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Chief",
+        "dates": "11/21/1983 - 3/1/1985",
+        "deptImage": "string",
+        "deptAddress": "3153 Lemon Sq, Lynn, WA 92091"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 8,
+        "occurred": 1424274711000,
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      },
+      {
+        "id": 38,
+        "occurred": 1253169695000,
+        "officers": ["J.Welchman", "D.Hardison", "L.Dolle", "D.Gresch", "A.Ivanyukov"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "firstName": "Christopher",
+    "lastName": "Robinson",
+    "badgeNo": "414273591",
+    "status": "Technician",
+    "department": "Boston Police Department",
+    "birthDate": "06/27/1972",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Black or African American",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Lowell Police Department",
+        "status": "Corporal",
+        "dates": "11/2/2013 - 9/21/1981",
+        "deptImage": "string",
+        "deptAddress": "13513 Boston Ln, Springfield, MN 32513"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Technician",
+        "dates": "11/5/1983 - 5/24/1996",
+        "deptImage": "string",
+        "deptAddress": "6714 Pear Rd, Quincy, HI 52214"
+      },
+      {
+        "deptName": "Fall River Police Department",
+        "status": "Captain",
+        "dates": "9/7/2001 - 2/21/2010",
+        "deptImage": "string",
+        "deptAddress": "10982 Washington Ct, Brockton, TX 79561"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 13,
+        "occurred": 1234544062000,
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Injurious restraint"],
+        "source": "Court record"
+      },
+      {
+        "id": 15,
+        "occurred": 1126800848000,
+        "officers": ["T.Streetfield", "R.McClinton", "C.McCloid", "P.Mc Giffin"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "firstName": "Ginny",
+    "lastName": "Cameron",
+    "badgeNo": "717457928",
+    "status": "Corporal",
+    "department": "Quincy Police Department",
+    "birthDate": "07/20/1987",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Native Hawaiian or Other Pacific Islander",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Corporal",
+        "dates": "11/16/1976 - 4/8/1979",
+        "deptImage": "string",
+        "deptAddress": "14840 Pine Way, Boston, NH 26346"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Officer",
+        "dates": "10/7/1974 - 9/11/2003",
+        "deptImage": "string",
+        "deptAddress": "2788 Lemon Way, Worcester, MI 78790"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Corporal",
+        "dates": "12/15/1987 - 11/11/1984",
+        "deptImage": "string",
+        "deptAddress": "12167 Maple Way, Worcester, CZ 91585"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 92,
+        "occurred": 1011094838000,
+        "officers": ["M.Ewestace"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 60,
+        "occurred": 1138166348000,
+        "officers": ["B.Burwell", "M.Benedidick"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "firstName": "Susan",
+    "lastName": "Grace",
+    "badgeNo": "133788298",
+    "status": "Sergeant",
+    "department": "New Bedford Police Department",
+    "birthDate": "01/21/1985",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Worcester Police Department",
+        "status": "Detective",
+        "dates": "4/5/2004 - 8/27/1970",
+        "deptImage": "string",
+        "deptAddress": "2917 Oak Sq, Brockton, NH 63684"
+      },
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Captain",
+        "dates": "8/3/2008 - 8/19/2021",
+        "deptImage": "string",
+        "deptAddress": "1510 Lemon Ave, Cambridge, MA 14745"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "firstName": "Steve",
+    "lastName": "Fernandez",
+    "badgeNo": "820899521",
+    "status": "Deputy",
+    "department": "Cambridge Police Department",
+    "birthDate": "12/29/1954",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "American Indian or Alaska Native",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Brockton Police Department",
+        "status": "Technician",
+        "dates": "2/6/2003 - 4/7/1990",
+        "deptImage": "string",
+        "deptAddress": "12482 Elm Ct, Worcester, FL 89058"
+      },
+      {
+        "deptName": "Lynn Police Department",
+        "status": "Detective",
+        "dates": "7/9/1983 - 2/1/2001",
+        "deptImage": "string",
+        "deptAddress": "8562 Elm Ct, Cambridge, AR 11325"
+      },
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Lieutenant",
+        "dates": "3/23/2015 - 0/2/1985",
+        "deptImage": "string",
+        "deptAddress": "11013 Elm St, Cambridge, DE 41255"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police", "National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "firstName": "Thea",
+    "lastName": "Wright",
+    "badgeNo": "665396561",
+    "status": "Captain",
+    "department": "Cambridge Police Department",
+    "birthDate": "09/15/1974",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Quincy Police Department",
+        "status": "Corporal",
+        "dates": "12/23/2002 - 1/8/2009",
+        "deptImage": "string",
+        "deptAddress": "8719 Maple St, Lynn, AR 24885"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 61,
+        "occurred": 978823892000,
+        "officers": ["C.Nabbs", "J.Roseburgh"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Injurious restraint", "Unarmed presence", "Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 100,
+    "firstName": "Betty",
+    "lastName": "Briant",
+    "badgeNo": "76042486",
+    "status": "Sergeant",
+    "department": "Lynn Police Department",
+    "birthDate": "05/03/1975",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Cambridge Police Department",
+        "status": "Captain",
+        "dates": "7/13/2017 - 11/25/1998",
+        "deptImage": "string",
+        "deptAddress": "13314 Oak Ave, Brockton, ME 91927"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 100,
+        "occurred": 1079754874000,
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 96,
+        "occurred": 1421225817000,
+        "officers": ["R.Randals", "T.Parzizek"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      }
+    ]
+  }
+]
