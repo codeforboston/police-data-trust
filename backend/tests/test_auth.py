@@ -116,11 +116,34 @@ def test_forgot_email(mocker, client, example_user, use_correct_email):
     assert res.status_code == 200
 
 @pytest.mark.parametrize(("use_correct_token"), [(True), (False)])
-def test_reset_password(client, example_user, use_correct_token):
+def test_reset_password(client, db_session, example_user, use_correct_token):
+    login_res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": "my_password"
+        }
+    )
+    print(login_res.json)
     client.post(
         "api/v1/auth/resetPassword",
-        json={"password": "newPassword"}
+        headers={
+            "Authorization": "Bearer {0}".format(login_res.json["access_token"])
+        },
+        json={
+            "password": "newPassword",
+        }
     )
+
+    login_res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": "newPassword"
+        }
+    )
+
+    assert login_res.status_code == 200
 
 def test_access_token_fixture(access_token):
     assert len(access_token) > 0

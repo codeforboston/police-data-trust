@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_access_cookies,
 )
+from flask_jwt_extended.utils import get_jwt_header
 from pydantic.main import BaseModel
 from ..auth import role_required, user_manager
 from ..database import User, UserRole, db
@@ -157,21 +158,22 @@ def send_reset_email():
 class PasswordDTO(BaseModel):
     password: str
 
-@bp.route("/resetPassword/<token>", methods=["POST"])
-@validate(auth=False, json=PasswordDTO)
-def reset_password(token: str):
+@bp.route("/resetPassword", methods=["POST"])
+@jwt_required()
+@validate(auth=True, json=PasswordDTO)
+def reset_password():
     body: PasswordDTO = request.context.json
     # NOTE: Should this be the same expiration time as a normal token, or shorter?
-    expiration_seconds = current_app.config.get("TOKEN_EXPIRATION").total_seconds()
-    is_valid, is_expired, user_id = user_manager.verify_token(token, expiration_seconds);
-    print(is_valid, is_expired, user_id)
-    if (not is_valid):
-        return "Token is not valid, please request another reset token.", 400
-    elif (is_expired):
-        return "Token has expired, please request another reset token.", 400
-    else:
-        user = User.get(user_id)
-        user.password = user_manager.hash_password(body.password),
-        db.session.commit()
+    # expiration_seconds = current_app.config.get("TOKEN_EXPIRATION").total_seconds()
+    # is_valid, is_expired, user_id = user_manager.verify_token(token, expiration_seconds);
+    # print(is_valid, is_expired, user_id)
+    # if (not is_valid):
+    #     return "Token is not valid, please request another reset token.", 400
+    # elif (is_expired):
+    #     return "Token has expired, please request another reset token.", 400
+    # else:
+    user = User.get(get_jwt_identity())
+    user.password = user_manager.hash_password(body.password),
+    db.session.commit()
     return "Password successfully changed", 200
     # user_manager.reset_password_form()
