@@ -164,6 +164,7 @@ class PasswordDTO(BaseModel):
 def reset_password():
     body: PasswordDTO = request.context.json
     user = User.get(get_jwt_identity())
+    print(user)
     user.password = user_manager.hash_password(body.password),
     db.session.commit()
-    return "Password successfully changed", 200
+    return { "message": "Password successfully changed"}, 200

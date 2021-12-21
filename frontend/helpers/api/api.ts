@@ -29,9 +29,13 @@ export interface ForgotPassword {
   email: string
 }
 
-export interface ResetPassword {
-  token: string,
+export interface ResetPasswordRequest extends AuthenticatedRequest {
+  accessToken: string,
   password: string
+}
+
+export interface ResetPasswordResponse {
+  message: string,
 }
 
 export interface Officer {
@@ -100,7 +104,6 @@ export function register(data: RegisterRequest): Promise<AccessToken> {
 }
 
 export function forgotPassowrd(data: ForgotPassword): Promise<void> {
-  
   return request({
     url: "/auth/forgotPassword",
     method: "POST",
@@ -108,11 +111,14 @@ export function forgotPassowrd(data: ForgotPassword): Promise<void> {
   })
 }
 
-export function resetPassword(data: ResetPassword): Promise<void> {
+export function resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+  const { accessToken } = req;
+  
   return request({
-    url: `/auth/resetPassword/${data.token}`,
+    url: `/auth/resetPassword`,
     method: "POST",
-    data,
+    data: { password: req.password },
+    accessToken
   })
 }
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import { EnrollmentHeader, PasswordAid } from "../../compositions"
-import { AppRoutes, CallToActionTypes, PrimaryInputNames, TooltipTypes } from "../../models"
+import { AppRoutes, PrimaryInputNames } from "../../models"
 import { Layout, PrimaryInput, PrimaryButton, FormLevelError } from "../../shared-components"
-import { useAuth, useRedirectOnAuth } from "../../helpers"
+import styles from "./reset.module.css"
+import { useRedirectOnAuth } from "../../helpers"
 import { resetPassword } from "../../helpers/api"
 import { FormProvider, useForm } from "react-hook-form"
 import { useRouter } from "next/router"
@@ -36,11 +37,15 @@ export default function ResetPassword() {
     try {
       await resetPassword({
         password: formValues[CREATE_PASSWORD],
-        token,
+        accessToken: token,
       })
     } catch (e) {
-      console.error("Unexpected registration error", e)
-      setSubmitError("Something went wrong. Please try again.")
+      console.error("Unexpected password reset error", e)
+      if (e.message.includes("401")) {
+        setSubmitError("Token Invalid, please request another forgot password email.")
+      } else {
+        setSubmitError("Something went wrong. Please try again.")
+      }
     }
     setLoading(false)
   }
@@ -48,9 +53,9 @@ export default function ResetPassword() {
   return (
     <Layout>
       <section className="enrollmentSection">
-        <EnrollmentHeader headerText="Register: Viewer Account" tooltip={TooltipTypes.VIEWER} />
+        <EnrollmentHeader headerText="Reset Password"/>
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
             <PrimaryInput inputName={CREATE_PASSWORD} isShown={isPasswordShown} />
             <PrimaryInput inputName={CONFIRM_PASSWORD} isShown={isPasswordShown} />
             <PasswordAid id={passwordAidId} onDisplayChange={handlePasswordDisplay} />

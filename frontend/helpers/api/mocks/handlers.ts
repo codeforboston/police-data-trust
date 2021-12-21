@@ -34,8 +34,31 @@ export const handlers = [
     }
   }),
 
-  rest.post<Json>(routePath("/auth/reset-password/:token"), (req, res, ctx) => {
-    return res(ctx.status(200));
+  rest.post<Json>(routePath("/auth/resetPassword"), (req, res, ctx) => {
+    const accessToken = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)?.groups?.token
+    const user = accessToken && auth.whoami(accessToken)
+
+    if (!user) {
+      return res(ctx.status(401))
+    }
+
+    const { password } = req.body;
+    try {
+      const message = auth.reset({ accessToken, password })
+      return res(
+        ctx.json({ message }),
+        ctx.status(200)
+      )
+    } catch (e) {
+      console.log("HANDLER CAUGHT", e.message)
+      return res(
+        ctx.status(401),
+        ctx.json({
+          message: e.message,
+        })
+      )
+    }
+    
   }),
 
   rest.get(routePath("/auth/test"), (req, res, ctx) => {
