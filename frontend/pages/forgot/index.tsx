@@ -11,7 +11,8 @@ import {
   Layout,
   PrimaryButton,
   LinkButton,
-  PrimaryInput
+  PrimaryInput,
+  SuccessPage
 } from "../../shared-components"
 import sharedStyles from "../../styles/shared.module.css"
 
@@ -24,6 +25,7 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [useEmail, setEmailState] = useState(true)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
 
   async function onSubmit(formValues: any) {
     setLoading(true)
@@ -31,11 +33,18 @@ export default function ForgotPassword() {
     try {
       if (useEmail) {
         forgotPassowrd({ email: formValues.emailAddress });
+        setShowSuccessMessage(true)
       } else {
-        setSubmitError("Phone number not connected to back end")
+        setSubmitError("Phone number not connected to back end, please use your email.")
       }
     } catch (e) {}
     setLoading(false)
+  }
+
+  if (showSuccessMessage) {
+    return (
+      <SuccessPage message="Instructions to reset your login credentials have been sent to the email you registered with."/>
+    )
   }
 
   return (
