@@ -56,7 +56,7 @@ describe("behaviors", () => {
       expect(elements[k].getAttribute("aria-invalid")).toBeTruthy()
     }
 
-    expect(r.findAllByRole("alert")).resolves.toHaveLength(1);
+    expect(r.findAllByRole("alert")).resolves.toHaveLength(2);
 
   })
 
@@ -71,7 +71,7 @@ describe("behaviors", () => {
 
     expect(
       r.findAllByRole("alert")
-    ).resolves.toHaveLength(1);
+    ).resolves.toHaveLength(2);
   })
 
   it("requires matching passwords", async () => {

@@ -1,6 +1,6 @@
 import { AppRoutes } from "../../models"
 import Login from "../../pages/login"
-import { render, router, userEvent, waitFor } from "../test-utils"
+import { render, router, userEvent, waitFor, act } from "../test-utils"
 
 it("renders Login correctly", () => {
   const { container } = render(<Login />)
@@ -24,7 +24,7 @@ describe("behaviors", () => {
   it("should require fields", async () => {
     const r = renderPage()
 
-    userEvent.click(r.submit)
+    act(() => userEvent.click(r.submit))
 
     await expect(r.findByText(/Please enter a valid email/i)).resolves.toBeInTheDocument()
     await expect(r.findByText(/A password is required/i)).resolves.toBeInTheDocument()

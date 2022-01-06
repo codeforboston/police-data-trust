@@ -53,8 +53,8 @@ export default function ForgotPassword() {
         <EnrollmentHeader headerText="Forgot your password?" />
         <FormProvider {...form}>
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
-            <PrimaryInput inputName={EMAIL_ADDRESS} isShown={useEmail} className={useEmail ? "" : "hidden"} />
-            <PrimaryInput inputName={PHONE_NUMBER} isShown={!useEmail} className={useEmail ? "hidden" : ""} />
+            <PrimaryInput inputName={EMAIL_ADDRESS} isRequired={useEmail} className={useEmail ? "" : "hidden"} />
+            <PrimaryInput inputName={PHONE_NUMBER} isRequired={!useEmail} className={useEmail ? "hidden" : ""} />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <LinkButton
               loading={loading}

@@ -12,6 +12,7 @@ interface PrimaryInputProps {
   size?: string
   defaultValue?: string
   className?: string
+  isRequired?: boolean
 }
 
 export default function PrimaryInput({
@@ -19,7 +20,8 @@ export default function PrimaryInput({
   isShown,
   size,
   defaultValue,
-  className
+  className,
+  isRequired=true,
 }: PrimaryInputProps) {
   const {
     register,
@@ -56,7 +58,7 @@ export default function PrimaryInput({
         aria-describedby={errorId}
         aria-invalid={!isValid}
         defaultValue={defaultValue}
-        {...register(inputName, { required: isShown, pattern })}
+        {...register(inputName, { required: isRequired, pattern })}
       />
       {!isValid && (
         <FormLevelError
