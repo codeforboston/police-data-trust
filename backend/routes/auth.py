@@ -163,8 +163,9 @@ class PasswordDTO(BaseModel):
 @validate(auth=True, json=PasswordDTO)
 def reset_password():
     body: PasswordDTO = request.context.json
+    # NOTE: 401s if the user or token is not valid
+    # NOTE: This token follows the logged in user token lifespan, is that wanted?
     user = User.get(get_jwt_identity())
-    print(user)
     user.password = user_manager.hash_password(body.password),
     db.session.commit()
     return { "message": "Password successfully changed"}, 200
