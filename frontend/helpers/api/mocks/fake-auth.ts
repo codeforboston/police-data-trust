@@ -44,7 +44,7 @@ export default class FakeAuth {
   reset(request: ResetPasswordRequest): String | undefined {
     const { password, accessToken } = request;
     const user = this.sessions[accessToken]
-    console.log("USER ", user)
+
     if (user) {
       user.password = password;
       return "Password reset successfully";

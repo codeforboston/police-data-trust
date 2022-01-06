@@ -16,7 +16,7 @@ export default function ResetPassword() {
   const router = useRouter()
   const token = router.query.token instanceof Array ? router.query.token[0] : router.query.token
   
-  useRedirectOnAuth(AppRoutes.DASHBOARD)
+  useRedirectOnAuth(AppRoutes.LOGIN)
   const form = useForm()
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
@@ -39,6 +39,7 @@ export default function ResetPassword() {
         password: formValues[CREATE_PASSWORD],
         accessToken: token,
       })
+      router.push(AppRoutes.LOGIN)
     } catch (e) {
       console.error("Unexpected password reset error", e)
       if (e.message.includes("401")) {

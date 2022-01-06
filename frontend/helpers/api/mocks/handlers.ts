@@ -1,3 +1,4 @@
+import { access } from "fs"
 import { MockedRequest, rest } from "msw"
 import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser, ForgotPassword } from ".."
 import FakeAuth from "./fake-auth"
@@ -50,7 +51,6 @@ export const handlers = [
         ctx.status(200)
       )
     } catch (e) {
-      console.log("HANDLER CAUGHT", e.message)
       return res(
         ctx.status(401),
         ctx.json({
