@@ -7,7 +7,7 @@ from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
-from .types.enums import UserRole
+from enum import Enum
 
 
 fs_mixin = FlaskSerialize(db)
