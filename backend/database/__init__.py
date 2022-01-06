@@ -25,5 +25,4 @@ from .models.action import *
 from .models.use_of_force import *
 from .models.user import *
 from .models.victim import *
-from .models.passport_request import *
 from .models.accusation import *
