@@ -22,7 +22,7 @@ create_user(
         role=UserRole.PUBLIC,
         first_name="Test",
         last_name="Example",
-        phone_number="(123) 456-7890"
+        phone_number="(123) 456-7890",
     )
 )
 
@@ -33,7 +33,7 @@ create_user(
         role=UserRole.CONTRIBUTOR,
         first_name="Contributor",
         last_name="Example",
-        phone_number="(123) 456-7890"
+        phone_number="(123) 456-7890",
     )
 )
 
@@ -60,12 +60,14 @@ create_user(
 )
 
 
-def create_incident(key=1, date="10-01-2019"):
+def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
     id = base_id + key
     incident = Incident(
         id=id,
         location=f"Test location {key}",
+        longitude=lon,
+        latitude=lat,
         description=f"Test description {key}",
         department=f"Small Police Department {key}",
         time_of_incident=f"{date} 00:00:00",
@@ -84,11 +86,11 @@ def create_incident(key=1, date="10-01-2019"):
         incident.create()
 
 
-create_incident(key=1, date="10-01-2019")
-create_incident(key=2, date="11-01-2019")
-create_incident(key=3, date="12-01-2019")
-create_incident(key=4, date="03-15-2020")
-create_incident(key=5, date="04-15-2020")
-create_incident(key=6, date="08-10-2020")
-create_incident(key=7, date="10-01-2020")
-create_incident(key=8, date="10-15-2020")
+create_incident(key=1, date="10-01-2019", lon=-84.362576, lat=33.7589748)
+create_incident(key=2, date="11-01-2019", lon=-118.1861128, lat=33.76702)
+create_incident(key=3, date="12-01-2019", lon=-117.8827321, lat=33.800308)
+create_incident(key=4, date="03-15-2020", lon=-118.1690197, lat=33.8338271)
+create_incident(key=5, date="04-15-2020", lon=-83.9007382, lat=33.8389977)
+create_incident(key=6, date="08-10-2020", lon=-84.2687574, lat=33.9009798)
+create_incident(key=7, date="10-01-2020", lon=-118.40853, lat=33.9415889)
+create_incident(key=8, date="10-15-2020", lon=-84.032149, lat=33.967774)

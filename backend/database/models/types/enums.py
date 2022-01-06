@@ -18,10 +18,3 @@ class Race(enum.Enum):
     AMERICAN_INDIAN_ALASKA_NATIVE = 4
     ASIAN = 5
     NATIVE_HAWAIIAN_PACIFIC_ISLANDER = 6
-
-
-class UserRole(str, enum.Enum):
-    PASSPORT = "PASSPORT"
-    PUBLIC = "PUBLIC"
-    CONTRIBUTOR = "CONTRIBUTOR"
-    ADMIN = "ADMIN"

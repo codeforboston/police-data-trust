@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     unset_access_cookies,
 )
 from pydantic.main import BaseModel
-from ..auth import role_required, user_manager
+from ..auth import min_role_required, user_manager
 from ..database import User, UserRole, db
 from ..dto import LoginUserDTO, RegisterUserDTO
 from ..schemas import UserSchema, validate
@@ -136,7 +136,7 @@ def logout():
 
 @bp.route("/test", methods=["GET"])
 @jwt_required()
-@role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.PUBLIC)
 @validate()
 def test_auth():
     """Returns the currently-authenticated user."""

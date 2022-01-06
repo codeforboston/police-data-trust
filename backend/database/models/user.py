@@ -39,6 +39,23 @@ def compile_ci_string(element, compiler, **kwargs):
         return base_visit
 
 
+class UserRole(str, Enum):
+    PUBLIC = "Public"
+    PASSPORT = "Passport"
+    CONTRIBUTOR = "Contributor"
+    ADMIN = "Admin"
+
+    def get_value(self):
+        if self == UserRole.PUBLIC:
+            return 1
+        elif self == UserRole.PASSPORT:
+            return 2
+        elif self == UserRole.CONTRIBUTOR:
+            return 3
+        else:
+            return 4
+
+
 # Define the User data-model.
 class User(db.Model, UserMixin, CrudMixin):
     """The SQL dataclass for an Incident."""
