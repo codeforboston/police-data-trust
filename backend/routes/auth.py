@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -6,7 +6,6 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_access_cookies,
 )
-from flask_jwt_extended.utils import get_jwt_header
 from pydantic.main import BaseModel
 from ..auth import role_required, user_manager
 from ..database import User, UserRole, db

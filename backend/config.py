@@ -31,7 +31,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get(
         "MAIL_DEFAULT_SENDER",
-        "National Police Data Coalition <%s>".format(MAIL_USERNAME)
+        "National Police Data Coalition <{email}>".format(email=MAIL_USERNAME)
     )
 
     # Flask-User settings
