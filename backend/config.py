@@ -29,7 +29,10 @@ class Config(object):
     MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "National Police Data Coalition <%s>".format(MAIL_USERNAME))
+    MAIL_DEFAULT_SENDER = os.environ.get(
+        "MAIL_DEFAULT_SENDER",
+        "National Police Data Coalition <%s>".format(MAIL_USERNAME)
+    )
 
     # Flask-User settings
     USER_APP_NAME = (

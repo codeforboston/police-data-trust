@@ -63,17 +63,6 @@ def example_user(db_session):
     db_session.commit()
     return user
 
-@pytest.fixture
-def access_token(client, admin_user):
-    res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": admin_email,
-            "password": example_password,
-        },
-    )
-
-    return res.access_token
 
 @pytest.fixture
 def admin_user(db_session):

@@ -14,7 +14,6 @@ from .routes.incidents import bp as incidents_bp
 from .routes.auth import bp as auth_bp
 from .routes.healthcheck import bp as healthcheck_bp
 from .routes.user import bp as user_bp
-from .routes.passport import bp as passport_bp
 from .utils import dev_only
 
 
@@ -112,7 +111,6 @@ def register_routes(app: Flask):
     app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(healthcheck_bp)
-    app.register_blueprint(passport_bp)
     app.register_blueprint(user_bp)
 
     @app.route("/")

@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask import jsonify
 from flask import request
 from ..auth import role_required
 from ..database import User, UserRole, db

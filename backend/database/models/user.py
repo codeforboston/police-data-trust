@@ -12,6 +12,7 @@ from .types.enums import UserRole
 
 fs_mixin = FlaskSerialize(db)
 
+
 # Creating this class as NOCASE collation is not compatible with ordinary
 # SQLAlchemy Strings
 class CI_String(TypeDecorator):
