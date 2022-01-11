@@ -32,7 +32,7 @@ export default function ForgotPassword() {
     setSubmitError(null)
     try {
       if (useEmail) {
-        forgotPassowrd({ email: formValues.emailAddress });
+        forgotPassowrd({ email: formValues.emailAddress })
         setShowSuccessMessage(true)
       } else {
         setSubmitError("Phone number not connected to back end, please use your email.")
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
 
   if (showSuccessMessage) {
     return (
-      <SuccessPage message="Instructions to reset your login credentials have been sent to the email you registered with."/>
+      <SuccessPage message="Instructions to reset your login credentials have been sent to the email you registered with." />
     )
   }
 
@@ -53,8 +53,16 @@ export default function ForgotPassword() {
         <EnrollmentHeader headerText="Forgot your password?" />
         <FormProvider {...form}>
           <form className={sharedStyles.centerContent} onSubmit={form.handleSubmit(onSubmit)}>
-            <PrimaryInput inputName={EMAIL_ADDRESS} isRequired={useEmail} className={useEmail ? "" : "hidden"} />
-            <PrimaryInput inputName={PHONE_NUMBER} isRequired={!useEmail} className={useEmail ? "hidden" : ""} />
+            <PrimaryInput
+              inputName={EMAIL_ADDRESS}
+              isRequired={useEmail}
+              className={useEmail ? "" : "hidden"}
+            />
+            <PrimaryInput
+              inputName={PHONE_NUMBER}
+              isRequired={!useEmail}
+              className={useEmail ? "hidden" : ""}
+            />
             {submitError && <FormLevelError errorId="submitError" errorMessage={submitError} />}
             <LinkButton
               loading={loading}

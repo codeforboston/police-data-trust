@@ -25,16 +25,16 @@ describe("behaviors", () => {
   it("checks required fields", async () => {
     const token = await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
+    const useRouter = jest.spyOn(require("next/router"), "useRouter")
     const mockPush = jest.fn()
 
-    setAuthForTest();
+    setAuthForTest()
 
     useRouter.mockImplementation(() => ({
-      route: '/reset',
-      pathname: '',
+      route: "/reset",
+      pathname: "",
       query: { token: token },
-      asPath: '',
+      asPath: "",
       push: mockPush,
       events: {
         on: jest.fn(),
@@ -42,41 +42,34 @@ describe("behaviors", () => {
       },
       beforePopState: jest.fn(() => null),
       prefetch: jest.fn(() => null)
-    }));
+    }))
 
     const r = renderPage()
     const elements: any = r
 
     act(() => userEvent.click(r.submit))
 
-    for (const k of [
-      "createPassword",
-      "confirmPassword",
-    ]) {
+    for (const k of ["createPassword", "confirmPassword"]) {
       expect(elements[k].getAttribute("aria-invalid")).toBeTruthy()
     }
 
-    expect(r.findAllByRole("alert")).resolves.toHaveLength(2);
-
+    expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
   })
 
   it("checks password formatting", async () => {
     const r = renderPage()
 
-    
     act(() => {
       userEvent.type(r.createPassword, "badpassword")
       userEvent.click(r.submit)
     })
 
-    expect(
-      r.findAllByRole("alert")
-    ).resolves.toHaveLength(2);
+    expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
   })
 
   it("requires matching passwords", async () => {
     const r = renderPage()
-   
+
     act(() => {
       userEvent.type(r.createPassword, "aA1!asdfasdf")
       userEvent.type(r.confirmPassword, "mistmatch")
@@ -87,19 +80,18 @@ describe("behaviors", () => {
   })
 
   it("should redirect to the login", async () => {
-
     const token = await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
+    const useRouter = jest.spyOn(require("next/router"), "useRouter")
     const mockPush = jest.fn()
 
-    setAuthForTest();
+    setAuthForTest()
 
     useRouter.mockImplementation(() => ({
-      route: '/reset',
-      pathname: '',
+      route: "/reset",
+      pathname: "",
       query: { token: token },
-      asPath: '',
+      asPath: "",
       push: mockPush,
       events: {
         on: jest.fn(),
@@ -107,7 +99,7 @@ describe("behaviors", () => {
       },
       beforePopState: jest.fn(() => null),
       prefetch: jest.fn(() => null)
-    }));
+    }))
 
     const r = renderPage()
 
@@ -123,16 +115,16 @@ describe("behaviors", () => {
   it("checks token validity", async () => {
     const token = await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
+    const useRouter = jest.spyOn(require("next/router"), "useRouter")
     const mockPush = jest.fn()
 
-    setAuthForTest();
+    setAuthForTest()
 
     useRouter.mockImplementation(() => ({
-      route: '/reset',
-      pathname: '',
+      route: "/reset",
+      pathname: "",
       query: { token: "badtoken" },
-      asPath: '',
+      asPath: "",
       push: mockPush,
       events: {
         on: jest.fn(),
@@ -140,7 +132,7 @@ describe("behaviors", () => {
       },
       beforePopState: jest.fn(() => null),
       prefetch: jest.fn(() => null)
-    }));
+    }))
 
     const r = renderPage()
 

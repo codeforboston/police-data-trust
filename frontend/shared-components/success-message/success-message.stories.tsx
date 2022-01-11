@@ -11,5 +11,5 @@ const Template: ComponentStory<typeof SuccessMessage> = (args) => <SuccessMessag
 
 export const Default = Template.bind({})
 Default.args = {
-  message: 'This is a success message',
+  message: "This is a success message"
 }

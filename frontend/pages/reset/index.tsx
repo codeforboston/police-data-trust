@@ -8,14 +8,13 @@ import { resetPassword } from "../../helpers/api"
 import { FormProvider, useForm } from "react-hook-form"
 import { useRouter } from "next/router"
 
-const { CREATE_PASSWORD, CONFIRM_PASSWORD } =
-  PrimaryInputNames
+const { CREATE_PASSWORD, CONFIRM_PASSWORD } = PrimaryInputNames
 const passwordAidId = "passwordAid"
 
 export default function ResetPassword() {
   const router = useRouter()
   const token = router.query.token instanceof Array ? router.query.token[0] : router.query.token
-  
+
   useRedirectOnAuth(AppRoutes.LOGIN)
   const form = useForm()
   const [loading, setLoading] = useState(false)
@@ -37,7 +36,7 @@ export default function ResetPassword() {
     try {
       await resetPassword({
         password: formValues[CREATE_PASSWORD],
-        accessToken: token,
+        accessToken: token
       })
       router.push(AppRoutes.LOGIN)
     } catch (e) {
@@ -54,7 +53,7 @@ export default function ResetPassword() {
   return (
     <Layout>
       <section className="enrollmentSection">
-        <EnrollmentHeader headerText="Reset Password"/>
+        <EnrollmentHeader headerText="Reset Password" />
         <FormProvider {...form}>
           <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
             <PrimaryInput inputName={CREATE_PASSWORD} isShown={isPasswordShown} />

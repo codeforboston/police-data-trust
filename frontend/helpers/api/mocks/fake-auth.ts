@@ -36,18 +36,18 @@ export default class FakeAuth {
     const user = this.users.find((u) => u.email === email)
 
     if (user) {
-      const token = String(this.sessionId++);
-      this.sessions[token] = user;
+      const token = String(this.sessionId++)
+      this.sessions[token] = user
     }
   }
 
   reset(request: ResetPasswordRequest): String | undefined {
-    const { password, accessToken } = request;
+    const { password, accessToken } = request
     const user = this.sessions[accessToken]
 
     if (user) {
-      user.password = password;
-      return "Password reset successfully";
+      user.password = password
+      return "Password reset successfully"
     } else {
       throw new Error("Missing JWT in headers or cookies")
     }

@@ -30,12 +30,12 @@ export interface ForgotPassword {
 }
 
 export interface ResetPasswordRequest extends AuthenticatedRequest {
-  accessToken: string,
+  accessToken: string
   password: string
 }
 
 export interface ResetPasswordResponse {
-  message: string,
+  message: string
 }
 
 export interface Officer {
@@ -112,8 +112,8 @@ export function forgotPassowrd(data: ForgotPassword): Promise<void> {
 }
 
 export function resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
-  const { accessToken } = req;
-  
+  const { accessToken } = req
+
   return request({
     url: `/auth/resetPassword`,
     method: "POST",

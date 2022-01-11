@@ -29,36 +29,33 @@ export const handlers = [
   // TODO: How can these be faked better
   rest.post<Json>(routePath("/auth/forgotPassword"), (req, res, ctx) => {
     if (req.body.email) {
-      return res(ctx.status(200));
+      return res(ctx.status(200))
     } else {
-      return res(ctx.status(422));
+      return res(ctx.status(422))
     }
   }),
 
   rest.post<Json>(routePath("/auth/resetPassword"), (req, res, ctx) => {
-    const accessToken = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)?.groups?.token
+    const accessToken = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)
+      ?.groups?.token
     const user = accessToken && auth.whoami(accessToken)
 
     if (!user) {
       return res(ctx.status(401))
     }
 
-    const { password } = req.body;
+    const { password } = req.body
     try {
       const message = auth.reset({ accessToken, password })
-      return res(
-        ctx.json({ message }),
-        ctx.status(200)
-      )
+      return res(ctx.json({ message }), ctx.status(200))
     } catch (e) {
       return res(
         ctx.status(401),
         ctx.json({
-          message: e.message,
+          message: e.message
         })
       )
     }
-    
   }),
 
   rest.get(routePath("/auth/test"), (req, res, ctx) => {

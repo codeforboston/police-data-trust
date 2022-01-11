@@ -21,7 +21,7 @@ export default function PrimaryInput({
   size,
   defaultValue,
   className,
-  isRequired=true,
+  isRequired = true
 }: PrimaryInputProps) {
   const {
     register,
