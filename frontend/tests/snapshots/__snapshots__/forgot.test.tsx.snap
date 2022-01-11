@@ -30,7 +30,6 @@ exports[`renders Forgot correctly 1`] = `
             Email Address:
           </label>
           <input
-            aria-describedby="emailAddressError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"
@@ -49,7 +48,6 @@ exports[`renders Forgot correctly 1`] = `
             Phone Number:
           </label>
           <input
-            aria-describedby="phoneNumberError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"

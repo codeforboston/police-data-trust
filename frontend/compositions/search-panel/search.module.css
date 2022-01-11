@@ -1,0 +1,14 @@
+.searchPanelContainer {
+  margin-top: var(--size40);
+  width: var(--size384);
+  border-right: 2px solid black;
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: var(--size384);
+  height: 60vh;
+}

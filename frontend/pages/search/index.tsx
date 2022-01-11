@@ -1,23 +1,22 @@
-import { DashboardHeader, Map, SearchResultsTable } from "../../compositions"
-import { requireAuth } from "../../helpers"
+import { DashboardHeader, Map, SearchPanel, SearchResultsTable } from "../../compositions"
+import { requireAuth, useSearch } from "../../helpers"
 import { Layout } from "../../shared-components"
-import { InputForm, ResultsTable } from "../../compositions/basic-search"
-import { SearchPanel } from "../../compositions/search/search-panel"
-import PopUp from "../../compositions/visualizations/popUps/popUpComp"
-import { usePopUp } from "../../compositions/visualizations/popUps/popUps"
-
-type ChartType = "bubble" | "map"
+import styles from "./search.module.css"
 
 export default requireAuth(function Dashboard() {
+  const { searchPageContainer, searchPageDisplay } = styles
+  const { incidentResults } = useSearch()
+
   return (
     <Layout>
-      <div style={{ display: "flex" }}>
+      <DashboardHeader />
+      <div className={searchPageContainer}>
         <SearchPanel />
-        <Map />
+        <div className={searchPageDisplay}>
+          <Map />
+          {!!incidentResults && <SearchResultsTable />}
+        </div>
       </div>
-      <InputForm />
-      <SearchResultsTable />
-      <ResultsTable />
     </Layout>
   )
 })
