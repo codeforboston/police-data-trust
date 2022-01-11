@@ -25,7 +25,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json({ access_token: token }))
   }),
 
-  rest.get(routePath("/auth/test"), (req, res, ctx) => {
+  rest.get(routePath("/auth/whoami"), (req, res, ctx) => {
     const token = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)?.groups?.token
     const user = token && auth.whoami(token)
 
