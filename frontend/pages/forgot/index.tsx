@@ -12,7 +12,7 @@ import {
   PrimaryButton,
   LinkButton,
   PrimaryInput,
-  SuccessPage
+  SuccessMessage
 } from "../../shared-components"
 import sharedStyles from "../../styles/shared.module.css"
 
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
 
   if (showSuccessMessage) {
     return (
-      <SuccessPage message="Instructions to reset your login credentials have been sent to the email you registered with." />
+      <SuccessMessage message="Instructions to reset your login credentials have been sent to the email you registered with." />
     )
   }
 
