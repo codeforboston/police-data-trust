@@ -1,13 +1,13 @@
 import React from "react"
 import { Logo } from ".."
 import { LogoSizes } from "../../models"
-import styles from "./success-page.module.css"
+import styles from "./success-message.module.css"
 
-interface SuccessPageProps {
+interface SuccessMessage {
   message: string
 }
 
-export default function SuccessPage({ message }: SuccessPageProps) {
+export default function SuccessMessage({ message }: SuccessMessage) {
 
   return (
     <div className={styles.center}>

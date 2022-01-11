@@ -9,7 +9,7 @@ import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
 import LinkButton from "./link-button/link-button"
 import ResultsAlert from "./results-alert/results-alert"
-import SuccessPage from "./success-page/success-page"
+import SuccessMessage from "./success-message/success-message"
 
 export {
   ExternalLink,
@@ -23,5 +23,5 @@ export {
   ResponseTextArea,
   USAStateInput,
   ResultsAlert,
-  SuccessPage
+  SuccessMessage
 }
