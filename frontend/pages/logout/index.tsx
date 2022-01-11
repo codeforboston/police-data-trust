@@ -11,7 +11,7 @@ export default requireAuth(function Logout() {
   const { logout } = useAuth()
   React.useEffect(() => {
     logout()
-  }, [])
+  }, [logout])
   return (
     <Layout>
       <section className="enrollmentSection">
