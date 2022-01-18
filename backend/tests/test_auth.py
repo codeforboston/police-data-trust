@@ -72,7 +72,7 @@ def test_auth_test_header(client, example_user):
     client.set_cookie("localhost", "access_token_cookie", value="")
 
     test_res = client.get(
-        "api/v1/auth/test",
+        "api/v1/auth/whoami",
         headers={
             "Authorization": "Bearer {0}".format(login_res.json["access_token"])
         },
@@ -88,7 +88,7 @@ def test_auth_test_cookie(client, example_user):
     )
 
     test_res = client.get(
-        "api/v1/auth/test",
+        "api/v1/auth/whoami",
     )
 
     assert test_res.status_code == 200
