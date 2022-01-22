@@ -7,6 +7,6 @@ export default {
   component: Map
 } as ComponentMeta<typeof Map>
 
-const Template: ComponentStory<typeof Map> = (args) => <Map {...args} />
+const Template: ComponentStory<typeof Map> = () => <Map />
 
 export const Default = Template.bind({})
