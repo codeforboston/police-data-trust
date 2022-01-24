@@ -30,7 +30,9 @@ export default function BaseMap(props: BaseMapProps) {
     // Set the title after loading data to facilitate testing
     svg.attr("title", "US Map")
 
-    /* Definitions */
+    /* Definitions -- this section defines the special styling which 
+    will be applied to the features of the map */
+
     // const defs = svg.append("defs")
 
     // const strokeShape = defs.append("filter").attr("id", "strokeShape")
@@ -76,7 +78,7 @@ export default function BaseMap(props: BaseMapProps) {
 
     const paths = svg.append("g").attr("id", "paths")
 
-    /* SVG Body */
+    /* SVG Body -- the visible map features are described here */
     paths
       .selectAll("path")
       .data(geoData.features)

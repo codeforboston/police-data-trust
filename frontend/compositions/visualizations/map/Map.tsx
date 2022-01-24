@@ -37,8 +37,6 @@ export default function Map() {
   }, [])
 
   const path = useMemo(() => geoPath(projection), [projection])
-  // const svgElementRef = useRef(select("#map-svg") as D3CallableSelectionType)
-  // const svgElement = select("#map-svg") as D3CallableSelectionType
   const gZoomable = select("#zoom-container") as D3CallableSelectionType
 
   const getHeightAndWidth = useCallback(() => {
@@ -50,7 +48,7 @@ export default function Map() {
   }, [height, width])
 
   const calcFitFeatureToWindow = useCallback(
-    (/* width: number, height: number, */ d: Feature) => {
+    (d: Feature) => {
       const [height, width] = getHeightAndWidth()
       const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
       const dWidth = x1 - x0
@@ -98,7 +96,6 @@ export default function Map() {
     (event: MouseEvent) => {
       event.stopPropagation()
       event.stopImmediatePropagation()
-      console.log("doubleclick")
       resetZoom()
     },
     [resetZoom]
@@ -200,13 +197,5 @@ export default function Map() {
     </div>
   ) : (
     <div></div>
-  )
-}
-
-export const BodyComp = (bodyContent: string | any) => {
-  return (
-    <div>
-      <p>{bodyContent}</p>
-    </div>
   )
 }

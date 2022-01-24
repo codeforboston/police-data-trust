@@ -18,46 +18,34 @@ export function MarkerLayer(props: MarkerLayerProps) {
   const { markersData } = props
 
   const handleMouseOver = (event: MouseEvent, markerDescription: MarkerDescription) => {
-    console.log("moue enter marker")
-
     const x = markerDescription.geoCenter.x + (event.target as HTMLElement).offsetLeft
     const y = markerDescription.geoCenter.y + (event.target as HTMLElement).offsetTop
-
-    // popup.moveTo({x: x, y: y})
-    // popup.setHeader(markerDescription.label)
-    // popup.setBody("this is a marker popup")
-    // popup.show()
   }
 
   const handleMouseMove = (event: MouseEvent) => {
     event.stopPropagation()
   }
 
-  const handleMouseLeave = () => {
-    console.log("mosue leave makrer")
-    // popup.hide()
-  }
+  const handleMouseLeave = () => {}
 
   return (
     <svg
       viewBox="0, 0, 1200, 700"
-      id={"marker-layer"}
+      id="marker-layer"
       className={styles.markerLayer}
-      height={"100%"}
-      width={"100%"}>
+      height="100%"
+      width="100%">
       {markersData &&
         markersData.map((c, i) => {
           return (
-            <>
-              <Marker
-                type={"circle"}
-                markerDescription={c}
-                key={`${i}${c.dataPoint}`}
-                handleMouseOver={handleMouseOver}
-                handleMouseLeave={handleMouseLeave}
-                handleMouseMove={handleMouseMove}
-              />
-            </>
+            <Marker
+              type="circle"
+              markerDescription={c}
+              key={`${i}${c.dataPoint}`}
+              handleMouseOver={handleMouseOver}
+              handleMouseLeave={handleMouseLeave}
+              handleMouseMove={handleMouseMove}
+            />
           )
         })}
     </svg>
@@ -90,7 +78,6 @@ export function Marker(props: MarkerProps) {
     <g
       type={type}
       {...props}
-      onClick={() => console.log(markerDescription.label)}
       onMouseOver={(e) => handleMouseOver(e, markerDescription)}
       onMouseMove={(e) => handleMouseMove(e, markerDescription)}
       onMouseOut={handleMouseLeave}>
@@ -100,12 +87,8 @@ export function Marker(props: MarkerProps) {
   )
 }
 
-export function CircleMarker(props: { position: Coord; fill?: string }) {
-  const {
-    position: { x, y },
-    fill
-  } = props
-  const r = 10
+export function CircleMarker({position:{x, y}, fill} :{ position: Coord; fill?: string }) {
+  const radius = 10
   const cx = x
   const cy = y
 
@@ -114,26 +97,22 @@ export function CircleMarker(props: { position: Coord; fill?: string }) {
       className={"marker " + styles.circleMarker}
       cx={cx}
       cy={cy}
-      r={r}
+      r={radius}
       fill={fill || "var(--darkBlue)"}
     />
   )
 }
 
-export function SquareMarker(props: { position: Coord; fill?: string }) {
-  const {
-    position: { x, y },
-    fill
-  } = props
-  const r = 20
+export function SquareMarker({position:{x, y}, fill} :{ position: Coord; fill?: string }) {
+  const side = 20
 
   return (
     <rect
       className={"marker " + styles.squareMarker}
-      x={x - r / 2}
-      y={y - r / 2}
-      width={r}
-      height={r}
+      x={x - side / 2}
+      y={y - side / 2}
+      width={side}
+      height={side}
       fill={fill || "var(--darkBlue)"}
     />
   )
