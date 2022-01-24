@@ -1,0 +1,4385 @@
+[
+  {
+    "id": 1,
+    "firstName": "Timothy",
+    "lastName": "Young",
+    "badgeNo": "30420452",
+    "status": "Chief",
+    "department": "Houston Police Department",
+    "birthDate": "12/15/1976",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Captain",
+        "dates": "8/7/2014 - 10/15/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1191 Elm Ave, Houston, KY 93452"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Sergeant",
+        "dates": "3/7/1999 - 4/10/2007",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10435 Lemon Ln, San Diego, MN 58574"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "firstName": "Ruby",
+    "lastName": "Recalde",
+    "badgeNo": "444755448",
+    "status": "Captain",
+    "department": "Pheonix Police Department",
+    "birthDate": "02/14/1950",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 60,
+        "occurred": 1138166348000,
+        "officers": ["B.Burwell", "M.Benedidick"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      },
+      {
+        "id": 7,
+        "occurred": 1328178379000,
+        "officers": ["I.Riccardini", "E.Sizeland"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Injurious restraint", "Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "firstName": "Barry",
+    "lastName": "Rollins",
+    "badgeNo": "809770685",
+    "status": "Officer",
+    "department": "Houston Police Department",
+    "birthDate": "09/09/1979",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Technician",
+        "dates": "11/15/2019 - 9/14/2002",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "12141 Apple Ln, San Jose, NE 93060"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 95,
+        "occurred": 1051961034000,
+        "officers": ["Y.Trowle", "P.Beange", "R.Grebner", "R.Heaviside"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "firstName": "Bryant",
+    "lastName": "Auld",
+    "badgeNo": "770131489",
+    "status": "Lieutenant",
+    "department": "Los Angeles Police Department",
+    "birthDate": "04/17/1987",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Houston Police Department",
+        "status": "Sergeant",
+        "dates": "11/6/1993 - 2/19/1993",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "14535 Pear Ln, San Antonio, ID 21431"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Technician",
+        "dates": "4/10/2002 - 0/20/1985",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "8949 California Ave, Philadelphia, FL 94249"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Technician",
+        "dates": "3/3/2008 - 0/12/1978",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6423 Elm St, Dallas, NY 91394"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 20,
+        "occurred": 1145369169000,
+        "officers": ["I.Gainforth", "G.Trustrie", "S.Kliche", "S.Fitzer", "M.Shedd"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 28,
+        "occurred": 1550632519000,
+        "officers": ["Ailbert de Savery", "L.Rannald", "L.Killik", "M.Riccelli", "A.Keilty"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Electric weaponry"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "firstName": "Karen",
+    "lastName": "Gray",
+    "badgeNo": "556903643",
+    "status": "Detective",
+    "department": "San Antonio Police Department",
+    "birthDate": "12/17/1962",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Detective",
+        "dates": "2/9/2001 - 2/12/1995",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5592 Oak Ln, Houston, PA 77003"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Deputy",
+        "dates": "12/28/1982 - 2/8/1995",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "14879 Maple Ave, Chicago, PR 14012"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Technician",
+        "dates": "9/21/2017 - 4/13/1988",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "5106 Pine Ln, San Diego, WY 40114"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 6,
+    "firstName": "Martin",
+    "lastName": "Franklin",
+    "badgeNo": "378437681",
+    "status": "Sergeant",
+    "department": "Pheonix Police Department",
+    "birthDate": "03/06/1988",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Chief",
+        "dates": "1/30/1976 - 7/28/1983",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7289 Cedar Ave, Philadelphia, MT 93824"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Sergeant",
+        "dates": "7/29/1975 - 9/6/1995",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3753 Oak Ln, Chicago, MS 55314"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 91,
+        "occurred": 1519495314000,
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 36,
+        "occurred": 1284624218000,
+        "officers": ["M.Cotterel", "N.Eaglestone"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 60,
+        "occurred": 1138166348000,
+        "officers": ["B.Burwell", "M.Benedidick"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "firstName": "Ronald",
+    "lastName": "Workman",
+    "badgeNo": "668017781",
+    "status": "Chief",
+    "department": "Chicago Police Department",
+    "birthDate": "09/22/1980",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 100,
+        "occurred": 1079754874000,
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "firstName": "Edward",
+    "lastName": "Mcdevitt",
+    "badgeNo": "134693388",
+    "status": "Lieutenant",
+    "department": "San Diego Police Department",
+    "birthDate": "12/18/1952",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 51,
+        "occurred": 1130675484000,
+        "officers": ["A.Rofe", "F.Lias"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 77,
+        "occurred": 1235475821000,
+        "officers": ["V.Sealove", "T.Buyers", "L.Spenton"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 92,
+        "occurred": 1011094838000,
+        "officers": ["M.Ewestace"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "firstName": "Herbert",
+    "lastName": "Boardman",
+    "badgeNo": "178663474",
+    "status": "Technician",
+    "department": "San Antonio Police Department",
+    "birthDate": "09/01/1979",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Officer",
+        "dates": "10/15/1975 - 5/7/1975",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "9025 Apple Rd, Pheonix, KY 91174"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Officer",
+        "dates": "5/1/2000 - 2/10/2005",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "12917 Maple Ct, Chicago, FL 58617"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Corporal",
+        "dates": "12/19/1997 - 4/5/2021",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "11794 Lemon Ave, San Diego, MS 96540"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 10,
+    "firstName": "Harry",
+    "lastName": "Brown",
+    "badgeNo": "62967412",
+    "status": "Chief",
+    "department": "San Jose Police Department",
+    "birthDate": "07/24/1985",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Corporal",
+        "dates": "3/6/1978 - 9/0/1979",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6695 Maple Sq, Philadelphia, ND 87869"
+      },
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Lieutenant",
+        "dates": "4/9/2009 - 7/3/2005",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7771 Washington Rd, San Diego, WI 18157"
+      }
+    ],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 11,
+    "firstName": "David",
+    "lastName": "Mcgregor",
+    "badgeNo": "479538415",
+    "status": "Corporal",
+    "department": "San Antonio Police Department",
+    "birthDate": "09/07/1983",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 24,
+        "occurred": 1035961368000,
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "firstName": "Nancy",
+    "lastName": "Baumgartner",
+    "badgeNo": "462543321",
+    "status": "Detective",
+    "department": "San Antonio Police Department",
+    "birthDate": "08/29/1985",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Detective",
+        "dates": "11/9/1989 - 2/30/2015",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1685 Washington Ln, Chicago, UT 31331"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 35,
+        "occurred": 1293957746000,
+        "officers": ["S.Giacometti", "E.Maureen"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Unarmed blunt impact", "Verbalization", "Unarmed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "firstName": "Lisa",
+    "lastName": "Shaffer",
+    "badgeNo": "919379488",
+    "status": "Officer",
+    "department": "San Jose Police Department",
+    "birthDate": "04/06/1966",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Detective",
+        "dates": "9/1/1986 - 7/13/2013",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11803 Washington Rd, New York, NV 60052"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 14,
+    "firstName": "Cassandra",
+    "lastName": "Sanborn",
+    "badgeNo": "612915422",
+    "status": "Deputy",
+    "department": "Philadelphia Police Department",
+    "birthDate": "11/06/1965",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Detective",
+        "dates": "5/3/2009 - 8/20/1974",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3224 Boston St, Dallas, CT 51386"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Technician",
+        "dates": "10/21/2018 - 0/10/2007",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "11210 Lemon Ct, San Diego, CT 28788"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 89,
+        "occurred": 1348102502000,
+        "officers": ["A.Sansam"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Electric weaponry",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "firstName": "Tracy",
+    "lastName": "Bonner",
+    "badgeNo": "773591334",
+    "status": "Technician",
+    "department": "Los Angeles Police Department",
+    "birthDate": "08/02/1957",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 65,
+        "occurred": 1394883023000,
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "firstName": "Vickie",
+    "lastName": "Valdez",
+    "badgeNo": "679408279",
+    "status": "Captain",
+    "department": "New York Police Department",
+    "birthDate": "10/15/1975",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Deputy",
+        "dates": "9/17/2019 - 6/2/1981",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8157 Maple Rd, Pheonix, CO 19482"
+      },
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Sergeant",
+        "dates": "5/22/1993 - 5/27/1987",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "2267 California Ave, Pheonix, AK 16998"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 17,
+    "firstName": "Claude",
+    "lastName": "Austin",
+    "badgeNo": "224259459",
+    "status": "Captain",
+    "department": "San Jose Police Department",
+    "birthDate": "08/22/1961",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Technician",
+        "dates": "8/16/1984 - 3/8/1981",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "4067 Oak Ln, San Antonio, WA 96194"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Deputy",
+        "dates": "5/8/1977 - 7/16/1976",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "9632 Boston Sq, San Antonio, FL 10507"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 32,
+        "occurred": 1513409896000,
+        "officers": ["H.Sturley", "C.Daborne"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 21,
+        "occurred": 1491666066000,
+        "officers": ["S.Rendbaek", "F.Fewless", "Jo ann Queyeiro", "R.Gilson"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "firstName": "Elizabeth",
+    "lastName": "New",
+    "badgeNo": "986778015",
+    "status": "Sergeant",
+    "department": "Houston Police Department",
+    "birthDate": "04/14/1965",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Deputy",
+        "dates": "12/13/1972 - 9/28/1993",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6401 Oak Sq, New York, MN 47699"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Corporal",
+        "dates": "7/24/1997 - 6/19/1970",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "3847 Pear Ave, San Jose, KS 63390"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Chief",
+        "dates": "0/12/1990 - 7/9/2002",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12660 Apple St, San Antonio, MT 94252"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 19,
+    "firstName": "Ernestine",
+    "lastName": "Barnes",
+    "badgeNo": "740716272",
+    "status": "Detective",
+    "department": "Houston Police Department",
+    "birthDate": "02/27/1965",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Detective",
+        "dates": "1/9/2003 - 5/29/1987",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1499 Washington Sq, Chicago, IL 89390"
+      },
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Corporal",
+        "dates": "6/13/1997 - 6/19/2000",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "2073 Oak St, Dallas, GA 31635"
+      },
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Lieutenant",
+        "dates": "5/15/2012 - 10/9/1973",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3732 California St, San Antonio, KS 24594"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 85,
+        "occurred": 1385387993000,
+        "officers": ["F.Rodbourne", "L.Sabatini", "G.Dartnall", "C.Seymer"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "firstName": "Jessica",
+    "lastName": "Jones",
+    "badgeNo": "60677500",
+    "status": "Officer",
+    "department": "San Antonio Police Department",
+    "birthDate": "09/10/1986",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Corporal",
+        "dates": "6/3/2020 - 3/6/2009",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "9354 Pear Sq, New York, RI 55622"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Sergeant",
+        "dates": "8/21/2006 - 12/24/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7273 Cedar Ct, Dallas, CO 60108"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Technician",
+        "dates": "2/7/2021 - 10/7/2016",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10491 Pear Ct, Philadelphia, NC 20892"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 44,
+        "occurred": 1328006783000,
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "firstName": "Patty",
+    "lastName": "Davidson",
+    "badgeNo": "555346906",
+    "status": "Chief",
+    "department": "Chicago Police Department",
+    "birthDate": "04/01/1956",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "firstName": "Harold",
+    "lastName": "Kelly",
+    "badgeNo": "575714763",
+    "status": "Sergeant",
+    "department": "Houston Police Department",
+    "birthDate": "10/26/1961",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 23,
+    "firstName": "Christopher",
+    "lastName": "Graney",
+    "badgeNo": "877290998",
+    "status": "Chief",
+    "department": "Los Angeles Police Department",
+    "birthDate": "12/16/1972",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Technician",
+        "dates": "9/6/1982 - 4/22/2000",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8449 Maple Rd, New York, AK 50504"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Sergeant",
+        "dates": "6/29/1974 - 0/22/1992",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6689 Pine Ave, Houston, CA 69094"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 1,
+        "occurred": 1313471121000,
+        "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "firstName": "Lisa",
+    "lastName": "Mcadoo",
+    "badgeNo": "978601132",
+    "status": "Lieutenant",
+    "department": "Dallas Police Department",
+    "birthDate": "08/30/1972",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 45,
+        "occurred": 950326011000,
+        "officers": ["A.Etridge", "Y.Alans", "A.Olensby", "T.Gornall"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Electric weaponry", "Verbalization"],
+        "source": "Police report"
+      },
+      {
+        "id": 9,
+        "occurred": 1592579133000,
+        "officers": ["D.Bubear", "Y.Terbruggen", "A.Pooke", "G.Fleischmann", "K.Enric"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 100,
+        "occurred": 1079754874000,
+        "officers": ["Velvet St. Hill", "H.Dodgshon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "firstName": "Rhonda",
+    "lastName": "Oberg",
+    "badgeNo": "803007500",
+    "status": "Technician",
+    "department": "Pheonix Police Department",
+    "birthDate": "12/18/1971",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Detective",
+        "dates": "7/2/1972 - 9/4/1979",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5425 Maple Sq, Pheonix, WA 23675"
+      },
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Corporal",
+        "dates": "6/20/1975 - 7/10/2010",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3639 Pine Sq, Dallas, AL 26401"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 39,
+        "occurred": 998541593000,
+        "officers": ["H.Caslane"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "firstName": "Leslie",
+    "lastName": "Steen",
+    "badgeNo": "694300910",
+    "status": "Captain",
+    "department": "San Diego Police Department",
+    "birthDate": "10/26/1958",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 5,
+        "occurred": 1417759257000,
+        "officers": ["L.Ellerbeck", "H.Goldthorp", "C.Morcombe", "D.Moncrefe"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "firstName": "Christopher",
+    "lastName": "Person",
+    "badgeNo": "746518592",
+    "status": "Lieutenant",
+    "department": "San Antonio Police Department",
+    "birthDate": "11/16/1987",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Technician",
+        "dates": "10/3/1983 - 11/0/2013",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6411 Pine Ave, San Antonio, NE 88080"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Lieutenant",
+        "dates": "4/10/2005 - 5/26/1993",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10879 Apple Ln, Los Angeles, NV 22720"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 79,
+        "occurred": 1421248509000,
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 76,
+        "occurred": 1475264360000,
+        "officers": ["G.Linger", "K.Hanratty"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "firstName": "Brenda",
+    "lastName": "Price",
+    "badgeNo": "459365922",
+    "status": "Sergeant",
+    "department": "Houston Police Department",
+    "birthDate": "03/28/1969",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 85,
+        "occurred": 1385387993000,
+        "officers": ["F.Rodbourne", "L.Sabatini", "G.Dartnall", "C.Seymer"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "firstName": "Gina",
+    "lastName": "Raxter",
+    "badgeNo": "650628209",
+    "status": "Corporal",
+    "department": "Philadelphia Police Department",
+    "birthDate": "06/25/1953",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Technician",
+        "dates": "3/21/1974 - 11/5/1994",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8625 Maple Sq, San Antonio, VT 69387"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Corporal",
+        "dates": "3/11/1976 - 4/28/1984",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7420 Elm Way, Chicago, MO 16115"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Chief",
+        "dates": "1/0/1996 - 2/0/2011",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11611 Pine Sq, San Diego, VT 92516"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 97,
+        "occurred": 1616676069000,
+        "officers": ["F.Cockerton", "N.Charon", "C.Drinkhill", "A.Everiss", "O.Daice"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence", "Electric weaponry"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "firstName": "Shirley",
+    "lastName": "Lippert",
+    "badgeNo": "105908180",
+    "status": "Sergeant",
+    "department": "San Diego Police Department",
+    "birthDate": "07/27/1977",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Officer",
+        "dates": "5/28/1992 - 10/21/2016",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7904 Maple Rd, New York, CT 53667"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Detective",
+        "dates": "4/1/2012 - 1/17/1998",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7000 Cedar Ct, Philadelphia, DE 23138"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 98,
+        "occurred": 1328486358000,
+        "officers": ["J.Cluett"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Injurious restraint", "Unarmed presence"],
+        "source": "Court record"
+      },
+      {
+        "id": 92,
+        "occurred": 1011094838000,
+        "officers": ["M.Ewestace"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "firstName": "Jacob",
+    "lastName": "Peters",
+    "badgeNo": "991653873",
+    "status": "Detective",
+    "department": "Pheonix Police Department",
+    "birthDate": "01/03/1964",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 79,
+        "occurred": 1421248509000,
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 3,
+        "occurred": 965934788000,
+        "officers": ["F.Eakly"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "Police report"
+      },
+      {
+        "id": 81,
+        "occurred": 976491916000,
+        "officers": ["S.Mumbeson", "S.Brundale", "F.Farington", "D.Derrell", "T.Oxbrough"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Verbalization",
+          "Armed presence"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "firstName": "Theola",
+    "lastName": "Vargas",
+    "badgeNo": "30985924",
+    "status": "Deputy",
+    "department": "San Diego Police Department",
+    "birthDate": "01/27/1962",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Captain",
+        "dates": "12/21/1975 - 1/3/2010",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "11316 California Ave, Houston, NH 17127"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 30,
+        "occurred": 1309312190000,
+        "officers": ["J.Byforth", "C.McAvaddy", "P.Fivey", "T.Beecraft"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 69,
+        "occurred": 1051626343000,
+        "officers": ["R.Wiltshaw", "P.Boyford", "S.Abberley", "R.Hemerijk", "L.Pitt"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 92,
+        "occurred": 1011094838000,
+        "officers": ["M.Ewestace"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "firstName": "Janice",
+    "lastName": "Bergeron",
+    "badgeNo": "734836826",
+    "status": "Officer",
+    "department": "New York Police Department",
+    "birthDate": "08/02/1966",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Captain",
+        "dates": "3/21/1994 - 7/26/2019",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "14205 Cedar Ln, Dallas, FL 93744"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Officer",
+        "dates": "1/0/1994 - 4/7/2012",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "10892 Washington St, New York, FL 38365"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Corporal",
+        "dates": "7/15/1988 - 11/13/1997",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "12282 Maple Ave, New York, ID 15265"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 41,
+        "occurred": 1139441954000,
+        "officers": ["F.Gilli", "J.Osban"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 8,
+        "occurred": 1424274711000,
+        "officers": ["M.Kikke", "A.Halshaw", "L.Van Dale", "C.Blondel"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "firstName": "Richard",
+    "lastName": "Freeman",
+    "badgeNo": "554209919",
+    "status": "Deputy",
+    "department": "Pheonix Police Department",
+    "birthDate": "06/23/1978",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Corporal",
+        "dates": "0/16/1980 - 3/2/2006",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7500 Elm Way, Los Angeles, OR 68600"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Chief",
+        "dates": "2/6/1989 - 0/0/1988",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "9515 Lemon Ln, Houston, AR 20627"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Deputy",
+        "dates": "8/27/1972 - 3/15/1985",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12520 Boston Rd, San Antonio, MD 79374"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 71,
+        "occurred": 1193830644000,
+        "officers": ["B.Elderbrant", "B.Brassington", "I.Porrett", "M.Vallack", "M.Maus"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 39,
+        "occurred": 998541593000,
+        "officers": ["H.Caslane"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "firstName": "Esther",
+    "lastName": "King",
+    "badgeNo": "324679656",
+    "status": "Detective",
+    "department": "San Jose Police Department",
+    "birthDate": "05/06/1967",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Detective",
+        "dates": "10/26/2020 - 11/30/2019",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1882 Pear St, San Diego, MS 93655"
+      },
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Officer",
+        "dates": "10/7/1980 - 1/4/1996",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5448 Boston Ct, San Jose, GU 90636"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Chief",
+        "dates": "10/27/1988 - 4/14/1981",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10564 Pear Ct, New York, IN 85353"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 43,
+        "occurred": 1501602340000,
+        "officers": ["E.Seiter", "A.Blackie"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 64,
+        "occurred": 1064191433000,
+        "officers": ["C.Rossant", "C.Lansly", "K.Drain", "S.Rutter"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Verbalization",
+          "Armed presence",
+          "Injurious restraint",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 96,
+        "occurred": 1421225817000,
+        "officers": ["R.Randals", "T.Parzizek"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "firstName": "Michael",
+    "lastName": "Rock",
+    "badgeNo": "74067717",
+    "status": "Technician",
+    "department": "Houston Police Department",
+    "birthDate": "11/15/1965",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 20,
+        "occurred": 1145369169000,
+        "officers": ["I.Gainforth", "G.Trustrie", "S.Kliche", "S.Fitzer", "M.Shedd"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "firstName": "Vanessa",
+    "lastName": "Dillard",
+    "badgeNo": "657849451",
+    "status": "Sergeant",
+    "department": "Philadelphia Police Department",
+    "birthDate": "05/08/1970",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Corporal",
+        "dates": "6/0/2001 - 6/10/2021",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7865 Apple Sq, Philadelphia, AR 10661"
+      },
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Captain",
+        "dates": "12/5/1984 - 12/24/1997",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6738 Maple Ct, San Jose, IN 93182"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      },
+      {
+        "id": 74,
+        "occurred": 1142546598000,
+        "officers": ["E.Armiger"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization", "Unarmed presence", "Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "firstName": "Gerry",
+    "lastName": "Wells",
+    "badgeNo": "369615440",
+    "status": "Captain",
+    "department": "Dallas Police Department",
+    "birthDate": "09/11/1969",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 13,
+        "occurred": 1234544062000,
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Injurious restraint"],
+        "source": "Court record"
+      },
+      {
+        "id": 24,
+        "occurred": 1035961368000,
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "firstName": "Kay",
+    "lastName": "Vigil",
+    "badgeNo": "279253945",
+    "status": "Captain",
+    "department": "San Antonio Police Department",
+    "birthDate": "03/22/1970",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Sergeant",
+        "dates": "9/7/2005 - 4/26/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1995 Washington Ln, San Diego, TX 66271"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Technician",
+        "dates": "1/28/1977 - 1/27/1985",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "13177 Lemon Ln, San Jose, RI 18708"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Detective",
+        "dates": "0/15/1987 - 5/20/2005",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "2748 Apple Ln, New York, CA 21626"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 40,
+    "firstName": "James",
+    "lastName": "Cash",
+    "badgeNo": "220795204",
+    "status": "Captain",
+    "department": "San Antonio Police Department",
+    "birthDate": "11/26/1970",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Captain",
+        "dates": "0/9/2013 - 3/14/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7244 Cedar Ct, Philadelphia, VI 21048"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Sergeant",
+        "dates": "4/7/1973 - 5/1/2020",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7096 Maple Rd, San Antonio, VI 79894"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 41,
+    "firstName": "Ann",
+    "lastName": "Murray",
+    "badgeNo": "172193948",
+    "status": "Lieutenant",
+    "department": "New York Police Department",
+    "birthDate": "07/11/1968",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Technician",
+        "dates": "10/8/1985 - 5/22/1986",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7590 Washington Sq, Dallas, PR 64895"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "Fraternal Order of Police",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 42,
+    "firstName": "Jason",
+    "lastName": "Kountz",
+    "badgeNo": "250155223",
+    "status": "Detective",
+    "department": "Houston Police Department",
+    "birthDate": "01/29/1986",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Technician",
+        "dates": "8/4/2001 - 12/21/2016",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "1516 Maple Rd, Los Angeles, NC 35920"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Officer",
+        "dates": "4/11/1983 - 3/19/2010",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9291 Maple Ln, Houston, NY 55688"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Deputy",
+        "dates": "7/19/2017 - 12/7/1992",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11327 Oak Sq, Chicago, LA 38133"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 43,
+    "firstName": "William",
+    "lastName": "Whitaker",
+    "badgeNo": "269379188",
+    "status": "Chief",
+    "department": "Pheonix Police Department",
+    "birthDate": "08/20/1985",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Captain",
+        "dates": "11/24/1991 - 5/25/1985",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6214 Elm Ct, San Jose, TN 15678"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Technician",
+        "dates": "1/27/1983 - 12/18/2017",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "14928 Cedar Way, San Jose, OK 62681"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 76,
+        "occurred": 1475264360000,
+        "officers": ["G.Linger", "K.Hanratty"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      },
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "firstName": "Mildred",
+    "lastName": "Montgomery",
+    "badgeNo": "735382106",
+    "status": "Deputy",
+    "department": "Los Angeles Police Department",
+    "birthDate": "11/25/1977",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Captain",
+        "dates": "6/14/2006 - 2/10/1990",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1063 Boston Ave, Philadelphia, PR 96799"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 45,
+    "firstName": "Betty",
+    "lastName": "Mccormack",
+    "badgeNo": "195754592",
+    "status": "Sergeant",
+    "department": "Pheonix Police Department",
+    "birthDate": "08/20/1983",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Chief",
+        "dates": "4/15/1996 - 8/5/2005",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "5432 Maple Rd, Houston, DC 20549"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Lieutenant",
+        "dates": "4/11/1991 - 5/27/2010",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "1030 Washington St, San Jose, AR 36907"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Technician",
+        "dates": "11/15/1991 - 3/30/2017",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7281 Lemon St, San Antonio, MN 47205"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "Fraternal Order of Police",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 14,
+        "occurred": 1288978403000,
+        "officers": ["E.Antcliffe", "M.Mintoft", "G.Heynel", "C.Mompesson", "F.Oatley"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Unarmed blunt impact", "Armed presence"],
+        "source": "Court record"
+      },
+      {
+        "id": 82,
+        "occurred": 1482113496000,
+        "officers": ["C.Andretti"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Verbalization", "Unarmed presence", "Unarmed blunt impact"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "firstName": "Jennifer",
+    "lastName": "Ingram",
+    "badgeNo": "472173581",
+    "status": "Chief",
+    "department": "Los Angeles Police Department",
+    "birthDate": "02/14/1961",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Lieutenant",
+        "dates": "4/19/1986 - 9/21/2006",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5908 Cedar Rd, New York, OK 60003"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Chief",
+        "dates": "1/15/1997 - 12/25/2000",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8063 Cedar St, Chicago, NH 66310"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 65,
+        "occurred": 1394883023000,
+        "officers": ["H.Cranshaw", "B.Trebbett", "G.Chilvers", "A.Docwra"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "firstName": "Erin",
+    "lastName": "Jimenez",
+    "badgeNo": "525749572",
+    "status": "Technician",
+    "department": "Houston Police Department",
+    "birthDate": "06/02/1955",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Corporal",
+        "dates": "12/0/2005 - 4/13/1972",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6096 Pine Way, New York, GU 51683"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Technician",
+        "dates": "10/28/2005 - 5/14/2004",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "5431 Oak St, Pheonix, WY 45014"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police", "National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 48,
+    "firstName": "Catherine",
+    "lastName": "Laflam",
+    "badgeNo": "3410853",
+    "status": "Corporal",
+    "department": "San Jose Police Department",
+    "birthDate": "08/09/1975",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Houston Police Department",
+        "status": "Detective",
+        "dates": "5/21/1973 - 1/9/2021",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10240 Pear Ct, San Jose, RI 60573"
+      },
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Technician",
+        "dates": "12/15/1990 - 5/18/2004",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "4784 Cedar Rd, Los Angeles, AK 21450"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 47,
+        "occurred": 1348427978000,
+        "officers": ["M.Cranmere", "V.Giraldo", "C.Whitley"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Court record"
+      },
+      {
+        "id": 9,
+        "occurred": 1592579133000,
+        "officers": ["D.Bubear", "Y.Terbruggen", "A.Pooke", "G.Fleischmann", "K.Enric"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "firstName": "Scott",
+    "lastName": "Taylor",
+    "badgeNo": "154570120",
+    "status": "Detective",
+    "department": "Dallas Police Department",
+    "birthDate": "07/04/1963",
+    "gender": "Nonbinary",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Technician",
+        "dates": "3/26/2011 - 8/9/1987",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "6500 Maple Way, Los Angeles, AZ 12096"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 18,
+        "occurred": 1358319194000,
+        "officers": ["D.Liger", "T.Eppson"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Injurious restraint"],
+        "source": "News report"
+      },
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "firstName": "Jennifer",
+    "lastName": "Mccormack",
+    "badgeNo": "905296547",
+    "status": "Captain",
+    "department": "New York Police Department",
+    "birthDate": "06/13/1982",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 76,
+        "occurred": 1475264360000,
+        "officers": ["G.Linger", "K.Hanratty"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "firstName": "Daniel",
+    "lastName": "Erickson",
+    "badgeNo": "66731510",
+    "status": "Officer",
+    "department": "Chicago Police Department",
+    "birthDate": "10/25/1952",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Lieutenant",
+        "dates": "8/7/2003 - 1/0/2020",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "14861 California Ave, San Antonio, NJ 74195"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Sergeant",
+        "dates": "1/21/2021 - 3/19/1987",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8888 Cedar Sq, San Jose, WV 42841"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "Fraternal Order of Police",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 46,
+        "occurred": 1254530615000,
+        "officers": ["C.Coils"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence", "Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 50,
+        "occurred": 1523325774000,
+        "officers": ["K.Wulfinger", "E.Hannaway", "D.Coton", "R.Larenson", "M.Barter"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "firstName": "Hilda",
+    "lastName": "Barnard",
+    "badgeNo": "213459000",
+    "status": "Technician",
+    "department": "Chicago Police Department",
+    "birthDate": "04/07/1977",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "Fraternal Order of Police",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 63,
+        "occurred": 1127976186000,
+        "officers": ["W.Winfrey", "M.Mountain", "K.Cullnean"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry", "Unarmed blunt impact"],
+        "source": "Court record"
+      },
+      {
+        "id": 27,
+        "occurred": 1098943489000,
+        "officers": ["Abigale Pond-Jones"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 86,
+        "occurred": 1078607243000,
+        "officers": ["F.Ramel", "L.Cossington"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "firstName": "Perla",
+    "lastName": "Moss",
+    "badgeNo": "181091616",
+    "status": "Detective",
+    "department": "San Antonio Police Department",
+    "birthDate": "07/30/1958",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Captain",
+        "dates": "9/1/1982 - 9/0/2003",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7250 Apple Ln, San Jose, RI 51342"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Detective",
+        "dates": "4/0/1971 - 9/25/1983",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "4941 Apple Ave, Pheonix, AR 48311"
+      }
+    ],
+    "affiliations": ["Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 54,
+    "firstName": "Paul",
+    "lastName": "Smyth",
+    "badgeNo": "82148833",
+    "status": "Sergeant",
+    "department": "Philadelphia Police Department",
+    "birthDate": "12/07/1973",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Captain",
+        "dates": "0/6/2000 - 9/15/1971",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3338 Boston Ave, Houston, IN 60780"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Corporal",
+        "dates": "2/6/2004 - 8/1/1975",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "11924 Lemon Ln, San Diego, MN 98911"
+      },
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Technician",
+        "dates": "4/15/1983 - 5/5/1984",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "13095 Lemon Way, New York, VI 31794"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 12,
+        "occurred": 949134977000,
+        "officers": ["B.Codner", "L.MacAlpine", "S.Flieg", "M.Syplus", "C.Kleisle"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Armed presence",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 73,
+        "occurred": 1395829499000,
+        "officers": ["L.Lappine", "A.Naul"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization"],
+        "source": "Police report"
+      },
+      {
+        "id": 69,
+        "occurred": 1051626343000,
+        "officers": ["R.Wiltshaw", "P.Boyford", "S.Abberley", "R.Hemerijk", "L.Pitt"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "firstName": "Kim",
+    "lastName": "Frank",
+    "badgeNo": "521649325",
+    "status": "Captain",
+    "department": "San Diego Police Department",
+    "birthDate": "09/23/1990",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Deputy",
+        "dates": "6/0/1991 - 5/27/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8639 Pine Way, San Diego, ND 29873"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Corporal",
+        "dates": "10/19/2007 - 6/27/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6260 Cedar Way, Dallas, MO 60940"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 6,
+        "occurred": 1416237781000,
+        "officers": ["K.Warrack", "M.Quare", "B.Rivett"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "firstName": "Chasity",
+    "lastName": "Cronin",
+    "badgeNo": "676649715",
+    "status": "Corporal",
+    "department": "Philadelphia Police Department",
+    "birthDate": "05/06/1969",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 57,
+    "firstName": "Myung",
+    "lastName": "Lassiter",
+    "badgeNo": "623567228",
+    "status": "Officer",
+    "department": "New York Police Department",
+    "birthDate": "04/04/1979",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Technician",
+        "dates": "5/15/2017 - 0/21/1993",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8600 Maple Ln, Pheonix, WA 65755"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Officer",
+        "dates": "3/1/2013 - 7/12/1974",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "14052 Elm Ct, Houston, AL 95551"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 94,
+        "occurred": 989017907000,
+        "officers": ["I.Rentelll", "M.Stienham"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Court record"
+      },
+      {
+        "id": 50,
+        "occurred": 1523325774000,
+        "officers": ["K.Wulfinger", "E.Hannaway", "D.Coton", "R.Larenson", "M.Barter"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 15,
+        "occurred": 1126800848000,
+        "officers": ["T.Streetfield", "R.McClinton", "C.McCloid", "P.Mc Giffin"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "firstName": "Amanda",
+    "lastName": "Bielinski",
+    "badgeNo": "216321640",
+    "status": "Chief",
+    "department": "San Antonio Police Department",
+    "birthDate": "12/05/1979",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Officer",
+        "dates": "0/27/2000 - 10/18/2016",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7313 Maple Ln, New York, GA 25759"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Lieutenant",
+        "dates": "2/21/2004 - 6/9/2017",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6988 Apple Ct, New York, FL 22703"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 87,
+        "occurred": 1565023348000,
+        "officers": ["R.Sarson", "Ellis O'Mullally", "M.Ianno", "L.Galgey"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Injurious restraint"],
+        "source": "News report"
+      },
+      {
+        "id": 71,
+        "occurred": 1193830644000,
+        "officers": ["B.Elderbrant", "B.Brassington", "I.Porrett", "M.Vallack", "M.Maus"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization", "Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 56,
+        "occurred": 1383705886000,
+        "officers": ["C.Almond", "T.Pride", "A.Antram", "J.Doore"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "firstName": "Yesenia",
+    "lastName": "Owen",
+    "badgeNo": "438776994",
+    "status": "Corporal",
+    "department": "Los Angeles Police Department",
+    "birthDate": "02/28/1962",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Corporal",
+        "dates": "2/27/1997 - 4/13/1992",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12380 Pine Way, San Antonio, OR 58298"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Sergeant",
+        "dates": "12/23/2005 - 7/17/2009",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9926 Apple Way, Los Angeles, LA 94117"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 71,
+        "occurred": 1193830644000,
+        "officers": ["B.Elderbrant", "B.Brassington", "I.Porrett", "M.Vallack", "M.Maus"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization", "Electric weaponry"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "firstName": "James",
+    "lastName": "Martin",
+    "badgeNo": "313373161",
+    "status": "Captain",
+    "department": "San Diego Police Department",
+    "birthDate": "05/22/1981",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Technician",
+        "dates": "0/8/2011 - 0/26/2020",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "4243 Maple Sq, Pheonix, MS 33060"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Captain",
+        "dates": "11/20/1970 - 9/5/1974",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "14651 California Ct, San Jose, GU 12804"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Chief",
+        "dates": "8/24/2012 - 0/18/1981",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1040 Oak Rd, Pheonix, IN 50846"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 28,
+        "occurred": 1550632519000,
+        "officers": ["Ailbert de Savery", "L.Rannald", "L.Killik", "M.Riccelli", "A.Keilty"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Electric weaponry"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "firstName": "Stephen",
+    "lastName": "Richardson",
+    "badgeNo": "994570810",
+    "status": "Detective",
+    "department": "San Diego Police Department",
+    "birthDate": "10/28/1982",
+    "gender": "Nonbinary",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 6,
+        "occurred": 1416237781000,
+        "officers": ["K.Warrack", "M.Quare", "B.Rivett"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "firstName": "Bobbi",
+    "lastName": "Sanders",
+    "badgeNo": "915386313",
+    "status": "Corporal",
+    "department": "New York Police Department",
+    "birthDate": "03/18/1963",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": [],
+    "incidents": []
+  },
+  {
+    "id": 63,
+    "firstName": "Bertha",
+    "lastName": "March",
+    "badgeNo": "639216787",
+    "status": "Deputy",
+    "department": "San Diego Police Department",
+    "birthDate": "04/07/1973",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "firstName": "Clarence",
+    "lastName": "Bussard",
+    "badgeNo": "327519174",
+    "status": "Detective",
+    "department": "San Diego Police Department",
+    "birthDate": "04/07/1966",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Detective",
+        "dates": "11/29/2012 - 10/10/2000",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7738 Pine St, San Jose, CT 84221"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Deputy",
+        "dates": "10/26/2010 - 4/21/1985",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "4536 Cedar St, San Diego, FL 63731"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 65,
+    "firstName": "Kelley",
+    "lastName": "Hernandez",
+    "badgeNo": "143749230",
+    "status": "Sergeant",
+    "department": "Pheonix Police Department",
+    "birthDate": "02/18/1982",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Sergeant",
+        "dates": "3/1/2009 - 12/12/1999",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10239 Elm Ct, New York, NH 13617"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 91,
+        "occurred": 1519495314000,
+        "officers": ["D.Truswell", "G.Ferrara", "L.Driutti"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 42,
+        "occurred": 1479604775000,
+        "officers": ["D.Mateescu", "Stacie O'Dowd", "W.Durtnell", "J.Hamon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Unarmed blunt impact", "Injurious restraint"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "firstName": "Louisa",
+    "lastName": "Slaughter",
+    "badgeNo": "412337670",
+    "status": "Sergeant",
+    "department": "Los Angeles Police Department",
+    "birthDate": "05/21/1964",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Deputy",
+        "dates": "12/23/2003 - 12/2/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "2510 Pear Ave, Dallas, MI 75225"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Lieutenant",
+        "dates": "6/3/1976 - 2/27/2005",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "14932 California Way, Pheonix, AK 12338"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Lieutenant",
+        "dates": "0/24/1983 - 0/17/1971",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7596 Maple Sq, San Diego, AZ 91550"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 48,
+        "occurred": 1233953502000,
+        "officers": ["C.Melville", "I.Sherston", "R.Cornuau", "K.Rigts"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Armed presence",
+          "Unarmed blunt impact",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "firstName": "Alicia",
+    "lastName": "Ginn",
+    "badgeNo": "860241736",
+    "status": "Technician",
+    "department": "San Antonio Police Department",
+    "birthDate": "12/04/1971",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 15,
+        "occurred": 1126800848000,
+        "officers": ["T.Streetfield", "R.McClinton", "C.McCloid", "P.Mc Giffin"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      },
+      {
+        "id": 34,
+        "occurred": 1335573338000,
+        "officers": ["D.Sprigings", "R.Scobie"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Armed presence"],
+        "source": "News report"
+      },
+      {
+        "id": 39,
+        "occurred": 998541593000,
+        "officers": ["H.Caslane"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "firstName": "Crystal",
+    "lastName": "Berlinger",
+    "badgeNo": "454070214",
+    "status": "Deputy",
+    "department": "San Jose Police Department",
+    "birthDate": "04/02/1953",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Technician",
+        "dates": "7/22/1981 - 4/20/2011",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "12353 Apple St, San Jose, MS 22120"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 99,
+        "occurred": 1206630719000,
+        "officers": ["R.Rupprecht", "Z.Gore", "B.Pinnere", "R.Garlett", "R.Campagne"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Armed presence"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "firstName": "Kevin",
+    "lastName": "Boulton",
+    "badgeNo": "9572864",
+    "status": "Detective",
+    "department": "Chicago Police Department",
+    "birthDate": "07/12/1960",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 87,
+        "occurred": 1565023348000,
+        "officers": ["R.Sarson", "Ellis O'Mullally", "M.Ianno", "L.Galgey"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Injurious restraint"],
+        "source": "News report"
+      },
+      {
+        "id": 44,
+        "occurred": 1328006783000,
+        "officers": ["A.Albers", "L.Simonett", "A.Llewellyn"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Verbalization"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "firstName": "Eboni",
+    "lastName": "Curry",
+    "badgeNo": "26674883",
+    "status": "Detective",
+    "department": "San Antonio Police Department",
+    "birthDate": "02/07/1966",
+    "gender": "Male",
+    "race": "Black or African American",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Sergeant",
+        "dates": "6/22/1985 - 6/6/1996",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11328 Oak Rd, Houston, HI 70862"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Sergeant",
+        "dates": "11/17/1996 - 10/16/1979",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "8263 California Ln, San Antonio, LA 87833"
+      },
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Detective",
+        "dates": "9/19/1993 - 4/6/2003",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "4146 California St, Pheonix, ID 49196"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 71,
+    "firstName": "Brandon",
+    "lastName": "Hansell",
+    "badgeNo": "648296416",
+    "status": "Officer",
+    "department": "San Antonio Police Department",
+    "birthDate": "10/18/1973",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 72,
+    "firstName": "Peter",
+    "lastName": "Ponce",
+    "badgeNo": "680710090",
+    "status": "Technician",
+    "department": "Los Angeles Police Department",
+    "birthDate": "01/09/1964",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": ["Fraternal Order of Police", "International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 66,
+        "occurred": 1513635915000,
+        "officers": ["C.Maryman", "J.Grute"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Verbalization",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 57,
+        "occurred": 1426617030000,
+        "officers": ["D.Allenson", "E.Caddock"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "firstName": "Bruce",
+    "lastName": "Jones",
+    "badgeNo": "729673193",
+    "status": "Detective",
+    "department": "Houston Police Department",
+    "birthDate": "11/24/1960",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 74,
+    "firstName": "Corinne",
+    "lastName": "Pimentel",
+    "badgeNo": "255153529",
+    "status": "Chief",
+    "department": "San Diego Police Department",
+    "birthDate": "05/05/1956",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "Fraternal Order of Police",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 75,
+    "firstName": "Gordon",
+    "lastName": "Hoffman",
+    "badgeNo": "168222476",
+    "status": "Officer",
+    "department": "San Jose Police Department",
+    "birthDate": "11/28/1971",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Captain",
+        "dates": "2/5/1992 - 4/19/1999",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "13982 Cedar Ln, Dallas, MT 57102"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 76,
+    "firstName": "Clifford",
+    "lastName": "Smith",
+    "badgeNo": "292818911",
+    "status": "Officer",
+    "department": "Philadelphia Police Department",
+    "birthDate": "12/02/1986",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Officer",
+        "dates": "9/8/2002 - 2/23/1988",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7509 Oak Rd, Chicago, MO 53801"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Sergeant",
+        "dates": "12/1/1977 - 1/15/1992",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11269 Cedar Ave, San Antonio, GA 58640"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 76,
+        "occurred": 1475264360000,
+        "officers": ["G.Linger", "K.Hanratty"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 28,
+        "occurred": 1550632519000,
+        "officers": ["Ailbert de Savery", "L.Rannald", "L.Killik", "M.Riccelli", "A.Keilty"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Unarmed presence",
+          "Armed presence",
+          "Electric weaponry"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 24,
+        "occurred": 1035961368000,
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "firstName": "Jose",
+    "lastName": "Collins",
+    "badgeNo": "845657147",
+    "status": "Lieutenant",
+    "department": "Houston Police Department",
+    "birthDate": "03/20/1959",
+    "gender": "Male",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Corporal",
+        "dates": "1/27/1993 - 4/21/1990",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12182 Cedar Rd, Philadelphia, MA 91643"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Deputy",
+        "dates": "7/23/1989 - 3/11/1974",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9674 Maple Rd, Houston, VT 73247"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Detective",
+        "dates": "4/13/2008 - 8/30/2008",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "4898 Pear Ct, Dallas, TN 25035"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations",
+      "Fraternal Order of Police"
+    ],
+    "incidents": [
+      {
+        "id": 22,
+        "occurred": 1585777275000,
+        "officers": ["E.Seller", "G.Imesen", "A.Doig", "M.Elsegood", "C.Suttell"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "firstName": "Daniel",
+    "lastName": "Godwin",
+    "badgeNo": "585100070",
+    "status": "Sergeant",
+    "department": "Philadelphia Police Department",
+    "birthDate": "02/03/1963",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "Houston Police Department",
+        "status": "Technician",
+        "dates": "2/11/2012 - 0/10/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5201 Boston Ave, Dallas, FL 50962"
+      }
+    ],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 96,
+        "occurred": 1421225817000,
+        "officers": ["R.Randals", "T.Parzizek"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Electric weaponry"],
+        "source": "News report"
+      },
+      {
+        "id": 87,
+        "occurred": 1565023348000,
+        "officers": ["R.Sarson", "Ellis O'Mullally", "M.Ianno", "L.Galgey"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Injurious restraint"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "firstName": "Gerald",
+    "lastName": "Macinnes",
+    "badgeNo": "874082612",
+    "status": "Officer",
+    "department": "Los Angeles Police Department",
+    "birthDate": "09/02/1985",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 22,
+        "occurred": 1585777275000,
+        "officers": ["E.Seller", "G.Imesen", "A.Doig", "M.Elsegood", "C.Suttell"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "firstName": "Dennis",
+    "lastName": "Carey",
+    "badgeNo": "404539656",
+    "status": "Deputy",
+    "department": "San Jose Police Department",
+    "birthDate": "05/08/1972",
+    "gender": "Nonbinary",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "Houston Police Department",
+        "status": "Sergeant",
+        "dates": "2/10/2020 - 11/17/2018",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10820 Cedar Sq, Houston, TN 70773"
+      },
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Sergeant",
+        "dates": "0/16/2019 - 9/10/1990",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "4634 Pear Sq, Chicago, DC 70549"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Technician",
+        "dates": "1/15/1999 - 2/17/1993",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6672 Pear Ave, San Diego, GA 45009"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": []
+  },
+  {
+    "id": 81,
+    "firstName": "Terri",
+    "lastName": "Houston",
+    "badgeNo": "915387293",
+    "status": "Technician",
+    "department": "San Diego Police Department",
+    "birthDate": "07/03/1970",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 31,
+        "occurred": 1370269468000,
+        "officers": ["H.Telega", "D.Quene", "E.Kmicicki", "F.Chellam", "E.Alford"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Armed presence",
+          "Unarmed blunt impact"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 42,
+        "occurred": 1479604775000,
+        "officers": ["D.Mateescu", "Stacie O'Dowd", "W.Durtnell", "J.Hamon"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Verbalization", "Unarmed blunt impact", "Injurious restraint"],
+        "source": "Court record"
+      },
+      {
+        "id": 22,
+        "occurred": 1585777275000,
+        "officers": ["E.Seller", "G.Imesen", "A.Doig", "M.Elsegood", "C.Suttell"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "firstName": "Lara",
+    "lastName": "Cerna",
+    "badgeNo": "294451355",
+    "status": "Sergeant",
+    "department": "Houston Police Department",
+    "birthDate": "06/21/1982",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Sergeant",
+        "dates": "10/29/2018 - 6/18/1996",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "1029 Oak Ave, San Antonio, NE 71408"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Detective",
+        "dates": "9/13/1979 - 9/22/1978",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5692 Elm Ave, Houston, NC 29267"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 4,
+        "occurred": 1149591684000,
+        "officers": ["R.Heaysman", "H.Cornelisse"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 49,
+        "occurred": 1078876405000,
+        "officers": ["D.Kenrack", "H.Rivalant", "L.Deener", "P.Howship"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "firstName": "Gilbert",
+    "lastName": "Flander",
+    "badgeNo": "708897694",
+    "status": "Sergeant",
+    "department": "Dallas Police Department",
+    "birthDate": "09/10/1958",
+    "gender": "Male",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Technician",
+        "dates": "3/15/1970 - 5/25/1994",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "13788 California Ln, Chicago, VA 72666"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Technician",
+        "dates": "0/12/1991 - 9/16/1981",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "14459 Lemon Ct, San Diego, AZ 30526"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Technician",
+        "dates": "8/30/1976 - 9/25/1988",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7143 Pine Ct, Philadelphia, AK 60487"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": [
+      {
+        "id": 93,
+        "occurred": 1287520675000,
+        "officers": ["E.Morando", "D.Massie"],
+        "incidentType": "Traffic stop",
+        "useOfForce": ["Unarmed presence", "Verbalization"],
+        "source": "News report"
+      },
+      {
+        "id": 57,
+        "occurred": 1426617030000,
+        "officers": ["D.Allenson", "E.Caddock"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry"],
+        "source": "Police report"
+      },
+      {
+        "id": 69,
+        "occurred": 1051626343000,
+        "officers": ["R.Wiltshaw", "P.Boyford", "S.Abberley", "R.Hemerijk", "L.Pitt"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "firstName": "Leslie",
+    "lastName": "Hainley",
+    "badgeNo": "122372275",
+    "status": "Detective",
+    "department": "San Diego Police Department",
+    "birthDate": "07/22/1981",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [],
+    "affiliations": ["International Union of Police Associations"],
+    "incidents": []
+  },
+  {
+    "id": 85,
+    "firstName": "Mary",
+    "lastName": "Rafferty",
+    "badgeNo": "968053358",
+    "status": "Chief",
+    "department": "New York Police Department",
+    "birthDate": "10/13/1971",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [],
+    "affiliations": [
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": []
+  },
+  {
+    "id": 86,
+    "firstName": "Jennifer",
+    "lastName": "Mouser",
+    "badgeNo": "878573480",
+    "status": "Detective",
+    "department": "San Jose Police Department",
+    "birthDate": "07/27/1957",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 6,
+        "occurred": 1416237781000,
+        "officers": ["K.Warrack", "M.Quare", "B.Rivett"],
+        "incidentType": "Robbery",
+        "useOfForce": [
+          "Electric weaponry",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 7,
+        "occurred": 1328178379000,
+        "officers": ["I.Riccardini", "E.Sizeland"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Injurious restraint", "Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "firstName": "Jonathan",
+    "lastName": "Stevenson",
+    "badgeNo": "516866939",
+    "status": "Technician",
+    "department": "Pheonix Police Department",
+    "birthDate": "03/30/1979",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Chicago Police Department",
+        "status": "Technician",
+        "dates": "12/8/1996 - 9/29/1987",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12649 Cedar Rd, Houston, WY 57526"
+      },
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Corporal",
+        "dates": "7/1/1973 - 7/5/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "12683 Lemon Ct, Los Angeles, NV 59846"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 79,
+        "occurred": 1421248509000,
+        "officers": ["K.Desforges", "F.Presman", "E.Endrizzi"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 38,
+        "occurred": 1253169695000,
+        "officers": ["J.Welchman", "D.Hardison", "L.Dolle", "D.Gresch", "A.Ivanyukov"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 74,
+        "occurred": 1142546598000,
+        "officers": ["E.Armiger"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Verbalization", "Unarmed presence", "Armed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "firstName": "Joseph",
+    "lastName": "Edwards",
+    "badgeNo": "370707073",
+    "status": "Corporal",
+    "department": "Dallas Police Department",
+    "birthDate": "11/15/1982",
+    "gender": "Nonbinary",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Deputy",
+        "dates": "2/17/2010 - 9/29/2002",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3668 Elm Ln, Dallas, FL 47663"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 3,
+        "occurred": 965934788000,
+        "officers": ["F.Eakly"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Verbalization"],
+        "source": "Police report"
+      },
+      {
+        "id": 76,
+        "occurred": 1475264360000,
+        "officers": ["G.Linger", "K.Hanratty"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Armed presence", "Unarmed blunt impact"],
+        "source": "News report"
+      },
+      {
+        "id": 10,
+        "occurred": 1577467844000,
+        "officers": ["J.Searl", "W.Coalbran", "T.Imeson"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Injurious restraint",
+          "Verbalization",
+          "Electric weaponry",
+          "Armed presence"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "firstName": "Cortney",
+    "lastName": "Blazek",
+    "badgeNo": "755560145",
+    "status": "Chief",
+    "department": "New York Police Department",
+    "birthDate": "07/23/1965",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Technician",
+        "dates": "2/15/1990 - 5/1/1995",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7493 Oak Way, Dallas, AK 29818"
+      }
+    ],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "Fraternal Order of Police",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 63,
+        "occurred": 1127976186000,
+        "officers": ["W.Winfrey", "M.Mountain", "K.Cullnean"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Electric weaponry", "Unarmed blunt impact"],
+        "source": "Court record"
+      },
+      {
+        "id": 9,
+        "occurred": 1592579133000,
+        "officers": ["D.Bubear", "Y.Terbruggen", "A.Pooke", "G.Fleischmann", "K.Enric"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "firstName": "Charles",
+    "lastName": "Silcox",
+    "badgeNo": "930715084",
+    "status": "Chief",
+    "department": "San Diego Police Department",
+    "birthDate": "05/04/1983",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Not over $9,950",
+    "workHistory": [
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Officer",
+        "dates": "9/27/1985 - 2/8/1971",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "8283 Pear Ln, San Diego, HI 95176"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Officer",
+        "dates": "10/10/1980 - 2/10/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "9571 Pear Ct, Chicago, GA 56418"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Detective",
+        "dates": "11/9/1991 - 12/20/1988",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10855 California Sq, San Diego, TX 84120"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 62,
+        "occurred": 1101858287000,
+        "officers": ["R.Hubbocks"],
+        "incidentType": "Domestic disturbance",
+        "useOfForce": [
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "firstName": "Nathan",
+    "lastName": "Napier",
+    "badgeNo": "135599449",
+    "status": "Deputy",
+    "department": "New York Police Department",
+    "birthDate": "09/17/1951",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Lieutenant",
+        "dates": "12/25/2007 - 0/0/2007",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "5090 Apple Ct, San Diego, LA 42268"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations"],
+    "incidents": [
+      {
+        "id": 98,
+        "occurred": 1328486358000,
+        "officers": ["J.Cluett"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Injurious restraint", "Unarmed presence"],
+        "source": "Court record"
+      },
+      {
+        "id": 1,
+        "occurred": 1313471121000,
+        "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 67,
+        "occurred": 1007582943000,
+        "officers": ["A.Rigeby", "Y.Missen"],
+        "incidentType": "Noise complaint",
+        "useOfForce": ["Unarmed blunt impact", "Unarmed presence"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "firstName": "Yvonne",
+    "lastName": "Manfre",
+    "badgeNo": "698608099",
+    "status": "Chief",
+    "department": "San Jose Police Department",
+    "birthDate": "09/10/1954",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $86,375 but not over $164,925",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Lieutenant",
+        "dates": "3/18/1977 - 7/20/1975",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "8604 Lemon Rd, Pheonix, NJ 16546"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Chief",
+        "dates": "9/28/1975 - 2/22/2003",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9477 Cedar Sq, San Diego, NC 89944"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 13,
+        "occurred": 1234544062000,
+        "officers": ["B.Colquitt", "A.Lightoller", "W.Andreini"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Injurious restraint"],
+        "source": "Court record"
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "firstName": "Dorothy",
+    "lastName": "Guinasso",
+    "badgeNo": "180941692",
+    "status": "Technician",
+    "department": "Pheonix Police Department",
+    "birthDate": "07/07/1960",
+    "gender": "Female",
+    "race": "Black or African American",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $209,425 but not over $523,600",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Corporal",
+        "dates": "3/28/1981 - 6/20/2010",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "6166 Lemon Ln, Houston, CT 54633"
+      },
+      {
+        "deptName": "Los Angeles Police Department",
+        "status": "Technician",
+        "dates": "8/1/1995 - 12/23/2012",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11763 Lemon Sq, Los Angeles, WA 37934"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 20,
+        "occurred": 1145369169000,
+        "officers": ["I.Gainforth", "G.Trustrie", "S.Kliche", "S.Fitzer", "M.Shedd"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Unarmed blunt impact"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "firstName": "Richard",
+    "lastName": "Folse",
+    "badgeNo": "739242661",
+    "status": "Captain",
+    "department": "San Antonio Police Department",
+    "birthDate": "04/16/1969",
+    "gender": "Female",
+    "race": "American Indian or Alaska Native",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $164,925 but not over $209,425",
+    "workHistory": [
+      {
+        "deptName": "Dallas Police Department",
+        "status": "Corporal",
+        "dates": "2/6/1987 - 2/25/1999",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "11162 Boston Ct, New York, TX 44521"
+      },
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Chief",
+        "dates": "11/17/1973 - 12/16/1975",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "3078 Pine Ln, Los Angeles, VI 56537"
+      },
+      {
+        "deptName": "New York Police Department",
+        "status": "Corporal",
+        "dates": "12/15/2009 - 9/23/1979",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9958 Elm Rd, Los Angeles, SC 85606"
+      }
+    ],
+    "affiliations": ["International Union of Police Associations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 23,
+        "occurred": 1507822037000,
+        "officers": ["C.Mattingly", "R.Chaudret", "I.Middup"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Verbalization",
+          "Injurious restraint",
+          "Unarmed blunt impact",
+          "Electric weaponry"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 30,
+        "occurred": 1309312190000,
+        "officers": ["J.Byforth", "C.McAvaddy", "P.Fivey", "T.Beecraft"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "firstName": "Joseph",
+    "lastName": "Redman",
+    "badgeNo": "447899374",
+    "status": "Deputy",
+    "department": "Los Angeles Police Department",
+    "birthDate": "11/09/1984",
+    "gender": "Male",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "San Diego Police Department",
+        "status": "Deputy",
+        "dates": "2/17/1999 - 7/7/2015",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "9191 Boston Sq, Philadelphia, KY 23030"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Detective",
+        "dates": "4/30/1973 - 4/7/1976",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "12055 Elm St, San Antonio, KS 46401"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 96,
+    "firstName": "Bryan",
+    "lastName": "Reed",
+    "badgeNo": "260246386",
+    "status": "Detective",
+    "department": "Dallas Police Department",
+    "birthDate": "06/05/1983",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Deputy",
+        "dates": "1/28/2002 - 0/2/1986",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "10002 Cedar St, Los Angeles, SC 34608"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Chief",
+        "dates": "2/25/1985 - 1/5/1980",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "8079 Pear Rd, Houston, PA 66783"
+      },
+      {
+        "deptName": "Philadelphia Police Department",
+        "status": "Chief",
+        "dates": "10/7/2018 - 3/25/1998",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "13384 Lemon Ct, Philadelphia, AL 38092"
+      }
+    ],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": [
+      {
+        "id": 22,
+        "occurred": 1585777275000,
+        "officers": ["E.Seller", "G.Imesen", "A.Doig", "M.Elsegood", "C.Suttell"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Unarmed presence",
+          "Armed presence",
+          "Verbalization",
+          "Injurious restraint"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "firstName": "Jessica",
+    "lastName": "Gentry",
+    "badgeNo": "684181827",
+    "status": "Technician",
+    "department": "Pheonix Police Department",
+    "birthDate": "05/19/1957",
+    "gender": "Male",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $9,950 but not over $40,525",
+    "workHistory": [
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Technician",
+        "dates": "7/10/1991 - 5/28/2021",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "11043 Oak Ct, San Antonio, ND 16565"
+      },
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Sergeant",
+        "dates": "9/5/1984 - 1/16/1989",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "7411 Boston Rd, Houston, UT 27926"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 1,
+        "occurred": 1313471121000,
+        "officers": ["C.Charlwood", "I.Esterbrook", "D.Foddy"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Injurious restraint",
+          "Electric weaponry",
+          "Armed presence",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 24,
+        "occurred": 1035961368000,
+        "officers": ["T.Stalley", "D.Heber", "H.Mutch"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Unarmed blunt impact",
+          "Verbalization",
+          "Unarmed presence",
+          "Electric weaponry",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 29,
+        "occurred": 1624012506000,
+        "officers": ["S.Bunclark", "Z.Cardis", "J.Crosdill"],
+        "incidentType": "Traffic stop",
+        "useOfForce": [
+          "Electric weaponry",
+          "Unarmed presence",
+          "Injurious restraint",
+          "Verbalization",
+          "Unarmed blunt impact"
+        ],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "firstName": "Donald",
+    "lastName": "Littrell",
+    "badgeNo": "640777992",
+    "status": "Chief",
+    "department": "San Antonio Police Department",
+    "birthDate": "05/10/1956",
+    "gender": "Female",
+    "race": "White",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [
+      {
+        "deptName": "New York Police Department",
+        "status": "Technician",
+        "dates": "6/16/1994 - 0/14/1972",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "10439 Boston Ct, New York, CA 48932"
+      },
+      {
+        "deptName": "Houston Police Department",
+        "status": "Officer",
+        "dates": "11/8/1978 - 7/14/1991",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "5602 Elm Ct, Houston, VA 63243"
+      },
+      {
+        "deptName": "San Antonio Police Department",
+        "status": "Deputy",
+        "dates": "8/8/2013 - 4/7/1980",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "7507 Washington Ave, New York, WY 48223"
+      }
+    ],
+    "affiliations": [],
+    "incidents": [
+      {
+        "id": 16,
+        "occurred": 1082408708000,
+        "officers": ["F.Sarson"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Electric weaponry", "Verbalization", "Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "firstName": "John",
+    "lastName": "Palmer",
+    "badgeNo": "967756718",
+    "status": "Corporal",
+    "department": "San Jose Police Department",
+    "birthDate": "03/21/1966",
+    "gender": "Female",
+    "race": "Native Hawaiian or Other Pacific Islander",
+    "ethnicity": "Not Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": ["National Association of Police Organizations", "Fraternal Order of Police"],
+    "incidents": []
+  },
+  {
+    "id": 100,
+    "firstName": "Rene",
+    "lastName": "Nichols",
+    "badgeNo": "204226039",
+    "status": "Captain",
+    "department": "Los Angeles Police Department",
+    "birthDate": "10/28/1964",
+    "gender": "Female",
+    "race": "Asian",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $40,525 but not over $86,375",
+    "workHistory": [],
+    "affiliations": [
+      "National Association of Police Organizations",
+      "International Union of Police Associations"
+    ],
+    "incidents": [
+      {
+        "id": 78,
+        "occurred": 1505217751000,
+        "officers": ["S.Seakes", "M.MacCarroll", "L.Gymlett", "R.Jacob", "O.Withams"],
+        "incidentType": "Harassment",
+        "useOfForce": [
+          "Armed presence",
+          "Verbalization",
+          "Unarmed presence",
+          "Injurious restraint"
+        ],
+        "source": "News report"
+      },
+      {
+        "id": 19,
+        "occurred": 1595707672000,
+        "officers": ["B.Swann", "W.Poe", "H.Pimlott", "T.Ingleby"],
+        "incidentType": "Noise complaint",
+        "useOfForce": [
+          "Verbalization",
+          "Armed presence",
+          "Electric weaponry",
+          "Injurious restraint",
+          "Unarmed presence"
+        ],
+        "source": "Police report"
+      },
+      {
+        "id": 9,
+        "occurred": 1592579133000,
+        "officers": ["D.Bubear", "Y.Terbruggen", "A.Pooke", "G.Fleischmann", "K.Enric"],
+        "incidentType": "Harassment",
+        "useOfForce": ["Unarmed presence"],
+        "source": "News report"
+      }
+    ]
+  }
+]
