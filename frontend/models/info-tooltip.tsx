@@ -1,15 +1,12 @@
-import { ReactElement } from "react"
-
 interface Tooltips {
-  content: (string | (() => ReactElement))[]
+  content: string[]
 }
 
 export enum TooltipTypes {
   VIEWER = "viewerAccounts",
   INCIDENTS = "policeIncidents",
   DATETIME = "dateTime",
-  USEFORCE = "useOfForce",
-  KEYWORD = "keyWord"
+  USEFORCE = "useOfForce"
 }
 
 export enum TooltipIcons {
@@ -42,11 +39,6 @@ export const tooltipContent: { [key in TooltipTypes]: Tooltips } = {
     content: [
       "Use of Force refers to the continuum of violence that may be used in an incident",
       "For more info, view our Use of Force explainer"
-    ]
-  },
-  [TooltipTypes.KEYWORD]: {
-    content: [
-      "Key words will look for matching words in any column in the database, including names, locations, and descriptions"
     ]
   }
 }

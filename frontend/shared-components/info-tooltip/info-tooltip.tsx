@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react"
+import React from "react"
 import styles from "./info-tooltip.module.css"
 import { getTitleCaseFromCamel } from "../../helpers"
 import { tooltipContent, TooltipTypes, TooltipIcons } from "../../models"
@@ -10,7 +10,7 @@ function getTipIcon(icon: TooltipIcons): IconDefinition {
   return icon === TooltipIcons.INFO ? faInfoCircle : faQuestionCircle
 }
 
-export interface InfoTooltipProps {
+interface InfoTooltipProps {
   type: TooltipTypes
   icon?: TooltipIcons
   iconSize?: any
@@ -21,13 +21,10 @@ export default function InfoTooltip({
   iconSize = "sm"
 }: InfoTooltipProps) {
   const { tooltipContainer, tooltipIcon, tooltip } = styles
+
   const ariaLabel: string = `Learn more about ${getTitleCaseFromCamel(type)}`
   const tooltipBodyId: string = `${type}Tooltip`
   const { content } = tooltipContent[type]
-
-  const display = (x: string | (() => ReactElement)) => {
-    return typeof x === "string" ? <p key={x.slice(0, 5)}>{x}</p> : x()
-  }
 
   return (
     <div
@@ -43,7 +40,9 @@ export default function InfoTooltip({
         size={iconSize}
       />
       <div id={tooltipBodyId} className={tooltip}>
-        {content.map((contentItem) => display(contentItem))}
+        {content.map((sentence) => (
+          <p key={sentence.slice(0, 5)}>{sentence}</p>
+        ))}
       </div>
     </div>
   )
