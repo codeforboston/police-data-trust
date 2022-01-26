@@ -14,11 +14,6 @@
   cursor: pointer;
 }
 
-#map-svg {
-  border: 2px solid green;
-  pointer-events: all;
-}
-
 .mapData {
   width: 100%;
   height: 100%;
@@ -48,8 +43,8 @@
   background-color: white;
   border-radius: 6px;
   border: 1px solid #666;
-  left: 10px;
-  top: 10px;
+  left: 0;
+  top: 0;
   pointer-events: none;
   box-shadow: 4px 4px 6px #6665;
 }
@@ -65,16 +60,4 @@
 #zoom-container {
   stroke: blueviolet;
   stroke-width: 4px;
-  pointer-events: all;
-}
-
-.markerLayer {
-  pointer-events: none;
-  cursor: grab;
-}
-
-.circleMarker,
-.squareMarker {
-  pointer-events: all;
-  cursor: grab;
 }

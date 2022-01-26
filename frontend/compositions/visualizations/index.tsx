@@ -1,4 +1,4 @@
 import Map from "./map"
-import useSearchData from "./map/useSearchData"
+import useData from "./map/useData"
 
-export { Map, useSearchData }
+export { Map, useData }

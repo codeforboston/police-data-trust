@@ -1,7 +1,7 @@
 import React from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useAuth, useSearch } from "../../helpers"
-import { PrimaryInputNames, TooltipIcons, TooltipTypes } from "../../models"
+import { PrimaryInputNames } from "../../models"
 import { FormLevelError, PrimaryButton, PrimaryInput } from "../../shared-components"
 import styles from "./search.module.css"
 const { KEY_WORDS, DATE_START, DATE_END, OFFICER_NAME, LOCATION, BADGE_NUMBER } = PrimaryInputNames
@@ -40,7 +40,6 @@ export const SearchPanel = () => {
     }
     setLoading(false)
   }
-
   return (
     <div className={searchPanelContainer}>
       <FormProvider {...form}>
@@ -59,24 +58,10 @@ export const SearchPanel = () => {
           {incidentSearch ? (
             <div>
               <div>
-                <PrimaryInput
-                  inputName={LOCATION}
-                  tooltipProps={{
-                    type: TooltipTypes.USEFORCE,
-                    icon: TooltipIcons.INFO,
-                    iconSize: "xs"
-                  }}
-                />
+                <PrimaryInput inputName={LOCATION} />
               </div>
               <div>
-                <PrimaryInput
-                  inputName={KEY_WORDS}
-                  tooltipProps={{
-                    type: TooltipTypes.KEYWORD,
-                    icon: TooltipIcons.INFO,
-                    iconSize: "xs"
-                  }}
-                />
+                <PrimaryInput inputName={KEY_WORDS} />
               </div>
               <div>
                 <PrimaryInput inputName={DATE_START} />
