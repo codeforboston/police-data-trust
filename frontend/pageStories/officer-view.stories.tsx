@@ -9,4 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof OfficerView> = (args) => <OfficerView {...args} />
 
-export const Blank = Template.bind({})
+export const Timothy = Template.bind({})
