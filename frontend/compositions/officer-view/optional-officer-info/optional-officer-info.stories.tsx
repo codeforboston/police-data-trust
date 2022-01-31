@@ -3,10 +3,12 @@ import OptionalOfficerData from "./"
 import officers from "../../../models/mock-data/officer.json"
 
 export default {
-    title: "Compositions/Officer View Components/OptionalOfficerData",
+  title: "Compositions/Officer View Components/OptionalOfficerData"
 } as ComponentMeta<typeof OptionalOfficerData>
 
-const Template: ComponentStory<typeof OptionalOfficerData> = (args) => <OptionalOfficerData {...args} />
+const Template: ComponentStory<typeof OptionalOfficerData> = (args) => (
+  <OptionalOfficerData {...args} />
+)
 
 export const Blank = Template.bind({})
 
