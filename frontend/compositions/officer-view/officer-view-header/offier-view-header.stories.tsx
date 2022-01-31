@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta} from "@storybook/react"
-import OfficerHeader from "./officer-view-header"
+import OfficerHeader from "."
 import officers from "../../../models/mock-data/officer.json"
 
 export default {
