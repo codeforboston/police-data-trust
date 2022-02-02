@@ -16,9 +16,9 @@ export function mockToOfficerType(officer : typeof officers[0]) : OfficerRecordT
                 {
                     department: {
                         departmentName: workInstance.deptName,
-                        deptImage: workInstance.deptImage,
+                        deptImage: workInstance.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
                         deptAddress: workInstance.deptAddress,
-                        webAddress: "No webaddress in mock data"
+                        webAddress: "https://www.google.com/search?q=police+department"
                     },
                     status: workInstance.status,
                     startDate: new Date(workInstance.dates.split("-")[0].trim()),
