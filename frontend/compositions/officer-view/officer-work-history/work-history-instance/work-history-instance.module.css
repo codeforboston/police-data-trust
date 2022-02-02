@@ -1,0 +1,9 @@
+.patch {
+    width:var(--size64);
+    height:var(--size64)
+}
+
+.wrapper {
+    display: flex;
+    margin-bottom: var(--size16)
+}
