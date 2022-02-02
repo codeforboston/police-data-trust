@@ -1,5 +1,10 @@
 import { DashboardHeader } from "../../compositions"
-import { OfficerHeader, OptionalOfficerInfo, OfficerWorkHistory, OfficerAffiliations } from "../../compositions/officer-view"
+import {
+  OfficerHeader,
+  OptionalOfficerInfo,
+  OfficerWorkHistory,
+  OfficerAffiliations
+} from "../../compositions/officer-view"
 import { DataTable } from "../../shared-components/data-table/data-table"
 import { resultsColumns } from "../../compositions/search-results/search-results"
 import { EXISTING_TEST_INCIDENTS } from "../../helpers/api/mocks/data"
@@ -25,7 +30,7 @@ export default requireAuth(function OfficerView() {
       <hr />
       <OfficerWorkHistory {...timothy} />
       <OfficerAffiliations {...timothy} />
-      <DataTable {...tableProps}/>
+      <DataTable {...tableProps} />
     </Layout>
   )
 })
