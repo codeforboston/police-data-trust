@@ -3,14 +3,12 @@ import styles from "./officer-affiliations.module.css"
 
 export default function OfficerAffiliations(officer: OfficerRecordType) {
   const { affiliations } = officer
+  const { wrapper } = styles
 
-  let affiliationsString = ""
-  for (const union of affiliations) {
-    affiliationsString += union + ", "
-  }
+  const affiliationsString = affiliations.join(', ')
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className={wrapper}>
       <p>Professional Affiliations: </p>
       <p>{affiliationsString}</p>
     </div>

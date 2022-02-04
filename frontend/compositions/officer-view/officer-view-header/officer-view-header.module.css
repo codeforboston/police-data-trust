@@ -16,3 +16,7 @@
 .otherData {
   width: 22%;
 }
+
+.viewWrapper {
+  display: flex;
+}

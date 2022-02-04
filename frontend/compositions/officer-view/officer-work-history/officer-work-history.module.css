@@ -4,3 +4,7 @@
   color: var(--grey);
   margin-left: 0;
 }
+
+.wrapper {
+  display: "flex"
+}

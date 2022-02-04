@@ -8,7 +8,7 @@ export default function WorkHistoryInstance(pastWorkplace: EmploymentType) {
   const startDateString = new Date(startDate).toLocaleDateString().split(",")[0]
   const endDateString = new Date(endDate).toLocaleDateString().split(",")[0]
 
-  const { patch, wrapper } = styles
+  const { patch, wrapper, dates } = styles
 
   return (
     <div className={wrapper}>
@@ -16,12 +16,13 @@ export default function WorkHistoryInstance(pastWorkplace: EmploymentType) {
       <div>
         <p>
           {status}
-          <span style={{ float: "right" }}>
+          <span className={dates}>
             {startDateString} - {endDateString}
           </span>
         </p>
         <a href={webAddress}>{departmentName}</a>
-        <p>(Sam)ple-0123 * {deptAddress}</p>
+        {/*TODO: Get Phone number from officer data, mock data currently does not have*/}
+        <p>(123) 456-7890 * {deptAddress}</p>
       </div>
     </div>
   )

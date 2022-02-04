@@ -4,15 +4,12 @@ import styles from "./officer-work-history.module.css"
 
 export default function OfficerWorkHistory(officer: OfficerRecordType) {
   const { workHistory } = officer
-  const { category, workInstanceBlock } = styles
+  const { category, wrapper } = styles
 
-  let result: JSX.Element[] = []
-  for (const workInstance of workHistory) {
-    result.push(<WorkHistoryInstance {...workInstance} />)
-  }
+  const result = workHistory.map( (item, index) => <WorkHistoryInstance key={index + 'workHistoryItem'} {...item} />)
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className={wrapper}>
       <div className={category}>
         <p>Work History Summary:</p>
       </div>

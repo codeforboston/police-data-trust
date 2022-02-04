@@ -3,12 +3,12 @@ import styles from "./officer-view-header.module.css"
 
 export default function OfficerHeader(officer: OfficerRecordType) {
   const { firstName, lastName, badgeNo, status, department } = officer
-  const { category, name, titleAndName, otherData } = styles
+  const { category, name, titleAndName, otherData, viewWrapper } = styles
 
   return (
     <div>
       <h3>Officer Record</h3>
-      <div style={{ display: "flex" }}>
+      <div className={viewWrapper}>
         <div className={titleAndName}>
           <p className={name}>
             {firstName} {lastName}
