@@ -10,57 +10,51 @@ export function getOfficerFromMockData(officerId: number) {
 
 export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordType {
   function mockToWorkHistoryType(workHistory: typeof officer.workHistory): EmploymentType[] {
-    let converted: EmploymentType[] = []
-    for (let workInstance of workHistory) {
-      converted.push({
+    const converted : EmploymentType[] = workHistory.map( (item) => {
+      return {
         department: {
-          departmentName: workInstance.deptName,
-          deptImage: workInstance.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
-          deptAddress: workInstance.deptAddress,
+          departmentName: item.deptName,
+          deptImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
+          deptAddress: item.deptAddress,
           webAddress: "https://www.google.com/search?q=police+department"
         },
-        status: workInstance.status,
-        startDate: new Date(workInstance.dates.split("-")[0].trim()),
-        endDate: new Date(workInstance.dates.split("-")[1].trim())
-      })
-    }
-
+        status: item.status,
+        startDate: new Date(item.dates.split("-")[0].trim()),
+        endDate: new Date(item.dates.split("-")[1].trim())
+      }
+    })
     return converted
   }
 
   function mockToIncidentType(incidents: typeof officer.incidents): Incident[] {
-    let converted: Incident[] = []
-
-    let officerNames = incidents[0].officers
+    const officerNames = incidents[0].officers
     function mockToOfficerNameType(names: typeof officerNames): Officer[] {
-      let converted: Officer[] = []
-      for (let name of names) {
-        converted.push({
-          first_name: name.split(".")[0] + ".",
-          last_name: name.split(".")[1]
-        })
-      }
-      return converted
-    }
-
-    let usesOfForce = incidents[0].useOfForce
-    function mockToForceType(forces: typeof usesOfForce): UseOfForce[] {
-      let converted: UseOfForce[] = []
-      for (let force of forces) {
-        converted.push({
-          item: force
-        })
-      }
-      return converted
-    }
-
-    for (let incidentInstance of incidents) {
-      converted.push({
-        id: incidentInstance.id,
-        officers: mockToOfficerNameType(incidentInstance.officers),
-        use_of_force: mockToForceType(incidentInstance.useOfForce)
+      const converted: Officer[] = names.map( (item) => {
+        return {
+          first_name: item.split(".")[0] + ".",
+          last_name: item.split(".")[1]
+        }
       })
+      return converted
     }
+
+    const usesOfForce = incidents[0].useOfForce
+    function mockToForceType(forces: typeof usesOfForce): UseOfForce[] {
+      const converted: UseOfForce[] = forces.map ( (force) => {
+        return {
+          item: force
+        }
+      })
+      return converted
+    }
+
+    const converted = incidents.map ( (incident) => {
+      return {
+        id: incident.id,
+        officers: mockToOfficerNameType(incident.officers),
+        use_of_force: mockToForceType(incident.useOfForce)
+      }
+    })
     return converted
   }
 

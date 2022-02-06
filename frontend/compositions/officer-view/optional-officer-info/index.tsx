@@ -3,12 +3,12 @@ import styles from "./optional-officer-info.module.css"
 
 export default function OptionalOfficerInfo(officer: OfficerRecordType) {
   const { birthDate, gender, race, ethnicity, incomeBracket } = officer
-  const { category, data } = styles
+  const { category, data, viewWrapper } = styles
 
   const dateString: string = new Date(birthDate).toLocaleDateString().split(",")[0]
   return (
     <div>
-      <div style={{ display: "flex" }}>
+      <div className={viewWrapper}>
         <div className={data}>
           <p className={category}>Date of Birth</p>
           <p>{dateString}</p>

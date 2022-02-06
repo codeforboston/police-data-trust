@@ -1,5 +1,4 @@
 .category {
-  display: block;
   font-size: var(--size10);
   color: var(--grey);
   margin-left: 0;
@@ -7,4 +6,8 @@
 
 .data {
   width: 20%;
+}
+
+.viewWrapper {
+  display:flex;
 }
