@@ -6,7 +6,9 @@ export default function OfficerWorkHistory(officer: OfficerRecordType) {
   const { workHistory } = officer
   const { category, wrapper } = styles
 
-  const result = workHistory.map( (item, index) => <WorkHistoryInstance key={index + 'workHistoryItem'} {...item} />)
+  const result = workHistory.map((item, index) => (
+    <WorkHistoryInstance key={index + "workHistoryItem"} {...item} />
+  ))
 
   return (
     <div className={wrapper}>

@@ -10,7 +10,7 @@ export function getOfficerFromMockData(officerId: number) {
 
 export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordType {
   function mockToWorkHistoryType(workHistory: typeof officer.workHistory): EmploymentType[] {
-    const converted : EmploymentType[] = workHistory.map( (item) => {
+    const converted: EmploymentType[] = workHistory.map((item) => {
       return {
         department: {
           departmentName: item.deptName,
@@ -29,7 +29,7 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
   function mockToIncidentType(incidents: typeof officer.incidents): Incident[] {
     const officerNames = incidents[0].officers
     function mockToOfficerNameType(names: typeof officerNames): Officer[] {
-      const converted: Officer[] = names.map( (item) => {
+      const converted: Officer[] = names.map((item) => {
         return {
           first_name: item.split(".")[0] + ".",
           last_name: item.split(".")[1]
@@ -40,7 +40,7 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
 
     const usesOfForce = incidents[0].useOfForce
     function mockToForceType(forces: typeof usesOfForce): UseOfForce[] {
-      const converted: UseOfForce[] = forces.map ( (force) => {
+      const converted: UseOfForce[] = forces.map((force) => {
         return {
           item: force
         }
@@ -48,7 +48,7 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
       return converted
     }
 
-    const converted = incidents.map ( (incident) => {
+    const converted = incidents.map((incident) => {
       return {
         id: incident.id,
         officers: mockToOfficerNameType(incident.officers),
