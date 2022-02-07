@@ -170,6 +170,6 @@ def reset_password():
     # NOTE: 401s if the user or token is not valid
     # NOTE: This token follows the logged in user token lifespan
     user = User.get(get_jwt_identity())
-    user.password = (user_manager.hash_password(body.password),)
+    user.password = user_manager.hash_password(body.password)
     db.session.commit()
     return {"message": "Password successfully changed"}, 200
