@@ -1,0 +1,22 @@
+.category {
+  display: block;
+  font-size: var(--size10);
+  color: var(--grey);
+  margin-left: 0;
+}
+
+.name {
+  font-size: var(--size32);
+}
+
+.titleAndName {
+  width: 33%;
+}
+
+.otherData {
+  width: 22%;
+}
+
+.viewWrapper {
+  display: flex;
+}
