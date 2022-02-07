@@ -26,7 +26,6 @@ export const handlers = [
     return res(ctx.status(200), ctx.json({ access_token: token }))
   }),
 
-  // TODO: How can these be faked better
   rest.post<Json>(routePath("/auth/forgotPassword"), (req, res, ctx) => {
     if (req.body.email) {
       return res(ctx.status(200))
@@ -58,7 +57,7 @@ export const handlers = [
     }
   }),
 
-  rest.get(routePath("/auth/test"), (req, res, ctx) => {
+  rest.get(routePath("/auth/whoami"), (req, res, ctx) => {
     const token = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)?.groups?.token
     const user = token && auth.whoami(token)
 

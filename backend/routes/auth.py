@@ -134,7 +134,7 @@ def logout():
     return resp, 200
 
 
-@bp.route("/test", methods=["GET"])
+@bp.route("/whoami", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate()

@@ -124,7 +124,7 @@ export function resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordR
 
 export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
   return request({
-    url: "/auth/test",
+    url: "/auth/whoami",
     method: "GET",
     accessToken
   }).then(({ active, email, email_confirmed_at, first_name, last_name, phone_number, role }) => ({
