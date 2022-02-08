@@ -556,7 +556,7 @@ exports[`renders Map correctly 1`] = `
         role="tooltip"
         style="transform: translate(undefinedpx, undefinedpx) translateX(50%);"
       >
-        <header
+        <p
           class="popUpHead"
           id="head"
         />

@@ -87,7 +87,7 @@ export function Marker(props: MarkerProps) {
   )
 }
 
-export function CircleMarker({position:{x, y}, fill} :{ position: Coord; fill?: string }) {
+export function CircleMarker({ position: { x, y }, fill }: { position: Coord; fill?: string }) {
   const radius = 10
   const cx = x
   const cy = y
@@ -103,7 +103,7 @@ export function CircleMarker({position:{x, y}, fill} :{ position: Coord; fill?: 
   )
 }
 
-export function SquareMarker({position:{x, y}, fill} :{ position: Coord; fill?: string }) {
+export function SquareMarker({ position: { x, y }, fill }: { position: Coord; fill?: string }) {
   const side = 20
 
   return (
