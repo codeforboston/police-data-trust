@@ -1,3 +1,4 @@
+import { DashboardHeader } from "../compositions"
 import "../styles/globals.css"
 import Head from "next/head"
 import { AppProps } from "next/app"
@@ -30,6 +31,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <meta property="og:image:alt" content={logoAlt} />
       </Head>
       <Providers>
+        <DashboardHeader />
         <Component {...pageProps} />
       </Providers>
     </>

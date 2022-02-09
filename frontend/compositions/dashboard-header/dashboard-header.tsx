@@ -1,6 +1,7 @@
 import * as React from "react"
 import useDropdownMenu from "react-accessible-dropdown-menu-hook"
 import { useMediaQuery } from "react-responsive"
+import { AuthContext } from "../../helpers/auth"
 import { LogoSizes } from "../../models"
 import { Logo as NPDCLogo } from "../../shared-components"
 import styles from "./dashboard-header.module.css"
@@ -12,6 +13,8 @@ export default function DashboardHeader() {
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
   const desktop = useMediaQuery({ query: "screen and (min-width: 32em)" })
 
+  const { user } = React.useContext(AuthContext)
+
   return (
     <header className={wrapper}>
       <div className={backgroundBanner}>
@@ -22,13 +25,16 @@ export default function DashboardHeader() {
             <p>The national index of police incidents</p>
           </div>
         </div>
-        <nav aria-label="Main Navigation">
-          {desktop ? (
-            <Nav itemProps={itemProps} />
-          ) : (
-            <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
-          )}
-        </nav>
+        {/* Only show the buttons if the user is logged in */}
+        {user &&
+          <nav aria-label="Main Navigation">
+            {desktop ? (
+              <Nav itemProps={itemProps} />
+            ) : (
+              <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+            )}
+          </nav>
+        }
       </div>
     </header>
   )

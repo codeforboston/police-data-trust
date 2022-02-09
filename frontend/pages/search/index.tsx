@@ -9,7 +9,6 @@ type ChartType = "bubble" | "map"
 export default requireAuth(function Dashboard() {
   return (
     <Layout>
-      <DashboardHeader />
       <div style={{ display: "flex" }}>
         <SearchPanel />
         <Map />
