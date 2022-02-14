@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_access_cookies,
 )
+from pydantic.main import BaseModel
 from ..auth import min_role_required, user_manager
 from ..database import User, UserRole, db
 from ..dto import LoginUserDTO, RegisterUserDTO
@@ -141,3 +142,34 @@ def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
     return UserSchema.from_orm(User.get(current_identity)).dict()
+
+
+class EmailDTO(BaseModel):
+    email: str
+
+
+@bp.route("/forgotPassword", methods=["POST"])
+@validate(auth=False, json=EmailDTO)
+def send_reset_email():
+    body: EmailDTO = request.context.json
+    print(user_manager.find_user_by_email(body.email))
+    user_manager.send_reset_password_email(body.email)
+    # always 200 so you cant use this endpoint to find emails of users
+    return {}, 200
+
+
+class PasswordDTO(BaseModel):
+    password: str
+
+
+@bp.route("/resetPassword", methods=["POST"])
+@jwt_required()
+@validate(auth=True, json=PasswordDTO)
+def reset_password():
+    body: PasswordDTO = request.context.json
+    # NOTE: 401s if the user or token is not valid
+    # NOTE: This token follows the logged in user token lifespan
+    user = User.get(get_jwt_identity())
+    user.password = user_manager.hash_password(body.password)
+    db.session.commit()
+    return {"message": "Password successfully changed"}, 200

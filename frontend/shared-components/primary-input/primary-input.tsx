@@ -13,7 +13,8 @@ interface PrimaryInputProps {
   size?: string
   defaultValue?: string
   className?: string
-  tooltipProps?: InfoTooltipProps
+  tooltipProps?: InfoTooltipProps,
+  isRequired?: boolean,
 }
 
 export default function PrimaryInput({
@@ -22,7 +23,8 @@ export default function PrimaryInput({
   size,
   defaultValue,
   className,
-  tooltipProps
+  tooltipProps,
+  isRequired = true,
 }: PrimaryInputProps) {
   const {
     register,
@@ -67,7 +69,7 @@ export default function PrimaryInput({
         aria-describedby={errorId}
         aria-invalid={!isValid}
         defaultValue={defaultValue}
-        {...register(inputName, { required: true, pattern })}
+        {...register(inputName, { required: isRequired, pattern })}
       />
       {!isValid && (
         <FormLevelError
