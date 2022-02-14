@@ -49,6 +49,7 @@ export interface UseOfForce {
 export interface Incident {
   id: number
   location?: string
+  locationLonLat?: [number, number]
   time_of_incident?: string
   department?: string
   officers: Officer[]

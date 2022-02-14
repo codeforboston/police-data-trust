@@ -1,0 +1,74 @@
+.popUpDiv {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: fit-content;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #666;
+  left: 10px;
+  top: 10px;
+  pointer-events: none;
+  box-shadow: 4px 4px 6px #6665;
+}
+
+.popUpHead {
+  font-size: var(--size18);
+  color: var(--darkBlue);
+  font-weight: bold;
+  text-transform: capitalize;
+  text-align: center;
+  text-anchor: middle;
+  margin: 1em;
+}
+
+.popUpBody {
+  font-size: var(--size14);
+  color: var(--grey);
+  text-align: center;
+  text-anchor: middle;
+  margin: 1em;
+}
+
+.popUp {
+  position: absolute;
+  bottom: calc(100% + 26px);
+  right: 100%;
+  min-width: var(--size128);
+  max-width: var(--size256);
+  transform-origin: center;
+  background-color: white;
+  border: var(--lightBlue);
+  border-radius: 5px;
+  opacity: 0;
+  box-shadow: 0px 1px 3px 0 var(--grey);
+  transition: opacity 800ms, bottom 800ms;
+  pointer-events: none;
+}
+
+.popUp::after {
+  position: absolute;
+  content: "";
+  bottom: calc(100% + 10px) * -1;
+  right: calc(100% + 10px) * -1;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  width: var(--size14);
+  height: var(--size14);
+  background-color: white;
+  border-right: 1px solid var(--grey);
+  border-bottom: 1px solid var(--grey);
+}
+
+.popUpOpen {
+  bottom: calc(100% + 15px);
+  opacity: 1;
+}
+
+.popUpClosed {
+  bottom: calc(100% + 26px);
+  opacity: 0;
+}
