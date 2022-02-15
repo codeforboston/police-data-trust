@@ -1,0 +1,28 @@
+.category {
+    display: block;
+    font-size: var(--size10);
+    color: var(--grey);
+    padding: var(--size16)
+  }
+
+.detailWrapper {
+    display: flex;
+    padding: var(--size16)
+}
+
+.forceWrapper {
+    font-size: var(--size32);
+    width: 50%;
+    padding: var(--size16)
+}
+
+.idWrapper {
+    font-weight: bold;
+    padding: var(--size16)
+}
+
+.outcomeWrapper {
+    padding: var(--size16)
+}
+
+
