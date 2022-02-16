@@ -13,7 +13,7 @@ on:
         description: 'Branch, Tag, or Full SHA'
         required: true
 env:
-  AWS_APP_NAME: police-data-trust-backend
+  AWS_APP_NAME: police-data-trust-frontend
   AWS_REGION: us-east-1
   DOCKERFILE: ./frontend/Dockerfile.cloud
   DOCKER_PATH: ./frontend
