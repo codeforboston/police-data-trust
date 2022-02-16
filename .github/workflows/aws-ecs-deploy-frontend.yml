@@ -110,6 +110,6 @@ jobs:
       with:
         task-definition: ${{ steps.task-definition.outputs.task-definition }}
         service: ${{ needs.setup_env.outputs.AWS_APPENV }}
-        cluster: incubator-prod
+        cluster: infra-prod
         wait-for-service-stability: true
         wait-for-minutes: 7 minutes
