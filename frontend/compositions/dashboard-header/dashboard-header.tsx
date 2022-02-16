@@ -26,7 +26,7 @@ export default function DashboardHeader() {
           </div>
         </div>
         {/* Only show the buttons if the user is logged in */}
-        {user &&
+        {user && (
           <nav aria-label="Main Navigation">
             {desktop ? (
               <Nav itemProps={itemProps} />
@@ -34,7 +34,7 @@ export default function DashboardHeader() {
               <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
             )}
           </nav>
-        }
+        )}
       </div>
     </header>
   )
