@@ -3,7 +3,8 @@ import React from "react"
 import { useFormContext } from "react-hook-form"
 import { FormLevelError } from ".."
 import { getTitleCaseFromCamel } from "../../helpers"
-import { PrimaryInputNames, primaryInputValidation } from "../../models"
+import { PrimaryInputNames, primaryInputValidation, TooltipTypes } from "../../models"
+import InfoTooltip, { InfoTooltipProps } from "../info-tooltip/info-tooltip"
 import styles from "./primary-input.module.css"
 
 interface PrimaryInputProps {
@@ -12,6 +13,8 @@ interface PrimaryInputProps {
   size?: string
   defaultValue?: string
   className?: string
+  tooltipProps?: InfoTooltipProps,
+  isRequired?: boolean,
 }
 
 export default function PrimaryInput({
@@ -19,7 +22,9 @@ export default function PrimaryInput({
   isShown,
   size,
   defaultValue,
-  className
+  className,
+  tooltipProps,
+  isRequired = true,
 }: PrimaryInputProps) {
   const {
     register,
@@ -36,7 +41,6 @@ export default function PrimaryInput({
   const labelText: string = `${getTitleCaseFromCamel(inputName)}:`
   const displayType: string = isShown ? "text" : inputType
   const isValid = !errors[inputName]
-
   return (
     <div
       className={classNames(
@@ -46,7 +50,16 @@ export default function PrimaryInput({
         styles[size],
         !isValid && "hasError"
       )}>
-      <label htmlFor={inputId}>{labelText}</label>
+      <label htmlFor={inputId}>
+        {labelText}
+        {tooltipProps?.type && (
+          <InfoTooltip
+            type={tooltipProps?.type}
+            icon={tooltipProps?.icon}
+            iconSize={tooltipProps?.iconSize}
+          />
+        )}
+      </label>
       <input
         id={inputId}
         className={inputField}
@@ -56,7 +69,7 @@ export default function PrimaryInput({
         aria-describedby={errorId}
         aria-invalid={!isValid}
         defaultValue={defaultValue}
-        {...register(inputName, { required: true, pattern })}
+        {...register(inputName, { required: isRequired, pattern })}
       />
       {!isValid && (
         <FormLevelError

@@ -1,5 +1,6 @@
+import { access } from "fs"
 import { MockedRequest, rest } from "msw"
-import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser } from ".."
+import { baseURL, IncidentSearchRequest, LoginCredentials, NewUser, ForgotPassword } from ".."
 import FakeAuth from "./fake-auth"
 import FakeSearch from "./fake-search"
 
@@ -23,6 +24,37 @@ export const handlers = [
       return res(ctx.status(400), ctx.json({ message: "email matches existing account" }))
     }
     return res(ctx.status(200), ctx.json({ access_token: token }))
+  }),
+
+  rest.post<Json>(routePath("/auth/forgotPassword"), (req, res, ctx) => {
+    if (req.body.email) {
+      return res(ctx.status(200))
+    } else {
+      return res(ctx.status(422))
+    }
+  }),
+
+  rest.post<Json>(routePath("/auth/resetPassword"), (req, res, ctx) => {
+    const accessToken = req.headers.get("Authorization")?.match(/^Bearer (?<token>.*)$/)
+      ?.groups?.token
+    const user = accessToken && auth.whoami(accessToken)
+
+    if (!user) {
+      return res(ctx.status(401))
+    }
+
+    const { password } = req.body
+    try {
+      const message = auth.reset({ accessToken, password })
+      return res(ctx.json({ message }), ctx.status(200))
+    } catch (e) {
+      return res(
+        ctx.status(401),
+        ctx.json({
+          message: e.message
+        })
+      )
+    }
   }),
 
   rest.get(routePath("/auth/whoami"), (req, res, ctx) => {

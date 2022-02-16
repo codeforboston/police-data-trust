@@ -1,0 +1,22 @@
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  margin: 0 10vw;
+}
+
+@media screen and (min-width: 32em) {
+  .center {
+    flex-direction: row;
+  }
+}
+
+.text h1 {
+  color: var(--darkBlue);
+}
+
+.text p {
+  margin: 0.25em 0;
+}

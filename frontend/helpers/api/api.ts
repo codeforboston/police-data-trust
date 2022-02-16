@@ -25,6 +25,19 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface ForgotPassword {
+  email: string
+}
+
+export interface ResetPasswordRequest extends AuthenticatedRequest {
+  accessToken: string
+  password: string
+}
+
+export interface ResetPasswordResponse {
+  message: string
+}
+
 export interface Officer {
   first_name?: string
   last_name?: string
@@ -36,6 +49,7 @@ export interface UseOfForce {
 export interface Incident {
   id: number
   location?: string
+  locationLonLat?: [number, number]
   time_of_incident?: string
   department?: string
   officers: Officer[]
@@ -88,6 +102,25 @@ export function register(data: RegisterRequest): Promise<AccessToken> {
     method: "POST",
     data
   }).then(({ access_token }) => access_token)
+}
+
+export function forgotPassowrd(data: ForgotPassword): Promise<void> {
+  return request({
+    url: "/auth/forgotPassword",
+    method: "POST",
+    data
+  })
+}
+
+export function resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+  const { accessToken } = req
+
+  return request({
+    url: `/auth/resetPassword`,
+    method: "POST",
+    data: { password: req.password },
+    accessToken
+  })
 }
 
 export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
