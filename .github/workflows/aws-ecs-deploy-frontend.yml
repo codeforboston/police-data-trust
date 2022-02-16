@@ -14,7 +14,7 @@ on:
         required: true
 env:
   AWS_APP_NAME: police-data-trust-backend
-  AWS_REGION: us-west-2
+  AWS_REGION: us-east-1
   DOCKERFILE: ./frontend/Dockerfile.cloud
   DOCKER_PATH: ./frontend
 jobs:
