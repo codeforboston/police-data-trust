@@ -29,7 +29,8 @@ export default function PasswordAid({ id, onDisplayChange }: PasswordAidProps) {
         className={passwordToggle}
         role="switch"
         aria-checked={isHidden}
-        onClick={togglePasswordView}>
+        onClick={togglePasswordView}
+      >
         <FontAwesomeIcon icon={icon} /> {text}
       </button>
     </div>

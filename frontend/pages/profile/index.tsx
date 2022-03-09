@@ -18,7 +18,6 @@ export default requireAuth(function Profile() {
 
   return (
     <Layout>
-      <DashboardHeader />
       <div className={styles.profileWrapper}>
         <ProfileNav currentItem={nav} selectNav={setNav} />
 

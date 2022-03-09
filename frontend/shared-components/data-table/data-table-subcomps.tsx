@@ -22,7 +22,8 @@ const EditButton = (props: EditButtonProps) => {
     <button
       className={inEditMode ? editButtonOn : editButton}
       title="Edit Result Filter"
-      onClick={onclick}>
+      onClick={onclick}
+    >
       <FontAwesomeIcon icon={faEdit} />
     </button>
   )

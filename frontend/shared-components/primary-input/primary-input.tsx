@@ -13,8 +13,8 @@ interface PrimaryInputProps {
   size?: string
   defaultValue?: string
   className?: string
-  tooltipProps?: InfoTooltipProps,
-  isRequired?: boolean,
+  tooltipProps?: InfoTooltipProps
+  isRequired?: boolean
 }
 
 export default function PrimaryInput({
@@ -24,7 +24,7 @@ export default function PrimaryInput({
   defaultValue,
   className,
   tooltipProps,
-  isRequired = true,
+  isRequired = true
 }: PrimaryInputProps) {
   const {
     register,
@@ -49,7 +49,8 @@ export default function PrimaryInput({
         inputContainer,
         styles[size],
         !isValid && "hasError"
-      )}>
+      )}
+    >
       <label htmlFor={inputId}>
         {labelText}
         {tooltipProps?.type && (

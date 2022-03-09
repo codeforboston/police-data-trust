@@ -69,7 +69,8 @@ export default function ForgotPassword() {
               className={useEmail ? "" : "hidden"}
               onClick={() => {
                 setEmailState(false)
-              }}>
+              }}
+            >
               Forgot your Email?
             </LinkButton>
             <LinkButton
@@ -77,7 +78,8 @@ export default function ForgotPassword() {
               className={useEmail ? "hidden" : ""}
               onClick={() => {
                 setEmailState(true)
-              }}>
+              }}
+            >
               Provide Email instead
             </LinkButton>
             <PrimaryButton loading={loading} type="submit">

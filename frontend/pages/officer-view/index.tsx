@@ -23,7 +23,6 @@ export default requireAuth(function OfficerView() {
 
   return (
     <Layout>
-      <DashboardHeader />
       <OfficerHeader {...timothy} />
       <hr />
       <OptionalOfficerInfo {...timothy} />

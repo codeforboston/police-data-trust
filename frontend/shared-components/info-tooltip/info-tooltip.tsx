@@ -35,7 +35,8 @@ export default function InfoTooltip({
       aria-label={ariaLabel}
       aria-describedby={tooltipBodyId}
       role="tooltip"
-      tabIndex={0}>
+      tabIndex={0}
+    >
       <FontAwesomeIcon
         className={tooltipIcon}
         aria-hidden={true}

@@ -17,7 +17,8 @@ export default function LandingPage() {
             border: "#303463 thin solid",
             fontWeight: "bold",
             margin: "2rem 2rem 0 0"
-          }}>
+          }}
+        >
           Donate
         </button>
       </div>
