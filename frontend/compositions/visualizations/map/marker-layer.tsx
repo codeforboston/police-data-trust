@@ -34,8 +34,7 @@ export function MarkerLayer(props: MarkerLayerProps) {
       id="marker-layer"
       className={styles.markerLayer}
       height="100%"
-      width="100%"
-    >
+      width="100%">
       {markersData &&
         markersData.map((c, i) => {
           return (
@@ -81,8 +80,7 @@ export function Marker(props: MarkerProps) {
       {...props}
       onMouseOver={(e) => handleMouseOver(e, markerDescription)}
       onMouseMove={(e) => handleMouseMove(e, markerDescription)}
-      onMouseOut={handleMouseLeave}
-    >
+      onMouseOut={handleMouseLeave}>
       {type === "circle" && <CircleMarker position={coordinate} />}
       {type === "square" && <SquareMarker position={coordinate} />}
     </g>

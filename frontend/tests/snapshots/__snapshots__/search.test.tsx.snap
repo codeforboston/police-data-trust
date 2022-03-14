@@ -2,267 +2,115 @@
 
 exports[`renders Dashboard correctly 1`] = `
 <div>
-  <div>
+  <header
+    class="wrapper"
+  >
     <div
-      style="display: flex;"
+      class="backgroundBanner"
     >
       <div
-        class="searchPanelContainer"
+        class="leftHeader"
       >
-        <form
-          class="searchForm"
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          class="logo medium"
+          src="/NPDCLogo.svg"
+        />
+        <div
+          class="titleContainer"
         >
-          <div
-            class="searchToggle"
+          <h2>
+            National Police Data Coalition
+          </h2>
+          <p>
+            The national index of police incidents
+          </p>
+        </div>
+      </div>
+      <nav
+        aria-label="Main Navigation"
+      >
+        <div
+          class="dropdown"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            role="button"
+            tabindex="0"
           >
-            <div>
-              I am searching for...
-            </div>
-            <div
-              class="searchChoices"
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
+              data-icon="ellipsis-v"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 192 512"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <div
-                class="selectedSearch"
-              >
-                Incident(s)
-              </div>
-              <div
+              <path
+                d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+          <div
+            class="hidden"
+            role="menu"
+          >
+            <ul
+              id="navMenu"
+            >
+              <li
                 class=""
               >
-                Officer(s)
-              </div>
-            </div>
+                <a
+                  href="/search"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  Search
+                </a>
+              </li>
+              <li
+                class=""
+              >
+                <a
+                  href="/profile"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  Profile
+                </a>
+              </li>
+              <li
+                class=""
+              >
+                <a
+                  href="/logout"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  Sign Out
+                </a>
+              </li>
+              <li
+                class=""
+              >
+                <a
+                  href="/"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  DONATE
+                </a>
+              </li>
+            </ul>
           </div>
-          <div>
-            <div>
-              <div
-                class="defaultInputContainer inputContainer undefined"
-              >
-                <label
-                  for="locationInput"
-                >
-                  Location:
-                  <div
-                    aria-describedby="useOfForceTooltip"
-                    aria-label="Learn more about Use Of Force"
-                    class="tooltipContainer"
-                    role="tooltip"
-                    tabindex="0"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="svg-inline--fa fa-info-circle fa-w-16 fa-xs tooltipIcon"
-                      data-icon="info-circle"
-                      data-prefix="fas"
-                      focusable="false"
-                      role="img"
-                      viewBox="0 0 512 512"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    <div
-                      class="tooltip"
-                      id="useOfForceTooltip"
-                    >
-                      <p>
-                        Use of Force refers to the continuum of violence that may be used in an incident
-                      </p>
-                      <p>
-                        For more info, view our Use of Force explainer
-                      </p>
-                    </div>
-                  </div>
-                </label>
-                <input
-                  aria-describedby="locationError"
-                  aria-invalid="false"
-                  aria-required="true"
-                  class="inputField"
-                  id="locationInput"
-                  name="location"
-                  type="text"
-                  value=""
-                />
-              </div>
-            </div>
-            <div>
-              <div
-                class="defaultInputContainer inputContainer undefined"
-              >
-                <label
-                  for="keyWordsInput"
-                >
-                  Key Words:
-                  <div
-                    aria-describedby="keyWordTooltip"
-                    aria-label="Learn more about Key Word"
-                    class="tooltipContainer"
-                    role="tooltip"
-                    tabindex="0"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="svg-inline--fa fa-info-circle fa-w-16 fa-xs tooltipIcon"
-                      data-icon="info-circle"
-                      data-prefix="fas"
-                      focusable="false"
-                      role="img"
-                      viewBox="0 0 512 512"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    <div
-                      class="tooltip"
-                      id="keyWordTooltip"
-                    >
-                      <p>
-                        Key words will look for matching words in any column in the database, including names, locations, and descriptions
-                      </p>
-                    </div>
-                  </div>
-                </label>
-                <input
-                  aria-describedby="keyWordsError"
-                  aria-invalid="false"
-                  aria-required="true"
-                  class="inputField"
-                  id="keyWordsInput"
-                  name="keyWords"
-                  type="text"
-                  value=""
-                />
-              </div>
-            </div>
-            <div>
-              <div
-                class="defaultInputContainer inputContainer undefined"
-              >
-                <label
-                  for="dateStartInput"
-                >
-                  Date Start:
-                </label>
-                <input
-                  aria-describedby="dateStartError"
-                  aria-invalid="false"
-                  aria-required="true"
-                  class="inputField"
-                  id="dateStartInput"
-                  name="dateStart"
-                  type="date"
-                  value=""
-                />
-              </div>
-            </div>
-            <div>
-              <div
-                class="defaultInputContainer inputContainer undefined"
-              >
-                <label
-                  for="dateEndInput"
-                >
-                  Date End:
-                </label>
-                <input
-                  aria-describedby="dateEndError"
-                  aria-invalid="false"
-                  aria-required="true"
-                  class="inputField"
-                  id="dateEndInput"
-                  name="dateEnd"
-                  type="date"
-                  value=""
-                />
-              </div>
-            </div>
-          </div>
-          <button
-            class="primaryButton"
-            type="submit"
-          >
-            Search
-          </button>
-        </form>
-      </div>
-      <div>
-        FakeMap
-      </div>
+        </div>
+      </nav>
     </div>
-    <section
-      style="max-width: 500px; margin: 1em auto;"
-    >
-      <h1>
-        Search Incidents
-      </h1>
-      <form
-        class="centerContent"
-      >
-        <fieldset
-          style="display: flex; align-items: center;"
-        >
-          <label>
-            Location
-          </label>
-          <input
-            name="Location"
-            placeholder="Location keyword"
-            style="margin: 10px; flex-basis: auto;"
-            type="text"
-          />
-        </fieldset>
-        <fieldset
-          style="display: flex; align-items: center;"
-        >
-          <label>
-            Start Date
-          </label>
-          <input
-            name="Start Date"
-            style="margin: 10px; flex-basis: auto;"
-            type="date"
-          />
-        </fieldset>
-        <fieldset
-          style="display: flex; align-items: center;"
-        >
-          <label>
-            End Date
-          </label>
-          <input
-            name="End Date"
-            style="margin: 10px; flex-basis: auto;"
-            type="date"
-          />
-        </fieldset>
-        <fieldset
-          style="display: flex; align-items: center;"
-        >
-          <label>
-            Description
-          </label>
-          <input
-            name="Description"
-            placeholder="Description keyword"
-            style="margin: 10px; flex-basis: auto;"
-            type="text"
-          />
-        </fieldset>
-        <button
-          class="primaryButton"
-          type="submit"
-        >
-          Search
-        </button>
-      </form>
-    </section>
-  </div>
+  </header>
 </div>
 `;

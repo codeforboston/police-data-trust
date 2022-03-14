@@ -178,8 +178,7 @@ export default function Map() {
           role="img"
           aria-labelledby="title desc"
           className={styles.mapData}
-          viewBox={`0, 0, 1200, 700`}
-        >
+          viewBox={`0, 0, 1200, 700`}>
           {/* <title>US Map Graphic</title> */}
           <desc>A data graphic showing incidents of poice violence by state.</desc>
           <g id="zoom-container">

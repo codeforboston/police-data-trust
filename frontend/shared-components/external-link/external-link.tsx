@@ -16,8 +16,7 @@ export default function ExternalLink({ linkPath, linkText }: ExternalLinkProps) 
       rel="noopener noreferrer"
       target="_blank"
       className={externalLink}
-      href={linkPath}
-    >
+      href={linkPath}>
       {linkText}
       <FontAwesomeIcon aria-hidden="true" icon={faExternalLinkAlt} size="xs" />
     </a>

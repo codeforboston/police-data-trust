@@ -16,6 +16,7 @@ export default function ResetPassword() {
   const token = router.query.token instanceof Array ? router.query.token[0] : router.query.token
 
   useRedirectOnAuth(AppRoutes.LOGIN)
+
   const form = useForm()
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
@@ -40,7 +41,7 @@ export default function ResetPassword() {
       })
       router.push(AppRoutes.LOGIN)
     } catch (e) {
-      console.error("Unexpected password reset error", e)
+      // console.error("Unexpected password reset error", e)
       if (e.message.includes("401")) {
         setSubmitError("Token Invalid, please request another forgot password email.")
       } else {
