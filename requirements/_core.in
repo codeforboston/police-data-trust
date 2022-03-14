@@ -32,3 +32,4 @@ openpyxl
 xlsxwriter
 numpy
 spectree
+jupyter
