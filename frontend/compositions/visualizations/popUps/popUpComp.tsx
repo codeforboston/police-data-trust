@@ -27,8 +27,7 @@ export default function PopUp({ shouldShowPopUp, headerText, bodyText, location 
       style={style}
       aria-label={ariaLabel}
       aria-describedby={popUpBodyId}
-      role="tooltip"
-    >
+      role="tooltip">
       <p id="head" className={styles.popUpHead}>
         {headerText}
       </p>

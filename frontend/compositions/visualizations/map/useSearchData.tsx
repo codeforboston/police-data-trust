@@ -19,9 +19,11 @@ export default function useSearchData() {
   }
 
   const features: Feature[] = incidentResults?.results
-    ? incidentResults.results.map((incident) => {
-        return createFeature(incident)
-      })
+    ? incidentResults.results
+        .filter((incident) => incident.locationLonLat)
+        .map((incident) => {
+          return createFeature(incident)
+        })
     : []
 
   return {

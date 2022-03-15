@@ -16,6 +16,7 @@ export default function ResetPassword() {
   const token = router.query.token instanceof Array ? router.query.token[0] : router.query.token
 
   useRedirectOnAuth(AppRoutes.LOGIN)
+
   const form = useForm()
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)

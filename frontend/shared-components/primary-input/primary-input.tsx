@@ -49,8 +49,7 @@ export default function PrimaryInput({
         inputContainer,
         styles[size],
         !isValid && "hasError"
-      )}
-    >
+      )}>
       <label htmlFor={inputId}>
         {labelText}
         {tooltipProps?.type && (

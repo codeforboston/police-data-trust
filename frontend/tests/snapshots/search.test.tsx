@@ -1,5 +1,6 @@
 import * as React from "react"
-import Dashboard from "../../pages/search"
+import { act } from "react-dom/test-utils"
+import { DashboardHeader } from "../../compositions"
 import { render, router, setAuthForTest, userEvent, waitFor } from "../test-utils"
 
 jest.mock("../../compositions/visualizations/map")
@@ -7,15 +8,17 @@ jest.mock("../../compositions/visualizations/map")
 beforeAll(() => setAuthForTest())
 
 it("renders Dashboard correctly", async () => {
-  const { container } = render(<Dashboard />)
+  const { container } = render(<DashboardHeader />)
   expect(container).toMatchSnapshot()
 })
 
 it("navigates to logout page", async () => {
-  const { getByRole } = render(<Dashboard />)
-  const logout = getByRole("menuitem", { name: /sign out/i })
+  const { getByText } = render(<DashboardHeader />)
+  const logout = getByText(/sign out/i)
 
-  userEvent.click(logout)
+  act(() => {
+    userEvent.click(logout)
+  })
 
   await waitFor(() => expect(router.pathname).toBe("/logout"))
 })

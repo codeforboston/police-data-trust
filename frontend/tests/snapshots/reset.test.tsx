@@ -1,8 +1,9 @@
 import { api, useAuth } from "../../helpers"
+import { act } from "react-dom/test-utils"
 import { EXISTING_TEST_USER } from "../../helpers/api/mocks/data"
 import { AppRoutes } from "../../models"
 import Reset from "../../pages/reset"
-import { render, router, setAuthForTest, uniqueEmail, userEvent, waitFor, act } from "../test-utils"
+import { render, router, setAuthForTest, uniqueEmail, userEvent, waitFor } from "../test-utils"
 
 it("renders Register correctly", () => {
   const { container } = render(<Reset />)
