@@ -41,7 +41,7 @@ export default function ResetPassword() {
       })
       router.push(AppRoutes.LOGIN)
     } catch (e) {
-      // console.error("Unexpected password reset error", e)
+      console.error("Unexpected password reset error", e)
       if (e.message.includes("401")) {
         setSubmitError("Token Invalid, please request another forgot password email.")
       } else {
