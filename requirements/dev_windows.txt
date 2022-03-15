@@ -10,16 +10,30 @@ amqp==5.0.6
     # via kombu
 appdirs==1.4.4
     # via black
+argon2-cffi==21.3.0
+    # via notebook
+argon2-cffi-bindings==21.2.0
+    # via argon2-cffi
+asttokens==2.0.5
+    # via stack-data
 attrs==21.2.0
-    # via pytest
+    # via
+    #   jsonschema
+    #   pytest
 babel==2.9.1
     # via flask-babelex
+backcall==0.2.0
+    # via ipython
 bcrypt==3.2.0
     # via flask-user
+beautifulsoup4==4.10.0
+    # via nbconvert
 billiard==3.6.4.0
     # via celery
 black==21.6b0
     # via -r requirements/_core.in
+bleach==4.1.0
+    # via nbconvert
 blinker==1.4
     # via flask-mail
 celery==5.1.0
@@ -27,7 +41,9 @@ celery==5.1.0
 certifi==2021.5.30
     # via requests
 cffi==1.14.5
-    # via bcrypt
+    # via
+    #   argon2-cffi-bindings
+    #   bcrypt
 chardet==4.0.0
     # via requests
 click==7.1.2
@@ -47,12 +63,24 @@ click-repl==0.2.0
     # via celery
 coverage==5.5
     # via pytest-cov
+debugpy==1.5.1
+    # via ipykernel
+decorator==5.1.1
+    # via ipython
+defusedxml==0.7.1
+    # via nbconvert
 dnspython==2.1.0
     # via email-validator
 email-validator==1.1.3
     # via -r requirements/_core.in
+entrypoints==0.4
+    # via
+    #   jupyter-client
+    #   nbconvert
 et-xmlfile==1.1.0
     # via openpyxl
+executing==0.8.3
+    # via stack-data
 flake8==3.9.2
     # via -r requirements/_core.in
 flask==2.0.1
@@ -76,9 +104,7 @@ flask-db==0.3.2
 flask-jwt-extended==4.2.3
     # via -r requirements/_core.in
 flask-login==0.5.0
-    # via
-    #   -r requirements/_core.in
-    #   flask-user
+    # via flask-user
 flask-mail==0.9.1
     # via flask-user
 flask-serialize==1.5.1
@@ -101,16 +127,65 @@ idna==2.10
     # via
     #   email-validator
     #   requests
+importlib-resources==5.4.0
+    # via jsonschema
 iniconfig==1.1.1
     # via pytest
+ipykernel==6.9.2
+    # via
+    #   ipywidgets
+    #   jupyter
+    #   jupyter-console
+    #   notebook
+    #   qtconsole
+ipython==8.1.1
+    # via
+    #   ipykernel
+    #   ipywidgets
+    #   jupyter-console
+ipython-genutils==0.2.0
+    # via
+    #   ipywidgets
+    #   notebook
+    #   qtconsole
+ipywidgets==7.6.5
+    # via jupyter
 itsdangerous==2.0.1
     # via
     #   flask
     #   flask-wtf
+jedi==0.18.1
+    # via ipython
 jinja2==3.0.1
     # via
     #   flask
     #   flask-babelex
+    #   nbconvert
+    #   notebook
+jsonschema==4.4.0
+    # via nbformat
+jupyter==1.0.0
+    # via -r requirements/_core.in
+jupyter-client==7.1.2
+    # via
+    #   ipykernel
+    #   jupyter-console
+    #   nbclient
+    #   notebook
+    #   qtconsole
+jupyter-console==6.4.3
+    # via jupyter
+jupyter-core==4.9.2
+    # via
+    #   jupyter-client
+    #   nbconvert
+    #   nbformat
+    #   notebook
+    #   qtconsole
+jupyterlab-pygments==0.1.2
+    # via nbconvert
+jupyterlab-widgets==1.0.2
+    # via ipywidgets
 kombu==5.1.0
     # via celery
 mako==1.1.4
@@ -120,12 +195,40 @@ markupsafe==2.0.1
     #   jinja2
     #   mako
     #   wtforms
+matplotlib-inline==0.1.3
+    # via
+    #   ipykernel
+    #   ipython
 mccabe==0.6.1
     # via flake8
 mirakuru==2.4.1
     # via pytest-postgresql
+mistune==0.8.4
+    # via nbconvert
 mypy-extensions==0.4.3
     # via black
+nbclient==0.5.13
+    # via nbconvert
+nbconvert==6.4.4
+    # via
+    #   jupyter
+    #   notebook
+nbformat==5.2.0
+    # via
+    #   ipywidgets
+    #   nbclient
+    #   nbconvert
+    #   notebook
+nest-asyncio==1.5.4
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   nbclient
+    #   notebook
+notebook==6.4.9
+    # via
+    #   jupyter
+    #   widgetsnbextension
 numpy==1.20.3
     # via
     #   -r requirements/_core.in
@@ -134,10 +237,16 @@ openpyxl==3.0.9
     # via -r requirements/_core.in
 packaging==20.9
     # via
+    #   bleach
     #   pytest
     #   pytest-flask-sqlalchemy
+    #   qtpy
 pandas==1.2.4
     # via -r requirements/_core.in
+pandocfilters==1.5.0
+    # via nbconvert
+parso==0.8.3
+    # via jedi
 passlib==1.7.4
     # via flask-user
 pathspec==0.8.1
@@ -146,18 +255,35 @@ pep517==0.10.0
     # via pip-tools
 permissive-dict==1.0.4
     # via flask-serialize
+pexpect==4.8.0
+    # via ipython
+pickleshare==0.7.5
+    # via ipython
 pip-tools==6.1.0
     # via -r requirements/_core.in
 pluggy==0.13.1
     # via pytest
 port-for==0.6.1
     # via pytest-postgresql
+prometheus-client==0.13.1
+    # via notebook
 prompt-toolkit==3.0.18
-    # via click-repl
+    # via
+    #   click-repl
+    #   ipython
+    #   jupyter-console
 psutil==5.8.0
-    # via mirakuru
+    # via
+    #   ipykernel
+    #   mirakuru
 psycopg2==2.8.6
     # via -r requirements/dev_windows.in
+ptyprocess==0.7.0
+    # via
+    #   pexpect
+    #   terminado
+pure-eval==0.2.2
+    # via stack-data
 py==1.10.0
     # via pytest
 pycodestyle==2.7.0
@@ -175,10 +301,19 @@ pydantic-sqlalchemy==0.0.9
     # via -r requirements/_core.in
 pyflakes==2.3.1
     # via flake8
+pygments==2.11.2
+    # via
+    #   ipython
+    #   jupyter-console
+    #   jupyterlab-pygments
+    #   nbconvert
+    #   qtconsole
 pyjwt==2.1.0
     # via flask-jwt-extended
 pyparsing==2.4.7
     # via packaging
+pyrsistent==0.18.1
+    # via jsonschema
 pytest==6.2.4
     # via
     #   -r requirements/_core.in
@@ -194,12 +329,15 @@ pytest-env==0.6.2
 pytest-flask-sqlalchemy==1.0.2
     # via -r requirements/_core.in
 pytest-mock==3.6.1
-    # via pytest-flask-sqlalchemy
+    # via
+    #   -r requirements/_core.in
+    #   pytest-flask-sqlalchemy
 pytest-postgresql==3.1.1
     # via -r requirements/_core.in
 python-dateutil==2.8.1
     # via
     #   alembic
+    #   jupyter-client
     #   pandas
 python-dotenv==0.17.1
     # via -r requirements/_core.in
@@ -212,17 +350,32 @@ pytz==2021.1
     #   pandas
 pyyaml==5.4.1
     # via -r requirements/_core.in
+pyzmq==22.3.0
+    # via
+    #   jupyter-client
+    #   notebook
+    #   qtconsole
+qtconsole==5.2.2
+    # via jupyter
+qtpy==2.0.1
+    # via qtconsole
 regex==2021.4.4
     # via black
 requests==2.25.1
     # via -r requirements/_core.in
+send2trash==1.8.0
+    # via notebook
 six==1.16.0
     # via
+    #   asttokens
     #   bcrypt
+    #   bleach
     #   click-repl
     #   flask-cors
     #   python-dateutil
     #   sqlalchemy-utils
+soupsieve==2.3.1
+    # via beautifulsoup4
 speaklater==1.3
     # via flask-babelex
 spectree==0.6.3
@@ -238,12 +391,37 @@ sqlalchemy==1.3.23
     #   sqlalchemy-utils
 sqlalchemy-utils==0.37.7
     # via flask-db
+stack-data==0.2.0
+    # via ipython
+terminado==0.13.3
+    # via notebook
+testpath==0.6.0
+    # via nbconvert
 toml==0.10.2
     # via
     #   black
     #   pep517
     #   pytest
     #   pytest-cov
+tornado==6.1
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   notebook
+    #   terminado
+traitlets==5.1.1
+    # via
+    #   ipykernel
+    #   ipython
+    #   ipywidgets
+    #   jupyter-client
+    #   jupyter-core
+    #   matplotlib-inline
+    #   nbclient
+    #   nbconvert
+    #   nbformat
+    #   notebook
+    #   qtconsole
 typing-extensions==3.10.0.0
     # via pydantic
 urllib3==1.26.5
@@ -255,16 +433,22 @@ vine==5.0.0
     #   kombu
 wcwidth==0.2.5
     # via prompt-toolkit
+webencodings==0.5.1
+    # via bleach
 werkzeug==2.0.1
     # via
     #   flask
     #   flask-jwt-extended
+widgetsnbextension==3.5.2
+    # via ipywidgets
 wtforms==2.3.3
     # via
     #   -r requirements/_core.in
     #   flask-wtf
 xlsxwriter==3.0.1
     # via -r requirements/_core.in
+zipp==3.7.0
+    # via importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
