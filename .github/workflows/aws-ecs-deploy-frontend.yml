@@ -25,7 +25,7 @@ jobs:
     - name: Debug Action
       uses: hmarr/debug-action@v1.0.0
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.inputs.ref }}
     - name: Set AWS Env & Image Tag per workflow
