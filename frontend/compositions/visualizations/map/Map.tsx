@@ -179,8 +179,8 @@ export default function Map() {
           aria-labelledby="title desc"
           className={styles.mapData}
           viewBox={`0, 0, 1200, 700`}>
-          {/* <title>US Map Graphic</title> */}
-          <desc>A data graphic showing incidents of poice violence by state.</desc>
+          <title>US Map Graphic</title>
+          <desc>A data graphic showing incidents of police violence by state.</desc>
           <g id="zoom-container">
             <BaseMap projection={projection} geoData={boundaryPaths} />
             <MarkerLayer markersData={markersData} />

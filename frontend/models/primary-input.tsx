@@ -1,55 +1,43 @@
-interface primaryInputValidationFormat {
-  errorMessage: string
-  pattern: RegExp
-  inputType: string
-}
-
 export enum PrimaryInputNames {
-  FIRST_NAME = "firstName",
-  LAST_NAME = "lastName",
-  EMAIL_ADDRESS = "emailAddress",
-  PHONE_NUMBER = "phoneNumber",
-  CREATE_PASSWORD = "createPassword",
-  CONFIRM_PASSWORD = "confirmPassword",
-  LOGIN_PASSWORD = "loginPassword",
-  STREET_ADDRESS = "streetAddress",
-  CITY_TOWN = "cityOrTown",
-  ZIP_CODE = "zipCode",
-  OFFICER_NAME = "officerName",
-  LOCATION = "location",
   BADGE_NUMBER = "badgeNumber",
-  KEY_WORDS = "keyWords",
+  CITY_TOWN = "cityOrTown",
+  CONFIRM_PASSWORD = "confirmPassword",
+  CREATE_PASSWORD = "createPassword",
+  DATE = "date",
+  DATE_END = "dateEnd",
   DATE_START = "dateStart",
-  DATE_END = "dateEnd"
+  EMAIL_ADDRESS = "emailAddress",
+  FIRST_NAME = "firstName",
+  INCIDENT_TYPE = "incidentType",
+  KEY_WORDS = "keyWords",
+  LAST_NAME = "lastName",
+  LOCATION = "location",
+  LOGIN_PASSWORD = "loginPassword",
+  OFFICER_NAME = "officerName",
+  PHONE_NUMBER = "phoneNumber",
+  STREET_ADDRESS = "streetAddress",
+  ZIP_CODE = "zipCode"
 }
 
 const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/
-
 const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", "i")
-const numberRgx: RegExp = new RegExp("^[0-9]$")
-// Since all input fields are required, we need a way to accept any string
 const anyString: RegExp = new RegExp("[sS]*")
 
 export const primaryInputValidation = {
-  [PrimaryInputNames.FIRST_NAME]: {
-    errorMessage: "A name requires 2+ letters",
-    pattern: nameRgx,
+  [PrimaryInputNames.BADGE_NUMBER]: {
+    errorMessage: "A badge number requires 2+ letters",
+    pattern: anyString,
     inputType: "text"
   },
-  [PrimaryInputNames.LAST_NAME]: {
-    errorMessage: "A name requires 2+ letters",
-    pattern: nameRgx,
+  [PrimaryInputNames.CITY_TOWN]: {
+    errorMessage: "A city or town is required",
+    pattern: /[a-z' -]{3,}/i,
     inputType: "text"
   },
-  [PrimaryInputNames.EMAIL_ADDRESS]: {
-    errorMessage: "Please enter a valid email",
-    pattern: /^[a-z0-9_.-]+@[a-z0-9_.-]+\.[a-z]{2,4}$/i,
-    inputType: "email"
-  },
-  [PrimaryInputNames.PHONE_NUMBER]: {
-    errorMessage: 'A phone number is required, formatted as "123 456 7890"',
-    pattern: /\d{3} \d{3} \d{4}/,
-    inputType: "tel"
+  [PrimaryInputNames.CONFIRM_PASSWORD]: {
+    errorMessage: "Please confirm your password",
+    pattern: /.+/,
+    inputType: "password"
   },
   [PrimaryInputNames.CREATE_PASSWORD]: {
     errorMessage:
@@ -57,10 +45,45 @@ export const primaryInputValidation = {
     pattern: passwordRgx,
     inputType: "password"
   },
-  [PrimaryInputNames.CONFIRM_PASSWORD]: {
-    errorMessage: "Please confirm your password",
-    pattern: /.+/,
-    inputType: "password"
+  [PrimaryInputNames.DATE]: {
+    errorMessage: "Date",
+    pattern: anyString,
+    inputType: "date"
+  },
+  [PrimaryInputNames.DATE_START]: {
+    errorMessage: "Enter a date",
+    pattern: anyString,
+    inputType: "date"
+  },
+  [PrimaryInputNames.DATE_END]: {
+    errorMessage: "Enter a date",
+    pattern: anyString,
+    inputType: "date"
+  },
+  [PrimaryInputNames.EMAIL_ADDRESS]: {
+    errorMessage: "Please enter a valid email",
+    pattern: /^[a-z0-9_.-]+@[a-z0-9_.-]+\.[a-z]{2,4}$/i,
+    inputType: "email"
+  },
+  [PrimaryInputNames.FIRST_NAME]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.INCIDENT_TYPE]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: anyString,
+    inputType: "text"
+  },
+  [PrimaryInputNames.LAST_NAME]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.PHONE_NUMBER]: {
+    errorMessage: 'A phone number is required, formatted as "123 456 7890"',
+    pattern: /\d{3} \d{3} \d{4}/,
+    inputType: "tel"
   },
   [PrimaryInputNames.LOGIN_PASSWORD]: {
     errorMessage: "A password is required",
@@ -70,11 +93,6 @@ export const primaryInputValidation = {
   [PrimaryInputNames.STREET_ADDRESS]: {
     errorMessage: "A street address is required",
     pattern: /.+/,
-    inputType: "text"
-  },
-  [PrimaryInputNames.CITY_TOWN]: {
-    errorMessage: "A city or town is required",
-    pattern: /[a-z' -]{3,}/i,
     inputType: "text"
   },
   [PrimaryInputNames.ZIP_CODE]: {
@@ -92,24 +110,27 @@ export const primaryInputValidation = {
     pattern: nameRgx,
     inputType: "text"
   },
-  [PrimaryInputNames.BADGE_NUMBER]: {
-    errorMessage: "A badge number requires 2+ letters",
-    pattern: anyString,
-    inputType: "text"
-  },
   [PrimaryInputNames.KEY_WORDS]: {
     errorMessage: "Enter a valid term",
     pattern: anyString,
     inputType: "text"
-  },
-  [PrimaryInputNames.DATE_START]: {
-    errorMessage: "Enter a date",
-    pattern: anyString,
-    inputType: "date"
-  },
-  [PrimaryInputNames.DATE_END]: {
-    errorMessage: "Enter a date",
-    pattern: anyString,
-    inputType: "date"
   }
+}
+
+export enum SearchTypes {
+  INCIDENTS = "incidents",
+  OFFICERS = "officers"
+}
+
+export const searchPanelInputs: { [key in SearchTypes]: PrimaryInputNames[] } = {
+  [SearchTypes.INCIDENTS]: [
+    PrimaryInputNames.LOCATION,
+    PrimaryInputNames.INCIDENT_TYPE,
+    PrimaryInputNames.DATE
+  ],
+  [SearchTypes.OFFICERS]: [
+    PrimaryInputNames.OFFICER_NAME,
+    PrimaryInputNames.LOCATION,
+    PrimaryInputNames.BADGE_NUMBER
+  ]
 }

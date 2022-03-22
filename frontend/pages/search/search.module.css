@@ -1,0 +1,12 @@
+.searchPageContainer {
+  display: flex;
+}
+
+.searchPageDisplay {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchPageDisplay > * {
+  min-height: 50%;
+}

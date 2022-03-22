@@ -30,7 +30,6 @@ exports[`renders Register correctly 1`] = `
             Create Password:
           </label>
           <input
-            aria-describedby="createPasswordError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"
@@ -49,7 +48,6 @@ exports[`renders Register correctly 1`] = `
             Confirm Password:
           </label>
           <input
-            aria-describedby="confirmPasswordError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"

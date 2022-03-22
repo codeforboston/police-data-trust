@@ -66,7 +66,7 @@ export default function PrimaryInput({
         name={inputName}
         type={displayType}
         aria-required="true"
-        aria-describedby={errorId}
+        aria-describedby={!isValid ? errorId : undefined}
         aria-invalid={!isValid}
         defaultValue={defaultValue}
         {...register(inputName, { required: isRequired, pattern })}

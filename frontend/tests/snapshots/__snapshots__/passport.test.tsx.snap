@@ -43,7 +43,6 @@ exports[`renders Passport correctly 1`] = `
               Street Address:
             </label>
             <input
-              aria-describedby="streetAddressError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -62,7 +61,6 @@ exports[`renders Passport correctly 1`] = `
               City Or Town:
             </label>
             <input
-              aria-describedby="cityOrTownError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -372,7 +370,6 @@ exports[`renders Passport correctly 1`] = `
               Zip Code:
             </label>
             <input
-              aria-describedby="zipCodeError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"

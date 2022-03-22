@@ -65,7 +65,6 @@ exports[`renders Register correctly 1`] = `
               First Name:
             </label>
             <input
-              aria-describedby="firstNameError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -84,7 +83,6 @@ exports[`renders Register correctly 1`] = `
               Last Name:
             </label>
             <input
-              aria-describedby="lastNameError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -107,7 +105,6 @@ exports[`renders Register correctly 1`] = `
               Email Address:
             </label>
             <input
-              aria-describedby="emailAddressError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -126,7 +123,6 @@ exports[`renders Register correctly 1`] = `
               Phone Number:
             </label>
             <input
-              aria-describedby="phoneNumberError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -150,7 +146,6 @@ exports[`renders Register correctly 1`] = `
               Create Password:
             </label>
             <input
-              aria-describedby="createPasswordError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"
@@ -169,7 +164,6 @@ exports[`renders Register correctly 1`] = `
               Confirm Password:
             </label>
             <input
-              aria-describedby="confirmPasswordError"
               aria-invalid="false"
               aria-required="true"
               class="inputField"

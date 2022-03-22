@@ -1,0 +1,36 @@
+.searchToggle {
+  box-shadow: var(--boxShadow);
+  width: var(--size232);
+  height: var(--size80);
+  border-radius: var(--size8);
+  background-color: #ebf1f5;
+  color: var(--grey);
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.searchToggle fieldset {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.5rem;
+}
+
+.searchToggle legend {
+  display: block;
+  margin-top: var(--size16);
+  font-style: italic;
+}
+
+.searchToggle input[type="radio"] {
+  display: none;
+}
+
+.searchToggle input[type="radio"] + label {
+  color: var(--darkBlue);
+  cursor: pointer;
+}
+
+.searchToggle input[type="radio"]:checked + label {
+  font-weight: 700;
+  text-decoration: underline;
+}
