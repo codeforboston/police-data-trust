@@ -1,27 +1,42 @@
-import { IncidentDetailType } from "../../../models"
+import { Incident } from "../../../helpers/sample-incident"
 import styles from "./incident-view-header.module.css"
 
-export default function IncidentViewHeader(incident: IncidentDetailType) {
-  const { id, use_of_force, outcome } = incident
-  const { idWrapper, detailWrapper, forceWrapper, outcomeWrapper, category } = styles
-  const outcomeString = outcome.join(", ")
-  function forcesToString(forces: typeof use_of_force): string {
-    const forceStrings: string[] = forces.map((force) => {
-      return force.item
-    })
-    return forceStrings.join(", ")
-  }
+/*
+export interface Incident {
+  id: number
+  time_of_incident: Date
+  location: { latitude: number; longitude: number }
+  description: string // A summary of what happened
+  stop_type: string // Reason for stop. ie Traffic Stop
+  officers: OfficerRecordType[]
+}
+*/
+export default function IncidentViewHeader(incident: Incident) {
+  const { id, stop_type, time_of_incident } = incident
+  const { wrapper, idAndStop, data, category } = styles
+
+  const date = time_of_incident.toDateString()
+  const time = time_of_incident.toTimeString()
 
   return (
-    <div>
-      <p className={idWrapper}>{id}</p>
-      <div className={detailWrapper}>
-        <p className={forceWrapper}>{forcesToString(use_of_force)}</p>
-        <div className={outcomeWrapper}>
-          <p className={category}></p>
-          <p>{outcomeString}</p>
-        </div>
+    <div className={wrapper}>
+      <div className={idAndStop}>
+        <strong>{id}</strong>
+        <p>{stop_type}</p>
+      </div>
+      <div className={data}>
+        <p className={category}>Date</p>
+        <p>{date}</p>
+      </div>
+      <div className={data}>
+        <p className={category}>Time</p>
+        <p>{time}</p>
+      </div>
+      <div className={data}>
+        <p className={category}>Location</p>
+        <p>TODO: Possibly use Google Maps API</p>
       </div>
     </div>
+    
   )
 }

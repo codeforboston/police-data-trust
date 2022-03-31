@@ -1,16 +1,14 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import IncidentViewHeader from "."
-import incidents from "../../../models/mock-data/incidents.json"
+import sampleIncident, { Incident } from '../../../helpers/sample-incident'
 
 export default {
   title: "Compositions/Incident View Components/IncidentHeader"
 } as ComponentMeta<typeof IncidentViewHeader>
 
-const Template: ComponentStory<typeof IncidentViewHeader> = (args) => (
+const Template: ComponentStory<typeof IncidentViewHeader> = (args : Incident) => (
   <IncidentViewHeader {...args} />
 )
 
 export const Blank = Template.bind({})
-
-export const Timothy = Template.bind({})
-Timothy.args = incidents[0]
+Blank.args = sampleIncident()

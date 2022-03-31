@@ -1,26 +1,20 @@
+.wrapper {
+  margin: var(--size16);
+  display: flex
+}
+
+.idAndStop {
+  margin: var(--size16);
+  flex: 3;
+}
+
+.data {
+  margin: var(--size16);
+  flex: 1;
+}
+
 .category {
-  display: block;
   font-size: var(--size10);
   color: var(--grey);
-  padding: var(--size16);
-}
-
-.detailWrapper {
-  display: flex;
-  padding: var(--size16);
-}
-
-.forceWrapper {
-  font-size: var(--size32);
-  width: 50%;
-  padding: var(--size16);
-}
-
-.idWrapper {
-  font-weight: bold;
-  padding: var(--size16);
-}
-
-.outcomeWrapper {
-  padding: var(--size16);
+  margin-left: var(--size16);
 }
