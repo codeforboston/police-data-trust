@@ -1,0 +1,15 @@
+.dataBlock {
+    margin: var(--size16);
+    display: flex
+}
+
+.category {
+    justify-content: right;
+    margin: var(--size16);
+    font-size: var(--size12);
+    color: var(--grey);
+}
+
+.data {
+    margin: var(--size16)
+}

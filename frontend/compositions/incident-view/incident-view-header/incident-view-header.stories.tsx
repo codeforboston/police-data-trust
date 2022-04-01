@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import IncidentViewHeader from "."
-import sampleIncident, { Incident } from '../../../helpers/sample-incident'
+import sampleIncident, { Incident } from '../../../helpers/incident'
 
 export default {
   title: "Compositions/Incident View Components/IncidentHeader"

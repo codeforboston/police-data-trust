@@ -1,16 +1,6 @@
-import { Incident } from "../../../helpers/sample-incident"
+import { Incident } from "../../../helpers/incident"
 import styles from "./incident-view-header.module.css"
 
-/*
-export interface Incident {
-  id: number
-  time_of_incident: Date
-  location: { latitude: number; longitude: number }
-  description: string // A summary of what happened
-  stop_type: string // Reason for stop. ie Traffic Stop
-  officers: OfficerRecordType[]
-}
-*/
 export default function IncidentViewHeader(incident: Incident) {
   const { id, stop_type, time_of_incident } = incident
   const { wrapper, idAndStop, data, category, stopType } = styles
