@@ -27,6 +27,5 @@ export default function IncidentViewHeader(incident: Incident) {
         <p>TODO: Possibly use Google Maps API</p>
       </div>
     </div>
-    
   )
 }

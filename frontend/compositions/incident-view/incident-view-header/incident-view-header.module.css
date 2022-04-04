@@ -1,6 +1,6 @@
 .wrapper {
   margin: var(--size16);
-  display: flex
+  display: flex;
 }
 
 .idAndStop {

@@ -1,3 +1,3 @@
-import IncidentViewHeader from './incident-view-header'
+import IncidentViewHeader from "./incident-view-header"
 
 export { IncidentViewHeader }
