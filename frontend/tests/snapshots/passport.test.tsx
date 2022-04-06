@@ -1,6 +1,7 @@
 import * as React from "react"
 import Passport from "../../pages/passport/index"
 import { render, setAuthForTest, userEvent } from "../test-utils"
+import { act } from "react-dom/test-utils"
 
 beforeAll(() => setAuthForTest())
 
@@ -27,14 +28,15 @@ describe("behaviors", () => {
 
   it("submits the form", async () => {
     const r = renderPage()
+    act(() => {
+      userEvent.type(r.address, "123 Park Street")
+      userEvent.type(r.city, "Boston")
+      userEvent.type(r.state, "MA")
+      userEvent.type(r.zip, "02155")
+      userEvent.type(r.reason, Array(10).fill("In a partner organization ").join(""))
 
-    userEvent.type(r.address, "123 Park Street")
-    userEvent.type(r.city, "Boston")
-    userEvent.type(r.state, "MA")
-    userEvent.type(r.zip, "02155")
-    userEvent.type(r.reason, Array(10).fill("In a partner organization ").join(""))
-
-    userEvent.click(r.submit)
+      userEvent.click(r.submit)
+    })
 
     await expect(r.findByText(/thank you for your submission/i)).resolves.toBeInTheDocument()
   })
