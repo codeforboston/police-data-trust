@@ -1,10 +1,6 @@
-import * as d3 from "d3"
+import { geoPath, scaleLinear, interpolate, select } from "d3"
 import { Feature, FeatureCollection } from "geojson"
 import React, { useEffect, useRef, useState } from "react"
-import * as topojson from "topojson-client"
-import { presimplify, simplify } from "topojson-simplify"
-import { Topology } from "topojson-specification"
-import { FakeData } from "../utilities/chartTypes"
 
 // colors:
 // --darkBlue: #303463;
@@ -16,102 +12,73 @@ import { FakeData } from "../utilities/chartTypes"
 
 export interface BaseMapProps {
   projection: d3.GeoProjection
-  data: FakeData[]
-}
-
-function useBoundaryPaths(): FeatureCollection {
-  const wholeTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
-  const stateOnlyTopo = "https://cdn.jsdelivr.net/npm/us-atlas@3.0.0/states-10m.json"
-
-  const [geoData, setGeoData] = useState<FeatureCollection>(null)
-
-  useEffect(
-    () =>
-      void fetch(stateOnlyTopo)
-        .then((res) => res.json())
-        .then((topology?: Topology) => {
-          if (!topology) return
-
-          topology = presimplify(topology)
-          topology = simplify(topology, 0.05)
-
-          const statesTopo = topojson.feature(
-            topology,
-            topology.objects.states
-          ) as FeatureCollection
-          return statesTopo
-        })
-        .then(setGeoData),
-    [setGeoData]
-  )
-  return geoData
+  geoData: FeatureCollection
 }
 
 export default function BaseMap(props: BaseMapProps) {
   const baseMapRef = useRef(null)
-  const { projection, data } = props
+  const { projection, geoData } = props
+  const [reload, setReload] = useState(1)
+  const path = geoPath().projection(projection)
 
-  const geoData = useBoundaryPaths()
+  const valueScale = scaleLinear().domain([0, 5]).range([0, 1])
+  const colorGradient = interpolate("#7caed7", "#303463")
 
-  const path = d3.geoPath().projection(projection)
-
-  const valueScale = d3.scaleLinear().domain([0, 5]).range([0, 1])
-  const colorGradient = d3.interpolate("#7caed7", "#303463")
-
-  const svg = d3.select(baseMapRef.current)
-
+  const svg = select(baseMapRef.current)
   useEffect(() => {
-    if (!geoData) return
-
+    // if (!geoData) return
     // Set the title after loading data to facilitate testing
     svg.attr("title", "US Map")
 
-    /* Definitions */
-    const defs = svg.append("defs")
+    /* Definitions -- this section defines the special styling which 
+    will be applied to the features of the map */
 
-    const strokeShape = defs.append("filter").attr("id", "strokeShape")
+    // const defs = svg.append("defs")
 
-    strokeShape
-      .append("feMorphology")
-      .attr("operator", "erode")
-      .attr("radius", 1)
-      .attr("result", "erode")
+    // const strokeShape = defs.append("filter").attr("id", "strokeShape")
 
-    strokeShape
-      .append("feGaussianBlur")
-      .attr("in", "erode")
-      .attr("stdDeviation", "3")
-      .attr("result", "blurFilter")
+    // strokeShape
+    //   .append("feMorphology")
+    //   .attr("operator", "erode")
+    //   .attr("radius", 1)
+    //   .attr("result", "erode")
 
-    strokeShape
-      .append("feColorMatrix")
-      .attr("id", "colorMatrix2")
-      .attr("in", "blurFilter")
-      .attr("mode", "matrix")
-      .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -7")
-      .attr("result", "colorMatrix2")
+    // strokeShape
+    //   .append("feGaussianBlur")
+    //   .attr("in", "erode")
+    //   .attr("stdDeviation", "3")
+    //   .attr("result", "blurFilter")
 
-    strokeShape
-      .append("feGaussianBlur")
-      .attr("in", "erode")
-      .attr("stdDeviation", "2")
-      .attr("result", "blurFilter2")
+    // strokeShape
+    //   .append("feColorMatrix")
+    //   .attr("id", "colorMatrix2")
+    //   .attr("in", "blurFilter")
+    //   .attr("mode", "matrix")
+    //   .attr("values", "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -7")
+    //   .attr("result", "colorMatrix2")
 
-    strokeShape
-      .append("feComposite")
-      .attr("in", "colorMatrix2")
-      .attr("in2", "blurFilter2")
-      .attr("operator", "out")
-      .attr("result", "compositedStroke")
+    // strokeShape
+    //   .append("feGaussianBlur")
+    //   .attr("in", "erode")
+    //   .attr("stdDeviation", "2")
+    //   .attr("result", "blurFilter2")
 
-    strokeShape
-      .append("feBlend")
-      .attr("in", "colorMatrix2")
-      .attr("in2", "compositedStroke")
-      .attr("mode", "multiply")
+    // strokeShape
+    //   .append("feComposite")
+    //   .attr("in", "colorMatrix2")
+    //   .attr("in2", "blurFilter2")
+    //   .attr("operator", "out")
+    //   .attr("result", "compositedStroke")
+
+    // strokeShape
+    //   .append("feBlend")
+    //   .attr("in", "colorMatrix2")
+    //   .attr("in2", "compositedStroke")
+    //   .attr("mode", "multiply")
 
     const paths = svg.append("g").attr("id", "paths")
-    /* SVG Body */
+
+    /* SVG Body -- the visible map features are described here */
     paths
       .selectAll("path")
       .data(geoData.features)
@@ -120,19 +87,30 @@ export default function BaseMap(props: BaseMapProps) {
       .classed("state", true)
       .attr("title", (d) => d.properties.name)
       .attr("d", path)
-      .attr("filter", "url(#strokeShape)")
-      .attr("fill", (d: Feature) => {
-        const countIncidents = data.filter((i) => d.id === i.state).length
-        return colorGradient(valueScale(countIncidents))
-      })
-      // .attr("pointer-events", "all")
+      .attr("fill", (d: Feature) => "lightblue")
+      .attr("stroke", "white")
       .attr("cursor", "pointer")
+      .attr("pointer-events", "all")
 
     return () => {
-      defs.remove()
+      // defs.remove()
       paths.remove()
     }
-  }, [data, valueScale, path, colorGradient, geoData, svg])
+  }, [valueScale, path, colorGradient, geoData, svg])
 
-  return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
+  return (
+    <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}>
+      <rect
+        height={100}
+        width={100}
+        x={100}
+        y={100}
+        fill={"yellow"}
+        onClick={() => {
+          console.log(reload)
+          setReload(reload + 1)
+        }}
+      />
+    </svg>
+  )
 }

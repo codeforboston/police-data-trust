@@ -16,7 +16,7 @@ interface AuthState {
   register: (newUser: api.NewUser) => Promise<void>
 }
 
-const AuthContext = createContext<AuthState>(undefined)
+export const AuthContext = createContext<AuthState>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const auth = useAuthenticationHook()

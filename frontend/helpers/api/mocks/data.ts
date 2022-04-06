@@ -17,24 +17,29 @@ export const EXISTING_TEST_USER: TestUser = {
 /** Matches alembic/dev_seeds.py */
 export const EXISTING_TEST_INCIDENTS: Incident[] = (
   [
-    [1, "10-01-2019Z"],
-    [2, "11-01-2019Z"],
-    [3, "12-01-2019Z"],
-    [4, "03-15-2020Z"],
-    [5, "04-15-2020Z"],
-    [6, "08-10-2020Z"],
-    [7, "10-01-2020Z"],
-    [8, "10-15-2020Z"]
+    [1, "10-01-2019Z", [-87.6974962, 41.6928005]],
+    [2, "11-01-2019Z", [-87.6621781, 41.7511912]],
+    [3, "12-01-2019Z", [-87.628557, 41.751667]],
+    [4, "03-15-2020Z", [-87.5667172, 41.7642916]],
+    [5, "04-15-2020Z", [-87.7690689, 41.7932642]],
+    [6, "08-10-2020Z", [-87.6073355, 41.8060329]],
+    [7, "10-01-2020Z", [-87.6958407, 41.8125757]],
+    [8, "10-15-2020Z", [-87.6951311, 41.8190785]]
   ] as const
-).map(([key, date]) => createTestIncident(key, date))
+).map(([key, date, lonlat]) => createTestIncident(key, date, lonlat))
 
-function createTestIncident(key: number, date: string) {
+function createTestIncident(
+  key: number,
+  date: string,
+  lonlat: readonly [number, number]
+): Incident {
   const baseId = 10000000
   return {
     id: baseId + key,
     department: `Small Police Department ${key}`,
     description: `Test description ${key}`,
     location: `Test location ${key}`,
+    locationLonLat: [lonlat[0], lonlat[1]],
     officers: [
       {
         first_name: `TestFirstName ${key}`,

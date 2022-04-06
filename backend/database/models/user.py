@@ -2,7 +2,6 @@
 
 import bcrypt
 from backend.database.core import db
-from flask_login import LoginManager
 from flask_serialize.flask_serialize import FlaskSerialize
 from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
@@ -12,10 +11,6 @@ from enum import Enum
 
 
 fs_mixin = FlaskSerialize(db)
-
-login_manager = LoginManager()
-login_manager.session_protection = "strong"
-login_manager.login_view = "login"
 
 
 # Creating this class as NOCASE collation is not compatible with ordinary

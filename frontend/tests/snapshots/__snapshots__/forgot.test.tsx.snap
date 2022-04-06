@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Forgot correctly 1`] = `
+<div>
+  <div>
+    <section
+      class="enrollmentSection"
+    >
+      <div
+        class="header"
+      >
+        <img
+          alt="A blue circular logo design reads 'National Police Data Coalition'"
+          class="logo medium"
+          src="/NPDCLogo.svg"
+        />
+        <h1>
+          Forgot your password?
+        </h1>
+      </div>
+      <form
+        class="centerContent"
+      >
+        <div
+          class="defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="emailAddressInput"
+          >
+            Email Address:
+          </label>
+          <input
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="emailAddressInput"
+            name="emailAddress"
+            type="email"
+            value=""
+          />
+        </div>
+        <div
+          class="hidden defaultInputContainer inputContainer undefined"
+        >
+          <label
+            for="phoneNumberInput"
+          >
+            Phone Number:
+          </label>
+          <input
+            aria-invalid="false"
+            aria-required="true"
+            class="inputField"
+            id="phoneNumberInput"
+            name="phoneNumber"
+            type="tel"
+            value=""
+          />
+        </div>
+        <button
+          class="linkButton"
+          type="submit"
+        >
+          Forgot your Email?
+        </button>
+        <button
+          class="hidden linkButton"
+          type="submit"
+        >
+          Provide Email instead
+        </button>
+        <button
+          class="primaryButton"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+      <div
+        class="callToActionContainer"
+      >
+        <p>
+          Do you remember you login credentials?
+        </p>
+        <a
+          class="callToActionLink"
+          href="/login"
+        >
+          Return to login
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
+`;

@@ -1,7 +1,7 @@
 import React from "react"
 import { useRouter } from "next/router"
 import styles from "./landing.module.css"
-import { Logo, PrimaryButton } from "../../shared-components/"
+import { Logo, PrimaryButton } from "../../shared-components"
 import { AppRoutes } from "../../models"
 export default function LandingPage() {
   const router = useRouter()

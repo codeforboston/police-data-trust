@@ -30,7 +30,6 @@ exports[`renders Login correctly 1`] = `
             Email Address:
           </label>
           <input
-            aria-describedby="emailAddressError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"
@@ -49,7 +48,6 @@ exports[`renders Login correctly 1`] = `
             Login Password:
           </label>
           <input
-            aria-describedby="loginPasswordError"
             aria-invalid="false"
             aria-required="true"
             class="inputField"

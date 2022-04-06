@@ -11,6 +11,17 @@ bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
 def check_db():
     """Verifies that we can read the incidents table"""
     db.session.query(Incident).first()
+    is_database_working = False
+    output = ''
+
+    try:
+        # to check database we will execute raw query
+        db.session.execute('SELECT 1')
+        is_database_working = True
+    except Exception as e:
+        output = str(e)
+
+    return is_database_working, output
 
 
 class Resp(BaseModel):

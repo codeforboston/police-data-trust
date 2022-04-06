@@ -10,3 +10,12 @@ details:focus-visible,
   outline: 1px dashed black;
   outline-offset: var(--size4);
 }
+
+.screenReaderOnly {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

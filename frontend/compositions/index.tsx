@@ -5,31 +5,33 @@ import {
   PassportApplicationResponse,
   RegistrationResponse
 } from "./enrollment-response/enrollment-response"
+import LandingPage from "./landing-page/landing"
 import PasswordAid from "./password-aid/password-aid"
-import { Map } from "./visualizations"
-import ProfileNav from "./profile-nav"
-import ProfileInfo from "./profile-info"
-import ProfileType from "./profile-type"
 import EditProfileInfo from "./profile-edit"
+import ProfileInfo from "./profile-info"
+import ProfileNav from "./profile-nav"
 import SavedResults from "./profile-saved-tables/saved-results"
 import SavedSearches from "./profile-saved-tables/saved-searches"
+import ProfileType from "./profile-type"
+import { SearchPanel } from "./search-panel/search-panel"
 import SearchResultsTable from "./search-results"
-import LandingPage from "./landingpage/landing"
+import { Map } from "./visualizations"
 
 export {
   DashboardHeader,
+  EditProfileInfo,
   EnrollmentCallToAction,
   EnrollmentHeader,
+  LandingPage,
+  Map,
   PassportApplicationResponse,
   PasswordAid,
-  RegistrationResponse,
-  Map,
-  ProfileNav,
   ProfileInfo,
-  EditProfileInfo,
+  ProfileNav,
   ProfileType,
-  SearchResultsTable,
+  RegistrationResponse,
   SavedResults,
   SavedSearches,
-  LandingPage
+  SearchPanel,
+  SearchResultsTable
 }

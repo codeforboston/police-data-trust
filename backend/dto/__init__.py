@@ -1,3 +1,3 @@
 # flake8: noqa: F401
-from .register_user import RegisterUserDTO
-from .login_user import LoginUserDTO
+from .user.register_user import RegisterUserDTO
+from .user.login_user import LoginUserDTO
