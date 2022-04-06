@@ -31,7 +31,7 @@ describe("behaviors", () => {
 
     act(() => {
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findAllByRole("alert")).resolves.toHaveLength(6)
 
     for (const k of [
@@ -51,7 +51,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.phoneNumber, "5555555555")
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/phone number is required/)).resolves.toBeInTheDocument()
   })
 
@@ -60,7 +60,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.email, "test@test")
       userEvent.click(r.submit)
-    });
+    })
 
     await expect(r.findByText(/enter a valid email/)).resolves.toBeInTheDocument()
   })
@@ -70,7 +70,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.createPassword, "badpassword")
       userEvent.click(r.submit)
-    });
+    })
     await expect(
       r.findByText(/please enter a password that contains/i)
     ).resolves.toBeInTheDocument()
@@ -86,7 +86,7 @@ describe("behaviors", () => {
       userEvent.type(r.createPassword, "aA1!asdfasdf")
       userEvent.type(r.confirmPassword, "mistmatch")
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/passwords do not match/i)).resolves.toBeInTheDocument()
   })
 
@@ -101,7 +101,7 @@ describe("behaviors", () => {
       userEvent.type(r.confirmPassword, "aA1!asdfasdf")
 
       userEvent.click(r.submit)
-    });
+    })
     await waitFor(() => expect(router.pathname).toBe(AppRoutes.DASHBOARD))
   })
 
@@ -116,7 +116,7 @@ describe("behaviors", () => {
       userEvent.type(r.confirmPassword, "aA1!asdfasdf")
 
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/existing account found/i)).resolves.toBeInTheDocument()
   })
 })

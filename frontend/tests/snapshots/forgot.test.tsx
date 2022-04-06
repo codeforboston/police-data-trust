@@ -24,7 +24,7 @@ describe("behaviors", () => {
     const r = renderPage()
     act(() => {
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/Please enter a valid email/i)).resolves.toBeInTheDocument()
   })
 
@@ -33,7 +33,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.email, "test@test")
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/Please enter a valid email/i)).resolves.toBeInTheDocument()
   })
 
@@ -42,7 +42,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.email, "test@example.com")
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/Success!/i)).resolves.toBeInTheDocument()
   })
 
@@ -51,7 +51,7 @@ describe("behaviors", () => {
     act(() => {
       userEvent.type(r.email, "thisemail@doesnotexist.com")
       userEvent.click(r.submit)
-    });
+    })
     await expect(r.findByText(/Success!/i)).resolves.toBeInTheDocument()
   })
 })
