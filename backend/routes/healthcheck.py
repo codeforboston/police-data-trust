@@ -2,7 +2,7 @@ from flask import Blueprint
 from pydantic import BaseModel
 from spectree import Response
 
-from ..database import db, Incident
+from ..database import db
 from ..schemas import spec, validate
 
 bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
