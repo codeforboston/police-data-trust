@@ -9,7 +9,7 @@ beforeAll(() => setAuthForTest())
 
 it("renders Dashboard correctly", async () => {
   const { container } = render(<DashboardHeader />)
-  expect(container).toMatchSnapshot()
+  await waitFor(() => expect(container).toMatchSnapshot())
 })
 
 it("navigates to logout page", async () => {

@@ -20,15 +20,17 @@ import { useBoundaryPaths } from "./useBoundaryPaths"
 import useMarkerLayerSearchData from "./useMarkerLayerSearchData"
 
 export default function Map() {
-  const markersData = useMarkerLayerSearchData()
+  //   const markersData = useMarkerLayerSearchData()
 
   const boundaryPaths = useBoundaryPaths()
 
   const { updatePopUp, popUpProps } = usePopUp()
 
   const mapRef = useRef<HTMLDivElement>()
+
   const zoomRef = useRef<ReturnType<typeof zoom>>()
-  const { width, height } = useResizeObserver({ ref: mapRef })
+
+  //   const { width, height } = { width: 100, height: 100 } //useResizeObserver({ ref: mapRef })
 
   const projection = useMemo(() => {
     return geoAlbersUsa()
@@ -36,20 +38,14 @@ export default function Map() {
       .translate([487.5 + 112, 305 + 50])
   }, [])
 
-  const path = useMemo(() => geoPath(projection), [projection])
+  const { width, height } = useResizeObserver({ ref: mapRef })
+  
   const gZoomable = select("#zoom-container") as D3CallableSelectionType
 
-  const getHeightAndWidth = useCallback(() => {
-    const container: HTMLElement = document.querySelector("#map-container")
-    if (!container) return [100, 100]
-    const containerHeight = height || container.clientHeight
-    const containerWidth = width || container.clientWidth
-    return [containerHeight, containerWidth]
-  }, [height, width])
+  const path = useMemo(() => geoPath(projection), [projection])
 
   const calcFitFeatureToWindow = useCallback(
     (d: Feature) => {
-      const [height, width] = getHeightAndWidth()
       const [[x0, y0], [x1, y1]]: BoundingType = path.bounds(d)
       const dWidth = x1 - x0
       const dHeight = y1 - y0
@@ -59,7 +55,7 @@ export default function Map() {
         .scale(1 / maxBound)
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
     },
-    [getHeightAndWidth, path]
+    [height, path, width]
   )
 
   const moveMap = useCallback(
@@ -136,13 +132,13 @@ export default function Map() {
 
   useEffect(() => {
     if (!boundaryPaths) return
-    zoomRef.current = zoom().on("zoom", zoomed)
+    // zoomRef.current = zoom().on("zoom", zoomed)
 
     const svgElement = select("#map-svg") as D3CallableSelectionType
     svgElement.on("click", handleMapClick)
     svgElement.on("dblclick", handleMapDoubleClick)
     svgElement.on("mousemove", handleMouseMove)
-    svgElement.call(zoomRef.current)
+    zoomRef.current && svgElement.call(zoomRef.current)
 
     const zoomResetButton = select("#zoom-reset")
     zoomResetButton.on("click", resetZoom)
@@ -183,7 +179,7 @@ export default function Map() {
           <desc>A data graphic showing incidents of police violence by state.</desc>
           <g id="zoom-container">
             <BaseMap projection={projection} geoData={boundaryPaths} />
-            <MarkerLayer markersData={markersData} />
+            <MarkerLayer markersData={[]} />
           </g>
         </svg>
         <PopUp {...popUpProps} />
@@ -196,6 +192,6 @@ export default function Map() {
       </div>
     </div>
   ) : (
-    <div></div>
+    <div ref={mapRef} >test container</div>
   )
 }

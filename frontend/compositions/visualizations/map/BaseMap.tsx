@@ -76,7 +76,7 @@ export default function BaseMap(props: BaseMapProps) {
     //   .attr("in2", "compositedStroke")
     //   .attr("mode", "multiply")
 
-    const paths = svg.append("g").attr("id", "paths")
+    const paths = svg.append("g").attr("id", "paths").attr("date-testid", "basemapsvg")
 
     /* SVG Body -- the visible map features are described here */
     paths
@@ -101,6 +101,7 @@ export default function BaseMap(props: BaseMapProps) {
   return (
     <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}>
       <rect
+        // data-testid={"yellow-rect"}
         height={100}
         width={100}
         x={100}
