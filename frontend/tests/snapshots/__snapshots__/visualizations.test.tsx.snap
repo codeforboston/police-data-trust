@@ -39,7 +39,7 @@ exports[`the map renders Map correctly 1`] = `
               y="100"
             />
             <g
-              date-testid="basemapsvg"
+              data-testid="basemapsvg"
               id="paths"
             >
               <path
