@@ -39,7 +39,7 @@ export default function Map() {
   }, [])
 
   const { width, height } = useResizeObserver({ ref: mapRef })
-  
+
   const gZoomable = select("#zoom-container") as D3CallableSelectionType
 
   const path = useMemo(() => geoPath(projection), [projection])
@@ -192,6 +192,6 @@ export default function Map() {
       </div>
     </div>
   ) : (
-    <div ref={mapRef} >test container</div>
+    <div ref={mapRef}>test container</div>
   )
 }

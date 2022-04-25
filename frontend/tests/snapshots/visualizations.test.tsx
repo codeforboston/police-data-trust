@@ -12,40 +12,38 @@ import { render, renderHook, setAuthForTest, waitFor } from "../test-utils"
 
 describe("the map", () => {
   beforeAll(() => setAuthForTest())
-  
 
-//   const projection = geoAlbersUsa()
-//     .scale(1300)
-//     .translate([487.5 + 112, 305 + 50])
+  //   const projection = geoAlbersUsa()
+  //     .scale(1300)
+  //     .translate([487.5 + 112, 305 + 50])
 
-//   it("renders BaseMap correctly", async () => {
-//     const {
-//       result: { current: boundaryPaths }
-//     } = renderHook(() => useBoundaryPaths())
+  //   it("renders BaseMap correctly", async () => {
+  //     const {
+  //       result: { current: boundaryPaths }
+  //     } = renderHook(() => useBoundaryPaths())
 
-//     const { result: {current: {user}} } = renderHook(() => useAuth())
+  //     const { result: {current: {user}} } = renderHook(() => useAuth())
 
-//     console.log(user)
+  //     console.log(user)
 
-//     const { getByTestId } = render(
-//       <BaseMap geoData={boundaryPaths} projection={projection} />
-//     )
+  //     const { getByTestId } = render(
+  //       <BaseMap geoData={boundaryPaths} projection={projection} />
+  //     )
 
-//     const yellowRect = getByTestId("yellow-rect")
-//     const baseMap = getByTestId("basemapsvg")
+  //     const yellowRect = getByTestId("yellow-rect")
+  //     const baseMap = getByTestId("basemapsvg")
 
-//     act(() => userEvent.click(yellowRect))
+  //     act(() => userEvent.click(yellowRect))
 
-//     await waitFor(() => expect(baseMap).resolves.toBeInTheDocument())
+  //     await waitFor(() => expect(baseMap).resolves.toBeInTheDocument())
 
-    
-//   })
+  //   })
 
-    it("renders Map correctly", async () => {
-      const { container, findByTitle } = render(<Map />)
-      await waitFor(() => expect(findByTitle("New York")).resolves.toBeInTheDocument())
+  it("renders Map correctly", async () => {
+    const { container, findByTitle } = render(<Map />)
+    await waitFor(() => expect(findByTitle("New York")).resolves.toBeInTheDocument())
     //   await new Promise(r => setTimeout(r, 1000))
 
-      expect(container).toMatchSnapshot()
-    })
+    expect(container).toMatchSnapshot()
+  })
 })
