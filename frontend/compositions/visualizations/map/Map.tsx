@@ -20,7 +20,7 @@ import { useBoundaryPaths } from "./useBoundaryPaths"
 import useMarkerLayerSearchData from "./useMarkerLayerSearchData"
 
 export default function Map() {
-  //   const markersData = useMarkerLayerSearchData()
+  const markersData = useMarkerLayerSearchData()
 
   const boundaryPaths = useBoundaryPaths()
 
@@ -29,8 +29,6 @@ export default function Map() {
   const mapRef = useRef<HTMLDivElement>()
 
   const zoomRef = useRef<ReturnType<typeof zoom>>()
-
-  //   const { width, height } = { width: 100, height: 100 } //useResizeObserver({ ref: mapRef })
 
   const projection = useMemo(() => {
     return geoAlbersUsa()
@@ -132,7 +130,7 @@ export default function Map() {
 
   useEffect(() => {
     if (!boundaryPaths) return
-    // zoomRef.current = zoom().on("zoom", zoomed)
+    zoomRef.current = zoom().on("zoom", zoomed)
 
     const svgElement = select("#map-svg") as D3CallableSelectionType
     svgElement.on("click", handleMapClick)
