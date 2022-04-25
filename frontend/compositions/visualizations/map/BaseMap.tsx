@@ -20,7 +20,7 @@ export default function BaseMap(props: BaseMapProps) {
   useEffect(() => {
     svg.attr("title", "US Map")
 
-    const paths = svg.append("g").attr("id", "paths").attr("date-testid", "basemapsvg")
+    const paths = svg.append("g").attr("id", "paths").attr("data-testid", "basemapsvg")
 
     /* SVG Body -- the visible map features are described here */
     paths
