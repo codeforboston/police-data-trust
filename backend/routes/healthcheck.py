@@ -2,15 +2,13 @@ from flask import Blueprint
 from pydantic import BaseModel
 from spectree import Response
 
-from ..database import db, Incident
+from ..database import db
 from ..schemas import spec, validate
 
 bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
 
 
 def check_db():
-    """Verifies that we can read the incidents table"""
-    db.session.query(Incident).first()
     is_database_working = False
     output = ''
 
