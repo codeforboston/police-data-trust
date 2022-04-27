@@ -138,3 +138,8 @@ export function setAuthForTest(
   storage.setItem(STORAGE_KEYS.USER, user)
   storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken)
 }
+
+export function clearAuthForTest() {
+  storage.removeItem(STORAGE_KEYS.USER)
+  storage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+}
