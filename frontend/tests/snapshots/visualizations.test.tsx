@@ -1,9 +1,14 @@
 import * as React from "react"
 import { Map } from "../../compositions"
-import { render } from "../test-utils"
+import { render, setAuthForTest, waitFor } from "../test-utils"
 
-it("renders Map correctly", async () => {
-  const { container, findByTitle } = render(<Map />)
-  await expect(findByTitle("US Map Graphic")).resolves.toBeInTheDocument()
-  expect(container).toMatchSnapshot()
+describe("the map", () => {
+  beforeAll(() => setAuthForTest())
+
+  it("renders Map correctly", async () => {
+    const { container, findByTitle } = render(<Map />)
+    await waitFor(() => expect(findByTitle("New York")).resolves.toBeInTheDocument())
+
+    expect(container).toMatchSnapshot()
+  })
 })

@@ -39,7 +39,6 @@ export default function EditProfileInfo({ cancelEditMode }: EditProfileProps) {
 
   function onError(e: any) {
     setSubmitError(e)
-    console.log(e)
   }
 
   const { profileData, sectionTitle, inputLine, formControls, cancelButton, submitButton } = styles
