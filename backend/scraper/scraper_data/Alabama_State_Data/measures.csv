@@ -1,0 +1,117 @@
+id,name,format,calculation
+1,Non-Custodial Promise to Appear Instead of Custodial Arrest,percentage,PERCENTAGE
+51,Violent Cases Received,percentage,PERCENTAGE
+2,Cases Rejected for Prosecution,percentage,PERCENTAGE
+6,Time to Initial Appearance,median,MEDIAN
+7,Nonviolent Misdemeanor Cases with Nonmonetary Release (ROR),percentage,PERCENTAGE
+8,Failure to Pay Low Monetary Bail,percentage,PERCENTAGE
+11,Monetary Bail Reductions,percentage,PERCENTAGE
+12,Pretrial Release Violations,percentage,PERCENTAGE
+52,Misdemeanor Cases Received by the Prosecutor Resulting in Diversion,percentage,PERCENTAGE
+53,Misdemeanor Diversion Completion,percentage,PERCENTAGE
+54,Time from Offense to Charging,median,MEDIAN
+15,Guilty Plea without Attorney in Misdemeanor Cases,percentage,PERCENTAGE
+23,Cases Dismissed,percentage,PERCENTAGE
+16,Felony Cases Resolved with a Trial Verdict,percentage,PERCENTAGE
+55,Time from Offense to Sentencing,median,MEDIAN
+104,Time to Disposition in Felony Cases,median,MEDIAN
+105,Time to Disposition in Misdemeanor Cases,median,MEDIAN
+25,Nonviolent Felonies Sentenced to Prison,percentage,PERCENTAGE
+26,Length of Imposed Prison Sentence: Nonviolent Felonies,median,MEDIAN
+27,Nonviolent Misdemeanors Sentenced to Jail,percentage,PERCENTAGE
+28,Length of Imposed Jail Sentence: Nonviolent Misdemeanors,median,MEDIAN
+29,Drug Possession Convictions Sentenced to Prison,percentage,PERCENTAGE
+41,Drug Possession Convictions Sentenced to Jail,percentage,PERCENTAGE
+13,Jail Capacity Utilization,percentage,AGGREGATE
+33,Court Fees and Fines,median,MEDIAN
+34,Failure to Pay Court Fees and Fines,percentage,PERCENTAGE
+39,Driver's License Suspension,percentage,PERCENTAGE
+56,Re-arrest Rate,percentage,PERCENTAGE
+36,Probation Technical Revocations,percentage,PERCENTAGE
+35,Reconviction Rate: Probation,percentage,PERCENTAGE
+38,Reconviction Rate: Prison,percentage,PERCENTAGE
+57,Return to Prison Rate,percentage,PERCENTAGE
+100,Total Cases,quantity,COUNT
+103,Misdemeanor Cases,percentage,PERCENTAGE
+131,Violent Victimization of Persons of Color in Cases Received by the Prosecutor,percentage,PERCENTAGE
+132,Violent Victimization of White Persons in Cases Received by the Prosecutor,percentage,PERCENTAGE
+130,Felony Cases Received by the Prosecutor Resulting in Diversion,percentage,PERCENTAGE
+102,Cases with Monetary Bail Equivalent to $500 or Less,percentage,PERCENTAGE
+114,Monetary Bail Amount,median,MEDIAN
+122,Nonviolent Felony Cases with Nonmonetary Release (ROR),percentage,PERCENTAGE
+123,Nonviolent Misdemeanor Cases with Monetary Bail,percentage,PERCENTAGE
+124,Nonviolent Felony Cases with Monetary Bail,percentage,PERCENTAGE
+17,Felony Cases Resolved within 180 Days,percentage,PERCENTAGE
+18,Misdemeanor Cases Resolved within 90 Days,percentage,PERCENTAGE
+137,Felony Cases Resolved within 365 Days,percentage,PERCENTAGE
+138,Time from Arraignment for Felonies,median,MEDIAN
+139,Time from Arraignment for Misdemeanors,median,MEDIAN
+133,Felony Cases with Failures to Appear in Court,percentage,PERCENTAGE
+134,Misdemeanor Cases with Failures to Appear in Court,percentage,PERCENTAGE
+135,Felony Cases with Continuances,percentage,PERCENTAGE
+136,Misdemeanor Cases with Continuances,percentage,PERCENTAGE
+140,Misdemeanor Cases Resolved within 180 days,percentage,PERCENTAGE
+141,Time from Filing to Disposition in Homicide Cases,median,MEDIAN
+142,Time from Arraignment to Disposition in Homicide Cases,median,MEDIAN
+143,Cases Dismissed by Prosecutor,percentage,PERCENTAGE
+144,Cases Dismissed by the Court,percentage,PERCENTAGE
+113,Convictions with Unknown Disposition Method,percentage,PERCENTAGE
+120,Cases Resulting in Conviction,percentage,PERCENTAGE
+119,Cases Involving a Guilty Plea as Charged,percentage,PERCENTAGE
+106,Convicted Defendants with Court Fees and Fines,percentage,PERCENTAGE
+115,Court Fees,median,MEDIAN
+116,Fines,median,MEDIAN
+108,Pretrial Jail Population,percentage,AGGREGATE
+109,Pre-sentence Jail Population,percentage,AGGREGATE
+110,Post-sentence Jail Population,percentage,AGGREGATE
+117,Jail Name,value,AGGREGATE
+126,Daily Cost of a Jail Bed,average,AGGREGATE
+118,Drug Courts,quantity,AGGREGATE
+127,Nonviolent Felonies Sentenced to Local Prison,percentage,PERCENTAGE
+128,Nonviolent Felonies Sentenced to State Prison,percentage,PERCENTAGE
+145,Length of Imposed Prison Sentence: Drug Possession,median,MEDIAN
+146,Length of Imposed Jail Sentence: Drug Possession,median,MEDIAN
+147,Reconviction Rate,percentage,PERCENTAGE
+501,Population,quantity,AGGREGATE
+504,Urban Population,percentage,AGGREGATE
+505,Rural Population,percentage,AGGREGATE
+507,Single Female-Headed Households with Children,percentage,AGGREGATE
+508,Unemployment Rate,percentage,AGGREGATE
+510,Non-Citizens,percentage,AGGREGATE
+511,High School Graduates,percentage,AGGREGATE
+512,Below Poverty Line,percentage,AGGREGATE
+514,White Population,percentage,AGGREGATE
+516,African American Population,percentage,AGGREGATE
+518,Native American/Alaskan Population,percentage,AGGREGATE
+520,Asian or Pacific Islander Population,percentage,AGGREGATE
+522,Other Race Population,percentage,AGGREGATE
+524,Hispanic or Latino Population,percentage,AGGREGATE
+525,Median Household Income,quantity,AGGREGATE
+526,Average Commute Minutes,quantity,AGGREGATE
+527,Number of Criminal Court Judges,quantity,AGGREGATE
+528,Property Crime Rate,perCapita,AGGREGATE
+529,Clearance Rate for Property Offenses,percentage,AGGREGATE
+530,Violent Crime Rate,perCapita,AGGREGATE
+531,Clearance Rate for Violent Offenses,percentage,AGGREGATE
+532,"Police Officers per 100,000 Residents",ratio,AGGREGATE
+533,Law Enforcement Agencies Reporting to UCR,percentage,AGGREGATE
+534,Total Number of Law Enforcement Agencies,quantity,AGGREGATE
+535,Voted Democrat in the presidential election.,percentage,AGGREGATE
+547,Voted Republican in the presidential election.,percentage,AGGREGATE
+537,Number of Full-Time Prosecutors,quantity,AGGREGATE
+548,Number of Part-Time Prosecutors,quantity,AGGREGATE
+538,Number of Full-Time Public Defenders,quantity,AGGREGATE
+549,Number of Part-Time Public Defenders,quantity,AGGREGATE
+539,Number of Full-Time Sworn Law Enforcement Officers,quantity,AGGREGATE
+540,Arrest Rate for Violent Offenses,perCapita,AGGREGATE
+541,Arrest Rate for Property Offenses,perCapita,AGGREGATE
+543,Residential Mobility,percentage,AGGREGATE
+544,Young Males Population,percentage,AGGREGATE
+545,Largest Municipality,value,AGGREGATE
+546,Largest Municipality Population,quantity,AGGREGATE
+560,Total Problem Solving Courts,quantity,AGGREGATE
+561,Drug Courts,quantity,AGGREGATE
+562,Mental Health Courts,quantity,AGGREGATE
+563,Domestic Violence Courts,quantity,AGGREGATE
+564,Hybrid DWI and Drug Courts,quantity,AGGREGATE
+565,Other Problem Solving Courts,quantity,AGGREGATE

@@ -1,0 +1,782 @@
+id,description
+1,all defendants
+10,white defendants
+11,African American defendants
+12,Hispanic / Latino defendants
+13,Native American or Alaskan defendants
+14,Asian or Pacific Islander defendants
+15,defendants of color
+16,defendants of unknown race / ethnicity
+20,male defendants
+21,female defendants
+22,defendants of unknown sex
+30,non-indigent defendants
+31,indigent defendants
+32,defendants of unknown indigent status
+40,defendants under age 18
+41,defendants age 18 to 25
+42,defendants age 26 to 35
+43,defendants age 36 to 45
+44,defendants age 46 to 65
+45,defendants over age 65
+46,defendants of unknown age group
+50,defendants who self-represented
+51,defendants represented by private attorney
+52,defendants represented by public defender
+53,defendants represented by a court-appointed private attorney
+54,defendants represented by other attorney type
+55,defendants represented by an attorney of unknown type
+60,defendants with no drug charges
+61,defendants with drug paraphernalia related charges
+62,defendants with other/unspecified drug offense charges
+63,defendants with possession/use of unspecified drug charges
+64,defendants with marijuana possession/use charges
+65,defendants with other drug possession/use charges
+66,defendants with other prescription drug possession/use charges
+67,defendants with opioid drug possession/use charges
+7100,defendants charged with a violent offense
+7101,defendants charged with a property offense
+7102,defendants charged with a drug offense
+7103,defendants charged with a DUI offense
+7104,defendants charged with public order offense
+7105,defendants charged with a criminal traffic offense
+7106,defendants charged with other offense
+7199,defendants charged with an offense of unknown
+7200,defendants charged with a nonviolent misdemeanor
+7201,defendants charged with a violent misdemeanor
+7202,defendants charged with a nonviolent felony
+7203,defendants charged with a violent felony
+7299,defendants charged with an offense of unknown severity
+8100,defendants charged with a violent offense
+8101,defendants charged with a property offense
+8102,defendants charged with a drug offense
+8103,defendants charged with a DUI offense
+8104,defendants charged with a public order offense
+8105,defendants charged with a criminal traffic offense
+8106,defendants charged with other offense
+8199,defendants charged with an offense of unknown
+8200,defendants charged with a nonviolent misdemeanor
+8201,defendants charged with a violent misdemeanor
+8202,defendants charged with a nonviolent felony
+8203,defendants charged with a violent felony
+8299,defendants charged with an offense of unknown severity
+9100,defendants charged with a violent offense
+9101,defendants charged with a property offense
+9102,defendants charged with a drug offense
+9103,defendants charged with DUI offense
+9104,defendants charged with a public order offense
+9105,defendants charged with a criminal traffic offense
+9106,defendants charged with other offense
+9199,defendants charged with an offense of unknown
+9200,defendants charged with a nonviolent misdemeanor
+9201,defendants charged with a violent misdemeanor
+9202,defendants charged with a nonviolent felony
+9203,defendants charged with a violent felony
+9299,defendants charged with an offense of unknown severity
+71000,defendants charged with an ordinance / infraction
+71001,defendants charged with an unclassified misdemeanor
+71002,defendants charged with a class 2 misdemeanor
+71003,defendants charged with a class 1 misdemeanor
+71004,defendants charged with an unclassified felony
+71005,defendants charged with a class 3 felony
+71006,defendants charged with a class 2 felony
+71007,defendants charged with a class 1 felony
+71008,defendants charged with a life felony
+71009,defendants charged with a capital felony
+71099,defendants charged with an offense of unknown severity
+71100,defendants charged with an  infraction
+71101,defendants charged with an unclassified misdemeanor
+71102,defendants charged with a class 3 misdemeanor
+71103,defendants charged with a traffic misdemeanor
+71104,defendants charged with a class 2 misdemeanor
+71105,defendants charged with a class 1 misdemeanor
+71106,defendants charged with a class A1 misdemeanor
+71107,defendants charged with an unclassified felony
+71108,defendants charged with a class I felony
+71109,defendants charged with a class H elony
+71110,defendants charged with a class G felony
+71111,defendants charged with a class F felony
+71112,defendants charged with a class E felony
+71113,defendants charged with a class D felony
+71114,defendants charged with a class C felony
+71115,defendants charged with a class B2 felony
+71116,defendants charged with a class B1 felony
+71117,defendants charged with a class A felony
+71199,defendants charged with an offense of unknown severity
+71200,defendants charged with an ordinance / infraction
+71201,defendants charged with an unclassified misdemeanor
+71202,defendants charged with a summary offense
+71203,defendants charged with a class 3 misdemeanor
+71204,defendants charged with a class 2 misdemeanor
+71205,defendants charged with a class 1 misdemeanor
+71206,defendants charged with an unclassified felony
+71207,defendants charged with a class 3 felony
+71208,defendants charged with a class 2 felony
+71209,defendants charged with a class 1 felony
+71210,defendants charged with homicide
+71299,defendants charged with an offense of unknown severity
+71300,defendants charged with an infraction
+71301,defendants charged with a class C misdemeanor
+71302,defendants charged with a class B misdemeanor
+71303,defendants charged with a class A misdemeanor
+71304,defendants charged with a class 3 felony
+71305,defendants charged with a class 2 felony
+71306,defendants charged with a class 1 felony
+71307,defendants charged with a capital felony
+71399,defendants charged with an offense of unknown severity
+71400,defendants charged with an infraction
+71401,defendants charged with a misdemeanor
+71402,defendants charged with a gross misdemeanor
+71403,defendants charged with a class C felony
+71404,defendants charged with a class B felony
+71405,defendants charged with a class A felony
+71499,defendants charged with an offense of unknown severity
+71500,defendants charged with an ordinance/forfeiture
+71501,defendants charged with an unclassified misdemeanor
+71502,defendants charged with a class C misdemeanor
+71503,defendants charged with a class B misdemeanor
+71504,defendants charged with a class A misdemeanor
+71505,defendants charged with an unclassified felony
+71506,defendants charged with a class I felony
+71507,defendants charged with a class H felony
+71508,defendants charged with a class G felony
+71509,defendants charged with a class F felony
+71510,defendants charged with a class E felony
+71511,defendants charged with a class D felony
+71512,defendants charged with a class C felony
+71513,defendants charged with a class B felony
+71514,defendants charged with a class A felony
+71599,defendants charged with an offense of unknown severity
+71600,defendants charged with an unclassified misdemeanor
+71601,defendants charged with a class C misdemeanor
+71602,defendants charged with a class B misdemeanor
+71603,defendants charged with a class A misdemeanor
+71604,defendants charged with an unclassified felony
+71605,defendants charged with a class D felony
+71606,defendants charged with a class C felony
+71607,defendants charged with a class B felony
+71608,defendants charged with a class A felony
+71609,defendants charged with a class Y felony
+71699,defendants charged with an offense of unknown severity
+71700,defendants charged with an offense of infraction
+71701,defendants charged with an offense of unclassified petty offense
+71702,defendants charged with an offense of unclassified misdemeanor
+71703,defendants charged with an offense of class C misdemeanor
+71704,defendants charged with an offense of class B misdemeanor
+71705,defendants charged with an offense of class A misdemeanor
+71706,defendants charged with an offense of unclassified felony
+71707,defendants charged with an offense of class 4 felony
+71708,defendants charged with an offense of class 3 felony
+71709,defendants charged with an offense of class 2 felony
+71710,defendants charged with an offense of class 1 felony
+71711,defendants charged with an offense of class X felony
+71712,defendants charged with an offense of class M felony
+71799,defendants charged with an offense of unknown severity
+71800,defendants with no drug charges
+71801,defendants with drug paraphernalia related charges
+71802,defendants with other/unspecified drug offense charges
+71803,defendants with possession/use of unspecified drug charges
+71804,defendants with marijuana possession/use charges
+71805,defendants with other drug possession/use charges
+71806,defendants with other prescription drug possession/use charges
+71807,defendants with opioid drug possession/use charges
+71808,defendants with cocaine possession/use charges
+71809,defendants with amphetamine possession/use charges
+71810,defendants with heroin possession/use charges
+71811,defendants with distribution of unspecified drug charges
+71812,defendants with marijuana distribution charges
+71813,defendants with other drug distribution charges
+71814,defendants with other prescription drug distribution charges
+71815,defendants with opioid drug distribution charges
+71816,defendants with cocaine distribution charges
+71817,defendants with amphetamine distribution charges
+71818,defendants with heroin distribution charges
+71899,defendants with unknown charges
+81000,defendants charged with an ordinance / infraction
+81001,defendants charged with an unclassified misdemeanor
+81002,defendants charged with a class 2 misdemeanor
+81003,defendants charged with a class 1 misdemeanor
+81004,defendants charged with an unclassified felony
+81005,defendants charged with a class 3 felony
+81006,defendants charged with a class 2 felony
+81007,defendants charged with a class 1 felony
+81008,defendants charged with a life felony
+81009,defendants charged with a capital felony
+81099,defendants charged with an offense of unknown severity
+81100,defendants charged with an  infraction
+81101,defendants charged with an unclassified misdemeanor
+81102,defendants charged with a class 3 misdemeanor
+81103,defendants charged with a traffic misdemeanor
+81104,defendants charged with a class 2 misdemeanor
+81105,defendants charged with a class 1 misdemeanor
+81106,defendants charged with a class A1 misdemeanor
+81107,defendants charged with an unclassified felony
+81108,defendants charged with a class I felony
+81109,defendants charged with a class H elony
+81110,defendants charged with a class G felony
+81111,defendants charged with a class F felony
+81112,defendants charged with a class E felony
+81113,defendants charged with a class D felony
+81114,defendants charged with a class C felony
+81115,defendants charged with a class B2 felony
+81116,defendants charged with a class B1 felony
+81117,defendants charged with a class A felony
+81199,defendants charged with an offense of unknown severity
+81200,defendants charged with an ordinance / infraction
+81201,defendants charged with an unclassified misdemeanor
+81202,defendants charged with a summary offense
+81203,defendants charged with a class 3 misdemeanor
+81204,defendants charged with a class 2 misdemeanor
+81205,defendants charged with a class 1 misdemeanor
+81206,defendants charged with an unclassified felony
+81207,defendants charged with a class 3 felony
+81208,defendants charged with a class 2 felony
+81209,defendants charged with a class 1 felony
+81210,defendants charged with homicide
+81299,defendants charged with an offense of unknown severity
+81300,defendants charged with an infraction
+81301,defendants charged with a class C misdemeanor
+81302,defendants charged with a class B misdemeanor
+81303,defendants charged with a class A misdemeanor
+81304,defendants charged with a class 3 felony
+81305,defendants charged with a class 2 felony
+81306,defendants charged with a class 1 felony
+81307,defendants charged with a capital felony
+81399,defendants charged with an offense of unknown severity
+81400,defendants charged with an infraction
+81401,defendants charged with a misdemeanor
+81402,defendants charged with a gross misdemeanor
+81403,defendants charged with a class C felony
+81404,defendants charged with a class B felony
+81405,defendants charged with a class A felony
+81499,defendants charged with an offense of unknown severity
+81500,defendants charged with an ordinance/forfeiture
+81501,defendants charged with an unclassified misdemeanor
+81502,defendants charged with a class C misdemeanor
+81503,defendants charged with a class B misdemeanor
+81504,defendants charged with a class A misdemeanor
+81505,defendants charged with an unclassified felony
+81506,defendants charged with a class I felony
+81507,defendants charged with a class H felony
+81508,defendants charged with a class G felony
+81509,defendants charged with a class F felony
+81510,defendants charged with a class E felony
+81511,defendants charged with a class D felony
+81512,defendants charged with a class C felony
+81513,defendants charged with a class B felony
+81514,defendants charged with a class A felony
+81599,defendants charged with an offense of unknown severity
+81600,defendants charged with an unclassified misdemeanor
+81601,defendants charged with a class C misdemeanor
+81602,defendants charged with a class B misdemeanor
+81603,defendants charged with a class A misdemeanor
+81604,defendants charged with an unclassified felony
+81605,defendants charged with a class D felony
+81606,defendants charged with a class C felony
+81607,defendants charged with a class B felony
+81608,defendants charged with a class A felony
+81609,defendants charged with a class Y felony
+81699,defendants charged with an offense of unknown severity
+81700,defendants charged with an offense of infraction
+81701,defendants charged with an offense of unclassified petty offense
+81702,defendants charged with an offense of unclassified misdemeanor
+81703,defendants charged with an offense of class C misdemeanor
+81704,defendants charged with an offense of class B misdemeanor
+81705,defendants charged with an offense of class A misdemeanor
+81706,defendants charged with an offense of unclassified felony
+81707,defendants charged with an offense of class 4 felony
+81708,defendants charged with an offense of class 3 felony
+81709,defendants charged with an offense of class 2 felony
+81710,defendants charged with an offense of class 1 felony
+81711,defendants charged with an offense of class X felony
+81712,defendants charged with an offense of class M felony
+81799,defendants charged with an offense of unknown severity
+81800,defendants with no drug charges
+81801,defendants with drug paraphernalia related charges
+81802,defendants with other/unspecified drug offense charges
+81803,defendants with possession/use of unspecified drug charges
+81804,defendants with marijuana possession/use charges
+81805,defendants with other drug possession/use charges
+81806,defendants with other prescription drug possession/use charges
+81807,defendants with opioid drug possession/use charges
+81808,defendants with cocaine possession/use charges
+81809,defendants with amphetamine possession/use charges
+81810,defendants with heroin possession/use charges
+81811,defendants with distribution of unspecified drug charges
+81812,defendants with marijuana distribution charges
+81813,defendants with other drug distribution charges
+81814,defendants with other prescription drug distribution charges
+81815,defendants with opioid drug distribution charges
+81816,defendants with cocaine distribution charges
+81817,defendants with amphetamine distribution charges
+81818,defendants with heroin distribution charges
+81899,defendants with unknown charges
+91000,defendants charged with an ordinance / infraction
+91001,defendants charged with an unclassified misdemeanor
+91002,defendants charged with a class 2 misdemeanor
+91003,defendants charged with a class 1 misdemeanor
+91004,defendants charged with an unclassified felony
+91005,defendants charged with a class 3 felony
+91006,defendants charged with a class 2 felony
+91007,defendants charged with a class 1 felony
+91008,defendants charged with a life felony
+91009,defendants charged with a capital felony
+91099,defendants charged with an offense of unknown severity
+91100,defendants charged with an  infraction
+91101,defendants charged with an unclassified misdemeanor
+91102,defendants charged with a class 3 misdemeanor
+91103,defendants charged with a traffic misdemeanor
+91104,defendants charged with a class 2 misdemeanor
+91105,defendants charged with a class 1 misdemeanor
+91106,defendants charged with a class A1 misdemeanor
+91107,defendants charged with an unclassified felony
+91108,defendants charged with a class I felony
+91109,defendants charged with a class H elony
+91110,defendants charged with a class G felony
+91111,defendants charged with a class F felony
+91112,defendants charged with a class E felony
+91113,defendants charged with a class D felony
+91114,defendants charged with a class C felony
+91115,defendants charged with a class B2 felony
+91116,defendants charged with a class B1 felony
+91117,defendants charged with a class A felony
+91199,defendants charged with an offense of unknown severity
+91200,defendants charged with an ordinance / infraction
+91201,defendants charged with an unclassified misdemeanor
+91202,defendants charged with a summary offense
+91203,defendants charged with a class 3 misdemeanor
+91204,defendants charged with a class 2 misdemeanor
+91205,defendants charged with a class 1 misdemeanor
+91206,defendants charged with an unclassified felony
+91207,defendants charged with a class 3 felony
+91208,defendants charged with a class 2 felony
+91209,defendants charged with a class 1 felony
+91210,defendants charged with homicide
+91299,defendants charged with an offense of unknown severity
+91300,defendants charged with an infraction
+91301,defendants charged with a class C misdemeanor
+91302,defendants charged with a class B misdemeanor
+91303,defendants charged with a class A misdemeanor
+91304,defendants charged with a class 3 felony
+91305,defendants charged with a class 2 felony
+91306,defendants charged with a class 1 felony
+91307,defendants charged with a capital felony
+91399,defendants charged with an offense of unknown severity
+91400,defendants charged with an infraction
+91401,defendants charged with a misdemeanor
+91402,defendants charged with a gross misdemeanor
+91403,defendants charged with a class C felony
+91404,defendants charged with a class B felony
+91405,defendants charged with a class A felony
+91499,defendants charged with an offense of unknown severity
+91500,defendants charged with an ordinance/forfeiture
+91501,defendants charged with an unclassified misdemeanor
+91502,defendants charged with a class C misdemeanor
+91503,defendants charged with a class B misdemeanor
+91504,defendants charged with a class A misdemeanor
+91505,defendants charged with an unclassified felony
+91506,defendants charged with a class I felony
+91507,defendants charged with a class H felony
+91508,defendants charged with a class G felony
+91509,defendants charged with a class F felony
+91510,defendants charged with a class E felony
+91511,defendants charged with a class D felony
+91512,defendants charged with a class C felony
+91513,defendants charged with a class B felony
+91514,defendants charged with a class A felony
+91599,defendants charged with an offense of unknown severity
+91600,defendants charged with an unclassified misdemeanor
+91601,defendants charged with a class C misdemeanor
+91602,defendants charged with a class B misdemeanor
+91603,defendants charged with a class A misdemeanor
+91604,defendants charged with an unclassified felony
+91605,defendants charged with a class D felony
+91606,defendants charged with a class C felony
+91607,defendants charged with a class B felony
+91608,defendants charged with a class A felony
+91609,defendants charged with a class Y felony
+91699,defendants charged with an offense of unknown severity
+91700,defendants charged with an offense of infraction
+91701,defendants charged with an offense of unclassified petty offense
+91702,defendants charged with an offense of unclassified misdemeanor
+91703,defendants charged with an offense of class C misdemeanor
+91704,defendants charged with an offense of class B misdemeanor
+91705,defendants charged with an offense of class A misdemeanor
+91706,defendants charged with an offense of unclassified felony
+91707,defendants charged with an offense of class 4 felony
+91708,defendants charged with an offense of class 3 felony
+91709,defendants charged with an offense of class 2 felony
+91710,defendants charged with an offense of class 1 felony
+91711,defendants charged with an offense of class X felony
+91712,defendants charged with an offense of class M felony
+91799,defendants charged with an offense of unknown severity
+91808,defendants with cocaine possession/use charges
+91809,defendants with amphetamine possession/use charges
+91810,defendants with heroin possession/use charges
+91811,defendants with distribution of unspecified drug charges
+91812,defendants with marijuana distribution charges
+91813,defendants with other drug distribution charges
+91814,defendants with other prescription drug distribution charges
+91815,defendants with opioid drug distribution charges
+91816,defendants with cocaine distribution charges
+91817,defendants with amphetamine distribution charges
+91818,defendants with heroin distribution charges
+91899,defendants with unknown charges
+91900,defendants charged with an offense of infraction
+91901,defendants charged with an offense of unclassified misdemeanor
+91902,defendants charged with an offense of class C misdemeanor
+91903,defendants charged with an offense of class B misdemeanor
+91904,defendants charged with an offense of class A misdemeanor
+91905,defendants charged with an offense of unclassified felony
+91906,defendants charged with an offense of class E felony
+91907,defendants charged with an offense of class D felony
+91908,defendants charged with an offense of class C felony
+91909,defendants charged with an offense of class B felony
+91910,defendants charged with an offense of class A felony
+91911,defendants charged with an offense of unknown severity
+92000,defendants charged in the lower court
+92001,defendants charged in the higher court
+93000,defendants with non-domestic abuse charges
+93001,defendants with domestic abuse charges
+94001,defendants with possession/use of unspecified drug charges
+94002,defendants with marijuana possession/use charges
+94003,defendants with other drug possession/use charges
+94004,defendants with other prescription drug possession/use charges
+94005,defendants with opioid drug possession/use charges
+94006,defendants with cocaine possession/use charges
+94007,defendants with amphetamine possession/use charges
+94008,defendants with heroin possession/use charges
+94009,defendants charged with an offense of municipal ordinance
+94010,defendants charged with an offense of petty offense
+94011,defendants charged with an offense of class 2 misdemeanor
+94012,defendants charged with an offense of class 1 misdemeanor
+94013,defendants charged with an offense of class 6 felony
+94014,defendants charged with an offense of class 5 felony
+94015,defendants charged with an offense of class 4 felony
+94016,defendants charged with an offense of class 3 felony
+94017,defendants charged with an offense of class 2 felony
+94018,defendants charged with an offense of class 1 felony
+94019,defendants charged with an offense of class C felony
+94020,defendants charged with an offense of class B felony
+94021,defendants charged with an offense of class A felony
+94022,defendants charged with an offense of unknown severity
+94023,defendants charged with an offense of municipal ordinance
+94024,defendants charged with an offense of petty offense
+94025,defendants charged with an offense of class 2 misdemeanor
+94026,defendants charged with an offense of class 1 misdemeanor
+94027,defendants charged with an offense of class 6 felony
+94028,defendants charged with an offense of class 5 felony
+94029,defendants charged with an offense of class 4 felony
+94030,defendants charged with an offense of class 3 felony
+94031,defendants charged with an offense of class 2 felony
+94032,defendants charged with an offense of class 1 felony
+94033,defendants charged with an offense of class C felony
+94034,defendants charged with an offense of class B felony
+94035,defendants charged with an offense of class A felony
+94036,defendants charged with an offense of unknown severity
+94037,defendants charged with an offense of municipal ordinance
+94038,defendants charged with an offense of petty offense
+94039,defendants charged with an offense of class 2 misdemeanor
+94040,defendants charged with an offense of class 1 misdemeanor
+94041,defendants charged with an offense of class 6 felony
+94042,defendants charged with an offense of class 5 felony
+94043,defendants charged with an offense of class 4 felony
+94044,defendants charged with an offense of class 3 felony
+94045,defendants charged with an offense of class 2 felony
+94046,defendants charged with an offense of class 1 felony
+94047,defendants charged with an offense of class C felony
+94048,defendants charged with an offense of class B felony
+94049,defendants charged with an offense of class A felony
+94050,defendants charged with an offense of unknown severity
+94051,defendants charged with an offense of infraction
+94052,defendants charged with an offense of class B misdemeanor
+94053,defendants charged with an offense of class A misdemeanor
+94054,defendants charged with an offense of class C felony
+94055,defendants charged with an offense of class B felony
+94056,defendants charged with an offense of class A felony
+94057,defendants charged with an offense of class AA felony
+94058,defendants charged with an offense of unknown severity
+94059,defendants charged with an offense of infraction
+94060,defendants charged with an offense of class B misdemeanor
+94061,defendants charged with an offense of class A misdemeanor
+94062,defendants charged with an offense of class C felony
+94063,defendants charged with an offense of class B felony
+94064,defendants charged with an offense of class A felony
+94065,defendants charged with an offense of class AA felony
+94066,defendants charged with an offense of unknown severity
+94067,defendants charged with an offense of infraction
+94068,defendants charged with an offense of class B misdemeanor
+94069,defendants charged with an offense of class A misdemeanor
+94070,defendants charged with an offense of class C felony
+94071,defendants charged with an offense of class B felony
+94072,defendants charged with an offense of class A felony
+94073,defendants charged with an offense of class AA felony
+94074,defendants charged with an offense of unknown severity
+94075,defendants charged with an offense of infraction
+94076,defendants charged with an offense of unclassified misdemeanor
+94077,defendants charged with an offense of class D misdemeanor
+94078,defendants charged with an offense of class C misdemeanor
+94079,defendants charged with an offense of class B misdemeanor
+94080,defendants charged with an offense of class A misdemeanor
+94081,defendants charged with an offense of unclassified felony
+94082,defendants charged with an offense of class E felony
+94083,defendants charged with an offense of class D felony
+94084,defendants charged with an offense of class C felony
+94085,defendants charged with an offense of class B felony
+94086,defendants charged with an offense of class A felony
+94087,defendants charged with an offense of unknown severity
+94088,defendants charged with an offense of infraction
+94089,defendants charged with an offense of unclassified misdemeanor
+94090,defendants charged with an offense of class B misdemeanor
+94091,defendants charged with an offense of class A misdemeanor
+94092,defendants charged with an offense of class E felony
+94093,defendants charged with an offense of class D felony
+94094,defendants charged with an offense of class C felony
+94095,defendants charged with an offense of class B felony
+94096,defendants charged with an offense of class A felony
+94097,defendants charged with an offense of unknown severity
+94098,defendants charged with an offense of infraction
+94099,defendants charged with an offense of unclassified misdemeanor
+94100,defendants charged with an offense of class B misdemeanor
+94101,defendants charged with an offense of class A misdemeanor
+94102,defendants charged with an offense of class E felony
+94103,defendants charged with an offense of class D felony
+94104,defendants charged with an offense of class C felony
+94105,defendants charged with an offense of class B felony
+94106,defendants charged with an offense of class A felony
+94107,defendants charged with an offense of unknown severity
+94108,defendants charged with an offense of infraction
+94109,defendants charged with an offense of unclassified misdemeanor
+94110,defendants charged with an offense of class B misdemeanor
+94111,defendants charged with an offense of class A misdemeanor
+94112,defendants charged with an offense of class E felony
+94113,defendants charged with an offense of class D felony
+94114,defendants charged with an offense of class C felony
+94115,defendants charged with an offense of class B felony
+94116,defendants charged with an offense of class A felony
+94117,defendants charged with an offense of unknown severity
+94118,defendants charged with an offense of infraction
+94119,defendants charged with an offense of unclassified misdemeanor
+94120,defendants charged with an offense of class C misdemeanor
+94121,defendants charged with an offense of class B misdemeanor
+94122,defendants charged with an offense of class A misdemeanor
+94123,defendants charged with an offense of unclassified felony
+94124,defendants charged with an offense of class C felony
+94125,defendants charged with an offense of class B felony
+94126,defendants charged with an offense of class A felony
+94127,defendants charged with an offense of life felony
+94128,defendants charged with an offense of capital felony
+94129,defendants charged with an offense of unknown severity
+94130,defendants charged with an offense of infraction
+94131,defendants charged with an offense of unclassified misdemeanor
+94132,defendants charged with an offense of class C misdemeanor
+94133,defendants charged with an offense of class B misdemeanor
+94134,defendants charged with an offense of class A misdemeanor
+94135,defendants charged with an offense of unclassified felony
+94136,defendants charged with an offense of class C felony
+94137,defendants charged with an offense of class B felony
+94138,defendants charged with an offense of class A felony
+94139,defendants charged with an offense of life felony
+94140,defendants charged with an offense of capital felony
+94141,defendants charged with an offense of unknown severity
+94142,defendants charged with an offense of infraction
+94143,defendants charged with an offense of unclassified misdemeanor
+94144,defendants charged with an offense of class C misdemeanor
+94145,defendants charged with an offense of class B misdemeanor
+94146,defendants charged with an offense of class A misdemeanor
+94147,defendants charged with an offense of unclassified felony
+94148,defendants charged with an offense of class C felony
+94149,defendants charged with an offense of class B felony
+94150,defendants charged with an offense of class A felony
+94151,defendants charged with an offense of life felony
+94152,defendants charged with an offense of capital felony
+94153,defendants charged with an offense of unknown severity
+94154,defendants charged with an offense of violation
+94155,defendants charged with an offense of unclassified misdemeanor
+94156,defendants charged with an offense of class C misdemeanor
+94157,defendants charged with an offense of class B misdemeanor
+94158,defendants charged with an offense of class A misdemeanor
+94159,defendants charged with an offense of unclassified felony
+94160,defendants charged with an offense of class D felony
+94161,defendants charged with an offense of class C felony
+94162,defendants charged with an offense of class B felony
+94163,defendants charged with an offense of class A felony
+94164,defendants charged with an offense of unknown severity
+94165,defendants charged with an offense of violation
+94166,defendants charged with an offense of unclassified misdemeanor
+94167,defendants charged with an offense of class C misdemeanor
+94168,defendants charged with an offense of class B misdemeanor
+94169,defendants charged with an offense of class A misdemeanor
+94170,defendants charged with an offense of unclassified felony
+94171,defendants charged with an offense of class D felony
+94172,defendants charged with an offense of class C felony
+94173,defendants charged with an offense of class B felony
+94174,defendants charged with an offense of class A felony
+94175,defendants charged with an offense of unknown severity
+94176,defendants charged with an offense of violation
+94177,defendants charged with an offense of unclassified misdemeanor
+94178,defendants charged with an offense of class C misdemeanor
+94179,defendants charged with an offense of class B misdemeanor
+94180,defendants charged with an offense of class A misdemeanor
+94181,defendants charged with an offense of unclassified felony
+94182,defendants charged with an offense of class D felony
+94183,defendants charged with an offense of class C felony
+94184,defendants charged with an offense of class B felony
+94185,defendants charged with an offense of class A felony
+94186,defendants charged with an offense of unknown severity
+94187,defendants charged with an offense of class D infraction
+94188,defendants charged with an offense of class D infraction
+94189,defendants charged with an offense of class D infraction
+94190,defendants charged with an offense of class D infraction
+94191,defendants charged with an offense of unclassified misdemeanor
+94192,defendants charged with an offense of class D misdemeanor
+94193,defendants charged with an offense of class C misdemeanor
+94194,defendants charged with an offense of class B misdemeanor
+94195,defendants charged with an offense of class A misdemeanor
+94196,defendants charged with an offense of unclassified felony
+94197,defendants charged with an offense of class 6 felony
+94198,defendants charged with an offense of class 5 felony
+94199,defendants charged with an offense of class 4 felony
+94200,defendants charged with an offense of class 3 felony
+94201,defendants charged with an offense of class 2 felony
+94202,defendants charged with an offense of class 1 felony
+94203,defendants charged with an offense of murder
+94204,defendants charged with an offense of unknown severity
+94205,defendants charged with an offense of class D infraction
+94206,defendants charged with an offense of class D infraction
+94207,defendants charged with an offense of class D infraction
+94208,defendants charged with an offense of class D infraction
+94209,defendants charged with an offense of unclassified misdemeanor
+94210,defendants charged with an offense of class D misdemeanor
+94211,defendants charged with an offense of class C misdemeanor
+94212,defendants charged with an offense of class B misdemeanor
+94213,defendants charged with an offense of class A misdemeanor
+94214,defendants charged with an offense of unclassified felony
+94215,defendants charged with an offense of class 6 felony
+94216,defendants charged with an offense of class 5 felony
+94217,defendants charged with an offense of class 4 felony
+94218,defendants charged with an offense of class 3 felony
+94219,defendants charged with an offense of class 2 felony
+94220,defendants charged with an offense of class 1 felony
+94221,defendants charged with an offense of murder
+94222,defendants charged with an offense of unknown severity
+94223,defendants charged with an offense of class D infraction
+94224,defendants charged with an offense of class D infraction
+94225,defendants charged with an offense of class D infraction
+94226,defendants charged with an offense of class D infraction
+94227,defendants charged with an offense of unclassified misdemeanor
+94228,defendants charged with an offense of class D misdemeanor
+94229,defendants charged with an offense of class C misdemeanor
+94230,defendants charged with an offense of class B misdemeanor
+94231,defendants charged with an offense of class A misdemeanor
+94232,defendants charged with an offense of unclassified felony
+94233,defendants charged with an offense of class 6 felony
+94234,defendants charged with an offense of class 5 felony
+94235,defendants charged with an offense of class 4 felony
+94236,defendants charged with an offense of class 3 felony
+94237,defendants charged with an offense of class 2 felony
+94238,defendants charged with an offense of class 1 felony
+94239,defendants charged with an offense of murder
+94240,defendants charged with an offense of unknown severity
+94241,defendants charged with an offense of an infraction
+94242,defendants charged with an offense of unspecified misdemeanor
+94243,defendants charged with an offense of class C misdemeanor
+94244,defendants charged with an offense of class B misdemeanor
+94245,defendants charged with an offense of class A misdemeanor
+94246,defendants charged with an offense of unspecified felony
+94247,defendants charged with an offense of class E felony
+94248,defendants charged with an offense of class D felony
+94249,defendants charged with an offense of class C felony
+94250,defendants charged with an offense of class B felony
+94251,defendants charged with an offense of class A felony
+94254,defendants charged with an offense of unknown severity
+94255,defendants charged with an offense of an infraction
+94256,defendants charged with an offense of unspecified misdemeanor
+94257,defendants charged with an offense of class C misdemeanor
+94258,defendants charged with an offense of class B misdemeanor
+94259,defendants charged with an offense of class A misdemeanor
+94260,defendants charged with an offense of unspecified felony
+94261,defendants charged with an offense of class E felony
+94262,defendants charged with an offense of class D felony
+94263,defendants charged with an offense of class C felony
+94264,defendants charged with an offense of class B felony
+94265,defendants charged with an offense of class A felony
+94268,defendants charged with an offense of unknown severity
+94269,defendants charged with an offense of an infraction
+94270,defendants charged with an offense of unspecified misdemeanor
+94271,defendants charged with an offense of class C misdemeanor
+94272,defendants charged with an offense of class B misdemeanor
+94273,defendants charged with an offense of class A misdemeanor
+94274,defendants charged with an offense of unspecified felony
+94275,defendants charged with an offense of class E felony
+94276,defendants charged with an offense of class D felony
+94277,defendants charged with an offense of class C felony
+94278,defendants charged with an offense of class B felony
+94279,defendants charged with an offense of class A felony
+94282,defendants charged with an offense of unknown severity
+94283,defendants charged with an offense of infraction
+94284,defendants charged with an offense of unspecified misdemeanor
+94285,defendants charged with an offense of class 4 misdemeanor
+94286,defendants charged with an offense of class 3 misdemeanor
+94287,defendants charged with an offense of class 2 misdemeanor
+94288,defendants charged with an offense of class 1 misdemeanor
+94289,defendants charged with an offense of unspecified felony
+94290,defendants charged with an offense of class 6 felony
+94291,defendants charged with an offense of class 5 felony
+94292,defendants charged with an offense of class 4 felony
+94293,defendants charged with an offense of class 3 felony
+94294,defendants charged with an offense of class 2 felony
+94295,defendants charged with an offense of class 1 felony
+94296,defendants charged with an offense of unknown severity
+94297,defendants charged with an offense of infraction
+94298,defendants charged with an offense of unspecified misdemeanor
+94299,defendants charged with an offense of class 4 misdemeanor
+94300,defendants charged with an offense of class 3 misdemeanor
+94301,defendants charged with an offense of class 2 misdemeanor
+94302,defendants charged with an offense of class 1 misdemeanor
+94303,defendants charged with an offense of unspecified felony
+94304,defendants charged with an offense of class 6 felony
+94305,defendants charged with an offense of class 5 felony
+94306,defendants charged with an offense of class 4 felony
+94307,defendants charged with an offense of class 3 felony
+94308,defendants charged with an offense of class 2 felony
+94309,defendants charged with an offense of class 1 felony
+94310,defendants charged with an offense of unknown severity
+94311,defendants charged with an offense of infraction
+94312,defendants charged with an offense of unspecified misdemeanor
+94313,defendants charged with an offense of class 4 misdemeanor
+94314,defendants charged with an offense of class 3 misdemeanor
+94315,defendants charged with an offense of class 2 misdemeanor
+94316,defendants charged with an offense of class 1 misdemeanor
+94317,defendants charged with an offense of unspecified felony
+94318,defendants charged with an offense of class 6 felony
+94319,defendants charged with an offense of class 5 felony
+94320,defendants charged with an offense of class 4 felony
+94321,defendants charged with an offense of class 3 felony
+94322,defendants charged with an offense of class 2 felony
+94323,defendants charged with an offense of class 1 felony
+94324,defendants charged with an offense of unknown severity
+95000,defendants charged with an offense of infraction
+95001,defendants charged with an offense of unclassified misdemeanor
+95002,defendants charged with an offense of class C misdemeanor
+95003,defendants charged with an offense of class B misdemeanor
+95004,defendants charged with an offense of class A misdemeanor
+95005,defendants charged with an offense of unclassified felony
+95006,defendants charged with an offense of class E felony
+95007,defendants charged with an offense of class D felony
+95008,defendants charged with an offense of class C felony
+95009,defendants charged with an offense of class B felony
+95010,defendants charged with an offense of class A felony
+95011,defendants charged with an offense of unknown severity
+95012,defendants charged with an offense of infraction
+95013,defendants charged with an offense of unclassified misdemeanor
+95014,defendants charged with an offense of class C misdemeanor
+95015,defendants charged with an offense of class B misdemeanor
+95016,defendants charged with an offense of class A misdemeanor
+95017,defendants charged with an offense of unclassified felony
+95018,defendants charged with an offense of class E felony
+95019,defendants charged with an offense of class D felony
+95020,defendants charged with an offense of class C felony
+95021,defendants charged with an offense of class B felony
+95022,defendants charged with an offense of class A felony
+95023,defendants charged with an offense of unknown severity

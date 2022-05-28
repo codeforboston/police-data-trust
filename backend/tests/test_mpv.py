@@ -1,5 +1,5 @@
 import pytest
-from backend.scraper.mpv_2 import *
+from backend.scraper.mpv import *
 
 test_dataset = {"Original_Column_Name": "test"}
 test_df = pd.DataFrame([test_dataset])
@@ -22,6 +22,10 @@ def test_cols():
     dataset = cols()
     assert dataset == test_columns
 
+def test_cols_2():
+    test_data = pd.read_csv(/test)
+    assert dtype
+
 def test_isnan():
     x = float("nan")
     assert isnan(x) == True
@@ -38,6 +42,12 @@ def test_strip():
 
 def test_map_df(df, mapper):
     return [mapper(strip_nan(r)) for r in df.itertuples(index=False)]
+
+def test_parse_int():
+    assert parse_int('test_str') == None
+
+
+
 
 
 
