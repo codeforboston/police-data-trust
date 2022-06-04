@@ -13,7 +13,7 @@ from .client import *
 def extract_zip():
     os.chdir('/Users/brianrennie/Documents/GitHub/police-data-trust/backend/scraper/data_scrapers/counted/scraper_data')
     curDir = os.getcwd()
-    r = Counted_Client.run(self)
+    
     open('thecounted-data.zip', 'wb').write(r.content)
     zf = zipfile.ZipFile(curDir + '/thecounted-data.zip')
     zf.extractall(curDir)
