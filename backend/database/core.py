@@ -4,6 +4,7 @@ setting up and tearing down the database.
 Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
+print(__name__)
 import os
 from typing import Any, Optional
 
