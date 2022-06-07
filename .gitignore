@@ -104,8 +104,8 @@ ENV/
 env.bak/
 venv.bak/
 .python-version
-.new
 .devcontainer
+.pdt
 
 # mkdocs documentation
 /site

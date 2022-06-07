@@ -1,3 +1,4 @@
+from email import utils
 import pandas as pd
 import requests
 import zipfile
@@ -5,7 +6,7 @@ import os
 import glob
 from collections import namedtuple
 
-from scraper_utils import *
+from scraper_utils.utils import *
 from .client import *
 #from ....database import Incident
 
@@ -13,7 +14,8 @@ from .client import *
 def extract_zip():
     os.chdir('/Users/brianrennie/Documents/GitHub/police-data-trust/backend/scraper/data_scrapers/counted/scraper_data')
     curDir = os.getcwd()
-    
+    dataset = Counted_Client()
+    r = dataset.run()
     open('thecounted-data.zip', 'wb').write(r.content)
     zf = zipfile.ZipFile(curDir + '/thecounted-data.zip')
     zf.extractall(curDir)

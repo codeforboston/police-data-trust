@@ -28,7 +28,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
-    command: bash -c '/wait && flask psql create && flask psql init && jupyter notebook --allow-root --ip=0.0.0.0'
+    command: bash -c '/wait && flask psql create && flask psql init && jupyter notebook --allow-root --ip=0.0.0.0 --port=8889'
     volumes:
       - .:/app
     depends_on:
@@ -39,7 +39,7 @@ services:
       WAIT_HOSTS: db:5432
     ports:
       - 5000:5000
-      - 8888:8888
+      - 8889:8889
 
 volumes:
   postgres: {}
