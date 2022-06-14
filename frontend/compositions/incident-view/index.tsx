@@ -4,9 +4,9 @@ import { Incident } from "../../helpers/incident"
 
 export default function IncidentView(incident: Incident) {
   return (
-    <div>
+    <>
       <IncidentViewHeader {...incident} />
       <IncidentBody {...incident} />
-    </div>
+    </>
   )
 }

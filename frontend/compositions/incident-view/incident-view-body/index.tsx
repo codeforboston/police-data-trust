@@ -7,7 +7,7 @@ export default function IncidentBody(incident: Incident) {
   const { bodyWrapper, bodyElement } = styles
   return (
     <div className={bodyWrapper}>
-      <Map />
+      <Map {...incident} />
       <IncidentData {...incident} />
     </div>
   )

@@ -17,7 +17,7 @@ export default function sampleIncident(): Incident {
   return {
     id: 0,
     time_of_incident: new Date("March 1, 2022 00:00:00"),
-    location: { latitude: 0, longitude: 0 },
+    location: { latitude: 42.3601, longitude: -71.0589 },
     description:
       "Officer issued motorist ticket, use of excessive force resulted in civilian injury.",
     stop_type: "Traffic Stop",
