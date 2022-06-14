@@ -2,6 +2,7 @@ import * as rtl from "@testing-library/react"
 import { Providers } from "../helpers"
 import { v4 as uuidv4 } from "uuid"
 import * as htl from "@testing-library/react-hooks"
+import router from "next/router"
 
 // re-export testing libraries
 export * from "@testing-library/react"
@@ -28,3 +29,12 @@ export const uniqueEmail = () => `${uuidv4()}@example.com`
  */
 export const pause = (seconds: number) =>
   new Promise((r) => setTimeout(r, Math.round(seconds * 1000)))
+
+export function setRouterForTest(path: string, query = {}) {
+  router.pathname = path
+  router.query = query
+}
+export function clearRouterForTest() {
+  router.pathname = ""
+  router.query = {}
+}

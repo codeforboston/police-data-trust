@@ -1,9 +1,22 @@
-import { api, useAuth } from "../../helpers"
 import { act } from "react-dom/test-utils"
+import { api } from "../../helpers"
 import { EXISTING_TEST_USER } from "../../helpers/api/mocks/data"
+import { clearAuthForTest } from "../../helpers/auth"
 import { AppRoutes } from "../../models"
 import Reset from "../../pages/reset"
-import { render, router, setAuthForTest, uniqueEmail, userEvent, waitFor } from "../test-utils"
+import {
+  clearRouterForTest,
+  render,
+  router,
+  setRouterForTest,
+  userEvent,
+  waitFor
+} from "../test-utils"
+
+beforeEach(() => {
+  clearAuthForTest()
+  clearRouterForTest()
+})
 
 it("renders Register correctly", () => {
   const { container } = render(<Reset />)
@@ -26,24 +39,7 @@ describe("behaviors", () => {
   it("checks required fields", async () => {
     const token = await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter")
-    const mockPush = jest.fn()
-
-    setAuthForTest()
-
-    useRouter.mockImplementation(() => ({
-      route: "/reset",
-      pathname: "",
-      query: { token: token },
-      asPath: "",
-      push: mockPush,
-      events: {
-        on: jest.fn(),
-        off: jest.fn()
-      },
-      beforePopState: jest.fn(() => null),
-      prefetch: jest.fn(() => null)
-    }))
+    setRouterForTest("/reset", { token })
 
     const r = renderPage()
     const elements: any = r
@@ -54,7 +50,7 @@ describe("behaviors", () => {
       expect(elements[k].getAttribute("aria-invalid")).toBeTruthy()
     }
 
-    expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
+    await expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
   })
 
   it("checks password formatting", async () => {
@@ -65,7 +61,7 @@ describe("behaviors", () => {
       userEvent.click(r.submit)
     })
 
-    expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
+    await expect(r.findAllByRole("alert")).resolves.toHaveLength(2)
   })
 
   it("requires matching passwords", async () => {
@@ -83,24 +79,7 @@ describe("behaviors", () => {
   it("should redirect to the login", async () => {
     const token = await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter")
-    const mockPush = jest.fn()
-
-    setAuthForTest()
-
-    useRouter.mockImplementation(() => ({
-      route: "/reset",
-      pathname: "",
-      query: { token: token },
-      asPath: "",
-      push: mockPush,
-      events: {
-        on: jest.fn(),
-        off: jest.fn()
-      },
-      beforePopState: jest.fn(() => null),
-      prefetch: jest.fn(() => null)
-    }))
+    setRouterForTest("/reset", { token })
 
     const r = renderPage()
 
@@ -110,30 +89,13 @@ describe("behaviors", () => {
       userEvent.click(r.submit)
     })
 
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith(AppRoutes.LOGIN))
+    await waitFor(() => expect(router.pathname).toBe(AppRoutes.LOGIN))
   })
 
   it("checks token validity", async () => {
-    const token = await api.login(EXISTING_TEST_USER)
+    await api.login(EXISTING_TEST_USER)
 
-    const useRouter = jest.spyOn(require("next/router"), "useRouter")
-    const mockPush = jest.fn()
-
-    setAuthForTest()
-
-    useRouter.mockImplementation(() => ({
-      route: "/reset",
-      pathname: "",
-      query: { token: "badtoken" },
-      asPath: "",
-      push: mockPush,
-      events: {
-        on: jest.fn(),
-        off: jest.fn()
-      },
-      beforePopState: jest.fn(() => null),
-      prefetch: jest.fn(() => null)
-    }))
+    setRouterForTest("/reset", { token: "badtoken" })
 
     const r = renderPage()
 

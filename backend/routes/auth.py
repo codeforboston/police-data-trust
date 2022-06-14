@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_cors import cross_origin
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -138,6 +139,7 @@ def logout():
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate()
+@cross_origin()
 def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
