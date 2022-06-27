@@ -1,19 +1,18 @@
-from email import utils
-import pandas as pd
-import requests
-import zipfile
-import os
 import glob
-from collections import namedtuple
+import os
 import sys
-sys.path.append('/Users/brianrennie/Documents/GitHub/police-data-trust') 
+import zipfile
 
-from scraper_utils.utils import map_cols, map_df, create_bulk, create_orm
-from counted.client import *
+import pandas as pd
+
+from ..scraper_utils import create_bulk, create_orm, map_cols, map_df
+from .client import *
+
+data_dir = os.path.join(os.path.dirname(__file__), 'scraper_data')
 
 #extracts zipfile from Counted_Client function into cwd
 def extract_zip():
-    os.chdir('/Users/brianrennie/Documents/GitHub/police-data-trust/backend/scraper/data_scrapers/counted/scraper_data')
+    os.chdir(data_dir)
     curDir = os.getcwd()
     dataset = Counted_Client()
     r = dataset.run()
@@ -23,7 +22,7 @@ def extract_zip():
 
 #filters out any other filetype except .csv
 def filter_csv():
-    os.chdir('/Users/brianrennie/Documents/GitHub/police-data-trust/backend/scraper/data_scrapers/counted/scraper_data')
+    os.chdir(data_dir)
     curDir = os.getcwd()
     files = glob.glob(curDir + "/*.csv")
     return files
@@ -63,11 +62,6 @@ def create_incidents(data):
 def append_to_index(incidents):
     create_bulk(incidents)
 
-if __name__ == '__main__':
-    extract_zip()
-    dataset = col_conv()
-    incidents = create_incidents(dataset)
-    append_to_index(incidents)
     
 
 

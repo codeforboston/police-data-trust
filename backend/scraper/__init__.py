@@ -1,1 +1,1 @@
-from data_scrapers import *
+from .data_scrapers import *
