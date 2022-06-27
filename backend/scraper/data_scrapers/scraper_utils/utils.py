@@ -4,22 +4,17 @@ import pandas as pd
 from itertools import zip_longest
 from typing import List
 from collections import namedtuple
-from ....database import db, Incident, Officer, Accusation, Victim
+import backend.database as md
+from backend.database import db
+from backend.api import create_app
+app = create_app("development")   
+
 
 def map_cols(df, m: dict):
     return df[list(m.keys())].rename(columns=m)
 
-def create_bulk(instances, chunk_size=1000):
-    """Inserts ORM instances into the database"""
-    with app.app_context():
-        for chunk in range(0, len(instances), chunk_size):
-            db.session.add_all(instances[chunk : chunk + chunk_size])
-            db.session.flush()
-        db.session.commit()
-
 def isnan(x):
     return isinstance(x, float) and math.isnan(x)  
-
 
 def nan_to_none(x):
     return None if isnan(x) else x
@@ -52,21 +47,21 @@ def parse_officers(r: namedtuple):
     races = parse_parts(r.officer_races_draft)
 
     return [
-        Officer(last_name=name, race=race)
+        md.Officer(last_name=name, race=race)
         for name, race in zip_longest(names, races)
     ]
 
 
-def parse_accusations(r: namedtuple, officers: List[Officer]):
+def parse_accusations(r: namedtuple, officers: List[md.Officer]):
     outcomes = parse_parts(r.officer_outcomes)
     return [
-        Accusation(outcome=outcome, officer=officer)
+        md.Accusation(outcome=outcome, officer=officer)
         for officer, outcome in zip_longest(officers, outcomes)
     ]
 
 
-def create_orm(r: namedtuple):
-    victim = Victim(
+def create_orm(r: namedtuple, source):
+    victim = md.Victim(
         name=r.victim_name,
         race=r.victim_race,
         gender=r.victim_gender,
@@ -75,9 +70,9 @@ def create_orm(r: namedtuple):
     )
     officers = parse_officers(r)
     accusations = parse_accusations(r, officers)
-    incident = Incident(
+    incident = md.Incident(
         source_id=r.source_id,
-        source="mpv",
+        source=source,
         time_of_incident=r.incident_date,
         location=location(r),
         description=r.description,
@@ -89,3 +84,13 @@ def create_orm(r: namedtuple):
         accusations=accusations,
     )
     return incident
+
+def create_bulk(instances, chunk_size=1000):
+    """Inserts ORM instances into the database"""
+    with app.app_context():
+        for chunk in range(0, len(instances), chunk_size):
+            db.session.add_all(instances[chunk : chunk + chunk_size])
+            db.session.flush()
+        db.session.commit()
+
+    
