@@ -65,20 +65,17 @@ def create_orm(r: namedtuple, source):
         name=r.victim_name,
         race=r.victim_race,
         gender=r.victim_gender,
-        manner_of_injury=r.manner_of_injury,
         deceased=True,
     )
     officers = parse_officers(r)
     accusations = parse_accusations(r, officers)
     incident = md.Incident(
-        source_id=r.source_id,
+        source_id=r.source_id, 
         source=source,
         time_of_incident=r.incident_date,
         location=location(r),
         description=r.description,
         department=r.department,
-        # latitude=r.latitude,
-        # longitude=r.longitude,
         victims=[victim],
         officers=officers,
         accusations=accusations,
@@ -92,5 +89,16 @@ def create_bulk(instances, chunk_size=1000):
             db.session.add_all(instances[chunk : chunk + chunk_size])
             db.session.flush()
         db.session.commit()
+
+def drop_existing_records(dataset, source):
+    with app.app_context():
+        existing_source_ids = list(
+            s
+            for (s,) in db.session.query(md.Incident.source_id).filter(
+                md.Incident.source == source, md.Incident.source_id != None
+            )
+        )
+    return dataset.drop(existing_source_ids)
+
 
     
