@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react"
 import { Loader } from "@googlemaps/js-api-loader"
 
-import type { Incident } from "../../../../helpers/incident"
+import type { IncidentRecordType } from "../../../../models"
 import styles from "./map.module.css"
 
-export default function OverheadMap(incident: Incident) {
-  const location = { lat: incident.location.latitude, lng: incident.location.longitude }
+export default function OverheadMap(incident: IncidentRecordType) {
+  const [lng, lat] = incident.locationLonLat
+
+  const location = { lat: lat, lng: lng }
   const googleMap = useRef(null)
 
   useEffect(() => {

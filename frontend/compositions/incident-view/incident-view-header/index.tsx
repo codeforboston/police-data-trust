@@ -1,15 +1,16 @@
 import { useEffect, useRef } from "react"
 import { Loader } from "@googlemaps/js-api-loader"
 
-import { Incident } from "../../../helpers/incident"
+import type { IncidentRecordType } from "../../../models"
 import styles from "./incident-view-header.module.css"
 
-export default function IncidentViewHeader(incident: Incident) {
-  const { id, stop_type, time_of_incident, location } = incident
+export default function IncidentViewHeader(incident: IncidentRecordType) {
+  const { id, stop_type, time_of_incident, locationLonLat } = incident
   const { wrapper, idAndStop, data, category, stopType } = styles
+  const [lng, lat] = locationLonLat
 
-  const date = time_of_incident.toDateString()
-  const time = time_of_incident.toTimeString()
+  const date = new Date(time_of_incident).toDateString()
+  const time = new Date(time_of_incident).toTimeString()
 
   const displayLocation = useRef(null)
 
@@ -21,7 +22,7 @@ export default function IncidentViewHeader(incident: Incident) {
 
     loader.load().then(() => {
       const geocoder = new google.maps.Geocoder()
-      const mapLocation = { lat: location.latitude, lng: location.longitude }
+      const mapLocation = { lat: lat, lng: lng }
 
       geocoder
         .geocode({

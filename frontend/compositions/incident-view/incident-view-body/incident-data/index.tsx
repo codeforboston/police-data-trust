@@ -1,9 +1,9 @@
-import { Incident } from "../../../../helpers/incident"
+import { IncidentRecordType } from "../../../../models"
 import styles from "./incident-data.module.css"
 
 const { wrapper, dataBlock, category, data, officerDisplay, officerColumn } = styles
 
-export default function IncidentData(incident: Incident) {
+export default function IncidentData(incident: IncidentRecordType) {
   const { description } = incident
   // Need to make grid style, newline for departments
   return (
@@ -30,7 +30,7 @@ export default function IncidentData(incident: Incident) {
   )
 }
 
-function officerBox(officers: Incident["officers"]) {
+function officerBox(officers: IncidentRecordType["officers"]) {
   return (
     <div className={officerDisplay}>
       <div className={officerColumn}>

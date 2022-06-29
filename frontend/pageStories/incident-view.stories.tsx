@@ -1,11 +1,11 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import IncidentView from "../pages/incident-view"
+import IncidentView from "../pages/incident-view/[id]"
 
 export default {
   title: "Pages/IncidentView",
   component: IncidentView
 } as ComponentMeta<typeof IncidentView>
 
-const Template: ComponentStory<typeof IncidentView> = (args) => <IncidentView {...args} />
+const Template: ComponentStory<typeof IncidentView> = () => <IncidentView />
 
 export const Login = Template.bind({})
