@@ -9,4 +9,4 @@ export default {
 const Template: ComponentStory<typeof IncidentBody> = (args) => <IncidentBody {...args} />
 
 export const Blank = Template.bind({})
-Blank.args = sampleIncident()
+Blank.args = sampleIncident(1)
