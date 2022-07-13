@@ -36,6 +36,7 @@ def append_dataframe(filtered_files):
         counted_data = pd.concat(content)
     return counted_data
 
+<<<<<<< HEAD
 # def convert_date(df):
 #     converted_date = df[['month','year']].apply(pd.to_datetime, format='%B/%y')
 #     breakpoint()
@@ -53,16 +54,23 @@ def convert_date(df):
 #     return df
 
 
+=======
+def convert_date(df):
+    converted_date = df[['month','day','year']].apply(pd.to_datetime, format='m%/d%/%y')
+    return converted_date
+    
+>>>>>>> ce7f0825cca167000cb8fcbaaddb54b13c74badb
 #convert colummns name to map to schema
 def col_conv():
-    df = append_dataframe(filter_csv())
+    filtered_data = append_dataframe(filter_csv())
+    df = convert_date(filtered_data)
     dataset = map_cols(df, {
         "uid": "source_id",
         "name": "victim_name",
         "gender": "victim_gender",
         "raceethnicity": "victim_race",
         "age": "victim_age",
-        #"Date of Incident (month/day/year)": "incident_date",
+        "Date of Incident (month/day/year)": "incident_date",
         "streetaddress": "address",
         "city": "city",
         "state": "state",
@@ -83,7 +91,8 @@ def create_counted_orm(r: namedtuple):
     )
     incident = md.Incident(
         source='counted',
-        source_id=r.source_id, 
+        source_id=r.source_id,
+        time_of_incident=r.incident_date, 
         department=r.department,
         victims=[victim],
         location=f"{r.address} {r.city} {r.state}"
