@@ -35,7 +35,24 @@ def append_dataframe(filtered_files):
         content.append(df)
         counted_data = pd.concat(content)
     return counted_data
-    
+
+# def convert_date(df):
+#     converted_date = df[['month','year']].apply(pd.to_datetime, format='%B/%y')
+#     breakpoint()
+#     return converted_date
+
+def convert_date(df):
+    converted_date = pd.to_datetime(df[['month','year','day']], format='%m/%y/%d')
+    print(converted_date)
+    breakpoint()
+    return converted_date
+
+# def convert_date(df):
+#     df[['month','day','year']]
+#     breakpoint()
+#     return df
+
+
 #convert colummns name to map to schema
 def col_conv():
     df = append_dataframe(filter_csv())
@@ -86,7 +103,6 @@ def append_to_index(incidents):
     #    'lawenforcementagency', 'armed'],
     #   dtype='object')
     
-
 
 
 
