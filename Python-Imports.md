@@ -20,7 +20,7 @@ Relative imports don’t work from the main script passed to `python`, unless `-
 
 ## 1. **Resolve relative imports**
 
-Python first resolves all relative imports to absolute paths like `x.y.z`. Each module has a special `__name__` variable with the [fully-qualified name of the module](https://docs.python.org/3/reference/import.html#name__). This is like the current working directory, and relative paths are resolved by following the chain. So from a module with `__name__` of `x.y.z`, `from ..y import w` resolves like `x/y/z/../y -> x.y`.
+Python first resolves all relative imports to absolute paths like `x.y.z`. Each module has a special `__name__` variable with the [fully-qualified name of the module](https://docs.python.org/3/reference/import.html#name__). This is like the current working directory, and relative paths are resolved by following the chain. So from a module with `__name__` of `x.y.z`, `from ..y import w` nresolves like `x/y/z/../y -> x.y`.
 
 **However**, Python treats the main script file specially, `foo.py` in `python foo.py`. In this file, `__name__ == "__main__"`, so relative imports can’t be resolved from the main module of a script. They trigger an error:
 
