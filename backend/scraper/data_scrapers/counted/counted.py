@@ -36,7 +36,6 @@ def append_dataframe(filtered_files):
         counted_data = pd.concat(content)
     return counted_data
 
-<<<<<<< HEAD
 # def convert_date(df):
 #     converted_date = df[['month','year']].apply(pd.to_datetime, format='%B/%y')
 #     breakpoint()
@@ -54,12 +53,10 @@ def convert_date(df):
 #     return df
 
 
-=======
 def convert_date(df):
     converted_date = df[['month','day','year']].apply(pd.to_datetime, format='m%/d%/%y')
     return converted_date
     
->>>>>>> ce7f0825cca167000cb8fcbaaddb54b13c74badb
 #convert colummns name to map to schema
 def col_conv():
     filtered_data = append_dataframe(filter_csv())
