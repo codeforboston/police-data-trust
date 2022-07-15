@@ -36,12 +36,7 @@ def append_dataframe(filtered_files):
         counted_data = pd.concat(content)
     return counted_data
 
-# def convert_date(df):
-#     converted_date = pd.to_datetime(df[['month','year','day']], format='%B/%y/%d')
-#     print(converted_date)
-#     breakpoint()
-#     return converted_date
-
+#Convert date to correct incident_date format
 def convert_date(df):
     month_map = {
         'January':1,
@@ -62,22 +57,10 @@ def convert_date(df):
         'month':df.month.apply(lambda x: month_map[x]),
         'year':df.year
     })
-    converted_dates = pd.to_datetime(dates, format='%B/%d/%Y')
+    converted_dates = pd.to_datetime(dates)
     df['incident_date'] = converted_dates
     print(df)
     return df
-
-
-#     dates = pd.DataFrame({
-#     'day':booking_date.day,
-#     'month':booking_date.month.apply(lambda x: month_map[x]),
-#     'year':booking_date.year
-# })
-# ts = pd.to_datetime(dates)
-#     converted_dates['incident_date'] = pd.to_datetime(converted_dates[['month','year','day']], format='%B/%y/%d')
-#     print(converted_dates)
-#     return converted_dates
-
 
     
 #convert colummns name to map to schema
@@ -90,7 +73,7 @@ def col_conv():
         "gender": "victim_gender",
         "raceethnicity": "victim_race",
         "age": "victim_age",
-        # "Date of Incident (month/day/year)": "incident_date",
+        "incident_date": "incident_date",
         "streetaddress": "address",
         "city": "city",
         "state": "state",
