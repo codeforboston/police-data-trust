@@ -30,6 +30,7 @@ services:
     depends_on:
       - db
     environment:
+      PYTHONPATH: /app
       POSTGRES_HOST: db
       FLASK_ENV: ${FLASK_ENV:-development}
       WAIT_HOSTS: db:5432
