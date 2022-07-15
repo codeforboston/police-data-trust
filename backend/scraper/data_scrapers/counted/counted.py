@@ -37,25 +37,48 @@ def append_dataframe(filtered_files):
     return counted_data
 
 # def convert_date(df):
-#     converted_date = df[['month','year']].apply(pd.to_datetime, format='%B/%y')
+#     converted_date = pd.to_datetime(df[['month','year','day']], format='%B/%y/%d')
+#     print(converted_date)
 #     breakpoint()
 #     return converted_date
 
 def convert_date(df):
-    converted_date = pd.to_datetime(df[['month','year','day']], format='%m/%y/%d')
-    print(converted_date)
-    breakpoint()
-    return converted_date
+    month_map = {
+        'January':1,
+        'February':2,
+        'March':3,
+        'April':4,
+        'May':5,
+        'June':6,
+        'July':7,
+        'August':8,
+        'September':9,
+        'October':10,
+        'November':11,
+        'December':12
+}
+    dates = pd.DataFrame({
+        'day':df.day,
+        'month':df.month.apply(lambda x: month_map[x]),
+        'year':df.year
+    })
+    converted_dates = pd.to_datetime(dates, format='%B/%d/%Y')
+    df['incident_date'] = converted_dates
+    print(df)
+    return df
 
-# def convert_date(df):
-#     df[['month','day','year']]
-#     breakpoint()
-#     return df
+
+#     dates = pd.DataFrame({
+#     'day':booking_date.day,
+#     'month':booking_date.month.apply(lambda x: month_map[x]),
+#     'year':booking_date.year
+# })
+# ts = pd.to_datetime(dates)
+#     converted_dates['incident_date'] = pd.to_datetime(converted_dates[['month','year','day']], format='%B/%y/%d')
+#     print(converted_dates)
+#     return converted_dates
 
 
-def convert_date(df):
-    converted_date = df[['month','day','year']].apply(pd.to_datetime, format='m%/d%/%y')
-    return converted_date
     
 #convert colummns name to map to schema
 def col_conv():
@@ -67,7 +90,7 @@ def col_conv():
         "gender": "victim_gender",
         "raceethnicity": "victim_race",
         "age": "victim_age",
-        "Date of Incident (month/day/year)": "incident_date",
+        # "Date of Incident (month/day/year)": "incident_date",
         "streetaddress": "address",
         "city": "city",
         "state": "state",
