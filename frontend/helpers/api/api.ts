@@ -54,7 +54,7 @@ export interface Incident {
   department?: string
   officers: Officer[]
   description?: string
-  use_of_force: UseOfForce[]
+  use_of_force?: UseOfForce[]
   source?: string
 }
 
