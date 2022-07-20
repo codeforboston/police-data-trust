@@ -1,6 +1,5 @@
 
 import math
-import pandas as pd
 from itertools import zip_longest
 from typing import List
 from collections import namedtuple
@@ -13,11 +12,14 @@ app = create_app("development")
 def map_cols(df, m: dict):
     return df[list(m.keys())].rename(columns=m)
 
+
 def isnan(x):
     return isinstance(x, float) and math.isnan(x)  
 
+
 def nan_to_none(x):
     return None if isnan(x) else x
+
 
 def strip_nan(r):
     return r._make([nan_to_none(e) for e in r])
@@ -95,10 +97,8 @@ def drop_existing_records(dataset, source):
         existing_source_ids = list(
             s
             for (s,) in db.session.query(md.Incident.source_id).filter(
-                md.Incident.source == source, md.Incident.source_id != None
+                md.Incident.source == source, md.Incident.source_id is not None
             )
         )
     return dataset.drop(existing_source_ids)
-
-
     
