@@ -14,8 +14,7 @@ export default requireAuth(function OfficerPage() {
         <OfficerView {...officer} />
       </Layout>
     )
-  }
-  else {
+  } else {
     return (
       <Layout>
         <p>Loading...</p>

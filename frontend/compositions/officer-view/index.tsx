@@ -8,15 +8,15 @@ import { resultsColumns } from "../search-results/search-results"
 import { EXISTING_TEST_INCIDENTS } from "../../helpers/api/mocks/data"
 
 export default function OfficerView(officer: OfficerRecordType) {
-    return (
-            <>
-              <OfficerHeader {...officer} />
-              <hr />
-              <OptionalOfficerInfo {...officer} />
-              <hr />
-              <OfficerWorkHistory {...officer} />
-        <OfficerAffiliations {...officer} />
-        <DataTable tableName='Mock Table' columns={resultsColumns} data={EXISTING_TEST_INCIDENTS} />
-            </>
-          )
+  return (
+    <>
+      <OfficerHeader {...officer} />
+      <hr />
+      <OptionalOfficerInfo {...officer} />
+      <hr />
+      <OfficerWorkHistory {...officer} />
+      <OfficerAffiliations {...officer} />
+      {/* TODO: <DataTable tableName='Mock Table' columns={resultsColumns} data={EXISTING_TEST_INCIDENTS} /> */}
+    </>
+  )
 }

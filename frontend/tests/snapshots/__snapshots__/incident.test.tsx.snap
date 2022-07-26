@@ -1,0 +1,372 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Incident Page Renders the incident page correctly 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        class="wrapper"
+      >
+        <div
+          class="idAndStop"
+        >
+          <strong>
+            0
+          </strong>
+          <p
+            class="stopType"
+          >
+            Traffic Stop
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Date
+          </p>
+          <p>
+            Tue Mar 01 2022
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Time
+          </p>
+          <p>
+            00:00:00 GMT-0800 (Pacific Standard Time)
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Location
+          </p>
+          <p />
+        </div>
+      </div>
+      <div
+        class="bodyWrapper"
+      >
+        <div
+          class="map"
+          id="map"
+        />
+        <div
+          class="wrapper"
+        >
+          <div
+            class="dataBlock"
+          >
+            <p
+              class="category"
+            >
+              Summary:
+            </p>
+            <p
+              class="data"
+            >
+              Officer issued motorist ticket, use of excessive force resulted in civilian injury.
+            </p>
+          </div>
+          <div
+            class="dataBlock"
+          >
+            <p
+              class="category"
+            >
+              Departments Involved:
+            </p>
+            <div>
+              <p
+                class="data"
+              >
+                Houston Police Department
+              </p>
+              <p
+                class="data"
+              >
+                Pheonix Police Department
+              </p>
+            </div>
+          </div>
+          <div
+            class="dataBlock"
+          >
+            <p
+              class="category"
+            >
+              Officers Involved:
+            </p>
+            <div>
+              <div
+                class="officerDisplay"
+              >
+                <div
+                  class="officerColumn"
+                >
+                  <p
+                    class="category"
+                  >
+                    Officer Name
+                  </p>
+                  <p
+                    class="data"
+                  >
+                    Timothy
+                     
+                    Young
+                  </p>
+                  <p
+                    class="data"
+                  >
+                    Ruby
+                     
+                    Recalde
+                  </p>
+                </div>
+                <div
+                  class="officerColumn"
+                >
+                  <p
+                    class="category"
+                  >
+                    Badge No.
+                  </p>
+                  <p
+                    class="data"
+                  >
+                    30420452
+                  </p>
+                  <p
+                    class="data"
+                  >
+                    444755448
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="wrapper"
+    >
+      <div
+        class="idAndStop"
+      >
+        <strong>
+          0
+        </strong>
+        <p
+          class="stopType"
+        >
+          Traffic Stop
+        </p>
+      </div>
+      <div
+        class="data"
+      >
+        <p
+          class="category"
+        >
+          Date
+        </p>
+        <p>
+          Tue Mar 01 2022
+        </p>
+      </div>
+      <div
+        class="data"
+      >
+        <p
+          class="category"
+        >
+          Time
+        </p>
+        <p>
+          00:00:00 GMT-0800 (Pacific Standard Time)
+        </p>
+      </div>
+      <div
+        class="data"
+      >
+        <p
+          class="category"
+        >
+          Location
+        </p>
+        <p />
+      </div>
+    </div>
+    <div
+      class="bodyWrapper"
+    >
+      <div
+        class="map"
+        id="map"
+      />
+      <div
+        class="wrapper"
+      >
+        <div
+          class="dataBlock"
+        >
+          <p
+            class="category"
+          >
+            Summary:
+          </p>
+          <p
+            class="data"
+          >
+            Officer issued motorist ticket, use of excessive force resulted in civilian injury.
+          </p>
+        </div>
+        <div
+          class="dataBlock"
+        >
+          <p
+            class="category"
+          >
+            Departments Involved:
+          </p>
+          <div>
+            <p
+              class="data"
+            >
+              Houston Police Department
+            </p>
+            <p
+              class="data"
+            >
+              Pheonix Police Department
+            </p>
+          </div>
+        </div>
+        <div
+          class="dataBlock"
+        >
+          <p
+            class="category"
+          >
+            Officers Involved:
+          </p>
+          <div>
+            <div
+              class="officerDisplay"
+            >
+              <div
+                class="officerColumn"
+              >
+                <p
+                  class="category"
+                >
+                  Officer Name
+                </p>
+                <p
+                  class="data"
+                >
+                  Timothy
+                   
+                  Young
+                </p>
+                <p
+                  class="data"
+                >
+                  Ruby
+                   
+                  Recalde
+                </p>
+              </div>
+              <div
+                class="officerColumn"
+              >
+                <p
+                  class="category"
+                >
+                  Badge No.
+                </p>
+                <p
+                  class="data"
+                >
+                  30420452
+                </p>
+                <p
+                  class="data"
+                >
+                  444755448
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
