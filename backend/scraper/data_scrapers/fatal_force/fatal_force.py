@@ -4,11 +4,14 @@ from collections import namedtuple
 import backend.database as md
 from ..scraper_utils import create_bulk, map_cols, map_df, drop_existing_records
 
+
 def get_data():
     dataset = FF_Client()
     r = dataset.run()
     df = pd.read_csv(r.content, dtype={"uid": str}, index_col=None)
+    breakpoint()
     return df
+
 
 def fatal_cols():
     dataset = map_cols(get_data(), 
@@ -27,6 +30,7 @@ def fatal_cols():
     dataset = dataset[~dataset.index.duplicated(keep='first')]
     dataset = drop_existing_records(dataset, 'fatal_force')
     return dataset
+
 
 def create_FF_orm(r: namedtuple, source):
     victim = md.Victim(
