@@ -102,7 +102,14 @@ def create_counted_orm(r: namedtuple):
         time_of_incident=r.incident_date, 
         department=r.department,
         victims=[victim],
+        source=[source],
         location=f"{r.address} {r.city} {r.state}"
+    )
+    source = md.Source(
+        id = r.source_id,
+        publication_name = 'test',
+        publication_date = 'test',
+        author = 'test',
     )
     return incident
 
