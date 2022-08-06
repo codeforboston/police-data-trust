@@ -107,9 +107,10 @@ def create_counted_orm(r: namedtuple):
     )
     source = md.Source(
         id = r.source_id,
-        publication_name = 'test',
+        publication_name = 'The Guardian',
         publication_date = 'test',
         author = 'test',
+        URL = 'http://www.theguardian.com/thecounted'
     )
     return incident
 

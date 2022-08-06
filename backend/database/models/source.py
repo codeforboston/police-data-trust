@@ -1,10 +1,9 @@
 from ..core import db
 
 class Source(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    publication_name = db.column(db.text)
-    publication_date = db.column(db.date)
-    author = db.column(db.text)
-    URL = db.column(db.text)
-    incidents = db.relationship("incident", backref = "source")
+    id = db.Column(db.Text, primary_key=True)
+    publication_name = db.Column(db.Text)
+    publication_date = db.Column(db.Date)
+    author = db.Column(db.Text)
+    URL = db.Column(db.Text)
     
