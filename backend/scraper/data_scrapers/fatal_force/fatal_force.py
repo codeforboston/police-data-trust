@@ -4,15 +4,16 @@ from collections import namedtuple
 import backend.database as md
 from backend.scraper.data_scrapers.scraper_utils import create_bulk, map_cols, map_df, drop_existing_records
 
-
+# extract csv from URL and convert to dataframe
 def get_data():
     dataset = FF_Client()
     r = dataset.run()
-    df = pd.read_csv(r.content, dtype={"uid": str}, index_col=None)
-    breakpoint()
+    temp_csv = 'backend/scraper/data_scrapers/fatal_force/scraper_data/temp.csv'
+    open(temp_csv, 'wb').write(r.content)
+    df = pd.read_csv(temp_csv, dtype={"uid": str}, index_col=None)
     return df
 
-
+# map data in csv to columns contained in models
 def fatal_cols():
     dataset = map_cols(get_data(), 
     {
@@ -31,7 +32,7 @@ def fatal_cols():
     dataset = drop_existing_records(dataset, 'fatal_force')
     return dataset
 
-
+breakpoint()
 def create_FF_orm(r: namedtuple, source):
     victim = md.Victim(
         name=r.victim_name,
@@ -39,17 +40,24 @@ def create_FF_orm(r: namedtuple, source):
         gender=r.victim_gender,
         deceased=True,
     )
-    officers = parse_officers(r)
-    accusations = parse_accusations(r, officers)
+
     incident = md.Incident(
         source_id=r.source_id, 
         source=source,
         time_of_incident=r.incident_date,
-        location=location(r),
         description=r.description,
         department=r.department,
         victims=[victim],
-        officers=officers,
-        accusations=accusations,
+        
     )
+
     return incident
+
+
+def create_incidents(data):
+    incidents = map_df(data, create_FF_orm)
+    return incidents
+
+
+def append_to_index(incidents):
+    create_bulk(incidents)
