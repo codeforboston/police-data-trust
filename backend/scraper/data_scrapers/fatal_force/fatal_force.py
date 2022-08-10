@@ -53,6 +53,16 @@ def create_FF_orm(r: namedtuple, source):
 
     return incident
 
+def create_source():
+    source = md.Source(
+        id = 'Fatal_Force',
+        publication_name = 'Fatal Force',
+        publication_date = '05/22/2022',
+        author = 'test',
+        URL = 'https://github.com/washingtonpost/data-police-shootings/releases/download/v0.1/fatal-police-shootings-data.csv'
+    )
+    return source
+
 
 def create_incidents(data):
     incidents = map_df(data, create_FF_orm)
