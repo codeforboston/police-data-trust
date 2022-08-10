@@ -107,4 +107,3 @@ def drop_existing_records(dataset, source):
             )
         )
     return dataset.drop(existing_source_ids)
-    
