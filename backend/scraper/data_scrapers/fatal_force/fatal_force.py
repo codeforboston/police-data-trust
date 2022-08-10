@@ -2,7 +2,7 @@ import pandas as pd
 from client import FF_Client
 from collections import namedtuple
 import backend.database as md
-from ..scraper_utils import create_bulk, map_cols, map_df, drop_existing_records
+from backend.scraper.data_scrapers.scraper_utils import create_bulk, map_cols, map_df, drop_existing_records
 
 
 def get_data():
