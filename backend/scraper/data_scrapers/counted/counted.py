@@ -112,7 +112,7 @@ def create_source():
     source = md.Source(
         id = 'counted',
         publication_name = 'The Guardian',
-        publication_date = '05/22/2022',
+        publication_date = '06/1/2015',
         author = 'test',
         URL = 'https://interactive.guim.co.uk/2015/the-counted/thecounted-data.zip'
     )
@@ -125,5 +125,4 @@ def create_incidents(data):
 
 
 def append_to_index(incidents):
-    create_bulk(incidents)
-    
+    create_bulk(incidents)   
