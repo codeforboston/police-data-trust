@@ -38,18 +38,6 @@ Object {
           <p
             class="category"
           >
-            Time
-          </p>
-          <p>
-            00:00:00 GMT-0800 (Pacific Standard Time)
-          </p>
-        </div>
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
             Location
           </p>
           <p />
@@ -187,18 +175,6 @@ Object {
         </p>
         <p>
           Tue Mar 01 2022
-        </p>
-      </div>
-      <div
-        class="data"
-      >
-        <p
-          class="category"
-        >
-          Time
-        </p>
-        <p>
-          00:00:00 GMT-0800 (Pacific Standard Time)
         </p>
       </div>
       <div
