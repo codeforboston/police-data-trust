@@ -104,6 +104,8 @@ ENV/
 env.bak/
 venv.bak/
 .python-version
+.devcontainer
+.pdt
 
 # mkdocs documentation
 /site
@@ -117,4 +119,5 @@ dmypy.json
 /node_modules
 
 # Data scraper
-/chicago-police-data
+/backend/scraper/data_scrapers/notebooks/chicago-police-data
+/backend/scraper/data_scrapers/counted/scraper_data
