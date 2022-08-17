@@ -10,7 +10,6 @@ export default function IncidentViewHeader(incident: IncidentRecordType) {
   const [lng, lat] = locationLonLat
 
   const date = new Date(time_of_incident).toDateString()
-  const time = new Date(time_of_incident).toTimeString()
 
   const displayLocation = useRef(null)
 
@@ -45,10 +44,6 @@ export default function IncidentViewHeader(incident: IncidentRecordType) {
       <div className={data}>
         <p className={category}>Date</p>
         <p>{date}</p>
-      </div>
-      <div className={data}>
-        <p className={category}>Time</p>
-        <p>{time}</p>
       </div>
       <div className={data}>
         <p className={category}>Location</p>

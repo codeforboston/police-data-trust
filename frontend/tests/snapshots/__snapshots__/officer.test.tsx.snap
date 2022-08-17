@@ -1,0 +1,478 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Officer Page Renders the officer page correctly 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div>
+        <h3>
+          Officer Record
+        </h3>
+        <div
+          class="viewWrapper"
+        >
+          <div
+            class="titleAndName"
+          >
+            <p
+              class="name"
+            >
+              Timothy
+               
+              Young
+            </p>
+          </div>
+          <div
+            class="otherData"
+          >
+            <p
+              class="category"
+            >
+              Badge Number
+            </p>
+            <p>
+              30420452
+            </p>
+          </div>
+          <div
+            class="otherData"
+          >
+            <p
+              class="category"
+            >
+              Officer Status
+            </p>
+            <p>
+              Chief
+            </p>
+          </div>
+          <div
+            class="otherData"
+          >
+            <p
+              class="category"
+            >
+              Department
+            </p>
+            <p>
+              Houston Police Department
+            </p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div>
+        <div
+          class="viewWrapper"
+        >
+          <div
+            class="data"
+          >
+            <p
+              class="category"
+            >
+              Date of Birth
+            </p>
+            <p>
+              12/15/1976
+            </p>
+          </div>
+          <div
+            class="data"
+          >
+            <p
+              class="category"
+            >
+              Gender
+            </p>
+            <p>
+              Nonbinary
+            </p>
+          </div>
+          <div
+            class="data"
+          >
+            <p
+              class="category"
+            >
+              Race
+            </p>
+            <p>
+              Black or African American
+            </p>
+          </div>
+          <div
+            class="data"
+          >
+            <p
+              class="category"
+            >
+              Ethnicity
+            </p>
+            <p>
+              Hispanic or Latino
+            </p>
+          </div>
+          <div
+            class="data"
+          >
+            <p
+              class="category"
+            >
+              Income Bracket
+            </p>
+            <p>
+              Over $523,600
+            </p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div
+        class="wrapper"
+      >
+        <div
+          class="category"
+        >
+          <p>
+            Work History Summary:
+          </p>
+        </div>
+        <div>
+          <div
+            class="wrapper"
+          >
+            <img
+              alt="San Jose Police Department Patch"
+              class="patch"
+              src="/Boston_Police_Patch.jpg"
+            />
+            <div>
+              <p>
+                Captain
+                <span
+                  class="dates"
+                >
+                  8/7/2014
+                   - 
+                  10/15/2001
+                </span>
+              </p>
+              <a
+                href="https://www.google.com/search?q=police+department"
+              >
+                San Jose Police Department
+              </a>
+              <p>
+                (123) 456-7890 * 
+                1191 Elm Ave, Houston, KY 93452
+              </p>
+            </div>
+          </div>
+          <div
+            class="wrapper"
+          >
+            <img
+              alt="Pheonix Police Department Patch"
+              class="patch"
+              src="/San_Jose_Police_Patch.png"
+            />
+            <div>
+              <p>
+                Sergeant
+                <span
+                  class="dates"
+                >
+                  3/7/1999
+                   - 
+                  4/10/2007
+                </span>
+              </p>
+              <a
+                href="https://www.google.com/search?q=police+department"
+              >
+                Pheonix Police Department
+              </a>
+              <p>
+                (123) 456-7890 * 
+                10435 Lemon Ln, San Diego, MN 58574
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="wrapper"
+      >
+        <p>
+          Professional Affiliations: 
+        </p>
+        <p>
+          Fraternal Order of Police, International Union of Police Associations, National Association of Police Organizations
+        </p>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div>
+      <h3>
+        Officer Record
+      </h3>
+      <div
+        class="viewWrapper"
+      >
+        <div
+          class="titleAndName"
+        >
+          <p
+            class="name"
+          >
+            Timothy
+             
+            Young
+          </p>
+        </div>
+        <div
+          class="otherData"
+        >
+          <p
+            class="category"
+          >
+            Badge Number
+          </p>
+          <p>
+            30420452
+          </p>
+        </div>
+        <div
+          class="otherData"
+        >
+          <p
+            class="category"
+          >
+            Officer Status
+          </p>
+          <p>
+            Chief
+          </p>
+        </div>
+        <div
+          class="otherData"
+        >
+          <p
+            class="category"
+          >
+            Department
+          </p>
+          <p>
+            Houston Police Department
+          </p>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div>
+      <div
+        class="viewWrapper"
+      >
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Date of Birth
+          </p>
+          <p>
+            12/15/1976
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Gender
+          </p>
+          <p>
+            Nonbinary
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Race
+          </p>
+          <p>
+            Black or African American
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Ethnicity
+          </p>
+          <p>
+            Hispanic or Latino
+          </p>
+        </div>
+        <div
+          class="data"
+        >
+          <p
+            class="category"
+          >
+            Income Bracket
+          </p>
+          <p>
+            Over $523,600
+          </p>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div
+      class="wrapper"
+    >
+      <div
+        class="category"
+      >
+        <p>
+          Work History Summary:
+        </p>
+      </div>
+      <div>
+        <div
+          class="wrapper"
+        >
+          <img
+            alt="San Jose Police Department Patch"
+            class="patch"
+            src="/Boston_Police_Patch.jpg"
+          />
+          <div>
+            <p>
+              Captain
+              <span
+                class="dates"
+              >
+                8/7/2014
+                 - 
+                10/15/2001
+              </span>
+            </p>
+            <a
+              href="https://www.google.com/search?q=police+department"
+            >
+              San Jose Police Department
+            </a>
+            <p>
+              (123) 456-7890 * 
+              1191 Elm Ave, Houston, KY 93452
+            </p>
+          </div>
+        </div>
+        <div
+          class="wrapper"
+        >
+          <img
+            alt="Pheonix Police Department Patch"
+            class="patch"
+            src="/San_Jose_Police_Patch.png"
+          />
+          <div>
+            <p>
+              Sergeant
+              <span
+                class="dates"
+              >
+                3/7/1999
+                 - 
+                4/10/2007
+              </span>
+            </p>
+            <a
+              href="https://www.google.com/search?q=police+department"
+            >
+              Pheonix Police Department
+            </a>
+            <p>
+              (123) 456-7890 * 
+              10435 Lemon Ln, San Diego, MN 58574
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="wrapper"
+    >
+      <p>
+        Professional Affiliations: 
+      </p>
+      <p>
+        Fraternal Order of Police, International Union of Police Associations, National Association of Police Organizations
+      </p>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
