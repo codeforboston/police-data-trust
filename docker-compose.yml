@@ -2,7 +2,6 @@ version: "3"
 services:
   db:
     image: postgres:13.2 #AWS RDS latest version
-    restart: always
     env_file:
       - ".env"
     volumes:
@@ -11,7 +10,6 @@ services:
     ports:
       - 5432:5432
   web:
-    restart: always
     build:
       context: ./frontend
     volumes:
@@ -24,7 +22,6 @@ services:
     ports:
       - 3000:3000
   api:
-    restart: always
     build:
       context: .
       dockerfile: ./backend/Dockerfile
@@ -33,6 +30,7 @@ services:
     depends_on:
       - db
     environment:
+      PYTHONPATH: /app
       POSTGRES_HOST: db
       FLASK_ENV: ${FLASK_ENV:-development}
       WAIT_HOSTS: db:5432

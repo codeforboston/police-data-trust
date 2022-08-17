@@ -13,3 +13,4 @@ CONTRIBUTING.md
 heroku.yml
 **/__pycache__
 chicago-police-data
+excel_outputs
