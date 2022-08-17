@@ -5,11 +5,6 @@ import { useRouter } from "next/router"
 
 export default requireAuth(function () {
   const router = useRouter()
-  try {
-    const id = parseInt(String(router.query.id))
-    const incident = getIncident(id)
-    return <IncidentView {...incident} />
-  } catch (e) {
-    return null
-  }
+  const id = parseInt(String(router.query.id))
+  return isNaN(id) ? <p>Loading...</p> : <IncidentView {...getIncident(id)} />
 })

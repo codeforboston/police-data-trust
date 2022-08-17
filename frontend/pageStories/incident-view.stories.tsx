@@ -1,5 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import IncidentView from "../pages/incident-view/[id]"
+import IncidentView from "../pages/incident/[id]"
 
 export default {
   title: "Pages/IncidentView",
