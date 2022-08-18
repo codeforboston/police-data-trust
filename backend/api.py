@@ -80,10 +80,12 @@ def register_commands(app: Flask):
         This is a handy way to populate the database to start with publicly
         available data.
         """
-        from backend.scraper.data_scrapers.scrape_data_sources \
-             import make_all_tables
-        from backend.scraper.data_scrapers.load_full_database \
-             import load_full_database
+        from backend.scraper.data_scrapers.scrape_data_sources import (
+            make_all_tables,
+        )
+        from backend.scraper.data_scrapers.load_full_database import (
+            load_full_database,
+        )
 
         make_all_tables()
         load_full_database()
