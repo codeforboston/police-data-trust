@@ -156,6 +156,14 @@ export function searchIncidents({
   })
 }
 
+export async function getIncidentById(id: number, accessToken: string): Promise<Incident> {
+  return request({
+    url: `/incidents/get/${id}`,
+    method: "GET",
+    accessToken
+  })
+}
+
 function request({ accessToken, ...config }: AxiosRequestConfig & { accessToken?: AccessToken }) {
   let { headers, ...rest } = config
   if (accessToken) {

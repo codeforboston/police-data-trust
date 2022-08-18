@@ -1,8 +1,8 @@
 import IncidentViewHeader from "./incident-view-header"
 import IncidentBody from "./incident-view-body"
-import type { IncidentRecordType } from "../../models"
+import type { Incident } from "../../helpers/api"
 
-export default function IncidentView(incident: IncidentRecordType) {
+export default function IncidentView(incident: Incident) {
   return (
     <>
       <IncidentViewHeader {...incident} />
