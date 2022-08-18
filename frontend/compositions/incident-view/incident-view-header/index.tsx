@@ -4,9 +4,8 @@ import type { Incident } from "../../../helpers/api"
 import styles from "./incident-view-header.module.css"
 
 export default function IncidentViewHeader(incident: Incident) {
-  const { id, /* stop_type ,*/ time_of_incident, locationLonLat } = incident
+  const { id, /* stop_type ,*/ time_of_incident, latitude, longitude } = incident
   const { wrapper, idAndStop, data, category, stopType } = styles
-  const [lng, lat] = locationLonLat
 
   const date = new Date(time_of_incident).toDateString()
 
@@ -20,7 +19,7 @@ export default function IncidentViewHeader(incident: Incident) {
 
     loader.load().then(() => {
       const geocoder = new google.maps.Geocoder()
-      const mapLocation = { lat: lat, lng: lng }
+      const mapLocation = { lat: latitude, lng: longitude }
 
       geocoder
         .geocode({

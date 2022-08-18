@@ -49,7 +49,9 @@ export interface UseOfForce {
 export interface Incident {
   id: number
   location?: string
-  locationLonLat?: [number, number]
+  locationLonLat?: [number, number] //TODO: Backend data does not return locationLonLat attribute. Remove this and refactor frontend
+  latitude?: number
+  longitude?: number
   time_of_incident?: string
   department?: string
   officers: Officer[]

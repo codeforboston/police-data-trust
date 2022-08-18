@@ -2,23 +2,19 @@ import { requireAuth, useAuth } from "../../helpers"
 import IncidentView from "../../compositions/incident-view"
 import { useRouter } from "next/router"
 import type { Incident } from "../../helpers/api"
-import { useState } from "@storybook/addons"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { getIncidentById } from "../../helpers/api"
 
-export default requireAuth(function () {
+export default requireAuth(function IncidentDetailsView() {
   const [incident, setIncident] = useState<Incident>(undefined)
   const router = useRouter()
   const id = parseInt(String(router.query.id))
   const { accessToken } = useAuth()
 
   useEffect(() => {
-    const getIncident = async () => {
-      setIncident(await getIncidentById(id, accessToken))
-    }
-
-    getIncident()
+    if (isNaN(id)) return
+    getIncidentById(id, accessToken).then((i) => setIncident(i))
   }, [id, accessToken])
 
-  return isNaN(id) ? <p>Loading...</p> : <IncidentView {...incident} />
+  return incident ? <IncidentView {...incident} /> : <p>Loading...</p>
 })

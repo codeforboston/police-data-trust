@@ -8,7 +8,8 @@ describe("Incident Page", () => {
     const sampleIncident: Incident = {
       id: 0,
       time_of_incident: "March 1, 2022",
-      locationLonLat: [-71.0589, 42.3601] as [number, number],
+      longitude: -71.0589,
+      latitude: 42.3601,
       description:
         "Officer issued motorist ticket, use of excessive force resulted in civilian injury.",
       officers: [

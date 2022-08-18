@@ -4,9 +4,7 @@ import type { Incident } from "../../../../helpers/api"
 import styles from "./map.module.css"
 
 export default function OverheadMap(incident: Incident) {
-  const [lng, lat] = incident.locationLonLat
-
-  const location = { lat: lat, lng: lng }
+  const location = { lat: incident.latitude, lng: incident.longitude }
   const googleMap = useRef(null)
 
   useEffect(() => {
