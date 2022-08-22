@@ -78,7 +78,11 @@ export const resultsColumns: Column<any>[] = [
   {
     Header: "Full",
     accessor: "full",
-    Cell: () => <GreaterThanButton title={"Full"} onclick={() => console.log("clicked")} />,
+    Cell: (e) => (
+      <a href={`/incident/${e.row.values.id}`}>
+        <GreaterThanButton title={"Full"} onclick={() => console.log(e.row.values.id)} />
+      </a>
+    ),
     id: "full"
   },
   {
