@@ -1,0 +1,11 @@
+version: "3"
+services:
+  api:
+    command: bash -c '/wait && flask psql create && flask psql init && jupyter notebook --allow-root --ip=0.0.0.0 --port=8889'
+    ports:
+      - 8889:8889
+    environment:
+      PYTHONPATH: /app
+
+volumes:
+  postgres: {}
