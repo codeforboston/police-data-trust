@@ -1,0 +1,29 @@
+.wrapper {
+  flex: 1;
+}
+
+.dataBlock {
+  margin: var(--size16);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.category {
+  justify-content: right;
+  margin: var(--size16);
+  font-size: var(--size12);
+  color: var(--grey);
+}
+
+.data {
+  margin: var(--size16);
+}
+
+.officerDisplay {
+  border-style: solid;
+  display: flex;
+}
+
+.officerColumn {
+  flex: 1;
+}

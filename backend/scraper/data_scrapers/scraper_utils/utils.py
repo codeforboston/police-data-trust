@@ -1,4 +1,3 @@
-
 import math
 from itertools import zip_longest
 from typing import List
@@ -6,7 +5,8 @@ from collections import namedtuple
 import backend.database as md
 from backend.database import db
 from backend.api import create_app
-app = create_app("development")   
+
+app = create_app("development")
 
 
 def map_cols(df, m: dict):
@@ -14,7 +14,7 @@ def map_cols(df, m: dict):
 
 
 def isnan(x):
-    return isinstance(x, float) and math.isnan(x)  
+    return isinstance(x, float) and math.isnan(x)
 
 
 def nan_to_none(x):
@@ -34,7 +34,7 @@ def parse_int(value):
         return int(value)
     except ValueError:
         return None
-        
+
 
 def location(r: namedtuple):
     return " ".join(filter(None, [r.address, r.city, r.state, r.zip]))
@@ -72,7 +72,7 @@ def create_orm(r: namedtuple, source):
     officers = parse_officers(r)
     accusations = parse_accusations(r, officers)
     incident = md.Incident(
-        source_id=r.source_id, 
+        source_id=r.source_id,
         source=source,
         time_of_incident=r.incident_date,
         location=location(r),
@@ -83,6 +83,7 @@ def create_orm(r: namedtuple, source):
         accusations=accusations,
     )
     return incident
+
 
 def create_bulk(instances, chunk_size=1000):
     """Inserts ORM instances into the database"""
@@ -106,4 +107,5 @@ def drop_existing_records(dataset, source):
                 md.Incident.source == source, md.Incident.source_id is not None
             )
         )
+<<<<<<< HEAD
     return dataset.drop(existing_source_ids)

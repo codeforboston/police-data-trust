@@ -11,8 +11,10 @@ def verify_roles_or_abort(min_role):
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
-    if current_user is None or\
-            current_user.role.get_value() < min_role[0].get_value():
+    if (
+        current_user is None
+        or current_user.role.get_value() < min_role[0].get_value()
+    ):
         abort(403)
         return False
     return True
