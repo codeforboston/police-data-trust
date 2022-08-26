@@ -1,6 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import IncidentData from "."
-import sampleIncident from "../../../../helpers/incident"
 
 export default {
   title: "Compositions/Incident View Components/Incident Body/IncidentData"
@@ -9,4 +8,3 @@ export default {
 const Template: ComponentStory<typeof IncidentData> = (args) => <IncidentData {...args} />
 
 export const Blank = Template.bind({})
-Blank.args = sampleIncident(1)

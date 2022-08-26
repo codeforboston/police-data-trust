@@ -49,7 +49,9 @@ export interface UseOfForce {
 export interface Incident {
   id: number
   location?: string
-  locationLonLat?: [number, number]
+  locationLonLat?: [number, number] //TODO: Backend data does not return locationLonLat attribute. Remove this and refactor frontend
+  latitude?: number
+  longitude?: number
   time_of_incident?: string
   department?: string
   officers: Officer[]
@@ -153,6 +155,14 @@ export function searchIncidents({
     method: "POST",
     accessToken,
     data: { startTime, endTime, ...rest }
+  })
+}
+
+export async function getIncidentById(id: number, accessToken: string): Promise<Incident> {
+  return request({
+    url: `/incidents/get/${id}`,
+    method: "GET",
+    accessToken
   })
 }
 
