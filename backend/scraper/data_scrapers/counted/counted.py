@@ -113,7 +113,7 @@ def create_source():
         id = 'counted',
         publication_name = 'The Guardian',
         publication_date = '06/1/2015',
-        author = 'test',
+        author = 'Jon Swaine, Oliver Laughland, Jamiles Lartey, Ciara McCarthy',
         URL = 'https://interactive.guim.co.uk/2015/the-counted/thecounted-data.zip'
     )
     return source
