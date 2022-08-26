@@ -10,11 +10,11 @@ bp = Blueprint("healthcheck", __name__, url_prefix="/api/v1")
 
 def check_db():
     is_database_working = False
-    output = ''
+    output = ""
 
     try:
         # to check database we will execute raw query
-        db.session.execute('SELECT 1')
+        db.session.execute("SELECT 1")
         is_database_working = True
     except Exception as e:
         output = str(e)
