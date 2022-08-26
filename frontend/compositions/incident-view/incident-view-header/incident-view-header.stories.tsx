@@ -1,6 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import IncidentViewHeader from "."
-import sampleIncident from "../../../helpers/incident"
 
 export default {
   title: "Compositions/Incident View Components/IncidentHeader"
@@ -11,4 +10,3 @@ const Template: ComponentStory<typeof IncidentViewHeader> = (args) => (
 )
 
 export const Blank = Template.bind({})
-Blank.args = sampleIncident(1)

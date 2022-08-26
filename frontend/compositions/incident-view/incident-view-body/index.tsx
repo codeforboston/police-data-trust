@@ -1,9 +1,9 @@
 import IncidentData from "./incident-data"
 import Map from "./incident-google-map"
-import { IncidentRecordType } from "../../../models"
+import type { Incident } from "../../../helpers/api"
 import styles from "./incident-body.module.css"
 
-export default function IncidentBody(incident: IncidentRecordType) {
+export default function IncidentBody(incident: Incident) {
   const { bodyWrapper } = styles
   return (
     <div className={bodyWrapper}>

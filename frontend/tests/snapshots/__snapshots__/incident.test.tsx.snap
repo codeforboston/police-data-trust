@@ -14,11 +14,6 @@ Object {
           <strong>
             0
           </strong>
-          <p
-            class="stopType"
-          >
-            Traffic Stop
-          </p>
         </div>
         <div
           class="data"
@@ -75,18 +70,6 @@ Object {
             >
               Departments Involved:
             </p>
-            <div>
-              <p
-                class="data"
-              >
-                Houston Police Department
-              </p>
-              <p
-                class="data"
-              >
-                Pheonix Police Department
-              </p>
-            </div>
           </div>
           <div
             class="dataBlock"
@@ -96,54 +79,6 @@ Object {
             >
               Officers Involved:
             </p>
-            <div>
-              <div
-                class="officerDisplay"
-              >
-                <div
-                  class="officerColumn"
-                >
-                  <p
-                    class="category"
-                  >
-                    Officer Name
-                  </p>
-                  <p
-                    class="data"
-                  >
-                    Timothy
-                     
-                    Young
-                  </p>
-                  <p
-                    class="data"
-                  >
-                    Ruby
-                     
-                    Recalde
-                  </p>
-                </div>
-                <div
-                  class="officerColumn"
-                >
-                  <p
-                    class="category"
-                  >
-                    Badge No.
-                  </p>
-                  <p
-                    class="data"
-                  >
-                    30420452
-                  </p>
-                  <p
-                    class="data"
-                  >
-                    444755448
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -159,11 +94,6 @@ Object {
         <strong>
           0
         </strong>
-        <p
-          class="stopType"
-        >
-          Traffic Stop
-        </p>
       </div>
       <div
         class="data"
@@ -220,18 +150,6 @@ Object {
           >
             Departments Involved:
           </p>
-          <div>
-            <p
-              class="data"
-            >
-              Houston Police Department
-            </p>
-            <p
-              class="data"
-            >
-              Pheonix Police Department
-            </p>
-          </div>
         </div>
         <div
           class="dataBlock"
@@ -241,54 +159,6 @@ Object {
           >
             Officers Involved:
           </p>
-          <div>
-            <div
-              class="officerDisplay"
-            >
-              <div
-                class="officerColumn"
-              >
-                <p
-                  class="category"
-                >
-                  Officer Name
-                </p>
-                <p
-                  class="data"
-                >
-                  Timothy
-                   
-                  Young
-                </p>
-                <p
-                  class="data"
-                >
-                  Ruby
-                   
-                  Recalde
-                </p>
-              </div>
-              <div
-                class="officerColumn"
-              >
-                <p
-                  class="category"
-                >
-                  Badge No.
-                </p>
-                <p
-                  class="data"
-                >
-                  30420452
-                </p>
-                <p
-                  class="data"
-                >
-                  444755448
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
