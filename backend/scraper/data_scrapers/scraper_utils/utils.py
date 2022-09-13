@@ -107,5 +107,4 @@ def drop_existing_records(dataset, source):
                 md.Incident.source == source, md.Incident.source_id is not None
             )
         )
-<<<<<<< HEAD
     return dataset.drop(existing_source_ids)
