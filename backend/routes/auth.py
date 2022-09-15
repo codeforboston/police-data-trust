@@ -136,10 +136,10 @@ def logout():
 
 
 @bp.route("/whoami", methods=["GET"])
+@cross_origin()
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate()
-@cross_origin()
 def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
