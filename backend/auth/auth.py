@@ -1,4 +1,4 @@
-from ..database import db, User
+from database import db, User
 from flask_user import SQLAlchemyAdapter
 from flask_user import UserManager
 from datetime import timezone, datetime

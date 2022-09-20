@@ -1,6 +1,6 @@
 import enum
 
-from backend.database.core import SourceMixin
+from database.core import SourceMixin
 
 from .. import db
 

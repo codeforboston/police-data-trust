@@ -2,9 +2,9 @@ import math
 from itertools import zip_longest
 from typing import List
 from collections import namedtuple
-import backend.database as md
-from backend.database import db
-from backend.api import create_app
+import database as md
+from database import db
+from api import create_app
 
 app = create_app("development")
 

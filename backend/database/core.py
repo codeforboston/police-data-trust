@@ -20,8 +20,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.utils import secure_filename
 
-from ..config import TestingConfig
-from ..utils import dev_only
+from config import TestingConfig
+from utils import dev_only
 
 db = SQLAlchemy()
 

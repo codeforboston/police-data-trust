@@ -8,10 +8,10 @@ from flask_jwt_extended import (
     unset_access_cookies,
 )
 from pydantic.main import BaseModel
-from ..auth import min_role_required, user_manager
-from ..database import User, UserRole, db
-from ..dto import LoginUserDTO, RegisterUserDTO
-from ..schemas import UserSchema, validate
+from auth import min_role_required, user_manager
+from database import User, UserRole, db
+from dto import LoginUserDTO, RegisterUserDTO
+from schemas import UserSchema, validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 

@@ -1,7 +1,7 @@
 """Define the SQL classes for Users."""
 
 import bcrypt
-from backend.database.core import db
+from database.core import db
 from flask_serialize.flask_serialize import FlaskSerialize
 from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles

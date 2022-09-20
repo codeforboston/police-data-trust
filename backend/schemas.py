@@ -8,18 +8,18 @@ from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 
-from .database import User
-from .database.models.action import Action
-from .database.models.incident import Description, Incident
-from .database.models.investigation import Investigation
-from .database.models.legal_case import LegalCase
-from .database.models.multimedia import Multimedia
-from .database.models.officer import Officer
-from .database.models.participant import Participant
-from .database.models.result_of_stop import ResultOfStop
-from .database.models.tag import Tag
-from .database.models.use_of_force import UseOfForce
-from .database.models.victim import Victim
+from database import User
+from database.models.action import Action
+from database.models.incident import Description, Incident
+from database.models.investigation import Investigation
+from database.models.legal_case import LegalCase
+from database.models.multimedia import Multimedia
+from database.models.officer import Officer
+from database.models.participant import Participant
+from database.models.result_of_stop import ResultOfStop
+from database.models.tag import Tag
+from database.models.use_of_force import UseOfForce
+from database.models.victim import Victim
 
 spec = SpecTree(
     "flask",

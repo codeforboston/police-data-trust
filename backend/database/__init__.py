@@ -1,7 +1,7 @@
 # flake8: noqa: F401
-from backend.database.core import db
-from backend.database.core import db_cli
-from backend.database.core import execute_query
+from database.core import db
+from database.core import db_cli
+from database.core import execute_query
 
 # TODO: remove star imports; at the moment it is a convenience to make sure
 #  that all db models are loaded into the SQLAlchemy metadata.
