@@ -5,15 +5,15 @@ from flask import Flask
 from flask.testing import FlaskClient
 from flask_mail import Mail
 from flask_cors import CORS
-from config import get_config_from_env
-from database import db
-from database import db_cli
-from auth import user_manager, jwt, refresh_token
-from schemas import spec
-from routes.incidents import bp as incidents_bp
-from routes.auth import bp as auth_bp
-from routes.healthcheck import bp as healthcheck_bp
-from utils import dev_only
+from backend.config import get_config_from_env
+from backend.database import db
+from backend.database import db_cli
+from backend.auth import user_manager, jwt, refresh_token
+from backend.schemas import spec
+from backend.routes.incidents import bp as incidents_bp
+from backend.routes.auth import bp as auth_bp
+from backend.routes.healthcheck import bp as healthcheck_bp
+from backend.utils import dev_only
 
 
 def create_app(config: Optional[str] = None):

@@ -1,6 +1,6 @@
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt
 from functools import wraps
-from database import User
+from ..database import User
 from flask import abort
 
 

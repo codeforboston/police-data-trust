@@ -3,8 +3,8 @@ import os
 import zipfile
 import pandas as pd
 from collections import namedtuple
-import database as md
-from scraper_utils.utils import map_cols
+import backend.database as md
+from ..scraper_utils.utils import create_bulk, map_cols, map_df, drop_existing_records
 from client import Counted_Client
 
 
@@ -89,7 +89,7 @@ def col_conv():
         },
     ).set_index("source_id", drop=False)
     dataset = dataset[~dataset.index.duplicated(keep="first")]
-    dataset = utl.drop_existing_records(dataset, "counted")
+    dataset = drop_existing_records(dataset, "counted")
     return dataset
 
 
@@ -124,9 +124,9 @@ def create_source():
 
 
 def create_incidents(data):
-    incidents = utl.map_df(data, create_counted_orm)
+    incidents = map_df(data, create_counted_orm)
     return incidents
 
 
 def append_to_index(incidents):
-    utl.create_bulk(incidents)   
+    create_bulk(incidents)   

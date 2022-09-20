@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
-from auth.jwt import min_role_required
-from database.models.user import UserRole
+from backend.auth.jwt import min_role_required
+from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
-from database import Incident, db
-from schemas import (
+from ..database import Incident, db
+from ..schemas import (
     CreateIncidentSchema,
     incident_orm_to_json,
     incident_to_orm,
