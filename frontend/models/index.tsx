@@ -1,6 +1,5 @@
 export * from "./app-routes"
 export * from "./enrollment-cta"
-export * from "./incidents"
 export * from "./info-tooltip"
 export * from "./logo-sizes"
 export * from "./password-aid"

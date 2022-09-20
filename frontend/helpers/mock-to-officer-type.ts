@@ -48,8 +48,9 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
       return converted
     }
 
-    const converted = incidents.map((incident) => {
+    const converted: Incident[] = incidents.map((incident) => {
       return {
+        ...incident,
         id: incident.id,
         officers: mockToOfficerNameType(incident.officers),
         use_of_force: mockToForceType(incident.useOfForce)
