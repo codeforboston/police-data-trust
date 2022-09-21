@@ -56,7 +56,7 @@ class SourceMixin:
     # Identifies the source dataset or organization
     @declared_attr
     def source(self):
-        return db.Column(db.Text, ForeignKey('sources.id'))
+        return db.Column(db.Text, ForeignKey("sources.id"))
 
     # Identifies the unique primary key in the source
     source_id = db.Column(db.Text)

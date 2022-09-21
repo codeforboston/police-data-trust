@@ -97,8 +97,6 @@ class Incident(db.Model, CrudMixin, SourceMixin):
     use_of_force = db.relationship("UseOfForce", backref="incident")
     legal_case = db.relationship("LegalCase", backref="incident")
     accusations = db.relationship("Accusation", backref="incident")
-    
-
 
 
 class Description(db.Model):

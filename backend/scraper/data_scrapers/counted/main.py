@@ -1,4 +1,10 @@
-from backend.scraper.data_scrapers.counted.counted import append_to_index, col_conv, create_incidents, extract_zip, create_source
+from backend.scraper.data_scrapers.counted.counted import (
+    append_to_index,
+    col_conv,
+    create_incidents,
+    extract_zip,
+    create_source,
+)
 from backend.scraper.data_scrapers.scraper_utils.utils import insert_model
 
 

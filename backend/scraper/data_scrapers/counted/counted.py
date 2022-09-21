@@ -4,7 +4,12 @@ import zipfile
 import pandas as pd
 from collections import namedtuple
 import backend.database as md
-from ..scraper_utils.utils import create_bulk, map_cols, map_df, drop_existing_records
+from ..scraper_utils.utils import (
+    create_bulk,
+    map_cols,
+    map_df,
+    drop_existing_records,
+)
 from client import Counted_Client
 
 
@@ -101,24 +106,24 @@ def create_counted_orm(r: namedtuple):
         deceased=True,
     )
     incident = md.Incident(
-        source='counted',
-        source_id = r.source_id,
-        time_of_incident=r.incident_date, 
+        source="counted",
+        source_id=r.source_id,
+        time_of_incident=r.incident_date,
         department=r.department,
         victims=[victim],
         location=f"{r.address} {r.city} {r.state}",
     )
-    
+
     return incident
 
 
 def create_source():
     source = md.Source(
-        id = 'counted',
-        publication_name = 'The Guardian',
-        publication_date = '06/1/2015',
-        author = 'Jon Swaine, Oliver Laughland, Jamiles Lartey, Ciara McCarthy',
-        URL = 'https://interactive.guim.co.uk/2015/the-counted/thecounted-data.zip'
+        id="counted",
+        publication_name="The Guardian",
+        publication_date="06/1/2015",
+        author="Jon Swaine, Oliver Laughland, Jamiles Lartey, Ciara McCarthy",
+        URL="https://interactive.guim.co.uk/2015/the-counted/thecounted-data.zip",
     )
     return source
 
@@ -129,4 +134,4 @@ def create_incidents(data):
 
 
 def append_to_index(incidents):
-    create_bulk(incidents)   
+    create_bulk(incidents)

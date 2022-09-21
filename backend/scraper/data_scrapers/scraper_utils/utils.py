@@ -93,6 +93,7 @@ def create_bulk(instances, chunk_size=1000):
             db.session.flush()
         db.session.commit()
 
+
 def insert_model(instance):
     with app.app_context():
         db.session.merge(instance)
