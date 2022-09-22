@@ -15,8 +15,8 @@ from flask.cli import AppGroup, with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from psycopg2 import connect
 from psycopg2.extensions import connection
-from sqlalchemy.exc import ResourceClosedError
 from sqlalchemy import ForeignKey
+from sqlalchemy.exc import ResourceClosedError
 from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.utils import secure_filename
 
@@ -56,7 +56,7 @@ class SourceMixin:
     # Identifies the source dataset or organization
     @declared_attr
     def source(self):
-        return db.Column(db.Text, ForeignKey("sources.id"))
+        return db.Column(db.Text, ForeignKey("source.id"))
 
     # Identifies the unique primary key in the source
     source_id = db.Column(db.Text)
