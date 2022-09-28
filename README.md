@@ -43,7 +43,7 @@ POSTGRES_HOST=db
 This method runs the frontend natively on your computer and does not require a running backend, which can be convenient.
 
 1. Make sure that you have `node 16+` and either `npm 7+` or `yarn` installed.
-2. Follow the install instructions in the [frontend](./frontend/README.md) directory.
+2. Follow the [install instructions](./frontend/README.md) in the `frontend` directory.
 
 # Documentation
 
