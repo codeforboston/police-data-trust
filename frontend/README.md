@@ -2,7 +2,7 @@
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-*These instructions are for frontend only.  If you are just getting started with the project, or need help starting the Docker environment, see the [README](../README.md) in the root directory.*
+_These instructions are for frontend only. If you are just getting started with the project, or need help starting the Docker environment, see the [README](../README.md) in the root directory._
 
 ## Getting Started
 
