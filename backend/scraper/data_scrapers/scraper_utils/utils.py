@@ -94,6 +94,12 @@ def create_bulk(instances, chunk_size=1000):
         db.session.commit()
 
 
+def insert_model(instance):
+    with app.app_context():
+        db.session.merge(instance)
+        db.session.commit()
+
+
 def drop_existing_records(dataset, source):
     with app.app_context():
         existing_source_ids = list(

@@ -9,7 +9,6 @@ export default requireAuth(function Dashboard() {
 
   return (
     <Layout>
-      <DashboardHeader />
       <div className={searchPageContainer}>
         <SearchPanel />
         <div className={searchPageDisplay}>

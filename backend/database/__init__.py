@@ -26,3 +26,4 @@ from .models.use_of_force import *
 from .models.user import *
 from .models.victim import *
 from .models.accusation import *
+from .models.source import *
