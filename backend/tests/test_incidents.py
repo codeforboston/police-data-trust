@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident
+from backend.database import Incident, Source
 
 mock_incidents = {
     "domestic": {
@@ -44,9 +44,18 @@ mock_incidents = {
     },
 }
 
+mock_sources = {
+    "cpdp": {"publication_name": "chicago police data project"},
+    "mpv": {"publication_name": "Mapping Police Violence"},
+}
+
 
 @pytest.fixture
-def example_incidents(client, access_token):
+def example_incidents(db_session, client, access_token):
+    for id, mock in mock_sources.items():
+        db_session.add(Source(id=id, **mock))
+        db_session.commit()
+
     created = {}
     for name, mock in mock_incidents.items():
         res = client.post(
