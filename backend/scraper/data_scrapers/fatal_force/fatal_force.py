@@ -26,14 +26,16 @@ def fatal_cols():
         "date": "incident_date",
         "city": "city",
         "state": "state",
+        "latitude": "latitude",
+        "longitude": "longitude"
     },
     ).set_index("source_id", drop=False)
     dataset = dataset[~dataset.index.duplicated(keep='first')]
     dataset = drop_existing_records(dataset, 'fatal_force')
     return dataset
 
-breakpoint()
-def create_FF_orm(r: namedtuple, source):
+
+def create_FF_orm(r: namedtuple):
     victim = md.Victim(
         name=r.victim_name,
         race=r.victim_race,
@@ -43,10 +45,12 @@ def create_FF_orm(r: namedtuple, source):
 
     incident = md.Incident(
         source_id=r.source_id, 
-        source=source,
+        source='fatal_force',
         time_of_incident=r.incident_date,
-        description=r.description,
-        department=r.department,
+        description=r.manner_of_injury,
+        complaint_date=r.incident_date,
+        latitude=r.latitude,
+        longitude=r.longitude,
         victims=[victim],
         
     )
