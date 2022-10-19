@@ -3,7 +3,9 @@ from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
 from backend.database.models.officer import Officer
+from backend.database.models.source import Source
 from backend.database.models.use_of_force import UseOfForce
+
 
 
 def create_user(user):
@@ -56,6 +58,24 @@ create_user(
         first_name="Passport",
         last_name="Example",
         phone_number="(012) 345-6789",
+    )
+)
+
+def create_source(source):
+    source_exists = (
+        db.session.query(Source).filter_by(id=source.id)is not None
+    )
+
+    if not source_exists:
+        source.create()
+
+create_source(
+    Source(
+        id="mpv",
+        publication_name="Mapping Police Violence",
+        publication_date="01/01/2015",
+        author="Samuel Sinyangwe",
+        URL="https://mappingpoliceviolence.us",
     )
 )
 
