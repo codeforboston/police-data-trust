@@ -10,7 +10,7 @@ def get_data():
     r = dataset.run()
     temp_csv = 'backend/scraper/data_scrapers/fatal_force/scraper_data/temp.csv'
     open(temp_csv, 'wb').write(r.content)
-    df = pd.read_csv(temp_csv, dtype={"uid": str}, index_col=None)
+    df = pd.read_csv(temp_csv)
     return df
 
 # map data in csv to columns contained in models
@@ -30,8 +30,9 @@ def fatal_cols():
         "longitude": "longitude"
     },
     ).set_index("source_id", drop=False)
+    print(dataset)
     dataset = dataset[~dataset.index.duplicated(keep='first')]
-    dataset = drop_existing_records(dataset, 'fatal_force')
+    dataset = drop_existing_records(dataset, "fatal_force")
     return dataset
 
 
@@ -44,8 +45,8 @@ def create_FF_orm(r: namedtuple):
     )
 
     incident = md.Incident(
+        source="fatal_force",
         source_id=r.source_id, 
-        source='fatal_force',
         time_of_incident=r.incident_date,
         description=r.manner_of_injury,
         complaint_date=r.incident_date,
@@ -54,7 +55,7 @@ def create_FF_orm(r: namedtuple):
         victims=[victim],
         
     )
-
+    
     return incident
 
 def create_source():
