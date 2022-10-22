@@ -1,7 +1,7 @@
-from ..core import db
+from ..core import db, CrudMixin
 
 
-class Source(db.Model):
+class Source(db.Model, CrudMixin):
     id = db.Column(db.Text, primary_key=True)
     publication_name = db.Column(db.Text)
     publication_date = db.Column(db.Date)

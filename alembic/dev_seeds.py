@@ -63,7 +63,7 @@ create_user(
 
 def create_source(source):
     source_exists = (
-        db.session.query(Source).filter_by(id=source.id)is not None
+        db.session.query(Source).filter_by(id=source.id).first() is not None
     )
 
     if not source_exists:

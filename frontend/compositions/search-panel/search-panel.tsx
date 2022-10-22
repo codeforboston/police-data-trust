@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { useAuth, useSearch } from "../../helpers"
@@ -51,7 +51,9 @@ export const SearchPanel = () => {
           <fieldset>
             <legend className="screenReaderOnly">Search Criteria</legend>
             {!!formInputs.length &&
-              formInputs.map((inputName) => <PrimaryInput key={inputName} inputName={inputName} />)}
+              formInputs.map((inputName) => (
+                <PrimaryInput isRequired={false} key={inputName} inputName={inputName} />
+              ))}
           </fieldset>
           {errorMessage && <FormLevelError errorId="ErrorMessage" errorMessage={errorMessage} />}
           <PrimaryButton loading={isLoading} type="submit">

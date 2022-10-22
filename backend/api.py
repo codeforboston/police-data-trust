@@ -26,7 +26,6 @@ def create_app(config: Optional[str] = None):
         register_extensions(app)
         register_commands(app)
         register_routes(app)
-        register_misc(app)
 
     # @app.before_first_request
     # def _():
@@ -123,34 +122,6 @@ def register_routes(app: Flask):
     def after_request(response):
         response = refresh_token(response)
         return response
-
-
-def register_misc(app: Flask):
-    """For things that don't neatly fit into the other "register" functions."""
-
-    @app.shell_context_processor
-    def make_shell_context():
-        """This function makes some objects available in the Flask shell without
-        the need to manually declare an import. This is just a convenience for
-        using the Flask shell.
-        """
-        from flask import current_app as app
-
-        from .database import db  # noqa: F401
-
-        client = app.test_client()
-
-        return locals()
-
-    # Client that makes testing a bit easier.
-
-    class FlaskClientWithDefaultHeaders(FlaskClient):
-        def post(self, *args, **kwargs):
-            kwargs.setdefault("headers", {"Content-Type": "application/json"})
-            return super().post(*args, **kwargs)
-
-    app.test_client_class = FlaskClientWithDefaultHeaders
-
 
 if __name__ == "__main__":
     app = create_app()
