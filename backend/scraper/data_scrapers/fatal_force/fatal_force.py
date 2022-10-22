@@ -8,9 +8,9 @@ from backend.scraper.data_scrapers.scraper_utils import create_bulk, map_cols, m
 def get_data():
     dataset = FF_Client()
     r = dataset.run()
-    temp_csv = 'backend/scraper/data_scrapers/fatal_force/scraper_data/temp.csv'
+    temp_csv = 'temp.csv'
     open(temp_csv, 'wb').write(r.content)
-    df = pd.read_csv(temp_csv)
+    df = pd.read_csv(temp_csv, dtype={"id": str}, index_col=None)
     return df
 
 # map data in csv to columns contained in models
@@ -60,7 +60,7 @@ def create_FF_orm(r: namedtuple):
 
 def create_source():
     source = md.Source(
-        id = 'Fatal_Force',
+        id = 'fatal_force',
         publication_name = 'Fatal Force',
         publication_date = '05/22/2022',
         author = 'test',
