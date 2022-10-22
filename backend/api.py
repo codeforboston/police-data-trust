@@ -2,7 +2,6 @@ from typing import Optional
 
 import click
 from flask import Flask
-from flask.testing import FlaskClient
 from flask_mail import Mail
 from flask_cors import CORS
 from backend.config import get_config_from_env
@@ -122,6 +121,7 @@ def register_routes(app: Flask):
     def after_request(response):
         response = refresh_token(response)
         return response
+
 
 if __name__ == "__main__":
     app = create_app()
