@@ -9,6 +9,7 @@ from backend.scraper.data_scrapers.scraper_utils import (
     drop_existing_records,
 )
 
+
 # extract csv from URL and convert to dataframe
 def get_data():
     dataset = FF_Client()
@@ -71,7 +72,9 @@ def create_source():
         publication_name="Fatal Force",
         publication_date="05/22/2022",
         author="test",
-        URL="https://github.com/washingtonpost/data-police-shootings/releases/download/v0.1/fatal-police-shootings-data.csv",
+        URL="https://github.com/washingtonpost/\
+            data-police-shootings/releases/download/\
+                v0.1/fatal-police-shootings-data.csv",
     )
     return source
 
