@@ -93,7 +93,6 @@ def col_conv():
             "lawenforcementagency": "department",
         },
     ).set_index("source_id", drop=False)
-    print(dataset)
     dataset = dataset[~dataset.index.duplicated(keep="first")]
     dataset = drop_existing_records(dataset, "counted")
     return dataset
