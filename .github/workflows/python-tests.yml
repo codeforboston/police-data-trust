@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install python-dev libpq-dev
+        sudo apt-get install python3-dev libpq-dev
         python -m pip install --upgrade pip
         python -m pip install -r requirements/dev_unix.txt
     - name: Check style
