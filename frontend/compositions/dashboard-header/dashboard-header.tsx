@@ -33,7 +33,7 @@ export default function DashboardHeader() {
                 margin: "2rem 2rem 0 0"
               }}>
               Donate
-        </button>
+            </button>
           </div>
         </div>
         {/* Only show the buttons if the user is logged in */}

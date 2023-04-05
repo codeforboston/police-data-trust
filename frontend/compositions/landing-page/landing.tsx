@@ -7,8 +7,7 @@ export default function LandingPage() {
   const router = useRouter()
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
-      </div>
+      <div className={styles.header}></div>
       <div className={styles.content}>
         <h1 className={styles.title}>Data to keep our communities safer</h1>
         <p className={styles.text}>Police brutality thrives in anonymity.</p>
