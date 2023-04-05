@@ -23,6 +23,17 @@ export default function DashboardHeader() {
           <div className={titleContainer}>
             <h2>National Police Data Coalition</h2>
             <p>The national index of police incidents</p>
+            <button
+              className="primaryButton"
+              style={{
+                backgroundColor: "white",
+                color: "#303463",
+                border: "#303463 thin solid",
+                fontWeight: "bold",
+                margin: "2rem 2rem 0 0"
+              }}>
+              Donate
+        </button>
           </div>
         </div>
         {/* Only show the buttons if the user is logged in */}

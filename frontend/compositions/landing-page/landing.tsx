@@ -8,17 +8,6 @@ export default function LandingPage() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <button
-          className="primaryButton"
-          style={{
-            backgroundColor: "white",
-            color: "#303463",
-            border: "#303463 thin solid",
-            fontWeight: "bold",
-            margin: "2rem 2rem 0 0"
-          }}>
-          Donate
-        </button>
       </div>
       <div className={styles.content}>
         <h1 className={styles.title}>Data to keep our communities safer</h1>
