@@ -7,20 +7,7 @@ export default function LandingPage() {
   const router = useRouter()
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <Logo />
-        <button
-          className="primaryButton"
-          style={{
-            backgroundColor: "white",
-            color: "#303463",
-            border: "#303463 thin solid",
-            fontWeight: "bold",
-            margin: "2rem 2rem 0 0"
-          }}>
-          Donate
-        </button>
-      </div>
+      <div className={styles.header}></div>
       <div className={styles.content}>
         <h1 className={styles.title}>Data to keep our communities safer</h1>
         <p className={styles.text}>Police brutality thrives in anonymity.</p>

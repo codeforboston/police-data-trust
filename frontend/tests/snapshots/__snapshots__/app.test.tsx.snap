@@ -6,27 +6,7 @@ exports[`renders Home correctly 1`] = `
 >
   <div
     className="header"
-  >
-    <img
-      alt="A blue circular logo design reads 'National Police Data Coalition'"
-      className="logo medium"
-      src="/NPDCLogo.svg"
-    />
-    <button
-      className="primaryButton"
-      style={
-        Object {
-          "backgroundColor": "white",
-          "border": "#303463 thin solid",
-          "color": "#303463",
-          "fontWeight": "bold",
-          "margin": "2rem 2rem 0 0",
-        }
-      }
-    >
-      Donate
-    </button>
-  </div>
+  />
   <div
     className="content"
   >
