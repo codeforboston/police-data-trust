@@ -25,6 +25,12 @@ exports[`renders Dashboard correctly 1`] = `
           <p>
             The national index of police incidents
           </p>
+          <button
+            class="primaryButton"
+            style="background-color: white; color: rgb(48, 52, 99); border: thin solid #303463; font-weight: bold; margin: 2rem 2rem 0px 0px;"
+          >
+            Donate
+          </button>
         </div>
       </div>
       <nav
