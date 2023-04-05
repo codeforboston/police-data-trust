@@ -8,7 +8,6 @@ export default function LandingPage() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <Logo />
         <button
           className="primaryButton"
           style={{
