@@ -46,10 +46,10 @@ describe("behaviors", () => {
     }
   })
 
-  it("checks phone formatting", async () => {
+  it("checks phone number length", async () => {
     const r = renderPage()
     act(() => {
-      userEvent.type(r.phoneNumber, "5555555555")
+      userEvent.type(r.phoneNumber, "5555555555555")
       userEvent.click(r.submit)
     })
     await expect(r.findByText(/phone number is required/)).resolves.toBeInTheDocument()

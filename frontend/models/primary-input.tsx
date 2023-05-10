@@ -22,8 +22,7 @@ export enum PrimaryInputNames {
 const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/
 const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", "i")
 const anyString: RegExp = new RegExp("[sS]*")
-const phoneNumberRgx: RegExp  = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
-
+const phoneNumberRgx: RegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
 
 export const primaryInputValidation = {
   [PrimaryInputNames.BADGE_NUMBER]: {
@@ -83,7 +82,7 @@ export const primaryInputValidation = {
     inputType: "text"
   },
   [PrimaryInputNames.PHONE_NUMBER]: {
-    errorMessage: 'A valid phone number is required',
+    errorMessage: "A valid phone number is required",
     pattern: phoneNumberRgx,
     inputType: "tel"
   },
