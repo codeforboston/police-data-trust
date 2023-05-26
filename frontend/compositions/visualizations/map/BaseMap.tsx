@@ -43,17 +43,6 @@ export default function BaseMap(props: BaseMapProps) {
 
   return (
     <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}>
-      <rect
-        height={100}
-        width={100}
-        x={100}
-        y={100}
-        fill={"yellow"}
-        onClick={() => {
-          console.log(reload)
-          setReload(reload + 1)
-        }}
-      />
     </svg>
   )
 }
