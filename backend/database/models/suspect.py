@@ -1,12 +1,10 @@
 import enum
 
-from backend.database.core import SourceMixin
-
 from .. import db
 
 
 
-class Suspect(db.Model, SourceMixin):
+class Suspect(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # suspect id
     incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     first_name = db.Column(db.Text)

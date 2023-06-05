@@ -2,10 +2,15 @@
 import enum
 
 
-from ..core import CrudMixin, SourceMixin, db
+from ..core import CrudMixin, db
 
 # Question: Should we be doing string enums?
 
+class RecordType(enum.Enum):
+    NEWS_REPORT = 1
+    GOVERNMENT_RECORD = 2
+    LEGAL_ACTION = 3
+    PERSONAL_ACCOUNT = 4
 
 class InitialEncounter(enum.Enum):
     UNKNOWN = 1
@@ -57,10 +62,12 @@ class VictimStatus(enum.Enum):
 #  implement them accordingly.
 
 
-class Incident(db.Model, CrudMixin, SourceMixin):
+class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    source_id = db.Column(db.Integer, db.ForeignKey("source.id"), nullable=False)
+    source_details = db.relationship("SourceDetails", backref="incident", uselist=False)
     time_of_incident = db.Column(db.DateTime)
     complaint_date = db.Column(db.Date)
     closed_date = db.Column(db.Date)
@@ -104,7 +111,7 @@ class Description(db.Model):
     text = db.Column(db.Text)
     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
-    source = db.Column(db.Text)
+    #source = db.Column(db.Text)
     # location = db.Column(db.Text)  # TODO: location object
     # # TODO: neighborhood seems like a weird identifier that may not always
     # #  apply in consistent ways across municipalities.
@@ -119,3 +126,27 @@ class Description(db.Model):
     # # Does an existing warrant count here?
     # criminal_case_brought = db.Column(db.Boolean)
     # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+
+
+class SourceDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # source details id
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
+    record_type = db.Column(db.Enum(RecordType))
+    # For Journalistic Publications
+    publication_name = db.Column(db.Text)
+    publication_date = db.Column(db.Date)
+    publication_url = db.Column(db.Text)
+    author = db.Column(db.Text)
+    author_url = db.Column(db.Text)
+    author_email = db.Column(db.Text)
+    # For Government Records
+    reporting_organization = db.Column(db.Text)
+    reporting_organization_url = db.Column(db.Text)
+    reporting_organization_email = db.Column(db.Text)
+    # For Legal Records
+    court = db.Column(db.Text)
+    judge = db.Column(db.Text)
+    docket_number = db.Column(db.Text)
+    date_of_action = db.Column(db.Date)

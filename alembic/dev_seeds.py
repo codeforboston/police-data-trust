@@ -71,11 +71,10 @@ def create_source(source):
 
 create_source(
     Source(
-        id="mpv",
-        publication_name="Mapping Police Violence",
-        publication_date="01/01/2015",
-        author="Samuel Sinyangwe",
-        URL="https://mappingpoliceviolence.us",
+        id=10000000,
+        name="Mapping Police Violence",
+        url="https://mappingpoliceviolence.us",
+        contact_email="info@campaignzero.org"
     )
 )
 
@@ -83,8 +82,10 @@ create_source(
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
     id = base_id + key
+    mpv = db.session.query(Source).filter_by(name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
+        source = mpv,
         location=f"Test location {key}",
         longitude=lon,
         latitude=lat,
@@ -97,8 +98,7 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
                 last_name=f"TestLastName {key}",
             )
         ],
-        use_of_force=[UseOfForce(item=f"gunshot {key}")],
-        source="mpv",
+        use_of_force=[UseOfForce(item=f"gunshot {key}")]
     )
     exists = db.session.query(Incident).filter_by(id=id).first() is not None
 

@@ -1,7 +1,5 @@
 import enum
 
-from backend.database.core import SourceMixin
-
 from .. import db
 
 
@@ -18,7 +16,7 @@ class Rank(str, enum.Enum):
     CHIEF = "CHIEF"
 
 
-class Officer(db.Model, SourceMixin):
+class Officer(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)

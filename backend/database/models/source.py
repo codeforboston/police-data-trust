@@ -2,8 +2,8 @@ from ..core import db, CrudMixin
 
 
 class Source(db.Model, CrudMixin):
-    id = db.Column(db.Text, primary_key=True)
-    publication_name = db.Column(db.Text)
-    publication_date = db.Column(db.Date)
-    author = db.Column(db.Text)
-    URL = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text)
+    url = db.Column(db.Text)
+    contact_email = db.Column(db.Text)
+    reported_incidents = db.relationship('Incident', backref='source', lazy="select")

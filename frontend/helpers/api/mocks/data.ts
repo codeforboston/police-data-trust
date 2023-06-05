@@ -40,13 +40,12 @@ function createTestIncident(
     description: `Test description ${key}`,
     location: `Test location ${key}`,
     locationLonLat: [lonlat[0], lonlat[1]],
-    officers: [
+    suspects: [
       {
         first_name: `TestFirstName ${key}`,
         last_name: `TestLastName ${key}`
       }
     ],
-    source: "mpv",
     time_of_incident: new Date(date).toUTCString(),
     use_of_force: [
       {
