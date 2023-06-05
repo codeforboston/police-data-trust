@@ -7,7 +7,7 @@ mock_incidents = {
     "domestic": {
         "time_of_incident": "2021-03-14 01:05:09",
         "description": "Domestic disturbance",
-        "officers": [
+        "suspects": [
             {"first_name": "Susie", "last_name": "Suserson"},
             {"first_name": "Lisa", "last_name": "Wong"},
         ],
@@ -18,7 +18,7 @@ mock_incidents = {
     "traffic": {
         "time_of_incident": "2021-10-01 00:00:00",
         "description": "Traffic stop",
-        "officers": [
+        "suspects": [
             {"first_name": "Ronda", "last_name": "Sousa"},
         ],
         "use_of_force": [{"item": "verbalization"}],
@@ -28,7 +28,7 @@ mock_incidents = {
     "firearm": {
         "time_of_incident": "2021-10-05 00:00:00",
         "description": "Robbery",
-        "officers": [
+        "suspects": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
         "use_of_force": [{"item": "indirect firearm"}],
@@ -37,7 +37,7 @@ mock_incidents = {
     },
     "missing_fields": {
         "description": "Robbery",
-        "officers": [
+        "suspects": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
         "source": "cpdp",
@@ -78,7 +78,7 @@ def test_create_incident(db_session, example_incidents):
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
     for i in [0, 1]:
-        assert incident_obj.officers[i].id == created["officers"][i]["id"]
+        assert incident_obj.suspects[i].id == created["suspects"][i]["id"]
     assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
     assert incident_obj.source == expected["source"]
 

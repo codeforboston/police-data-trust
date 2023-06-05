@@ -16,7 +16,8 @@ from .models.case_document import *
 from .models.incident import *
 from .models.investigation import *
 from .models.legal_case import *
-from .models.multimedia import *
+from .models.attachment import *
+from .models.suspect import *
 from .models.officer import *
 from .models.participant import *
 from .models.tag import *

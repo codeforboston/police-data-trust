@@ -1,7 +1,7 @@
 import React from "react"
 import { Column } from "react-table"
 import { useSearch } from "../../helpers"
-import { Officer } from "../../helpers/api"
+import { Suspect } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
 import { TooltipIcons, TooltipTypes } from "../../models"
 import { InfoTooltip } from "../../shared-components"
@@ -21,10 +21,10 @@ export const searchesColumns: Column<any>[] = [
     id: "time_of_incident"
   },
   {
-    Header: "Officer(s)",
+    Header: "Suspect(s)",
     accessor: (row: any) =>
-      row["officers"].map((names: Officer) => Object.values(names).join(", ")).join(", "),
-    id: "officers"
+      row["suspects"].map((names: Suspect) => Object.values(names).join(", ")).join(", "),
+    id: "suspects"
   },
   {
     Header: "Department",

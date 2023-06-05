@@ -2,7 +2,7 @@ from backend.database.core import db
 from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
-from backend.database.models.officer import Officer
+from backend.database.models.suspect import Suspect
 from backend.database.models.source import Source
 from backend.database.models.use_of_force import UseOfForce
 
@@ -91,8 +91,8 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
         description=f"Test description {key}",
         department=f"Small Police Department {key}",
         time_of_incident=f"{date} 00:00:00",
-        officers=[
-            Officer(
+        suspects=[
+            Suspect(
                 first_name=f"TestFirstName {key}",
                 last_name=f"TestLastName {key}",
             )

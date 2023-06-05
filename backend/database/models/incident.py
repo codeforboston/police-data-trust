@@ -83,20 +83,17 @@ class Incident(db.Model, CrudMixin, SourceMixin):
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
     victims = db.relationship("Victim", backref="incident")
-    # TODO: Remove this. incident-officer relationship is many-many using
-    # accusation as the join table.
-    officers = db.relationship("Officer", backref="incident")
+    suspects = db.relationship("Suspect", backref="incident")
     department = db.Column(db.Text)
     # descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", backref="incident")
     participants = db.relationship("Participant", backref="incident")
-    multimedias = db.relationship("Multimedia", backref="incident")
+    attachments = db.relationship("Attachment", backref="incident")
     investigations = db.relationship("Investigation", backref="incident")
     results_of_stop = db.relationship("ResultOfStop", backref="incident")
     actions = db.relationship("Action", backref="incident")
     use_of_force = db.relationship("UseOfForce", backref="incident")
     legal_case = db.relationship("LegalCase", backref="incident")
-    accusations = db.relationship("Accusation", backref="incident")
 
 
 class Description(db.Model):

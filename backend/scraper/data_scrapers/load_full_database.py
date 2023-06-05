@@ -4,7 +4,7 @@ import pandas as pd
 from dateutil import parser
 
 from ...api import db
-from ...database import UseOfForce, Incident, Officer
+from ...database import UseOfForce, Incident, Suspect
 
 
 def isnan(x):
@@ -69,8 +69,8 @@ def row_to_orm(row):
     if row.department_present:
         incident.department = row.department_present
     if row.perpetrator:
-        incident.officers = [
-            Officer(
+        incident.suspects = [
+            Suspect(
                 last_name=row.perpetrator,
             )
         ]

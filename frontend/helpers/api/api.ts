@@ -38,7 +38,7 @@ export interface ResetPasswordResponse {
   message: string
 }
 
-export interface Officer {
+export interface Suspect {
   first_name?: string
   last_name?: string
 }
@@ -54,7 +54,7 @@ export interface Incident {
   longitude?: number
   time_of_incident?: string
   department?: string
-  officers: Officer[]
+  suspects: Suspect[]
   description?: string
   use_of_force?: UseOfForce[]
   source?: string
