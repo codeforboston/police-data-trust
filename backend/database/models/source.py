@@ -6,4 +6,5 @@ class Source(db.Model, CrudMixin):
     name = db.Column(db.Text)
     url = db.Column(db.Text)
     contact_email = db.Column(db.Text)
-    reported_incidents = db.relationship('Incident', backref='source', lazy="select")
+    reported_incidents = db.relationship(
+        'Incident', backref='source', lazy="select")

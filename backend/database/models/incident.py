@@ -1,16 +1,16 @@
 """Define the SQL classes for Users."""
 import enum
 
-
 from ..core import CrudMixin, db
+from backend.database.models._assoc_tables import incident_agency, incident_tag
 
-# Question: Should we be doing string enums?
 
 class RecordType(enum.Enum):
     NEWS_REPORT = 1
     GOVERNMENT_RECORD = 2
     LEGAL_ACTION = 3
     PERSONAL_ACCOUNT = 4
+
 
 class InitialEncounter(enum.Enum):
     UNKNOWN = 1
@@ -55,20 +55,16 @@ class VictimStatus(enum.Enum):
     DECEASED = 5
 
 
-# TODO: This file's a bit of a mess (my fault!)
-#  There are a lot of association tables in here, and the incidents table is
-#  not clearly either a facts table or component table.
-#  We need to get a better idea of the relationships we want and then we should
-#  implement them accordingly.
-
-
 class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    source_id = db.Column(db.Integer, db.ForeignKey("source.id"), nullable=False)
-    source_details = db.relationship("SourceDetails", backref="incident", uselist=False)
+    source_id = db.Column(
+        db.Integer, db.ForeignKey("source.id"), nullable=False)
+    source_details = db.relationship(
+        "SourceDetails", backref="incident", uselist=False)
     time_of_incident = db.Column(db.DateTime)
+    time_confidence = db.Column(db.Integer)
     complaint_date = db.Column(db.Date)
     closed_date = db.Column(db.Date)
     location = db.Column(db.Text)  # TODO: location object
@@ -81,7 +77,7 @@ class Incident(db.Model, CrudMixin):
     description = db.Column(db.Text)
     stop_type = db.Column(db.Text)  # TODO: enum
     call_type = db.Column(db.Text)  # TODO: enum
-    has_multimedia = db.Column(db.Boolean)
+    has_attachments = db.Column(db.Boolean)
     from_report = db.Column(db.Boolean)
     # These may require an additional table. Also can dox a victim
     was_victim_arrested = db.Column(db.Boolean)
@@ -93,7 +89,9 @@ class Incident(db.Model, CrudMixin):
     suspects = db.relationship("Suspect", backref="incident")
     department = db.Column(db.Text)
     # descriptions = db.relationship("Description", backref="incident")
-    tags = db.relationship("Tag", backref="incident")
+    tags = db.relationship("Tag", secondary=incident_tag, backref="incidents")
+    agencies_present = db.relationship(
+        "Agency", secondary=incident_agency, backref="recorded_incidents")
     participants = db.relationship("Participant", backref="incident")
     attachments = db.relationship("Attachment", backref="incident")
     investigations = db.relationship("Investigation", backref="incident")
@@ -102,7 +100,12 @@ class Incident(db.Model, CrudMixin):
     use_of_force = db.relationship("UseOfForce", backref="incident")
     legal_case = db.relationship("LegalCase", backref="incident")
 
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return f"<Incident {self.id}>"
 
+
+# TODO: This is a component table, but it's not clear what it's a component of.
 class Description(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # description id
     incident_id = db.Column(
@@ -111,7 +114,7 @@ class Description(db.Model):
     text = db.Column(db.Text)
     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
-    #source = db.Column(db.Text)
+    # source = db.Column(db.Text)
     # location = db.Column(db.Text)  # TODO: location object
     # # TODO: neighborhood seems like a weird identifier that may not always
     # #  apply in consistent ways across municipalities.

@@ -22,11 +22,11 @@ class Officer(db.Model):
     last_name = db.Column(db.Text)
     race = db.Column(db.Text)
     gender = db.Column(db.Text)
-    appointed_date = db.Column(db.DateTime)
-    badge = db.Column(db.Text)
-    unit = db.Column(db.Text)  # type?
     # Note: rank at time of incident
-    rank = db.Column(db.Text)  # type?
+    rank = db.Column(db.Enum(Rank))
     star = db.Column(db.Text)  # type?
     date_of_birth = db.Column(db.Date)
     accusations = db.relationship("Accusation", backref="officer")
+
+    def __repr__(self):
+        return f"<Officer {self.id}>"

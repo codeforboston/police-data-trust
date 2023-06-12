@@ -73,6 +73,6 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     incomeBracket: officer.incomeBracket,
     workHistory: mockToWorkHistoryType(officer.workHistory),
     affiliations: officer.affiliations,
-    incidents: mockToIncidentType(officer.incidents)
+    suspect_matches: mockToIncidentType(officer.suspect_matches)
   }
 }

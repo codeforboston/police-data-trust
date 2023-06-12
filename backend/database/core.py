@@ -15,9 +15,7 @@ from flask.cli import AppGroup, with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from psycopg2 import connect
 from psycopg2.extensions import connection
-from sqlalchemy import ForeignKey
 from sqlalchemy.exc import ResourceClosedError
-from sqlalchemy.ext.declarative import declared_attr
 from werkzeug.utils import secure_filename
 
 from ..config import TestingConfig

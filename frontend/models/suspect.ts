@@ -1,4 +1,4 @@
-import { Incident, Suspect } from "../helpers/api"
+import { Incident } from "../helpers/api"
 
 export interface DepartmentType {
   departmentName: string
@@ -33,19 +33,18 @@ export interface EmploymentType {
   endDate: Date
 }
 
-export interface OfficerRecordType {
+export interface SuspectRecordType {
   recordId: number
   firstName: string
   lastName: string
   badgeNo: string
   status: string
   department: string
-  birthDate?: Date
   gender?: string
   race?: string
   ethnicity?: string
   incomeBracket?: string
   workHistory: EmploymentType[]
   affiliations?: string[]
-  suspect_matches?: Suspect[]
+  incident?: Incident
 }
