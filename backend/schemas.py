@@ -17,7 +17,7 @@ from .database.models.officer import Officer
 from .database.models.investigation import Investigation
 from .database.models.legal_case import LegalCase
 from .database.models.attachment import Attachment
-from .database.models.suspect import Suspect
+from .database.models.perpetrator import Perpetrator
 from .database.models.participant import Participant
 from .database.models.result_of_stop import ResultOfStop
 from .database.models.tag import Tag
@@ -98,7 +98,7 @@ def validate(auth=True, **kwargs):
 
 _incident_list_attrs = [
     "victims",
-    "suspects",
+    "perpetrators",
     "descriptions",
     "tags",
     "participants",
@@ -135,7 +135,7 @@ _BaseCreateIncidentSchema = schema_create(Incident)
 CreateOfficerSchema = schema_create(Officer)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
-CreateSuspectSchema = schema_create(Suspect)
+CreateSuspectSchema = schema_create(Perpetrator)
 CreateDescriptionSchema = schema_create(Description)
 CreateSourceDetailsSchema = schema_create(SourceDetails)
 CreateTagSchema = schema_create(Tag)
@@ -150,7 +150,7 @@ CreateLegalCaseSchema = schema_create(LegalCase)
 
 class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     victims: Optional[List[CreateVictimSchema]]
-    suspects: Optional[List[CreateSuspectSchema]]
+    perpetrators: Optional[List[CreateSuspectSchema]]
     tags: Optional[List[CreateTagSchema]]
     participants: Optional[List[CreateParticipantSchema]]
     attachments: Optional[List[CreateAttachmentSchema]]
@@ -167,7 +167,7 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseIncidentSchema = schema_get(Incident)
 VictimSchema = schema_get(Victim)
-SuspectSchema = schema_get(Suspect)
+SuspectSchema = schema_get(Perpetrator)
 DescriptionSchema = schema_get(Description)
 TagSchema = schema_get(Tag)
 ParticipantSchema = schema_get(Participant)
@@ -181,7 +181,7 @@ LegalCaseSchema = schema_get(LegalCase)
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     victims: List[VictimSchema]
-    suspects: List[SuspectSchema]
+    perpetrators: List[SuspectSchema]
     tags: List[TagSchema]
     participants: List[ParticipantSchema]
     attachments: List[AttachmentSchema]
@@ -205,7 +205,7 @@ def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
     associated with a schema instance.
     """
 
-    converters = {"suspects": Suspect, "use_of_force": UseOfForce}
+    converters = {"perpetrators": Perpetrator, "use_of_force": UseOfForce}
     orm_attrs = incident.dict()
     for k, v in orm_attrs.items():
         is_dict = isinstance(v, dict)

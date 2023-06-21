@@ -1,9 +1,9 @@
-from backend.database.models._assoc_tables import suspect_officer
+from backend.database.models._assoc_tables import perpetrator_officer
 from backend.database.models.officer import Rank
 from .. import db
 
 
-class Suspect(db.Model):
+class Perpetrator(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     first_name = db.Column(db.Text)
@@ -15,8 +15,8 @@ class Suspect(db.Model):
     # Note: rank at time of incident
     rank = db.Column(db.Enum(Rank))
     star = db.Column(db.Text)  # type?
-    suspected_matches = db.relationship(
-        "Officer", secondary=suspect_officer, backref="suspect_matches")
+    suspects = db.relationship(
+        "Officer", secondary=perpetrator_officer, backref="suspected_matches")
 
     def __repr__(self):
-        return f"<Suspect {self.id}>"
+        return f"<Perpetrator {self.id}>"

@@ -26,7 +26,6 @@ class Officer(db.Model):
     rank = db.Column(db.Enum(Rank))
     star = db.Column(db.Text)  # type?
     date_of_birth = db.Column(db.Date)
-    accusations = db.relationship("Accusation", backref="officer")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

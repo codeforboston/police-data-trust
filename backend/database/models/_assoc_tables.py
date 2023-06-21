@@ -29,9 +29,9 @@ agency_officer = db.Table('agency_officer',
     db.Column('currently_employed', db.Boolean)
 )
 
-suspect_officer = db.Table('suspect_officer',
-    db.Column('suspect_id',
-              db.Integer, db.ForeignKey('suspect.id'), primary_key=True),
+perpetrator_officer = db.Table('perpetrator_officer',
+    db.Column('perpetrator_id',
+              db.Integer, db.ForeignKey('perpetrator.id'), primary_key=True),
     db.Column('officer_id',
               db.Integer, db.ForeignKey('officer.id'), primary_key=True)
 )

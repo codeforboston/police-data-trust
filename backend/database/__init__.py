@@ -17,7 +17,7 @@ from .models.incident import *
 from .models.investigation import *
 from .models.legal_case import *
 from .models.attachment import *
-from .models.suspect import *
+from .models.perpetrator import *
 from .models.officer import *
 from .models.participant import *
 from .models.tag import *
@@ -26,5 +26,4 @@ from .models.action import *
 from .models.use_of_force import *
 from .models.user import *
 from .models.victim import *
-from .models.accusation import *
 from .models.source import *
