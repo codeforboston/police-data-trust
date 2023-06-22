@@ -16,7 +16,7 @@ class Perpetrator(db.Model):
     rank = db.Column(db.Enum(Rank))
     star = db.Column(db.Text)  # type?
     suspects = db.relationship(
-        "Officer", secondary=perpetrator_officer, backref="suspected_matches")
+        "Officer", secondary=perpetrator_officer, backref="accusations")
 
     def __repr__(self):
         return f"<Perpetrator {self.id}>"

@@ -3,50 +3,50 @@ from datetime import datetime
 import pytest
 from backend.database import Incident, Source
 
+mock_sources = {
+    "cpdp": {"name": "Citizens Police Data Project"},
+    "mpv": {"name": "Mapping Police Violence"},
+}
+
 mock_incidents = {
     "domestic": {
         "time_of_incident": "2021-03-14 01:05:09",
         "description": "Domestic disturbance",
-        "suspects": [
+        "perpetrators": [
             {"first_name": "Susie", "last_name": "Suserson"},
             {"first_name": "Lisa", "last_name": "Wong"},
         ],
         "use_of_force": [{"item": "Injurious restraint"}],
-        "source": "cpdp",
+        "source": "Citizens Police Data Project",
         "location": "123 Right St Chicago, IL",
     },
     "traffic": {
         "time_of_incident": "2021-10-01 00:00:00",
         "description": "Traffic stop",
-        "suspects": [
+        "perpetrators": [
             {"first_name": "Ronda", "last_name": "Sousa"},
         ],
         "use_of_force": [{"item": "verbalization"}],
-        "source": "mpv",
+        "source": "Mapping Police Violence",
         "location": "Park St and Boylston Boston",
     },
     "firearm": {
         "time_of_incident": "2021-10-05 00:00:00",
         "description": "Robbery",
-        "suspects": [
+        "perpetrators": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
         "use_of_force": [{"item": "indirect firearm"}],
-        "source": "cpdp",
+        "source": "Citizens Police Data Project",
         "location": "CHICAGO ILLINOIS",
     },
     "missing_fields": {
         "description": "Robbery",
-        "suspects": [
+        "perpetrators": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
-        "source": "cpdp",
+        "source": "Citizens Police Data Project",
     },
-}
-
-mock_sources = {
-    "cpdp": {"publication_name": "chicago police data project"},
-    "mpv": {"publication_name": "Mapping Police Violence"},
 }
 
 
