@@ -28,7 +28,7 @@ export const agencyColumns = [
 
 export interface EmploymentType {
   agency: AgencyType
-  currentlyEmployed: string
+  currentlyEmployed: boolean
   earliestEmployment: Date
   latestEmployment: Date
   badgeNumber: string
@@ -44,4 +44,5 @@ export interface OfficerRecordType {
   knownEmployers?: AgencyType[]
   workHistory: EmploymentType[]
   accusations?: Perpetrator[]
+  affiliations?: OfficerRecordType[]
 }

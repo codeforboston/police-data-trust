@@ -14,13 +14,13 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
       return {
         agency: {
           agencyName: item.deptName,
-          deptImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
-          deptAddress: item.deptAddress,
-          webAddress: "https://www.google.com/search?q=police+department"
+          agencyImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
+          agencyHqAddress: item.deptAddress,
+          websiteUrl: "https://www.google.com/search?q=police+department"
         },
-        status: item.status,
-        startDate: new Date(item.dates.split("-")[0].trim()),
-        endDate: new Date(item.dates.split("-")[1].trim())
+        currentlyEmployed: item.status,
+        earliestEmployment: new Date(item.dates.split("-")[0].trim()),
+        latestEmployment: new Date(item.dates.split("-")[1].trim())
       }
     })
     return converted
