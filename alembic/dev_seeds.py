@@ -92,7 +92,6 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
         longitude=lon,
         latitude=lat,
         description=f"Test description {key}",
-        department=f"Small Police Department {key}",
         time_of_incident=f"{date} 00:00:00",
         perpetrators=[
             Perpetrator(

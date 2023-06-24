@@ -12,8 +12,8 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
   function mockToWorkHistoryType(workHistory: typeof officer.workHistory): EmploymentType[] {
     const converted: EmploymentType[] = workHistory.map((item) => {
       return {
-        department: {
-          departmentName: item.deptName,
+        agency: {
+          agencyName: item.deptName,
           deptImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
           deptAddress: item.deptAddress,
           webAddress: "https://www.google.com/search?q=police+department"
@@ -65,7 +65,7 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     lastName: officer.lastName,
     badgeNo: officer.badgeNo,
     status: officer.status,
-    department: officer.department,
+    department: officer.knownEmployers[0].deptName,
     birthDate: new Date(officer.birthDate),
     gender: officer.gender,
     race: officer.race,
@@ -73,6 +73,6 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     incomeBracket: officer.incomeBracket,
     workHistory: mockToWorkHistoryType(officer.workHistory),
     affiliations: officer.affiliations,
-    suspect_matches: mockToIncidentType(officer.suspect_matches)
+    accusations: mockToIncidentType(officer.accusations)
   }
 }

@@ -40,7 +40,7 @@ function createTestIncident(
     description: `Test description ${key}`,
     location: `Test location ${key}`,
     locationLonLat: [lonlat[0], lonlat[1]],
-    suspects: [
+    perpetrators: [
       {
         first_name: `TestFirstName ${key}`,
         last_name: `TestLastName ${key}`

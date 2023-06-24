@@ -2,7 +2,7 @@ import { OfficerRecordType } from "../../../models/officer"
 import styles from "./officer-view-header.module.css"
 
 export default function OfficerHeader(officer: OfficerRecordType) {
-  const { firstName, lastName, badgeNo, status, department } = officer
+  const { firstName, lastName, badgeNo, status, agency } = officer
   const { category, name, titleAndName, otherData, viewWrapper } = styles
 
   return (
@@ -23,8 +23,8 @@ export default function OfficerHeader(officer: OfficerRecordType) {
           <p>{status}</p>
         </div>
         <div className={otherData}>
-          <p className={category}>Department</p>
-          <p>{department}</p>
+          <p className={category}>Known Employers</p>
+          <p>{agency}</p>
         </div>
       </div>
     </div>

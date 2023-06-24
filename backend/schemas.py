@@ -11,7 +11,7 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from .database import User
 from .database.models.action import Action
 from .database.models.source import Source
-from .database.models.incident import Description, Incident, SourceDetails
+from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
 from .database.models.officer import Officer
 from .database.models.investigation import Investigation
@@ -99,7 +99,6 @@ def validate(auth=True, **kwargs):
 _incident_list_attrs = [
     "victims",
     "perpetrators",
-    "descriptions",
     "tags",
     "participants",
     "attachments",
@@ -135,8 +134,7 @@ _BaseCreateIncidentSchema = schema_create(Incident)
 CreateOfficerSchema = schema_create(Officer)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
-CreateSuspectSchema = schema_create(Perpetrator)
-CreateDescriptionSchema = schema_create(Description)
+CreatePerpetratorSchema = schema_create(Perpetrator)
 CreateSourceDetailsSchema = schema_create(SourceDetails)
 CreateTagSchema = schema_create(Tag)
 CreateParticipantSchema = schema_create(Participant)
@@ -150,7 +148,7 @@ CreateLegalCaseSchema = schema_create(LegalCase)
 
 class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     victims: Optional[List[CreateVictimSchema]]
-    perpetrators: Optional[List[CreateSuspectSchema]]
+    perpetrators: Optional[List[CreatePerpetratorSchema]]
     tags: Optional[List[CreateTagSchema]]
     participants: Optional[List[CreateParticipantSchema]]
     attachments: Optional[List[CreateAttachmentSchema]]
@@ -167,8 +165,7 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseIncidentSchema = schema_get(Incident)
 VictimSchema = schema_get(Victim)
-SuspectSchema = schema_get(Perpetrator)
-DescriptionSchema = schema_get(Description)
+PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
 ParticipantSchema = schema_get(Participant)
 AttachmentSchema = schema_get(Attachment)
@@ -181,7 +178,7 @@ LegalCaseSchema = schema_get(LegalCase)
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     victims: List[VictimSchema]
-    perpetrators: List[SuspectSchema]
+    perpetrators: List[PerpetratorSchema]
     tags: List[TagSchema]
     participants: List[ParticipantSchema]
     attachments: List[AttachmentSchema]
@@ -224,7 +221,6 @@ def incident_orm_to_json(incident: Incident) -> dict:
         exclude={
             "actions",
             "investigations",
-            "attachments",
             "legal_case",
             "participants",
             "results_of_stop",

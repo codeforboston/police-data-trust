@@ -1,51 +1,47 @@
-import { Incident, Suspect } from "../helpers/api"
+import { Incident, Perpetrator } from "../helpers/api"
 
-export interface DepartmentType {
-  departmentName: string
-  deptImage: string
-  deptAddress: string
-  webAddress: string
+export interface AgencyType {
+  agencyName: string
+  agencyImage: string
+  agencyHqAddress: string
+  websiteUrl: string
 }
 
-export const departmentColumns = [
+export const agencyColumns = [
   {
-    Header: "Department",
-    accessor: "dept"
+    Header: "agency",
+    accessor: "agency"
   },
   {
     Header: "Address",
-    accessor: "deptAddress"
+    accessor: "agencyHqAddress"
   },
   {
     Header: "Website",
-    accessor: "webAddress"
+    accessor: "websiteUrl"
   },
   {
-    Header: "Dept Address",
-    accessor: "deptAddress"
+    Header: "Agency Address",
+    accessor: "agencyHqAddress"
   }
 ]
 
 export interface EmploymentType {
-  department: DepartmentType
-  status: string
-  startDate: Date
-  endDate: Date
+  agency: AgencyType
+  currentlyEmployed: string
+  earliestEmployment: Date
+  latestEmployment: Date
+  badgeNumber: string
 }
 
 export interface OfficerRecordType {
   recordId: number
   firstName: string
   lastName: string
-  badgeNo: string
-  status: string
-  department: string
-  birthDate?: Date
+  dateOfBirth?: Date
   gender?: string
   race?: string
-  ethnicity?: string
-  incomeBracket?: string
+  knownEmployers?: AgencyType[]
   workHistory: EmploymentType[]
-  affiliations?: string[]
-  suspect_matches?: Suspect[]
+  accusations?: Perpetrator[]
 }

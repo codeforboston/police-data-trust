@@ -1,10 +1,10 @@
 import { Incident } from "../helpers/api"
 
-export interface DepartmentType {
-  departmentName: string
-  deptImage: string
-  deptAddress: string
-  webAddress: string
+export interface AgencyType {
+  agencyName: string
+  agencyImage: string
+  agencyHqAddress: string
+  websiteUrl: string
 }
 
 export const departmentColumns = [
@@ -27,24 +27,20 @@ export const departmentColumns = [
 ]
 
 export interface EmploymentType {
-  department: DepartmentType
-  status: string
-  startDate: Date
-  endDate: Date
+  agency: AgencyType
+  currentlyEmployed: string
+  earliestEmployment: Date
+  latestEmployment: Date
+  badgeNumber: string
 }
 
-export interface SuspectRecordType {
+export interface PerpetratorRecordType {
   recordId: number
   firstName: string
   lastName: string
-  badgeNo: string
-  status: string
-  department: string
+  badge: string
+  rank: string
   gender?: string
   race?: string
-  ethnicity?: string
-  incomeBracket?: string
-  workHistory: EmploymentType[]
-  affiliations?: string[]
   incident?: Incident
 }

@@ -45,7 +45,7 @@ export interface Source {
   contact_email?: string
 }
 
-export interface Suspect {
+export interface Perpetrator {
   first_name?: string
   last_name?: string
 }
@@ -68,7 +68,7 @@ export interface Incident {
   longitude?: number
   time_of_incident?: string
   department?: string
-  suspects: Suspect[]
+  perpetrators: Perpetrator[]
   description?: string
   use_of_force?: UseOfForce[]
 }

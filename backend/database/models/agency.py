@@ -14,8 +14,8 @@ class JURISDICTION(enum.Enum):
 
 class Agency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     name = db.Column(db.Text)
+    website_url = db.Column(db.Text)
     hq_address = db.Column(db.Text)
     hq_city = db.Column(db.Text)
     hq_zip = db.Column(db.Text)

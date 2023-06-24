@@ -78,7 +78,8 @@ def test_create_incident(db_session, example_incidents):
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
     for i in [0, 1]:
-        assert incident_obj.suspects[i].id == created["suspects"][i]["id"]
+        assert incident_obj.perpetrators[i].id == \
+            created["perpetrators"][i]["id"]
     assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
     assert incident_obj.source == expected["source"]
 

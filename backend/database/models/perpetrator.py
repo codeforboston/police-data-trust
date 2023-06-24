@@ -15,6 +15,7 @@ class Perpetrator(db.Model):
     # Note: rank at time of incident
     rank = db.Column(db.Enum(Rank))
     star = db.Column(db.Text)  # type?
+    role = db.Column(db.Text)
     suspects = db.relationship(
         "Officer", secondary=perpetrator_officer, backref="accusations")
 

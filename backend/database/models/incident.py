@@ -71,9 +71,6 @@ class Incident(db.Model, CrudMixin):
     # Float is double precision (8 bytes) by default in Postgres
     longitude = db.Column(db.Float)
     latitude = db.Column(db.Float)
-    # TODO: neighborhood seems like a weird identifier that may not always
-    #  apply in consistent ways across municipalities.
-    neighborhood = db.Column(db.Text)
     description = db.Column(db.Text)
     stop_type = db.Column(db.Text)  # TODO: enum
     call_type = db.Column(db.Text)  # TODO: enum
@@ -87,7 +84,6 @@ class Incident(db.Model, CrudMixin):
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
     victims = db.relationship("Victim", backref="incident")
     perpetrators = db.relationship("Perpetrator", backref="incident")
-    department = db.Column(db.Text)
     # descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", secondary=incident_tag, backref="incidents")
     agencies_present = db.relationship(
@@ -105,14 +101,18 @@ class Incident(db.Model, CrudMixin):
         return f"<Incident {self.id}>"
 
 
-# TODO: This is a component table, but it's not clear what it's a component of.
-class Description(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # description id
-    incident_id = db.Column(
-        db.Integer, db.ForeignKey("incident.id"), nullable=False
-    )
-    text = db.Column(db.Text)
-    type = db.Column(db.Text)  # TODO: enum
+# On the Description object:
+# Seems like this is based on the WITNESS standard. It also appears that the
+# original intention of that standard is to allow multiple descriptions to be
+# applied to a single incident. I recomend we handle this as part of a
+# larger epic when we add the annotation system, which is related.
+# class Description(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)  # description id
+#     incident_id = db.Column(
+#         db.Integer, db.ForeignKey("incident.id"), nullable=False
+#     )
+#     text = db.Column(db.Text)
+#     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
     # source = db.Column(db.Text)
     # location = db.Column(db.Text)  # TODO: location object
