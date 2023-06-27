@@ -1,10 +1,17 @@
 import { OfficerRecordType, EmploymentType } from "../models/officer"
+import { PerpetratorRecordType } from "../models/perpetrator"
 import { Incident, Officer, UseOfForce } from "../helpers/api"
 import officers from "../models/mock-data/officer.json"
 
 export function getOfficerFromMockData(officerId: number) {
   if (officerId >= 0 && officerId < 100) {
     return mockToOfficerType(officers[officerId])
+  }
+}
+
+export function getPerpetratorFromMockData(perpetratorId: number) {
+  if (perpetratorId >= 0 && perpetratorId < 100) {
+    return mockToPerpetratorType(officers[perpetratorId])
   }
 }
 
@@ -26,39 +33,6 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     return converted
   }
 
-  function mockToIncidentType(incidents: typeof officer.incidents): Incident[] {
-    const officerNames = incidents[0].officers
-    function mockToOfficerNameType(names: typeof officerNames): Officer[] {
-      const converted: Officer[] = names.map((item) => {
-        return {
-          first_name: item.split(".")[0] + ".",
-          last_name: item.split(".")[1]
-        }
-      })
-      return converted
-    }
-
-    const usesOfForce = incidents[0].useOfForce
-    function mockToForceType(forces: typeof usesOfForce): UseOfForce[] {
-      const converted: UseOfForce[] = forces.map((force) => {
-        return {
-          item: force
-        }
-      })
-      return converted
-    }
-
-    const converted: Incident[] = incidents.map((incident) => {
-      return {
-        ...incident,
-        id: incident.id,
-        officers: mockToOfficerNameType(incident.officers),
-        use_of_force: mockToForceType(incident.useOfForce)
-      }
-    })
-    return converted
-  }
-
   return {
     recordId: officer.id,
     firstName: officer.firstName,
@@ -69,3 +43,16 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     workHistory: mockToWorkHistoryType(officer.workHistory)
   }
 }
+
+export function mockToPerpetratorType(officer: typeof officers[0]): PerpetratorRecordType {
+
+
+  return {
+    recordId: officer.id,
+    firstName: officer.firstName,
+    lastName: officer.lastName,
+    gender: officer.gender,
+    race: officer.race
+  }
+}
+

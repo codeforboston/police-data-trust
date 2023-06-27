@@ -26,14 +26,6 @@ export const departmentColumns = [
   }
 ]
 
-export interface EmploymentType {
-  agency: AgencyType
-  currentlyEmployed: string
-  earliestEmployment: Date
-  latestEmployment: Date
-  badgeNumber: string
-}
-
 export interface PerpetratorRecordType {
   recordId: number
   firstName?: string
