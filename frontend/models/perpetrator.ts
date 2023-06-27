@@ -36,10 +36,10 @@ export interface EmploymentType {
 
 export interface PerpetratorRecordType {
   recordId: number
-  firstName: string
-  lastName: string
-  badge: string
-  rank: string
+  firstName?: string
+  lastName?: string
+  badge?: string
+  rank?: string
   gender?: string
   race?: string
   incident?: Incident

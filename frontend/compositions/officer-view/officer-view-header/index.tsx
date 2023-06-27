@@ -16,7 +16,6 @@ export default function OfficerHeader(officer: OfficerRecordType) {
         </div>
         <div className={otherData}>
           <p className={category}>Known Employers</p>
-          <p>{knownEmployers[0]}</p>
         </div>
       </div>
     </div>

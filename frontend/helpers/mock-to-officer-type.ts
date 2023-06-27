@@ -18,7 +18,7 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
           agencyHqAddress: item.deptAddress,
           websiteUrl: "https://www.google.com/search?q=police+department"
         },
-        currentlyEmployed: item.status,
+        currentlyEmployed: true,
         earliestEmployment: new Date(item.dates.split("-")[0].trim()),
         latestEmployment: new Date(item.dates.split("-")[1].trim())
       }
@@ -63,16 +63,9 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     recordId: officer.id,
     firstName: officer.firstName,
     lastName: officer.lastName,
-    badgeNo: officer.badgeNo,
-    status: officer.status,
-    department: officer.knownEmployers[0].deptName,
-    birthDate: new Date(officer.birthDate),
+    dateOfBirth: new Date(officer.birthDate),
     gender: officer.gender,
     race: officer.race,
-    ethnicity: officer.ethnicity,
-    incomeBracket: officer.incomeBracket,
-    workHistory: mockToWorkHistoryType(officer.workHistory),
-    affiliations: officer.affiliations,
-    accusations: mockToIncidentType(officer.accusations)
+    workHistory: mockToWorkHistoryType(officer.workHistory)
   }
 }

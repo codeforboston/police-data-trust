@@ -12,7 +12,7 @@ describe("Incident Page", () => {
       latitude: 42.3601,
       description:
         "Officer issued motorist ticket, use of excessive force resulted in civilian injury.",
-      officers: [
+      perpetrators: [
         { first_name: "George", last_name: "Lopez" },
         { first_name: "Hannah", last_name: "Montana" }
       ]

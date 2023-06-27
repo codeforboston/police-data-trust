@@ -31,7 +31,7 @@ export interface EmploymentType {
   currentlyEmployed: boolean
   earliestEmployment: Date
   latestEmployment: Date
-  badgeNumber: string
+  badgeNumber?: string
 }
 
 export interface OfficerRecordType {
@@ -42,7 +42,7 @@ export interface OfficerRecordType {
   gender?: string
   race?: string
   knownEmployers?: AgencyType[]
-  workHistory: EmploymentType[]
+  workHistory?: EmploymentType[]
   accusations?: Perpetrator[]
   affiliations?: OfficerRecordType[]
 }
