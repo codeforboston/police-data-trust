@@ -41,8 +41,5 @@ export default function BaseMap(props: BaseMapProps) {
     }
   }, [valueScale, path, colorGradient, geoData, svg])
 
-  return (
-    <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}>
-    </svg>
-  )
+  return <svg id="map" viewBox={`0, 0, 1200, 700`} ref={baseMapRef}></svg>
 }
