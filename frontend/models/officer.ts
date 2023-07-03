@@ -41,6 +41,7 @@ export interface OfficerRecordType {
   dateOfBirth?: Date
   gender?: string
   race?: string
+  ethnicity?: string
   knownEmployers?: AgencyType[]
   workHistory?: EmploymentType[]
   accusations?: Perpetrator[]

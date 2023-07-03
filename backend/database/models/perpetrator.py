@@ -9,6 +9,7 @@ class Perpetrator(db.Model):
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
     race = db.Column(db.Text)
+    ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     badge = db.Column(db.Text)
     unit = db.Column(db.Text)  # type?

@@ -34,5 +34,6 @@ export interface PerpetratorRecordType {
   rank?: string
   gender?: string
   race?: string
+  ethnicity?: string
   incident?: Incident
 }

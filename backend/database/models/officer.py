@@ -21,6 +21,7 @@ class Officer(db.Model):
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
     race = db.Column(db.Text)
+    ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     # Note: rank at time of incident
     rank = db.Column(db.Enum(Rank))
