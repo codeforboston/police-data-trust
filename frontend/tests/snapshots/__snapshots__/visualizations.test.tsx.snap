@@ -31,13 +31,6 @@ exports[`the map renders Map correctly 1`] = `
             title="US Map"
             viewBox="0, 0, 1200, 700"
           >
-            <rect
-              fill="yellow"
-              height="100"
-              width="100"
-              x="100"
-              y="100"
-            />
             <g
               data-testid="basemapsvg"
               id="paths"
