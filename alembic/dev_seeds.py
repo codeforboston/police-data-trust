@@ -2,10 +2,9 @@ from backend.database.core import db
 from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
-from backend.database.models.officer import Officer
+from backend.database.models.perpetrator import Perpetrator
 from backend.database.models.source import Source
 from backend.database.models.use_of_force import UseOfForce
-
 
 
 def create_user(user):
@@ -61,6 +60,7 @@ create_user(
     )
 )
 
+
 def create_source(source):
     source_exists = (
         db.session.query(Source).filter_by(id=source.id).first() is not None
@@ -69,13 +69,13 @@ def create_source(source):
     if not source_exists:
         source.create()
 
+
 create_source(
     Source(
-        id="mpv",
-        publication_name="Mapping Police Violence",
-        publication_date="01/01/2015",
-        author="Samuel Sinyangwe",
-        URL="https://mappingpoliceviolence.us",
+        id=10000000,
+        name="Mapping Police Violence",
+        url="https://mappingpoliceviolence.us",
+        contact_email="info@campaignzero.org"
     )
 )
 
@@ -83,22 +83,23 @@ create_source(
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
     id = base_id + key
+    mpv = db.session.query(Source).filter_by(
+        name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
+        source=mpv,
         location=f"Test location {key}",
         longitude=lon,
         latitude=lat,
         description=f"Test description {key}",
-        department=f"Small Police Department {key}",
         time_of_incident=f"{date} 00:00:00",
-        officers=[
-            Officer(
+        perpetrators=[
+            Perpetrator(
                 first_name=f"TestFirstName {key}",
                 last_name=f"TestLastName {key}",
             )
         ],
-        use_of_force=[UseOfForce(item=f"gunshot {key}")],
-        source="mpv",
+        use_of_force=[UseOfForce(item=f"gunshot {key}")]
     )
     exists = db.session.query(Incident).filter_by(id=id).first() is not None
 

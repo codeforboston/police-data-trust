@@ -3,16 +3,16 @@ import styles from "./work-history-instance.module.css"
 import Image from "next/image"
 
 export default function WorkHistoryInstance(pastWorkplace: EmploymentType) {
-  const { department, status, startDate, endDate } = pastWorkplace
-  const { departmentName, deptImage, deptAddress, webAddress } = department
-  const startDateString = new Date(startDate).toLocaleDateString().split(",")[0]
-  const endDateString = new Date(endDate).toLocaleDateString().split(",")[0]
+  const { agency, currentlyEmployed, earliestEmployment, latestEmployment } = pastWorkplace
+  const { agencyName, agencyImage, agencyHqAddress, websiteUrl } = agency
+  const startDateString = new Date(earliestEmployment).toLocaleDateString().split(",")[0]
+  const endDateString = new Date(latestEmployment).toLocaleDateString().split(",")[0]
 
   const { patch, wrapper, dates } = styles
 
   return (
     <div className={wrapper}>
-      <img className={patch} src={deptImage} alt={departmentName.concat(" Patch")} />
+      <img className={patch} src={agencyImage} alt={agencyName.concat(" Patch")} />
       <div>
         <p>
           {status}
@@ -20,9 +20,9 @@ export default function WorkHistoryInstance(pastWorkplace: EmploymentType) {
             {startDateString} - {endDateString}
           </span>
         </p>
-        <a href={webAddress}>{departmentName}</a>
+        <a href={websiteUrl}>{agencyName}</a>
         {/*TODO: Get Phone number from officer data, mock data currently does not have*/}
-        <p>(123) 456-7890 * {deptAddress}</p>
+        <p>(123) 456-7890 * {agencyHqAddress}</p>
       </div>
     </div>
   )

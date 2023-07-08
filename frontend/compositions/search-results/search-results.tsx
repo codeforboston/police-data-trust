@@ -3,7 +3,7 @@ import { faSlidersH } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { useSearch } from "../../helpers"
-import { Officer } from "../../helpers/api"
+import { Perpetrator } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
 import { TooltipIcons, TooltipTypes } from "../../models"
 import { InfoTooltip } from "../../shared-components"
@@ -38,11 +38,11 @@ export const resultsColumns: Column<any>[] = [
     id: "searchDate"
   },
   {
-    Header: "Officer(s) Involved",
+    Header: "Perpetrator(s) Involved",
     accessor: (row: any) =>
-      row["officers"].map((names: Officer) => Object.values(names).join(", ")).join(", "),
+      row["perpetrators"].map((names: Perpetrator) => Object.values(names).join(", ")).join(", "),
     filter: "text",
-    id: "officers"
+    id: "perpetrators"
   },
   {
     Header: () => (

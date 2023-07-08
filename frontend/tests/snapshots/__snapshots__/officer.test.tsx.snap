@@ -29,34 +29,7 @@ Object {
             <p
               class="category"
             >
-              Badge Number
-            </p>
-            <p>
-              30420452
-            </p>
-          </div>
-          <div
-            class="otherData"
-          >
-            <p
-              class="category"
-            >
-              Officer Status
-            </p>
-            <p>
-              Chief
-            </p>
-          </div>
-          <div
-            class="otherData"
-          >
-            <p
-              class="category"
-            >
-              Department
-            </p>
-            <p>
-              Houston Police Department
+              Known Employers
             </p>
           </div>
         </div>
@@ -102,30 +75,6 @@ Object {
               Black or African American
             </p>
           </div>
-          <div
-            class="data"
-          >
-            <p
-              class="category"
-            >
-              Ethnicity
-            </p>
-            <p>
-              Hispanic or Latino
-            </p>
-          </div>
-          <div
-            class="data"
-          >
-            <p
-              class="category"
-            >
-              Income Bracket
-            </p>
-            <p>
-              Over $523,600
-            </p>
-          </div>
         </div>
       </div>
       <hr />
@@ -150,7 +99,7 @@ Object {
             />
             <div>
               <p>
-                Captain
+                
                 <span
                   class="dates"
                 >
@@ -180,7 +129,7 @@ Object {
             />
             <div>
               <p>
-                Sergeant
+                
                 <span
                   class="dates"
                 >
@@ -207,9 +156,6 @@ Object {
       >
         <p>
           Professional Affiliations: 
-        </p>
-        <p>
-          Fraternal Order of Police, International Union of Police Associations, National Association of Police Organizations
         </p>
       </div>
     </div>
@@ -239,34 +185,7 @@ Object {
           <p
             class="category"
           >
-            Badge Number
-          </p>
-          <p>
-            30420452
-          </p>
-        </div>
-        <div
-          class="otherData"
-        >
-          <p
-            class="category"
-          >
-            Officer Status
-          </p>
-          <p>
-            Chief
-          </p>
-        </div>
-        <div
-          class="otherData"
-        >
-          <p
-            class="category"
-          >
-            Department
-          </p>
-          <p>
-            Houston Police Department
+            Known Employers
           </p>
         </div>
       </div>
@@ -312,30 +231,6 @@ Object {
             Black or African American
           </p>
         </div>
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
-            Ethnicity
-          </p>
-          <p>
-            Hispanic or Latino
-          </p>
-        </div>
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
-            Income Bracket
-          </p>
-          <p>
-            Over $523,600
-          </p>
-        </div>
       </div>
     </div>
     <hr />
@@ -360,7 +255,7 @@ Object {
           />
           <div>
             <p>
-              Captain
+              
               <span
                 class="dates"
               >
@@ -390,7 +285,7 @@ Object {
           />
           <div>
             <p>
-              Sergeant
+              
               <span
                 class="dates"
               >
@@ -417,9 +312,6 @@ Object {
     >
       <p>
         Professional Affiliations: 
-      </p>
-      <p>
-        Fraternal Order of Police, International Union of Police Associations, National Association of Police Organizations
       </p>
     </div>
   </div>,

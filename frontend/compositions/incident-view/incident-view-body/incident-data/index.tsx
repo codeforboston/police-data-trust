@@ -13,7 +13,7 @@ export default function IncidentData(incident: Incident) {
         <p className={data}>{description}</p>
       </div>
       <div className={dataBlock}>
-        <p className={category}>Departments Involved:</p>
+        <p className={category}>Agencies Involved:</p>
         {/* TODO: Display badge numbers and departments once api model is updated. 
         <div>
           {incident.officers.map((officer) => (

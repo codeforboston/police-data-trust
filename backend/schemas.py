@@ -10,11 +10,14 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 
 from .database import User
 from .database.models.action import Action
-from .database.models.incident import Description, Incident
+from .database.models.source import Source
+from .database.models.incident import Incident, SourceDetails
+from .database.models.agency import Agency
+from .database.models.officer import Officer
 from .database.models.investigation import Investigation
 from .database.models.legal_case import LegalCase
-from .database.models.multimedia import Multimedia
-from .database.models.officer import Officer
+from .database.models.attachment import Attachment
+from .database.models.perpetrator import Perpetrator
 from .database.models.participant import Participant
 from .database.models.result_of_stop import ResultOfStop
 from .database.models.tag import Tag
@@ -95,11 +98,10 @@ def validate(auth=True, **kwargs):
 
 _incident_list_attrs = [
     "victims",
-    "officers",
-    "descriptions",
+    "perpetrators",
     "tags",
     "participants",
-    "multimedias",
+    "attachments",
     "investigations",
     "results_of_stop",
     "actions",
@@ -127,13 +129,16 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
 
 
+CreateSourceSchema = schema_create(Source)
 _BaseCreateIncidentSchema = schema_create(Incident)
-CreateVictimSchema = schema_create(Victim)
 CreateOfficerSchema = schema_create(Officer)
-CreateDescriptionSchema = schema_create(Description)
+CreateAgencySchema = schema_create(Agency)
+CreateVictimSchema = schema_create(Victim)
+CreatePerpetratorSchema = schema_create(Perpetrator)
+CreateSourceDetailsSchema = schema_create(SourceDetails)
 CreateTagSchema = schema_create(Tag)
 CreateParticipantSchema = schema_create(Participant)
-CreateMultimediaSchema = schema_create(Multimedia)
+CreateAttachmentSchema = schema_create(Attachment)
 CreateInvestigationSchema = schema_create(Investigation)
 CreateResultOfStopSchema = schema_create(ResultOfStop)
 CreateActionSchema = schema_create(Action)
@@ -143,10 +148,10 @@ CreateLegalCaseSchema = schema_create(LegalCase)
 
 class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     victims: Optional[List[CreateVictimSchema]]
-    officers: Optional[List[CreateOfficerSchema]]
+    perpetrators: Optional[List[CreatePerpetratorSchema]]
     tags: Optional[List[CreateTagSchema]]
     participants: Optional[List[CreateParticipantSchema]]
-    multimedias: Optional[List[CreateMultimediaSchema]]
+    attachments: Optional[List[CreateAttachmentSchema]]
     investigations: Optional[List[CreateInvestigationSchema]]
     results_of_stop: Optional[List[CreateResultOfStopSchema]]
     actions: Optional[List[CreateActionSchema]]
@@ -160,11 +165,10 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseIncidentSchema = schema_get(Incident)
 VictimSchema = schema_get(Victim)
-OfficerSchema = schema_get(Officer)
-DescriptionSchema = schema_get(Description)
+PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
 ParticipantSchema = schema_get(Participant)
-MultimediaSchema = schema_get(Multimedia)
+AttachmentSchema = schema_get(Attachment)
 InvestigationSchema = schema_get(Investigation)
 ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
@@ -174,10 +178,10 @@ LegalCaseSchema = schema_get(LegalCase)
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     victims: List[VictimSchema]
-    officers: List[OfficerSchema]
+    perpetrators: List[PerpetratorSchema]
     tags: List[TagSchema]
     participants: List[ParticipantSchema]
-    multimedias: List[MultimediaSchema]
+    attachments: List[AttachmentSchema]
     investigations: List[InvestigationSchema]
     results_of_stop: List[ResultOfStopSchema]
     actions: List[ActionSchema]
@@ -198,7 +202,7 @@ def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
     associated with a schema instance.
     """
 
-    converters = {"officers": Officer, "use_of_force": UseOfForce}
+    converters = {"perpetrators": Perpetrator, "use_of_force": UseOfForce}
     orm_attrs = incident.dict()
     for k, v in orm_attrs.items():
         is_dict = isinstance(v, dict)
@@ -217,7 +221,6 @@ def incident_orm_to_json(incident: Incident) -> dict:
         exclude={
             "actions",
             "investigations",
-            "multimedias",
             "legal_case",
             "participants",
             "results_of_stop",

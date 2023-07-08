@@ -38,6 +38,18 @@ export interface ResetPasswordResponse {
   message: string
 }
 
+export interface Source {
+  name?: string
+  id?: number
+  url?: string
+  contact_email?: string
+}
+
+export interface Perpetrator {
+  first_name?: string
+  last_name?: string
+}
+
 export interface Officer {
   first_name?: string
   last_name?: string
@@ -48,16 +60,17 @@ export interface UseOfForce {
 }
 export interface Incident {
   id: number
+  source?: Source
+  source_id?: number
   location?: string
   locationLonLat?: [number, number] //TODO: Backend data does not return locationLonLat attribute. Remove this and refactor frontend
   latitude?: number
   longitude?: number
   time_of_incident?: string
   department?: string
-  officers: Officer[]
+  perpetrators: Perpetrator[]
   description?: string
   use_of_force?: UseOfForce[]
-  source?: string
 }
 
 interface AuthenticatedRequest {

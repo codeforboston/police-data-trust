@@ -1,19 +1,19 @@
 import React from "react"
 import { Column } from "react-table"
 import { useSearch } from "../../helpers"
-import { Officer } from "../../helpers/api"
+import { Perpetrator } from "../../helpers/api"
 import { DataTable } from "../../shared-components/data-table/data-table"
 
 export const savedResultsColumns: Column<any>[] = [
   {
-    Header: "Officer(s)",
+    Header: "Perpetrator(s)",
     accessor: (row: any) =>
-      row["officers"].map((names: Officer) => Object.values(names).join(", ")).join(", "),
-    id: "officers"
+      row["perpetrators"].map((names: Perpetrator) => Object.values(names).join(", ")).join(", "),
+    id: "perpetrators"
   },
   {
-    Header: "Department",
-    accessor: "department"
+    Header: "Agency",
+    accessor: "agency"
   },
   {
     Header: "Use of Force",

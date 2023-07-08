@@ -1,4 +1,5 @@
 import { OfficerRecordType, EmploymentType } from "../models/officer"
+import { PerpetratorRecordType } from "../models/perpetrator"
 import { Incident, Officer, UseOfForce } from "../helpers/api"
 import officers from "../models/mock-data/officer.json"
 
@@ -8,52 +9,25 @@ export function getOfficerFromMockData(officerId: number) {
   }
 }
 
-export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordType {
+export function getPerpetratorFromMockData(perpetratorId: number) {
+  if (perpetratorId >= 0 && perpetratorId < 100) {
+    return mockToPerpetratorType(officers[perpetratorId])
+  }
+}
+
+export function mockToOfficerType(officer: (typeof officers)[0]): OfficerRecordType {
   function mockToWorkHistoryType(workHistory: typeof officer.workHistory): EmploymentType[] {
     const converted: EmploymentType[] = workHistory.map((item) => {
       return {
-        department: {
-          departmentName: item.deptName,
-          deptImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
-          deptAddress: item.deptAddress,
-          webAddress: "https://www.google.com/search?q=police+department"
+        agency: {
+          agencyName: item.deptName,
+          agencyImage: item.deptImage.replace("./frontend/models/mock-data/dept-images", ""),
+          agencyHqAddress: item.deptAddress,
+          websiteUrl: "https://www.google.com/search?q=police+department"
         },
-        status: item.status,
-        startDate: new Date(item.dates.split("-")[0].trim()),
-        endDate: new Date(item.dates.split("-")[1].trim())
-      }
-    })
-    return converted
-  }
-
-  function mockToIncidentType(incidents: typeof officer.incidents): Incident[] {
-    const officerNames = incidents[0].officers
-    function mockToOfficerNameType(names: typeof officerNames): Officer[] {
-      const converted: Officer[] = names.map((item) => {
-        return {
-          first_name: item.split(".")[0] + ".",
-          last_name: item.split(".")[1]
-        }
-      })
-      return converted
-    }
-
-    const usesOfForce = incidents[0].useOfForce
-    function mockToForceType(forces: typeof usesOfForce): UseOfForce[] {
-      const converted: UseOfForce[] = forces.map((force) => {
-        return {
-          item: force
-        }
-      })
-      return converted
-    }
-
-    const converted: Incident[] = incidents.map((incident) => {
-      return {
-        ...incident,
-        id: incident.id,
-        officers: mockToOfficerNameType(incident.officers),
-        use_of_force: mockToForceType(incident.useOfForce)
+        currentlyEmployed: true,
+        earliestEmployment: new Date(item.dates.split("-")[0].trim()),
+        latestEmployment: new Date(item.dates.split("-")[1].trim())
       }
     })
     return converted
@@ -63,16 +37,19 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     recordId: officer.id,
     firstName: officer.firstName,
     lastName: officer.lastName,
-    badgeNo: officer.badgeNo,
-    status: officer.status,
-    department: officer.department,
-    birthDate: new Date(officer.birthDate),
+    dateOfBirth: new Date(officer.birthDate),
     gender: officer.gender,
     race: officer.race,
-    ethnicity: officer.ethnicity,
-    incomeBracket: officer.incomeBracket,
-    workHistory: mockToWorkHistoryType(officer.workHistory),
-    affiliations: officer.affiliations,
-    incidents: mockToIncidentType(officer.incidents)
+    workHistory: mockToWorkHistoryType(officer.workHistory)
+  }
+}
+
+export function mockToPerpetratorType(officer: (typeof officers)[0]): PerpetratorRecordType {
+  return {
+    recordId: officer.id,
+    firstName: officer.firstName,
+    lastName: officer.lastName,
+    gender: officer.gender,
+    race: officer.race
   }
 }

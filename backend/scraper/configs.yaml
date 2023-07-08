@@ -45,7 +45,6 @@ tables:
       - death_location_state
       - description
       - perpetrator
-      - department_present
     optional:
       - incident_type
   victim:

@@ -6,8 +6,9 @@ class Victim(db.Model):
     incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"))
     name = db.Column(db.Text)
     race = db.Column(db.Text)
+    ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
-    date_of_birth = db.Column(db.Date)  # TODO: add "estimated"?
+    age = db.Column(db.Integer)
     manner_of_injury = db.Column(db.Text)  # TODO: is an enum
     injury_description = db.Column(db.Text)
     injury_condition = db.Column(db.Text)
