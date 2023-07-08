@@ -5,7 +5,6 @@ export default function OfficerAffiliations(officer: OfficerRecordType) {
   const { affiliations } = officer
   const { wrapper } = styles
 
-
   return (
     <div className={wrapper}>
       <p>Professional Affiliations: </p>

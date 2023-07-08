@@ -59,7 +59,7 @@ export interface UseOfForce {
   item?: string
 }
 export interface Incident {
-  id: number 
+  id: number
   source?: Source
   source_id?: number
   location?: string
