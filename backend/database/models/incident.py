@@ -60,7 +60,7 @@ class Incident(db.Model, CrudMixin):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     source_id = db.Column(
-        db.Integer, db.ForeignKey("source.id"), nullable=False)
+        db.String, db.ForeignKey("source.id"))
     source_details = db.relationship(
         "SourceDetails", backref="incident", uselist=False)
     time_of_incident = db.Column(db.DateTime)
