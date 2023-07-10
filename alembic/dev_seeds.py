@@ -72,7 +72,7 @@ def create_source(source):
 
 create_source(
     Source(
-        id=10000000,
+        id="mpv",
         name="Mapping Police Violence",
         url="https://mappingpoliceviolence.us",
         contact_email="info@campaignzero.org"
