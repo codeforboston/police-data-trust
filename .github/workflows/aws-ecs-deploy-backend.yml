@@ -1,5 +1,8 @@
 name: Backend Build and Deploy to AWS ECS
 on:
+  push:
+    branches:
+      - 'main'
   release:
     types:
       - created
@@ -31,6 +34,10 @@ jobs:
     - name: Set AWS Env & Image Tag per workflow
       run: |
         SHORT_SHA=$(git rev-parse --short HEAD)
+        if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            echo AWS_APPENV="$AWS_APP_NAME"-dev >> $GITHUB_ENV
+            echo IMAGE_TAG=$SHORT_SHA >> $GITHUB_ENV
+        fi
         if [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
             RELEASE_TAG=$(git describe --tags)
             echo AWS_APPENV="$AWS_APP_NAME"-prod >> $GITHUB_ENV
