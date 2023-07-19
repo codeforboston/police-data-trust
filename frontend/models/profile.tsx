@@ -73,7 +73,7 @@ export const publicUser = (user: User): UserDataType => ({
   firstName: user.firstName || "",
   lastName: user.lastName || "",
   email: user.email,
-  phone: fakePhoneNumber,
+  phone: user.phoneNumber,
   active: user.active,
   role: UserRoles.PUBLIC
 })
@@ -82,7 +82,7 @@ export const passportUser = (user: User): UserDataType => ({
   firstName: user.firstName || "",
   lastName: user.lastName || "",
   email: user.email,
-  phone: fakePhoneNumber,
+  phone: user.phoneNumber,
   active: user.active,
   role: UserRoles.PASSPORT
 })
@@ -91,7 +91,7 @@ export const contributorUser = (user: User): UserDataType => ({
   firstName: user.firstName || "",
   lastName: user.lastName || "",
   email: user.email,
-  phone: fakePhoneNumber,
+  phone: user.phoneNumber,
   active: user.active,
   role: UserRoles.CONTRIBUTOR
 })
@@ -100,7 +100,7 @@ export const adminUser = (user: User): UserDataType => ({
   firstName: user.firstName || "",
   lastName: user.lastName || "",
   email: user.email,
-  phone: fakePhoneNumber,
+  phone: user.phoneNumber,
   active: user.active,
   role: UserRoles.ADMIN
 })
@@ -109,7 +109,7 @@ export const someUser = (user: User, role: UserRoles): UserDataType => ({
   firstName: user.firstName || "",
   lastName: user.lastName || "",
   email: user.email,
-  phone: fakePhoneNumber,
+  phone: user.phoneNumber,
   active: user.active,
   role: role
 })
@@ -152,6 +152,3 @@ export const profileTypeContent: { [key in UserRoles]: ProfileTypeText } = {
     content: ""
   }
 }
-
-// not currently part of API data
-export const fakePhoneNumber = "9995550123"

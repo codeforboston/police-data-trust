@@ -8,7 +8,8 @@ interface EnrollmentErrorText {
 
 export enum EnrollmentTypes {
   VIEWER = "viewer",
-  PASSPORT = "passport"
+  PASSPORT = "passport",
+  CONTRIBUTOR = "contributor"
 }
 
 export const enrollmentMessage: { [key in EnrollmentTypes]: EnrollmentErrorText } = {
@@ -18,6 +19,11 @@ export const enrollmentMessage: { [key in EnrollmentTypes]: EnrollmentErrorText 
     returnPath: AppRoutes.LOGIN
   },
   [EnrollmentTypes.PASSPORT]: {
+    statusMessage: "submit your application",
+    returnText: "Return to dashboard",
+    returnPath: AppRoutes.DASHBOARD
+  },
+  [EnrollmentTypes.CONTRIBUTOR]: {
     statusMessage: "submit your application",
     returnText: "Return to dashboard",
     returnPath: AppRoutes.DASHBOARD
