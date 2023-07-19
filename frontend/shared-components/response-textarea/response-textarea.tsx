@@ -9,7 +9,7 @@ export default function ResponseTextArea() {
     formState: { errors }
   } = useFormContext()
   const [textareaId, counterId, errorId] = ["responseTextArea", "responseCounter", "responseError"]
-  const [charMax, charMin] = [500, 150]
+  const [charMax, charMin] = [500, 20]
   const inputName = ResponseTextArea.inputName
   const defaultErrorMessage = `Please provide a response of at least ${charMin} characters`
 
@@ -28,7 +28,7 @@ export default function ResponseTextArea() {
 
   return (
     <div className={`defaultInputContainer ${!isValid && "hasError"}`}>
-      <label htmlFor={textareaId}>Why are you signing up to the NPDC?:</label>
+      <label htmlFor={textareaId}>Why are you applying for this role?</label>
       <textarea
         className={styles.responseArea}
         id={textareaId}

@@ -14,6 +14,9 @@ export enum PrimaryInputNames {
   LOCATION = "location",
   LOGIN_PASSWORD = "loginPassword",
   OFFICER_NAME = "officerName",
+  ORGANIZATION_NAME = "organizationName",
+  ORGANIZATION_URL = "organizationUrl",
+  ORGANIZATION_EMAIL = "organizationEmail",
   PHONE_NUMBER = "phoneNumber",
   STREET_ADDRESS = "streetAddress",
   ZIP_CODE = "zipCode"
@@ -23,6 +26,8 @@ const passwordRgx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).
 const nameRgx: RegExp = new RegExp("^[' -]*[a-z]+[a-z' -]+$", "i")
 const anyString: RegExp = new RegExp("[sS]*")
 const phoneNumberRgx: RegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
+const emailRgx: RegExp = /^[a-z0-9_.-]+@[a-z0-9_.-]+\.[a-z]{2,4}$/i
+const urlRgx: RegExp = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
 
 export const primaryInputValidation = {
   [PrimaryInputNames.BADGE_NUMBER]: {
@@ -63,7 +68,7 @@ export const primaryInputValidation = {
   },
   [PrimaryInputNames.EMAIL_ADDRESS]: {
     errorMessage: "Please enter a valid email",
-    pattern: /^[a-z0-9_.-]+@[a-z0-9_.-]+\.[a-z]{2,4}$/i,
+    pattern: emailRgx,
     inputType: "email"
   },
   [PrimaryInputNames.FIRST_NAME]: {
@@ -79,6 +84,21 @@ export const primaryInputValidation = {
   [PrimaryInputNames.LAST_NAME]: {
     errorMessage: "A name requires 2+ letters",
     pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.ORGANIZATION_NAME]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: nameRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.ORGANIZATION_URL]: {
+    errorMessage: "A name requires 2+ letters",
+    pattern: urlRgx,
+    inputType: "text"
+  },
+  [PrimaryInputNames.ORGANIZATION_EMAIL]: {
+    errorMessage: "Please enter a valid email",
+    pattern: emailRgx,
     inputType: "text"
   },
   [PrimaryInputNames.PHONE_NUMBER]: {
