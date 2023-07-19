@@ -15,7 +15,7 @@ export function getPerpetratorFromMockData(perpetratorId: number) {
   }
 }
 
-export function mockToOfficerType(officer: (typeof officers)[0]): OfficerRecordType {
+export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordType {
   function mockToWorkHistoryType(workHistory: typeof officer.workHistory): EmploymentType[] {
     const converted: EmploymentType[] = workHistory.map((item) => {
       return {
@@ -44,7 +44,7 @@ export function mockToOfficerType(officer: (typeof officers)[0]): OfficerRecordT
   }
 }
 
-export function mockToPerpetratorType(officer: (typeof officers)[0]): PerpetratorRecordType {
+export function mockToPerpetratorType(officer: typeof officers[0]): PerpetratorRecordType {
   return {
     recordId: officer.id,
     firstName: officer.firstName,
