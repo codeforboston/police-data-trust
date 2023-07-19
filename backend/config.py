@@ -43,7 +43,11 @@ class Config(object):
     USER_EMAIL_SENDER_NAME = USER_APP_NAME
     USER_EMAIL_SENDER_EMAIL = "noreply@policedatatrust.com"
 
-    FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+    FRONTEND_PORT = os.environ.get("PDT_WEB_PORT", "3000")
+    FRONTEND_URL = os.environ.get(
+        "FRONTEND_URL",
+        "http://localhost:" + FRONTEND_PORT
+    )
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):

@@ -4,12 +4,15 @@ FROM python:3.8-slim-buster
 
 WORKDIR /app/
 
+ARG PDT_API_PORT=5000
+
 COPY requirements/prod.txt .
 RUN pip install -r prod.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE $PDT_API_PORT
+ENV PDT_API_PORT=$PDT_API_PORT
 
 ENTRYPOINT [ "./run_cloud.sh" ]
 # ENV FLASK_ENV=${FLASK_ENV:-development}
