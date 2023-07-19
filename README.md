@@ -34,7 +34,12 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=police_data
 POSTGRES_HOST=db
+POSTGRES_PORT=5432
+PDT_API_PORT=5000
 ```
+
+> **Note**
+> When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
 
 3. Build and run the project with `docker-compose build; docker-compose up -d; docker-compose logs -f app`
 
