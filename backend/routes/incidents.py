@@ -31,7 +31,7 @@ def get_incidents(incident_id: int):
 @bp.route("/create", methods=["POST"])
 @jwt_required()
 # TODO: Require CONTRIBUTOR role
-@min_role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateIncidentSchema)
 def create_incident():
     """Create a single incident.

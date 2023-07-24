@@ -51,7 +51,7 @@ mock_incidents = {
 
 
 @pytest.fixture
-def example_incidents(db_session, client, access_token):
+def example_incidents(db_session, client, contributor_access_token):
     for id, mock in mock_sources.items():
         db_session.add(Source(id=id, **mock))
         db_session.commit()
@@ -61,7 +61,7 @@ def example_incidents(db_session, client, access_token):
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
-            headers={"Authorization": "Bearer {0}".format(access_token)},
+            headers={"Authorization": "Bearer {0}".format(contributor_access_token)},
         )
         assert res.status_code == 200
         created[name] = res.json
