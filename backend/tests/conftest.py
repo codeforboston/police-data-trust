@@ -3,8 +3,12 @@ import pytest
 from backend.api import create_app
 from backend.auth import user_manager
 from backend.config import TestingConfig
-from backend.database import User, UserRole, db
+from backend.database import User, UserRole, db, Source, source_user
+from backend.database.models._assoc_tables import MemberRole
+from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
+from sqlalchemy import insert
+from enum import Enum
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
@@ -51,6 +55,18 @@ def client(app):
 
 
 @pytest.fixture
+def example_source(db_session):
+    source = Source(
+        id="example_source",
+        name="Example Source",
+        url = "www.example.com",
+        contact_email=contributor_email,
+    )
+    db_session.add(source)
+    db_session.commit()
+    return source
+
+@pytest.fixture
 def example_user(db_session):
     user = User(
         email=example_email,
@@ -81,15 +97,22 @@ def admin_user(db_session):
 
 
 @pytest.fixture
-def contributor_user(db_session):
+def contributor_user(db_session, example_source):
     user = User(
         email=contributor_email,
         password=user_manager.hash_password(example_password),
         role=UserRole.CONTRIBUTOR,
         first_name="contributor",
-        last_name="last",
+        last_name="last"
     )
     db_session.add(user)
+    db_session.commit()
+    insert_statement = insert(source_user).values(
+        source_id=example_source.id, user_id=user.id,
+        role=MemberRole.PUBLISHER, joined_at=datetime.now(),
+        is_active=True, is_admin=False
+    )
+    db_session.execute(insert_statement)
     db_session.commit()
 
     return user
