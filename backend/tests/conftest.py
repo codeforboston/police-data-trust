@@ -64,6 +64,7 @@ def example_user(db_session):
     db_session.commit()
     return user
 
+
 @pytest.fixture
 def admin_user(db_session):
     user = User(
@@ -77,6 +78,7 @@ def admin_user(db_session):
     db_session.commit()
 
     return user
+
 
 @pytest.fixture
 def contributor_user(db_session):
@@ -92,6 +94,7 @@ def contributor_user(db_session):
 
     return user
 
+
 @pytest.fixture
 def access_token(client, example_user):
     res = client.post(
@@ -104,6 +107,7 @@ def access_token(client, example_user):
     assert res.status_code == 200
     return res.json["access_token"]
 
+
 @pytest.fixture
 def contributor_access_token(client, contributor_user):
     res = client.post(
@@ -115,6 +119,7 @@ def contributor_access_token(client, contributor_user):
     )
     assert res.status_code == 200
     return res.json["access_token"]
+
 
 @pytest.fixture
 def cli_runner(app):

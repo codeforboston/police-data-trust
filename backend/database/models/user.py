@@ -85,5 +85,8 @@ class User(db.Model, UserMixin, CrudMixin):
 
     phone_number = db.Column(db.Text)
 
+    member_of = db.relationship(
+        'Source', backref='source', secondary='source_user', lazy="select")
+
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))

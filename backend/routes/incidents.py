@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from backend.auth.jwt import min_role_required
+from backend.auth.jwt import min_role_required, contributor_has_source
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -30,8 +30,8 @@ def get_incidents(incident_id: int):
 
 @bp.route("/create", methods=["POST"])
 @jwt_required()
-# TODO: Require CONTRIBUTOR role
 @min_role_required(UserRole.CONTRIBUTOR)
+@contributor_has_source()
 @validate(json=CreateIncidentSchema)
 def create_incident():
     """Create a single incident.

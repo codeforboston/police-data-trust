@@ -20,6 +20,19 @@ def verify_roles_or_abort(min_role):
     return True
 
 
+def verify_contributor_has_source_or_abort():
+    verify_jwt_in_request()
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    if (
+        current_user is None
+        or not current_user.member_of
+    ):
+        abort(403)
+        return False
+    return True
+
+
 def blueprint_role_required(*roles):
     def decorator():
         verify_roles_or_abort(roles)
@@ -44,4 +57,15 @@ def min_role_required(*roles):
 
         return decorator
 
+    return wrapper
+
+def contributor_has_source():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            if verify_contributor_has_source_or_abort():
+                return fn(*args, **kwargs)
+            
+        return decorator
+    
     return wrapper
