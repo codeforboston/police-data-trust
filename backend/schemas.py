@@ -10,8 +10,8 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 
 from .database import User
 from .database.models.action import Action
-from .database.models.source import Source
-from .database.models.incident import Incident, SourceDetails
+from .database.models.organization import Organization
+from .database.models.incident import Incident, OrganizationDetails
 from .database.models.agency import Agency
 from .database.models.officer import Officer
 from .database.models.investigation import Investigation
@@ -129,13 +129,13 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
 
 
-CreateSourceSchema = schema_create(Source)
+CreateOrganizationSchema = schema_create(Organization)
 _BaseCreateIncidentSchema = schema_create(Incident)
 CreateOfficerSchema = schema_create(Officer)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
-CreateSourceDetailsSchema = schema_create(SourceDetails)
+CreateOrganizationDetailsSchema = schema_create(OrganizationDetails)
 CreateTagSchema = schema_create(Tag)
 CreateParticipantSchema = schema_create(Participant)
 CreateAttachmentSchema = schema_create(Attachment)

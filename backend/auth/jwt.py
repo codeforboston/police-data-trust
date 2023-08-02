@@ -20,7 +20,7 @@ def verify_roles_or_abort(min_role):
     return True
 
 
-def verify_contributor_has_source_or_abort():
+def verify_contributor_has_organization_or_abort():
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
@@ -59,11 +59,11 @@ def min_role_required(*roles):
 
     return wrapper
 
-def contributor_has_source():
+def contributor_has_organization():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
-            if verify_contributor_has_source_or_abort():
+            if verify_contributor_has_organization_or_abort():
                 return fn(*args, **kwargs)
             
         return decorator

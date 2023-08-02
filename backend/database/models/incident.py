@@ -59,10 +59,10 @@ class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    source_id = db.Column(
-        db.String, db.ForeignKey("source.id"))
-    source_details = db.relationship(
-        "SourceDetails", backref="incident", uselist=False)
+    organization_id = db.Column(
+        db.String, db.ForeignKey("organization.id"))
+    organization_details = db.relationship(
+        "OrganizationDetails", backref="incident", uselist=False)
     time_of_incident = db.Column(db.DateTime)
     time_confidence = db.Column(db.Integer)
     complaint_date = db.Column(db.Date)
@@ -114,7 +114,7 @@ class Incident(db.Model, CrudMixin):
 #     text = db.Column(db.Text)
 #     type = db.Column(db.Text)  # TODO: enum
     # TODO: are there rules for this column other than text?
-    # source = db.Column(db.Text)
+    # organization_id = db.Column(db.Text)
     # location = db.Column(db.Text)  # TODO: location object
     # # TODO: neighborhood seems like a weird identifier that may not always
     # #  apply in consistent ways across municipalities.
@@ -131,8 +131,8 @@ class Incident(db.Model, CrudMixin):
     # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
-class SourceDetails(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # source details id
+class OrganizationDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # organization details id
     incident_id = db.Column(
         db.Integer, db.ForeignKey("incident.id"), nullable=False
     )

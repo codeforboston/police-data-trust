@@ -22,9 +22,9 @@ class MemberRole(Enum):
             return 5
 
 
-source_user = db.Table(
-    'source_user',
-    db.Column('source_id', db.String, db.ForeignKey('source.id'),
+organization_user = db.Table(
+    'organization_user',
+    db.Column('organization_id', db.String, db.ForeignKey('organization.id'),
               primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
               primary_key=True),

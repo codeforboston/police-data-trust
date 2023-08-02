@@ -3,7 +3,7 @@ from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
 from backend.database.models.perpetrator import Perpetrator
-from backend.database.models.source import Source
+from backend.database.models.organization import Organization
 from backend.database.models.use_of_force import UseOfForce
 
 
@@ -61,17 +61,17 @@ create_user(
 )
 
 
-def create_source(source):
-    source_exists = (
-        db.session.query(Source).filter_by(id=source.id).first() is not None
+def create_organization(organization):
+    organization_exists = (
+        db.session.query(Organization).filter_by(id=organization.id).first() is not None
     )
 
-    if not source_exists:
-        source.create()
+    if not organization_exists:
+        organization.create()
 
 
-create_source(
-    Source(
+create_organization(
+    Organization(
         id="mpv",
         name="Mapping Police Violence",
         url="https://mappingpoliceviolence.us",
@@ -83,11 +83,11 @@ create_source(
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
     id = base_id + key
-    mpv = db.session.query(Source).filter_by(
+    mpv = db.session.query(Organization).filter_by(
         name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
-        source=mpv,
+        organization=mpv,
         location=f"Test location {key}",
         longitude=lon,
         latitude=lat,

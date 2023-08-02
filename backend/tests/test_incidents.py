@@ -1,9 +1,9 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Source
+from backend.database import Incident, Organization
 
-mock_sources = {
+mock_organizations = {
     "cpdp": {"name": "Citizens Police Data Project"},
     "mpv": {"name": "Mapping Police Violence"},
 }
@@ -17,7 +17,7 @@ mock_incidents = {
             {"first_name": "Lisa", "last_name": "Wong"},
         ],
         "use_of_force": [{"item": "Injurious restraint"}],
-        "source": "Citizens Police Data Project",
+        "organization": "Citizens Police Data Project",
         "location": "123 Right St Chicago, IL",
     },
     "traffic": {
@@ -27,7 +27,7 @@ mock_incidents = {
             {"first_name": "Ronda", "last_name": "Sousa"},
         ],
         "use_of_force": [{"item": "verbalization"}],
-        "source": "Mapping Police Violence",
+        "organization": "Mapping Police Violence",
         "location": "Park St and Boylston Boston",
     },
     "firearm": {
@@ -37,7 +37,7 @@ mock_incidents = {
             {"first_name": "Dale", "last_name": "Green"},
         ],
         "use_of_force": [{"item": "indirect firearm"}],
-        "source": "Citizens Police Data Project",
+        "organization": "Citizens Police Data Project",
         "location": "CHICAGO ILLINOIS",
     },
     "missing_fields": {
@@ -45,15 +45,15 @@ mock_incidents = {
         "perpetrators": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
-        "source": "Citizens Police Data Project",
+        "organization": "Citizens Police Data Project",
     },
 }
 
 
 @pytest.fixture
 def example_incidents(db_session, client, contributor_access_token):
-    for id, mock in mock_sources.items():
-        db_session.add(Source(id=id, **mock))
+    for id, mock in mock_organizations.items():
+        db_session.add(Organization(id=id, **mock))
         db_session.commit()
 
     created = {}
