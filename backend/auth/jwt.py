@@ -59,13 +59,14 @@ def min_role_required(*roles):
 
     return wrapper
 
+
 def contributor_has_organization():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
             if verify_contributor_has_organization_or_abort():
                 return fn(*args, **kwargs)
-            
+
         return decorator
-    
+
     return wrapper

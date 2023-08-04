@@ -8,7 +8,6 @@ from backend.database.models._assoc_tables import MemberRole
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
 from sqlalchemy import insert
-from enum import Enum
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
@@ -59,12 +58,13 @@ def example_organization(db_session):
     organization = Organization(
         id="example_organization",
         name="Example Organization",
-        url = "www.example.com",
+        url="www.example.com",
         contact_email=contributor_email,
     )
     db_session.add(organization)
     db_session.commit()
     return organization
+
 
 @pytest.fixture
 def example_user(db_session):

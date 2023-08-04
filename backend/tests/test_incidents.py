@@ -61,7 +61,7 @@ def example_incidents(db_session, client, contributor_access_token):
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
-            headers={"Authorization": 
+            headers={"Authorization":
                      "Bearer {0}".format(contributor_access_token)},
         )
         assert res.status_code == 200
