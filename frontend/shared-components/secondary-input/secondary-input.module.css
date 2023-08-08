@@ -1,0 +1,26 @@
+.filterContainer {
+  height: var(--size28);
+  width: var(--size128);
+  flex-shrink: 0;
+}
+
+
+.filterContainer.large {
+  width: var(--size424);
+}
+
+.filterContainer.small {
+  width: var(--size112);
+}
+
+/* Need to make sure that Poppins is the correct name here. */
+.filterLabel[type="text"] {
+  color: var(--grey);
+  font-family: Poppins;
+  font-size: var(--size12);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.01875rem;
+}
+

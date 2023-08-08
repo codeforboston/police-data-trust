@@ -82,9 +82,10 @@ export type LoginRequest = LoginCredentials
 export type WhoamiRequest = AuthenticatedRequest
 export interface IncidentSearchRequest extends AuthenticatedRequest {
   description?: string
-  startTime?: string
-  endTime?: string
+  dateStart?: string
+  dateEnd?: string
   location?: string
+  source?: string
   page?: number
   perPage?: number
 }

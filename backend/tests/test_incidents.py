@@ -111,8 +111,8 @@ def test_get_incident(app, client, db_session, access_token):
         ),
         (
             {
-                "startTime": "2021-09-30 00:00:00",
-                "endTime": "2021-10-02 00:00:00",
+                "dateStart": "2021-09-30",
+                "dateEnd": "2021-10-02",
             },
             ["traffic"],
         ),

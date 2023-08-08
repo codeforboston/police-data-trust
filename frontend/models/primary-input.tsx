@@ -9,6 +9,7 @@ export enum PrimaryInputNames {
   EMAIL_ADDRESS = "emailAddress",
   FIRST_NAME = "firstName",
   INCIDENT_TYPE = "incidentType",
+  DESCRIPTION = "description",
   KEY_WORDS = "keyWords",
   LAST_NAME = "lastName",
   LOCATION = "location",
@@ -28,6 +29,7 @@ const anyString: RegExp = new RegExp("[sS]*")
 const phoneNumberRgx: RegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
 const emailRgx: RegExp = /^[a-z0-9_.-]+@[a-z0-9_.-]+\.[a-z]{2,4}$/i
 const urlRgx: RegExp = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
+const dateRgx: RegExp = /^\d{4}-\d{2}-\d{2}$/
 
 export const primaryInputValidation = {
   [PrimaryInputNames.BADGE_NUMBER]: {
@@ -52,18 +54,18 @@ export const primaryInputValidation = {
     inputType: "password"
   },
   [PrimaryInputNames.DATE]: {
-    errorMessage: "Date",
-    pattern: anyString,
+    errorMessage: "Enter a valid date in the format YYYY-MM-DD.",
+    pattern: dateRgx,
     inputType: "date"
   },
   [PrimaryInputNames.DATE_START]: {
-    errorMessage: "Enter a date",
-    pattern: anyString,
+    errorMessage: "Enter a valid date in the format YYYY-MM-DD.",
+    pattern: dateRgx,
     inputType: "date"
   },
   [PrimaryInputNames.DATE_END]: {
-    errorMessage: "Enter a date",
-    pattern: anyString,
+    errorMessage: "Enter a valid date in the format YYYY-MM-DD.",
+    pattern: dateRgx,
     inputType: "date"
   },
   [PrimaryInputNames.EMAIL_ADDRESS]: {
@@ -77,7 +79,12 @@ export const primaryInputValidation = {
     inputType: "text"
   },
   [PrimaryInputNames.INCIDENT_TYPE]: {
-    errorMessage: "A name requires 2+ letters",
+    errorMessage: "Must include at least 2 characters.",
+    pattern: anyString,
+    inputType: "text"
+  },
+  [PrimaryInputNames.DESCRIPTION]: {
+    errorMessage: "Must include at least 2 characters.",
     pattern: anyString,
     inputType: "text"
   },
@@ -87,12 +94,12 @@ export const primaryInputValidation = {
     inputType: "text"
   },
   [PrimaryInputNames.ORGANIZATION_NAME]: {
-    errorMessage: "A name requires 2+ letters",
+    errorMessage: "Must include at least 2 characters.",
     pattern: nameRgx,
     inputType: "text"
   },
   [PrimaryInputNames.ORGANIZATION_URL]: {
-    errorMessage: "A name requires 2+ letters",
+    errorMessage: "Must include at least 2 characters.",
     pattern: urlRgx,
     inputType: "text"
   },
@@ -145,13 +152,16 @@ export enum SearchTypes {
 
 export const searchPanelInputs: { [key in SearchTypes]: PrimaryInputNames[] } = {
   [SearchTypes.INCIDENTS]: [
+    PrimaryInputNames.DESCRIPTION,
     PrimaryInputNames.LOCATION,
-    PrimaryInputNames.INCIDENT_TYPE,
-    PrimaryInputNames.DATE
+    PrimaryInputNames.DATE_START,
+    PrimaryInputNames.DATE_END
   ],
   [SearchTypes.OFFICERS]: [
     PrimaryInputNames.OFFICER_NAME,
     PrimaryInputNames.LOCATION,
-    PrimaryInputNames.BADGE_NUMBER
+    PrimaryInputNames.BADGE_NUMBER,
+    PrimaryInputNames.DATE_START,
+    PrimaryInputNames.DATE_END
   ]
 }
