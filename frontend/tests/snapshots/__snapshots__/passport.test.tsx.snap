@@ -386,7 +386,7 @@ exports[`renders Passport correctly 1`] = `
           <label
             for="responseTextArea"
           >
-            Why are you signing up to the NPDC?:
+            Why are you applying for this role?
           </label>
           <textarea
             aria-describedby="responseCounter null"

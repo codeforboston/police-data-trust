@@ -52,8 +52,8 @@ def create_incident():
 
 class SearchIncidentsSchema(BaseModel):
     location: Optional[str] = None
-    startTime: Optional[datetime] = None
-    endTime: Optional[datetime] = None
+    dateStart: Optional[str] = None
+    dateEnd: Optional[str] = None
     description: Optional[str] = None
     page: Optional[int] = 1
     perPage: Optional[int] = 20
@@ -63,9 +63,9 @@ class SearchIncidentsSchema(BaseModel):
         schema_extra = {
             "example": {
                 "description": "Test description",
-                "endTime": "2019-12-01 00:00:00",
+                "dateEnd": "2019-12-01",
                 "location": "Location 1",
-                "startTime": "2019-09-01 00:00:00",
+                "dateStart": "2019-09-01",
             }
         }
 
@@ -86,10 +86,14 @@ def search_incidents():
         # TODO: eventually replace with geosearch. Geocode records and integrate
         # PostGIS
         query = query.filter(Incident.location.ilike(f"%{body.location}%"))
-    if body.startTime:
-        query = query.filter(Incident.time_of_incident >= body.startTime)
-    if body.endTime:
-        query = query.filter(Incident.time_of_incident <= body.endTime)
+    if body.dateStart:
+        query = query.filter(
+                             Incident.time_of_incident >=
+                             datetime.strptime(body.dateStart, "%Y-%m-%d"))
+    if body.dateEnd:
+        query = query.filter(
+                             Incident.time_of_incident <=
+                             datetime.strptime(body.dateEnd, "%Y-%m-%d"))
     if body.description:
         query = query.filter(
             Incident.description.ilike(f"%{body.description}%")

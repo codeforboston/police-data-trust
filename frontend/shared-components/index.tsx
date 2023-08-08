@@ -4,6 +4,7 @@ import InfoTooltip from "./info-tooltip/info-tooltip"
 import Layout from "./layout/layout"
 import Logo from "./logo/logo"
 import PrimaryInput from "./primary-input/primary-input"
+import SecondaryInput from "./secondary-input/secondary-input"
 import ResponseTextArea from "./response-textarea/response-textarea"
 import USAStateInput from "./state-input/state-input"
 import PrimaryButton from "./primary-button/primary-button"
@@ -21,6 +22,7 @@ export {
   PrimaryButton,
   LinkButton,
   PrimaryInput,
+  SecondaryInput,
   ResponseTextArea,
   USAStateInput,
   ResultsAlert,
