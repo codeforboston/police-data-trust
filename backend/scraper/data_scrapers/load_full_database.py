@@ -51,7 +51,7 @@ def row_to_orm(row):
     row = row._make(map(nan_to_none, row))
     incident_date = parse_date(row.incident_date)
     incident_time = parse_date(row.incident_time)
-    organization_id = row.data_source_id
+    source_id = row.data_source_id
     use_of_force = row.death_manner
     location = orm_location(row)
 
@@ -78,8 +78,8 @@ def row_to_orm(row):
         incident.description = row.description
     if use_of_force:
         incident.use_of_force = [UseOfForce(item=use_of_force)]
-    if organization_id:
-        incident.organization_id = organization_id
+    if source_id:
+        incident.source_id = source_id
 
     return incident
 

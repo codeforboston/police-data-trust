@@ -17,7 +17,7 @@ mock_incidents = {
             {"first_name": "Lisa", "last_name": "Wong"},
         ],
         "use_of_force": [{"item": "Injurious restraint"}],
-        "organization": "Citizens Police Data Project",
+        "source": "Citizens Police Data Project",
         "location": "123 Right St Chicago, IL",
     },
     "traffic": {
@@ -27,7 +27,7 @@ mock_incidents = {
             {"first_name": "Ronda", "last_name": "Sousa"},
         ],
         "use_of_force": [{"item": "verbalization"}],
-        "organization": "Mapping Police Violence",
+        "source": "Mapping Police Violence",
         "location": "Park St and Boylston Boston",
     },
     "firearm": {
@@ -37,7 +37,7 @@ mock_incidents = {
             {"first_name": "Dale", "last_name": "Green"},
         ],
         "use_of_force": [{"item": "indirect firearm"}],
-        "organization": "Citizens Police Data Project",
+        "source": "Citizens Police Data Project",
         "location": "CHICAGO ILLINOIS",
     },
     "missing_fields": {
@@ -45,7 +45,7 @@ mock_incidents = {
         "perpetrators": [
             {"first_name": "Dale", "last_name": "Green"},
         ],
-        "organization": "Citizens Police Data Project",
+        "source": "Citizens Police Data Project",
     },
 }
 
