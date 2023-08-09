@@ -62,7 +62,7 @@ def parse_accusations(r: namedtuple, officers: List[md.Officer]):
     ]
 
 
-def create_orm(r: namedtuple, organization):
+def create_orm(r: namedtuple, source):
     victim = md.Victim(
         name=r.victim_name,
         race=r.victim_race,
@@ -72,8 +72,8 @@ def create_orm(r: namedtuple, organization):
     officers = parse_officers(r)
     accusations = parse_accusations(r, officers)
     incident = md.Incident(
-        organization_id=r.organization_id,
-        organization=organization,
+        source_id=r.source_id,
+        source=source,
         time_of_incident=r.incident_date,
         location=location(r),
         description=r.description,
@@ -100,13 +100,13 @@ def insert_model(instance):
         db.session.commit()
 
 
-def drop_existing_records(dataset, organization):
+def drop_existing_records(dataset, source):
     with app.app_context():
-        existing_organization_ids = list(
+        existing_source_ids = list(
             s
-            for (s,) in db.session.query(md.Incident.organization_id).filter(
-                md.Incident.organization == organization,
-                md.Incident.organization_id is not None
+            for (s,) in db.session.query(md.Incident.source_id).filter(
+                md.Incident.source == source,
+                md.Incident.source_id is not None
             )
         )
-    return dataset.drop(existing_organization_ids)
+    return dataset.drop(existing_source_ids)

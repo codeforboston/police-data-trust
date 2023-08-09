@@ -11,7 +11,7 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from .database import User
 from .database.models.action import Action
 from .database.models.organization import Organization
-from .database.models.incident import Incident, OrganizationDetails
+from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
 from .database.models.officer import Officer
 from .database.models.investigation import Investigation
@@ -135,7 +135,7 @@ CreateOfficerSchema = schema_create(Officer)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
-CreateOrganizationDetailsSchema = schema_create(OrganizationDetails)
+CreateSourceDetailsSchema = schema_create(SourceDetails)
 CreateTagSchema = schema_create(Tag)
 CreateParticipantSchema = schema_create(Participant)
 CreateAttachmentSchema = schema_create(Attachment)
