@@ -8,7 +8,7 @@ class Organization(db.Model, CrudMixin):
     url = db.Column(db.Text)
     contact_email = db.Column(db.Text)
     reported_incidents = db.relationship(
-        'Incident', backref='organization', lazy="select")
+        'Incident', backref='source', lazy="select")
     members = db.relationship(
-        'User', backref='contributor_orgs',
+        'User', backref='member_of',
         secondary=organization_user, lazy="select")

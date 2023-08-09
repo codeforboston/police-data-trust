@@ -59,10 +59,10 @@ class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    organization_id = db.Column(
+    source_id = db.Column(
         db.String, db.ForeignKey("organization.id"))
-    organization_details = db.relationship(
-        "OrganizationDetails", backref="incident", uselist=False)
+    source_details = db.relationship(
+        "SourceDetails", backref="incident", uselist=False)
     time_of_incident = db.Column(db.DateTime)
     time_confidence = db.Column(db.Integer)
     complaint_date = db.Column(db.Date)
@@ -131,8 +131,8 @@ class Incident(db.Model, CrudMixin):
     # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
-class OrganizationDetails(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # organization details id
+class SourceDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # source details id
     incident_id = db.Column(
         db.Integer, db.ForeignKey("incident.id"), nullable=False
     )

@@ -87,7 +87,7 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
         name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
-        organization=mpv,
+        source=mpv,
         location=f"Test location {key}",
         longitude=lon,
         latitude=lat,
