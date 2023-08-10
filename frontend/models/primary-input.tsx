@@ -15,9 +15,9 @@ export enum PrimaryInputNames {
   LOCATION = "location",
   LOGIN_PASSWORD = "loginPassword",
   OFFICER_NAME = "officerName",
-  ORGANIZATION_NAME = "organizationName",
-  ORGANIZATION_URL = "organizationUrl",
-  ORGANIZATION_EMAIL = "organizationEmail",
+  PARTNER_NAME = "partnerName",
+  PARTNER_URL = "partnerUrl",
+  PARTNER_EMAIL = "partnerEmail",
   PHONE_NUMBER = "phoneNumber",
   STREET_ADDRESS = "streetAddress",
   ZIP_CODE = "zipCode"
@@ -93,17 +93,17 @@ export const primaryInputValidation = {
     pattern: nameRgx,
     inputType: "text"
   },
-  [PrimaryInputNames.ORGANIZATION_NAME]: {
+  [PrimaryInputNames.PARTNER_NAME]: {
     errorMessage: "Must include at least 2 characters.",
     pattern: nameRgx,
     inputType: "text"
   },
-  [PrimaryInputNames.ORGANIZATION_URL]: {
+  [PrimaryInputNames.PARTNER_URL]: {
     errorMessage: "Must include at least 2 characters.",
     pattern: urlRgx,
     inputType: "text"
   },
-  [PrimaryInputNames.ORGANIZATION_EMAIL]: {
+  [PrimaryInputNames.PARTNER_EMAIL]: {
     errorMessage: "Please enter a valid email",
     pattern: emailRgx,
     inputType: "text"

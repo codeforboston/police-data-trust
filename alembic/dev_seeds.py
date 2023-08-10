@@ -3,7 +3,7 @@ from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
 from backend.database.models.perpetrator import Perpetrator
-from backend.database.models.organization import Partner
+from backend.database.models.partner import Partner
 from backend.database.models.use_of_force import UseOfForce
 
 
@@ -61,16 +61,16 @@ create_user(
 )
 
 
-def create_organization(organization):
-    organization_exists = (
-        db.session.query(Partner).filter_by(id=organization.id).first() is not None
+def create_partner(partner):
+    partner_exists = (
+        db.session.query(Partner).filter_by(id=partner.id).first() is not None
     )
 
-    if not organization_exists:
-        organization.create()
+    if not partner_exists:
+        partner.create()
 
 
-create_organization(
+create_partner(
     Partner(
         id="mpv",
         name="Mapping Police Violence",

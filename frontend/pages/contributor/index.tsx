@@ -14,7 +14,7 @@ import { FormProvider, useForm } from "react-hook-form"
 
 export default requireAuth(function Passport() {
   const { contributorForm, contributorIntro } = styles
-  const { ORGANIZATION_NAME, ORGANIZATION_URL, ORGANIZATION_EMAIL, CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = PrimaryInputNames
+  const { PARTNER_NAME: PARTNER_NAME, PARTNER_URL: PARTNER_URL, PARTNER_EMAIL: PARTNER_EMAIL, CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = PrimaryInputNames
 
   const form = useForm()
   const { user } = useAuth()
@@ -27,9 +27,9 @@ export default requireAuth(function Passport() {
     setLoading(true)
     setSubmitError(null)
     const values = {
-      organizationName: formValues[ORGANIZATION_NAME],
-      organizationUrl: formValues[ORGANIZATION_URL],
-      organizationContact: formValues[ORGANIZATION_EMAIL],
+      partnerName: formValues[PARTNER_NAME],
+      partnerUrl: formValues[PARTNER_URL],
+      partnerContact: formValues[PARTNER_EMAIL],
       cityOrTown: formValues[CITY_TOWN],
       streetAddress: formValues[STREET_ADDRESS],
       signupReason: formValues[ResponseTextArea.inputName],
@@ -59,9 +59,9 @@ export default requireAuth(function Passport() {
         <FormProvider {...form}>
           <form className={contributorForm} onSubmit={form.handleSubmit(onSubmit, onError)}>
             <fieldset>
-              <PrimaryInput inputName={ORGANIZATION_NAME} size="large" />
-              <PrimaryInput inputName={ORGANIZATION_URL} size="large" />
-              <PrimaryInput inputName={ORGANIZATION_EMAIL} size="large" />
+              <PrimaryInput inputName={PARTNER_NAME} size="large" />
+              <PrimaryInput inputName={PARTNER_URL} size="large" />
+              <PrimaryInput inputName={PARTNER_EMAIL} size="large" />
               <PrimaryInput inputName={STREET_ADDRESS} size="large" />
               <PrimaryInput inputName={CITY_TOWN} />
               <USAStateInput />
