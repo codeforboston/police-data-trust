@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Organization
+from backend.database import Incident, Partner
 
 mock_organizations = {
     "cpdp": {"name": "Citizens Police Data Project"},
@@ -53,7 +53,7 @@ mock_incidents = {
 @pytest.fixture
 def example_incidents(db_session, client, contributor_access_token):
     for id, mock in mock_organizations.items():
-        db_session.add(Organization(id=id, **mock))
+        db_session.add(Partner(id=id, **mock))
         db_session.commit()
 
     created = {}

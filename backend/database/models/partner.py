@@ -1,8 +1,8 @@
 from ..core import db, CrudMixin
-from backend.database.models._assoc_tables import organization_user
+from backend.database.models._assoc_tables import partner_user
 
 
-class Organization(db.Model, CrudMixin):
+class Partner(db.Model, CrudMixin):
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.Text)
     url = db.Column(db.Text)
@@ -11,4 +11,4 @@ class Organization(db.Model, CrudMixin):
         'Incident', backref='source', lazy="select")
     members = db.relationship(
         'User', backref='member_of',
-        secondary=organization_user, lazy="select")
+        secondary=partner_user, lazy="select")

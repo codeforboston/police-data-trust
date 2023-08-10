@@ -3,7 +3,7 @@ from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.incident import Incident
 from backend.database.models.perpetrator import Perpetrator
-from backend.database.models.organization import Organization
+from backend.database.models.organization import Partner
 from backend.database.models.use_of_force import UseOfForce
 
 
@@ -63,7 +63,7 @@ create_user(
 
 def create_organization(organization):
     organization_exists = (
-        db.session.query(Organization).filter_by(id=organization.id).first() is not None
+        db.session.query(Partner).filter_by(id=organization.id).first() is not None
     )
 
     if not organization_exists:
@@ -71,7 +71,7 @@ def create_organization(organization):
 
 
 create_organization(
-    Organization(
+    Partner(
         id="mpv",
         name="Mapping Police Violence",
         url="https://mappingpoliceviolence.us",
@@ -83,7 +83,7 @@ create_organization(
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
     id = base_id + key
-    mpv = db.session.query(Organization).filter_by(
+    mpv = db.session.query(Partner).filter_by(
         name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
