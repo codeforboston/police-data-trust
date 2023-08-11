@@ -24,7 +24,7 @@ class MemberRole(Enum):
 
 partner_user = db.Table(
     'partner_user',
-    db.Column('partner_id', db.String, db.ForeignKey('partner.id'),
+    db.Column('partner_id', db.Integer, db.ForeignKey('partner.id'),
               primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
               primary_key=True),

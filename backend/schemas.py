@@ -109,6 +109,8 @@ _incident_list_attrs = [
     "legal_case",
 ]
 
+_partner_list_attrs = ["reported_incidents"]
+
 
 class _IncidentMixin(BaseModel):
     @root_validator(pre=True)
@@ -125,11 +127,26 @@ class _IncidentMixin(BaseModel):
         return values
 
 
+class _PartnerMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """For now it makes things easier to handle the many-to-one
+        relationships in the schema by allowing for None's, but casting to
+        lists prior to validation. In a sense, there is no distinction between
+        Optional[List[...]] vs merely List[...].
+        """
+        values = {**values}  # convert mappings to base dict type.
+        for i in _partner_list_attrs:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
 def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
 
 
-CreatePartnerSchema = schema_create(Partner)
+_BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
 CreateOfficerSchema = schema_create(Officer)
 CreateAgencySchema = schema_create(Agency)
@@ -159,10 +176,15 @@ class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     legal_case: Optional[List[CreateLegalCaseSchema]]
 
 
+class CreatePartnerSchema(_BaseCreatePartnerSchema, _PartnerMixin):
+    repoorted_incidents: Optional[List[_BaseCreateIncidentSchema]]
+
+
 def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, **kwargs)
 
 
+_BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
@@ -187,6 +209,10 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     actions: List[ActionSchema]
     use_of_force: List[UseOfForceSchema]
     legal_case: List[LegalCaseSchema]
+
+
+class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
+    reported_incidents: List[IncidentSchema]
 
 
 UserSchema = sqlalchemy_to_pydantic(User, exclude=["password", "id"])
@@ -227,4 +253,32 @@ def incident_orm_to_json(incident: Incident) -> dict:
             "tags",
             "victims",
         },
+    )
+
+
+def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
+    """Convert the JSON incident into an ORM instance
+
+    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
+    around. sqlalchemy won't convert nested dictionaries into the corresponding
+    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
+    roll our own recursive conversion if we can get the ORM model class
+    associated with a schema instance.
+    """
+
+    converters = {"reported_incidents": Incident}
+    orm_attrs = partner.dict()
+    for k, v in orm_attrs.items():
+        is_dict = isinstance(v, dict)
+        is_list = isinstance(v, list)
+        if is_dict:
+            orm_attrs[k] = converters[k](**v)
+        elif is_list and len(v) > 0:
+            orm_attrs[k] = [converters[k](**d) for d in v]
+    return Partner(**orm_attrs)
+
+
+def partner_orm_to_json(partner: Partner) -> dict:
+    return PartnerSchema.from_orm(partner).dict(
+        exclude_none=True,
     )
