@@ -53,7 +53,7 @@ mock_incidents = {
 @pytest.fixture
 def example_incidents(db_session, client, contributor_access_token):
     for id, mock in mock_partners.items():
-        db_session.add(Partner(id=id, **mock))
+        db_session.add(Partner(**mock))
         db_session.commit()
 
     created = {}

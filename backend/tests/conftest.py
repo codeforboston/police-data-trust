@@ -56,7 +56,6 @@ def client(app):
 @pytest.fixture
 def example_partner(db_session):
     partner = Partner(
-        id="example_partner",
         name="Example Partner",
         url="www.example.com",
         contact_email=contributor_email,
