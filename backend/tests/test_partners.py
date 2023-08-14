@@ -1,10 +1,5 @@
-from datetime import datetime
-
-import flask_user
 import pytest
-from backend.database import User, Partner
-from flask_jwt_extended import decode_token
-from unittest import mock
+from backend.database import Partner
 
 
 mock_partners = {

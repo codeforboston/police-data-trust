@@ -70,7 +70,7 @@ def example_incidents(db_session, client, contributor_access_token):
 
 
 def test_create_incident(db_session, example_incidents):
-    # TODO: test that the User actually has permission to create an 
+    # TODO: test that the User actually has permission to create an
     # incident for the partner
     # expected = mock_incidents["domestic"]
     created = example_incidents["domestic"]
