@@ -47,30 +47,32 @@ def test_create_partner(db_session, example_partners):
     created = example_partners["mpv"]
 
     partner_obj = (
-        db_session.query(Partner).filter(Partner.id == created["id"]).first()
+        db_session.query(Partner).filter(Partner.name == created["name"]
+                                         ).first()
     )
 
     assert partner_obj.name == created["name"]
     assert partner_obj.url == created["url"]
     assert partner_obj.contact_email == created["contact_email"]
-    # assert partner_obj.source == expected["source"]
 
 
-""" def test_get_partner(app, client, db_session, access_token):
-    # Create an incident in the database
-    incident_date = datetime(1969, 7, 16, 13, 32, 0)
-    incident_date_str = app.json_encoder().encode(incident_date)[1:-1]
+def test_get_partner(app, client, db_session, access_token):
+    # Create a partner in the database
+    partner_name = "Test Partner"
+    partner_url = "https://testpartner.com"
 
-    obj = Incident(time_of_incident=incident_date)
+    obj = Partner(name=partner_name, url=partner_url)
     db_session.add(obj)
     db_session.commit()
+    assert obj.id is not None
 
     # Test that we can get it
-    res = client.get(f"/api/v1/incidents/get/{obj.id}")
-    assert res.json["time_of_incident"] == incident_date_str
+    res = client.get(f"/api/v1/partners/{obj.id}")
+    assert res.json["name"] == partner_name
+    assert res.json["url"] == partner_url
 
 
-def test_pagination(client, example_partners, access_token):
+""" def test_pagination(client, example_partners, access_token):
     per_page = 1
     expected_total_pages = len(example_incidents)
     actual_ids = set()
@@ -97,5 +99,4 @@ def test_pagination(client, example_partners, access_token):
         json={"perPage": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
-    assert res.status_code == 404
- """
+    assert res.status_code == 404 """

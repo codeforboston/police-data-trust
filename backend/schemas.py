@@ -177,7 +177,7 @@ class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
 
 
 class CreatePartnerSchema(_BaseCreatePartnerSchema, _PartnerMixin):
-    repoorted_incidents: Optional[List[_BaseCreateIncidentSchema]]
+    reported_incidents: Optional[List[_BaseCreateIncidentSchema]]
 
 
 def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:

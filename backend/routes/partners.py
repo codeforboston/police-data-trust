@@ -25,7 +25,7 @@ bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 def get_partners(partner_id: int):
     """Get a single partner by ID."""
 
-    return Partner.get(partner_id).schema_json()
+    return partner_orm_to_json(Partner.get(partner_id))
 
 
 @bp.route("/create", methods=["POST"])
