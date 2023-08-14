@@ -70,33 +70,3 @@ def test_get_partner(app, client, db_session, access_token):
     res = client.get(f"/api/v1/partners/{obj.id}")
     assert res.json["name"] == partner_name
     assert res.json["url"] == partner_url
-
-
-""" def test_pagination(client, example_partners, access_token):
-    per_page = 1
-    expected_total_pages = len(example_incidents)
-    actual_ids = set()
-    for page in range(1, expected_total_pages + 1):
-        res = client.post(
-            "/api/v1/incidents/search",
-            json={"perPage": per_page, "page": page},
-            headers={"Authorization": "Bearer {0}".format(access_token)},
-        )
-
-        assert res.status_code == 200
-        assert res.json["page"] == page
-        assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == expected_total_pages
-
-        incidents = res.json["results"]
-        assert len(incidents) == per_page
-        actual_ids.add(incidents[0]["id"])
-
-    assert actual_ids == set(i["id"] for i in example_incidents.values())
-
-    res = client.post(
-        "/api/v1/incidents/search",
-        json={"perPage": per_page, "page": expected_total_pages + 1},
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 404 """
