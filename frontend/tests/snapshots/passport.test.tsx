@@ -21,7 +21,7 @@ describe("behaviors", () => {
       city: getByRole("textbox", { name: /city or town/i }),
       state: getByRole("combobox", { name: /state/i }),
       zip: getByRole("spinbutton", { name: /zip code/i }),
-      reason: getByRole("textbox", { name: /why are you signing up to the npdc/i }),
+      reason: getByRole("textbox", { name: /why are you applying for this role/i }),
       submit: getByRole("button", { name: /submit/i })
     }
   }

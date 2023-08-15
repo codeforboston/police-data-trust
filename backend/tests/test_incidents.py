@@ -1,9 +1,9 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Organization
+from backend.database import Incident, Partner
 
-mock_organizations = {
+mock_partners = {
     "cpdp": {"name": "Citizens Police Data Project"},
     "mpv": {"name": "Mapping Police Violence"},
 }
@@ -52,8 +52,8 @@ mock_incidents = {
 
 @pytest.fixture
 def example_incidents(db_session, client, contributor_access_token):
-    for id, mock in mock_organizations.items():
-        db_session.add(Organization(id=id, **mock))
+    for id, mock in mock_partners.items():
+        db_session.add(Partner(**mock))
         db_session.commit()
 
     created = {}
@@ -70,6 +70,8 @@ def example_incidents(db_session, client, contributor_access_token):
 
 
 def test_create_incident(db_session, example_incidents):
+    # TODO: test that the User actually has permission to create an
+    # incident for the partner
     # expected = mock_incidents["domestic"]
     created = example_incidents["domestic"]
 
@@ -112,8 +114,8 @@ def test_get_incident(app, client, db_session, access_token):
         ),
         (
             {
-                "startTime": "2021-09-30 00:00:00",
-                "endTime": "2021-10-02 00:00:00",
+                "dateStart": "2021-09-30",
+                "dateEnd": "2021-10-02",
             },
             ["traffic"],
         ),

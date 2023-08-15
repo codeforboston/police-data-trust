@@ -3,8 +3,15 @@ import { FormProvider, useForm } from "react-hook-form"
 
 import { useAuth, useSearch } from "../../helpers"
 import { searchPanelInputs, SearchTypes, ToggleOptions } from "../../models"
-import { FormLevelError, PrimaryButton, PrimaryInput, ToggleBox } from "../../shared-components"
+import {
+  FormLevelError,
+  PrimaryButton,
+  PrimaryInput,
+  SecondaryInput,
+  ToggleBox
+} from "../../shared-components"
 import styles from "./search.module.css"
+import SecondaryInputStories from "../../shared-components/secondary-input/secondary-input.stories"
 
 const { searchPanelContainer, searchForm } = styles
 
@@ -28,13 +35,14 @@ export const SearchPanel = () => {
     setFormInputs(searchPanelInputs[e.target.value as SearchTypes])
   }
 
-  async function onSubmit({ location, startTime, endTime, description }: any) {
+  async function onSubmit({ location, dateEnd, dateStart, description, source }: any) {
     setIsLoading(true)
     try {
-      await searchIncidents({ accessToken, description, endTime, location, startTime })
+      await searchIncidents({ accessToken, description, dateEnd, location, dateStart, source })
     } catch (e) {
       console.error("Unexpected search error", e)
       setErrorMessage("Something went wrong. Please try again.")
+      /* # TODO: Add error handling when a 401 is recieved. Redirect to login */
     }
     setIsLoading(false)
   }

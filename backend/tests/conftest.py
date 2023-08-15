@@ -3,7 +3,7 @@ import pytest
 from backend.api import create_app
 from backend.auth import user_manager
 from backend.config import TestingConfig
-from backend.database import User, UserRole, db, Organization, organization_user
+from backend.database import User, UserRole, db, Partner, partner_user
 from backend.database.models._assoc_tables import MemberRole
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
@@ -54,16 +54,15 @@ def client(app):
 
 
 @pytest.fixture
-def example_organization(db_session):
-    organization = Organization(
-        id="example_organization",
-        name="Example Organization",
+def example_partner(db_session):
+    partner = Partner(
+        name="Example Partner",
         url="www.example.com",
         contact_email=contributor_email,
     )
-    db_session.add(organization)
+    db_session.add(partner)
     db_session.commit()
-    return organization
+    return partner
 
 
 @pytest.fixture
@@ -97,7 +96,7 @@ def admin_user(db_session):
 
 
 @pytest.fixture
-def contributor_user(db_session, example_organization):
+def contributor_user(db_session, example_partner):
     user = User(
         email=contributor_email,
         password=user_manager.hash_password(example_password),
@@ -107,8 +106,8 @@ def contributor_user(db_session, example_organization):
     )
     db_session.add(user)
     db_session.commit()
-    insert_statement = insert(organization_user).values(
-        organization_id=example_organization.id, user_id=user.id,
+    insert_statement = insert(partner_user).values(
+        partner_id=example_partner.id, user_id=user.id,
         role=MemberRole.PUBLISHER, joined_at=datetime.now(),
         is_active=True, is_admin=False
     )

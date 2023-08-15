@@ -114,7 +114,7 @@ exports[`renders Profile Page correctly 1`] = `
             <div
               class="dataField"
             >
-              (999) 555-0123
+              --
             </div>
           </div>
         </main>

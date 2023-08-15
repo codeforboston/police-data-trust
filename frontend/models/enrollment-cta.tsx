@@ -8,6 +8,7 @@ interface CallToActionText {
 
 export enum CallToActionTypes {
   LOGIN = "login",
+  CONTRIBUTOR = "contributor",
   REGISTER = "register",
   DASHBOARD = "dashboard",
   FORGOT = "forgot",
@@ -29,6 +30,11 @@ export const enrollmentCallToActionText: { [key in CallToActionTypes]: CallToAct
     description: "Is the publically available data sufficient for your needs?",
     linkText: "Return to dashboard",
     linkPath: AppRoutes.DASHBOARD
+  },
+  [CallToActionTypes.CONTRIBUTOR]: {
+    description: "Want to report an issue the police in your area?",
+    linkText: "Become a Contributor",
+    linkPath: AppRoutes.CONTRIBUTOR
   },
   [CallToActionTypes.FORGOT]: {
     //description: "New to the National Police Data Coalition?",
