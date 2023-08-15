@@ -157,18 +157,18 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
 
 export function searchIncidents({
   accessToken,
-  startTime,
-  endTime,
+  dateStart,
+  dateEnd,
   ...rest
 }: IncidentSearchRequest): Promise<IncidentSearchResponse> {
-  if (startTime) startTime = new Date(startTime).toISOString()
-  if (endTime) endTime = new Date(endTime).toISOString()
+  if (dateStart) dateStart = new Date(dateStart).toISOString()
+  if (dateEnd) dateEnd = new Date(dateEnd).toISOString()
 
   return request({
     url: "/incidents/search",
     method: "POST",
     accessToken,
-    data: { startTime, endTime, ...rest }
+    data: { dateStart, dateEnd, ...rest }
   })
 }
 

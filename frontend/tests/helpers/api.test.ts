@@ -76,8 +76,8 @@ describe("api", () => {
       [
         "Filters by date",
         {
-          startTime: "09-01-2019",
-          endTime: "10-15-2019",
+          dateStart: "09-01-2019",
+          dateEnd: "10-15-2019",
           description: "Test description",
           location: "Test location"
         },

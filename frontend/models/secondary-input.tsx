@@ -16,4 +16,3 @@ export const secondaryInputValidation = {
     inputType: "text"
   }
 }
-

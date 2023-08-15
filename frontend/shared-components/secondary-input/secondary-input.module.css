@@ -4,7 +4,6 @@
   flex-shrink: 0;
 }
 
-
 .filterContainer.large {
   width: var(--size424);
 }
@@ -23,4 +22,3 @@
   line-height: normal;
   letter-spacing: -0.01875rem;
 }
-

@@ -3,7 +3,13 @@ import { FormProvider, useForm } from "react-hook-form"
 
 import { useAuth, useSearch } from "../../helpers"
 import { searchPanelInputs, SearchTypes, ToggleOptions } from "../../models"
-import { FormLevelError, PrimaryButton, PrimaryInput, SecondaryInput, ToggleBox } from "../../shared-components"
+import {
+  FormLevelError,
+  PrimaryButton,
+  PrimaryInput,
+  SecondaryInput,
+  ToggleBox
+} from "../../shared-components"
 import styles from "./search.module.css"
 import SecondaryInputStories from "../../shared-components/secondary-input/secondary-input.stories"
 
@@ -56,7 +62,6 @@ export const SearchPanel = () => {
               formInputs.map((inputName) => (
                 <PrimaryInput isRequired={false} key={inputName} inputName={inputName} />
               ))}
-            <SecondaryInput inputName="source" />
           </fieldset>
           {errorMessage && <FormLevelError errorId="ErrorMessage" errorMessage={errorMessage} />}
           <PrimaryButton loading={isLoading} type="submit">

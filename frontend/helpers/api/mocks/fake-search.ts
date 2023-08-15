@@ -7,13 +7,13 @@ export default class FakeSearch {
   search({
     location,
     description,
-    endTime,
-    startTime,
+    dateEnd,
+    dateStart,
     page = 1,
     perPage = 20
   }: IncidentSearchRequest): IncidentSearchResponse {
-    const end = endTime && new Date(endTime)
-    const start = startTime && new Date(startTime)
+    const end = dateEnd && new Date(dateEnd)
+    const start = dateStart && new Date(dateStart)
     const results = EXISTING_TEST_INCIDENTS.filter(
       (i) => !location || i.location?.toLowerCase()?.includes(location.toLowerCase())
     )

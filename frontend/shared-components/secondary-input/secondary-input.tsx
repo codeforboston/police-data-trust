@@ -17,10 +17,7 @@ interface SecondaryInputProps {
   isRequired?: boolean
 }
 
-export default function SecondaryInput({
-  inputName,
-  tooltipProps
-}: SecondaryInputProps) {
+export default function SecondaryInput({ inputName, tooltipProps }: SecondaryInputProps) {
   const {
     register,
     formState: { errors }
@@ -31,7 +28,7 @@ export default function SecondaryInput({
   const isValid = !errors[inputName]
   return (
     <div>
-      <label htmlFor='source'>
+      <label htmlFor="source">
         {labelText}
         {tooltipProps?.type && (
           <InfoTooltip

@@ -14,7 +14,14 @@ import { FormProvider, useForm } from "react-hook-form"
 
 export default requireAuth(function Passport() {
   const { contributorForm, contributorIntro } = styles
-  const { PARTNER_NAME: PARTNER_NAME, PARTNER_URL: PARTNER_URL, PARTNER_EMAIL: PARTNER_EMAIL, CITY_TOWN, STREET_ADDRESS, ZIP_CODE } = PrimaryInputNames
+  const {
+    PARTNER_NAME: PARTNER_NAME,
+    PARTNER_URL: PARTNER_URL,
+    PARTNER_EMAIL: PARTNER_EMAIL,
+    CITY_TOWN,
+    STREET_ADDRESS,
+    ZIP_CODE
+  } = PrimaryInputNames
 
   const form = useForm()
   const { user } = useAuth()
@@ -54,7 +61,8 @@ export default requireAuth(function Passport() {
           Data Coalition.
           <br />
           <br />
-          In order to become a contributor to the Police Data Index, you will need to create or join a contributing organization. Please fill out the form below to get started.
+          In order to become a contributor to the Police Data Index, you will need to create or join
+          a contributing organization. Please fill out the form below to get started.
         </p>
         <FormProvider {...form}>
           <form className={contributorForm} onSubmit={form.handleSubmit(onSubmit, onError)}>
