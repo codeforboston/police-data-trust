@@ -3,7 +3,7 @@ from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
 
-from ..database import Partner
+from ..database import Partner, db
 from ..schemas import (
     CreatePartnerSchema,
     partner_orm_to_json,
@@ -43,3 +43,30 @@ def create_partner():
 
     created = partner.create()
     return partner_orm_to_json(created)
+
+
+@bp.route("/", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@validate()
+def get_all_partners():
+    """Get all partners.
+    Accepts Query Parameters for pagination:
+    per_page: number of results per page
+    page: page number
+    """
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
+
+    all_partners = db.session.query(Partner)
+    results = all_partners.paginate(
+        page=q_page, per_page=q_per_page, max_per_page=100
+    )
+
+    return {
+        "results": [partner_orm_to_json(partner) for partner in results.items],
+        "page": results.page,
+        "totalPages": results.pages,
+        "totalResults": results.total,
+    }

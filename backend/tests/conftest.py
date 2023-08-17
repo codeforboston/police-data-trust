@@ -3,8 +3,8 @@ import pytest
 from backend.api import create_app
 from backend.auth import user_manager
 from backend.config import TestingConfig
-from backend.database import User, UserRole, db, Partner, partner_user
-from backend.database.models._assoc_tables import MemberRole
+from backend.database import User, UserRole, db
+from backend.database import Partner, PartnerMember, MemberRole
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
 from sqlalchemy import insert
@@ -106,10 +106,10 @@ def contributor_user(db_session, example_partner):
     )
     db_session.add(user)
     db_session.commit()
-    insert_statement = insert(partner_user).values(
+    insert_statement = insert(PartnerMember).values(
         partner_id=example_partner.id, user_id=user.id,
-        role=MemberRole.PUBLISHER, joined_at=datetime.now(),
-        is_active=True, is_admin=False
+        role=MemberRole.PUBLISHER, date_joined=datetime.now(),
+        is_active=True
     )
     db_session.execute(insert_statement)
     db_session.commit()

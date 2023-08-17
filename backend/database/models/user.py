@@ -5,6 +5,7 @@ from backend.database.core import db
 from flask_serialize.flask_serialize import FlaskSerialize
 from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
 from enum import Enum
@@ -84,6 +85,11 @@ class User(db.Model, UserMixin, CrudMixin):
     role = db.Column(db.Enum(UserRole))
 
     phone_number = db.Column(db.Text)
+
+    # Data Partner Relationships
+    partner_association = db.relationship(
+        "PartnerMember", back_populates="user", lazy="select")
+    member_of = association_proxy("partner_association", "partner")
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
