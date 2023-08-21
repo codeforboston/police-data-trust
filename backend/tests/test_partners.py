@@ -1,6 +1,13 @@
 import pytest
-from backend.database import Partner
+from backend.auth import user_manager
+from backend.database import Partner, PartnerMember, MemberRole
+from backend.database.models.user import User, UserRole
 
+publisher_email = "pub@partner.com"
+inactive_email = "lurker@partner.com"
+admin_email = "leader@partner.com"
+member_email = "joe@partner.com"
+example_password = "my_password"
 
 mock_partners = {
     "cpdp": {
@@ -20,15 +27,46 @@ mock_partners = {
     }
 }
 
-mock_members = {
-    "user": {
-        "email": "user@email.com",
-        "password": "my_password",
+mock_users = {
+    "publisher": {
+        "email": publisher_email,
+        "password": example_password,
     },
-    "publisher": {},
-    "admin": {},
-    "member": {},
-    "subscriber": {}
+    "inactive": {
+        "email": inactive_email,
+        "password": example_password,
+    },
+    "admin": {
+        "email": admin_email,
+        "password": example_password,
+    },
+    "member": {
+        "email": member_email,
+        "password": example_password,
+    }
+}
+
+mock_members = {
+    "publisher": {
+        "user_email": publisher_email,
+        "role": MemberRole.PUBLISHER,
+        "is_active": True
+    },
+    "inactive": {
+        "user_email": inactive_email,
+        "role": MemberRole.PUBLISHER,
+        "is_active": False
+    },
+    "admin": {
+        "user_email": publisher_email,
+        "role": MemberRole.ADMIN,
+        "is_active": True
+    },
+    "member": {
+        "user_email": publisher_email,
+        "role": MemberRole.MEMBER,
+        "is_active": True
+    }
 }
 
 
@@ -49,24 +87,56 @@ def example_partners(client, access_token):
 
 
 @pytest.fixture
-def example_members(client, access_token, example_partners):
-    # partners = example_partners
+def example_members(client, db_session, example_partner, p_admin_access_token):
     created = {}
+    users = {}
 
-    for id, mock in mock_partners.items():
+    for id, mock in mock_users.items():
+        user = User(
+            email=mock["email"],
+            password=user_manager.hash_password(example_password),
+            role=UserRole.PUBLIC,
+            first_name=id,
+            last_name="user",
+            phone_number="(278) 555-7890"
+        )
+        db_session.add(user)
+        db_session.commit()
+        users[id] = user
+
+    partner_obj = (
+        db_session.query(Partner).filter(
+            Partner.name == example_partner.name
+        ).first()
+    )
+
+    for id, mock in mock_members.items():
+
+        user_obj = (
+            db_session.query(User).filter(
+                    User.email == mock["user_email"]
+            ).first()
+        )
+
+        req = {
+            "partner_id": partner_obj.id,
+            "user_id": user_obj.id,
+            "role": mock["role"],
+            "is_active": mock["is_active"]
+        }
+
         res = client.post(
-            "/api/v1/partners/create",
-            json=mock,
+            f"/api/v1/partners/{partner_obj.id}/members/add",
+            json=req,
             headers={"Authorization":
-                     "Bearer {0}".format(access_token)},
+                     "Bearer {0}".format(p_admin_access_token)},
         )
         assert res.status_code == 200
         created[id] = res.json
     return created
 
 
-def test_create_partner(db_session, example_partners):
-    # sample = mock_partners["mpv"]
+def test_create_partner(db_session, example_user, example_partners):
     created = example_partners["mpv"]
 
     partner_obj = (
@@ -74,9 +144,22 @@ def test_create_partner(db_session, example_partners):
                                          ).first()
     )
 
+    user_obj = (
+        db_session.query(User).filter(User.email == example_user.email).first()
+    )
+
+    association_obj = (
+        db_session.query(PartnerMember).filter(
+            PartnerMember.partner_id == partner_obj.id,
+            PartnerMember.user_id == user_obj.id
+        ).first()
+    )
+
     assert partner_obj.name == created["name"]
     assert partner_obj.url == created["url"]
     assert partner_obj.contact_email == created["contact_email"]
+    assert association_obj is not None
+    assert association_obj.is_administrator() is True
 
 
 def test_get_partner(client, db_session, access_token):
@@ -134,8 +217,32 @@ def test_partner_pagination(client, example_partners, access_token):
     )
     assert res.status_code == 404
 
-# def test_add_member_to_partner(client, example_partners, access_token):
 
-# def test_remove_member_from_partner(client, example_partners, access_token):
+def test_add_member_to_partner(db_session, example_members):
+    created = example_members["publisher"]
 
-# def test_get_partner_members(client, example_partners, access_token):
+    partner_member_obj = (
+        db_session.query(PartnerMember).filter(
+            PartnerMember.id == created["id"]).first()
+    )
+
+    assert partner_member_obj.partner_id == created["partner_id"]
+    assert partner_member_obj.user_id == created["user_id"]
+    assert partner_member_obj.role == created["role"]
+
+
+""" def test_get_partner_members(db_session, client,
+        example_partners, access_token):
+    # Create partners in the database
+    partner = example_partners["cpdp"]
+    partner_members = (
+        db_session.query(Partner).filter(
+            Partner.id == partner["id"]).first().members
+    )
+
+    # Test that we can get partners
+    res = client.get(f"/api/v1/partners/{partner.id}/members")
+    assert res.json["results"].__len__() == partner_members.__len__() """
+
+
+# def deactivate_partner_member(client, example_partners, access_token):

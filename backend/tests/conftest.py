@@ -11,6 +11,7 @@ from sqlalchemy import insert
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
+p_admin_email = "admin@partner.com"
 contributor_email = "contributor@email.com"
 example_password = "my_password"
 
@@ -96,7 +97,31 @@ def admin_user(db_session):
 
 
 @pytest.fixture
-def contributor_user(db_session, example_partner):
+def partner_admin(db_session, example_partner):
+    user = User(
+        email=p_admin_email,
+        password=user_manager.hash_password(example_password),
+        role=UserRole.CONTRIBUTOR,  # This is not a system admin,
+                                    # so we can't use ADMIN here
+        first_name="contributor",
+        last_name="last",
+        phone_number="(012) 345-6789",
+    )
+    db_session.add(user)
+    db_session.commit()
+    insert_statement = insert(PartnerMember).values(
+        partner_id=example_partner.id, user_id=user.id,
+        role=MemberRole.ADMIN, date_joined=datetime.now(),
+        is_active=True
+    )
+    db_session.execute(insert_statement)
+    db_session.commit()
+
+    return user
+
+
+@pytest.fixture
+def partner_publisher(db_session, example_partner):
     user = User(
         email=contributor_email,
         password=user_manager.hash_password(example_password),
@@ -131,7 +156,20 @@ def access_token(client, example_user):
 
 
 @pytest.fixture
-def contributor_access_token(client, contributor_user):
+def p_admin_access_token(client, partner_admin):
+    res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": p_admin_email,
+            "password": example_password,
+        },
+    )
+    assert res.status_code == 200
+    return res.json["access_token"]
+
+
+@pytest.fixture
+def contributor_access_token(client, partner_publisher):
     res = client.post(
         "api/v1/auth/login",
         json={

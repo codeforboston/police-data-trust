@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative.api import DeclarativeMeta
 
 from .database import User
 from .database.models.action import Action
-from .database.models.partner import Partner
+from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
 from .database.models.officer import Officer
@@ -180,12 +180,25 @@ class CreatePartnerSchema(_BaseCreatePartnerSchema, _PartnerMixin):
     reported_incidents: Optional[List[_BaseCreateIncidentSchema]]
 
 
+class CreatePartnerMemberSchema(BaseModel):
+    user_id: int
+    role: MemberRole
+    is_active: Optional[bool] = True
+
+
+AddMemberSchema = sqlalchemy_to_pydantic(
+    PartnerMember,
+    exclude=["id", "date_joined", "partner", "user"]
+)
+
+
 def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, **kwargs)
 
 
 _BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
+PartnerMemberSchema = schema_get(PartnerMember)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -257,7 +270,7 @@ def incident_orm_to_json(incident: Incident) -> dict:
 
 
 def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
-    """Convert the JSON incident into an ORM instance
+    """Convert the JSON partner into an ORM instance
 
     pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
     around. sqlalchemy won't convert nested dictionaries into the corresponding
@@ -280,5 +293,18 @@ def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
 
 def partner_orm_to_json(partner: Partner) -> dict:
     return PartnerSchema.from_orm(partner).dict(
+        exclude_none=True,
+    )
+
+
+def partner_member_to_orm(
+        partner_member: CreatePartnerMemberSchema) -> PartnerMember:
+    """Convert the JSON partner member into an ORM instance"""
+    orm_attrs = partner_member.dict()
+    return PartnerMember(**orm_attrs)
+
+
+def partner_member_orm_to_json(partner_member: PartnerMember) -> dict:
+    return PartnerMemberSchema.from_orm(partner_member).dict(
         exclude_none=True,
     )

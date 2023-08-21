@@ -93,3 +93,6 @@ class User(db.Model, UserMixin, CrudMixin):
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
+
+    def get_by_email(email):
+        return User.query.filter(User.email == email).first()

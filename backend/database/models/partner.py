@@ -2,9 +2,10 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 from ..core import db, CrudMixin
 from enum import Enum
+from datetime import datetime
 
 
-class MemberRole(Enum):
+class MemberRole(str, Enum):
     ADMIN = "Administrator"
     PUBLISHER = "Publisher"
     MEMBER = "Member"
@@ -23,7 +24,7 @@ class MemberRole(Enum):
             return 5
 
 
-class PartnerMember(db.Model):
+class PartnerMember(db.Model, CrudMixin):
     __tablename__ = "partner_user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     partner_id = db.Column(db.Integer, db.ForeignKey('partner.id'),
@@ -38,6 +39,13 @@ class PartnerMember(db.Model):
 
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
+
+    def get_default_role():
+        return MemberRole.SUBSCRIBER
+
+    def create(self, refresh: bool = True):
+        self.date_joined = datetime.now()
+        return super().create(refresh)
 
 
 class Partner(db.Model, CrudMixin):
