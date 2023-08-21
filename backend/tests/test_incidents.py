@@ -161,7 +161,7 @@ def test_search_incidents(
     assert res.json["totalResults"] == len(expected_incident_names)
 
 
-def test_pagination(client, example_incidents, access_token):
+def test_incident_pagination(client, example_incidents, access_token):
     per_page = 1
     expected_total_pages = len(example_incidents)
     actual_ids = set()

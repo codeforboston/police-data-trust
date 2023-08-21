@@ -1,5 +1,6 @@
 """Define the SQL classes for Users."""
 import enum
+from datetime import datetime
 
 from ..core import CrudMixin, db
 from backend.database.models._assoc_tables import incident_agency, incident_tag
@@ -63,6 +64,7 @@ class Incident(db.Model, CrudMixin):
         db.Integer, db.ForeignKey("partner.id"))
     source_details = db.relationship(
         "SourceDetails", backref="incident", uselist=False)
+    date_record_created = db.Column(db.DateTime)
     time_of_incident = db.Column(db.DateTime)
     time_confidence = db.Column(db.Integer)
     complaint_date = db.Column(db.Date)
@@ -99,6 +101,10 @@ class Incident(db.Model, CrudMixin):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Incident {self.id}>"
+
+    def create(self, refresh: bool = True):
+        self.date_record_created = datetime.now()
+        return super().create(refresh)
 
 
 # On the Description object:

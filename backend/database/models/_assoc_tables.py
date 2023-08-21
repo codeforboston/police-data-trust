@@ -1,38 +1,6 @@
 from .. import db
 from backend.database.models.officer import Rank
-from enum import Enum
 
-
-class MemberRole(Enum):
-    ADMIN = "Administrator"
-    PUBLISHER = "Publisher"
-    MEMBER = "Member"
-    SUBSCRIBER = "Subscriber"
-
-    def get_value(self):
-        if self == MemberRole.ADMIN:
-            return 1
-        elif self == MemberRole.PUBLISHER:
-            return 2
-        elif self == MemberRole.MEMBER:
-            return 3
-        elif self == MemberRole.SUBSCRIBER:
-            return 4
-        else:
-            return 5
-
-
-partner_user = db.Table(
-    'partner_user',
-    db.Column('partner_id', db.Integer, db.ForeignKey('partner.id'),
-              primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
-              primary_key=True),
-    db.Column('role', db.Enum(MemberRole)),
-    db.Column('joined_at', db.DateTime),
-    db.Column('is_active', db.Boolean),
-    db.Column('is_admin', db.Boolean)
-)
 
 incident_agency = db.Table(
     'incident_agency',
