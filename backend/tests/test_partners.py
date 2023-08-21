@@ -231,18 +231,47 @@ def test_add_member_to_partner(db_session, example_members):
     assert partner_member_obj.role == created["role"]
 
 
-""" def test_get_partner_members(db_session, client,
-        example_partners, access_token):
+def test_get_partner_members(
+        db_session, client, example_partner, example_user,
+        admin_user, access_token):
     # Create partners in the database
-    partner = example_partners["cpdp"]
-    partner_members = (
+    users = []
+    partner_obj = (
         db_session.query(Partner).filter(
-            Partner.id == partner["id"]).first().members
+            Partner.name == example_partner.name).first()
     )
 
+    member_obj = (
+        db_session.query(User).filter(
+            User.email == example_user.email).first()
+    )
+
+    admin_obj = (
+        db_session.query(User).filter(
+            User.email == admin_user.email).first()
+    )
+
+    users.append(member_obj)
+    users.append(admin_obj)
+
+    for user in users:
+        association_obj = PartnerMember(
+            partner_id=partner_obj.id,
+            user_id=user.id
+        )
+        db_session.add(association_obj)
+        db_session.commit()
+
     # Test that we can get partners
-    res = client.get(f"/api/v1/partners/{partner.id}/members")
-    assert res.json["results"].__len__() == partner_members.__len__() """
+    res = client.get(
+        f"/api/v1/partners/{partner_obj.id}/members/",
+        headers={"Authorization":
+                 "Bearer {0}".format(access_token)}
+    )
+
+    assert res.status_code == 200
+    assert res.json["results"].__len__() == users.__len__()
+    # assert res.json["results"][0]["user"]["email"] == member_obj.email
 
 
 # def deactivate_partner_member(client, example_partners, access_token):

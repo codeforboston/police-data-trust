@@ -97,8 +97,11 @@ def get_partner_members(partner_id: int):
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    partner = Partner.get(partner_id)
-    results = partner.member_association.paginate(
+    # partner = Partner.get(partner_id)
+    all_members = db.session.query(PartnerMember).filter(
+        PartnerMember.partner_id == partner_id
+    )
+    results = all_members.paginate(
         page=q_page, per_page=q_per_page, max_per_page=100)
 
     return {
