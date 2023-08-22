@@ -36,6 +36,7 @@ POSTGRES_DB=police_data
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 PDT_API_PORT=5000
+MIXPANEL_TOKEN=your_mixpanel_token
 ```
 
 > **Note**
