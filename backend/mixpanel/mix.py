@@ -1,12 +1,14 @@
 from mixpanel import Mixpanel
+from backend.config import Config
 from ua_parser import user_agent_parser
 from flask_jwt_extended import get_jwt
 
-from backend import config
 # Path: backend/mixpanel/mix.py
 
+config = Config()
+
 # Mixpanel connection
-mp = Mixpanel.init(config.MIXPANEL_TOKEN)
+mp = Mixpanel(config.MIXPANEL_TOKEN)
 
 
 def track_to_mp(request, event_name, properties):
@@ -20,7 +22,7 @@ def track_to_mp(request, event_name, properties):
         "$os": parsed["os"]["family"],
     })
 
-    if properties["user_id"] is None:
+    if "user_id" not in properties:
         user_id = get_jwt()["sub"]
     else:
         user_id = properties["user_id"]

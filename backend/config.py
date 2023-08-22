@@ -59,6 +59,10 @@ class Config(object):
             self.POSTGRES_DB,
         )
 
+    @property
+    def MIXPANEL_TOKEN(self):
+        return os.environ.get("MIXPANEL_TOKEN", None)
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
 
