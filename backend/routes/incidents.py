@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from backend.auth.jwt import min_role_required, contributor_has_partner
+from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -47,6 +48,8 @@ def create_incident():
         abort(400)
 
     created = incident.create()
+    track_to_mp(request, "create_incident", {
+        "source_id": incident.source_id})
     return incident_orm_to_json(created)
 
 
@@ -103,6 +106,12 @@ def search_incidents():
         page=body.page, per_page=body.perPage, max_per_page=100
     )
 
+    track_to_mp(request, "search_incidents", {
+        "description": body.description,
+        "location": body.location,
+        "dateStart": body.dateStart,
+        "dateEnd": body.dateEnd,
+    })
     return {
         "results": [incident_orm_to_json(result) for result in results.items],
         "page": results.page,

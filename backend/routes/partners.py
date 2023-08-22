@@ -1,4 +1,5 @@
 from backend.auth.jwt import min_role_required
+from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
@@ -48,11 +49,15 @@ def create_partner():
     created = partner.create()
     make_admin = PartnerMember(
         partner_id=created.id,
-        user_id=User.get(get_jwt()["sub"]).id,
+        user_id=get_jwt()["sub"],
         role=MemberRole.ADMIN,
     )
     make_admin.create()
 
+    track_to_mp(request, "create_partner", {
+        "partner_name": partner.name,
+        "partner_contact": partner.contact_email
+    })
     return partner_orm_to_json(created)
 
 
@@ -182,4 +187,9 @@ def add_member_to_partner(partner_id: int):
 
     created = partner_member.create()
 
+    track_to_mp(request, "add_partner_member", {
+        "partner_id": partner_id,
+        "user_id": partner_member.user_id,
+        "role": partner_member.role,
+    })
     return partner_member_orm_to_json(created)
