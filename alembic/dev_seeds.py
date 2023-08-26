@@ -72,7 +72,7 @@ def create_partner(partner):
 
 create_partner(
     Partner(
-        id="mpv",
+        id="1",
         name="Mapping Police Violence",
         url="https://mappingpoliceviolence.us",
         contact_email="info@campaignzero.org"
@@ -87,12 +87,24 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
         name="Mapping Police Violence").first()
     incident = Incident(
         id=id,
-        source=mpv,
+        source_id="1",
+        date_record_created=f"{date} 00:00:00",
+        time_of_incident=f"{date} 00:00:00",
+        time_confidence="1",
+        complaint_date=f"{date} 00:00:00",
+        closed_date=f"{date} 00:00:00",
         location=f"Test location {key}",
         longitude=lon,
         latitude=lat,
         description=f"Test description {key}",
-        time_of_incident=f"{date} 00:00:00",
+        stop_type="Traffic",
+        call_type="Emergency",
+        has_attachments=False,
+        from_report=True,
+        was_victim_arrested=True,
+        arrest_id=1,
+        criminal_case_brought=True,
+        case_id=1,
         perpetrators=[
             Perpetrator(
                 first_name=f"TestFirstName {key}",
