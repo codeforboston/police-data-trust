@@ -79,33 +79,41 @@ def search_incidents():
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
 
-    if body.location:
-        # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text
-        # search
-        #
-        # TODO: eventually replace with geosearch. Geocode records and integrate
-        # PostGIS
-        query = query.filter(Incident.location.ilike(f"%{body.location}%"))
-    if body.dateStart:
-        query = query.filter(
-                             Incident.time_of_incident >=
-                             datetime.strptime(body.dateStart, "%Y-%m-%d"))
-    if body.dateEnd:
-        query = query.filter(
-                             Incident.time_of_incident <=
-                             datetime.strptime(body.dateEnd, "%Y-%m-%d"))
-    if body.description:
-        query = query.filter(
-            Incident.description.ilike(f"%{body.description}%")
-        )
+    try:
+        if body.location:
+            # TODO: Replace with .match, which uses `@@ to_tsquery`
+            # for full-text search
+            #
+            # TODO: eventually replace with geosearch. Geocode
+            # records and integrate PostGIS
+            query = query.filter(Incident.location.ilike(f"%{body.location}%"))
+        if body.dateStart:
+            query = query.filter(
+                                Incident.time_of_incident >=
+                                datetime.strptime(body.dateStart, "%Y-%m-%d"))
+        if body.dateEnd:
+            query = query.filter(
+                                Incident.time_of_incident <=
+                                datetime.strptime(body.dateEnd, "%Y-%m-%d"))
+        if body.description:
+            query = query.filter(
+                Incident.description.ilike(f"%{body.description}%")
+            )
+    except Exception as e:
+        abort(422, description=str(e))
 
     results = query.paginate(
         page=body.page, per_page=body.perPage, max_per_page=100
     )
 
-    return {
-        "results": [incident_orm_to_json(result) for result in results.items],
-        "page": results.page,
-        "totalPages": results.pages,
-        "totalResults": results.total,
-    }
+    try:
+        return {
+            "results": [
+                incident_orm_to_json(result) for result in results.items
+            ],
+            "page": results.page,
+            "totalPages": results.pages,
+            "totalResults": results.total,
+        }
+    except Exception as e:
+        abort(500, description=str(e))
