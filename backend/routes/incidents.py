@@ -81,11 +81,11 @@ def search_incidents():
 
     try:
         if body.location:
-            # TODO: Replace with .match, which uses `@@ to_tsquery` for full-text
-            # search
+            # TODO: Replace with .match, which uses `@@ to_tsquery`
+            # for full-text search
             #
-            # TODO: eventually replace with geosearch. Geocode records and integrate
-            # PostGIS
+            # TODO: eventually replace with geosearch. Geocode
+            # records and integrate PostGIS
             query = query.filter(Incident.location.ilike(f"%{body.location}%"))
         if body.dateStart:
             query = query.filter(
@@ -108,7 +108,9 @@ def search_incidents():
 
     try:
         return {
-            "results": [incident_orm_to_json(result) for result in results.items],
+            "results": [
+                incident_orm_to_json(result) for result in results.items
+            ],
             "page": results.page,
             "totalPages": results.pages,
             "totalResults": results.total,
