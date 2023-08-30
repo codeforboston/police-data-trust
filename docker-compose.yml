@@ -37,6 +37,7 @@ services:
       POSTGRES_HOST: db
       FLASK_ENV: ${FLASK_ENV:-development}
       WAIT_HOSTS: db:${POSTGRES_PORT:-5432}
+      MIXPANEL_TOKEN: ${MIXPANEL_TOKEN:-notset}
     ports:
       - ${PDT_API_PORT:-5000}:${PDT_API_PORT:-5000}
 
