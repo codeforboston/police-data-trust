@@ -6,7 +6,6 @@ from backend.database.models.perpetrator import Perpetrator
 from backend.database.models.partner import Partner
 from backend.database.models.use_of_force import UseOfForce
 
-
 def create_user(user):
     user_exists = (
         db.session.query(User).filter_by(email=user.email).first() is not None
@@ -15,52 +14,6 @@ def create_user(user):
     if not user_exists:
         user.create()
 
-
-create_user(
-    User(
-        email="test@example.com",
-        password=user_manager.hash_password("password"),
-        role=UserRole.PUBLIC,
-        first_name="Test",
-        last_name="Example",
-        phone_number="(123) 456-7890",
-    )
-)
-
-create_user(
-    User(
-        email="contributor@example.com",
-        password=user_manager.hash_password("password"),
-        role=UserRole.CONTRIBUTOR,
-        first_name="Contributor",
-        last_name="Example",
-        phone_number="(123) 456-7890",
-    )
-)
-
-create_user(
-    User(
-        email="admin@example.com",
-        password=user_manager.hash_password("password"),
-        role=UserRole.ADMIN,
-        first_name="Admin",
-        last_name="Example",
-        phone_number="(012) 345-6789",
-    )
-)
-
-create_user(
-    User(
-        email="passport@example.com",
-        password=user_manager.hash_password("password"),
-        role=UserRole.PASSPORT,
-        first_name="Passport",
-        last_name="Example",
-        phone_number="(012) 345-6789",
-    )
-)
-
-
 def create_partner(partner):
     partner_exists = (
         db.session.query(Partner).filter_by(id=partner.id).first() is not None
@@ -68,17 +21,6 @@ def create_partner(partner):
 
     if not partner_exists:
         partner.create()
-
-
-create_partner(
-    Partner(
-        id="1",
-        name="Mapping Police Violence",
-        url="https://mappingpoliceviolence.us",
-        contact_email="info@campaignzero.org"
-    )
-)
-
 
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     base_id = 10000000
@@ -118,12 +60,62 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
     if not exists:
         incident.create()
 
+def create_seeds():
+    create_user(
+        User(
+            email="test@example.com",
+            password=user_manager.hash_password("password"),
+            role=UserRole.PUBLIC,
+            first_name="Test",
+            last_name="Example",
+            phone_number="(123) 456-7890",
+        )
+    )
+    create_user(
+        User(
+            email="contributor@example.com",
+            password=user_manager.hash_password("password"),
+            role=UserRole.CONTRIBUTOR,
+            first_name="Contributor",
+            last_name="Example",
+            phone_number="(123) 456-7890",
+        )
+    )
+    create_user(
+        User(
+            email="admin@example.com",
+            password=user_manager.hash_password("password"),
+            role=UserRole.ADMIN,
+            first_name="Admin",
+            last_name="Example",
+            phone_number="(012) 345-6789",
+        )
+    )
+    create_user(
+        User(
+            email="passport@example.com",
+            password=user_manager.hash_password("password"),
+            role=UserRole.PASSPORT,
+            first_name="Passport",
+            last_name="Example",
+            phone_number="(012) 345-6789",
+        )
+    )
+    create_partner(
+        Partner(
+            id="1",
+            name="Mapping Police Violence",
+            url="https://mappingpoliceviolence.us",
+            contact_email="info@campaignzero.org"
+        )
+    )
+    create_incident(key=1, date="10-01-2019", lon=-84.362576, lat=33.7589748)
+    create_incident(key=2, date="11-01-2019", lon=-118.1861128, lat=33.76702)
+    create_incident(key=3, date="12-01-2019", lon=-117.8827321, lat=33.800308)
+    create_incident(key=4, date="03-15-2020", lon=-118.1690197, lat=33.8338271)
+    create_incident(key=5, date="04-15-2020", lon=-83.9007382, lat=33.8389977)
+    create_incident(key=6, date="08-10-2020", lon=-84.2687574, lat=33.9009798)
+    create_incident(key=7, date="10-01-2020", lon=-118.40853, lat=33.9415889)
+    create_incident(key=8, date="10-15-2020", lon=-84.032149, lat=33.967774)
 
-create_incident(key=1, date="10-01-2019", lon=-84.362576, lat=33.7589748)
-create_incident(key=2, date="11-01-2019", lon=-118.1861128, lat=33.76702)
-create_incident(key=3, date="12-01-2019", lon=-117.8827321, lat=33.800308)
-create_incident(key=4, date="03-15-2020", lon=-118.1690197, lat=33.8338271)
-create_incident(key=5, date="04-15-2020", lon=-83.9007382, lat=33.8389977)
-create_incident(key=6, date="08-10-2020", lon=-84.2687574, lat=33.9009798)
-create_incident(key=7, date="10-01-2020", lon=-118.40853, lat=33.9415889)
-create_incident(key=8, date="10-15-2020", lon=-84.032149, lat=33.967774)
+create_seeds()

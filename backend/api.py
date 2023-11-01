@@ -49,6 +49,22 @@ def register_commands(app: Flask):
     app.cli.add_command(db_cli)
 
     @app.cli.command(
+        "seed",
+        context_settings=dict(
+            ignore_unknown_options=True,
+            allow_extra_args=True,
+            help_option_names=[],
+        ),
+    )
+    @click.pass_context
+    @dev_only
+    def seed(ctx: click.Context):
+        """Seed the database."""
+        from alembic.dev_seeds import create_seeds
+
+        create_seeds()
+
+    @app.cli.command(
         "pip-compile",
         context_settings=dict(
             ignore_unknown_options=True,
