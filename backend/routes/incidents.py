@@ -1,8 +1,10 @@
+import logging
 from datetime import datetime
 from typing import Optional
 
 from backend.auth.jwt import min_role_required, contributor_has_partner
 from backend.mixpanel.mix import track_to_mp
+from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
