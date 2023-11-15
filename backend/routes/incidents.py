@@ -120,7 +120,7 @@ def search_incidents():
             "dateEnd": body.dateEnd,
         })
     except MixpanelException as e:
-        logger.error(e);
+        logger.error(e)
 
     try:
         return {
