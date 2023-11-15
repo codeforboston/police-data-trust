@@ -81,6 +81,7 @@ def search_incidents():
     """Search Incidents."""
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
+    logger = logging.getLogger('incidents')
 
     try:
         if body.location:
@@ -109,12 +110,15 @@ def search_incidents():
         page=body.page, per_page=body.perPage, max_per_page=100
     )
 
-    track_to_mp(request, "search_incidents", {
-        "description": body.description,
-        "location": body.location,
-        "dateStart": body.dateStart,
-        "dateEnd": body.dateEnd,
-    })
+    try:
+        track_to_mp(request, "search_incidents", {
+            "description": body.description,
+            "location": body.location,
+            "dateStart": body.dateStart,
+            "dateEnd": body.dateEnd,
+        })
+    except MixpanelException as e:
+        logger.error(e);
 
     try:
         return {
