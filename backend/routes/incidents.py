@@ -109,13 +109,14 @@ def search_incidents():
         page=body.page, per_page=body.perPage, max_per_page=100
     )
 
+    track_to_mp(request, "search_incidents", {
+        "description": body.description,
+        "location": body.location,
+        "dateStart": body.dateStart,
+        "dateEnd": body.dateEnd,
+    })
+
     try:
-        track_to_mp(request, "search_incidents", {
-            "description": body.description,
-            "location": body.location,
-            "dateStart": body.dateStart,
-            "dateEnd": body.dateEnd,
-        })
         return {
             "results": [
                 incident_orm_to_json(result) for result in results.items
