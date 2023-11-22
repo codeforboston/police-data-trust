@@ -94,6 +94,7 @@ class TestingConfig(Config):
     POSTGRES_DB = "police_data_test"
     SECRET_KEY = "my-secret-key"
     JWT_SECRET_KEY = "my-jwt-secret-key"
+    MIXPANEL_TOKEN = "mixpanel-token"
 
 
 def get_config_from_env(env: str) -> Config:
