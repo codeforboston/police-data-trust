@@ -9,6 +9,7 @@ from flask_jwt_extended import (
 )
 from pydantic.main import BaseModel
 from ..auth import min_role_required, user_manager
+from ..mixpanel.mix import track_to_mp
 from ..database import User, UserRole, db
 from ..dto import LoginUserDTO, RegisterUserDTO
 from ..schemas import UserSchema, validate
@@ -94,6 +95,11 @@ def register():
             }
         )
         set_access_cookies(resp, token)
+
+        track_to_mp(request, "register", {
+            'user_id': user.id,
+            'success': True,
+        })
         return resp, 200
     # In case of missing fields, return error message indicating
     # required fields.

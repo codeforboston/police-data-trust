@@ -1,7 +1,10 @@
+import logging
 from datetime import datetime
 from typing import Optional
 
 from backend.auth.jwt import min_role_required, contributor_has_partner
+from backend.mixpanel.mix import track_to_mp
+from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -47,6 +50,8 @@ def create_incident():
         abort(400)
 
     created = incident.create()
+    track_to_mp(request, "create_incident", {
+        "source_id": incident.source_id})
     return incident_orm_to_json(created)
 
 
@@ -78,6 +83,7 @@ def search_incidents():
     """Search Incidents."""
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
+    logger = logging.getLogger('incidents')
 
     try:
         if body.location:
@@ -105,6 +111,16 @@ def search_incidents():
     results = query.paginate(
         page=body.page, per_page=body.perPage, max_per_page=100
     )
+
+    try:
+        track_to_mp(request, "search_incidents", {
+            "description": body.description,
+            "location": body.location,
+            "dateStart": body.dateStart,
+            "dateEnd": body.dateEnd,
+        })
+    except MixpanelException as e:
+        logger.error(e)
 
     try:
         return {
