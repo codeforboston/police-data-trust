@@ -41,3 +41,4 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: police_data
+        MIXPANEL_TOKEN: mixpanel_token
