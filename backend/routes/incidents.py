@@ -90,11 +90,11 @@ def search_incidents():
         if body.dateStart:
             query = query.filter(
                                 Incident.time_of_incident >=
-                                datetime.strptime(body.dateStart, "%Y-%m-%d"))
+                                datetime.fromisoformat(body.dateStart))
         if body.dateEnd:
             query = query.filter(
                                 Incident.time_of_incident <=
-                                datetime.strptime(body.dateEnd, "%Y-%m-%d"))
+                                datetime.fromisoformat(body.dateEnd))
         if body.description:
             query = query.filter(
                 Incident.description.ilike(f"%{body.description}%")

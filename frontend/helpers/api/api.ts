@@ -161,8 +161,8 @@ export function searchIncidents({
   dateEnd,
   ...rest
 }: IncidentSearchRequest): Promise<IncidentSearchResponse> {
-  if (dateStart) dateStart = new Date(dateStart).toISOString()
-  if (dateEnd) dateEnd = new Date(dateEnd).toISOString()
+  if (dateStart) dateStart = new Date(dateStart).toISOString().slice(0, -1)
+  if (dateEnd) dateEnd = new Date(dateEnd).toISOString().slice(0, -1)
 
   return request({
     url: "/incidents/search",
