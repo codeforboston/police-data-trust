@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { useAuth, useSearch } from "../../helpers"
-import { searchPanelInputs, SearchTypes, ToggleOptions } from "../../models"
+import { IToggleOptions, searchPanelInputs, SearchTypes } from "../../models"
 import {
   FormLevelError,
   PrimaryButton,
@@ -12,10 +12,17 @@ import {
 } from "../../shared-components"
 import styles from "./search.module.css"
 import SecondaryInputStories from "../../shared-components/secondary-input/secondary-input.stories"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEdit } from "@fortawesome/free-solid-svg-icons"
 
 const { searchPanelContainer, searchForm } = styles
 
-export const SearchPanel = () => {
+interface SearchPanelProps {
+  toggleOptions: IToggleOptions[]
+  setToggleOptions: Function
+}
+
+export const SearchPanel = (props: SearchPanelProps) => {
   const form = useForm()
   const { searchIncidents } = useSearch()
   const { accessToken } = useAuth()
@@ -23,9 +30,7 @@ export const SearchPanel = () => {
   const [errorMessage, setErrorMessage] = useState("")
   const [formInputs, setFormInputs] = useState(searchPanelInputs.incidents)
   const [isLoading, setIsLoading] = useState(false)
-  const [toggleOptions, setToggleOptions] = useState(
-    new ToggleOptions("incidents", "officers").options
-  )
+  const { toggleOptions, setToggleOptions } = props
 
   const toggleFormInputs = (e: any) => {
     const updatedToggleOptions = toggleOptions.map(({ type, value }) => {
@@ -65,6 +70,7 @@ export const SearchPanel = () => {
           </fieldset>
           {errorMessage && <FormLevelError errorId="ErrorMessage" errorMessage={errorMessage} />}
           <PrimaryButton loading={isLoading} type="submit">
+            <FontAwesomeIcon icon={faEdit} />
             Search
           </PrimaryButton>
         </form>
