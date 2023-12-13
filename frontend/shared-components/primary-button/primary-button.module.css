@@ -12,6 +12,7 @@
   font-size: var(--size16);
   font-weight: 500;
   cursor: pointer;
+  padding: var(--size14);
 }
 .primaryButton:focus,
 .primaryButton:hover {

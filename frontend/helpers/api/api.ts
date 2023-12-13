@@ -50,9 +50,28 @@ export interface Perpetrator {
   last_name?: string
 }
 
+export enum Rank {
+  TECHNICIAN = "Technician",
+  OFFICER = "Officer",
+  DETECTIVE = "Detective",
+  CORPORAL = "Corporal",
+  SERGEANT = "Sergeant",
+  LIEUTENANT = "Lieutenant",
+  CAPTAIN = "Captain",
+  DEPUTY = "Deputy",
+  CHIEF = "Chief"
+}
+
 export interface Officer {
+  id?: number
   first_name?: string
   last_name?: string
+  race?: string
+  ethnicity?: string
+  gender?: string
+  rank?: Rank
+  star?: string
+  date_of_birth?: Date
 }
 
 export interface UseOfForce {

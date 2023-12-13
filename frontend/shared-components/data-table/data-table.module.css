@@ -12,7 +12,15 @@
   text-align: center;
 }
 
-.dataFooter,
+.dataFooter {
+  background-color: var(--lightBlue);
+  display: flex;
+  justify-content: space-between;
+  padding-left: var(--size100);
+  padding-right: var(--size80);
+  padding-top: var(--size4);
+  padding-bottom: var(--size4);
+}
 .dataHeader {
   background-color: var(--lightBlue);
 }
@@ -122,4 +130,9 @@
 .dataRowPage::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.recordCount {
+  font-weight: bold;
+  font-size: var(--size18);
 }

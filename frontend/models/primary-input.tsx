@@ -160,8 +160,14 @@ export const searchPanelInputs: { [key in SearchTypes]: PrimaryInputNames[] } = 
   [SearchTypes.OFFICERS]: [
     PrimaryInputNames.OFFICER_NAME,
     PrimaryInputNames.LOCATION,
-    PrimaryInputNames.BADGE_NUMBER,
-    PrimaryInputNames.DATE_START,
-    PrimaryInputNames.DATE_END
+    PrimaryInputNames.BADGE_NUMBER
+    // PrimaryInputNames.DATE_START,
+    // PrimaryInputNames.DATE_END
   ]
+}
+
+export const primaryInputContent: { [key in string]: string } = {
+  [PrimaryInputNames.OFFICER_NAME]: "Accepts full or partial names and titles",
+  [PrimaryInputNames.LOCATION]: "Place where the officer may have worked",
+  [PrimaryInputNames.BADGE_NUMBER]: "If known, provide any badge number used"
 }

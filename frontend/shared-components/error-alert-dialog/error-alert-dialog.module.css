@@ -1,0 +1,24 @@
+.errorAlertDialogContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size10) var(--size20) var(--size10) var(--size20);
+  border: 2px solid black;
+  border-radius: 5px;
+  /* height: 50%; */
+}
+
+.innerErrorAlertDialogContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size20);
+  border: 3px solid red;
+  border-radius: 5px;
+}
+
+.errorAlertDescription {
+  margin: 0 var(--size10) 0 var(--size10);
+}

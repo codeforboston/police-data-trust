@@ -5,7 +5,7 @@
 
 .backgroundBanner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto 0.3fr;
   min-width: 100%;
   position: absolute;
   background-color: var(--lightBlue);

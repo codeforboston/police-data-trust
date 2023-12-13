@@ -25,3 +25,9 @@
 .inputField[type="number"] {
   -moz-appearance: textfield;
 }
+
+.primarInputContent {
+  font-size: var(--size12);
+  margin-top: var(--size4);
+  margin-bottom: var(--size4);
+}
