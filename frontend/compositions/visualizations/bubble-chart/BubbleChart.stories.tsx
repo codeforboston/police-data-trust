@@ -7,6 +7,6 @@ export default {
   component: BubbleChart
 } as ComponentMeta<typeof BubbleChart>
 
-const Template: ComponentStory<typeof BubbleChart> = () => <BubbleChart />
+const Template: ComponentStory<typeof BubbleChart> = () => <BubbleChart height={500} />
 
 export const Default = Template.bind({})

@@ -12,105 +12,11 @@ interface BubbleNode extends BubbleData {
   children?: BubbleNode[]
 }
 
-const bubbleTree: BubbleNode = {
-  officerName: "Root",
-  location: "",
-  incidents: 0,
-  children: [
-    {
-      officerName: "Sgt. Jason Smith",
-      location: "New York PD",
-      incidents: 846
-    },
-    {
-      officerName: "Lt. Jason Smith",
-      location: "Seattle PD",
-      incidents: 92
-    },
-    {
-      officerName: "Sgt. Jason Smith",
-      location: "Hoover Sherriff",
-      incidents: 8
-    },
-    {
-      officerName: "Cpt. Jason Smith",
-      location: "Tampa PD",
-      incidents: 742
-    },
-    {
-      officerName: "Dep. Jason Smith",
-      location: "Honolulu PD",
-      incidents: 12
-    },
-    {
-      officerName: "Cpt. Sarah Johnson",
-      location: "Chicago PD",
-      incidents: 950
-    },
-    {
-      officerName: "Sgt. Emily Davis",
-      location: "Los Angeles PD",
-      incidents: 347
-    },
-    {
-      officerName: "Lt. Michael Brown",
-      location: "Dallas PD",
-      incidents: 580
-    },
-    {
-      officerName: "Dep. Amanda White",
-      location: "Miami PD",
-      incidents: 49
-    },
-    {
-      officerName: "Cpt. Robert Miller",
-      location: "Phoenix PD",
-      incidents: 15
-    }
-  ]
+interface BubbleChartProps {
+  height?: number
 }
 
-const renderBubbleText = (
-  data: BubbleNode,
-  r: number,
-  colorScale: d3.ScaleOrdinal<string, string, never>
-) => {
-  const dummy = document.createElement("div")
-  const circleColor = colorScale(data.officerName)
-  const fillColor = circleColor === "#303463" ? "white" : "black"
-
-  const bubbleText = document.createElement("div")
-  bubbleText.style.display = "flex"
-  bubbleText.style.flexDirection = "column"
-  bubbleText.style.justifyContent = "center"
-  bubbleText.style.alignItems = "center"
-  bubbleText.style.height = "100%"
-  bubbleText.style.color = fillColor
-
-  // Officer Name Element
-  const officerName = document.createElement("tspan")
-  officerName.textContent = data.officerName
-  officerName.style.fontWeight = "bold"
-  officerName.style.textAlign = "center"
-
-  // Location Element
-  const location = document.createElement("tspan")
-  location.textContent = data.location
-
-  // Incident Element
-  const incidents = document.createElement("tspan")
-  incidents.textContent = `${data.incidents} Incidents`
-
-  bubbleText.append(officerName)
-  bubbleText.append(location)
-  bubbleText.append(incidents)
-
-  dummy.append(bubbleText)
-
-  return r > 40 ? dummy.innerHTML : ""
-}
-
-export default function BubbleChart() {
+export default function BubbleChart({ height }: BubbleChartProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 
   const updateSVG = () => {
@@ -181,9 +87,103 @@ export default function BubbleChart() {
     updateSVG()
   }, [])
 
-  return (
-    <object className={styles.svgContainer}>
-      <svg ref={svgRef} className={styles.svg} />
-    </object>
-  )
+  return <svg ref={svgRef} height={height} className={styles.svg} />
+}
+
+const renderBubbleText = (
+  data: BubbleNode,
+  r: number,
+  colorScale: d3.ScaleOrdinal<string, string, never>
+) => {
+  const dummy = document.createElement("div")
+  const circleColor = colorScale(data.officerName)
+  const fillColor = circleColor === "#303463" ? "white" : "black"
+
+  const bubbleText = document.createElement("div")
+  bubbleText.style.display = "flex"
+  bubbleText.style.flexDirection = "column"
+  bubbleText.style.justifyContent = "center"
+  bubbleText.style.alignItems = "center"
+  bubbleText.style.height = "100%"
+  bubbleText.style.color = fillColor
+
+  // Officer Name Element
+  const officerName = document.createElement("tspan")
+  officerName.textContent = data.officerName
+  officerName.style.fontWeight = "bold"
+  officerName.style.textAlign = "center"
+
+  // Location Element
+  const location = document.createElement("tspan")
+  location.textContent = data.location
+
+  // Incident Element
+  const incidents = document.createElement("tspan")
+  incidents.textContent = `${data.incidents} Incidents`
+
+  bubbleText.append(officerName)
+  bubbleText.append(location)
+  bubbleText.append(incidents)
+
+  dummy.append(bubbleText)
+
+  return r > 40 ? dummy.innerHTML : ""
+}
+
+const bubbleTree: BubbleNode = {
+  officerName: "Root",
+  location: "",
+  incidents: 0,
+  children: [
+    {
+      officerName: "Sgt. Jason Smith",
+      location: "New York PD",
+      incidents: 846
+    },
+    {
+      officerName: "Lt. Jason Smith",
+      location: "Seattle PD",
+      incidents: 92
+    },
+    {
+      officerName: "Sgt. Jason Smith",
+      location: "Hoover Sherriff",
+      incidents: 8
+    },
+    {
+      officerName: "Cpt. Jason Smith",
+      location: "Tampa PD",
+      incidents: 742
+    },
+    {
+      officerName: "Dep. Jason Smith",
+      location: "Honolulu PD",
+      incidents: 12
+    },
+    {
+      officerName: "Cpt. Sarah Johnson",
+      location: "Chicago PD",
+      incidents: 950
+    },
+    {
+      officerName: "Sgt. Emily Davis",
+      location: "Los Angeles PD",
+      incidents: 347
+    },
+    {
+      officerName: "Lt. Michael Brown",
+      location: "Dallas PD",
+      incidents: 580
+    },
+    {
+      officerName: "Dep. Amanda White",
+      location: "Miami PD",
+      incidents: 49
+    },
+    {
+      officerName: "Cpt. Robert Miller",
+      location: "Phoenix PD",
+      incidents: 15
+    }
+  ]
 }
