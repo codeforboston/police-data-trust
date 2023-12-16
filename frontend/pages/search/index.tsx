@@ -1,5 +1,11 @@
 import { Column } from "react-table"
-import { DashboardHeader, Map, SearchPanel, SearchResultsTable } from "../../compositions"
+import {
+  BubbleChart,
+  DashboardHeader,
+  Map,
+  SearchPanel,
+  SearchResultsTable
+} from "../../compositions"
 import { resultsColumns } from "../../compositions/search-results/search-results"
 import { requireAuth, useSearch } from "../../helpers"
 import { Officer, Rank } from "../../helpers/api"
@@ -12,26 +18,31 @@ import { officerResultsColumns } from "../../models/officer"
 import { SearchResultsTypes, ToggleOptions } from "../../models"
 
 export default requireAuth(function Dashboard() {
-  const { searchPageContainer, searchPageDisplay } = styles
+  const { searchPageContainer } = styles
   const { incidentResults } = useSearch()
   const [toggleOptions, setToggleOptions] = useState(
     new ToggleOptions("incidents", "officers").options
   )
 
+  const isIncidentView = toggleOptions[0].value
+  const isOfficerView = toggleOptions[1].value
+
   return (
     <Layout>
       <div className={searchPageContainer}>
         <SearchPanel toggleOptions={toggleOptions} setToggleOptions={setToggleOptions} />
-        <div className={searchPageDisplay}>
-          <Map />
-          {toggleOptions[0].value && !!incidentResults && (
-            <SearchResultsTable
-              results={incidentResults.results}
-              resultsColumns={resultsColumns}
-            />
+        <div>
+          {isIncidentView && <Map />}
+          {isIncidentView && !!incidentResults && (
+            <SearchResultsTable results={incidentResults.results} resultsColumns={resultsColumns} />
           )}
-          {toggleOptions[1].value && !!officerSearchResult && (
-            <SearchResultsTable results={officerSearchResult} resultsColumns={officerResultsColumns} />
+
+          {isOfficerView && <BubbleChart height={325} />}
+          {isOfficerView && !!officerSearchResult && (
+            <SearchResultsTable
+              results={officerSearchResult}
+              resultsColumns={officerResultsColumns}
+            />
           )}
         </div>
       </div>
