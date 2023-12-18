@@ -1,11 +1,17 @@
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
-from flask import Blueprint, abort, current_app, request
+from flask import Blueprint, abort, current_app, request,jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-
 from ..database import Partner, PartnerMember, MemberRole, db
+from ..dto import InviteUserDTO
+from flask_mail import Message
+
+
+
+
+
 from ..schemas import (
     CreatePartnerSchema,
     AddMemberSchema,
@@ -33,32 +39,90 @@ def get_partners(partner_id: int):
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate(json=CreatePartnerSchema)
-def create_partner():
+def create():
     """Create a contributing partner.
 
     Cannot be called in production environments
     """
-    if current_app.env == "production":
-        abort(418)
+    body = request.context.json
+    # if current_app.env == "production":
+    #     abort(418)
 
-    try:
-        partner = partner_to_orm(request.context.json)
-    except Exception:
-        abort(400)
+    if body.name is not None and body.url is not None and body.contact_email is not None and body.name!="" and body.url!="" and body.contact_email!="":
 
-    created = partner.create()
-    make_admin = PartnerMember(
-        partner_id=created.id,
-        user_id=get_jwt()["sub"],
-        role=MemberRole.ADMIN,
-    )
-    make_admin.create()
+        """
+        check if instance already is in the db
+        """
+        try:
+            partner = partner_to_orm(request.context.json)
+        except Exception:
+            abort(400)
+        partner_query_email= Partner.query.filter_by(contact_email=body.contact_email).first()
+        partner_query_url= Partner.query.filter_by(url=body.url).first()
 
-    track_to_mp(request, "create_partner", {
-        "partner_name": partner.name,
-        "partner_contact": partner.contact_email
-    })
-    return partner_orm_to_json(created)
+        if partner_query_email:
+            if partner_query_email.contact_email==partner.contact_email:
+                return {
+                    "status": "error",
+                    "message":"Error. Entered email or url details matches existing record.",
+
+                },400
+        if partner_query_url:
+            if partner_query_url.url==partner.url:
+                return {
+                    "status": "error",
+                    "message":"Error. Entered email or url details matches existing record.",
+
+                },400
+
+
+
+        """
+        add to database if all fields are present, and instance not already in db.
+        """
+        
+        
+        created = partner.create()
+        resp = jsonify(
+                        {
+                            "status": "ok",
+                            "message": "Successfully registered.",
+                            "item": partner_orm_to_json(created),
+                        }
+                    )
+
+            
+        make_admin = PartnerMember(
+            partner_id=created.id,
+            user_id=get_jwt()["sub"],
+            role=MemberRole.ADMIN,
+        )
+        make_admin.create()
+
+        track_to_mp(request, "create_partner", {
+            "partner_name": partner.name,
+            "partner_contact": partner.contact_email
+        })
+        return resp,200
+    else:
+
+        """
+        missing values/fields in the form
+        """
+        required_keys=["name","url","contact_email"]
+        return {
+                "status": "error",
+                "message": "Failed to create partner. Please include all of the following"
+                " fields: " + ", ".join(required_keys),
+        }, 400
+
+
+    
+   
+
+
+
+
 
 
 @bp.route("/", methods=["GET"])
@@ -193,3 +257,7 @@ def add_member_to_partner(partner_id: int):
         "role": partner_member.role,
     })
     return partner_member_orm_to_json(created)
+
+
+
+    
