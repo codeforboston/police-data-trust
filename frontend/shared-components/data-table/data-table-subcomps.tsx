@@ -39,9 +39,9 @@ const PageButton = (props: PageButtonProps) => {
   const { icon, onclick, disabled } = props
 
   return (
-    <button className={pageBtn} onClick={onclick} disabled={disabled}>
+    <span className={pageBtn} onClick={onclick}>
       <FontAwesomeIcon icon={icon} />
-    </button>
+    </span>
   )
 }
 type PageNavigatorProps = {
@@ -76,42 +76,14 @@ const PageNavigator = (props: PageNavigatorProps) => {
 
   return (
     <div className={dataFooter}>
-      <span className={recordCount}>Found {data.length.toLocaleString()} records</span>
-      <PageButton
-        icon={faAngleDoubleLeft}
-        onclick={() => gotoPage(0)}
-        disabled={!canPreviousPage}
-      />
-      <PageButton icon={faAngleLeft} onclick={() => previousPage()} disabled={!canPreviousPage} />
-      <span className={pageCnt}>
-        Page <strong>{pageIndex + 1}</strong> of <strong>{pageOptions.length}</strong>{" "}
+      <span className={recordCount}>{data.length} records found</span>
+      <span>
+        <PageButton icon={faAngleLeft} onclick={() => previousPage()} disabled={!canPreviousPage} />
+        <span className={pageCnt}>
+          {pageIndex + 1} of {pageOptions.length}
+        </span>
+        <PageButton icon={faAngleRight} onclick={() => nextPage()} disabled={!canNextPage} />
       </span>
-      <PageButton icon={faAngleRight} onclick={() => nextPage()} disabled={!canNextPage} />
-      <PageButton
-        icon={faAngleDoubleRight}
-        onclick={() => gotoPage(pageCount - 1)}
-        disabled={!canNextPage}
-      />
-      <span className={goto}>
-        Go to page:{" "}
-        <input
-          type="number"
-          className={dataRowPage}
-          defaultValue={pageIndex + 1}
-          onChange={(e) => {
-            const page = e.target.value ? Number(e.target.value) - 1 : 0
-            gotoPage(page)
-          }}
-          style={{ width: "50px", textAlign: "right" }}
-        />
-      </span>{" "}
-      <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
-        {[10, 20, 30, 40, 50].map((pageSize) => (
-          <option key={pageSize} value={pageSize}>
-            Show {pageSize}
-          </option>
-        ))}
-      </select>
     </div>
   )
 }

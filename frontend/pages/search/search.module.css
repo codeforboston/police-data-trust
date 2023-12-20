@@ -1,12 +1,7 @@
 .searchPageContainer {
-  display: flex;
-}
-
-.searchPageDisplay {
-  display: flex;
-  flex-direction: column;
-}
-
-.searchPageDisplay > * {
-  min-height: 50%;
+  max-height: 85vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  grid-template-rows: repeat(2, 1fr);
 }
