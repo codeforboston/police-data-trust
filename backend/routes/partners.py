@@ -7,6 +7,8 @@ from flask_jwt_extended.view_decorators import jwt_required
 from ..database import Partner, PartnerMember, MemberRole, db
 from ..dto import InviteUserDTO
 from flask_mail import Message
+from ..config import TestingConfig
+
 
 
 
@@ -44,78 +46,27 @@ def create():
 
     Cannot be called in production environments
     """
-    body = request.context.json
-    # if current_app.env == "production":
-    #     abort(418)
+    if current_app.env == "production":
+        abort(418)
 
-    if body.name is not None and body.url is not None and body.contact_email is not None and body.name!="" and body.url!="" and body.contact_email!="":
+    try:
+        partner = partner_to_orm(request.context.json)
+    except Exception:
+        abort(400)
 
-        """
-        check if instance already is in the db
-        """
-        try:
-            partner = partner_to_orm(request.context.json)
-        except Exception:
-            abort(400)
-        partner_query_email= Partner.query.filter_by(contact_email=body.contact_email).first()
-        partner_query_url= Partner.query.filter_by(url=body.url).first()
+    created = partner.create()
+    make_admin = PartnerMember(
+        partner_id=created.id,
+        user_id=get_jwt()["sub"],
+        role=MemberRole.ADMIN,
+    )
+    make_admin.create()
 
-        if partner_query_email:
-            if partner_query_email.contact_email==partner.contact_email:
-                return {
-                    "status": "error",
-                    "message":"Error. Entered email or url details matches existing record.",
-
-                },400
-        if partner_query_url:
-            if partner_query_url.url==partner.url:
-                return {
-                    "status": "error",
-                    "message":"Error. Entered email or url details matches existing record.",
-
-                },400
-
-
-
-        """
-        add to database if all fields are present, and instance not already in db.
-        """
-        
-        
-        created = partner.create()
-        resp = jsonify(
-                        {
-                            "status": "ok",
-                            "message": "Successfully registered.",
-                            "item": partner_orm_to_json(created),
-                        }
-                    )
-
-            
-        make_admin = PartnerMember(
-            partner_id=created.id,
-            user_id=get_jwt()["sub"],
-            role=MemberRole.ADMIN,
-        )
-        make_admin.create()
-
-        track_to_mp(request, "create_partner", {
-            "partner_name": partner.name,
-            "partner_contact": partner.contact_email
-        })
-        return resp,200
-    else:
-
-        """
-        missing values/fields in the form
-        """
-        required_keys=["name","url","contact_email"]
-        return {
-                "status": "error",
-                "message": "Failed to create partner. Please include all of the following"
-                " fields: " + ", ".join(required_keys),
-        }, 400
-
+    track_to_mp(request, "create_partner", {
+        "partner_name": partner.name,
+        "partner_contact": partner.contact_email
+    })
+    return partner_orm_to_json(created)
 
     
    
@@ -260,4 +211,77 @@ def add_member_to_partner(partner_id: int):
 
 
 
+
+
+
+@bp.route("/invite",methods=["POST"])
+@jwt_required()
+@min_role_required(MemberRole.ADMIN)
+@validate(auth=True,json=InviteUserDTO)
+def invite_user():
     
+    """
+    Testing scenarios
+
+    1) Should not work for user that is not an Admin
+    2) Should work for someone who is an Admin of an organization
+    3) If a user is invited to an organization, message should be appropriate
+    4) If a user is not invited to an organization, message should be appropriate
+
+    After TODO
+
+    1) Check if the invitations are being added to the correct tables.
+
+
+
+    """
+
+
+    
+    
+    body: InviteUserDTO = request.context.json
+    mail = current_app.extensions.get('mail')
+
+        
+
+    user = User.query.filter_by(email=body.email).first()
+    
+    if user is not None:
+
+        #TODO:handle logic to add user's to the partner member table 
+        try:
+            msg = Message("Invitation to join NPDC partner organization!", sender=TestingConfig.MAIL_USERNAME, recipients=['paul@mailtrap.io'])
+            msg.body = "You are a registered user of NPDC and were invited to a partner organization. Please log on to accept or decline the invitation."
+            mail.send(msg)
+            return {
+            "status": "ok",
+            "message": "User notified of their invitation through email!"
+        }, 200
+            
+        except:
+            return {
+                "status":"error",
+                "message":"Something went wrong! Please try again!"
+            },500
+
+       
+
+    else:
+        try:
+            msg = Message("Invitation to join NPDC index!",sender=TestingConfig.MAIL_USERNAME ,
+                        recipients=['paul@mailtrap.io'])
+            msg.body = ("You are not a registered user of NPDC and were invited to a partner organization. Please register with NPDC index.")
+            mail.send(msg)
+
+            return {
+                "status": "ok",
+                "message": "User is not registered with the NPDC index. Email sent to user notifying them to register."
+            }, 200
+        
+        except:
+            return {
+                "status":"error",
+                "message":"Something went wrong! Please try again!"
+            },500
+
+
