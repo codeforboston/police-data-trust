@@ -87,6 +87,18 @@ def register():
         db.session.add(user)
         db.session.commit()
         token = create_access_token(identity=user.id)
+
+        """
+        code to handle adding staged_invitations-->invitations for users who have just signed up for NPDC
+        """
+        staged_invite = StagedInvitation.query.filter_by(email=user.email).all()
+        if staged_invite is not None and len(staged_invite)>0:
+            for instance in staged_invite:
+                new_invitation = Invitation(user_id=user.id,role=instance.role,partner_id=instance.partner_id)  
+                db.session.add(new_invitation)
+            db.session.commit()
+            StagedInvitation.query.filter_by(email=user.email).delete()
+
         resp = jsonify(
             {
                 "status": "ok",

@@ -23,6 +23,19 @@ class MemberRole(str, Enum):
         else:
             return 5
 
+class Invitation(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    partner_id = db.Column(db.Integer, db.ForeignKey('partner.id'),primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),primary_key=True)
+    role = db.Column(db.Enum(MemberRole), nullable=False)
+    is_accepted = db.Column(db.Boolean, default=False) # default to not accepted invite 
+    
+
+class StagedInvitation(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    partner_id = db.Column(db.Integer, db.ForeignKey('partner.id'),primary_key=True)
+    email = db.Column(db.String,unique=True,primary_key=True)
+    role = db.Column(db.Enum(MemberRole), nullable=False)
 
 class PartnerMember(db.Model, CrudMixin):
     __tablename__ = "partner_user"
@@ -62,3 +75,6 @@ class Partner(db.Model, CrudMixin):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Partner {self.id}>"
+
+
+    

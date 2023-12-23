@@ -4,7 +4,7 @@ from backend.database.models.user import User, UserRole
 from flask import Blueprint, abort, current_app, request,jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from ..database import Partner, PartnerMember, MemberRole, db
+from ..database import Partner, PartnerMember, MemberRole, db, Invitation, StagedInvitation
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
@@ -216,21 +216,23 @@ def add_member_to_partner(partner_id: int):
 
 @bp.route("/invite",methods=["POST"])
 @jwt_required()
-@min_role_required(MemberRole.ADMIN)
+@min_role_required(UserRole.PUBLIC)
 @validate(auth=True,json=InviteUserDTO)
 def invite_user():
     
+
+    #TODO : Only Admins of an organization can invite
     """
     Testing scenarios
 
     1) Should not work for user that is not an Admin
     2) Should work for someone who is an Admin of an organization
-    3) If a user is invited to an organization, message should be appropriate
-    4) If a user is not invited to an organization, message should be appropriate
 
-    After TODO
 
-    1) Check if the invitations are being added to the correct tables.
+    3) (TESTED) If a user already exists and is invited to an organization, message should be appropriate 
+    4) (TESTED) If a user does not exist and is not invited to an organization, message should be appropriate 
+
+    5)Make sure all db changes Invitations, and Staged Invitations are happening as expected
 
 
 
@@ -246,10 +248,15 @@ def invite_user():
 
     user = User.query.filter_by(email=body.email).first()
     
+    # if user is already registered with NPDC, add them to Invitations Table, and send out an email notification
     if user is not None:
+        
 
-        #TODO:handle logic to add user's to the partner member table 
-        try:
+        try:        
+            new_invitation= Invitation(partner_id=body.partner_id, user_id=user.id,role=body.role)
+            db.session.add(new_invitation)
+            db.session.commit()
+            
             msg = Message("Invitation to join NPDC partner organization!", sender=TestingConfig.MAIL_USERNAME, recipients=['paul@mailtrap.io'])
             msg.body = "You are a registered user of NPDC and were invited to a partner organization. Please log on to accept or decline the invitation."
             mail.send(msg)
@@ -264,10 +271,30 @@ def invite_user():
                 "message":"Something went wrong! Please try again!"
             },500
 
-       
+             
+        # new_invitation= Invitation(partner_id=body.partner_id, user_id=user.id,role=body.role)
+        # # new_invitation.create()
+        # db.session.add(new_invitation)
+        # db.session.commit()
+        
+        # msg = Message("Invitation to join NPDC partner organization!", sender=TestingConfig.MAIL_USERNAME, recipients=['paul@mailtrap.io'])
+        # msg.body = "You are a registered user of NPDC and were invited to a partner organization. Please log on to accept or decline the invitation."
+        # mail.send(msg)
+        # return {
+        # "status": "ok",
+        # "message": "User notified of their invitation through email!"
+        # }, 200
+        
+    
 
+       
+    #if user not registered with NPDC, add the invitation for them in StagedInvitations Table, and send out an email notification
     else:
         try:
+
+            new_staged_invite = StagedInvitation(partner_id=body.partner_id,email=body.email,role=body.role)
+            db.session.add(new_staged_invite)
+            db.session.commit()
             msg = Message("Invitation to join NPDC index!",sender=TestingConfig.MAIL_USERNAME ,
                         recipients=['paul@mailtrap.io'])
             msg.body = ("You are not a registered user of NPDC and were invited to a partner organization. Please register with NPDC index.")
@@ -283,5 +310,62 @@ def invite_user():
                 "status":"error",
                 "message":"Something went wrong! Please try again!"
             },500
+
+        
+
+        # new_staged_invite = StagedInvitation(partner_id=body.partner_id,email=body.email,role=body.role)
+        
+        # db.session.add(new_staged_invite)
+        # db.session.commit()
+        # msg = Message("Invitation to join NPDC index!",sender=TestingConfig.MAIL_USERNAME ,
+        #             recipients=['paul@mailtrap.io'])
+        # msg.body = ("You are not a registered user of NPDC and were invited to a partner organization. Please register with NPDC index.")
+        # mail.send(msg)
+
+        # return {
+        #     "status": "ok",
+        #     "message": "User is not registered with the NPDC index. Email sent to user notifying them to register."
+        # }, 200
+        
+       
+
+
+@bp.route("/invitations",methods=["GET"])
+@jwt_required()
+@validate()
+#only defined for testing environment
+def get_invitations():
+    if current_app.env == "production":
+        abort(418)
+    invitation_found = Invitation.query.filter_by(email="harsharauniyar1@gmail.com",partner_id=10)
+
+    if invitation_found is not None:
+        return "Found in DB"
+    elif invitation_found is None:
+        return "Did not find in DB"
+
+
+@bp.route("/stagedinvitations",methods=["GET"])
+@jwt_required()
+@validate()
+#only defined for testing environment
+def stagedinvitations():
+    if current_app.env == "production":
+        abort(418)
+    staged_invitations = StagedInvitation.query.all()
+
+   
+    invitations_data = [
+        {
+            'id': staged_invitation.id,
+            'email': staged_invitation.email,
+            'role': staged_invitation.role, 
+            'partner_id':staged_invitation.partner_id,
+        }
+        for staged_invitation in staged_invitations
+    ]
+
+    return jsonify({'staged_invitations': invitations_data})
+
 
 
