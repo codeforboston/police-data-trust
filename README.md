@@ -51,6 +51,62 @@ This method runs the frontend natively on your computer and does not require a r
 1. Make sure that you have `node 16+` and either `npm 7+` or `yarn` installed.
 2. Follow the [install instructions](./frontend/README.md) in the `frontend` directory.
 
+## Testing with Docker
+
+All code must pass the unit tests and style checks before it can be merged into the main branch. You can run the tests locally by opening up a comand line interface to a docker container while it's running the application:
+
+
+```
+docker exec -it "police-data-trust-api-1" /bin/bash
+
+```
+
+You'll need to replace `police-data-trust-api-1` with the name of the container you'd like tro connect to. You can see the names of all currently running containers by running `docker container ls`
+
+```bash
+docker container ls
+CONTAINER ID   IMAGE                   COMMAND                  CREATED              STATUS              PORTS                    NAMES
+c0cf********   police-data-trust-api   "/bin/sh -c '/wait &…"   About a minute ago   Up About a minute   0.0.0.0:5001->5001/tcp   police-data-trust-api-1
+5e6f********   postgres:13.2           "docker-entrypoint.s…"   3 days ago           Up About a minute   0.0.0.0:5432->5432/tcp   police-data-trust-db-1
+dacd********   police-data-trust-web   "docker-entrypoint.s…"   3 days ago           Up About a minute   0.0.0.0:3000->3000/tcp   police-data-trust-web-1
+```
+
+### Backend Tests
+
+The current backend tests can be found in the GitHub Actions workflow file [python-tests.yml](https://github.com/codeforboston/police-data-trust/blob/0488d03c2ecc01ba774cf512b1ed2f476441948b/.github/workflows/python-tests.yml)
+
+To run the tests locally, first start the application with docker-compose. Then open up a command line interface to the running container:
+
+```
+docker exec -it "police-data-trust-api-1" /bin/bash
+```
+
+Then run the tests:
+
+```
+flake8 backend/
+python -m pytest
+```
+
+### Front End Tests
+
+The current frontend tests can be found in the GitHub Actions workflow file [frontend-checks.yml](https://github.com/codeforboston/police-data-trust/blob/0488d03c2ecc01ba774cf512b1ed2f476441948b/.github/workflows/frontend-checks.yml)
+
+To run the tests locally, first start the application with docker-compose. Then open up a command line interface to the running container:
+
+```
+docker exec -it "police-data-trust-web-1" /bin/bash
+```
+
+Then run the tests:
+
+```
+npm run lint
+npm run check-formatting
+npm run test
+npm run check-types
+```
+
 # Documentation
 
 [Docs](https://codeforboston.github.io/police-data-trust)
