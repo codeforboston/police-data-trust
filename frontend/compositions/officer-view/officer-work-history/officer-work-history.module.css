@@ -1,10 +1,12 @@
-.category {
-  display: block;
-  font-size: var(--size10);
-  color: var(--grey);
-  margin-left: 0;
+.title {
+  font-size: var(--size14);
+  color: #666666;
+  margin: 0.5rem 0;
+  font-weight: 400;
 }
 
 .wrapper {
   display: flex;
+  flex-direction: column;
+  margin: 0.2rem 0;
 }

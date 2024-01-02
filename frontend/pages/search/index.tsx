@@ -16,6 +16,8 @@ import ErrorAlertDialog from "../../shared-components/error-alert-dialog/error-a
 import { useState } from "react"
 import { officerResultsColumns } from "../../models/officer"
 import { SearchResultsTypes, ToggleOptions } from "../../models"
+import { mockToOfficerType } from "../../helpers/mock-to-officer-type"
+import officer from "../../models/mock-data/officer.json"
 
 export default requireAuth(function Dashboard() {
   const { searchPageContainer } = styles
@@ -26,6 +28,10 @@ export default requireAuth(function Dashboard() {
 
   const isIncidentView = toggleOptions[0].value
   const isOfficerView = toggleOptions[1].value
+
+  const officerSearchResult = Array.from({ length: 100 }, (_, index) =>
+    mockToOfficerType(officer[index])
+  )
 
   return (
     <Layout>
@@ -49,94 +55,3 @@ export default requireAuth(function Dashboard() {
     </Layout>
   )
 })
-
-const officerSearchResult: Officer[] = [
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  },
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    race: "White",
-    ethnicity: "Non-Hispanic",
-    gender: "Male",
-    rank: Rank.CAPTAIN,
-    star: "123456",
-    date_of_birth: new Date("01/01/1980")
-  }
-]

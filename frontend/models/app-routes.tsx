@@ -6,5 +6,6 @@ export enum AppRoutes {
   LOGIN = "/login",
   PASSPORT = "/passport",
   PROFILE = "/profile",
-  REGISTER = "/register"
+  REGISTER = "/register",
+  OFFICER = "/officer",
 }

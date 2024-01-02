@@ -1,8 +1,11 @@
 import { Column } from "react-table"
-import { Incident, Perpetrator } from "../helpers/api"
-import { CirclePlusButton } from "../shared-components/icon-buttons/icon-buttons"
+import { Perpetrator } from "../helpers/api"
+import { CirclePlusButton, GreaterThanButton } from "../shared-components/icon-buttons/icon-buttons"
 import { InfoTooltip } from "../shared-components"
 import { TooltipIcons, TooltipTypes } from "./info-tooltip"
+import Link from "next/link"
+import { AppRoutes } from "./app-routes"
+import { IncidentRecordType } from "./incident"
 
 export interface AgencyType {
   agencyName: string
@@ -46,16 +49,24 @@ export interface OfficerRecordType {
   gender?: string
   race?: string
   ethnicity?: string
+  badgeNo?: string
+  status?: string
+  department?: string
   knownEmployers?: AgencyType[]
   workHistory?: EmploymentType[]
   accusations?: Perpetrator[]
-  affiliations?: OfficerRecordType[]
+  affiliations?: string[]
+  incidents?: IncidentRecordType[]
 }
 
 export const officerResultsColumns: Column<any>[] = [
   {
     Header: "Name",
-    accessor: (row: any) => `${row["first_name"]}, ${row["last_name"].charAt(0)}`,
+    accessor: (row: any) => (
+      <Link href={`${AppRoutes.OFFICER}/${row["recordId"]}`} passHref={true}>
+        <div>{`${row["firstName"]}, ${row["lastName"]}`}</div>
+      </Link>
+    ),
     id: "name"
   },
   {
@@ -85,7 +96,7 @@ export const officerResultsColumns: Column<any>[] = [
         <InfoTooltip type={TooltipTypes.DATETIME} icon={TooltipIcons.INFO} iconSize="xs" />
       </span>
     ),
-    accessor: "rank",
+    accessor: "status",
     id: "rank"
   },
   {
