@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
 import { PageNavigator } from "./officer-incident-data-table-subcomps"
 import styles from "./officer-incident-data-table.module.css"
-import { IncidentRecordType } from "../../models/officer"
+import { IncidentRecordType } from "../../models/incident"
 
 interface OfficerIncidentDataTableProps {
   tableName: string

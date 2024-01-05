@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
 import { OfficerIncidentDataTable } from "./officer-incident-data-table"
 import { getOfficerFromMockData } from "../../helpers/mock-to-officer-type"
-import { incidentResultsColumns } from "../../models/officer"
+import { incidentResultsColumns } from "../../models/incident"
 
 export default {
   title: "Shared Components/Officer Incident Data Table",
