@@ -20,7 +20,9 @@ export default function WorkHistoryInstance(pastWorkplace: EmploymentType) {
             {startDateString} - {endDateString}
           </span>
         </div>
-        <a href={websiteUrl} className={link}>{agencyName}</a>
+        <a href={websiteUrl} className={link}>
+          {agencyName}
+        </a>
         {/*TODO: Get Phone number from officer data, mock data currently does not have*/}
         <p className={address}>(123) 456-7890 * {agencyHqAddress}</p>
       </div>

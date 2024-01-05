@@ -1,11 +1,6 @@
-import {
-  faAngleLeft,
-  faAngleRight,
-  IconDefinition
-} from "@fortawesome/free-solid-svg-icons"
+import { faAngleLeft, faAngleRight, IconDefinition } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styles from "./officer-incident-data-table.module.css"
-
 
 type PageButtonProps = {
   icon: IconDefinition
@@ -68,4 +63,4 @@ const PageNavigator = (props: PageNavigatorProps) => {
 }
 
 export type { PageNavigatorProps }
-export {PageNavigator }
+export { PageNavigator }
