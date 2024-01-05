@@ -1,5 +1,5 @@
 from backend.database.models._assoc_tables import perpetrator_officer
-from backend.database.models.officer import Rank
+from backend.database.models.officer import Rank, State
 from .. import db
 
 
@@ -16,7 +16,7 @@ class Perpetrator(db.Model):
     # Note: rank at time of incident
     rank = db.Column(db.Enum(Rank))
     state_id_val = db.Column(db.Text)
-    state_id_state = db.Column(db.Text)
+    state_id_state = db.Column(db.Enum(State))
     state_id_name = db.Column(db.Text)
     role = db.Column(db.Text)
     suspects = db.relationship(
