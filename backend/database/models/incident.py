@@ -99,7 +99,9 @@ class Incident(db.Model, CrudMixin):
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
-    source_details = db.relationship("SourceDetails", backref="incident", uselist=False)
+    source_details = db.relationship(
+        "SourceDetails", backref="incident", uselist=False
+    )
     victims = db.relationship("Victim", backref="incident")
     perpetrators = db.relationship("Perpetrator", backref="incident")
     # descriptions = db.relationship("Description", backref="incident")
@@ -156,7 +158,9 @@ class Incident(db.Model, CrudMixin):
 
 class SourceDetails(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)  # source details id
-    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"), nullable=False)
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
     record_type = db.Column(db.Enum(RecordType))
     # For Journalistic Publications
     publication_name = db.Column(db.Text)

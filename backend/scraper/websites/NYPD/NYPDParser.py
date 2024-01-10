@@ -1,4 +1,10 @@
-from backend.database import Officer, Incident, StateID, SourceDetails, RecordType
+from backend.database import (
+    Officer,
+    Incident,
+    StateID,
+    SourceDetails,
+    RecordType,
+)
 
 
 class NYPDParser:
@@ -46,7 +52,7 @@ class NYPDParser:
                 **{
                     "record_type": RecordType.GOVERNMENT_RECORD,
                     "reporting_organization": "NYPD",
-                    "reporting_organization_url": "https://www.nyc.gov/site/ccrb/policy/MOS-records.page",
+                    "reporting_organization_url": "https://www.nyc.gov/site/ccrb/policy/MOS-records.page",  # noqa: E501
                 }
             )
             incident.source_details = source  # type: ignore

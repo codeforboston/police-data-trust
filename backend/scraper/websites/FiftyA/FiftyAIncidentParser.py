@@ -4,7 +4,13 @@ from bs4 import BeautifulSoup, Tag
 from datetime import datetime
 from typing import Optional
 from backend.scraper.mixins.Parser import ParserMixin
-from backend.database import Incident, Victim, UseOfForce, SourceDetails, RecordType
+from backend.database import (
+    Incident,
+    Victim,
+    UseOfForce,
+    SourceDetails,
+    RecordType,
+)
 
 
 class FiftyAIncidentParser(ParserMixin):
@@ -36,10 +42,18 @@ class FiftyAIncidentParser(ParserMixin):
         location_match = re.search(self.LOCATION_REGEX, details_text)
         return location_match.group(1).strip() if location_match else None
 
-    def _get_precinct(self, details_text: str) -> tuple[Optional[str], Optional[str]]:
-        precinct_match = re.search(self.PRECINCT_REGEX, details_text, re.IGNORECASE)
-        precinct_number = precinct_match.group(1).strip() if precinct_match else None
-        precinct_name = precinct_match.group(2).strip() if precinct_match else None
+    def _get_precinct(
+        self, details_text: str
+    ) -> tuple[Optional[str], Optional[str]]:
+        precinct_match = re.search(
+            self.PRECINCT_REGEX, details_text, re.IGNORECASE
+        )
+        precinct_number = (
+            precinct_match.group(1).strip() if precinct_match else None
+        )
+        precinct_name = (
+            precinct_match.group(2).strip() if precinct_match else None
+        )
         return precinct_number, precinct_name
 
     def _parse_victim(self, soup: BeautifulSoup) -> list[Victim]:
@@ -74,25 +88,25 @@ class FiftyAIncidentParser(ParserMixin):
         else:
             ethnicity = None
             gender = gender_ethnicity[0] if gender_ethnicity else None
-        return [Victim(**{"ethnicity": ethnicity, "gender": gender, "age": age})]
+        return [
+            Victim(**{"ethnicity": ethnicity, "gender": gender, "age": age})
+        ]
 
     def _get_force(self, soup: BeautifulSoup) -> Optional[list[UseOfForce]]:
         return [
             UseOfForce(**{"item": force})
             for force in list(
-                set(
-                    [
-                        allegation.text.strip().replace("Force: ", "")
-                        for allegation in soup.find_all("td", class_="allegation")
-                        if "Force: " in allegation.text.strip()
-                    ]
-                )
+                {
+                    allegation.text.strip().replace("Force: ", "")
+                    for allegation in soup.find_all("td", class_="allegation")
+                    if "Force: " in allegation.text.strip()
+                }
             )
         ]
 
     def _get_officer_badges(self, soup: BeautifulSoup):
         officer_involved = soup.find_all("a", class_="name")
-        return list(set([officer.get("title", "") for officer in officer_involved]))
+        return list({officer.get("title", "") for officer in officer_involved})
 
     def _get_witnesses(self, details: list[str]) -> Optional[list[str]]:
         witnesses: list[str] = []
@@ -124,7 +138,9 @@ class FiftyAIncidentParser(ParserMixin):
         if not details_text:
             return None
         details = [
-            detail.strip() for detail in details_text.split("\n") if detail.strip()
+            detail.strip()
+            for detail in details_text.split("\n")
+            if detail.strip()
         ]
 
         links = soup.find_all("a", href=self.LINK_PATTERN)
@@ -139,11 +155,12 @@ class FiftyAIncidentParser(ParserMixin):
         incident = Incident()
         incident.date_record_created = datetime.now().strftime(self.TIME_FORMAT)
         incident.time_of_incident = datetime.strptime(
-            details[0].replace("Received: ", "").replace("Incident: ", ""), "%B %d, %Y"
+            details[0].replace("Received: ", "").replace("Incident: ", ""),
+            "%B %d, %Y",
         ).strftime(self.TIME_FORMAT)
         incident.description = f"Incident scraped from: {complaint_link}"
         incident.location = (
-            f"{incident_location} In NYPD {precinct_number} Precinct {precinct_name}"
+            f"{incident_location} In NYPD {precinct_number} Precinct {precinct_name}"  # noqa: E501
             if incident_location and precinct_number and precinct_name
             else None
         )

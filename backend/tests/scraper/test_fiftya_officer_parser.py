@@ -1,6 +1,8 @@
 import pytest
 from bs4 import BeautifulSoup
-from backend.scraper.websites.FiftyA.FiftyAOfficerParser import FiftyAOfficerParser
+from backend.scraper.websites.FiftyA.FiftyAOfficerParser import (
+    FiftyAOfficerParser,
+)
 
 
 @pytest.fixture
@@ -80,7 +82,7 @@ def test_get_work_history_with_valid_soup(officer_parser: FiftyAOfficerParser):
 
     expected_result = ["Precinct 1", "Precinct 2"]
 
-    result = officer_parser._get_work_history(soup) # type: ignore
+    result = officer_parser._get_work_history(soup)
 
     assert result == expected_result
 
@@ -90,12 +92,14 @@ def test_get_work_history_with_missing_div(officer_parser: FiftyAOfficerParser):
 
     expected_result = []
 
-    result = officer_parser._get_work_history(soup) # type: ignore
+    result = officer_parser._get_work_history(soup)
 
     assert result == expected_result
 
 
-def test_get_work_history_with_missing_links(officer_parser: FiftyAOfficerParser):
+def test_get_work_history_with_missing_links(
+    officer_parser: FiftyAOfficerParser,
+):
     soup = BeautifulSoup(
         """<html>
             <div class="commandhistory">
@@ -106,6 +110,6 @@ def test_get_work_history_with_missing_links(officer_parser: FiftyAOfficerParser
 
     expected_result = []
 
-    result = officer_parser._get_work_history(soup) # type: ignore
+    result = officer_parser._get_work_history(soup)
 
     assert result == expected_result

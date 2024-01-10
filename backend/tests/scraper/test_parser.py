@@ -7,23 +7,31 @@ from backend.scraper.mixins.Parser import ParserMixin
 def parser():
     return ParserMixin()
 
-def test__find_and_extract_with_element(parser):
+
+def test__find_and_extract_with_element(parser: ParserMixin):
     soup = BeautifulSoup("<div class='test'>Hello, World!</div>", "html.parser")
     result = parser._find_and_extract(soup, "div", "test", "Element not found")
     assert result == "Hello, World!"
 
-def test__find_and_extract_without_element(parser, caplog):
+
+def test__find_and_extract_without_element(
+    parser: ParserMixin, caplog: pytest.LogCaptureFixture
+):
     soup = BeautifulSoup("<div>Hello, World!</div>", "html.parser")
     result = parser._find_and_extract(soup, "div", "test", "Element not found")
     assert result is None
     assert "Element not found" in caplog.text
 
-def test__find_and_extract_with_replace_text(parser):
+
+def test__find_and_extract_with_replace_text(parser: ParserMixin):
     soup = BeautifulSoup("<div class='test'>Hello, World!</div>", "html.parser")
-    result = parser._find_and_extract(soup, "div", "test", "Element not found", replace_text="Hello, ")
+    result = parser._find_and_extract(
+        soup, "div", "test", "Element not found", replace_text="Hello, "
+    )
     assert result == "World!"
 
-def test__find_and_extract_without_replace_text(parser):
+
+def test__find_and_extract_without_replace_text(parser: ParserMixin):
     soup = BeautifulSoup("<div class='test'>Hello, World!</div>", "html.parser")
     result = parser._find_and_extract(soup, "div", "test", "Element not found")
     assert result == "Hello, World!"

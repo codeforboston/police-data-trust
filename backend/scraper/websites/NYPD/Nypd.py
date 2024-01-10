@@ -6,8 +6,8 @@ from backend.scraper.websites.NYPD.NYPDParser import NYPDParser
 
 
 class Nypd(ScraperMixin, ParserMixin):
-    OFFICER_CSV_PATH = "https://www.nyc.gov/assets/ccrb/csv/mos-history/DTI_MOS_History_w_MOSDisposition_MOSTable.CSV"
-    INCIDENTS_CSV_PATH = "https://www.nyc.gov/assets/ccrb/csv/mos-history/DTI_MOS_History_w_MOSDisposition.CSV"
+    OFFICER_CSV_PATH = "https://www.nyc.gov/assets/ccrb/csv/mos-history/DTI_MOS_History_w_MOSDisposition_MOSTable.CSV"  # noqa: E501
+    INCIDENTS_CSV_PATH = "https://www.nyc.gov/assets/ccrb/csv/mos-history/DTI_MOS_History_w_MOSDisposition.CSV"  # noqa: E501
     RATE_LIMIT = 3
 
     def __init__(
@@ -21,7 +21,9 @@ class Nypd(ScraperMixin, ParserMixin):
         """Find all officers in a precinct"""
         resp = self.fetch(self.OFFICER_CSV_PATH)
         if not resp:
-            self.logger.error(f"Could not fetch officers from {self.OFFICER_CSV_PATH}")
+            self.logger.error(
+                f"Could not fetch officers from {self.OFFICER_CSV_PATH}"
+            )
             return []
         return resp.split("\n")[1:]
 
@@ -54,4 +56,6 @@ class Nypd(ScraperMixin, ParserMixin):
 
         parser = NYPDParser()
 
-        return parser.parse_officers(officers), parser.parse_incidents(incidents)
+        return parser.parse_officers(officers), parser.parse_incidents(
+            incidents
+        )

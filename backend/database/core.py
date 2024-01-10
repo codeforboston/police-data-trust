@@ -6,7 +6,6 @@ from `backend.database`.
 """
 import os
 from typing import Any, Optional
-from datetime import datetime
 import click
 import pandas as pd
 import psycopg
