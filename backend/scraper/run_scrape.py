@@ -28,6 +28,8 @@ def add_to_database(
         logger.info(f"{table} {uid} already in cache")
         return
 
+    # add the model to the database
+    # Check if the model already exists in the database
     model_exists: bool
     if table == "officer":
         model_exists = officer_exists(
@@ -41,7 +43,7 @@ def add_to_database(
         )
     else:
         raise ValueError(f"Invalid table {table}")
-    if model_exists:
+    if model_exists:  # type: ignore
         logger.info(f"{table} {uid} already in database")
         return
 
