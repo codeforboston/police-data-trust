@@ -461,6 +461,10 @@ xlsxwriter==3.2.0
 zipp==3.17.0
     # via importlib-resources
 
+requests_mock
+redis
+    
+
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 # setuptools

@@ -40,6 +40,10 @@ services:
       MIXPANEL_TOKEN: ${MIXPANEL_TOKEN:-notset}
     ports:
       - ${PDT_API_PORT:-5000}:${PDT_API_PORT:-5000}
+  scraper-cache:
+    image: redis/redis-stack-server
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres: {}

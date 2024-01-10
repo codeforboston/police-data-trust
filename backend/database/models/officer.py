@@ -56,15 +56,15 @@ class State(str, enum.Enum):
     WY = "WY"
 
 
-class StateID(db.Model):
+class StateID(db.Model, CrudMixin):
     """
     Represents a Statewide ID that follows an offcier even as they move between
     law enforcement agencies. For example, in New York, this would be
     the Tax ID Number.
     """
+
     id = db.Column(db.Integer, primary_key=True)
-    officer_id = db.Column(
-        db.Integer, db.ForeignKey("officer.id"))
+    officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
     id_name = db.Column(db.Text)  # e.g. "Tax ID Number"
     state = db.Column(db.Enum(State))  # e.g. "NY"
     value = db.Column(db.Text)  # e.g. "958938"
