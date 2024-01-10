@@ -60,10 +60,7 @@ class Incident(db.Model, CrudMixin):
     """The incident table is the fact table."""
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    source_id = db.Column(
-        db.Integer, db.ForeignKey("partner.id"))
-    source_details = db.relationship(
-        "SourceDetails", backref="incident", uselist=False)
+    source_id = db.Column(db.Integer, db.ForeignKey("partner.id"))
     date_record_created = db.Column(db.DateTime)
     time_of_incident = db.Column(db.DateTime)
     time_confidence = db.Column(db.Integer)
@@ -84,12 +81,15 @@ class Incident(db.Model, CrudMixin):
     # Does an existing warrant count here?
     criminal_case_brought = db.Column(db.Boolean)
     case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+
+    source_details = db.relationship("SourceDetails", backref="incident", uselist=False)
     victims = db.relationship("Victim", backref="incident")
     perpetrators = db.relationship("Perpetrator", backref="incident")
     # descriptions = db.relationship("Description", backref="incident")
     tags = db.relationship("Tag", secondary=incident_tag, backref="incidents")
     agencies_present = db.relationship(
-        "Agency", secondary=incident_agency, backref="recorded_incidents")
+        "Agency", secondary=incident_agency, backref="recorded_incidents"
+    )
     participants = db.relationship("Participant", backref="incident")
     attachments = db.relationship("Attachment", backref="incident")
     investigations = db.relationship("Investigation", backref="incident")
@@ -119,29 +119,27 @@ class Incident(db.Model, CrudMixin):
 #     )
 #     text = db.Column(db.Text)
 #     type = db.Column(db.Text)  # TODO: enum
-    # TODO: are there rules for this column other than text?
-    # organization_id = db.Column(db.Text)
-    # location = db.Column(db.Text)  # TODO: location object
-    # # TODO: neighborhood seems like a weird identifier that may not always
-    # #  apply in consistent ways across municipalities.
-    # neighborhood = db.Column(db.Text)
-    # stop_type = db.Column(db.Text)  # TODO: enum
-    # call_type = db.Column(db.Text)  # TODO: enum
-    # has_multimedia = db.Column(db.Boolean)
-    # from_report = db.Column(db.Boolean)
-    # # These may require an additional table. Also can dox a victim
-    # was_victim_arrested = db.Column(db.Boolean)
-    # arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-    # # Does an existing warrant count here?
-    # criminal_case_brought = db.Column(db.Boolean)
-    # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+# TODO: are there rules for this column other than text?
+# organization_id = db.Column(db.Text)
+# location = db.Column(db.Text)  # TODO: location object
+# # TODO: neighborhood seems like a weird identifier that may not always
+# #  apply in consistent ways across municipalities.
+# neighborhood = db.Column(db.Text)
+# stop_type = db.Column(db.Text)  # TODO: enum
+# call_type = db.Column(db.Text)  # TODO: enum
+# has_multimedia = db.Column(db.Boolean)
+# from_report = db.Column(db.Boolean)
+# # These may require an additional table. Also can dox a victim
+# was_victim_arrested = db.Column(db.Boolean)
+# arrest_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
+# # Does an existing warrant count here?
+# criminal_case_brought = db.Column(db.Boolean)
+# case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
 
 
-class SourceDetails(db.Model):
+class SourceDetails(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)  # source details id
-    incident_id = db.Column(
-        db.Integer, db.ForeignKey("incident.id"), nullable=False
-    )
+    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"), nullable=False)
     record_type = db.Column(db.Enum(RecordType))
     # For Journalistic Publications
     publication_name = db.Column(db.Text)

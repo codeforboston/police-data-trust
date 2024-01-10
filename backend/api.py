@@ -30,7 +30,6 @@ def create_app(config: Optional[str] = None):
     # @app.before_first_request
     # def _():
     #     db.create_all()
-
     return app
 
 
@@ -123,6 +122,18 @@ def register_commands(app: Flask):
                 "cpdp",
             ]
         )
+
+    @app.cli.command("scrape-v2")
+    @dev_only
+    def scrape_v2():
+        """Scrape from public data into the database.
+
+        This is a handy way to populate the database to start with publicly
+        available data.
+        """
+        from backend.scraper.run_scrape import scrape
+
+        scrape(True)
 
 
 def register_routes(app: Flask):
