@@ -2,40 +2,32 @@ import logging
 from backend.scraper.websites.FiftyA.FiftyA import FiftyA
 from backend.scraper.websites.NYPD.Nypd import Nypd
 from backend.scraper.mixins.ScrapeCache import ScrapeCacheContainer, ScrapeCache
-from backend.database import Officer, Incident, StateID, db
+from backend.database import Officer, Incident, db
+from backend.database.queries.queries import officer_exists, incident_exists
 from typing import Union
-from sqlalchemy.orm import Session, scoped_session
-
-
-def officer_exists(
-    session: scoped_session[Session], state_id_value: str
-) -> bool:
-    return (
-        session.query(Officer)
-        .join(StateID)
-        .filter(StateID.value == state_id_value)
-        .first()
-        is not None
-    )
-
-
-def incident_exists(session: Session, case_id: str) -> bool:
-    return (
-        session.query(Incident).filter(Incident.case_id == case_id).first()
-        is not None
-    )
 
 
 def add_to_database(
     model: Union[Officer, Incident], cache: ScrapeCache, uid: str, table: str
 ):
+    """
+    Adds the given model to the database if it doesn't already exist, and stores
+    it in the cache.
+
+    Args:
+        model (Union[Officer, Incident]): The model to be added to the database.
+        cache (ScrapeCache): The cache object used to store the model.
+        uid (str): The unique identifier for the model.
+        table (str): The table name where the model should be stored.
+
+    Returns:
+        None
+    """
     logger = logging.Logger("scrape")
     if cache.get_json(uid, table):
         logger.info(f"{table} {uid} already in cache")
         return
 
-    # add the model to the database
-    # Check if the model already exists in the database
     model_exists: bool
     if table == "officer":
         model_exists = officer_exists(
@@ -49,7 +41,7 @@ def add_to_database(
         )
     else:
         raise ValueError(f"Invalid table {table}")
-    if model_exists:  # type: ignore
+    if model_exists:
         logger.info(f"{table} {uid} already in database")
         return
 
@@ -64,6 +56,14 @@ def add_to_database(
 
 
 def scrape(debug: bool = False):
+    """
+    Scrapes data from FiftyA and NYPD sources, merges the data, and adds it to
+    the database.
+
+    Args:
+        debug (bool, optional): Flag indicating whether to enable debug mode.
+        Defaults to False.
+    """
     logger = logging.Logger("scrape")
     logger.info("Starting scrape")
 

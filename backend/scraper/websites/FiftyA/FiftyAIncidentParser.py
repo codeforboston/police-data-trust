@@ -148,10 +148,6 @@ class FiftyAIncidentParser(ParserMixin):
         incident_location = self._get_location(details_text)
         precinct_number, precinct_name = self._get_precinct(details_text)
 
-        # table = soup.find('tbody')
-        # perps = soup.find_all('a', class_="name")
-        # perpetrators = list(set([perp.text for perp in perps]))
-
         incident = Incident()
         incident.date_record_created = datetime.now().strftime(self.TIME_FORMAT)
         incident.time_of_incident = datetime.strptime(
@@ -192,6 +188,10 @@ class FiftyAIncidentParser(ParserMixin):
         incident.source_details = source  # type: ignore
         incident.victims = victim  # type: ignore
         incident.use_of_force = force  # type: ignore
+
+        # table = soup.find('tbody')
+        # perps = soup.find_all('a', class_="name")
+        # perpetrators = list(set([perp.text for perp in perps]))
         # data = {}
         # data["victim"] = victim
         # data["perpetrators"] = list(set(officer_involved_badges))
