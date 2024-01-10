@@ -13,8 +13,10 @@ class ScraperMixin:
     Attributes:
         headers_list (list): A list of headers to be used in requests.
         proxy_list (list): A list of proxies to be used in requests.
-        rate_limit (int): The rate limit in seconds between consecutive requests.
-        logger (logging.Logger): The logger object for logging errors and messages.
+        rate_limit (int): The rate limit in seconds between consecutive
+        requests.
+        logger (logging.Logger): The logger object for logging errors and
+        messages.
     """
 
     def __init__(self):
@@ -29,10 +31,12 @@ class ScraperMixin:
 
         Args:
             url (str): The URL to fetch.
-            retries (int, optional): The number of retries in case of failure. Defaults to 3.
+            retries (int, optional): The number of retries in case of failure.
+            Defaults to 3.
 
         Returns:
-            Optional[str]: The content of the URL as a string, or None if fetching failed.
+            Optional[str]: The content of the URL as a string, or None if
+            fetching failed.
         """
         for i in range(retries):
             try:
@@ -41,8 +45,10 @@ class ScraperMixin:
                 if response.status_code == 200:
                     return response.text
                 else:
-                    self.logger.error(f"Error fetching {url}: {response.status_code}")
-            # If there is an error, let's wait for a while before trying again (scuffed rate limiting)
+                    self.logger.error(
+                        f"Error fetching {url}: {response.status_code}"
+                    )
+            # If there is an error, let's wait for a while before trying again
             except requests.exceptions.RequestException as e:
                 self.logger.error(f"Error fetching {url}: {e}")
                 if i < retries - 1:  # no need to wait on the last iteration
@@ -66,5 +72,7 @@ class ScraperMixin:
             return []
         soup = BeautifulSoup(response, "html.parser")
         return [
-            link["href"] for link in soup.find_all("a", href=pattern) if link["href"]
+            link["href"]
+            for link in soup.find_all("a", href=pattern)
+            if link["href"]
         ]

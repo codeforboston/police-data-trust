@@ -49,7 +49,9 @@ class FiftyAOfficerParser(ParserMixin):
         current_year = datetime.now().year
         return f"{current_year - int(age)}-01-01"
 
-    def parse_officer(self, soup: BeautifulSoup) -> Optional[ParseOfficerReturn]:
+    def parse_officer(
+        self, soup: BeautifulSoup
+    ) -> Optional[ParseOfficerReturn]:
         if not soup:
             self.logger.error("Could not find identity div")
             return None

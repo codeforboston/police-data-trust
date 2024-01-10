@@ -8,7 +8,8 @@ class ParserMixin:
     A mixin class for parsing HTML using BeautifulSoup.
 
     Args:
-        logger (Union[logging.Logger, None], optional): The logger instance to use for logging. Defaults to None.
+        logger (Union[logging.Logger, None], optional): The logger instance to
+        use for logging. Defaults to None.
 
     Attributes:
         logger (logging.Logger): The logger instance used for logging.
@@ -33,14 +34,18 @@ class ParserMixin:
         Finds and extracts text from an HTML element.
 
         Args:
-            soup (Union[BeautifulSoup, Tag]): The BeautifulSoup object or Tag to search within.
+            soup (Union[BeautifulSoup, Tag]): The BeautifulSoup object or Tag to
+            search within.
             tag (str): The HTML tag to search for.
             class_ (str): The CSS class of the HTML element to search for.
-            error_message (str): The error message to log if the element is not found.
-            replace_text (Union[str, None], optional): The text to replace in the extracted text. Defaults to None.
+            error_message (str): The error message to log if the element is not
+            found.
+            replace_text (Union[str, None], optional): The text to replace
+            in the extracted text. Defaults to None.
 
         Returns:
-            Union[str, None]: The extracted text, or None if the element is not found.
+            Union[str, None]: The extracted text, or None if the element is
+            not found.
 
         """
         element = soup.find(tag, class_=class_)

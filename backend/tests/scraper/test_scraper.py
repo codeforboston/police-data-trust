@@ -9,11 +9,11 @@ def scraper():
     return ScraperMixin()
 
 
-def test_init(scraper):
+def test_init(scraper: ScraperMixin):
     assert scraper.rate_limit == 5
 
 
-def test_fetch(scraper):
+def test_fetch(scraper: ScraperMixin):
     url = "http://test.com"
     with requests_mock.Mocker() as m:
         m.get(url, text="response")
@@ -21,7 +21,7 @@ def test_fetch(scraper):
         assert result == "response"
 
 
-def test_fetch_error(scraper):
+def test_fetch_error(scraper: ScraperMixin):
     url = "http://test.com"
     with requests_mock.Mocker() as m:
         m.get(url, status_code=404)
@@ -29,15 +29,18 @@ def test_fetch_error(scraper):
         assert result is None
 
 
-def test_fetch_retries(scraper):
+def test_fetch_retries(scraper: ScraperMixin):
     url = "http://test.com"
     with requests_mock.Mocker() as m:
-        m.get(url, [{"status_code": 500}, {"status_code": 200, "text": "response"}])
+        m.get(
+            url,
+            [{"status_code": 500}, {"status_code": 200, "text": "response"}],
+        )
         result = scraper.fetch(url)
         assert result == "response"
 
 
-def test_find_urls(scraper):
+def test_find_urls(scraper: ScraperMixin):
     url = "http://test.com"
     pattern = re.compile(r"^\/page\/\w+$")
     with requests_mock.Mocker() as m:
