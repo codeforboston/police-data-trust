@@ -67,16 +67,6 @@ class CrudMixin:
             del state[key]
         return state
 
-    def __setstate__(self, state: dict[str, Any]):
-        """
-        Set the state of the object using the provided dictionary.
-
-        Args:
-            state (dict[str, Any]): The dictionary containing the state of the
-            object.
-        """
-        self.__dict__.update(state)
-
 
 QUERIES_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "queries")
