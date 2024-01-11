@@ -46,7 +46,8 @@ class CrudMixin:
             abort(404)
         return obj
 
-    """https://stackoverflow.com/questions/18147435/how-to-exclude-specific-fields-on-serialization-with-jsonpickle"""
+    """https://stackoverflow.com/questions/18147435/
+        how-to-exclude-specific-fields-on-serialization-with-jsonpickle"""
 
     def __getstate__(self):
         """
