@@ -52,12 +52,13 @@ class CrudMixin:
 
     """https://stackoverflow.com/questions/18147435/how-to-exclude-specific-fields-on-serialization-with-jsonpickle"""
 
-    def __getstate__(self, stringify_dates: list[str] = []):
+    def __getstate__(self):
         """
         Get the state of the object for pickling.
 
         Args:
-            stringify_dates (bool): Whether to convert datetime objects to strings.
+            stringify_dates (bool): Whether to convert datetime objects to
+            strings.
 
         Returns:
             dict: The state of the object.
@@ -74,12 +75,15 @@ class CrudMixin:
         Set the state of the object using the provided dictionary.
 
         Args:
-            state (dict[str, Any]): The dictionary containing the state of the object.
+            state (dict[str, Any]): The dictionary containing the state of the
+            object.
         """
         self.__dict__.update(state)
 
 
-QUERIES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "queries"))
+QUERIES_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "queries")
+)
 
 
 def execute_query(filename: str) -> Optional[pd.DataFrame]:
@@ -131,13 +135,17 @@ pass_psql_admin_connection = click.make_pass_decorator(connection)
 @pass_psql_admin_connection
 @click.pass_context
 @dev_only
-def create_database(ctx: click.Context, conn: connection, overwrite: bool = False):
+def create_database(
+    ctx: click.Context, conn: connection, overwrite: bool = False
+):
     """Create the database from nothing."""
     database = current_app.config["POSTGRES_DB"]
     cursor = conn.cursor()
 
     if overwrite:
-        cursor.execute(f"SELECT bool_or(datname = '{database}') FROM pg_database;")
+        cursor.execute(
+            f"SELECT bool_or(datname = '{database}') FROM pg_database;"
+        )
         exists = cursor.fetchall()[0][0]
         if exists:
             ctx.invoke(delete_database)
@@ -198,7 +206,9 @@ def delete_database(conn: connection, test_db: bool):
         )
         confirmation = click.prompt("Database name")
         if database != confirmation:
-            click.echo("The input does not match. " "The database will not be deleted.")
+            click.echo(
+                "The input does not match. " "The database will not be deleted."
+            )
             return None
 
     try:

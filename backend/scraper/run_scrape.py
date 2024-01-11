@@ -24,7 +24,8 @@ def add_to_database(
         None
     """
     logger = logging.Logger("scrape")
-    if cache.get_json(uid, table):
+    model_dict = model.__getstate__()
+    if cache.get_json(uid, table) == model_dict:
         logger.info(f"{table} {uid} already in cache")
         return
 
@@ -49,7 +50,6 @@ def add_to_database(
     model.create()
 
     # add the model to the cache
-    model_dict = model.__getstate__()
     try:
         cache.set_json(uid, model_dict, table)
     except Exception as e:
