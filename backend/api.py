@@ -125,7 +125,6 @@ def register_commands(app: Flask):
         )
 
     @app.cli.command("scrape-v2")
-    @dev_only
     @click.argument("debug", default=False)
     def scrape_v2(debug: bool = False):
         """Scrape from public data into the database.
