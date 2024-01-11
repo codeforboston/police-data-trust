@@ -1,50 +1,28 @@
-import { Column } from "react-table"
-import {
-  BubbleChart,
-  DashboardHeader,
-  Map,
-  SearchPanel,
-  SearchResultsTable
-} from "../../compositions"
-import { resultsColumns } from "../../compositions/search-results/search-results"
+import { useState } from "react"
 import { requireAuth, useSearch } from "../../helpers"
 import { Officer, Rank } from "../../helpers/api"
+import { ToggleOptions } from "../../models"
 import { Layout } from "../../shared-components"
+import { SearchForm } from "./search-page-components/search-form"
+import { SearchResults } from "./search-page-components/search-results"
 import styles from "./search.module.css"
-import { CirclePlusButton } from "../../shared-components/icon-buttons/icon-buttons"
-import ErrorAlertDialog from "../../shared-components/error-alert-dialog/error-alert-dialog"
-import { useState } from "react"
-import { officerResultsColumns } from "../../models/officer"
-import { SearchResultsTypes, ToggleOptions } from "../../models"
 
-export default requireAuth(function Dashboard() {
+export default requireAuth(function SearchPage() {
   const { searchPageContainer } = styles
   const { incidentResults } = useSearch()
   const [toggleOptions, setToggleOptions] = useState(
     new ToggleOptions("incidents", "officers").options
   )
 
-  const isIncidentView = toggleOptions[0].value
-  const isOfficerView = toggleOptions[1].value
-
   return (
     <Layout>
       <div className={searchPageContainer}>
-        <SearchPanel toggleOptions={toggleOptions} setToggleOptions={setToggleOptions} />
-        <div>
-          {isIncidentView && <Map />}
-          {isIncidentView && !!incidentResults && (
-            <SearchResultsTable results={incidentResults.results} resultsColumns={resultsColumns} />
-          )}
-
-          {isOfficerView && <BubbleChart height={325} />}
-          {isOfficerView && !!officerSearchResult && (
-            <SearchResultsTable
-              results={officerSearchResult}
-              resultsColumns={officerResultsColumns}
-            />
-          )}
-        </div>
+        <SearchForm toggleOptions={toggleOptions} setToggleOptions={setToggleOptions} />
+        <SearchResults
+          toggleOptions={toggleOptions}
+          incidentResults={incidentResults}
+          officerSearchResult={officerSearchResult}
+        />
       </div>
     </Layout>
   )
