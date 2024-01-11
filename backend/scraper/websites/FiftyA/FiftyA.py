@@ -67,6 +67,7 @@ class FiftyA(ScraperMixin, ParserMixin):
                 self.logger.info(f"Scrapped {index} complaints")
             response = self.fetch(f"{self.SEED}{complaint}")
             if not response:
+                self.logger.error(f"Could not fetch {complaint}")
                 continue
 
             incident = incident_parser.parse_complaint(response, complaint)

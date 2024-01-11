@@ -62,6 +62,30 @@ class PrivacyStatus(str, enum.Enum):
     PRIVATE = "PRIVATE"
 
 
+class SourceDetails(db.Model, CrudMixin):
+    id = db.Column(db.Integer, primary_key=True)  # source details id
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
+    record_type = db.Column(db.Enum(RecordType))
+    # For Journalistic Publications
+    publication_name = db.Column(db.Text)
+    publication_date = db.Column(db.Date)
+    publication_url = db.Column(db.Text)
+    author = db.Column(db.Text)
+    author_url = db.Column(db.Text)
+    author_email = db.Column(db.Text)
+    # For Government Records
+    reporting_organization = db.Column(db.Text)
+    reporting_organization_url = db.Column(db.Text)
+    reporting_organization_email = db.Column(db.Text)
+    # For Legal Records
+    court = db.Column(db.Text)
+    judge = db.Column(db.Text)
+    docket_number = db.Column(db.Text)
+    date_of_action = db.Column(db.Date)
+
+
 class Incident(db.Model, CrudMixin):
 
     """The incident table is the fact table."""
@@ -154,27 +178,3 @@ class Incident(db.Model, CrudMixin):
 # # Does an existing warrant count here?
 # criminal_case_brought = db.Column(db.Boolean)
 # case_id = db.Column(db.Integer)  # TODO: foreign key of some sort?
-
-
-class SourceDetails(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)  # source details id
-    incident_id = db.Column(
-        db.Integer, db.ForeignKey("incident.id"), nullable=False
-    )
-    record_type = db.Column(db.Enum(RecordType))
-    # For Journalistic Publications
-    publication_name = db.Column(db.Text)
-    publication_date = db.Column(db.Date)
-    publication_url = db.Column(db.Text)
-    author = db.Column(db.Text)
-    author_url = db.Column(db.Text)
-    author_email = db.Column(db.Text)
-    # For Government Records
-    reporting_organization = db.Column(db.Text)
-    reporting_organization_url = db.Column(db.Text)
-    reporting_organization_email = db.Column(db.Text)
-    # For Legal Records
-    court = db.Column(db.Text)
-    judge = db.Column(db.Text)
-    docket_number = db.Column(db.Text)
-    date_of_action = db.Column(db.Date)

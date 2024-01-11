@@ -10,6 +10,7 @@ from backend.database import (
     UseOfForce,
     SourceDetails,
     RecordType,
+    Perpetrator,
 )
 
 
@@ -104,9 +105,26 @@ class FiftyAIncidentParser(ParserMixin):
             )
         ]
 
-    def _get_officer_badges(self, soup: BeautifulSoup):
-        officer_involved = soup.find_all("a", class_="name")
-        return list({officer.get("title", "") for officer in officer_involved})
+    def _get_officers(self, soup: BeautifulSoup) -> list[Perpetrator]:
+        officer_involved = set(soup.find_all("a", class_="name"))
+        badge_number_pattern = re.compile(r"#(\w+)$")
+        perps: list[Perpetrator] = []
+        for officer in officer_involved:
+            description = officer.get_text(strip=True)
+            badge = re.search(badge_number_pattern, description)
+            if badge:
+                badge = badge.group(1)
+            perps.append(
+                Perpetrator(
+                    **{
+                        "badge": badge,
+                        "first_name": description.split(" ")[0],
+                        "last_name": description.split(" ")[-1],
+                        "rank": officer.get("title", "").split(" ")[0],
+                    }
+                )
+            )
+        return perps
 
     def _get_witnesses(self, details: list[str]) -> Optional[list[str]]:
         witnesses: list[str] = []
@@ -188,26 +206,6 @@ class FiftyAIncidentParser(ParserMixin):
         incident.source_details = source  # type: ignore
         incident.victims = victim  # type: ignore
         incident.use_of_force = force  # type: ignore
-
-        # table = soup.find('tbody')
-        # perps = soup.find_all('a', class_="name")
-        # perpetrators = list(set([perp.text for perp in perps]))
-        # data = {}
-        # data["victim"] = victim
-        # data["perpetrators"] = list(set(officer_involved_badges))
-        # data["tags"] = None
-        # data["agencies_present"] = [
-        #     f"NYPD {precinct_number} Precinct {precinct_name}"
-        #     if precinct_number and precinct_name
-        #     else None
-        # ]
-        # data["participants"] = witnesses
-        # data["attachments"] = None
-        # data["investigations"] = None
-        # data["results_of_stop"] = None
-        # data["actions"] = None
-        # data["use_of_force"] = force
-        # data["legal_case"] = None
-        # data["incident"] = incident
-
+        incident.case_id = int(self.complaint_number(complaint_link))
+        incident.perpetrators = self._get_officers(soup) # type: ignore
         return incident

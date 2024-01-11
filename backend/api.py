@@ -126,7 +126,8 @@ def register_commands(app: Flask):
 
     @app.cli.command("scrape-v2")
     @dev_only
-    def scrape_v2():
+    @click.argument("debug", default=False)
+    def scrape_v2(debug: bool = False):
         """Scrape from public data into the database.
 
         This is a handy way to populate the database to start with publicly
@@ -134,7 +135,7 @@ def register_commands(app: Flask):
         """
         from backend.scraper.run_scrape import scrape
 
-        scrape(True)
+        scrape(debug)
 
 
 def register_routes(app: Flask):
