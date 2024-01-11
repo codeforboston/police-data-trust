@@ -45,8 +45,7 @@ def add_to_database(
         raise ValueError(f"Invalid table {table}")
     if model_exists:  # type: ignore
         logger.info(f"{table} {uid} already in database")
-        return
-
+        model.delete()
     model.create()
 
     # add the model to the cache

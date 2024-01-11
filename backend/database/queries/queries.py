@@ -1,8 +1,9 @@
 from .. import Officer, StateID, Incident
 from sqlalchemy.orm import Session
+from typing import Optional
 
 
-def officer_exists(db: Session, stateID: StateID) -> bool:
+def officer_exists(db: Session, stateID: StateID) -> Optional[Officer]:
     return (
         db.query(Officer)
         .join(StateID)
@@ -10,12 +11,10 @@ def officer_exists(db: Session, stateID: StateID) -> bool:
             StateID.value == stateID.value and StateID.state == stateID.state
         )
         .first()
-        is not None
     )
 
 
-def incident_exists(db: Session, incident: Incident) -> bool:
+def incident_exists(db: Session, incident: Incident) -> Optional[Incident]:
     return (
         db.query(Incident).filter(Incident.case_id == incident.case_id).first()
-        is not None
     )
