@@ -1,5 +1,5 @@
 import * as React from "react"
-import styles from "./dashboard-header.module.css"
+import styles from "./nav.module.css"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { DropdownProps } from "../../models/nav-dropdown"
@@ -14,7 +14,7 @@ export default function Nav({ itemProps }: DropdownProps) {
     { title: "DONATE", path: "/" } // tbd - external donation page
   ]
 
-  const setClassName = (pathname: string): string => {
+  const setLiClassName = (pathname: string): string => {
     return router.pathname === pathname ? styles.selected : ""
   }
 
@@ -22,7 +22,7 @@ export default function Nav({ itemProps }: DropdownProps) {
     <ul id="navMenu">
       {menu.map((item, index) => {
         return (
-          <li key={index} className={setClassName(item.path)}>
+          <li key={index} className={setLiClassName(item.path)}>
             <Link href={item.path}>
               <a {...itemProps[index]}>{item.title}</a>
             </Link>
