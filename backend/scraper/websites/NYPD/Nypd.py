@@ -36,7 +36,7 @@ class Nypd(ScraperMixin, ParserMixin):
             return []
         return resp.split("\n")[1:]
 
-    def extract_data(self, debug: int = 0):
+    def extract_data(self, debug: bool = False):
         """
         Extract the officer profiles from NYPD
         :param debug: The number of officers to extract (0 for all)
@@ -46,12 +46,12 @@ class Nypd(ScraperMixin, ParserMixin):
 
         officers = self._find_officers()
         if debug:
-            officers = random.sample(officers, debug)
+            officers = random.sample(officers, min(5, len(officers)))
         self.logger.info(f"Found {len(officers)} officers")
 
         incidents = self._find_incidents()
         if debug:
-            incidents = random.sample(incidents, debug)
+            incidents = random.sample(incidents, min(5, len(incidents)))
         self.logger.info(f"Found {len(incidents)} incidents")
 
         parser = NYPDParser()

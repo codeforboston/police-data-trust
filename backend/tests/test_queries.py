@@ -48,7 +48,7 @@ def test_incident_exists(db_session: Any):
     )
 
     # Test that the incident exists
-    assert incident_exists(db_session, case_id_value)
+    assert incident_exists(db_session, incident)
 
     # Test that a non-existing incident returns False
-    assert not incident_exists(db_session, "654321")
+    assert not incident_exists(db_session, Incident(**{"case_id": "654321"}))

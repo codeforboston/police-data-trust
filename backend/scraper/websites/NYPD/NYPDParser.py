@@ -47,7 +47,10 @@ class NYPDParser:
             incident.was_victim_arrested = False
             incident.arrest_id = None
             incident.criminal_case_brought = None
-            incident.case_id = incident_csv[12]
+            case_id = int(incident_csv[12])
+            if not case_id:
+                continue
+            incident.case_id = case_id
             source = SourceDetails(
                 **{
                     "record_type": RecordType.GOVERNMENT_RECORD,

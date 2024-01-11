@@ -34,12 +34,12 @@ def add_to_database(
     if table == "officer":
         model_exists = officer_exists(
             db.session,  # type: ignore
-            model.stateId.value,  # type: ignore
+            model.stateId,  # type: ignore
         )
     elif table == "incident":
         model_exists = incident_exists(
             db.session,  # type: ignore
-            model.case_id,  # type: ignore
+            model,  # type: ignore
         )
     else:
         raise ValueError(f"Invalid table {table}")
@@ -83,7 +83,7 @@ def scrape(debug: bool = False):
     nypd_officer, nypd_incidents = nypd.extract_data(debug=debug)
 
     logger.info(
-        f"Found {len(nypd_officer)} officers and {len(nypd_incidents)}incidents from NYPD"  # noqa: E501
+        f"Found {len(nypd_officer)} officers and {len(nypd_incidents)} incidents from NYPD"  # noqa: E501
     )
 
     officers = fiftya_officer + nypd_officer

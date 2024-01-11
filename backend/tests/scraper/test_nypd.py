@@ -56,4 +56,4 @@ def test_extract_data(
     assert incidents[0].was_victim_arrested is False
     assert incidents[0].arrest_id is None
     assert incidents[0].criminal_case_brought is None
-    assert incidents[0].case_id == "202201611"
+    assert incidents[0].case_id == 202201611

@@ -14,8 +14,8 @@ def officer_exists(db: Session, stateID: StateID) -> bool:
     )
 
 
-def incident_exists(db: Session, case_id: str) -> bool:
+def incident_exists(db: Session, incident: Incident) -> bool:
     return (
-        db.query(Incident).filter(Incident.case_id == case_id).first()
+        db.query(Incident).filter(Incident.case_id == incident.case_id).first()
         is not None
     )
