@@ -15,9 +15,8 @@
 .dataFooter {
   background-color: var(--lightBlue);
   display: flex;
-  justify-content: space-between;
-  padding-left: var(--size100);
-  padding-right: var(--size80);
+  flex-wrap: wrap;
+  justify-content: space-around;
   padding-top: var(--size4);
   padding-bottom: var(--size4);
 }
