@@ -23,10 +23,10 @@ jobs:
           - 5432:5432
     steps:
     - uses: actions/checkout@v2
-    - name: Python 3.8 Setup
+    - name: Python 3.9.5 Setup
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: 3.9.5
     - name: Install dependencies
       run: |
         sudo apt-get update

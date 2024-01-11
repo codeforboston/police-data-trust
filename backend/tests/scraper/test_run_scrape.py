@@ -55,8 +55,9 @@ def test_add_to_database_existing_in_database(
 
     # Assertions
     cache.get_json.assert_called_once_with(uid, table)
-    model.create.assert_not_called()
-    cache.set_json.assert_not_called()
+    model.delete.assert_called_once()
+    model.create.assert_called_once()
+    cache.set_json.assert_called_once()
     mock_officer_exists.assert_called_once()
 
 
@@ -65,7 +66,7 @@ def test_add_to_database_new_model(
     mock_officer_exists: Mock, cache: Mock, model: Mock, uid: str, table: str
 ):
     cache.get_json.return_value = None
-    mock_officer_exists.return_value = False
+    mock_officer_exists.return_value = model
 
     # Calling the function
     add_to_database(model, cache, uid, table)
