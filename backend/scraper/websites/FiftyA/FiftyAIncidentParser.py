@@ -207,5 +207,5 @@ class FiftyAIncidentParser(ParserMixin):
         incident.victims = victim  # type: ignore
         incident.use_of_force = force  # type: ignore
         incident.case_id = int(self.complaint_number(complaint_link))
-        incident.perpetrators = self._get_officers(soup) # type: ignore
+        incident.perpetrators = self._get_officers(soup)  # type: ignore # noqa: E501
         return incident
