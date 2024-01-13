@@ -3,7 +3,7 @@ import { BubbleChart, Map, SearchResultsTable } from "../../../compositions"
 import { resultsColumns } from "../../../compositions/search-results/search-results"
 import { IncidentSearchResponse, Officer } from "../../../helpers/api"
 import { IToggleOptions } from "../../../models"
-import { officerResultsColumns } from "../../../models/officer"
+import { createOfficerColumns } from "../../../models/officer"
 import styles from "./search-results.module.css"
 
 interface SearchResultsProps {
@@ -21,6 +21,7 @@ export function SearchResults({
   const isIncidentView = toggleOptions[0].value
   const isOfficerView = toggleOptions[1].value
   const desktop = useMediaQuery({ query: "screen and (min-width: 70em)" })
+  const allegationFullLength = useMediaQuery({ query: "(min-width: 32em)" })
 
   const hasIncidentResults = !!incidentResults
   const hasOfficerResults = !!officerSearchResult
@@ -48,7 +49,10 @@ export function SearchResults({
       )}
       {desktop && isOfficerView && <BubbleChart height={325} />}
       {isOfficerView && hasOfficerResults && (
-        <SearchResultsTable results={officerSearchResult} resultsColumns={officerResultsColumns} />
+        <SearchResultsTable
+          results={officerSearchResult}
+          resultsColumns={createOfficerColumns(allegationFullLength)}
+        />
       )}
     </section>
   )
