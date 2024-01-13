@@ -28,6 +28,8 @@ exports[`renders Register correctly 1`] = `
               class="svg-inline--fa fa-question-circle fa-w-16 fa-sm tooltipIcon"
               data-icon="question-circle"
               data-prefix="far"
+              data-tooltip-content="A Viewer account allows you to see data that is publically available.:::::Once registered, you may optionally apply to see legally protected data through a Passport account"
+              data-tooltip-id="table-column-tooltip"
               focusable="false"
               role="img"
               viewBox="0 0 512 512"
@@ -38,17 +40,6 @@ exports[`renders Register correctly 1`] = `
                 fill="currentColor"
               />
             </svg>
-            <div
-              class="tooltip"
-              id="viewerAccountsTooltip"
-            >
-              <p>
-                A Viewer account allows you to see data that is publically available.
-              </p>
-              <p>
-                Once registered, you may optionally apply to see legally protected data through a Passport account
-              </p>
-            </div>
           </div>
         </h1>
       </div>
