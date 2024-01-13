@@ -3,8 +3,8 @@ import { requireAuth, useSearch } from "../../helpers"
 import { Officer, Rank } from "../../helpers/api"
 import { ToggleOptions } from "../../models"
 import { Layout } from "../../shared-components"
-import { SearchForm } from "./search-page-components/search-form"
-import { SearchResults } from "./search-page-components/search-results"
+import { SearchForm } from "../../compositions/search-page-components/search-form"
+import { SearchResults } from "../../compositions/search-page-components/search-results"
 import styles from "./search.module.css"
 
 export default requireAuth(function SearchPage() {

@@ -1,9 +1,9 @@
 import { useMediaQuery } from "react-responsive"
-import { BubbleChart, Map, SearchResultsTable } from "../../../compositions"
-import { resultsColumns } from "../../../compositions/search-results/search-results"
-import { IncidentSearchResponse, Officer } from "../../../helpers/api"
-import { IToggleOptions } from "../../../models"
-import { createOfficerColumns } from "../../../models/officer"
+import { BubbleChart, Map, SearchResultsTable } from ".."
+import { resultsColumns } from "../search-results/search-results"
+import { IncidentSearchResponse, Officer } from "../../helpers/api"
+import { IToggleOptions } from "../../models"
+import { createOfficerColumns } from "../../models/officer"
 import styles from "./search-results.module.css"
 
 interface SearchResultsProps {

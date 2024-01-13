@@ -2,8 +2,8 @@ import { faAngleDoubleDown, faAngleDoubleUp } from "@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
 import { useMediaQuery } from "react-responsive"
-import { SearchPanel } from "../../../compositions"
-import { IToggleOptions } from "../../../models"
+import { SearchPanel } from ".."
+import { IToggleOptions } from "../../models"
 import styles from "./search-form.module.css"
 
 interface SearchFormProps {
