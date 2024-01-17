@@ -4,7 +4,7 @@ import styles from "./officer-work-history.module.css"
 
 export default function OfficerWorkHistory(officer: OfficerRecordType) {
   const { workHistory } = officer
-  const { category, wrapper } = styles
+  const { wrapper, title } = styles
 
   const result = workHistory.map((item, index) => (
     <WorkHistoryInstance key={index + "workHistoryItem"} {...item} />
@@ -12,9 +12,7 @@ export default function OfficerWorkHistory(officer: OfficerRecordType) {
 
   return (
     <div className={wrapper}>
-      <div className={category}>
-        <p>Work History Summary:</p>
-      </div>
+      <p className={title}>Work History:</p>
       <div>{result}</div>
     </div>
   )

@@ -2,6 +2,7 @@ import { OfficerRecordType, EmploymentType } from "../models/officer"
 import { PerpetratorRecordType } from "../models/perpetrator"
 import { Incident, Officer, UseOfForce } from "../helpers/api"
 import officers from "../models/mock-data/officer.json"
+import { IncidentRecordType } from "../models/incident"
 
 export function getOfficerFromMockData(officerId: number) {
   if (officerId >= 0 && officerId < 100) {
@@ -40,7 +41,13 @@ export function mockToOfficerType(officer: typeof officers[0]): OfficerRecordTyp
     dateOfBirth: new Date(officer.birthDate),
     gender: officer.gender,
     race: officer.race,
-    workHistory: mockToWorkHistoryType(officer.workHistory)
+    badgeNo: officer.badgeNo,
+    status: officer.status,
+    department: officer.department,
+    ethnicity: officer.ethnicity,
+    affiliations: officer.affiliations,
+    workHistory: mockToWorkHistoryType(officer.workHistory),
+    incidents: mockToIncidentType(officer.incidents)
   }
 }
 
@@ -52,4 +59,8 @@ export function mockToPerpetratorType(officer: typeof officers[0]): PerpetratorR
     gender: officer.gender,
     race: officer.race
   }
+}
+
+export function mockToIncidentType(data: IncidentRecordType[]): IncidentRecordType[] {
+  return data
 }
