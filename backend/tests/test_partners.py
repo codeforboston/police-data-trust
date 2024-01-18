@@ -2,9 +2,7 @@ import pytest
 from backend.auth import user_manager
 from backend.database import Partner, PartnerMember, MemberRole
 from backend.database.models.user import User, UserRole
-from sqlalchemy.orm import Session
-from backend.database import db
-from typing import Any, List
+from typing import Any  
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
