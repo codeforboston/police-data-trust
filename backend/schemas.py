@@ -296,7 +296,9 @@ def partner_orm_to_json(partner: Partner) -> dict:
     )
 
 
-def partner_member_to_orm(partner_member: CreatePartnerMemberSchema) -> PartnerMember:
+def partner_member_to_orm(
+    partner_member: CreatePartnerMemberSchema,
+) -> PartnerMember:
     """Convert the JSON partner member into an ORM instance"""
     orm_attrs = partner_member.dict()
     return PartnerMember(**orm_attrs)

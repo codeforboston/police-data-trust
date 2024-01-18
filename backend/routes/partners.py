@@ -152,7 +152,8 @@ def get_partner_users(partner_id: int):
     # Get the number of items per page from the query parameters (default to 20)
     per_page = request.args.get("per_page", 20, type=int)
 
-    # Query the PartnerMember table for records with the given partner_id and paginate the results
+    # Query the PartnerMember table for records with
+    # the given partner_id and paginate the results
     pagination: Pagination = PartnerMember.query.filter_by(
         partner_id=partner_id
     ).paginate(page=page, per_page=per_page, error_out=False)
