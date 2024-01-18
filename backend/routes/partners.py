@@ -58,7 +58,10 @@ def create_partner():
     track_to_mp(
         request,
         "create_partner",
-        {"partner_name": partner.name, "partner_contact": partner.contact_email},
+        {
+            "partner_name": partner.name,
+            "partner_contact": partner.contact_email,
+        },
     )
     return partner_orm_to_json(created)
 
@@ -78,7 +81,9 @@ def get_all_partners():
     q_per_page = args.get("per_page", 20, type=int)
 
     all_partners = db.session.query(Partner)
-    results = all_partners.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
+    results = all_partners.paginate(
+        page=q_page, per_page=q_per_page, max_per_page=100
+    )
 
     return {
         "results": [partner_orm_to_json(partner) for partner in results.items],
@@ -106,10 +111,14 @@ def get_partner_members(partner_id: int):
     all_members = db.session.query(PartnerMember).filter(
         PartnerMember.partner_id == partner_id
     )
-    results = all_members.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
+    results = all_members.paginate(
+        page=q_page, per_page=q_per_page, max_per_page=100
+    )
 
     return {
-        "results": [partner_member_orm_to_json(member) for member in results.items],
+        "results": [
+            partner_member_orm_to_json(member) for member in results.items
+        ],
         "page": results.page,
         "totalPages": results.pages,
         "totalResults": results.total,
@@ -153,7 +162,9 @@ def get_partner_users(partner_id: int):
         return {"message": "Partner not found"}, 404
 
     # Get the User objects associated with the members on the current page
-    users: list[User] = [User.query.get(member.user_id) for member in pagination.items]  # type: ignore
+    users: list[User] = [
+        User.query.get(member.user_id) for member in pagination.items
+    ]  # type: ignore
 
     # Convert the User objects to dictionaries and return them as JSON
 
