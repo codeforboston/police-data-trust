@@ -3,21 +3,14 @@ import styles from "./officer-view-header.module.css"
 
 export default function OfficerHeader(officer: OfficerRecordType) {
   const { firstName, lastName, knownEmployers } = officer
-  const { category, name, titleAndName, otherData, viewWrapper } = styles
+  const { name, title } = styles
 
   return (
     <div>
-      <h3>Officer Record</h3>
-      <div className={viewWrapper}>
-        <div className={titleAndName}>
-          <p className={name}>
-            {firstName} {lastName}
-          </p>
-        </div>
-        <div className={otherData}>
-          <p className={category}>Known Employers</p>
-        </div>
-      </div>
+      <p className={title}>Officer Record</p>
+      <p className={name}>
+        {firstName} {lastName}
+      </p>
     </div>
   )
 }

@@ -5,16 +5,469 @@ Object {
   "asFragment": [Function],
   "baseElement": <body>
     <div>
-      <div>
-        <h3>
-          Officer Record
-        </h3>
-        <div
-          class="viewWrapper"
+      <div
+        class="wrapper"
+      >
+        <svg
+          aria-labelledby="svg-inline--fa-title-000000000000"
+          class="svg-inline--fa fa-arrow-left fa-w-14 fa-lg backButton"
+          data-icon="arrow-left"
+          data-prefix="fas"
+          role="img"
+          viewBox="0 0 448 512"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <div
-            class="titleAndName"
+          <title
+            id="svg-inline--fa-title-000000000000"
           >
+            Back
+          </title>
+          <path
+            d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"
+            fill="currentColor"
+          />
+        </svg>
+        <div
+          class="officerView"
+        >
+          <img
+            alt="Profile Picture"
+            class="profilePicture"
+            src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+          />
+          <div>
+            <div>
+              <p
+                class="title"
+              >
+                Officer Record
+              </p>
+              <p
+                class="name"
+              >
+                Timothy
+                 
+                Young
+              </p>
+            </div>
+            <div
+              class="viewWrapper"
+            >
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Badge Number
+                </p>
+                <p>
+                  30420452
+                </p>
+              </div>
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Officer Status
+                </p>
+                <p>
+                  Chief
+                </p>
+              </div>
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Department
+                </p>
+                <p>
+                  Houston Police Department
+                </p>
+              </div>
+            </div>
+            <div
+              class="viewWrapper"
+            >
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Date of Birth
+                </p>
+                <p>
+                  12/15/1976
+                </p>
+              </div>
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Gender
+                </p>
+                <p>
+                  Nonbinary
+                </p>
+              </div>
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Race
+                </p>
+                <p>
+                  Black or African American
+                </p>
+              </div>
+            </div>
+            <div>
+              <div
+                class="viewWrapper"
+              >
+                <div
+                  class="data"
+                >
+                  <p
+                    class="category"
+                  >
+                    Ethnicity
+                  </p>
+                  <p>
+                    Hispanic or Latino
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="wrapper"
+            >
+              <p
+                class="title"
+              >
+                Work History:
+              </p>
+              <div>
+                <div
+                  class="wrapper"
+                >
+                  <img
+                    alt="San Jose Police Department Patch"
+                    class="patch"
+                    src="/Boston_Police_Patch.jpg"
+                  />
+                  <div
+                    class="content"
+                  >
+                    <div
+                      class="titleAndDate"
+                    >
+                      <span
+                        class="title"
+                      >
+                        Detective
+                      </span>
+                      <span>
+                        2014
+                         - 
+                        2001
+                      </span>
+                    </div>
+                    <a
+                      class="link"
+                      href="https://www.google.com/search?q=police+department"
+                    >
+                      San Jose Police Department
+                    </a>
+                    <p
+                      class="address"
+                    >
+                      (123) 456-7890 * 
+                      1191 Elm Ave, Houston, KY 93452
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="wrapper"
+                >
+                  <img
+                    alt="Pheonix Police Department Patch"
+                    class="patch"
+                    src="/San_Jose_Police_Patch.png"
+                  />
+                  <div
+                    class="content"
+                  >
+                    <div
+                      class="titleAndDate"
+                    >
+                      <span
+                        class="title"
+                      >
+                        Detective
+                      </span>
+                      <span>
+                        1999
+                         - 
+                        2007
+                      </span>
+                    </div>
+                    <a
+                      class="link"
+                      href="https://www.google.com/search?q=police+department"
+                    >
+                      Pheonix Police Department
+                    </a>
+                    <p
+                      class="address"
+                    >
+                      (123) 456-7890 * 
+                      10435 Lemon Ln, San Diego, MN 58574
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <table
+                aria-label="Data Table"
+                class="dataTable"
+                role="table"
+              >
+                <thead
+                  class="dataHeader"
+                >
+                  <tr
+                    role="row"
+                  >
+                    <th
+                      colspan="1"
+                      role="columnheader"
+                      style="cursor: pointer;"
+                      title="Toggle SortBy"
+                    >
+                      Officers involved
+                      <span
+                        class="sortArrow"
+                      >
+                          
+                      </span>
+                    </th>
+                    <th
+                      colspan="1"
+                      role="columnheader"
+                      style="cursor: pointer;"
+                      title="Toggle SortBy"
+                    >
+                      Incident Type
+                      <span
+                        class="sortArrow"
+                      >
+                          
+                      </span>
+                    </th>
+                    <th
+                      colspan="1"
+                      role="columnheader"
+                      style="cursor: pointer;"
+                      title="Toggle SortBy"
+                    >
+                      Use of Force
+                      <span
+                        class="sortArrow"
+                      >
+                          
+                      </span>
+                    </th>
+                    <th
+                      colspan="1"
+                      role="columnheader"
+                      style="cursor: pointer;"
+                      title="Toggle SortBy"
+                    >
+                      Source
+                      <span
+                        class="sortArrow"
+                      >
+                          
+                      </span>
+                    </th>
+                    <th
+                      colspan="1"
+                      role="columnheader"
+                    >
+                      View Record
+                      <span
+                        class="sortArrow"
+                      >
+                          
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  role="rowgroup"
+                >
+                  <tr
+                    class="dataRows"
+                    role="row"
+                  >
+                    <td
+                      role="cell"
+                    >
+                      F.Keaves
+                    </td>
+                    <td
+                      role="cell"
+                    >
+                      Robbery
+                    </td>
+                    <td
+                      role="cell"
+                    >
+                      Armed presence
+                    </td>
+                    <td
+                      role="cell"
+                    >
+                      Police report
+                    </td>
+                    <td
+                      role="cell"
+                    >
+                      <svg
+                        aria-labelledby="svg-inline--fa-title-000000000000"
+                        class="svg-inline--fa fa-greater-than fa-w-12 actionBtn"
+                        data-icon="greater-than"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 384 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <title
+                          id="svg-inline--fa-title-000000000000"
+                        >
+                          View Record
+                        </title>
+                        <path
+                          d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                class="dataFooter"
+              >
+                <span
+                  class="recordCount"
+                >
+                  Number of results: 
+                  1
+                </span>
+                <span>
+                  <span
+                    class="pageBtn"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="svg-inline--fa fa-angle-left fa-w-8 "
+                      data-icon="angle-left"
+                      data-prefix="fas"
+                      focusable="false"
+                      role="img"
+                      viewBox="0 0 256 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="pageCnt"
+                  >
+                    1
+                     of 
+                    1
+                  </span>
+                  <span
+                    class="pageBtn"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="svg-inline--fa fa-angle-right fa-w-8 "
+                      data-icon="angle-right"
+                      data-prefix="fas"
+                      focusable="false"
+                      role="img"
+                      viewBox="0 0 256 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="wrapper"
+    >
+      <svg
+        aria-labelledby="svg-inline--fa-title-000000000000"
+        class="svg-inline--fa fa-arrow-left fa-w-14 fa-lg backButton"
+        data-icon="arrow-left"
+        data-prefix="fas"
+        role="img"
+        viewBox="0 0 448 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title
+          id="svg-inline--fa-title-000000000000"
+        >
+          Back
+        </title>
+        <path
+          d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"
+          fill="currentColor"
+        />
+      </svg>
+      <div
+        class="officerView"
+      >
+        <img
+          alt="Profile Picture"
+          class="profilePicture"
+          src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+        />
+        <div>
+          <div>
+            <p
+              class="title"
+            >
+              Officer Record
+            </p>
             <p
               class="name"
             >
@@ -24,295 +477,382 @@ Object {
             </p>
           </div>
           <div
-            class="otherData"
+            class="viewWrapper"
           >
-            <p
-              class="category"
+            <div
+              class="data"
             >
-              Known Employers
-            </p>
-          </div>
-        </div>
-      </div>
-      <hr />
-      <div>
-        <div
-          class="viewWrapper"
-        >
-          <div
-            class="data"
-          >
-            <p
-              class="category"
-            >
-              Date of Birth
-            </p>
-            <p>
-              12/15/1976
-            </p>
-          </div>
-          <div
-            class="data"
-          >
-            <p
-              class="category"
-            >
-              Gender
-            </p>
-            <p>
-              Nonbinary
-            </p>
-          </div>
-          <div
-            class="data"
-          >
-            <p
-              class="category"
-            >
-              Race
-            </p>
-            <p>
-              Black or African American
-            </p>
-          </div>
-        </div>
-      </div>
-      <hr />
-      <div
-        class="wrapper"
-      >
-        <div
-          class="category"
-        >
-          <p>
-            Work History Summary:
-          </p>
-        </div>
-        <div>
-          <div
-            class="wrapper"
-          >
-            <img
-              alt="San Jose Police Department Patch"
-              class="patch"
-              src="/Boston_Police_Patch.jpg"
-            />
-            <div>
-              <p>
-                
-                <span
-                  class="dates"
-                >
-                  8/7/2014
-                   - 
-                  10/15/2001
-                </span>
-              </p>
-              <a
-                href="https://www.google.com/search?q=police+department"
+              <p
+                class="category"
               >
-                San Jose Police Department
-              </a>
-              <p>
-                (123) 456-7890 * 
-                1191 Elm Ave, Houston, KY 93452
+                Badge Number
               </p>
+              <p>
+                30420452
+              </p>
+            </div>
+            <div
+              class="data"
+            >
+              <p
+                class="category"
+              >
+                Officer Status
+              </p>
+              <p>
+                Chief
+              </p>
+            </div>
+            <div
+              class="data"
+            >
+              <p
+                class="category"
+              >
+                Department
+              </p>
+              <p>
+                Houston Police Department
+              </p>
+            </div>
+          </div>
+          <div
+            class="viewWrapper"
+          >
+            <div
+              class="data"
+            >
+              <p
+                class="category"
+              >
+                Date of Birth
+              </p>
+              <p>
+                12/15/1976
+              </p>
+            </div>
+            <div
+              class="data"
+            >
+              <p
+                class="category"
+              >
+                Gender
+              </p>
+              <p>
+                Nonbinary
+              </p>
+            </div>
+            <div
+              class="data"
+            >
+              <p
+                class="category"
+              >
+                Race
+              </p>
+              <p>
+                Black or African American
+              </p>
+            </div>
+          </div>
+          <div>
+            <div
+              class="viewWrapper"
+            >
+              <div
+                class="data"
+              >
+                <p
+                  class="category"
+                >
+                  Ethnicity
+                </p>
+                <p>
+                  Hispanic or Latino
+                </p>
+              </div>
             </div>
           </div>
           <div
             class="wrapper"
           >
-            <img
-              alt="Pheonix Police Department Patch"
-              class="patch"
-              src="/San_Jose_Police_Patch.png"
-            />
+            <p
+              class="title"
+            >
+              Work History:
+            </p>
             <div>
-              <p>
-                
-                <span
-                  class="dates"
-                >
-                  3/7/1999
-                   - 
-                  4/10/2007
-                </span>
-              </p>
-              <a
-                href="https://www.google.com/search?q=police+department"
+              <div
+                class="wrapper"
               >
-                Pheonix Police Department
-              </a>
-              <p>
-                (123) 456-7890 * 
-                10435 Lemon Ln, San Diego, MN 58574
-              </p>
+                <img
+                  alt="San Jose Police Department Patch"
+                  class="patch"
+                  src="/Boston_Police_Patch.jpg"
+                />
+                <div
+                  class="content"
+                >
+                  <div
+                    class="titleAndDate"
+                  >
+                    <span
+                      class="title"
+                    >
+                      Detective
+                    </span>
+                    <span>
+                      2014
+                       - 
+                      2001
+                    </span>
+                  </div>
+                  <a
+                    class="link"
+                    href="https://www.google.com/search?q=police+department"
+                  >
+                    San Jose Police Department
+                  </a>
+                  <p
+                    class="address"
+                  >
+                    (123) 456-7890 * 
+                    1191 Elm Ave, Houston, KY 93452
+                  </p>
+                </div>
+              </div>
+              <div
+                class="wrapper"
+              >
+                <img
+                  alt="Pheonix Police Department Patch"
+                  class="patch"
+                  src="/San_Jose_Police_Patch.png"
+                />
+                <div
+                  class="content"
+                >
+                  <div
+                    class="titleAndDate"
+                  >
+                    <span
+                      class="title"
+                    >
+                      Detective
+                    </span>
+                    <span>
+                      1999
+                       - 
+                      2007
+                    </span>
+                  </div>
+                  <a
+                    class="link"
+                    href="https://www.google.com/search?q=police+department"
+                  >
+                    Pheonix Police Department
+                  </a>
+                  <p
+                    class="address"
+                  >
+                    (123) 456-7890 * 
+                    10435 Lemon Ln, San Diego, MN 58574
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <table
+              aria-label="Data Table"
+              class="dataTable"
+              role="table"
+            >
+              <thead
+                class="dataHeader"
+              >
+                <tr
+                  role="row"
+                >
+                  <th
+                    colspan="1"
+                    role="columnheader"
+                    style="cursor: pointer;"
+                    title="Toggle SortBy"
+                  >
+                    Officers involved
+                    <span
+                      class="sortArrow"
+                    >
+                        
+                    </span>
+                  </th>
+                  <th
+                    colspan="1"
+                    role="columnheader"
+                    style="cursor: pointer;"
+                    title="Toggle SortBy"
+                  >
+                    Incident Type
+                    <span
+                      class="sortArrow"
+                    >
+                        
+                    </span>
+                  </th>
+                  <th
+                    colspan="1"
+                    role="columnheader"
+                    style="cursor: pointer;"
+                    title="Toggle SortBy"
+                  >
+                    Use of Force
+                    <span
+                      class="sortArrow"
+                    >
+                        
+                    </span>
+                  </th>
+                  <th
+                    colspan="1"
+                    role="columnheader"
+                    style="cursor: pointer;"
+                    title="Toggle SortBy"
+                  >
+                    Source
+                    <span
+                      class="sortArrow"
+                    >
+                        
+                    </span>
+                  </th>
+                  <th
+                    colspan="1"
+                    role="columnheader"
+                  >
+                    View Record
+                    <span
+                      class="sortArrow"
+                    >
+                        
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                role="rowgroup"
+              >
+                <tr
+                  class="dataRows"
+                  role="row"
+                >
+                  <td
+                    role="cell"
+                  >
+                    F.Keaves
+                  </td>
+                  <td
+                    role="cell"
+                  >
+                    Robbery
+                  </td>
+                  <td
+                    role="cell"
+                  >
+                    Armed presence
+                  </td>
+                  <td
+                    role="cell"
+                  >
+                    Police report
+                  </td>
+                  <td
+                    role="cell"
+                  >
+                    <svg
+                      aria-labelledby="svg-inline--fa-title-000000000000"
+                      class="svg-inline--fa fa-greater-than fa-w-12 actionBtn"
+                      data-icon="greater-than"
+                      data-prefix="fas"
+                      role="img"
+                      viewBox="0 0 384 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <title
+                        id="svg-inline--fa-title-000000000000"
+                      >
+                        View Record
+                      </title>
+                      <path
+                        d="M365.52 209.85L59.22 67.01c-16.06-7.49-35.15-.54-42.64 15.52L3.01 111.61c-7.49 16.06-.54 35.15 15.52 42.64L236.96 256.1 18.49 357.99C2.47 365.46-4.46 384.5 3.01 400.52l13.52 29C24 445.54 43.04 452.47 59.06 445l306.47-142.91a32.003 32.003 0 0 0 18.48-29v-34.23c-.01-12.45-7.21-23.76-18.49-29.01z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              class="dataFooter"
+            >
+              <span
+                class="recordCount"
+              >
+                Number of results: 
+                1
+              </span>
+              <span>
+                <span
+                  class="pageBtn"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="svg-inline--fa fa-angle-left fa-w-8 "
+                    data-icon="angle-left"
+                    data-prefix="fas"
+                    focusable="false"
+                    role="img"
+                    viewBox="0 0 256 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="pageCnt"
+                >
+                  1
+                   of 
+                  1
+                </span>
+                <span
+                  class="pageBtn"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="svg-inline--fa fa-angle-right fa-w-8 "
+                    data-icon="angle-right"
+                    data-prefix="fas"
+                    focusable="false"
+                    role="img"
+                    viewBox="0 0 256 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+              </span>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="wrapper"
-      >
-        <p>
-          Professional Affiliations: 
-        </p>
-      </div>
-    </div>
-  </body>,
-  "container": <div>
-    <div>
-      <h3>
-        Officer Record
-      </h3>
-      <div
-        class="viewWrapper"
-      >
-        <div
-          class="titleAndName"
-        >
-          <p
-            class="name"
-          >
-            Timothy
-             
-            Young
-          </p>
-        </div>
-        <div
-          class="otherData"
-        >
-          <p
-            class="category"
-          >
-            Known Employers
-          </p>
-        </div>
-      </div>
-    </div>
-    <hr />
-    <div>
-      <div
-        class="viewWrapper"
-      >
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
-            Date of Birth
-          </p>
-          <p>
-            12/15/1976
-          </p>
-        </div>
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
-            Gender
-          </p>
-          <p>
-            Nonbinary
-          </p>
-        </div>
-        <div
-          class="data"
-        >
-          <p
-            class="category"
-          >
-            Race
-          </p>
-          <p>
-            Black or African American
-          </p>
-        </div>
-      </div>
-    </div>
-    <hr />
-    <div
-      class="wrapper"
-    >
-      <div
-        class="category"
-      >
-        <p>
-          Work History Summary:
-        </p>
-      </div>
-      <div>
-        <div
-          class="wrapper"
-        >
-          <img
-            alt="San Jose Police Department Patch"
-            class="patch"
-            src="/Boston_Police_Patch.jpg"
-          />
-          <div>
-            <p>
-              
-              <span
-                class="dates"
-              >
-                8/7/2014
-                 - 
-                10/15/2001
-              </span>
-            </p>
-            <a
-              href="https://www.google.com/search?q=police+department"
-            >
-              San Jose Police Department
-            </a>
-            <p>
-              (123) 456-7890 * 
-              1191 Elm Ave, Houston, KY 93452
-            </p>
-          </div>
-        </div>
-        <div
-          class="wrapper"
-        >
-          <img
-            alt="Pheonix Police Department Patch"
-            class="patch"
-            src="/San_Jose_Police_Patch.png"
-          />
-          <div>
-            <p>
-              
-              <span
-                class="dates"
-              >
-                3/7/1999
-                 - 
-                4/10/2007
-              </span>
-            </p>
-            <a
-              href="https://www.google.com/search?q=police+department"
-            >
-              Pheonix Police Department
-            </a>
-            <p>
-              (123) 456-7890 * 
-              10435 Lemon Ln, San Diego, MN 58574
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="wrapper"
-    >
-      <p>
-        Professional Affiliations: 
-      </p>
     </div>
   </div>,
   "debug": [Function],
