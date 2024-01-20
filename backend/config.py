@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
-
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
 
@@ -23,36 +22,33 @@ class Config(object):
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
 
     # Flask-Mail SMTP server settings
-    # MAIL_SERVER = os.environ.get("MAIL_SERVER")
-    # MAIL_PORT = os.environ.get("MAIL_PORT")
-    # MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL"))
-    # MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
-    # MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
-    # MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    # MAIL_DEFAULT_SENDER = os.environ.get(
-    #     "MAIL_DEFAULT_SENDER",
-    #     "National Police Data Coalition <{email}>".format(email=MAIL_USERNAME),
-    # )
+    """
+    Config settings for email sending
+    Put all of the information in your dotenv
+    config file
+    """
+    MAIL_SERVER = os.environ.get("MAIL_SERVER")
+    MAIL_PORT = os.environ.get("MAIL_PORT")
+    MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL"))
+    MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.environ.get(
+        "MAIL_DEFAULT_SENDER",
+        "National Police Data Coalition <{email}>".format(
+              email=MAIL_USERNAME),
+    )
 
-    # MAIL_SERVER = os.environ.get("MAIL_SERVER")
-    # MAIL_PORT = os.environ.get("MAIL_PORT")
-    # MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL"))
-    # MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
-    # MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
-    # MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    # MAIL_DEFAULT_SENDER = os.environ.get(
-    #     "MAIL_DEFAULT_SENDER",
-    #     "National Police Data Coalition <{email}>".format(email=MAIL_USERNAME),
-    # )
-
-    #Testing configurations with Mailtrap Email testing, all the configurations will be different--go to mailtrap for more information 
-    MAIL_SERVER='sandbox.smtp.mailtrap.io'
-    MAIL_PORT = 2525
-    MAIL_USERNAME = '30a682ceaa0416'
-    MAIL_PASSWORD = 'dbf502527604b1'
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = False
-
+    """
+    Testing configurations with Mailtrap Email testing, all the configurations
+    will be different--go to mailtrap for more information
+    """
+    # MAIL_SERVER = 'sandbox.smtp.mailtrap.io'
+    # MAIL_PORT = 2525
+    # MAIL_USERNAME = '30a682ceaa0416'
+    # MAIL_PASSWORD = 'dbf502527604b1'
+    # MAIL_USE_TLS = True
+    # MAIL_USE_SSL = False
 
     # Flask-User settings
     USER_APP_NAME = (
@@ -115,7 +111,6 @@ class TestingConfig(Config):
     SECRET_KEY = "my-secret-key"
     JWT_SECRET_KEY = "my-jwt-secret-key"
     MIXPANEL_TOKEN = "mixpanel-token"
-    
 
 
 def get_config_from_env(env: str) -> Config:

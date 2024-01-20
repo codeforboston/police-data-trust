@@ -163,7 +163,6 @@ CreateUseOfForceSchema = schema_create(UseOfForce)
 CreateLegalCaseSchema = schema_create(LegalCase)
 
 
-
 class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
     victims: Optional[List[CreateVictimSchema]]
     perpetrators: Optional[List[CreatePerpetratorSchema]]
@@ -210,7 +209,6 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
-
 
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):

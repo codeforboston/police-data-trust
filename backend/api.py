@@ -41,7 +41,6 @@ def register_extensions(app: Flask):
     jwt.init_app(app)
     Mail(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
 
 
 def register_commands(app: Flask):

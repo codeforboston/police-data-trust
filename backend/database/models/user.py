@@ -57,8 +57,6 @@ class UserRole(str, Enum):
             return 4
 
 
-    
-
 # Define the User data-model.
 class User(db.Model, UserMixin, CrudMixin):
     """The SQL dataclass for an Incident."""
@@ -98,5 +96,3 @@ class User(db.Model, UserMixin, CrudMixin):
 
     def get_by_email(email):
         return User.query.filter(User.email == email).first()
-
-

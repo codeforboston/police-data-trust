@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 from enum import Enum
+
 
 class MemberRole(str, Enum):
     ADMIN = "Administrator"
@@ -13,5 +13,3 @@ class InviteUserDTO(BaseModel):
     partner_id: int
     email: EmailStr
     role:  MemberRole
-
-

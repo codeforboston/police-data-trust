@@ -1,19 +1,21 @@
+from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
-from flask import Blueprint, abort, current_app, request,jsonify
+from flask import Blueprint, abort, current_app, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from ..database import Partner, PartnerMember, MemberRole, db, Invitation, StagedInvitation
+from ..database import (
+    Partner,
+    PartnerMember,
+    MemberRole,
+    db,
+    Invitation,
+    StagedInvitation,
+)
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
-
-
-
-
-
-
 from ..schemas import (
     CreatePartnerSchema,
     AddMemberSchema,
@@ -41,7 +43,7 @@ def get_partners(partner_id: int):
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate(json=CreatePartnerSchema)
-def create():
+def create_partner():
     """Create a contributing partner.
 
     Cannot be called in production environments
@@ -67,13 +69,6 @@ def create():
         "partner_contact": partner.contact_email
     })
     return partner_orm_to_json(created)
-
-    
-   
-
-
-
-
 
 
 @bp.route("/", methods=["GET"])
@@ -210,162 +205,276 @@ def add_member_to_partner(partner_id: int):
     return partner_member_orm_to_json(created)
 
 
-
-
-
-
-@bp.route("/invite",methods=["POST"])
+# user can join org they were invited to
+@bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate(auth=True,json=InviteUserDTO)
+def join_organization():
+    try:
+        body = request.get_json()
+        user_exists = PartnerMember.query.filter_by(
+            user_id=body["user_id"],
+            partner_id=body["partner_id"]).first()
+        if user_exists:
+            return {
+                "status" : "Error",
+                "message": "User already in the organization"
+            }, 400
+        else:
+            new_member = PartnerMember(
+                user_id=body["user_id"],
+                partner_id=body["partner_id"],
+                role=body["role"],
+                date_joined=datetime.now(),
+                is_active=True
+            )
+            db.session.add(new_member)
+            db.session.commit()
+            Invitation.query.filter_by(
+                user_id=body["user_id"],
+                partner_id=body["partner_id"]).delete()
+            db.session.commit()
+            return {
+                "status": "ok",
+                "message": "Successfully joined partner organization"
+            } , 200
+    except Exception:
+        db.session.rollback()
+        return {
+            "status": "Error",
+            "message": "Something went wrong!"
+        }, 500
+    finally:
+        db.session.close()
+
+
+# user can leave org they already joined
+@bp.route("/leave", methods=["DELETE"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def leave_organization():
+    """
+    remove from PartnerMember table
+    """
+    try:
+        body = request.get_json()
+        result = PartnerMember.query.filter_by(
+            user_id=body["user_id"], partner_id=body["partner_id"]).delete()
+        db.session.commit()
+        if result > 0:
+            return {
+                "status": "ok",
+                "message": "Succesfully left organization"
+            }, 200
+        else:
+            return {
+                "status": "Error",
+                "message": "Not a member of this organization"
+            }, 400
+    except Exception:
+        db.session.rollback()
+        return {
+            "status": "Error",
+            "message": "Something went wrong!"
+        }
+    finally:
+        db.session.close()
+
+
+# inviting anyone to NPDC
+@bp.route("/invite", methods=["POST"])
+@jwt_required()
+@min_role_required(MemberRole.ADMIN)
+@validate(auth=True, json=InviteUserDTO)
 def invite_user():
-    
-
-    #TODO : Only Admins of an organization can invite
-    """
-    Testing scenarios
-
-    1) Should not work for user that is not an Admin
-    2) Should work for someone who is an Admin of an organization
-
-
-    3) (TESTED) If a user already exists and is invited to an organization, message should be appropriate 
-    4) (TESTED) If a user does not exist and is not invited to an organization, message should be appropriate 
-
-    5)Make sure all db changes Invitations, and Staged Invitations are happening as expected
-
-
-
-    """
-
-
-    
-    
     body: InviteUserDTO = request.context.json
     mail = current_app.extensions.get('mail')
-
-        
-
     user = User.query.filter_by(email=body.email).first()
-    
-    # if user is already registered with NPDC, add them to Invitations Table, and send out an email notification
     if user is not None:
-        
-
-        try:        
-            new_invitation= Invitation(partner_id=body.partner_id, user_id=user.id,role=body.role)
-            db.session.add(new_invitation)
-            db.session.commit()
-            
-            msg = Message("Invitation to join NPDC partner organization!", sender=TestingConfig.MAIL_USERNAME, recipients=['paul@mailtrap.io'])
-            msg.body = "You are a registered user of NPDC and were invited to a partner organization. Please log on to accept or decline the invitation."
-            mail.send(msg)
+        invitation_exists = Invitation.query.filter_by(
+            partner_id=body.partner_id, user_id=user.id).first()
+        if invitation_exists:
             return {
-            "status": "ok",
-            "message": "User notified of their invitation through email!"
-        }, 200
-            
-        except:
-            return {
-                "status":"error",
-                "message":"Something went wrong! Please try again!"
-            },500
+                "status": "error",
+                "message": "Invitation already sent to this user!"
+            }, 500
+        else:
+            try:
+                new_invitation = Invitation(
+                    partner_id=body.partner_id, user_id=user.id, role=body.role)
+                db.session.add(new_invitation)
+                db.session.commit()
 
-             
-        # new_invitation= Invitation(partner_id=body.partner_id, user_id=user.id,role=body.role)
-        # # new_invitation.create()
-        # db.session.add(new_invitation)
-        # db.session.commit()
-        
-        # msg = Message("Invitation to join NPDC partner organization!", sender=TestingConfig.MAIL_USERNAME, recipients=['paul@mailtrap.io'])
-        # msg.body = "You are a registered user of NPDC and were invited to a partner organization. Please log on to accept or decline the invitation."
-        # mail.send(msg)
-        # return {
-        # "status": "ok",
-        # "message": "User notified of their invitation through email!"
-        # }, 200
-        
-    
+                msg = Message("Invitation to join NPDC partner organization!",
+                              sender=TestingConfig.MAIL_USERNAME,
+                              recipients=[body.email])
+                msg.body = """You are a registered user of NPDC and were invited
+                to a partner organization. Please log on to accept or decline
+                the invitation at https://dev.nationalpolicedata.org/."""
+                mail.send(msg)
+                return {
+                    "status": "ok",
+                    "message": "User notified of their invitation!"
+                }, 200
 
-       
-    #if user not registered with NPDC, add the invitation for them in StagedInvitations Table, and send out an email notification
+            except Exception:
+                return {
+                    "status": "error",
+                    "message": "Something went wrong! Please try again!"
+                }, 500
     else:
         try:
 
-            new_staged_invite = StagedInvitation(partner_id=body.partner_id,email=body.email,role=body.role)
+            new_staged_invite = StagedInvitation(
+                partner_id=body.partner_id, email=body.email, role=body.role)
             db.session.add(new_staged_invite)
             db.session.commit()
-            msg = Message("Invitation to join NPDC index!",sender=TestingConfig.MAIL_USERNAME ,
-                        recipients=['paul@mailtrap.io'])
-            msg.body = ("You are not a registered user of NPDC and were invited to a partner organization. Please register with NPDC index.")
+            msg = Message("Invitation to join NPDC index!",
+                          sender=TestingConfig.MAIL_USERNAME,
+                          recipients=[body.email])
+            msg.body = """You are not a registered user of NPDC and were
+                        invited to a partner organization. Please register
+                        with NPDC index at
+                        https://dev.nationalpolicedata.org/."""
             mail.send(msg)
 
             return {
                 "status": "ok",
-                "message": "User is not registered with the NPDC index. Email sent to user notifying them to register."
+                "message": """User is not registered with the NPDC index.
+                 Email sent to user notifying them to register."""
             }, 200
-        
-        except:
+
+        except Exception:
             return {
-                "status":"error",
-                "message":"Something went wrong! Please try again!"
-            },500
-
-        
-
-        # new_staged_invite = StagedInvitation(partner_id=body.partner_id,email=body.email,role=body.role)
-        
-        # db.session.add(new_staged_invite)
-        # db.session.commit()
-        # msg = Message("Invitation to join NPDC index!",sender=TestingConfig.MAIL_USERNAME ,
-        #             recipients=['paul@mailtrap.io'])
-        # msg.body = ("You are not a registered user of NPDC and were invited to a partner organization. Please register with NPDC index.")
-        # mail.send(msg)
-
-        # return {
-        #     "status": "ok",
-        #     "message": "User is not registered with the NPDC index. Email sent to user notifying them to register."
-        # }, 200
-        
-       
+                "status": "error",
+                "message": "Something went wrong! Please try again!"
+            }, 500
 
 
-@bp.route("/invitations",methods=["GET"])
+# admin can remove any member from a partner organization
+@bp.route("/remove_member", methods=['DELETE'])
+@jwt_required()
+@min_role_required(MemberRole.ADMIN)
+def remove_member():
+    body = request.get_json()
+    try:
+        user_found = PartnerMember.query.filter_by(
+            user_id=body["user_id"],
+            partner_id=body["partner_id"]
+            ).delete()
+        db.session.commit()
+        if user_found > 0:
+            return {
+                "status" : "ok",
+                "message" : "Member successfully deleted from Organization"
+            } , 200
+        else:
+            return {
+                "status" : "Error",
+                "message" : "Member is not part of the Organization"
+
+            } , 400
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+    finally:
+        db.session.close()
+
+
+# admin can withdraw invitations that have been sent out
+@bp.route("/withdraw_invitation", methods=['DELETE'])
+@jwt_required()
+@min_role_required(MemberRole.ADMIN)
+def withdraw_invitation():
+    body = request.get_json()
+    try:
+        user_found = Invitation.query.filter_by(
+            user_id=body["user_id"],
+            partner_id=body["partner_id"]
+            ).delete()
+        db.session.commit()
+        if user_found > 0:
+            return {
+                "status" : "ok",
+                "message" : "Member's invitation withdrawn from Organization"
+            } , 200
+        else:
+            return {
+                "status" : "Error",
+                "message" : "Member is not invited to the Organization"
+
+            } , 400
+    except Exception as e:
+        db.session.rollback()
+        return str(e)
+    finally:
+        db.session.close()
+
+
+# admin can change roles of any user
+@bp.route("/role_change", methods=["PATCH"])
+@jwt_required()
+@min_role_required(MemberRole.ADMIN)
+def role_change():
+    body = request.get_json()
+    try:
+        user_found = PartnerMember.query.filter_by(
+            user_id=body["user_id"],
+            partner_id=body["partner_id"]
+            ).first()
+        if user_found:
+            user_found.role = body["role"]
+            db.session.commit()
+            return {
+                "status" : "ok",
+                "message" : "Role has been updated!"
+            }, 200
+        else:
+            return {
+                "status" : "Error",
+                "message" : "User not found in this organization"
+            }, 400
+    except Exception as e:
+        db.session.rollback
+        return str(e)
+    finally:
+        db.session.close()
+
+
+# view invitations table
+@bp.route("/invitations", methods=["GET"])
 @jwt_required()
 @validate()
-#only defined for testing environment
+# only defined for testing environment
 def get_invitations():
     if current_app.env == "production":
         abort(418)
-    invitation_found = Invitation.query.filter_by(email="harsharauniyar1@gmail.com",partner_id=10)
+    try:
+        all_records = Invitation.query.all()
+        records_list = [record.serialize() for record in all_records]
+        return jsonify(records_list)
 
-    if invitation_found is not None:
-        return "Found in DB"
-    elif invitation_found is None:
-        return "Did not find in DB"
+    except Exception as e:
+        return str(e)
 
 
-@bp.route("/stagedinvitations",methods=["GET"])
+# view staged invitations table
+@bp.route("/stagedinvitations", methods=["GET"])
 @jwt_required()
 @validate()
-#only defined for testing environment
+# only defined for testing environment
 def stagedinvitations():
     if current_app.env == "production":
         abort(418)
     staged_invitations = StagedInvitation.query.all()
-
-   
     invitations_data = [
         {
             'id': staged_invitation.id,
             'email': staged_invitation.email,
-            'role': staged_invitation.role, 
-            'partner_id':staged_invitation.partner_id,
+            'role': staged_invitation.role,
+            'partner_id': staged_invitation.partner_id,
         }
         for staged_invitation in staged_invitations
     ]
 
     return jsonify({'staged_invitations': invitations_data})
-
-
-
