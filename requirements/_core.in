@@ -35,3 +35,6 @@ spectree
 jupyter
 mixpanel
 ua-parser
+requests
+redis
+requests-mock

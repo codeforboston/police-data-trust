@@ -3,7 +3,7 @@ import time
 import logging
 import re
 from bs4 import BeautifulSoup
-from typing import Any, Optional
+from typing import Any, Optional, List, AnyStr
 
 
 class ScraperMixin:
@@ -55,7 +55,7 @@ class ScraperMixin:
                     time.sleep(self.rate_limit)  # wait before retrying
         return None
 
-    def find_urls(self, url: str, pattern: re.Pattern[Any]) -> list[str]:
+    def find_urls(self, url: str, pattern: Any) -> List[AnyStr]:
         """
         Finds URLs matching a given pattern on a web page.
 

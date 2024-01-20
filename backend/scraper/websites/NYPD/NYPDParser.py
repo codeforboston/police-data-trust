@@ -47,9 +47,9 @@ class NYPDParser:
             incident.was_victim_arrested = False
             incident.arrest_id = None
             incident.criminal_case_brought = None
-            case_id = int(incident_csv[12])
-            if not case_id:
+            if not incident_csv[12]:
                 continue
+            case_id = int(incident_csv[12])
             incident.case_id = case_id
             source = SourceDetails(
                 **{
