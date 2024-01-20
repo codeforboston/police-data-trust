@@ -6,7 +6,6 @@ from `backend.database`.
 """
 import os
 from typing import Any, Optional
-
 import click
 import pandas as pd
 import psycopg2.errors
@@ -46,6 +45,27 @@ class CrudMixin:
         if obj is None and abort_if_null:
             abort(404)
         return obj
+
+    """https://stackoverflow.com/questions/18147435/
+        how-to-exclude-specific-fields-on-serialization-with-jsonpickle"""
+
+    def __getstate__(self):
+        """
+        Get the state of the object for pickling.
+
+        Args:
+            stringify_dates (bool): Whether to convert datetime objects to
+            strings.
+
+        Returns:
+            dict: The state of the object.
+        """
+        state = self.__dict__.copy()
+        keys_to_remove = ["_sa_instance_state", "id"]
+        keys_to_remove += [key for key, value in state.items() if value is None]
+        for key in keys_to_remove:
+            del state[key]
+        return state
 
 
 QUERIES_DIR = os.path.abspath(

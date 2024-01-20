@@ -1,0 +1,1 @@
+* * * * * flask scrape-v2 > /backend/scraper/scrape.log 2>&1

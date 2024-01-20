@@ -1,6 +1,5 @@
 import enum
-
-from .. import db
+from ..core import CrudMixin, db
 
 
 class Rank(str, enum.Enum):
@@ -69,15 +68,15 @@ class State(str, enum.Enum):
     WY = "WY"
 
 
-class StateID(db.Model):
+class StateID(db.Model, CrudMixin):
     """
     Represents a Statewide ID that follows an offcier even as they move between
     law enforcement agencies. for an officer. For example, in New York, this
     would be the Tax ID Number.
     """
+
     id = db.Column(db.Integer, primary_key=True)
-    officer_id = db.Column(
-        db.Integer, db.ForeignKey("officer.id"))
+    officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
     id_name = db.Column(db.Text)  # e.g. "Tax ID Number"
     state = db.Column(db.Enum(State))  # e.g. "NY"
     value = db.Column(db.Text)  # e.g. "958938"
@@ -86,7 +85,7 @@ class StateID(db.Model):
         return f"<StateID {self.id}>"
 
 
-class Officer(db.Model):
+class Officer(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     first_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
@@ -94,6 +93,7 @@ class Officer(db.Model):
     ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     date_of_birth = db.Column(db.Date)
+    stateId = db.relationship("StateID", backref="officer", uselist=False)
 
     def __repr__(self):
         return f"<Officer {self.id}>"

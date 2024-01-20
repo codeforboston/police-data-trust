@@ -9,3 +9,4 @@ class Participant(db.Model):
     gender = db.Column(db.Enum(Gender))
     race = db.Column(db.Enum(Race))
     age = db.Column(db.Integer)
+    name = db.Column(db.Text)
