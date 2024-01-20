@@ -187,8 +187,7 @@ class CreatePartnerMemberSchema(BaseModel):
 
 
 AddMemberSchema = sqlalchemy_to_pydantic(
-    PartnerMember,
-    exclude=["id", "date_joined", "partner", "user"]
+    PartnerMember, exclude=["id", "date_joined", "partner", "user"]
 )
 
 
@@ -298,7 +297,8 @@ def partner_orm_to_json(partner: Partner) -> dict:
 
 
 def partner_member_to_orm(
-        partner_member: CreatePartnerMemberSchema) -> PartnerMember:
+    partner_member: CreatePartnerMemberSchema,
+) -> PartnerMember:
     """Convert the JSON partner member into an ORM instance"""
     orm_attrs = partner_member.dict()
     return PartnerMember(**orm_attrs)
@@ -307,4 +307,13 @@ def partner_member_to_orm(
 def partner_member_orm_to_json(partner_member: PartnerMember) -> dict:
     return PartnerMemberSchema.from_orm(partner_member).dict(
         exclude_none=True,
+    )
+
+
+def user_orm_to_json(user: User) -> Dict[str, Any]:
+    return UserSchema.from_orm(user).dict(
+        exclude={
+            "password",
+            "email_confirmed_at",
+        }
     )
