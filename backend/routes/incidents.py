@@ -50,8 +50,7 @@ def create_incident():
         abort(400)
 
     created = incident.create()
-    track_to_mp(request, "create_incident", {
-        "source_id": incident.source_id})
+    track_to_mp(request, "create_incident", {"source_id": incident.source_id})
     return incident_orm_to_json(created)
 
 
@@ -83,8 +82,7 @@ def search_incidents():
     """Search Incidents."""
     body: SearchIncidentsSchema = request.context.json
     query = db.session.query(Incident)
-    logger = logging.getLogger('incidents')
-
+    logger = logging.getLogger("incidents")
     try:
         if body.location:
             # TODO: Replace with .match, which uses `@@ to_tsquery`
@@ -95,12 +93,14 @@ def search_incidents():
             query = query.filter(Incident.location.ilike(f"%{body.location}%"))
         if body.dateStart:
             query = query.filter(
-                                Incident.time_of_incident >=
-                                datetime.fromisoformat(body.dateStart))
+                Incident.time_of_incident
+                >= datetime.fromisoformat(body.dateStart)
+            )
         if body.dateEnd:
             query = query.filter(
-                                Incident.time_of_incident <=
-                                datetime.fromisoformat(body.dateEnd))
+                Incident.time_of_incident
+                <= datetime.fromisoformat(body.dateEnd)
+            )
         if body.description:
             query = query.filter(
                 Incident.description.ilike(f"%{body.description}%")
@@ -113,12 +113,16 @@ def search_incidents():
     )
 
     try:
-        track_to_mp(request, "search_incidents", {
-            "description": body.description,
-            "location": body.location,
-            "dateStart": body.dateStart,
-            "dateEnd": body.dateEnd,
-        })
+        track_to_mp(
+            request,
+            "search_incidents",
+            {
+                "description": body.description,
+                "location": body.location,
+                "dateStart": body.dateStart,
+                "dateEnd": body.dateEnd,
+            },
+        )
     except MixpanelException as e:
         logger.error(e)
 

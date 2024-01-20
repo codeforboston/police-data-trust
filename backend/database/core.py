@@ -64,7 +64,7 @@ class CrudMixin:
         keys_to_remove = ["_sa_instance_state", "id"]
         keys_to_remove += [key for key, value in state.items() if value is None]
         for key in keys_to_remove:
-            del state[key]
+            state.pop(key, None)
         return state
 
 

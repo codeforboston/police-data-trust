@@ -32,22 +32,31 @@ def add_to_database(
     # add the model to the database
     # Check if the model already exists in the database
     model_exists: bool
-    if table == "officer":
-        model_exists = officer_exists(
-            db.session,  # type: ignore
-            model.stateId,  # type: ignore
+    try:
+        if table == "officer":
+            model_exists = officer_exists(
+                db.session,  # type: ignore
+                model.stateId,  # type: ignore
+            )
+        elif table == "incident":
+            model_exists = incident_exists(
+                db.session,  # type: ignore
+                model,  # type: ignore
+            )
+        else:
+            raise ValueError(f"Invalid table {table}")
+    except Exception as e:
+        logger.error(
+            f"Failed to check if {table} {uid} exists in database: {e}"
         )
-    elif table == "incident":
-        model_exists = incident_exists(
-            db.session,  # type: ignore
-            model,  # type: ignore
-        )
-    else:
-        raise ValueError(f"Invalid table {table}")
-    if model_exists:  # type: ignore
-        logger.info(f"{table} {uid} already in database")
-        model.delete()
-    model.create()
+        return
+    try:
+        if model_exists:  # type: ignore
+            logger.info(f"{table} {uid} already in database")
+            model.delete()
+        model.create()
+    except Exception as e:
+        logger.error(f"Failed to add {table} {uid} to database: {e}")
 
     # add the model to the cache
     try:

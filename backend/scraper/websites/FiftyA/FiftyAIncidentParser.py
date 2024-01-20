@@ -114,13 +114,16 @@ class FiftyAIncidentParser(ParserMixin):
             badge = re.search(badge_number_pattern, description)
             if badge:
                 badge = badge.group(1)
+            title = officer.get("title", "").split(" ")[0]
+            mapping = {"Police": "OFFICER", "Sergeant": "SERGEANT"}
+            title = mapping.get(title, "OFFICER")
             perps.append(
                 Perpetrator(
                     **{
                         "badge": badge,
                         "first_name": description.split(" ")[0],
                         "last_name": description.split(" ")[-1],
-                        "rank": officer.get("title", "").split(" ")[0],
+                        "rank": title,
                     }
                 )
             )
