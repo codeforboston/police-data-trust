@@ -2,7 +2,7 @@ import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useState } from "react"
 import { Column, defaultColumn, useFilters, usePagination, useSortBy, useTable } from "react-table"
-import { Incident, Officer } from "../../helpers/api/api"
+import { User, Incident, Officer } from "../../helpers/api/api" //change here
 import { SavedResultsType, SavedSearchType } from "../../models"
 import { EditButton, PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
@@ -10,7 +10,7 @@ import styles from "./data-table.module.css"
 interface DataTableProps {
   tableName: string
   columns: Column<any>[]
-  data: Incident[] | SavedSearchType[] | SavedResultsType[] | Officer[] | undefined
+  data: Incident[] | SavedSearchType[] | SavedResultsType[] | Officer[] | User[] |undefined //change here
 }
 
 export function DataTable(props: DataTableProps) {

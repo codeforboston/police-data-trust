@@ -5,6 +5,7 @@ import { DataTable } from "./data-table"
 import { savedResultsColumns } from "../../compositions/profile-saved-tables/saved-results"
 import { resultsColumns } from "../../compositions/search-results/search-results"
 import { searchesColumns } from "../../compositions/profile-saved-tables/saved-searches"
+import { lawyerUserColumns } from "../../compositions/layer-admin-view/user-table/user-table"
 
 export default {
   title: "Shared Components/Data Table",
@@ -27,4 +28,13 @@ SavedResults.args = {
   tableName: "Saved Results",
   columns: savedResultsColumns,
   data: EXISTING_TEST_INCIDENTS
+}
+
+export const UserTable = Template.bind({})
+
+UserTable.args ={
+  tableName: "Lawyer User Table",
+  columns: lawyerUserColumns,
+  data: EXISTING_TEST_INCIDENTS
+
 }
