@@ -13,26 +13,12 @@ interface MenuText {
   text: string
 }
 
-export const menuContent: {
-  [key in ProfileMenu]: MenuText
-} = {
-  [ProfileMenu.USER_INFO]: {
-    item: ProfileMenu.USER_INFO,
-    text: "User Information"
-  },
-  [ProfileMenu.PROFILE_TYPE]: {
-    item: ProfileMenu.PROFILE_TYPE,
-    text: "Profile Type"
-  },
-  [ProfileMenu.SAVED_RESULTS]: {
-    item: ProfileMenu.SAVED_RESULTS,
-    text: "Saved Results"
-  },
-  [ProfileMenu.SAVED_SEARCHES]: {
-    item: ProfileMenu.SAVED_SEARCHES,
-    text: "Saved Searches"
-  }
-}
+export const profileMenuItems: MenuText[] = [
+  { item: ProfileMenu.USER_INFO, text: "User Information" },
+  { item: ProfileMenu.PROFILE_TYPE, text: "Profile Type" },
+  { item: ProfileMenu.SAVED_RESULTS, text: "Saved Results" },
+  { item: ProfileMenu.SAVED_SEARCHES, text: "Saved Searches" }
+]
 
 // props for profile menu content
 export interface UserProfileProps {

@@ -1,31 +1,39 @@
 import * as React from "react"
-import { Layout } from "../../shared-components"
-import { ProfileMenu } from "../../models/profile"
-import { requireAuth } from "../../helpers"
 import {
-  DashboardHeader,
   ProfileInfo,
   ProfileNav,
   ProfileType,
-  SavedSearches,
-  SavedResults
+  SavedResults,
+  SavedSearches
 } from "../../compositions"
+import { requireAuth } from "../../helpers"
+import { ProfileMenu } from "../../models/profile"
+import { Layout } from "../../shared-components"
 import styles from "./profile.module.css"
-// import { useAuth, requireAuth } from "../../helpers"
 
 export default requireAuth(function Profile() {
-  const [nav, setNav] = React.useState(ProfileMenu.USER_INFO)
+  const [activePage, setActivePage] = React.useState(ProfileMenu.USER_INFO)
+
+  const ActivePageComp = (function (menuItem: ProfileMenu) {
+    switch (menuItem) {
+      case ProfileMenu.USER_INFO:
+        return ProfileInfo
+      case ProfileMenu.PROFILE_TYPE:
+        return ProfileType
+      case ProfileMenu.SAVED_RESULTS:
+        return SavedResults
+      case ProfileMenu.SAVED_SEARCHES:
+        return SavedSearches
+      default:
+        throw new Error("Must be a key in 'ProfileMenu' enum - unexpected default case!")
+    }
+  })(activePage)
 
   return (
     <Layout>
       <div className={styles.profileWrapper}>
-        <ProfileNav currentItem={nav} selectNav={setNav} />
-
-        {/* TODO: this looks awful */}
-        {nav === ProfileMenu.USER_INFO && <ProfileInfo />}
-        {nav === ProfileMenu.PROFILE_TYPE && <ProfileType />}
-        {nav === ProfileMenu.SAVED_RESULTS && <SavedResults />}
-        {nav === ProfileMenu.SAVED_SEARCHES && <SavedSearches />}
+        <ProfileNav activePage={activePage} setActivePage={setActivePage} />
+        <ActivePageComp />
       </div>
     </Layout>
   )
