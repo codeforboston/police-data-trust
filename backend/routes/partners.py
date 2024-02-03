@@ -1,3 +1,5 @@
+from typing import Any
+
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
@@ -5,7 +7,7 @@ from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_sqlalchemy import Pagination
-from ..database import Partner, PartnerMember, MemberRole, db
+from ..database import Partner, PartnerMember, MemberRole, db, Incident
 from ..schemas import (
     CreatePartnerSchema,
     AddMemberSchema,
@@ -15,7 +17,9 @@ from ..schemas import (
     partner_member_to_orm,
     partner_to_orm,
     validate,
+    incident_orm_to_json,
 )
+
 
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 
@@ -146,6 +150,9 @@ def get_partner_members(partner_id: int):
 @min_role_required(UserRole.PUBLIC)
 @validate()  # type: ignore
 def get_partner_users(partner_id: int):
+    # check if the partner exists
+    partner = Partner.get(partner_id)
+
     # Get the page number from the query parameters (default to 1)
     page = request.args.get("page", 1, type=int)
 
@@ -155,12 +162,8 @@ def get_partner_users(partner_id: int):
     # Query the PartnerMember table for records with
     # the given partner_id and paginate the results
     pagination: Pagination = PartnerMember.query.filter_by(
-        partner_id=partner_id
+        partner_id=partner.id
     ).paginate(page=page, per_page=per_page, error_out=False)
-
-    # If the partner_id is invalid, return a 404 error
-    if pagination.total == 0:
-        return {"message": "Partner not found"}, 404
 
     # Get the User objects associated with the members on the current page
     users: list[User] = [
@@ -242,3 +245,44 @@ def add_member_to_partner(partner_id: int):
         },
     )
     return partner_member_orm_to_json(created)
+
+
+@bp.route("/<int:partner_id>/incidents", methods=["GET"])
+@jwt_required()  # type: ignore
+@min_role_required(UserRole.PUBLIC)
+@validate()  # type: ignore
+def get_incidents(partner_id: int):
+    """
+    Get all incidents associated with a partner.
+
+    Accepts Query Parameters for pagination:
+    per_page: number of results per page
+    page: page number
+    """
+
+    # check if the partner exists
+    partner: Partner = Partner.get(partner_id)  # type: ignore
+
+    # Get the page number from the query parameters (default to 1)
+    page = request.args.get("page", 1, type=int)
+
+    # Get the number of items per page from the query parameters (default to 20)
+    per_page = request.args.get("per_page", 20, type=int)
+
+    # Query the Incident table for records with the given partner_id
+    # and paginate the results
+    pagination: Any = Incident.query.filter_by(source_id=partner.id).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    incidents: list[dict[str, Any]] = [
+        incident_orm_to_json(incident) for incident in pagination.items
+    ]
+
+    # Convert the Incident objects to dictionaries and return them as JSON
+    return {
+        "results": incidents,
+        "page": pagination.page,
+        "totalPages": pagination.pages,
+        "totalResults": pagination.total,
+    }

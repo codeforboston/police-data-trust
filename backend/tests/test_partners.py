@@ -1,6 +1,6 @@
 import pytest
 from backend.auth import user_manager
-from backend.database import Partner, PartnerMember, MemberRole
+from backend.database import Partner, PartnerMember, MemberRole, Incident
 from backend.database.models.user import User, UserRole
 from typing import Any
 
@@ -311,6 +311,8 @@ def test_get_partner_users(
 def test_get_partner_users_error(
     client: Any,
     access_token: str,
+    example_partner: Partner,
+    example_members: PartnerMember,
 ) -> None:
     # Test that we can get partner users
     res: Any = client.get(
@@ -318,4 +320,82 @@ def test_get_partner_users_error(
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 404
-    assert res.get_json()["message"] == "Partner not found"
+
+
+def test_get_incidents(
+    client: Any,
+    example_partner: Partner,
+    access_token: str,
+    example_incidents: list[Incident],
+) -> None:
+    # Test getting incidents for the partner
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 200
+    data = res.get_json()
+
+    # Verify the response structure
+    assert "results" in data
+    assert "page" in data
+    assert "totalPages" in data
+    assert "totalResults" in data
+
+    # Verify the results
+    assert len(data["results"]) == len(example_incidents)
+
+    # Verify the page number
+    assert data["page"] == 1
+
+    # Verify the total pages
+    assert data["totalPages"] == 1
+
+    # Verify the total results
+    assert data["totalResults"] == len(example_incidents)
+
+
+def test_get_incidents_partner_not_found(
+    client: Any,
+    access_token: str,
+) -> None:
+    # Test getting incidents for the partner
+    res = client.get(
+        f"/api/v1/partners/{9999}/incidents",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 404
+
+
+def test_get_incidents_pagination(
+    client: Any,
+    access_token: str,
+    example_partner: Partner,
+    example_incidents: list[Incident],
+) -> None:
+    # Test getting incidents for the partner
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    data = res.get_json()
+
+    # Verify the response structure
+    assert "results" in data
+    assert "page" in data
+    assert "totalPages" in data
+    assert "totalResults" in data
+
+    # Verify the results
+    assert len(data["results"]) == len(example_incidents)
+
+    # Verify the page number
+    assert data["page"] == 1
+
+    # Verify the total pages
+    assert data["totalPages"] == 1
+
+    # Verify the total results
+    assert data["totalResults"] == len(example_incidents)
