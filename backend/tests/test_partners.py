@@ -2,7 +2,7 @@ import pytest
 from backend.auth import user_manager
 from backend.database import Partner, PartnerMember, MemberRole, Incident
 from backend.database.models.user import User, UserRole
-from typing import Any
+from typing import Any, List
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
@@ -326,7 +326,7 @@ def test_get_incidents(
     client: Any,
     example_partner: Partner,
     access_token: str,
-    example_incidents: list[Incident],
+    example_incidents: List[Incident],
 ) -> None:
     # Test getting incidents for the partner
     res = client.get(
@@ -371,7 +371,7 @@ def test_get_incidents_pagination(
     client: Any,
     access_token: str,
     example_partner: Partner,
-    example_incidents: list[Incident],
+    example_incidents: List[Incident],
 ) -> None:
     # Test getting incidents for the partner
     res = client.get(
