@@ -419,7 +419,6 @@ def test_get_incidents_not_admin(
     client: Any,
     access_token: str,
     example_partner: Partner,
-    example_user: User,
     example_incidents: List[Incident],
 ):
     # Make a request to get the incidents
@@ -432,3 +431,98 @@ def test_get_incidents_not_admin(
 
     # Verify that only public incidents are returned
     assert len(data["results"]) == len(example_incidents)
+
+
+def test_delete_incident(
+    client: Any,
+    partner_publisher: User,
+    example_partner: Partner,
+    example_incidents: List[Incident],
+):
+    """
+    Test that a partner member can delete an incident.
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password,
+        },
+    ).json["access_token"]
+
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/partners/{example_partner.id}"
+        + f"/incidents/{example_incidents[0].id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 204
+
+    # Verify that the incident is deleted
+    deleted_incident = Incident.query.get(example_incidents[0].id)
+    assert deleted_incident is None
+    
+def test_delete_incident_no_user_role(
+    client: Any,
+    access_token: str,
+):
+    """
+    Test that a user without atlest CONTRIBUTOR role can't delete an incident.
+    """
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/partners/{999}"
+        + f"/incidents/{999}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 403
+
+    
+def test_delete_incident_bad_partner_id(
+    client: Any,
+    partner_publisher: User,
+    example_incidents: List[Incident],
+):
+    """
+    Test that a partner member can't delete an incident with a invalid partner id.
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password,
+        },
+    ).json["access_token"]
+
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/partners/{999}"
+        + f"/incidents/{example_incidents[0].id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 403
+    
+    
+def test_delete_incident_bad_incident_id(
+    client: Any,
+    partner_publisher: User,
+    example_partner: Partner,
+):
+    """
+    Test that a partner member can't delete an incident with a invalid incident id.
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password,
+        },
+    ).json["access_token"]
+
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/partners/{example_partner.id}"
+        + f"/incidents/{999}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 404

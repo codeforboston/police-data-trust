@@ -274,11 +274,13 @@ def get_incidents(partner_id: int):
     """
 
     # Check if the partner exists
-    partner: Partner = Partner.get(partner_id)  # type: ignore
+    partner = Partner.get(partner_id, False)
+    if partner is None:
+        abort(404)
 
     # Check if the user has permission to view incidents for this partner
-    jwt_decoded = get_jwt()  # type: ignore
-    user_id = jwt_decoded["sub"]  # type: ignore
+    jwt_decoded: dict[str, str] = get_jwt()
+    user_id = jwt_decoded["sub"]
 
     # Get the page number from the query parameters (default to 1)
     page = request.args.get("page", 1, type=int)
@@ -310,3 +312,48 @@ def get_incidents(partner_id: int):
         "totalPages": pagination.pages,
         "totalResults": pagination.total,
     }
+
+
+@bp.route("/<int:partner_id>/incidents/<int:incident_id>", methods=["DELETE"])
+@jwt_required()  # type: ignore
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate()  # type: ignore
+def delete_incident(partner_id: int, incident_id: int):
+    """
+    Delete an incident associated with a partner.
+
+    Args:
+        partner_id (int): The ID of the partner.
+        incident_id (int): The ID of the incident.
+
+    Returns:
+        dict: A dictionary with a message indicating the success of the deletion.
+
+    Raises:
+        403: If the user does not have permission to delete the incident.
+        404: If the partner or incident is not found.
+    """
+    jwt_decoded: dict[str, str] = get_jwt() 
+    user_id = jwt_decoded["sub"]
+    
+    
+    # Check permissions first for security
+    permission = PartnerMember.query.filter(  # type: ignore
+        PartnerMember.user_id == user_id,
+        PartnerMember.partner_id == partner_id,
+        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    ).first()
+    if permission is None:
+        abort(403)
+
+    partner = Partner.get(partner_id, False)
+    if partner is None:
+        abort(404)
+
+    incident = Incident.get(incident_id, False)
+    if incident is None:
+        abort(404)
+
+    incident.delete()
+
+    return {"message": "Incident deleted successfully"}, 204
