@@ -327,16 +327,16 @@ def delete_incident(partner_id: int, incident_id: int):
         incident_id (int): The ID of the incident.
 
     Returns:
-        dict: A dictionary with a message indicating the success of the deletion.
+        dict: A dictionary with a message indicating the
+        success of the deletion.
 
     Raises:
         403: If the user does not have permission to delete the incident.
         404: If the partner or incident is not found.
     """
-    jwt_decoded: dict[str, str] = get_jwt() 
+    jwt_decoded: dict[str, str] = get_jwt()
     user_id = jwt_decoded["sub"]
-    
-    
+
     # Check permissions first for security
     permission = PartnerMember.query.filter(  # type: ignore
         PartnerMember.user_id == user_id,

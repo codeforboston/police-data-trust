@@ -24,14 +24,14 @@ from typing import TypeVar
 
 db = SQLAlchemy()
 
-T = TypeVar('T')
-
+T = TypeVar("T")
 
 
 class CrudMixin:
     """Mix me into a database model whose CRUD operations you want to expose in
     a convenient manner.
     """
+
     def create(self: T, refresh: bool = True) -> T:
         db.session.add(self)
         db.session.commit()
@@ -48,7 +48,7 @@ class CrudMixin:
         obj = db.session.query(cls).get(id)
         if obj is None and abort_if_null:
             abort(404)
-        return obj # type: ignore
+        return obj  # type: ignore
 
 
 QUERIES_DIR = os.path.abspath(
