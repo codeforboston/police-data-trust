@@ -74,7 +74,9 @@ class Incident(db.Model, CrudMixin):
     source_id: RelationshipProperty[int] = db.Column(
         db.Integer, db.ForeignKey("partner.id")
     )
-    source_details = db.relationship("SourceDetails", backref="incident", uselist=False)
+    source_details = db.relationship(
+        "SourceDetails", backref="incident", uselist=False
+    )
     source_type = db.Column(db.Enum(PrivacyStatus))
     date_record_created = db.Column(db.DateTime)
     time_of_incident = db.Column(db.DateTime)
@@ -152,7 +154,9 @@ class Incident(db.Model, CrudMixin):
 
 class SourceDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # source details id
-    incident_id = db.Column(db.Integer, db.ForeignKey("incident.id"), nullable=False)
+    incident_id = db.Column(
+        db.Integer, db.ForeignKey("incident.id"), nullable=False
+    )
     record_type = db.Column(db.Enum(RecordType))
     # For Journalistic Publications
     publication_name = db.Column(db.Text)

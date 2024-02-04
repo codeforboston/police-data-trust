@@ -4,7 +4,13 @@ from backend.api import create_app
 from backend.auth import user_manager
 from backend.config import TestingConfig
 from backend.database import User, UserRole, db
-from backend.database import Partner, PartnerMember, MemberRole, Incident, PrivacyStatus
+from backend.database import (
+    Partner,
+    PartnerMember,
+    MemberRole,
+    Incident,
+    PrivacyStatus,
+)
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
 from sqlalchemy import insert
@@ -83,7 +89,7 @@ def example_partner(db_session: Any):
     return partner
 
 
-@pytest.fixture # type: ignore
+@pytest.fixture  # type: ignore
 def example_partner_member(db_session: Any, example_user: User):
     partner = Partner(
         name="Example Partner Member",
@@ -170,8 +176,11 @@ def example_incidents(db_session: Any, example_partner: Partner):
 
     return incidents
 
+
 @pytest.fixture  # type: ignore
-def example_incidents_private_public(db_session: Any, example_partner_member: Partner):
+def example_incidents_private_public(
+    db_session: Any, example_partner_member: Partner
+):
     incidents = [
         Incident(
             source_id=example_partner_member.id,

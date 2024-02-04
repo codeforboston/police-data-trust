@@ -26,13 +26,14 @@ class MemberRole(str, Enum):
 
 
 class PartnerMember(db.Model, CrudMixin):
-    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     __tablename__ = "partner_user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(db.Integer, db.ForeignKey("partner.id"), primary_key=True)
+    partner_id = db.Column(
+        db.Integer, db.ForeignKey("partner.id"), primary_key=True
+    )
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     user = db.relationship("User", back_populates="partner_association")
     partner = db.relationship("Partner", back_populates="member_association")
@@ -49,8 +50,6 @@ class PartnerMember(db.Model, CrudMixin):
     def create(self, refresh: bool = True):
         self.date_joined = datetime.now()
         return super().create(refresh)
-    
-        
 
 
 class Partner(db.Model, CrudMixin):
