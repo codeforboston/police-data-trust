@@ -1,4 +1,5 @@
 .profileWrapper {
+  margin: 0 var(--size100);
   margin-top: var(--size32);
   display: flex;
   flex-wrap: wrap;
