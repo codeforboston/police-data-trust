@@ -2,6 +2,8 @@ import * as React from "react"
 import {
   ProfileInfo,
   ProfileNav,
+  ProfileNotifications,
+  ProfileOrganizations,
   ProfileType,
   SavedResults,
   SavedSearches
@@ -24,6 +26,10 @@ export default requireAuth(function Profile() {
         return SavedResults
       case ProfileMenu.SAVED_SEARCHES:
         return SavedSearches
+      case ProfileMenu.NOTIFICATIONS:
+        return ProfileNotifications
+      case ProfileMenu.ORGANIZATIONS:
+        return ProfileOrganizations
       default:
         throw new Error("Must be a key in 'ProfileMenu' enum - unexpected default case!")
     }
