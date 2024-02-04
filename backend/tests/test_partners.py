@@ -105,16 +105,12 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
         users[id] = user
 
     partner_obj = (
-        db_session.query(Partner)
-        .filter(Partner.name == example_partner.name)
-        .first()
+        db_session.query(Partner).filter(Partner.name == example_partner.name).first()
     )
 
     for id, mock in mock_members.items():
         user_obj = (
-            db_session.query(User)
-            .filter(User.email == mock["user_email"])
-            .first()
+            db_session.query(User).filter(User.email == mock["user_email"]).first()
         )
 
         req = {
@@ -127,9 +123,7 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
         res = client.post(
             f"/api/v1/partners/{partner_obj.id}/members/add",
             json=req,
-            headers={
-                "Authorization": "Bearer {0}".format(p_admin_access_token)
-            },
+            headers={"Authorization": "Bearer {0}".format(p_admin_access_token)},
         )
         assert res.status_code == 200
         created[id] = res.json
@@ -140,14 +134,10 @@ def test_create_partner(db_session, example_user, example_partners):
     created = example_partners["mpv"]
 
     partner_obj = (
-        db_session.query(Partner)
-        .filter(Partner.name == created["name"])
-        .first()
+        db_session.query(Partner).filter(Partner.name == created["name"]).first()
     )
 
-    user_obj = (
-        db_session.query(User).filter(User.email == example_user.email).first()
-    )
+    user_obj = db_session.query(User).filter(User.email == example_user.email).first()
 
     association_obj = (
         db_session.query(PartnerMember)
@@ -212,10 +202,7 @@ def test_partner_pagination(client, example_partners, access_token):
     assert actual_ids == set(i["id"] for i in example_partners.values())
 
     res = client.get(
-        (
-            f"/api/v1/partners/?per_page={per_page}"
-            f"&page={expected_total_pages + 1}"
-        ),
+        (f"/api/v1/partners/?per_page={per_page}" f"&page={expected_total_pages + 1}"),
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 404
@@ -241,26 +228,18 @@ def test_get_partner_members(
     # Create partners in the database
     users = []
     partner_obj = (
-        db_session.query(Partner)
-        .filter(Partner.name == example_partner.name)
-        .first()
+        db_session.query(Partner).filter(Partner.name == example_partner.name).first()
     )
 
-    member_obj = (
-        db_session.query(User).filter(User.email == example_user.email).first()
-    )
+    member_obj = db_session.query(User).filter(User.email == example_user.email).first()
 
-    admin_obj = (
-        db_session.query(User).filter(User.email == admin_user.email).first()
-    )
+    admin_obj = db_session.query(User).filter(User.email == admin_user.email).first()
 
     users.append(member_obj)
     users.append(admin_obj)
 
     for user in users:
-        association_obj = PartnerMember(
-            partner_id=partner_obj.id, user_id=user.id
-        )
+        association_obj = PartnerMember(partner_id=partner_obj.id, user_id=user.id)
         db_session.add(association_obj)
         db_session.commit()
 
@@ -311,8 +290,6 @@ def test_get_partner_users(
 def test_get_partner_users_error(
     client: Any,
     access_token: str,
-    example_partner: Partner,
-    example_members: PartnerMember,
 ) -> None:
     # Test that we can get partner users
     res: Any = client.get(
@@ -324,17 +301,17 @@ def test_get_partner_users_error(
 
 def test_get_incidents(
     client: Any,
-    example_partner: Partner,
     access_token: str,
+    example_partner: Partner,
     example_incidents: List[Incident],
-) -> None:
-    # Test getting incidents for the partner
+):
+    # Make a request to get the incidents
     res = client.get(
         f"/api/v1/partners/{example_partner.id}/incidents",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
+        headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 200
-    data = res.get_json()
+    data = res.json
 
     # Verify the response structure
     assert "results" in data
@@ -355,32 +332,30 @@ def test_get_incidents(
     assert data["totalResults"] == len(example_incidents)
 
 
-def test_get_incidents_partner_not_found(
-    client: Any,
-    access_token: str,
-) -> None:
-    # Test getting incidents for the partner
-    res = client.get(
-        f"/api/v1/partners/{9999}/incidents",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 404
+def test_get_incidents_unauthorized(client: Any, example_partner: Partner):
+    # Create a partner in the database
+    partner_id = example_partner.id
+
+    # Make a request to get the incidents without a valid access token
+    res = client.get(f"/api/v1/partners/{partner_id}/incidents")
+    assert res.status_code == 401
 
 
 def test_get_incidents_pagination(
     client: Any,
     access_token: str,
-    example_partner: Partner,
-    example_incidents: List[Incident],
-) -> None:
-    # Test getting incidents for the partner
+    example_partner_member: Partner,
+    example_incidents_private_public: List[Incident],
+):
+    # Make a request to get the incidents with pagination
+    per_page = 2
+    page = 1
     res = client.get(
-        f"/api/v1/partners/{example_partner.id}/incidents",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
+        f"/api/v1/partners/{example_partner_member.id}/incidents?per_page={per_page}&page={page}",
+        headers={"Authorization": f"Bearer {access_token}"},
     )
-
     assert res.status_code == 200
-    data = res.get_json()
+    data = res.json
 
     # Verify the response structure
     assert "results" in data
@@ -389,13 +364,47 @@ def test_get_incidents_pagination(
     assert "totalResults" in data
 
     # Verify the results
-    assert len(data["results"]) == len(example_incidents)
+    assert len(data["results"]) == per_page
 
     # Verify the page number
-    assert data["page"] == 1
+    assert data["page"] == page
 
     # Verify the total pages
-    assert data["totalPages"] == 1
+    assert data["totalPages"] == len(example_incidents_private_public) // per_page
 
     # Verify the total results
-    assert data["totalResults"] == len(example_incidents)
+    assert data["totalResults"] == len(example_incidents_private_public)
+
+
+def test_get_incidents_no_association(
+    client: Any, access_token: str, example_partner: Partner
+):
+    # Make a request to get the incidents without a partner member association
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify that only public incidents are returned
+    assert len(data["results"]) == 0
+
+
+def test_get_incidents_not_admin(
+    client: Any,
+    access_token: str,
+    example_partner: Partner,
+    example_user: User,
+    example_incidents: List[Incident],
+):
+    # Make a request to get the incidents
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify that only public incidents are returned
+    assert len(data["results"]) == len(example_incidents)

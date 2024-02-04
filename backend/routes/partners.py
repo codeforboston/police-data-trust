@@ -7,7 +7,7 @@ from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_sqlalchemy import Pagination
-from ..database import Partner, PartnerMember, MemberRole, db, Incident
+from ..database import Partner, PartnerMember, MemberRole, db, Incident, PrivacyStatus
 from ..schemas import (
     CreatePartnerSchema,
     AddMemberSchema,
@@ -85,9 +85,7 @@ def get_all_partners():
     q_per_page = args.get("per_page", 20, type=int)
 
     all_partners = db.session.query(Partner)
-    results = all_partners.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
-    )
+    results = all_partners.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
 
     return {
         "results": [partner_orm_to_json(partner) for partner in results.items],
@@ -115,14 +113,10 @@ def get_partner_members(partner_id: int):
     all_members = db.session.query(PartnerMember).filter(
         PartnerMember.partner_id == partner_id
     )
-    results = all_members.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
-    )
+    results = all_members.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
 
     return {
-        "results": [
-            partner_member_orm_to_json(member) for member in results.items
-        ],
+        "results": [partner_member_orm_to_json(member) for member in results.items],
         "page": results.page,
         "totalPages": results.pages,
         "totalResults": results.total,
@@ -166,9 +160,7 @@ def get_partner_users(partner_id: int):
     ).paginate(page=page, per_page=per_page, error_out=False)
 
     # Get the User objects associated with the members on the current page
-    users: list[User] = [
-        User.query.get(member.user_id) for member in pagination.items
-    ]  # type: ignore
+    users: list[User] = [User.query.get(member.user_id) for member in pagination.items]  # type: ignore
 
     # Convert the User objects to dictionaries and return them as JSON
 
@@ -258,10 +250,19 @@ def get_incidents(partner_id: int):
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
+
+    :param partner_id: The ID of the partner
+    :type partner_id: int
+    :return: A dictionary containing the results, page number, total pages, and total results
+    :rtype: dict
     """
 
-    # check if the partner exists
+    # Check if the partner exists
     partner: Partner = Partner.get(partner_id)  # type: ignore
+
+    # Check if the user has permission to view incidents for this partner
+    jwt_decoded = get_jwt()  # type: ignore
+    user_id = jwt_decoded["sub"]  # type: ignore
 
     # Get the page number from the query parameters (default to 1)
     page = request.args.get("page", 1, type=int)
@@ -270,10 +271,17 @@ def get_incidents(partner_id: int):
     per_page = request.args.get("per_page", 20, type=int)
 
     # Query the Incident table for records with the given partner_id
-    # and paginate the results
-    pagination: Any = Incident.query.filter_by(source_id=partner.id).paginate(
-        page=page, per_page=per_page, error_out=False
-    )
+    # and paginate the results. If the user is a partner display all incidents
+    # otherwise only display public incidents
+    pagination: Pagination
+    if user_id not in [user.id for user in partner.members]:
+        pagination = Incident.query.filter_by(
+            source_id=partner_id, source_type=PrivacyStatus.PUBLIC
+        ).paginate(page=page, per_page=per_page, error_out=False)
+    else:
+        pagination = Incident.query.filter_by(source_id=partner_id).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     incidents: list[dict[str, Any]] = [
         incident_orm_to_json(incident) for incident in pagination.items

@@ -4,7 +4,7 @@ from backend.api import create_app
 from backend.auth import user_manager
 from backend.config import TestingConfig
 from backend.database import User, UserRole, db
-from backend.database import Partner, PartnerMember, MemberRole, Incident
+from backend.database import Partner, PartnerMember, MemberRole, Incident, PrivacyStatus
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
 from sqlalchemy import insert
@@ -56,18 +56,6 @@ def client(app):
 
 
 @pytest.fixture
-def example_partner(db_session):
-    partner = Partner(
-        name="Example Partner",
-        url="www.example.com",
-        contact_email=contributor_email,
-    )
-    db_session.add(partner)
-    db_session.commit()
-    return partner
-
-
-@pytest.fixture
 def example_user(db_session):
     user = User(
         email=example_email,
@@ -82,11 +70,45 @@ def example_user(db_session):
     return user
 
 
+@pytest.fixture
+def example_partner(db_session: Any):
+    partner = Partner(
+        name="Example Partner",
+        url="www.example.com",
+        contact_email=contributor_email,
+        member_association=[],
+    )
+    db_session.add(partner)
+    db_session.commit()
+    return partner
+
+
+@pytest.fixture # type: ignore
+def example_partner_member(db_session: Any, example_user: User):
+    partner = Partner(
+        name="Example Partner Member",
+        url="www.example.com",
+        contact_email="example_test@example.ca",
+        member_association=[
+            PartnerMember(
+                user_id=example_user.id,
+                role=MemberRole.MEMBER,
+                date_joined=datetime.now(),
+                is_active=True,
+            )
+        ],
+    )
+    db_session.add(partner)
+    db_session.commit()
+    return partner
+
+
 @pytest.fixture  # type: ignore
 def example_incidents(db_session: Any, example_partner: Partner):
     incidents = [
         Incident(
             source_id=example_partner.id,
+            source_type=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
@@ -102,7 +124,93 @@ def example_incidents(db_session: Any, example_partner: Partner):
             from_report=True,
             was_victim_arrested=False,
             criminal_case_brought=True,
-        )
+        ),
+        Incident(
+            source_id=example_partner.id,
+            source_type=PrivacyStatus.PUBLIC,
+            date_record_created=datetime.now(),
+            time_of_incident=datetime.now(),
+            time_confidence=90,
+            complaint_date=datetime.now().date(),
+            closed_date=datetime.now().date(),
+            location="Location 1",
+            longitude=12.34,
+            latitude=56.78,
+            description="Description 1",
+            stop_type="Stop Type 1",
+            call_type="Call Type 1",
+            has_attachments=True,
+            from_report=True,
+            was_victim_arrested=False,
+            criminal_case_brought=True,
+        ),
+        Incident(
+            source_id=example_partner.id,
+            source_type=PrivacyStatus.PUBLIC,
+            date_record_created=datetime.now(),
+            time_of_incident=datetime.now(),
+            time_confidence=90,
+            complaint_date=datetime.now().date(),
+            closed_date=datetime.now().date(),
+            location="Location 1",
+            longitude=12.34,
+            latitude=56.78,
+            description="Description 1",
+            stop_type="Stop Type 1",
+            call_type="Call Type 1",
+            has_attachments=True,
+            from_report=True,
+            was_victim_arrested=False,
+            criminal_case_brought=True,
+        ),
+    ]
+    for incident in incidents:
+        db_session.add(incident)
+    db_session.commit()
+
+    return incidents
+
+@pytest.fixture  # type: ignore
+def example_incidents_private_public(db_session: Any, example_partner_member: Partner):
+    incidents = [
+        Incident(
+            source_id=example_partner_member.id,
+            source_type=PrivacyStatus.PUBLIC,
+            date_record_created=datetime.now(),
+            time_of_incident=datetime.now(),
+            time_confidence=90,
+            complaint_date=datetime.now().date(),
+            closed_date=datetime.now().date(),
+            location="Location 1",
+            longitude=12.34,
+            latitude=56.78,
+            description="Description 1",
+            stop_type="Stop Type 1",
+            call_type="Call Type 1",
+            has_attachments=True,
+            from_report=True,
+            was_victim_arrested=False,
+            criminal_case_brought=True,
+        ),
+        Incident(
+            source_id=example_partner_member.id,
+            source_type=PrivacyStatus.PRIVATE,
+            date_record_created=datetime.now(),
+            time_of_incident=datetime.now(),
+            time_confidence=90,
+            complaint_date=datetime.now().date(),
+            closed_date=datetime.now().date(),
+            location="Location 1",
+            longitude=12.34,
+            latitude=56.78,
+            description="Description 1",
+            stop_type="Stop Type 1",
+            call_type="Call Type 1",
+            has_attachments=True,
+            from_report=True,
+            was_victim_arrested=False,
+            criminal_case_brought=True,
+        ),
     ]
     for incident in incidents:
         db_session.add(incident)
