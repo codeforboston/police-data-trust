@@ -18,10 +18,8 @@ from flask_mail import Message
 from ..config import TestingConfig
 from ..schemas import (
     CreatePartnerSchema,
-    AddMemberSchema,
     partner_orm_to_json,
     partner_member_orm_to_json,
-    partner_member_to_orm,
     partner_to_orm,
     validate,
 )
@@ -146,66 +144,92 @@ def get_partner_members(partner_id: int):
         } """
 
 
-@bp.route("/<int:partner_id>/members/add", methods=["POST"])
+# inviting anyone to NPDC
+@bp.route("/invite", methods=["POST"])
 @jwt_required()
-@min_role_required(UserRole.PUBLIC)
-@validate(json=AddMemberSchema)
-def add_member_to_partner(partner_id: int):
-    """Add a member to a partner.
-
-    TODO: Allow the API to accept a user email instad of a user id
-    TODO: Use the partner ID from the API path instead of the request body
-    The `partner_member_to_orm` function seems very picky about the input.
-    I wasn't able to get it to accept a dict or a PartnerMember object.
-
-    Cannot be called in production environments
-    """
-    if current_app.env == "production":
-        abort(418)
-
-    # Ensure that the user has premission to add a member to this partner.
+@min_role_required(MemberRole.ADMIN)
+@validate(auth=True, json=InviteUserDTO)
+def add_member_to_partner():
+    body: InviteUserDTO = request.context.json
     jwt_decoded = get_jwt()
 
     current_user = User.get(jwt_decoded["sub"])
     association = db.session.query(PartnerMember).filter(
         PartnerMember.user_id == current_user.id,
-        PartnerMember.partner_id == partner_id,
+        PartnerMember.partner_id == body.partner_id,
     ).first()
 
     if (
         association is None
         or not association.is_administrator()
-        or not association.partner_id == partner_id
+        or not association.partner_id == body.partner_id
     ):
         abort(403)
+    mail = current_app.extensions.get('mail')
+    user = User.query.filter_by(email=body.email).first()
+    if user is not None:
+        invitation_exists = Invitation.query.filter_by(
+            partner_id=body.partner_id, user_id=user.id).first()
+        if invitation_exists:
+            return {
+                "status": "error",
+                "message": "Invitation already sent to this user!"
+            }, 500
+        else:
+            try:
+                new_invitation = Invitation(
+                    partner_id=body.partner_id, user_id=user.id, role=body.role)
+                db.session.add(new_invitation)
+                db.session.commit()
 
-    # TODO: Allow the API to accept a user email instad of a user id
-    # user_obj = User.get_by_email(request.context.json.user_email)
-    # if user_obj is None:
-    #     abort(400)
+                msg = Message("Invitation to join NPDC partner organization!",
+                              sender=TestingConfig.MAIL_USERNAME,
+                              recipients=[body.email])
+                msg.body = """You are a registered user of NPDC and were invited
+                to a partner organization. Please log on to accept or decline
+                the invitation at https://dev.nationalpolicedata.org/."""
+                mail.send(msg)
+                return {
+                    "status": "ok",
+                    "message": "User notified of their invitation!"
+                }, 200
 
-    # new_member = PartnerMember(
-    #     partner_id=partner_id,
-    #     user_id=user_obj.id,
-    #     role=request.context.json.role,
-    # )
+            except Exception:
+                return {
+                    "status": "error",
+                    "message": "Something went wrong! Please try again!"
+                }, 500
+    else:
+        try:
 
-    try:
-        partner_member = partner_member_to_orm(request.context.json)
-    except Exception:
-        abort(400)
+            new_staged_invite = StagedInvitation(
+                partner_id=body.partner_id, email=body.email, role=body.role)
+            db.session.add(new_staged_invite)
+            db.session.commit()
+            msg = Message("Invitation to join NPDC index!",
+                          sender=TestingConfig.MAIL_USERNAME,
+                          recipients=[body.email])
+            msg.body = """You are not a registered user of NPDC and were
+                        invited to a partner organization. Please register
+                        with NPDC index at
+                        https://dev.nationalpolicedata.org/."""
+            mail.send(msg)
 
-    created = partner_member.create()
+            return {
+                "status": "ok",
+                "message": """User is not registered with the NPDC index.
+                 Email sent to user notifying them to register."""
+            }, 200
 
-    track_to_mp(request, "add_partner_member", {
-        "partner_id": partner_id,
-        "user_id": partner_member.user_id,
-        "role": partner_member.role,
-    })
-    return partner_member_orm_to_json(created)
-
+        except Exception:
+            return {
+                "status": "error",
+                "message": "Something went wrong! Please try again!"
+            }, 500
 
 # user can join org they were invited to
+
+
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
@@ -280,78 +304,9 @@ def leave_organization():
     finally:
         db.session.close()
 
-
-# inviting anyone to NPDC
-@bp.route("/invite", methods=["POST"])
-@jwt_required()
-@min_role_required(MemberRole.ADMIN)
-@validate(auth=True, json=InviteUserDTO)
-def invite_user():
-    body: InviteUserDTO = request.context.json
-    mail = current_app.extensions.get('mail')
-    user = User.query.filter_by(email=body.email).first()
-    if user is not None:
-        invitation_exists = Invitation.query.filter_by(
-            partner_id=body.partner_id, user_id=user.id).first()
-        if invitation_exists:
-            return {
-                "status": "error",
-                "message": "Invitation already sent to this user!"
-            }, 500
-        else:
-            try:
-                new_invitation = Invitation(
-                    partner_id=body.partner_id, user_id=user.id, role=body.role)
-                db.session.add(new_invitation)
-                db.session.commit()
-
-                msg = Message("Invitation to join NPDC partner organization!",
-                              sender=TestingConfig.MAIL_USERNAME,
-                              recipients=[body.email])
-                msg.body = """You are a registered user of NPDC and were invited
-                to a partner organization. Please log on to accept or decline
-                the invitation at https://dev.nationalpolicedata.org/."""
-                mail.send(msg)
-                return {
-                    "status": "ok",
-                    "message": "User notified of their invitation!"
-                }, 200
-
-            except Exception:
-                return {
-                    "status": "error",
-                    "message": "Something went wrong! Please try again!"
-                }, 500
-    else:
-        try:
-
-            new_staged_invite = StagedInvitation(
-                partner_id=body.partner_id, email=body.email, role=body.role)
-            db.session.add(new_staged_invite)
-            db.session.commit()
-            msg = Message("Invitation to join NPDC index!",
-                          sender=TestingConfig.MAIL_USERNAME,
-                          recipients=[body.email])
-            msg.body = """You are not a registered user of NPDC and were
-                        invited to a partner organization. Please register
-                        with NPDC index at
-                        https://dev.nationalpolicedata.org/."""
-            mail.send(msg)
-
-            return {
-                "status": "ok",
-                "message": """User is not registered with the NPDC index.
-                 Email sent to user notifying them to register."""
-            }, 200
-
-        except Exception:
-            return {
-                "status": "error",
-                "message": "Something went wrong! Please try again!"
-            }, 500
-
-
 # admin can remove any member from a partner organization
+
+
 @bp.route("/remove_member", methods=['DELETE'])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
@@ -422,7 +377,7 @@ def role_change():
             user_id=body["user_id"],
             partner_id=body["partner_id"]
             ).first()
-        if user_found:
+        if user_found and user_found.role != "Admin":
             user_found.role = body["role"]
             db.session.commit()
             return {
