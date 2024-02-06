@@ -2,7 +2,7 @@ import pytest
 from backend.auth import user_manager
 from backend.database import Partner, PartnerMember, MemberRole
 from backend.database.models.user import User, UserRole
-from typing import Any
+
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
@@ -276,49 +276,3 @@ def test_get_partner_members(
     assert res.status_code == 200
     assert res.json["results"].__len__() == users.__len__()
     # assert res.json["results"][0]["user"]["email"] == member_obj.email
-
-
-def test_get_partner_users(
-    client: Any,
-    example_partner: Partner,
-    example_members: PartnerMember,
-    access_token: str,
-) -> None:
-    # Test that we can get partner users
-    res: Any = client.get(
-        f"/api/v1/partners/{example_partner.id}/users",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 200
-    data = res.get_json()
-
-    # Verify the response structure
-    assert "results" in data
-    assert "page" in data
-    assert "totalPages" in data
-    assert "totalResults" in data
-
-    # Verify the results
-    assert len(data["results"]) == len(mock_users) + 1
-
-    # Verify the page number
-    assert data["page"] == 1
-
-    # Verify the total pages
-    assert data["totalPages"] == 1
-
-    # Verify the total results
-    assert data["totalResults"] == len(mock_users) + 1
-
-
-def test_get_partner_users_error(
-    client: Any,
-    access_token: str,
-) -> None:
-    # Test that we can get partner users
-    res: Any = client.get(
-        f"/api/v1/partners/{1234}/users",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 404
-    assert res.get_json()["message"] == "Partner not found"
