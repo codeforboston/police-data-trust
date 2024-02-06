@@ -17,8 +17,6 @@ from ..database import (
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
-from flask_sqlalchemy import Pagination
-
 
 from ..schemas import (
     CreatePartnerSchema,
@@ -151,9 +149,9 @@ def get_partner_members(partner_id: int):
             }
         } """
 
-
-
 # inviting anyone to NPDC
+
+
 @bp.route("/invite", methods=["POST"])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
@@ -167,8 +165,6 @@ def add_member_to_partner():
         PartnerMember.user_id == current_user.id,
         PartnerMember.partner_id == body.partner_id,
     ).first()
-
-
     if (
         association is None
         or not association.is_administrator()
@@ -236,7 +232,6 @@ def add_member_to_partner():
                 "status": "error",
                 "message": "Something went wrong! Please try again!"
             }, 500
-
 # user can join org they were invited to
 
 
@@ -315,7 +310,6 @@ def leave_organization():
         db.session.close()
 
 # admin can remove any member from a partner organization
-
 
 
 @bp.route("/remove_member", methods=['DELETE'])
@@ -444,4 +438,3 @@ def stagedinvitations():
     ]
 
     return jsonify({'staged_invitations': invitations_data})
-
