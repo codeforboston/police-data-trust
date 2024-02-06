@@ -6,6 +6,7 @@ from backend.database.models.perpetrator import Perpetrator
 from backend.database.models.partner import Partner
 from backend.database.models.use_of_force import UseOfForce
 
+
 def create_user(user):
     user_exists = (
         db.session.query(User).filter_by(email=user.email).first() is not None
@@ -13,6 +14,7 @@ def create_user(user):
 
     if not user_exists:
         user.create()
+
 
 def create_partner(partner):
     partner_exists = (
@@ -22,14 +24,12 @@ def create_partner(partner):
     if not partner_exists:
         partner.create()
 
+
 def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
-    base_id = 10000000
-    id = base_id + key
     mpv = db.session.query(Partner).filter_by(
         name="Mapping Police Violence").first()
     incident = Incident(
-        id=id,
-        source_id="1",
+        source_id=mpv.id,
         date_record_created=f"{date} 00:00:00",
         time_of_incident=f"{date} 00:00:00",
         time_confidence="1",
@@ -55,10 +55,11 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
         ],
         use_of_force=[UseOfForce(item=f"gunshot {key}")]
     )
-    exists = db.session.query(Incident).filter_by(id=id).first() is not None
+    exists = db.session.query(Incident).filter_by(id=key).first() is not None
 
     if not exists:
         incident.create()
+
 
 def create_seeds():
     create_user(
@@ -103,7 +104,6 @@ def create_seeds():
     )
     create_partner(
         Partner(
-            id="1",
             name="Mapping Police Violence",
             url="https://mappingpoliceviolence.us",
             contact_email="info@campaignzero.org"
@@ -117,5 +117,6 @@ def create_seeds():
     create_incident(key=6, date="08-10-2020", lon=-84.2687574, lat=33.9009798)
     create_incident(key=7, date="10-01-2020", lon=-118.40853, lat=33.9415889)
     create_incident(key=8, date="10-15-2020", lon=-84.032149, lat=33.967774)
+
 
 create_seeds()

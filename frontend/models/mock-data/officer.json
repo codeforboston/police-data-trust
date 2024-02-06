@@ -1,5 +1,49 @@
 [
   {
+    "id": 0,
+    "firstName": "Timothy",
+    "lastName": "Young",
+    "badgeNo": "30420452",
+    "status": "Chief",
+    "department": "Houston Police Department",
+    "birthDate": "12/15/1976",
+    "gender": "Nonbinary",
+    "race": "Black or African American",
+    "ethnicity": "Hispanic or Latino",
+    "incomeBracket": "Over $523,600",
+    "workHistory": [
+      {
+        "deptName": "San Jose Police Department",
+        "status": "Captain",
+        "dates": "8/7/2014 - 10/15/2001",
+        "deptImage": "./frontend/models/mock-data/dept-images/Boston_Police_Patch.jpg",
+        "deptAddress": "1191 Elm Ave, Houston, KY 93452"
+      },
+      {
+        "deptName": "Pheonix Police Department",
+        "status": "Sergeant",
+        "dates": "3/7/1999 - 4/10/2007",
+        "deptImage": "./frontend/models/mock-data/dept-images/San_Jose_Police_Patch.png",
+        "deptAddress": "10435 Lemon Ln, San Diego, MN 58574"
+      }
+    ],
+    "affiliations": [
+      "Fraternal Order of Police",
+      "International Union of Police Associations",
+      "National Association of Police Organizations"
+    ],
+    "incidents": [
+      {
+        "id": 54,
+        "occurred": 1152962172000,
+        "officers": ["F.Keaves"],
+        "incidentType": "Robbery",
+        "useOfForce": ["Armed presence"],
+        "source": "Police report"
+      }
+    ]
+  },
+  {
     "id": 1,
     "firstName": "Timothy",
     "lastName": "Young",

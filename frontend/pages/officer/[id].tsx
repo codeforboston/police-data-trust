@@ -7,5 +7,5 @@ import { useRouter } from "next/router"
 export default requireAuth(function OfficerPage() {
   const router = useRouter()
   const id = parseInt(router.query.id as string)
-  return isNaN(id) ? <p>Loading</p> : <OfficerView {...getOfficerFromMockData(id)} />
+  return isNaN(id) ? <></> : <OfficerView {...getOfficerFromMockData(id)} />
 })

@@ -3,9 +3,17 @@ import React from "react"
 import { useFormContext } from "react-hook-form"
 import { FormLevelError } from ".."
 import { getTitleCaseFromCamel } from "../../helpers"
-import { PrimaryInputNames, primaryInputValidation, TooltipTypes } from "../../models"
+import {
+  primaryInputContent,
+  PrimaryInputNames,
+  primaryInputValidation,
+  SearchTypes,
+  TooltipTypes
+} from "../../models"
 import InfoTooltip, { InfoTooltipProps } from "../info-tooltip/info-tooltip"
 import styles from "./primary-input.module.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 
 interface PrimaryInputProps {
   inputName: PrimaryInputNames
@@ -30,7 +38,7 @@ export default function PrimaryInput({
     register,
     formState: { errors }
   } = useFormContext()
-  const { inputContainer, inputField } = styles
+  const { inputContainer, inputField, primarInputContent } = styles
   const {
     errorMessage: defaultErrorMessage,
     pattern,
@@ -71,6 +79,14 @@ export default function PrimaryInput({
         defaultValue={defaultValue}
         {...register(inputName, { required: isRequired, pattern })}
       />
+      {primaryInputContent[inputName] ? (
+        <p className={primarInputContent}>
+          <FontAwesomeIcon aria-hidden={true} icon={faInfoCircle} size={"sm"} />{" "}
+          {primaryInputContent[inputName]}
+        </p>
+      ) : (
+        <></>
+      )}
       {!isValid && (
         <FormLevelError
           errorId={errorId}

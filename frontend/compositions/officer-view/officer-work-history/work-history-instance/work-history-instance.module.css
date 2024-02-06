@@ -1,13 +1,35 @@
 .patch {
   width: var(--size64);
   height: var(--size64);
+  margin-right: var(--size8);
 }
 
 .wrapper {
   display: flex;
-  margin-bottom: var(--size16);
 }
 
-.dates {
-  float: "right";
+.titleAndDate {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--size16);
+  font-weight: bold;
+}
+
+.address {
+  font-size: var(--size14);
+  color: #666666;
+  font-style: italic;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  /* margin: var(--size4) 0; */
 }

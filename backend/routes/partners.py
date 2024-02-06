@@ -5,6 +5,7 @@ from backend.database.models.user import User, UserRole
 from flask import Blueprint, abort, current_app, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+
 from ..database import (
     Partner,
     PartnerMember,
@@ -16,6 +17,9 @@ from ..database import (
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
+from flask_sqlalchemy import Pagination
+
+
 from ..schemas import (
     CreatePartnerSchema,
     partner_orm_to_json,
@@ -62,10 +66,14 @@ def create_partner():
     )
     make_admin.create()
 
-    track_to_mp(request, "create_partner", {
-        "partner_name": partner.name,
-        "partner_contact": partner.contact_email
-    })
+    track_to_mp(
+        request,
+        "create_partner",
+        {
+            "partner_name": partner.name,
+            "partner_contact": partner.contact_email,
+        },
+    )
     return partner_orm_to_json(created)
 
 
@@ -115,12 +123,12 @@ def get_partner_members(partner_id: int):
         PartnerMember.partner_id == partner_id
     )
     results = all_members.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100)
+        page=q_page, per_page=q_per_page, max_per_page=100
+    )
 
     return {
         "results": [
-            partner_member_orm_to_json(member)
-            for member in results.items
+            partner_member_orm_to_json(member) for member in results.items
         ],
         "page": results.page,
         "totalPages": results.pages,
@@ -144,6 +152,7 @@ def get_partner_members(partner_id: int):
         } """
 
 
+
 # inviting anyone to NPDC
 @bp.route("/invite", methods=["POST"])
 @jwt_required()
@@ -158,6 +167,7 @@ def add_member_to_partner():
         PartnerMember.user_id == current_user.id,
         PartnerMember.partner_id == body.partner_id,
     ).first()
+
 
     if (
         association is None
@@ -307,6 +317,7 @@ def leave_organization():
 # admin can remove any member from a partner organization
 
 
+
 @bp.route("/remove_member", methods=['DELETE'])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
@@ -433,3 +444,4 @@ def stagedinvitations():
     ]
 
     return jsonify({'staged_invitations': invitations_data})
+

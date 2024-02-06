@@ -15,7 +15,7 @@ import SavedSearches from "./profile-saved-tables/saved-searches"
 import ProfileType from "./profile-type"
 import { SearchPanel } from "./search-panel/search-panel"
 import SearchResultsTable from "./search-results"
-import { Map } from "./visualizations"
+import { Map, BubbleChart } from "./visualizations"
 
 export {
   DashboardHeader,
@@ -24,6 +24,7 @@ export {
   EnrollmentHeader,
   LandingPage,
   Map,
+  BubbleChart,
   PassportApplicationResponse,
   PasswordAid,
   ProfileInfo,

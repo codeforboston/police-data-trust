@@ -1,0 +1,144 @@
+/* General styles */
+.dataTable {
+  border-collapse: collapse;
+  margin-top: var(--size36);
+  width: 100%;
+}
+
+/* Table header, footer, and rows */
+.dataFooter,
+.dataHeader,
+.dataRows {
+  height: var(--size36);
+  text-align: center;
+}
+
+.dataFooter,
+.dataHeader {
+  background-color: white;
+  font-weight: 700;
+  color: #716c6c;
+}
+
+.dataFooter {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line on small screens */
+  justify-content: space-between;
+  padding: var(--size4) var(--size20); /* Adjust padding for smaller screens */
+  font-size: small;
+  font-weight: 400;
+}
+
+.dataRows:nth-child(odd) {
+  background-color: #e7e7e7;
+}
+
+/* Remove number input arrows */
+.dataRowPage {
+  -moz-appearance: textfield;
+  padding: var(--size4);
+  border: none;
+  width: 100%; /* Make the input take the full width on small screens */
+}
+
+.dataRowPage::-webkit-outer-spin-button,
+.dataRowPage::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Action buttons and sorting */
+.actionBtn,
+.sortArrow,
+.colFliter,
+.pageBtn,
+.expandRecordButton {
+  margin: 0.1rem;
+}
+
+.actionBtn,
+.sortArrow,
+.pageBtn,
+.expandRecordButton {
+  font-size: var(--size12); /* Adjust font size for small screens */
+}
+
+/* Table wrapper and header */
+.tableWrapper {
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  box-shadow: -2px 2px 4px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: var(--size10);
+}
+
+.tableHeader {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line on small screens */
+  justify-content: space-between;
+}
+
+/* Edit buttons and record count */
+.editButton,
+.editButtonOn {
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 2px solid #303463;
+  font-size: var(--size12);
+  font-weight: bold;
+  cursor: pointer;
+  width: 48%; /* Two buttons side by side on small screens */
+  margin-bottom: var(--size4); /* Add some spacing between buttons */
+}
+
+.editButton,
+.editButtonOn {
+  margin: 0.1rem;
+}
+
+.editButton,
+.editButtonOn,
+.pageBtn,
+.expandRecordButton {
+  width: 100%; /* Make buttons take the full width on small screens */
+}
+
+/* Record count */
+.recordCount {
+  font-weight: bold;
+  font-size: var(--size18);
+  margin-top: var(--size10); /* Add some spacing at the top on small screens */
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media only screen and (max-width: 600px) {
+  .dataFooter,
+  .dataHeader,
+  .dataRows,
+  .dataRowPage,
+  .actionBtn,
+  .sortArrow,
+  .colFliter,
+  .pageBtn,
+  .expandRecordButton,
+  .editButton,
+  .editButtonOn,
+  .recordCount {
+    font-size: small;
+  }
+
+  .dataRows {
+    height: var(--size48);
+  }
+
+  .editButton,
+  .editButtonOn {
+    width: 100%; /* Make buttons take the full width on small screens */
+  }
+
+  .tableWrapper,
+  .tableHeader {
+    padding: var(--size6); /* Adjust padding for smaller screens */
+  }
+}

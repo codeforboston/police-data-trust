@@ -1,12 +1,14 @@
 .searchPageContainer {
   display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+  padding-bottom: var(--size64);
 }
 
-.searchPageDisplay {
-  display: flex;
-  flex-direction: column;
-}
-
-.searchPageDisplay > * {
-  min-height: 50%;
+/* 70em / 16px = 1120px */
+@media screen and (min-width: 70em) {
+  .searchPageContainer {
+    flex-direction: row;
+    padding-bottom: 0;
+  }
 }

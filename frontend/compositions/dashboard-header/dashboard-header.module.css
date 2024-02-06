@@ -4,8 +4,8 @@
 }
 
 .backgroundBanner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   min-width: 100%;
   position: absolute;
   background-color: var(--lightBlue);
@@ -28,15 +28,12 @@
   display: none;
 }
 
-.selected {
-  text-decoration: underline;
-}
-
 .backgroundBanner li:last-child {
   display: none;
 }
 
-@media screen and (min-width: 32em) {
+/* 48em / 16px = 768px */
+@media screen and (min-width: 48em) {
   .wrapper {
     height: var(--size128);
   }
@@ -77,6 +74,15 @@
     font-weight: normal;
     margin-top: var(--size6);
   }
+}
+
+/* 70em / 16px = 1120px */
+@media screen and (min-width: 70em) {
+  .navigationContainer {
+    margin-right: var(--size28);
+    display: flex;
+    gap: var(--size24);
+  }
 
   .backgroundBanner nav {
     display: flex;
@@ -114,17 +120,5 @@
     padding: var(--size16);
     cursor: pointer;
     white-space: nowrap;
-  }
-
-  .selected {
-    text-decoration: none;
-  }
-
-  .selected a {
-    font-weight: 700;
-    background-color: white;
-    padding: var(--size6) var(--size14) var(--size4) var(--size14);
-    border-radius: var(--size4) var(--size4) 0 0;
-    box-shadow: 0px -2px 4px rgb(48 52 99 / 25%);
   }
 }

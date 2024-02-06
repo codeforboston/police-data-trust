@@ -3,15 +3,15 @@ import useDropdownMenu from "react-accessible-dropdown-menu-hook"
 import { useMediaQuery } from "react-responsive"
 import { AuthContext } from "../../helpers/auth"
 import { LogoSizes } from "../../models"
-import { Logo as NPDCLogo } from "../../shared-components"
+import { Logo as NPDCLogo, PrimaryButton } from "../../shared-components"
 import styles from "./dashboard-header.module.css"
 import MobileDropdown from "./mobile-dropdown"
 import Nav from "./nav"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer, navigationContainer } = styles
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
-  const desktop = useMediaQuery({ query: "screen and (min-width: 32em)" })
+  const desktop = useMediaQuery({ query: "screen and (min-width: 70em)" })
 
   const { user } = React.useContext(AuthContext)
 
@@ -23,29 +23,21 @@ export default function DashboardHeader() {
           <div className={titleContainer}>
             <h2>National Police Data Coalition</h2>
             <p>The national index of police incidents</p>
-            <button
-              className="primaryButton"
-              style={{
-                backgroundColor: "white",
-                color: "#303463",
-                border: "#303463 thin solid",
-                fontWeight: "bold",
-                margin: "2rem 2rem 0 0"
-              }}>
-              Donate
-            </button>
           </div>
         </div>
         {/* Only show the buttons if the user is logged in */}
-        {user && (
-          <nav aria-label="Main Navigation">
-            {desktop ? (
-              <Nav itemProps={itemProps} />
-            ) : (
-              <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
-            )}
-          </nav>
-        )}
+        <div className={navigationContainer}>
+          {user && (
+            <nav aria-label="Main Navigation">
+              {desktop ? (
+                <Nav itemProps={itemProps} />
+              ) : (
+                <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+              )}
+            </nav>
+          )}
+          {desktop && <PrimaryButton>Donate</PrimaryButton>}
+        </div>
       </div>
     </header>
   )

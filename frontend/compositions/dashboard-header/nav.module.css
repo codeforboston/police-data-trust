@@ -1,0 +1,19 @@
+.selected {
+  text-decoration: underline;
+  text-decoration-color: white;
+}
+
+/* 70em / 16px = 1120px */
+@media screen and (min-width: 70em) {
+  .selected {
+    text-decoration: none;
+  }
+
+  .selected a {
+    font-weight: 700;
+    background-color: white;
+    padding: var(--size6) var(--size14) var(--size4) var(--size14);
+    border-radius: var(--size4) var(--size4) 0 0;
+    box-shadow: 0px -2px 4px rgb(48 52 99 / 25%);
+  }
+}

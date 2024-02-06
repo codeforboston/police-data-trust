@@ -3,7 +3,7 @@ import { faSlidersH } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { useSearch } from "../../helpers"
-import { Perpetrator } from "../../helpers/api"
+import { Incident, Officer, Perpetrator, Rank } from "../../helpers/api"
 import { formatDate } from "../../helpers/syntax-helper"
 import { TooltipIcons, TooltipTypes } from "../../models"
 import { InfoTooltip } from "../../shared-components"
@@ -13,16 +13,16 @@ import {
   GreaterThanButton
 } from "../../shared-components/icon-buttons/icon-buttons"
 
-export default function SearchResultsTable() {
-  const {
-    incidentResults: { results }
-  } = useSearch()
+interface SearchProps {
+  results: Incident[] | Officer[]
+  resultsColumns: Column<any>[]
+}
 
-  if (results.length === 0) return <div>No results</div>
-
+export default function SearchResultsTable(searchProps: SearchProps) {
+  const { results, resultsColumns } = searchProps
   return (
     <>
-      {!!results.length ? (
+      {!!searchProps.results.length ? (
         <DataTable tableName={"Search Results"} columns={resultsColumns} data={results} />
       ) : (
         <p>No Results</p>
