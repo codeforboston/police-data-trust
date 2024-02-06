@@ -220,7 +220,7 @@ def test_partner_pagination(client, example_partners, access_token):
     assert res.status_code == 404
 
 
-def test_add_member_to_partner(db_session, example_members):
+# def test_add_member_to_partner(db_session, example_members):
     # created = example_members["publisher"]
 
     # partner_member_obj = (
