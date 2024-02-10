@@ -5,7 +5,7 @@ import { DataTable } from "./data-table"
 import { savedResultsColumns } from "../../compositions/profile-saved-tables/saved-results"
 import { resultsColumns } from "../../compositions/search-results/search-results"
 import { searchesColumns } from "../../compositions/profile-saved-tables/saved-searches"
-import { lawyerUserColumns } from "../../compositions/layer-admin-view/user-table/user-table"
+import { lawyerUserColumns } from "../../compositions/profile-orguser/profile-orguser"
 
 export default {
   title: "Shared Components/Data Table",

@@ -1,20 +1,51 @@
 import React, { FormEvent, useState } from "react"
-import SideMenu from "../../compositions/layer-admin-view/side-menu/side-menu";
-import UserTable from "../../compositions/layer-admin-view/user-table/user-table";
-import styles from "./admin.module.css"
+import {
+  ProfileInfo,
+  ProfileNav,
+  ProfileType,
+  SavedResults,
+  SavedSearches
+} from "../../compositions"
+import UserTable from "../../compositions/profile-orguser/profile-orguser";
+import styles from "../../compositions/profile-orguser/profile-orguser.module.css"
 import { PrimaryButton } from "../../shared-components";
 import Link from "next/link";
+import { ProfileMenu } from "../../models/profile";
+import { requireAuth } from "../../helpers";
+import { DataTable } from "../../shared-components/data-table/data-table";
+import { Column } from "react-table";
+
 
 
 export default function LawyerAdmin() {
   return (     
-    <div className= {styles.container}>
+    // const [activePage, setActivePage] = React.useState(ProfileMenu.ORGANIZATIONS) 
+
+    // const ActivePageComp= (function (menuItem:ProfileMenu)){
+    //   switch (menuItem) {
+    //     case ProfileMenu.USER_INFO:
+    //       return ProfileInfo
+    //     case ProfileMenu.PROFILE_TYPE:
+    //       return ProfileType
+    //     case ProfileMenu.SAVED_RESULTS:
+    //       return SavedResults
+    //     case ProfileMenu.SAVED_SEARCHES:
+    //       return SavedSearches
+    //     case ProfileMenu.NOTIFICATIONS:
+    //       return ProfileNotifications
+    //     case ProfileMenu.ORGANIZATIONS:
+    //       return ProfileOrganizations
+    //     default:
+    //       throw new Error("Must be a key in 'ProfileMenu' enum - unexpected default case!")
+    // }
+    // })(activepage)
+
+    <div >
         
-        <SideMenu />
-        {/* <UserTable />  */}
-        <Link href="../user-invite">
-            <PrimaryButton className = {styles.invite_user} children = "Invite User"/>
-        </Link>
+        {/* <SideMenu /> */}
+        <UserTable/>
+        {/* <DataTable tableName="Users" columns={lawyerUserColumns} data = {data}/> */}
+
     </div>
   );
 }

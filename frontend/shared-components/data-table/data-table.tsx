@@ -7,13 +7,13 @@ import { SavedResultsType, SavedSearchType } from "../../models"
 import { EditButton, PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
 
-interface DataTableProps {
+interface DataTableProps<T extends object> {
   tableName: string
-  columns: Column<any>[]
-  data: Incident[] | SavedSearchType[] | SavedResultsType[] | Officer[] | User[] |undefined //change here
+  columns: Column<T>[]
+  data: T[] | undefined;
 }
 
-export function DataTable(props: DataTableProps) {
+export function DataTable<T extends object>(props: DataTableProps<T>) {
   const { tableName, data, columns } = props
   const { dataTable, dataHeader, dataRows } = styles
 
@@ -40,7 +40,7 @@ export function DataTable(props: DataTableProps) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
-  } = useTable(
+  } = useTable<T>(
     {
       columns,
       data,
