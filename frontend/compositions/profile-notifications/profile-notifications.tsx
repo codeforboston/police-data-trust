@@ -1,6 +1,4 @@
-import { Column } from "react-table"
-import { PrimaryButton } from "../../shared-components"
-import { DataTable } from "../../shared-components/data-table/data-table"
+import { CreateOrganizationBtn, DataTable } from "../../shared-components"
 import styles from "./profile-notifications.module.css"
 
 enum MemberRole {
@@ -26,7 +24,7 @@ export default function ProfileNotifications() {
     <section className={notificationsContainer}>
       <div className={headerContainer}>
         <h1 className={headerText}>Notifications</h1>
-        <PrimaryButton className={headerCTA}>Create Organization</PrimaryButton>
+        <CreateOrganizationBtn btnClassName={headerCTA} />
       </div>
       <DataTable tableName="Notifications" data={notifications} columns={notificationsColumns} />
     </section>

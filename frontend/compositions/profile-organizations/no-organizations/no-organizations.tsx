@@ -1,14 +1,15 @@
-import { Logo, PrimaryButton } from "../../../shared-components"
+import { Logo } from "../../../shared-components"
 import styles from "./no-organizations.module.css"
+import CreateOrganizationBtn from "../../../shared-components/create-organization-btn/create-organization-btn"
 
 export default function NoOrganizations() {
-  const { headerText, organizationBtn } = styles
+  const { headerText } = styles
 
   return (
     <>
       <Logo />
       <h1 className={headerText}>You&apos;re currently Not Part of Any Organizations</h1>
-      <PrimaryButton className={organizationBtn}>Create Organization</PrimaryButton>
+      <CreateOrganizationBtn />
     </>
   )
 }

@@ -4,9 +4,3 @@
   color: var(--darkBlue);
   margin-bottom: var(--size16);
 }
-
-.organizationBtn {
-  font-size: var(--size20);
-  font-weight: bold;
-  min-width: max-content;
-}
