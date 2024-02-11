@@ -1,0 +1,5 @@
+.organizationCTA {
+  font-size: var(--size16);
+  font-weight: bold;
+  min-width: max-content;
+}
