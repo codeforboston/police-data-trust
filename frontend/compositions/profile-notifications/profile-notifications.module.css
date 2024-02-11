@@ -17,16 +17,5 @@
 .headerCTA {
   /* Get rid of default margins */
   margin: 0;
-
-  min-width: max-content;
-  font-size: var(--size16);
-  font-weight: bold;
-}
-
-.actionBtn {
-  /* Define row height */
-  margin: var(--size4) 0;
-
-  width: min-content;
-  height: var(--size32);
+  font-size: var(--size16) !important;
 }

@@ -1,5 +1,7 @@
+import { CellProps, Column } from "react-table"
 import { CreateOrganizationBtn, DataTable } from "../../shared-components"
 import styles from "./profile-notifications.module.css"
+import ConfirmOrgDialog from "./sub-comps/confirm-org-dialog"
 
 enum MemberRole {
   ADMIN = "Administrator",
@@ -90,12 +92,9 @@ const notificationsColumns: Column<InterimInvitation>[] = [
   },
   {
     Header: "Action",
-    Cell: () => (
-      <PrimaryButton
-        className={styles.actionBtn}
-        onClick={() => console.log("join/leave clicked.")}>
-        Join
-      </PrimaryButton>
-    )
+    Cell: ({ row }: CellProps<InterimInvitation>) => {
+      const organizationName = row.original.organization
+      return <ConfirmOrgDialog organizationName={organizationName} />
+    }
   }
 ]
