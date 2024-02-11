@@ -1,6 +1,5 @@
-import { Logo } from "../../../shared-components"
+import { Logo, CreateOrganizationBtn } from "../../../shared-components"
 import styles from "./no-organizations.module.css"
-import CreateOrganizationBtn from "../../../shared-components/create-organization-btn/create-organization-btn"
 
 export default function NoOrganizations() {
   const { headerText } = styles
