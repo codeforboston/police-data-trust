@@ -6,11 +6,16 @@ from backend.auth.jwt import min_role_required, contributor_has_partner
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
-from flask import Blueprint, abort, current_app, request
+from flask import Blueprint, abort, request
+from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
-
-from ..database import Incident, db
+from ..database import (
+    PartnerMember,
+    MemberRole,
+    db,
+    Incident,
+)
 from ..schemas import (
     CreateIncidentSchema,
     incident_orm_to_json,
@@ -38,21 +43,36 @@ def get_incidents(incident_id: int):
 @validate(json=CreateIncidentSchema)
 def create_incident():
     """Create a single incident.
-
-    Cannot be called in production environments
     """
-    if current_app.env == "production":
-        abort(418)
+    body = request.context.json
+    jwt_decoded: dict[str, str] = get_jwt()
+    user_id = jwt_decoded["sub"]
+    permission = PartnerMember.query.filter(  # type: ignore
+        PartnerMember.user_id == user_id,
+        PartnerMember.partner_id == body.source_id,
+        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    ).first()
+    if permission is None:
+        abort(403)
 
+    existing_incident = Incident.query.filter_by(
+        source_id=body.source_id,
+        time_of_incident=body.time_of_incident,
+        longitude=body.longitude,
+        latitude=body.latitude,
+        location=body.location,
+    ).first()
+    if existing_incident:
+        abort(409, "Incident already exists")
     try:
-        incident = incident_to_orm(request.context.json)
+        incident = incident_to_orm(body)
     except Exception:
         abort(400)
 
     created = incident.create()
     track_to_mp(request, "create_incident", {
         "source_id": incident.source_id})
-    return incident_orm_to_json(created)
+    return incident_orm_to_json(created) , 200
 
 
 class SearchIncidentsSchema(BaseModel):
