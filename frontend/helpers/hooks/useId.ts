@@ -12,8 +12,6 @@ const useId = () => {
     }
   }, [])
 
-  console.log("ID: ", id)
-
   return id
 }
 
