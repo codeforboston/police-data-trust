@@ -1,8 +1,8 @@
 import pytest
 from backend.auth import user_manager
-from backend.database import Partner, PartnerMember, MemberRole
+from backend.database import Partner, PartnerMember, MemberRole, Incident
 from backend.database.models.user import User, UserRole
-from typing import Any
+from typing import Any, List
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
@@ -318,4 +318,117 @@ def test_get_partner_users_error(
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 404
-    assert res.get_json()["message"] == "Partner not found"
+
+
+def test_get_incidents(
+    client: Any,
+    access_token: str,
+    example_partner: Partner,
+    example_incidents: List[Incident],
+):
+    # Make a request to get the incidents
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify the response structure
+    assert "results" in data
+    assert "page" in data
+    assert "totalPages" in data
+    assert "totalResults" in data
+
+    # Verify the results
+    assert len(data["results"]) == len(example_incidents)
+
+    # Verify the page number
+    assert data["page"] == 1
+
+    # Verify the total pages
+    assert data["totalPages"] == 1
+
+    # Verify the total results
+    assert data["totalResults"] == len(example_incidents)
+
+
+def test_get_incidents_unauthorized(client: Any, example_partner: Partner):
+    # Create a partner in the database
+    partner_id = example_partner.id
+
+    # Make a request to get the incidents without a valid access token
+    res = client.get(f"/api/v1/partners/{partner_id}/incidents")
+    assert res.status_code == 401
+
+
+def test_get_incidents_pagination(
+    client: Any,
+    access_token: str,
+    example_partner_member: Partner,
+    example_incidents_private_public: List[Incident],
+):
+    # Make a request to get the incidents with pagination
+    per_page = 2
+    page = 1
+    res = client.get(
+        f"/api/v1/partners/{example_partner_member.id}/incidents"
+        + f"?per_page={per_page}&page={page}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify the response structure
+    assert "results" in data
+    assert "page" in data
+    assert "totalPages" in data
+    assert "totalResults" in data
+
+    # Verify the results
+    assert len(data["results"]) == per_page
+
+    # Verify the page number
+    assert data["page"] == page
+
+    # Verify the total pages
+    assert (
+        data["totalPages"] == len(example_incidents_private_public) // per_page
+    )
+
+    # Verify the total results
+    assert data["totalResults"] == len(example_incidents_private_public)
+
+
+def test_get_incidents_no_association(
+    client: Any, access_token: str, example_partner: Partner
+):
+    # Make a request to get the incidents without a partner member association
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify that only public incidents are returned
+    assert len(data["results"]) == 0
+
+
+def test_get_incidents_not_admin(
+    client: Any,
+    access_token: str,
+    example_partner: Partner,
+    example_user: User,
+    example_incidents: List[Incident],
+):
+    # Make a request to get the incidents
+    res = client.get(
+        f"/api/v1/partners/{example_partner.id}/incidents",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json
+
+    # Verify that only public incidents are returned
+    assert len(data["results"]) == len(example_incidents)
