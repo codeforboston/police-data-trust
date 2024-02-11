@@ -1,10 +1,12 @@
 from backend.database.core import db
 from backend.database import User, UserRole
 from backend.auth import user_manager
-from backend.database.models.incident import Incident
+from backend.database.models.incident import Incident, PrivacyStatus
 from backend.database.models.perpetrator import Perpetrator
-from backend.database.models.partner import Partner
+from backend.database.models.partner import Partner, PartnerMember, MemberRole
 from backend.database.models.use_of_force import UseOfForce
+from random import choice
+from datetime import datetime
 
 
 def create_user(user):
@@ -16,7 +18,7 @@ def create_user(user):
         user.create()
 
 
-def create_partner(partner):
+def create_partner(partner: Partner) -> Partner:
     partner_exists = (
         db.session.query(Partner).filter_by(id=partner.id).first() is not None
     )
@@ -24,12 +26,13 @@ def create_partner(partner):
     if not partner_exists:
         partner.create()
 
+    return partner
 
-def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
-    mpv = db.session.query(Partner).filter_by(
-        name="Mapping Police Violence").first()
+
+def create_incident(key=1, date="10-01-2019", lon=84, lat=34, partner_id=1):
     incident = Incident(
-        source_id=mpv.id,
+        source_id=partner_id,
+        privacy_filter=choice([PrivacyStatus.PUBLIC, PrivacyStatus.PRIVATE]),
         date_record_created=f"{date} 00:00:00",
         time_of_incident=f"{date} 00:00:00",
         time_confidence="1",
@@ -53,7 +56,7 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34):
                 last_name=f"TestLastName {key}",
             )
         ],
-        use_of_force=[UseOfForce(item=f"gunshot {key}")]
+        use_of_force=[UseOfForce(item=f"gunshot {key}")],
     )
     exists = db.session.query(Incident).filter_by(id=key).first() is not None
 
@@ -102,21 +105,77 @@ def create_seeds():
             phone_number="(012) 345-6789",
         )
     )
-    create_partner(
+    partner = create_partner(
         Partner(
             name="Mapping Police Violence",
             url="https://mappingpoliceviolence.us",
-            contact_email="info@campaignzero.org"
+            contact_email="info@campaignzero.org",
+            member_association=[
+                PartnerMember(
+                    user_id=1,
+                    role=MemberRole.MEMBER,
+                    date_joined=datetime.now(),
+                    is_active=True,
+                )
+            ],
         )
     )
-    create_incident(key=1, date="10-01-2019", lon=-84.362576, lat=33.7589748)
-    create_incident(key=2, date="11-01-2019", lon=-118.1861128, lat=33.76702)
-    create_incident(key=3, date="12-01-2019", lon=-117.8827321, lat=33.800308)
-    create_incident(key=4, date="03-15-2020", lon=-118.1690197, lat=33.8338271)
-    create_incident(key=5, date="04-15-2020", lon=-83.9007382, lat=33.8389977)
-    create_incident(key=6, date="08-10-2020", lon=-84.2687574, lat=33.9009798)
-    create_incident(key=7, date="10-01-2020", lon=-118.40853, lat=33.9415889)
-    create_incident(key=8, date="10-15-2020", lon=-84.032149, lat=33.967774)
+    create_incident(
+        key=1,
+        date="10-01-2019",
+        lon=-84.362576,
+        lat=33.7589748,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=2,
+        date="11-01-2019",
+        lon=-118.1861128,
+        lat=33.76702,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=3,
+        date="12-01-2019",
+        lon=-117.8827321,
+        lat=33.800308,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=4,
+        date="03-15-2020",
+        lon=-118.1690197,
+        lat=33.8338271,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=5,
+        date="04-15-2020",
+        lon=-83.9007382,
+        lat=33.8389977,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=6,
+        date="08-10-2020",
+        lon=-84.2687574,
+        lat=33.9009798,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=7,
+        date="10-01-2020",
+        lon=-118.40853,
+        lat=33.9415889,
+        partner_id=partner.id,
+    )
+    create_incident(
+        key=8,
+        date="10-15-2020",
+        lon=-84.032149,
+        lat=33.967774,
+        partner_id=partner.id,
+    )
 
 
 create_seeds()

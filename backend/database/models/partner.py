@@ -1,5 +1,6 @@
-
+from __future__ import annotations  # allows type hinting of class itself
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import RelationshipProperty
 from ..core import db, CrudMixin
 from enum import Enum
 from datetime import datetime
@@ -25,12 +26,15 @@ class MemberRole(str, Enum):
 
 
 class PartnerMember(db.Model, CrudMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     __tablename__ = "partner_user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(db.Integer, db.ForeignKey('partner.id'),
-                           primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
-                        primary_key=True)
+    partner_id = db.Column(
+        db.Integer, db.ForeignKey("partner.id"), primary_key=True
+    )
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     user = db.relationship("User", back_populates="partner_association")
     partner = db.relationship("Partner", back_populates="member_association")
     role = db.Column(db.Enum(MemberRole))
@@ -49,14 +53,19 @@ class PartnerMember(db.Model, CrudMixin):
 
 
 class Partner(db.Model, CrudMixin):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text)
     url = db.Column(db.Text)
     contact_email = db.Column(db.Text)
-    reported_incidents = db.relationship(
-        'Incident', backref='source', lazy="select")
-    member_association = db.relationship(
-        'PartnerMember', back_populates="partner", lazy="select")
+    reported_incidents: RelationshipProperty[int] = db.relationship(
+        "Incident", backref="source", lazy="select"
+    )
+    member_association: RelationshipProperty[PartnerMember] = db.relationship(
+        "PartnerMember", back_populates="partner", lazy="select"
+    )
     members = association_proxy("member_association", "user")
 
     def __repr__(self):
