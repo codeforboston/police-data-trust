@@ -77,7 +77,7 @@ class Incident(db.Model, CrudMixin):
     source_details = db.relationship(
         "SourceDetails", backref="incident", uselist=False
     )
-    source_type = db.Column(db.Enum(PrivacyStatus))
+    privacy_filter = db.Column(db.Enum(PrivacyStatus))
     date_record_created = db.Column(db.DateTime)
     time_of_incident = db.Column(db.DateTime)
     time_confidence = db.Column(db.Integer)

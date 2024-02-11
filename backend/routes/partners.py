@@ -292,7 +292,7 @@ def get_incidents(partner_id: int):
     pagination: Pagination
     if user_id not in [user.id for user in partner.members]:
         pagination = Incident.query.filter_by(
-            source_id=partner_id, source_type=PrivacyStatus.PUBLIC
+            source_id=partner_id, privacy_filter=PrivacyStatus.PUBLIC
         ).paginate(page=page, per_page=per_page, error_out=False)
     else:
         pagination = Incident.query.filter_by(source_id=partner_id).paginate(

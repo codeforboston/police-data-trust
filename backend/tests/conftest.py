@@ -114,7 +114,7 @@ def example_incidents(db_session: Any, example_partner: Partner):
     incidents = [
         Incident(
             source_id=example_partner.id,
-            source_type=PrivacyStatus.PUBLIC,
+            privacy_filter=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
@@ -133,7 +133,7 @@ def example_incidents(db_session: Any, example_partner: Partner):
         ),
         Incident(
             source_id=example_partner.id,
-            source_type=PrivacyStatus.PUBLIC,
+            privacy_filter=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
@@ -152,7 +152,7 @@ def example_incidents(db_session: Any, example_partner: Partner):
         ),
         Incident(
             source_id=example_partner.id,
-            source_type=PrivacyStatus.PUBLIC,
+            privacy_filter=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
@@ -184,7 +184,7 @@ def example_incidents_private_public(
     incidents = [
         Incident(
             source_id=example_partner_member.id,
-            source_type=PrivacyStatus.PUBLIC,
+            privacy_filter=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
@@ -203,7 +203,7 @@ def example_incidents_private_public(
         ),
         Incident(
             source_id=example_partner_member.id,
-            source_type=PrivacyStatus.PRIVATE,
+            privacy_filter=PrivacyStatus.PRIVATE,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
             time_confidence=90,
