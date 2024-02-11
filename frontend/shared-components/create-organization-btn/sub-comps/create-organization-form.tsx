@@ -15,7 +15,7 @@ const createOrganizationSchema = z.object({
 })
 
 export default function CreateOrganizationForm() {
-  const { organizationCTA } = styles
+  const { organizationCTA, orgExists } = styles
 
   const formMethods = useForm<CreateOrganizationSchema>({
     resolver: zodResolver(createOrganizationSchema),
@@ -36,7 +36,11 @@ export default function CreateOrganizationForm() {
   }
 
   if (!formCanSubmit) {
-    return <p>Org already exists! For admission, please contact: org@email.com</p>
+    return (
+      <p className={orgExists}>
+        The organization already exists! For admission, please contact: org@email.com
+      </p>
+    )
   }
 
   return (

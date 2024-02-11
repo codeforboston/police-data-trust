@@ -3,3 +3,8 @@
   font-weight: bold;
   min-width: max-content;
 }
+
+.orgExists {
+  text-align: center;
+  font-size: var(--size20);
+}
