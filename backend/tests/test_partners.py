@@ -299,7 +299,6 @@ def test_join_organization(
             "password": example_password
         },
     ).json["access_token"]
-    print(example_members["publisher"])
     """
     Join Endpoint requires the Invitation
     Table to populated using the /invite endpoint
@@ -368,3 +367,57 @@ def test_join_organization(
     ).first()
 
     assert invitation_check is None
+
+
+"""
+Test for when a user is trying to
+join an organization but they are already
+added to the organization
+"""
+
+
+def test_join_organization_user_exists(
+    client,
+    partner_publisher: User,
+    example_partner: Partner,
+    example_members,
+    db_session
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.post(
+        "/api/v1/partners/join",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["publisher"]["user_id"],
+            "partner_id": example_partner.id,
+            "role": "Member",
+            "date_joined": datetime.now(),
+            "is_active" : True
+        }
+    )
+
+    # verify status code
+    assert res.status_code == 400
+
+
+def test_leave_endpoint():
+    pass
+
+
+def test_remove_member():
+    pass
+
+
+def test_withdraw_invitation():
+    pass
+
+
+def test_role_change():
+    pass
