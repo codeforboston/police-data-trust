@@ -1,4 +1,3 @@
-from typing import Any
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -12,8 +11,6 @@ from ..database import (
     PartnerMember,
     MemberRole,
     db,
-    Incident,
-    PrivacyStatus,
 )
 from ..schemas import (
     CreatePartnerSchema,
@@ -24,7 +21,6 @@ from ..schemas import (
     partner_member_to_orm,
     partner_to_orm,
     validate,
-    incident_orm_to_json,
 )
 
 
@@ -254,106 +250,4 @@ def add_member_to_partner(partner_id: int):
     return partner_member_orm_to_json(created)
 
 
-@bp.route("/<int:partner_id>/incidents", methods=["GET"])
-@jwt_required()  # type: ignore
-@min_role_required(UserRole.PUBLIC)
-@validate()  # type: ignore
-def get_incidents(partner_id: int):
-    """
-    Get all incidents associated with a partner.
 
-    Accepts Query Parameters for pagination:
-    per_page: number of results per page
-    page: page number
-
-    :param partner_id: The ID of the partner
-    :type partner_id: int
-    :return: A dictionary containing the results, page number,
-    total pages, and total results
-    :rtype: dict
-    """
-
-    # Check if the partner exists
-    partner = Partner.get(partner_id, False)
-    if partner is None:
-        abort(404)
-
-    # Check if the user has permission to view incidents for this partner
-    jwt_decoded: dict[str, str] = get_jwt()
-    user_id = jwt_decoded["sub"]
-
-    # Get the page number from the query parameters (default to 1)
-    page = request.args.get("page", 1, type=int)
-
-    # Get the number of items per page from the query parameters (default to 20)
-    per_page = request.args.get("per_page", 20, type=int)
-
-    # Query the Incident table for records with the given partner_id
-    # and paginate the results. If the user is a partner display all incidents
-    # otherwise only display public incidents
-    pagination: Pagination
-    if user_id not in [user.id for user in partner.members]:
-        pagination = Incident.query.filter_by(
-            source_id=partner_id, privacy_filter=PrivacyStatus.PUBLIC
-        ).paginate(page=page, per_page=per_page, error_out=False)
-    else:
-        pagination = Incident.query.filter_by(source_id=partner_id).paginate(
-            page=page, per_page=per_page, error_out=False
-        )
-
-    incidents: list[dict[str, Any]] = [
-        incident_orm_to_json(incident) for incident in pagination.items
-    ]
-
-    # Convert the Incident objects to dictionaries and return them as JSON
-    return {
-        "results": incidents,
-        "page": pagination.page,
-        "totalPages": pagination.pages,
-        "totalResults": pagination.total,
-    }
-
-
-@bp.route("/<int:partner_id>/incidents/<int:incident_id>", methods=["DELETE"])
-@jwt_required()  # type: ignore
-@min_role_required(UserRole.CONTRIBUTOR)
-@validate()  # type: ignore
-def delete_incident(partner_id: int, incident_id: int):
-    """
-    Delete an incident associated with a partner.
-
-    Args:
-        partner_id (int): The ID of the partner.
-        incident_id (int): The ID of the incident.
-
-    Returns:
-        dict: A dictionary with a message indicating the
-        success of the deletion.
-
-    Raises:
-        403: If the user does not have permission to delete the incident.
-        404: If the partner or incident is not found.
-    """
-    jwt_decoded: dict[str, str] = get_jwt()
-    user_id = jwt_decoded["sub"]
-
-    # Check permissions first for security
-    permission = PartnerMember.query.filter(  # type: ignore
-        PartnerMember.user_id == user_id,
-        PartnerMember.partner_id == partner_id,
-        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
-    ).first()
-    if permission is None:
-        abort(403)
-
-    partner = Partner.get(partner_id, False)
-    if partner is None:
-        abort(404)
-
-    incident = Incident.get(incident_id, False)
-    if incident is None:
-        abort(404)
-
-    incident.delete()
-
-    return {"message": "Incident deleted successfully"}, 204
