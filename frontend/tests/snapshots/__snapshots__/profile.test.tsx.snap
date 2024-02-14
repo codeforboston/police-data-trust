@@ -30,6 +30,16 @@ exports[`renders Profile Page correctly 1`] = `
           >
             Saved Searches
           </li>
+          <li
+            class="menuItem"
+          >
+            Notifications
+          </li>
+          <li
+            class="menuItem"
+          >
+            My Organizations
+          </li>
         </ul>
       </nav>
       <div

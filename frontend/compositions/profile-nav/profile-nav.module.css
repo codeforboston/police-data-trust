@@ -1,23 +1,19 @@
 .leftMenu {
-  display: flex;
-
-  flex-direction: row;
-  align-items: flex-start;
   font-weight: bold;
-  text-align: left;
-
+  padding: var(--size20) var(--size32);
   border: 1px solid var(--darkBlue);
-  box-sizing: border-box;
   box-shadow: -2px 2px 4px 2px rgba(0, 0, 0, 0.25);
   border-radius: var(--size10);
+  align-self: flex-start;
+}
 
-  margin-left: var(--size10);
-  margin-right: var(--size24);
-  margin-top: var(--size20);
-  width: var(--size192);
+.leftMenu ul {
+  margin: 0;
+  padding: 0;
 
-  line-height: 2.5;
-  height: var(--size200);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size20);
 }
 
 .leftMenu li {

@@ -1,20 +1,18 @@
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useState } from "react"
-import { Column, defaultColumn, useFilters, usePagination, useSortBy, useTable } from "react-table"
-import { Incident, Officer } from "../../helpers/api/api"
-import { SavedResultsType, SavedSearchType } from "../../models"
-import { EditButton, PageNavigator } from "./data-table-subcomps"
+import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
+import { PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
 
-interface DataTableProps {
+interface DataTableProps<T extends object> {
   tableName: string
-  columns: Column<any>[]
-  data: Incident[] | SavedSearchType[] | SavedResultsType[] | Officer[] | undefined
+  columns: Column<T>[]
+  data: T[] | undefined
 }
 
-export function DataTable(props: DataTableProps) {
-  const { tableName, data, columns } = props
+export function DataTable<T extends object>(props: DataTableProps<T>) {
+  const { data, columns } = props
   const { dataTable, dataHeader, dataRows } = styles
 
   const [editMode, setEditMode] = useState(false)
@@ -40,7 +38,7 @@ export function DataTable(props: DataTableProps) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
-  } = useTable(
+  } = useTable<T>(
     {
       columns,
       data,
