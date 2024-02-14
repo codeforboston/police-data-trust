@@ -1,8 +1,14 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Partner
+from backend.database import Incident, Partner, User, UserRole
+from typing import Any, List
 
+publisher_email = "pub@partner.com"
+inactive_email = "lurker@partner.com"
+admin_email = "leader@partner.com"
+member_email = "joe@partner.com"
+example_password = "my_password"
 mock_partners = {
     "cpdp": {"name": "Citizens Police Data Project"},
     "mpv": {"name": "Mapping Police Violence"},
@@ -50,19 +56,25 @@ mock_incidents = {
 }
 
 
-@pytest.fixture
-def example_incidents(db_session, client, contributor_access_token):
+def example_incidents(db_session, client , partner_publisher: User):
     for id, mock in mock_partners.items():
         db_session.add(Partner(**mock))
         db_session.commit()
 
     created = {}
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password,
+        },
+    ).json["access_token"]
     for name, mock in mock_incidents.items():
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
             headers={"Authorization":
-                     "Bearer {0}".format(contributor_access_token)},
+                     "Bearer {0}".format(access_token)},
         )
         assert res.status_code == 200
         created[name] = res.json
@@ -73,18 +85,15 @@ def test_create_incident(db_session, example_incidents):
     # TODO: test that the User actually has permission to create an
     # incident for the partner
     # expected = mock_incidents["domestic"]
-    created = example_incidents["domestic"]
+    created = example_incidents[0]
 
     incident_obj = (
-        db_session.query(Incident).filter(Incident.id == created["id"]).first()
+        db_session.query(Incident).filter(Incident.id == created.id).first()
     )
 
-    assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
-    for i in [0, 1]:
-        assert incident_obj.perpetrators[i].id == \
-            created["perpetrators"][i]["id"]
-    assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
-    # assert incident_obj.source == expected["source"]
+    assert incident_obj.description == created.description
+    assert incident_obj.use_of_force[0].id == created.use_of_force[0].id
+    assert incident_obj.source == created.source
 
 
 def test_get_incident(app, client, db_session, access_token):

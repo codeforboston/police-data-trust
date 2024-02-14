@@ -47,7 +47,7 @@ def create_incident():
     body = request.context.json
     jwt_decoded: dict[str, str] = get_jwt()
     user_id = jwt_decoded["sub"]
-    permission = PartnerMember.query.filter(  # type: ignore
+    permission = PartnerMember.query.filter(
         PartnerMember.user_id == user_id,
         PartnerMember.partner_id == body.source_id,
         PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
@@ -72,7 +72,7 @@ def create_incident():
     created = incident.create()
     track_to_mp(request, "create_incident", {
         "source_id": incident.source_id})
-    return incident_orm_to_json(created) , 200
+    return incident_orm_to_json(created)
 
 
 class SearchIncidentsSchema(BaseModel):
