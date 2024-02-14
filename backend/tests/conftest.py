@@ -270,7 +270,7 @@ def partner_admin(db_session, example_partner):
 
 
 @pytest.fixture
-def partner_publisher(db_session, example_partner):
+def partner_publisher(db_session: Any, example_partner: PartnerMember):
     user = User(
         email=contributor_email,
         password=user_manager.hash_password(example_password),

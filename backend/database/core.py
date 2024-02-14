@@ -20,8 +20,11 @@ from werkzeug.utils import secure_filename
 
 from ..config import TestingConfig
 from ..utils import dev_only
+from typing import TypeVar, Type
 
 db = SQLAlchemy()
+
+T = TypeVar("T")
 
 
 class CrudMixin:
@@ -29,23 +32,23 @@ class CrudMixin:
     a convenient manner.
     """
 
-    def create(self, refresh: bool = True):
+    def create(self: T, refresh: bool = True) -> T:
         db.session.add(self)
         db.session.commit()
         if refresh:
             db.session.refresh(self)
         return self
 
-    def delete(self):
+    def delete(self) -> None:
         db.session.delete(self)
         db.session.commit()
 
     @classmethod
-    def get(cls, id: Any, abort_if_null: bool = True):
+    def get(cls: Type[T], id: Any, abort_if_null: bool = True) -> Optional[T]:
         obj = db.session.query(cls).get(id)
         if obj is None and abort_if_null:
             abort(404)
-        return obj
+        return obj  # type: ignore
 
 
 QUERIES_DIR = os.path.abspath(
