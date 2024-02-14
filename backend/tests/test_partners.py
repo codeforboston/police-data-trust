@@ -407,8 +407,48 @@ def test_join_organization_user_exists(
     assert res.status_code == 400
 
 
-def test_leave_endpoint():
-    pass
+def test_leave_endpoint(
+    client,
+    partner_publisher: User,
+    example_partner: Partner,
+    example_members,
+    db_session
+):
+    """
+    Can leave org user is already part
+    of
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.delete(
+        "/api/v1/partners/leave",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["publisher"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+    assert res.status_code == 200
+
+    """
+    Cannot leave org one hasnot joined
+    """
+    res = client.delete(
+        "/api/v1/partners/leave",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["publisher"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+
+    assert res.status_code == 400
 
 
 def test_remove_member():
