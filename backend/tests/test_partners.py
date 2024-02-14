@@ -1,7 +1,8 @@
 import pytest
 from backend.auth import user_manager
-from backend.database import Partner, PartnerMember, MemberRole
+from backend.database import Partner, PartnerMember, MemberRole, Invitation
 from backend.database.models.user import User, UserRole
+from datetime import datetime
 
 
 publisher_email = "pub@partner.com"
@@ -116,15 +117,15 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
             .filter(User.email == mock["user_email"])
             .first()
         )
-
         req = {
             "partner_id": partner_obj.id,
-            "email": user_obj.email,
+            "user_id": user_obj.id,
             "role": mock["role"],
+            "is_active": mock["is_active"],
         }
 
         res = client.post(
-            "/api/v1/partners/invite",
+            f"/api/v1/partners/{partner_obj.id}/members/add",
             json=req,
             headers={
                 "Authorization": "Bearer {0}".format(p_admin_access_token)
@@ -132,6 +133,7 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
         )
         assert res.status_code == 200
         created[id] = res.json
+    print(users["publisher"].id)
     return created
 
 
@@ -276,3 +278,93 @@ def test_get_partner_members(
     assert res.status_code == 200
     assert res.json["results"].__len__() == users.__len__()
     # assert res.json["results"][0]["user"]["email"] == member_obj.email
+
+
+def test_join_organization(
+    client,
+    partner_publisher: User,
+    example_partner: Partner,
+    example_members,
+    db_session
+):
+    """
+    Two test scenarios
+    User already in the organization
+    User not in the organization
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+    print(example_members["publisher"])
+    """
+    Join Endpoint requires the Invitation
+    Table to populated using the /invite endpoint
+    Adding a record to the Invitation Table manually
+    """
+    invite = Invitation(
+        partner_id=example_partner.id,
+        user_id=example_members["publisher"]["user_id"],
+        role="Member"
+
+    )
+    db_session.add(invite)
+    db_session.commit()
+
+    """
+    Deleting existing PartnerMember record
+    for "user_id=example_members["publisher"]["user_id"],
+     partner_id=example_partner.id" as it
+    has already been added to the PartnerMember
+    Table using the "example_members function above
+
+    In theory, records should only be added to
+    PartnerMember table using the /invite endpoint,
+    and after users have accepted their invites.
+    """
+    db_session.query(PartnerMember).filter_by(
+        user_id=example_members["publisher"]["user_id"],
+        partner_id=example_partner.id
+    ).delete()
+    db_session.commit()
+    res = client.post(
+        "/api/v1/partners/join",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["publisher"]["user_id"],
+            "partner_id": example_partner.id,
+            "role": "Member",
+            "date_joined": datetime.now(),
+            "is_active" : True
+        }
+    )
+
+    # verify status code
+    assert res.status_code == 200
+
+    """
+    Verify record has been added to
+    Partner Member table after /join endpoint
+    """
+    partner_member_obj = PartnerMember.query.filter_by(
+        user_id=example_members["publisher"]["user_id"],
+        partner_id=example_partner.id
+    ).first()
+
+    assert partner_member_obj.user_id == example_members["publisher"]["user_id"]
+    assert partner_member_obj.partner_id == example_partner.id
+
+    """
+    Record in Invitation Table has to
+    be deleted after /join endpoint
+    Verifying that this is happening correctly
+    """
+    invitation_check = Invitation.query.filter_by(
+        partner_id=example_partner.id,
+        user_id=example_members["publisher"]["user_id"]
+    ).first()
+
+    assert invitation_check is None

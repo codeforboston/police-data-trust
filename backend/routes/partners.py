@@ -24,6 +24,8 @@ from ..schemas import (
     partner_member_orm_to_json,
     partner_to_orm,
     validate,
+    AddMemberSchema,
+    partner_member_to_orm
 )
 
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
@@ -323,7 +325,7 @@ def remove_member():
             partner_id=body["partner_id"]
             ).delete()
         db.session.commit()
-        if user_found > 0:
+        if user_found > 0 and user_found.role != "Admin":
             return {
                 "status" : "ok",
                 "message" : "Member successfully deleted from Organization"
@@ -438,3 +440,70 @@ def stagedinvitations():
     ]
 
     return jsonify({'staged_invitations': invitations_data})
+
+
+@bp.route("/<int:partner_id>/members/add", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@validate(json=AddMemberSchema)
+def add_member_to_partner_testing(partner_id: int):
+    """Add a member to a partner.
+
+    TODO: Allow the API to accept a user email instad of a user id
+    TODO: Use the partner ID from the API path instead of the request body
+    The `partner_member_to_orm` function seems very picky about the input.
+    I wasn't able to get it to accept a dict or a PartnerMember object.
+
+    Cannot be called in production environments
+    """
+    if current_app.env == "production":
+        abort(418)
+
+    # Ensure that the user has premission to add a member to this partner.
+    jwt_decoded = get_jwt()
+
+    current_user = User.get(jwt_decoded["sub"])
+    association = (
+        db.session.query(PartnerMember)
+        .filter(
+            PartnerMember.user_id == current_user.id,
+            PartnerMember.partner_id == partner_id,
+        )
+        .first()
+    )
+
+    if (
+        association is None
+        or not association.is_administrator()
+        or not association.partner_id == partner_id
+    ):
+        abort(403)
+
+    # TODO: Allow the API to accept a user email instad of a user id
+    # user_obj = User.get_by_email(request.context.json.user_email)
+    # if user_obj is None:
+    #     abort(400)
+
+    # new_member = PartnerMember(
+    #     partner_id=partner_id,
+    #     user_id=user_obj.id,
+    #     role=request.context.json.role,
+    # )
+
+    try:
+        partner_member = partner_member_to_orm(request.context.json)
+    except Exception:
+        abort(400)
+
+    created = partner_member.create()
+
+    track_to_mp(
+        request,
+        "add_partner_member",
+        {
+            "partner_id": partner_id,
+            "user_id": partner_member.user_id,
+            "role": partner_member.role,
+        },
+    )
+    return partner_member_orm_to_json(created)
