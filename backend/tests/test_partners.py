@@ -431,6 +431,3 @@ def test_get_incidents_not_admin(
 
     # Verify that only public incidents are returned
     assert len(data["results"]) == len(example_incidents)
-
-
-
