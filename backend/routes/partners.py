@@ -248,6 +248,3 @@ def add_member_to_partner(partner_id: int):
         },
     )
     return partner_member_orm_to_json(created)
-
-
-
