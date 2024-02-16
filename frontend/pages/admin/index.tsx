@@ -6,7 +6,7 @@ import {
   SavedResults,
   SavedSearches
 } from "../../compositions"
-import UserTable from "../../compositions/profile-orguser/profile-orguser";
+import OrgUserTable from "../../compositions/profile-orguser/profile-orguser";
 import styles from "../../compositions/profile-orguser/profile-orguser.module.css"
 import { PrimaryButton } from "../../shared-components";
 import Link from "next/link";
@@ -43,7 +43,7 @@ export default function LawyerAdmin() {
     <div >
         
         {/* <SideMenu /> */}
-        <UserTable/>
+        <OrgUserTable/>
         {/* <DataTable tableName="Users" columns={lawyerUserColumns} data = {data}/> */}
 
     </div>

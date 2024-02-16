@@ -1,13 +1,32 @@
 import React, {FC, useState} from "react";
 import styles from "./toggle-dropdown.module.css"
+import { MemberRole } from "../../compositions/profile-orguser/profile-orguser";
+import { ActionOptions } from "../../compositions/profile-orguser/profile-orguser";
+
+
+// enum ActionOptions{
+//     REMOVE = "Remove",
+//     WITHDRAW = "Withdraw",
+//     INVITATION = "Invitation"
+// }
+
+// enum MemberRole {
+//     ADMIN = "Administrator",
+//     PUBLISHER = "Publisher",
+//     MEMBER = "Member",
+//     SUBSCRIBER = "Subscriber",
+//     NONE = ""
+//   }
 
 interface ToggleDropDownProps{
-    title: string
-    options: string[]
+    title: string,
+    //item: ActionOptions | MemberRole,
+    editChange: Function
+    options: any[]
 
 }
 
-export const ToggleDropDown: FC<ToggleDropDownProps> = ({title, options}) => {
+export default function ToggleDropDown({title, editChange, options}: ToggleDropDownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropDown = () =>{
@@ -19,9 +38,12 @@ export const ToggleDropDown: FC<ToggleDropDownProps> = ({title, options}) => {
             {isOpen && (
                 <div className = {styles.popup}>
                     <ul>
-                        {options.map((option,index)=>(
-                            <li key = {index}>{option}</li>
+                        {options.map((option)=>(
+                            <li key = {option.item} onClick = {() => editChange(option.item)}>
+                                {option.text}
+                            </li>
                         ))}
+
                     </ul>
                 </div>  
             )}
