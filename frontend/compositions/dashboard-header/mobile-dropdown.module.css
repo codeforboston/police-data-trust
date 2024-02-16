@@ -40,7 +40,7 @@
 }
 
 .visible a {
-  color: var(--white);
+  color: var(--white) !important;
   text-decoration: none;
   font-weight: 700;
   font-size: var(--size12);

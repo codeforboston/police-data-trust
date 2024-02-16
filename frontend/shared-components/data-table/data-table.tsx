@@ -1,20 +1,18 @@
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useState } from "react"
-import { Column, defaultColumn, useFilters, usePagination, useSortBy, useTable } from "react-table"
-import { User, Incident, Officer } from "../../helpers/api/api" //change here
-import { SavedResultsType, SavedSearchType } from "../../models"
-import { EditButton, PageNavigator } from "./data-table-subcomps"
+import { Column, useFilters, usePagination, useSortBy, useTable } from "react-table"
+import { PageNavigator } from "./data-table-subcomps"
 import styles from "./data-table.module.css"
 
-interface DataTableProps {
+interface DataTableProps<T extends object> {
   tableName: string
-  columns: Column<any>[]
-  data: Incident[] | SavedSearchType[] | SavedResultsType[] | Officer[] | User[] |undefined //change here
+  columns: Column<T>[]
+  data: T[] | undefined
 }
 
-export function DataTable(props: DataTableProps) {
-  const { tableName, data, columns } = props
+export function DataTable<T extends object>(props: DataTableProps<T>) {
+  const { data, columns } = props
   const { dataTable, dataHeader, dataRows } = styles
 
   const [editMode, setEditMode] = useState(false)
@@ -40,7 +38,7 @@ export function DataTable(props: DataTableProps) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize }
-  } = useTable(
+  } = useTable<T>(
     {
       columns,
       data,
@@ -60,55 +58,56 @@ export function DataTable(props: DataTableProps) {
   }
 
   return (
-    <div>
-      {/* <header className={tableHeader}></header> */}
-      <table {...getTableProps()} className={dataTable} aria-label="Data Table">
-        <thead className={dataHeader}>
-          {headerGroups.map((headerGroup) => (
-            // react-table prop types include keys, but eslint can't tell that
-            // eslint-disable-next-line react/jsx-key
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                // eslint-disable-next-line react/jsx-key
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render("Header")}
-                  <span className={sortArrow}>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      ) : (
-                        <FontAwesomeIcon icon={faArrowUp} />
-                      )
-                    ) : (
-                      "  "
-                    )}
-                  </span>
-                  {showFilters && (
-                    <div className={colFilter}>
-                      {column.canFilter ? column.render("Filter") : null}
-                    </div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row)
-            return (
+    <>
+      <div style={{ overflowX: "auto" }}>
+        {/* <header className={tableHeader}></header> */}
+        <table {...getTableProps()} className={dataTable} aria-label="Data Table">
+          <thead className={dataHeader}>
+            {headerGroups.map((headerGroup) => (
+              // react-table prop types include keys, but eslint can't tell that
               // eslint-disable-next-line react/jsx-key
-              <tr {...row.getRowProps()} className={dataRows}>
-                {row.cells.map((cell) => {
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
                   // eslint-disable-next-line react/jsx-key
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                })}
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render("Header")}
+                    <span className={sortArrow}>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <FontAwesomeIcon icon={faArrowDown} />
+                        ) : (
+                          <FontAwesomeIcon icon={faArrowUp} />
+                        )
+                      ) : (
+                        "  "
+                      )}
+                    </span>
+                    {showFilters && (
+                      <div className={colFilter}>
+                        {column.canFilter ? column.render("Filter") : null}
+                      </div>
+                    )}
+                  </th>
+                ))}
               </tr>
-            )
-          })}
-        </tbody>
-      </table>
-
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row, i) => {
+              prepareRow(row)
+              return (
+                // eslint-disable-next-line react/jsx-key
+                <tr {...row.getRowProps()} className={dataRows}>
+                  {row.cells.map((cell) => {
+                    // eslint-disable-next-line react/jsx-key
+                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
       <PageNavigator
         data={data}
         pageIndex={pageIndex}
@@ -122,6 +121,6 @@ export function DataTable(props: DataTableProps) {
         nextPage={nextPage}
         setPageSize={setPageSize}
       />
-    </div>
+    </>
   )
 }

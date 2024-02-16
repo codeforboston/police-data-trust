@@ -1,7 +1,14 @@
 .searchPageContainer {
-  max-height: 85vh;
+  display: flex;
+  flex-direction: column-reverse;
   overflow: auto;
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  grid-template-rows: repeat(2, 1fr);
+  padding-bottom: var(--size64);
+}
+
+/* 70em / 16px = 1120px */
+@media screen and (min-width: 70em) {
+  .searchPageContainer {
+    flex-direction: row;
+    padding-bottom: 0;
+  }
 }

@@ -10,6 +10,8 @@ import PasswordAid from "./password-aid/password-aid"
 import EditProfileInfo from "./profile-edit"
 import ProfileInfo from "./profile-info"
 import ProfileNav from "./profile-nav"
+import ProfileNotifications from "./profile-notifications/profile-notifications"
+import ProfileOrganizations from "./profile-organizations/profile-organizations"
 import SavedResults from "./profile-saved-tables/saved-results"
 import SavedSearches from "./profile-saved-tables/saved-searches"
 import ProfileType from "./profile-type"
@@ -29,6 +31,8 @@ export {
   PasswordAid,
   ProfileInfo,
   ProfileNav,
+  ProfileNotifications,
+  ProfileOrganizations,
   ProfileType,
   RegistrationResponse,
   SavedResults,

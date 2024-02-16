@@ -9,9 +9,9 @@ import MobileDropdown from "./mobile-dropdown"
 import Nav from "./nav"
 
 export default function DashboardHeader() {
-  const { wrapper, backgroundBanner, leftHeader, titleContainer } = styles
+  const { wrapper, backgroundBanner, leftHeader, titleContainer, navigationContainer } = styles
   const { buttonProps, itemProps, isOpen } = useDropdownMenu(4)
-  const desktop = useMediaQuery({ query: "screen and (min-width: 32em)" })
+  const desktop = useMediaQuery({ query: "screen and (min-width: 70em)" })
 
   const { user } = React.useContext(AuthContext)
 
@@ -26,16 +26,18 @@ export default function DashboardHeader() {
           </div>
         </div>
         {/* Only show the buttons if the user is logged in */}
-        {user && (
-          <nav aria-label="Main Navigation">
-            {desktop ? (
-              <Nav itemProps={itemProps} />
-            ) : (
-              <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
-            )}
-          </nav>
-        )}
-        <PrimaryButton>Donate</PrimaryButton>
+        <div className={navigationContainer}>
+          {user && (
+            <nav aria-label="Main Navigation">
+              {desktop ? (
+                <Nav itemProps={itemProps} />
+              ) : (
+                <MobileDropdown itemProps={itemProps} buttonProps={buttonProps} isOpen={isOpen} />
+              )}
+            </nav>
+          )}
+          {desktop && <PrimaryButton>Donate</PrimaryButton>}
+        </div>
       </div>
     </header>
   )

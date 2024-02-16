@@ -59,7 +59,7 @@ export interface OfficerRecordType {
   incidents?: IncidentRecordType[]
 }
 
-export const officerResultsColumns: Column<any>[] = [
+export const createOfficerColumns = (fullLength: boolean): Column<any>[] => [
   {
     Header: "Name",
     accessor: (row: any) => (
@@ -72,7 +72,7 @@ export const officerResultsColumns: Column<any>[] = [
   {
     Header: () => (
       <span>
-        Allegations
+        {fullLength ? "Allegations" : "Alle..."}
         <InfoTooltip type={TooltipTypes.DATETIME} icon={TooltipIcons.INFO} iconSize="xs" />
       </span>
     ),
@@ -103,13 +103,5 @@ export const officerResultsColumns: Column<any>[] = [
     Header: "Employers",
     accessor: "employers",
     id: "employers"
-  },
-  {
-    Header: "Save",
-    accessor: "save",
-    Cell: () => {
-      return <CirclePlusButton title={"Save"} onclick={() => console.log("clicked")} />
-    },
-    id: "save"
   }
 ]

@@ -27,95 +27,93 @@ exports[`renders Dashboard correctly 1`] = `
           </p>
         </div>
       </div>
-      <nav
-        aria-label="Main Navigation"
+      <div
+        class="navigationContainer"
       >
-        <div
-          class="dropdown"
+        <nav
+          aria-label="Main Navigation"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="true"
-            role="button"
-            tabindex="0"
-          >
-            <svg
-              aria-hidden="true"
-              class="svg-inline--fa fa-ellipsis-v fa-w-6 fa-3x "
-              data-icon="ellipsis-v"
-              data-prefix="fas"
-              focusable="false"
-              role="img"
-              viewBox="0 0 192 512"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
           <div
-            class="hidden"
-            role="menu"
+            class="dropdown"
           >
-            <ul
-              id="navMenu"
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              role="button"
+              tabindex="0"
             >
-              <li
-                class=""
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-bars fa-w-14 fa-3x "
+                data-icon="bars"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                viewBox="0 0 448 512"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <a
-                  href="/search"
-                  role="menuitem"
-                  tabindex="-1"
-                >
-                  Search
-                </a>
-              </li>
-              <li
-                class=""
+                <path
+                  d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+            <div
+              class="hidden"
+              role="menu"
+            >
+              <ul
+                id="navMenu"
               >
-                <a
-                  href="/profile"
-                  role="menuitem"
-                  tabindex="-1"
+                <li
+                  class=""
                 >
-                  Profile
-                </a>
-              </li>
-              <li
-                class=""
-              >
-                <a
-                  href="/logout"
-                  role="menuitem"
-                  tabindex="-1"
+                  <a
+                    href="/search"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Search
+                  </a>
+                </li>
+                <li
+                  class=""
                 >
-                  Sign Out
-                </a>
-              </li>
-              <li
-                class=""
-              >
-                <a
-                  href="/"
-                  role="menuitem"
-                  tabindex="-1"
+                  <a
+                    href="/profile"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Profile
+                  </a>
+                </li>
+                <li
+                  class=""
                 >
-                  DONATE
-                </a>
-              </li>
-            </ul>
+                  <a
+                    href="/logout"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Sign Out
+                  </a>
+                </li>
+                <li
+                  class=""
+                >
+                  <a
+                    href="/"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    DONATE
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </nav>
-      <button
-        class="primaryButton"
-        type="submit"
-      >
-        Donate
-      </button>
+        </nav>
+      </div>
     </div>
   </header>
 </div>
