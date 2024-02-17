@@ -6,6 +6,7 @@ import ExternalLink from "./external-link/external-link"
 import * as Form from "./form/form"
 import InfoTooltip from "./info-tooltip/info-tooltip"
 import Input from "./input/input"
+import InviteUserBtn from "./invite-user-btn/invite-user-btn"
 import Label from "./label/label"
 import Layout from "./layout/layout"
 import LinkButton from "./link-button/link-button"
@@ -29,6 +30,7 @@ export {
   FormLevelError,
   InfoTooltip,
   Input,
+  InviteUserBtn,
   Label,
   Layout,
   LinkButton,
