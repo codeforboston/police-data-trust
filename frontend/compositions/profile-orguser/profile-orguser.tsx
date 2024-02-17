@@ -1,14 +1,12 @@
 import styles from "./profile-orguser.module.css"
 import {DataTable} from "../../shared-components/data-table/data-table"
-import {Column, CellProps, Cell, Row} from "react-table"
-import { PrimaryButton } from "../../shared-components";
-import Link from "next/link"
-//import orgusers from "../../models/mock-data/orgusers"
-import { ToggleBox } from "../../shared-components";
+import {Column} from "react-table"
 import ToggleDropDown from "../../shared-components/toggle-dropdown/toggle-dropdown";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import InviteUserBtn from "./invite-user-btn";
 
-export enum MemberRole {
+
+enum MemberRole {
   ADMIN = "Administrator",
   PUBLISHER = "Publisher",
   MEMBER = "Member",
@@ -16,10 +14,21 @@ export enum MemberRole {
   NONE = ""
 }
 
-export enum ActionOptions{
+enum ActionOptions{
   REMOVE = "Remove",
   WITHDRAW = "Withdraw",
   INVITATION = "Invitation"
+}
+
+enum Organizations{
+  ORG1 = "Organization 1",
+  ORG2 = "Organization 2",
+  ORG3 = "Organization 3"
+}
+
+enum Users{
+  USER1 = "User 1",
+  USER2 = "User 2"
 }
 
 enum Status {
@@ -40,20 +49,23 @@ interface CurrentOrgUsers {
 export default function OrgUserTable(){
   //to show or not to show toggle button
   const[showToggle, setShowToggle] = useState<boolean>(false)
-  //1. the useState to see if selected rows greater than 0
-  //have to make this an array of selected Rows so that each of them can be edited
-  const[selectedRows, setSelectedRows] = useState<number>(0)
-  const[listOfRows, setListofRows] = useState<CurrentOrgUsers[]>([])
 
+  const[selectedRowsId, setSelectedRowsId] = useState<CurrentOrgUsers["id"][]>([])
 
-  function handleSelectRows(row: CurrentOrgUsers){
-    row.select = !row.select;
-    setSelectedRows(selectedRows + (row.select ? 1 : -1));
+  function handleSelected(id: CurrentOrgUsers["id"]){
 
-    setShowToggle(selectedRows > 0);
-    
+    if(selectedRowsId.includes(id)){
+      setSelectedRowsId(selectedRowsId.filter(rowId => rowId !== id))
+      if(selectedRowsId.length === 1){
+        setShowToggle(false)
+      }
+    }else{
+      setSelectedRowsId([...selectedRowsId,id])
+      setShowToggle(true)
+      
+    }
+
   }
-
 
 
   //Creating the mock data
@@ -123,12 +135,10 @@ export default function OrgUserTable(){
       Header: "Select",
       accessor: "select",
       Cell:({row}) =>{
-        return <input type = "checkbox"
-        onClick = {() =>{console.log("checked"); 
-        row.original.select = true;
-      }}
-        onChange={() => handleSelectRows(row.original)}
-
+        return <input 
+        type = "checkbox"
+        checked = {selectedRowsId.includes(row.original.id)}
+        onChange={() => handleSelected(row.original.id)}
         />
       },
       id: "select"
@@ -199,19 +209,61 @@ export default function OrgUserTable(){
     }
   ]
 
+  const organizationOptions = [
+    {
+      item: Organizations.ORG1, 
+      text: "Organization 1"
+    },
+    {
+      item: Organizations.ORG2, 
+      text: "Organization 2"
+    },
+    {
+      item: Organizations.ORG3, 
+      text: "Organization 3"
+    }
+
+  ]
+
+  const userOptions = [
+    {
+      item: Users.USER1,
+      text: "User 1"
+    },
+    {
+      item: Users.USER2,
+      text: "User 2"
+    }
+  ]
+
   return (
 
       <div className = {styles.container}>
-        {showToggle &&
-          <><ToggleDropDown title="Action" options={actionOptions} editChange={null} />
-          <ToggleDropDown title="Change Roles" options={changeRoleOptions} editChange={null} /></>
-        }
-          <DataTable tableName ="Users" 
-          columns = {lawyerUserColumns} 
-          data = {orgUsers} />
-          <Link href="../user-invite">
-              <PrimaryButton className = {styles.invite_user} children = "Invite User"/>
-          </Link>       
+
+        <div className = {styles.header}>
+
+        </div>
+          <div className = {styles.buttonrow}>
+            <div className = {styles.buttonrow1}>
+              <ToggleDropDown className = {styles.visiblebtn} title ="Organizations" options = {organizationOptions} editChange={null}/>
+              <ToggleDropDown className = {styles.visiblebtn} title = "Users" options = {userOptions} editChange={null}/>
+              
+
+            </div>
+            <div className ={styles.buttonrow2}>
+              {showToggle &&
+                  <><ToggleDropDown className = {styles.invisiblebtn} title="Action" options={actionOptions} editChange={null} />
+                  <ToggleDropDown className = {styles.invisiblebtn} title="Change Roles" options={changeRoleOptions} editChange={null} /></>
+                }
+                
+              <InviteUserBtn btnClassName={styles.invitebtn}/>
+            </div>
+          </div>
+          <div className = {styles.table}>
+            <DataTable tableName ="Users" columns = {lawyerUserColumns} data = {orgUsers} />
+          </div>
+          {/* <p>{Object.keys(selectedRowsId)}</p> 
+          <p>{Object.keys(selectedRowsId).length}</p>       */}
       </div>
   )
 }
