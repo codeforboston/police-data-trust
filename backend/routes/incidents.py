@@ -215,7 +215,14 @@ def get_incidents():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate()  # type: ignore
 def delete_incident(incident_id: int):
-    """ """
+    """
+    Delete an incident by ID. Only users with the role of PUBLISHER or ADMIN
+    can delete incidents.
+
+    :param incident_id: The ID of the incident to delete.
+    :return: A JSON object containing a message indicating that the incident
+    was deleted successfully.
+    """
     jwt_decoded: dict[str, str] = get_jwt()
     user_id = jwt_decoded["sub"]
 
