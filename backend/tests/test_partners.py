@@ -1,8 +1,8 @@
 import pytest
 from backend.auth import user_manager
-from backend.database import Partner, PartnerMember, MemberRole, Incident
+from backend.database import Partner, PartnerMember, MemberRole
 from backend.database.models.user import User, UserRole
-from typing import Any, List
+from typing import Any
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
