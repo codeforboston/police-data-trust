@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import textwrap
 from typing import Any, Dict, List, Optional
-
 from pydantic import BaseModel, root_validator
 from pydantic.main import ModelMetaclass
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
