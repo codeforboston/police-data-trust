@@ -2,9 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { z } from "zod"
-import { Dialog as D, Form as F, Input, PrimaryButton } from "../../shared-components"
+import { Dialog as D, Form as F, Input, PrimaryButton } from "../../../shared-components"
 import styles from "./create-organization-form.module.css"
-import {Select as S} from "../../shared-components"
+import {Select as S} from "../../../shared-components"
 
 interface SelectRoleProps{
     value: string

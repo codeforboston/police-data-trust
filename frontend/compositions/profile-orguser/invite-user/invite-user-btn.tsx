@@ -1,5 +1,5 @@
 import classNames from "classnames"
-import {Dialog as D, PrimaryButton} from "../../shared-components"
+import {Dialog as D, PrimaryButton} from "../../../shared-components"
 import styles from "./invite-user-button.module.css"
 import InviteUserForm from "./invite-user-form"
 
