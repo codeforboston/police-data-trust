@@ -11,7 +11,7 @@ from flask import  Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
-from ..database import  Officer, db
+from ..database import  Officer, db, StateID
 from ..schemas import (
     Officer_orm_to_json,
     validate,
@@ -22,6 +22,8 @@ bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
 class SearchOfficerSchema(BaseModel):
     officerName: Optional[str] = None
+    location:Optional[str]=None
+    badgeNumber:Optional[str]=None
     page: Optional[int] = 1
     perPage: Optional[int] = 20
 
@@ -29,7 +31,9 @@ class SearchOfficerSchema(BaseModel):
         extra = "forbid"
         schema_extra = {
             "example": {
-                "officername": "John Doe",
+                "officerName": "John Doe",
+                "location":"New York",
+                "badgeNumber":1234,
                 "page": 1,
                 "perPage": 20,
             }
@@ -46,7 +50,7 @@ def search_officer():
     query = db.session.query('Officer')
     # logger = logging.getLogger('officer')
     try:
-        data=Officer.query.all()
+        # data=Officer.query.all()
         # user_data= [{'id': user.id, 'name': user.first_name, } for user in data]
         # return jsonify(user_data), 200
 
@@ -54,14 +58,17 @@ def search_officer():
             names = body.officerName.split()
             firstName = names[0] if len(names) > 0 else ''
             lastName = names[1] if len(names) > 1 else ''
-            print(firstName)
-            print(lastName)
+
             query = query.filter(or_(
                 Officer.first_name.ilike(f"%{firstName}%"),
                 Officer.last_name.ilike(f"%{lastName}%")
             ))
-            # location
-            # badgeid(officer id)
+        if body.location:
+            location = body.location
+            query = query.join(StateID).filter(StateID.state.ilike(f"%{location}%"))
+
+        if body.badgeNumber:
+            query = query.filter(Officer.id == body.badgeNumber)
 
     except Exception as e:
         abort(422,description=str(e))
