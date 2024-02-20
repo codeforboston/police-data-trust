@@ -8,7 +8,9 @@ from datetime import datetime
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
 admin_email = "leader@partner.com"
+admin2_email = "leader2@partner.com"
 member_email = "joe@partner.com"
+member2_email = "jack@partner.com"
 example_password = "my_password"
 
 mock_partners = {
@@ -46,6 +48,14 @@ mock_users = {
         "email": member_email,
         "password": example_password,
     },
+    "admin2" : {
+        "email" : admin2_email,
+        "password" : example_password
+    },
+    "member2" : {
+        "email" : member2_email,
+        "password" : example_password
+    }
 }
 
 mock_members = {
@@ -69,6 +79,16 @@ mock_members = {
         "role": MemberRole.MEMBER,
         "is_active": True,
     },
+    "admin2" : {
+        "user_email": admin_email,
+        "role": MemberRole.ADMIN,
+        "is_active": True,
+    },
+    "member2" : {
+        "user_email": member2_email,
+        "role" : MemberRole.MEMBER,
+        "is_active" : True
+    }
 }
 
 
@@ -133,7 +153,6 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
         )
         assert res.status_code == 200
         created[id] = res.json
-    print(users["publisher"].id)
     return created
 
 
@@ -435,6 +454,12 @@ def test_leave_endpoint(
         }
     )
     assert res.status_code == 200
+    # verify item has been deleted using endpoint
+    deleted = PartnerMember.query.filter_by(
+        user_id=example_members["publisher"]["user_id"],
+        partner_id=example_partner.id
+    ).first()
+    assert deleted is None
 
     """
     Cannot leave org one hasnot joined
@@ -450,14 +475,144 @@ def test_leave_endpoint(
 
     assert res.status_code == 400
 
+# test:only admin can remove members
 
-def test_remove_member():
-    pass
+
+def test_remove_member_admin(
+    client,
+    example_members,
+    example_partner,
+    partner_admin,
+    db_session
+):
+    """
+    Test cases:
+    1)Only Admins can remove members
+    2)Handle Members in the Partner Org
+    assert DB changes
+    3)Handle Members not in the Parter Org
+    assert DB changes
+
+    """
+    # log in as admin
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    # use remove_member endpoint as admin
+    res = client.delete(
+        "/api/v1/partners/remove_member",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["publisher"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+    assert res.status_code == 200
+    removed = PartnerMember.query.filter_by(
+        user_id=example_members["publisher"]["user_id"],
+        partner_id=example_partner.id
+    ).first()
+    assert removed is None
+
+# test admins cannot remove other admins
+
+
+def test_remove_member_admin2(
+    client,
+    example_members,
+    example_partner,
+    partner_admin,
+    db_session
+):
+    # log in as admin
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    # use remove_member endpoint as admin\
+    # trying to remove admin as well
+    res = client.delete(
+        "/api/v1/partners/remove_member",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["admin2"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+    assert res.status_code == 400
+    removed = PartnerMember.query.filter_by(
+        user_id=example_members["admin2"]["user_id"],
+        partner_id=example_partner.id,
+    ).first()
+    assert removed is not None
+
+# admins trying to remove records that don't exist
+
+
+def test_remove_member_admin3(
+    client,
+    example_members,
+    example_partner,
+    partner_admin,
+
+
+):
+    # log in as admin
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    # use remove_member endpoint as admin\
+    # trying to remove record that does not\
+    # exist
+    res = client.delete(
+        "/api/v1/partners/remove_member",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : 99999999,
+            "partner_id": 9999999,
+        }
+    )
+    assert res.status_code == 400
+    removed = PartnerMember.query.filter_by(
+        user_id=99999999,
+        partner_id=99999999,
+    ).first()
+    assert removed is None
 
 
 def test_withdraw_invitation():
     pass
+    """
+    1)Only Admins can withdraw invitation
+    2)Handle withdrawing invitations for users
+    already invited to the org
+    Assert DB changes
+    3)Handle withdrawing invitations for users
+    not already invited to the org
+    Assert Db changes
+    """
 
 
 def test_role_change():
     pass
+    """
+    Admins can only role change
+    Admins cannot change role of other admins
+    Role change for members already in the org
+    Role change for members not already in the
+    org
+    """

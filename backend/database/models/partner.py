@@ -82,6 +82,13 @@ class PartnerMember(db.Model, CrudMixin):
         self.date_joined = datetime.now()
         return super().create(refresh)
 
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return f"<PartnerMember( \
+        id={self.id}, \
+        partner_id={self.partner_id}, \
+        user_id={self.user_id})>"
+
 
 class Partner(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

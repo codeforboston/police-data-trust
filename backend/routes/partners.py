@@ -323,9 +323,12 @@ def remove_member():
         user_found = PartnerMember.query.filter_by(
             user_id=body["user_id"],
             partner_id=body["partner_id"]
-            ).delete()
-        db.session.commit()
-        if user_found > 0 and user_found.role != "Admin":
+            ).first()
+        if user_found and user_found.role != MemberRole.ADMIN:
+            PartnerMember.query.filter_by(
+                user_id=body["user_id"],
+                partner_id=body["partner_id"]).delete()
+            db.session.commit()
             return {
                 "status" : "ok",
                 "message" : "Member successfully deleted from Organization"
