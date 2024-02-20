@@ -356,9 +356,13 @@ def withdraw_invitation():
         user_found = Invitation.query.filter_by(
             user_id=body["user_id"],
             partner_id=body["partner_id"]
+            ).first()
+        if user_found:
+            Invitation.query.filter_by(
+                user_id=body["user_id"],
+                partner_id=body["partner_id"]
             ).delete()
-        db.session.commit()
-        if user_found > 0:
+            db.session.commit()
             return {
                 "status" : "ok",
                 "message" : "Member's invitation withdrawn from Organization"

@@ -590,16 +590,85 @@ def test_remove_member_admin3(
     assert removed is None
 
 
-def test_withdraw_invitation():
-    pass
-    """
-    1)Handle withdrawing invitations for users
-    already invited to the org
-    Assert DB changes
-    2)Handle withdrawing invitations for users
-    not already invited to the org
-    Assert Db changes
-    """
+"""
+withdrawing invitations that exist
+"""
+
+
+def test_withdraw_invitation(
+        client,
+        partner_admin,
+        db_session,
+        example_partner,
+        example_members,
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    invite = Invitation(
+        partner_id=example_partner.id,
+        user_id=example_members["member2"]["user_id"],
+        role="Member"
+
+    )
+    db_session.add(invite)
+    db_session.commit()
+
+    res = client.delete(
+        "/api/v1/partners/withdraw_invitation",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["member2"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+    assert res.status_code == 200
+    query = db_session.query(Invitation).filter_by(
+        user_id=example_members["member2"]["user_id"],
+        partner_id=example_partner.id
+    ).first()
+    assert query is None
+
+
+"""
+withdrawing invitations that don't exist
+"""
+
+
+def test_withdraw_invitation1(
+        client,
+        partner_admin,
+        db_session,
+        example_members,
+        example_partner,
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.delete(
+        "/api/v1/partners/withdraw_invitation",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["member2"]["user_id"],
+            "partner_id": example_partner.id,
+        }
+    )
+    assert res.status_code == 400
+    query = db_session.query(Invitation).filter_by(
+        user_id=example_members["member2"]["user_id"],
+        partner_id=example_partner.id
+    ).first()
+    assert query is None
 
 # normal:all conditions met
 
