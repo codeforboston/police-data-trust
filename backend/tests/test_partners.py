@@ -560,11 +560,7 @@ def test_remove_member_admin2(
 
 def test_remove_member_admin3(
     client,
-    example_members,
-    example_partner,
     partner_admin,
-
-
 ):
     # log in as admin
     access_token = res = client.post(
@@ -597,22 +593,176 @@ def test_remove_member_admin3(
 def test_withdraw_invitation():
     pass
     """
-    1)Only Admins can withdraw invitation
-    2)Handle withdrawing invitations for users
+    1)Handle withdrawing invitations for users
     already invited to the org
     Assert DB changes
-    3)Handle withdrawing invitations for users
+    2)Handle withdrawing invitations for users
     not already invited to the org
     Assert Db changes
     """
 
+# normal:all conditions met
 
-def test_role_change():
-    pass
-    """
-    Admins can only role change
-    Admins cannot change role of other admins
-    Role change for members already in the org
-    Role change for members not already in the
-    org
-    """
+
+def test_role_change(
+        client,
+        partner_admin,
+        example_partner,
+        example_members
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["member2"]["user_id"],
+            "partner_id": example_partner.id,
+            "role": "Publisher"
+        }
+    )
+    assert res.status_code == 200
+    role_change = PartnerMember.query.filter_by(
+        user_id=example_members["member2"]["user_id"],
+        partner_id=example_partner.id,
+    ).first()
+    assert role_change.role == "Publisher" and role_change is not None
+
+
+"""
+admin cannot change the role
+of another admin
+"""
+
+
+def test_role_change5(
+        client,
+        partner_admin,
+        example_partner,
+        example_members
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["admin2"]["user_id"],
+            "partner_id": example_partner.id,
+            "role": "Publisher"
+        }
+    )
+    assert res.status_code == 400
+    role_change = PartnerMember.query.filter_by(
+        user_id=example_members["admin2"]["user_id"],
+        partner_id=example_partner.id,
+    ).first()
+    assert role_change.role != "Publisher" and role_change is not None
+
+
+"""
+Rest of the role change tests
+are for requests where the partner_id/
+user_id is not found
+"""
+
+
+def test_role_change1(
+        client,
+        partner_admin,
+        example_partner,
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : float("inf"),
+            "partner_id": example_partner.id,
+            "role": "Publisher"
+        }
+    )
+    assert res.status_code == 400
+    role_change_instance = PartnerMember.query.filter_by(
+        user_id=float("inf"),
+        partner_id=example_partner.id,
+    ).first()
+    assert role_change_instance is None
+
+
+def test_role_change2(
+        client,
+        partner_admin,
+        example_members
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["member2"]["user_id"],
+            "partner_id": -1,
+            "role": "Publisher"
+        }
+    )
+    assert res.status_code == 400
+    role_change_instance = PartnerMember.query.filter_by(
+        user_id=example_members["member2"]["user_id"],
+        partner_id=-1,
+    ).first()
+    assert role_change_instance is None
+
+
+def test_role_change3(
+        client,
+        partner_admin,
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : -1,
+            "partner_id": -1,
+            "role": "Publisher"
+        }
+    )
+    assert res.status_code == 400
+    role_change_instance = PartnerMember.query.filter_by(
+        user_id=-1,
+        partner_id=-1,
+    ).first()
+    assert role_change_instance is None

@@ -387,7 +387,7 @@ def role_change():
             user_id=body["user_id"],
             partner_id=body["partner_id"]
             ).first()
-        if user_found and user_found.role != "Admin":
+        if user_found and user_found.role != "Administrator":
             user_found.role = body["role"]
             db.session.commit()
             return {
