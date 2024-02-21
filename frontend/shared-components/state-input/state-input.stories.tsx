@@ -7,6 +7,6 @@ export default {
   component: USAStateInput
 } as ComponentMeta<typeof USAStateInput>
 
-const Template: ComponentStory<typeof USAStateInput> = (args) => <USAStateInput {...args} />
+const Template: ComponentStory<typeof USAStateInput> = (args: any) => <USAStateInput {...args} />
 
 export const Default = Template.bind({})
