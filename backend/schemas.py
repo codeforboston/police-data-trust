@@ -197,7 +197,7 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
-PartnerMemberSchema = schema_get(PartnerMember)
+_BasePartnerMemberSchema = schema_get(PartnerMember)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -208,6 +208,11 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+UserSchema = schema_get(User, exclude=["password", "id"])
+
+
+class PartnerMemberSchema(_BasePartnerMemberSchema):
+    user: UserSchema
 
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
@@ -225,9 +230,6 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
     reported_incidents: List[IncidentSchema]
-
-
-UserSchema = sqlalchemy_to_pydantic(User, exclude=["password", "id"])
 
 
 def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
@@ -304,7 +306,7 @@ def partner_member_to_orm(
     return PartnerMember(**orm_attrs)
 
 
-def partner_member_orm_to_json(partner_member: PartnerMember) -> dict:
+def partner_member_orm_to_json(partner_member: PartnerMember) -> dict[str, Any]:
     return PartnerMemberSchema.from_orm(partner_member).dict(
         exclude_none=True,
     )
