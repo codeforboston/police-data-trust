@@ -26,6 +26,7 @@ class FiftyA(ScraperMixin, ParserMixin):
         self.rate_limit = self.RATE_LIMIT
 
     def _find_officers(self, precinct: str) -> list[str]:
+        self.logger.info(f"Finding officers in precinct {precinct}...")
         """Find all officers in a precinct"""
         precinct_url = f"{self.SEED}{precinct}"
         officers = self.find_urls(precinct_url, self.OFFICER_PATTERN)
@@ -38,6 +39,7 @@ class FiftyA(ScraperMixin, ParserMixin):
         return random.sample(list, min(num, len(list)))
 
     def _find_officers_in_precincts(self, debug: bool) -> list[str]:
+        self.logger.info("Finding precincts...")
         precincts: list[str] = self.find_urls(
             f"{self.SEED}/commands", self.PRECINT_PATTERN
         )
@@ -50,7 +52,7 @@ class FiftyA(ScraperMixin, ParserMixin):
         officers: list[str] = []
         for index, precinct in enumerate(precincts):
             if index % 10 == 0 and index != 0:
-                self.logger.info(
+                self.logger.warning(
                     f"Scrapped {index} precincts and have found {len(officers)} officers"  # noqa: E501
                 )
             time.sleep(self.RATE_LIMIT)
@@ -60,6 +62,7 @@ class FiftyA(ScraperMixin, ParserMixin):
         return officers
 
     def _find_incidents(self, complaints: list[str]) -> list[Incident]:
+        self.logger.info("Finding incidents...")
         incidents: list[Incident] = []
         incident_parser = FiftyAIncidentParser()
         for index, complaint in enumerate(complaints):
@@ -78,12 +81,13 @@ class FiftyA(ScraperMixin, ParserMixin):
     def _find_officer_profile_and_complaints(
         self, officers: list[str]
     ) -> tuple[list[Officer], list[str]]:
+        self.logger.info("Finding officer profiles and complaints...")
         officer_profiles: list[Officer] = []
         complaints: list[str] = []
         officer_parser = FiftyAOfficerParser()
         for index, officer in enumerate(officers):
             if index % 10 == 0 and index != 0:
-                self.logger.info(
+                self.logger.warning(
                     f"Scrapped {index} officers and have found {len(officer_profiles)} officer profiles"  # noqa: E501
                 )
             response = self.fetch(f"{self.SEED}{officer}")
