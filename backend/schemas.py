@@ -306,7 +306,7 @@ def partner_member_to_orm(
     return PartnerMember(**orm_attrs)
 
 
-def partner_member_orm_to_json(partner_member: PartnerMember) -> dict[str, Any]:
+def partner_member_orm_to_json(partner_member: PartnerMember) -> Dict[str, Any]:
     return PartnerMemberSchema.from_orm(partner_member).dict(
         exclude_none=True,
     )
