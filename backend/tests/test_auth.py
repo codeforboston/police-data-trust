@@ -71,7 +71,7 @@ def test_auth_test_header(client, example_user):
         json={"email": example_user.email, "password": "my_password"},
     )
 
-    client.set_cookie("localhost", "access_token_cookie", value="")
+    client.set_cookie(domain="localhost", key="access_token_cookie", value="")
 
     test_res = client.get(
         "api/v1/auth/whoami",
