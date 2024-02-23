@@ -1,3 +1,4 @@
+import psycopg.errors
 import psycopg2.errors
 import pytest
 from backend.api import create_app
@@ -37,7 +38,7 @@ def database():
 
     try:
         janitor.init()
-    except psycopg2.errors.lookup("42P04"):
+    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
         pass
 
     yield
