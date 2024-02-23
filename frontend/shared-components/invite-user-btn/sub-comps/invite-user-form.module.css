@@ -1,0 +1,4 @@
+.submitBtn {
+  font-size: var(--size16);
+  min-width: max-content;
+}
