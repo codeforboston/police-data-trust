@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import textwrap
 from typing import Any, Dict, List, Optional
-
 from pydantic import BaseModel, root_validator
 from pydantic.main import ModelMetaclass
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
@@ -252,7 +253,7 @@ def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
     return Incident(**orm_attrs)
 
 
-def incident_orm_to_json(incident: Incident) -> dict:
+def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
     return IncidentSchema.from_orm(incident).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists

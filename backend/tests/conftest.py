@@ -110,7 +110,31 @@ def example_partner_member(db_session: Any, example_user: User):
 
 
 @pytest.fixture  # type: ignore
-def example_incidents(db_session: Any, example_partner: Partner):
+def example_partner_publisher(db_session: Any, example_user: User):
+    partner = Partner(
+        name="Example Partner Member",
+        url="www.example.com",
+        contact_email="example_test@example.ca",
+        member_association=[
+            PartnerMember(
+                user_id=example_user.id,
+                role=MemberRole.PUBLISHER,
+                date_joined=datetime.now(),
+                is_active=True,
+            )
+        ],
+    )
+    db_session.add(partner)
+    db_session.commit()
+    return partner
+
+
+@pytest.fixture  # type: ignore
+def example_incidents(
+    db_session: Any,
+    example_partner: Partner,
+    example_partner_publisher: Partner,
+) :
     incidents = [
         Incident(
             source_id=example_partner.id,
@@ -151,7 +175,7 @@ def example_incidents(db_session: Any, example_partner: Partner):
             criminal_case_brought=True,
         ),
         Incident(
-            source_id=example_partner.id,
+            source_id=example_partner_publisher.id,
             privacy_filter=PrivacyStatus.PUBLIC,
             date_record_created=datetime.now(),
             time_of_incident=datetime.now(),
