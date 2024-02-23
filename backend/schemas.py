@@ -7,7 +7,7 @@ from pydantic.main import ModelMetaclass
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
-from sqlalchemy.ext.declarative.api import DeclarativeMeta
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from .database import User
 from .database.models.action import Action
@@ -82,7 +82,7 @@ spec = SpecTree(
             data={
                 "type": "http",
                 "scheme": "bearer",
-                "bearerFormat": {"JWT": []},
+                "bearerFormat": "JWT",
             },
         ),
     ],
