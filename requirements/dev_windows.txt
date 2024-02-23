@@ -278,7 +278,7 @@ psutil==5.9.8
     # via
     #   ipykernel
     #   mirakuru
-psycopg2==2.8.6
+psycopg2==2.9.9
     # via -r requirements/dev_windows.in
 ptyprocess==0.7.0
     # via
