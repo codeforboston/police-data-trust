@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements/dev_windows.in
 #
-alembic==1.6.5
+alembic==1.13.1
     # via flask-db
 amqp==5.2.0
     # via kombu
@@ -188,7 +188,7 @@ jupyterlab-widgets==3.0.10
     # via ipywidgets
 kombu==5.3.5
     # via celery
-mako==1.1.4
+mako==1.3.2
     # via alembic
 markupsafe==2.1.5
     # via
