@@ -8,7 +8,7 @@ export default {
   component: ProfileInfo
 } as ComponentMeta<typeof ProfileInfo>
 
-const Template: ComponentStory<typeof ProfileInfo> = (args) => <ProfileInfo {...args} />
+const Template: ComponentStory<typeof ProfileInfo> = (args: any) => <ProfileInfo {...args} />
 
 export const Default = Template.bind({})
 Default.args = {

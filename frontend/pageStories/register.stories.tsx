@@ -7,7 +7,7 @@ export default {
   component: ViewerRegistration
 } as ComponentMeta<typeof ViewerRegistration>
 
-const Template: ComponentStory<typeof ViewerRegistration> = (args) => (
+const Template: ComponentStory<typeof ViewerRegistration> = (args: any) => (
   <ViewerRegistration {...args} />
 )
 

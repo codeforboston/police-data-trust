@@ -12,6 +12,7 @@ import { requireAuth } from "../../helpers"
 import { ProfileMenu } from "../../models/profile"
 import { Layout } from "../../shared-components"
 import styles from "./profile.module.css"
+import OrgUserTable from "../../compositions/profile-orguser/profile-orguser"
 
 export default requireAuth(function Profile() {
   const [activePage, setActivePage] = React.useState(ProfileMenu.USER_INFO)
@@ -29,7 +30,8 @@ export default requireAuth(function Profile() {
       case ProfileMenu.NOTIFICATIONS:
         return ProfileNotifications
       case ProfileMenu.ORGANIZATIONS:
-        return ProfileOrganizations
+        // return ProfileOrganizations
+        return OrgUserTable
       default:
         throw new Error("Must be a key in 'ProfileMenu' enum - unexpected default case!")
     }

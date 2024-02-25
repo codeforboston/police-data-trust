@@ -7,7 +7,7 @@ export default {
   component: Passport
 } as ComponentMeta<typeof Passport>
 
-const Template: ComponentStory<typeof Passport> = (args) => <Passport {...args} />
+const Template: ComponentStory<typeof Passport> = (args: any) => <Passport {...args} />
 
 export const Register = Template.bind({})
 Register.parameters = {

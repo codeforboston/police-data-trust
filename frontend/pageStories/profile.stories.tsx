@@ -7,7 +7,7 @@ export default {
   component: Profile
 } as ComponentMeta<typeof Profile>
 
-const Template: ComponentStory<typeof Profile> = (args) => <Profile {...args} />
+const Template: ComponentStory<typeof Profile> = (args: any) => <Profile {...args} />
 export const ProfilePage = Template.bind({})
 ProfilePage.parameters = {
   controls: { hideNoControlsWarning: true }

@@ -1,3 +1,48 @@
 .container {
   flex: 1;
 }
+
+.buttonrow {
+  display: flex;
+}
+.buttonrow1 {
+  display: inline-flex;
+}
+.buttonrow1 > * {
+  margin-right: 10px; /* Add margin to all child elements */
+}
+
+.buttonrow1 > *:last-child {
+  margin-right: 0; /* Remove margin from the last child */
+}
+
+.buttonrow2 {
+  display: inline-flex;
+  margin-left: auto;
+}
+.invisiblebtn {
+  border: none;
+  font-size: var(--size16);
+  font-weight: bold;
+  /* padding: 5% 10%; */
+  background-color: var(--white);
+  color: darkblue;
+}
+
+.visiblebtn {
+  align-items: center;
+  border: none;
+  font-size: var(--size16);
+  font-weight: bold;
+  padding: 5% 10%;
+  background-color: var(--darkBlue);
+  color: white;
+}
+
+.invitebtn {
+  margin: 0;
+  font-size: var(--size16);
+  /* padding: 5% 10%; */
+  background-color: var(--darkBlue);
+  color: white;
+}
