@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Debug Action
-      uses: hmarr/debug-action@v1.0.0
+      uses: hmarr/debug-action@v3.0.0
     - name: Checkout
       uses: actions/checkout@v4
       with:
