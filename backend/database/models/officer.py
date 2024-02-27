@@ -93,7 +93,7 @@ class Officer(db.Model):
     race = db.Column(db.Text)
     ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
-    date_of_birth = db.Column(db.Date) 
-    
+    date_of_birth = db.Column(db.Date)
+
     def __repr__(self):
         return f"<Officer {self.id}>"

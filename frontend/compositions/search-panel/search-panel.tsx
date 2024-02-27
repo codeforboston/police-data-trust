@@ -47,7 +47,6 @@ export const SearchPanel = (props: SearchPanelProps) => {
     } catch (e) {
       console.error("Unexpected search error", e)
       setErrorMessage("Something went wrong. Please try again.")
-      
       /* # TODO: Add error handling when a 401 is recieved. Redirect to login */
     }
     setIsLoading(false)

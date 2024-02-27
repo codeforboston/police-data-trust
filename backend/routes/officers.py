@@ -46,11 +46,9 @@ class SearchOfficerSchema(BaseModel):
 @validate(json=SearchOfficerSchema)
 def search_officer():
     """Search Officers"""
-    print("started searching..")
     body:SearchOfficerSchema=request.context.json
 
     query = db.session.query('Officer')
-    # logger = logging.getLogger('officer')
     try:
         
         if body.officerName:
@@ -65,28 +63,7 @@ def search_officer():
         if body.badgeNumber:
             officer_ids = [result.officer_id for result in db.session.query(agency_officer).filter_by(badge_number=body.badgeNumber).all()]
             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-        # query_result = db.session.query(agency_officer)
-        # officer_ids = [result.officer_id for result in db.session.query(agency_officer).all()]
-
-        # Query Officer table to get officer data based on the list of officer_ids
-        # officers = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-
-        # Create a list of officer data to return in the res ds
-        # //sddaeweawdsecdf dsfsda ss
-        # officer_data = []
-        # for result,officer in zip(query_result,officers):
-        #     officer_data.append({
-        #         'id': officer.id,
-        #         'badge_number':result.badge_number,
-        #         'first_name': officer.first_name,
-        #         'last_name': officer.last_name,
-        #         'race': officer.race,
-        #         'ethnicity': officer.ethnicity,
-        #         'gender': officer.gender,
-        #         'date_of_birth': str(officer.date_of_birth)  # Convert date to string for JSON serialization
-        #     })
-
-        # return jsonify({'officers': officer_data})
+        
     except Exception as e:
         abort(422,description=str(e))
 

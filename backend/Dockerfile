@@ -21,3 +21,4 @@ COPY . .
 ENV PORT=$PDT_API_PORT
 
 CMD /wait && ./run_dev.sh
+

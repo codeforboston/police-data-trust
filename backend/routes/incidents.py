@@ -6,7 +6,7 @@ from backend.auth.jwt import min_role_required, contributor_has_partner
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
-from flask import Blueprint, abort, app, current_app, request
+from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
@@ -76,7 +76,7 @@ class SearchIncidentsSchema(BaseModel):
 
 
 @bp.route("/search", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate(json=SearchIncidentsSchema)
 def search_incidents():
@@ -133,4 +133,3 @@ def search_incidents():
         }
     except Exception as e:
         abort(500, description=str(e))
-
