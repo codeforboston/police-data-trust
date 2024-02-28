@@ -1,30 +1,29 @@
 import logging
 from operator import or_
 from typing import Optional
-from venv import logger
 
 from backend.auth.jwt import min_role_required
-from backend.database.models.agency import JURISDICTION
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
-from flask import  Blueprint, abort, jsonify, request
+from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
-from ..database import  Officer, db, agency_officer, Agency
+from ..database import Officer, db, agency_officer
 from ..schemas import (
-    Officer_orm_to_json,
+    officer_orm_to_json,
     validate,
 )
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
+
 class SearchOfficerSchema(BaseModel):
     officerName: Optional[str] = None
-    location:Optional[str]=None
-    badgeNumber:Optional[str]=None
+    location: Optional[str] = None
+    badgeNumber: Optional[str] = None
     page: Optional[int] = 1
     perPage: Optional[int] = 20
 
@@ -33,24 +32,25 @@ class SearchOfficerSchema(BaseModel):
         schema_extra = {
             "example": {
                 "officerName": "John Doe",
-                "location":"New York",
-                "badgeNumber":1234,
+                "location" : "New York",
+                "badgeNumber" : 1234,
                 "page": 1,
                 "perPage": 20,
             }
         }
 
-@bp.route("/search/officer",methods=["POST"])
+
+@bp.route("/search", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate(json=SearchOfficerSchema)
 def search_officer():
     """Search Officers"""
-    body:SearchOfficerSchema=request.context.json
-
+    body: SearchOfficerSchema = request.context.json
     query = db.session.query('Officer')
+    logger = logging.getLogger("officers")
+
     try:
-        
         if body.officerName:
             names = body.officerName.split()
             first_name = names[0] if len(names) > 0 else ''
@@ -59,13 +59,17 @@ def search_officer():
                 Officer.first_name.ilike(f"%{first_name}%"),
                 Officer.last_name.ilike(f"%{last_name}%")
             ))
-        
+
         if body.badgeNumber:
-            officer_ids = [result.officer_id for result in db.session.query(agency_officer).filter_by(badge_number=body.badgeNumber).all()]
+            officer_ids = [
+                result.officer_id for result in db.session.query(
+                    agency_officer
+                    ).filter_by(badge_number=body.badgeNumber).all()
+            ]
             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-        
+
     except Exception as e:
-        abort(422,description=str(e))
+        abort(422, description=str(e))
 
     results = query.paginate(
         page=body.page, per_page=body.perPage, max_per_page=100
@@ -79,10 +83,9 @@ def search_officer():
     except MixpanelException as e:
         logger.error(e)
     try:
-        return{
-            "results":[
-                
-                Officer_orm_to_json(result) for result in results.items
+        return {
+            "results": [
+                officer_orm_to_json(result) for result in results.items
             ],
             "page": results.page,
             "totalPages": results.pages,
@@ -90,4 +93,3 @@ def search_officer():
         }
     except Exception as e:
         abort(500, description=str(e))
-
