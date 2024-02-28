@@ -1,8 +1,8 @@
-FROM python:3.9.5-slim-buster AS base
+FROM python:3-slim-buster AS base
 
 RUN apt-get update && apt-get install curl -y && apt-get install g++ libpq-dev gcc -y
 
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.12.1/wait /wait
 RUN chmod +x /wait
 
 
