@@ -269,7 +269,33 @@ def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
             "victims",
         },
     )
+# officer end point
 
+_officer_list_attributes=[
+    'first_name',
+    'last_name'
+]
+class _OfficerMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+       
+        values = {**values}  # convert mappings to base dict type.
+        for i in _officer_list_attributes:
+            if not values.get(i):
+                values[i] = []
+        return values
+_BaseOfficerSchema = schema_get(Officer)
+
+class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
+    reported_Officer: Optional[List[_BaseOfficerSchema]]
+
+
+def Officer_orm_to_json(officer: Officer) -> dict:
+    return IncidentSchema.from_orm(officer).dict(
+        exclude_none=True,
+        # Exclude a bunch of currently-unused empty lists
+    
+    )
 
 def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
     """Convert the JSON partner into an ORM instance
