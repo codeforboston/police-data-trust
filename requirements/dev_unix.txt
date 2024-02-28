@@ -278,6 +278,8 @@ psutil==5.9.8
     # via
     #   ipykernel
     #   mirakuru
+psycopg-binary==3.1.18
+    # via -r requirements/dev_unix.in
 psycopg2-binary==2.9.9
     # via -r requirements/dev_unix.in
 ptyprocess==0.7.0
