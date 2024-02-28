@@ -110,6 +110,11 @@ _incident_list_attrs = [
     "legal_case",
 ]
 
+_officer_list_attributes = [
+    'first_name',
+    'last_name'
+]
+
 _partner_list_attrs = ["reported_incidents"]
 
 
@@ -123,6 +128,16 @@ class _IncidentMixin(BaseModel):
         """
         values = {**values}  # convert mappings to base dict type.
         for i in _incident_list_attrs:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
+class _OfficerMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        values = {**values}  # convert mappings to base dict type.
+        for i in _officer_list_attributes:
             if not values.get(i):
                 values[i] = []
         return values
@@ -198,6 +213,7 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
+_BaseOfficerSchema = schema_get(Officer)
 _BasePartnerMemberSchema = schema_get(PartnerMember)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
@@ -227,6 +243,10 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     actions: List[ActionSchema]
     use_of_force: List[UseOfForceSchema]
     legal_case: List[LegalCaseSchema]
+
+
+class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
+    reported_Officer: Optional[List[_BaseOfficerSchema]]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
@@ -269,33 +289,14 @@ def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
             "victims",
         },
     )
-# officer end point
-
-_officer_list_attributes=[
-    'first_name',
-    'last_name'
-]
-class _OfficerMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-       
-        values = {**values}  # convert mappings to base dict type.
-        for i in _officer_list_attributes:
-            if not values.get(i):
-                values[i] = []
-        return values
-_BaseOfficerSchema = schema_get(Officer)
-
-class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    reported_Officer: Optional[List[_BaseOfficerSchema]]
 
 
-def Officer_orm_to_json(officer: Officer) -> dict:
+def officer_orm_to_json(officer: Officer) -> dict:
     return IncidentSchema.from_orm(officer).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists
-    
     )
+
 
 def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
     """Convert the JSON partner into an ORM instance

@@ -11,7 +11,7 @@ from backend.auth import user_manager, jwt, refresh_token
 from backend.schemas import spec
 from backend.routes.partners import bp as partners_bp
 from backend.routes.incidents import bp as incidents_bp
-from backend.routes.officers import bp as officers_bp 
+from backend.routes.officers import bp as officers_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
