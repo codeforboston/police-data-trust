@@ -836,4 +836,3 @@ def test_role_change3(
         partner_id=-1,
     ).first()
     assert role_change_instance is None
-

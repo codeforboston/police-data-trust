@@ -244,7 +244,6 @@ def add_member_to_partner():
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-
 def join_organization():
     try:
         body = request.get_json()
@@ -283,10 +282,9 @@ def join_organization():
     finally:
         db.session.close()
 
-
-
-
 # user can leave org they already joined
+
+
 @bp.route("/leave", methods=["DELETE"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
@@ -434,8 +432,8 @@ def get_invitations():
         return str(e)
 
 
-
 # view staged invitations table
+
 @bp.route("/stagedinvitations", methods=["GET"])
 @jwt_required()
 @validate()
