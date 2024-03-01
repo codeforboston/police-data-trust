@@ -1,0 +1,20 @@
+.root {
+  display: flex;
+  gap: var(--size4);
+  margin-top: var(--size12);
+}
+
+.item {
+  border: none;
+  background-color: inherit;
+  font-size: var(--size16);
+  color: var(--lightBlue);
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: bold;
+  text-decoration: underline;
+  color: var(--darkBlue);
+  cursor: default;
+}

@@ -582,6 +582,7 @@ def test_remove_member_admin3(
             "partner_id": 9999999,
         }
     )
+
     assert res.status_code == 400
     removed = PartnerMember.query.filter_by(
         user_id=99999999,
@@ -835,3 +836,4 @@ def test_role_change3(
         partner_id=-1,
     ).first()
     assert role_change_instance is None
+

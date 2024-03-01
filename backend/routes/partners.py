@@ -1,3 +1,4 @@
+
 from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -5,6 +6,8 @@ from backend.database.models.user import User, UserRole
 from flask import Blueprint, abort, current_app, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+from flask_sqlalchemy import Pagination
+from sqlalchemy.orm import joinedload
 
 from ..database import (
     Partner,
@@ -17,7 +20,6 @@ from ..database import (
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
-
 from ..schemas import (
     CreatePartnerSchema,
     partner_orm_to_json,
@@ -27,6 +29,7 @@ from ..schemas import (
     AddMemberSchema,
     partner_member_to_orm
 )
+
 
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 
@@ -107,10 +110,10 @@ def get_all_partners():
 @bp.route("/<int:partner_id>/members/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+@validate()  # type: ignore
 def get_partner_members(partner_id: int):
     """Get all members of a partner.
-    Accepts Query Parameters for pagination:
+    Accepts Query ParaFmeters for pagination:
     per_page: number of results per page
     page: page number
     """
@@ -119,20 +122,21 @@ def get_partner_members(partner_id: int):
     q_per_page = args.get("per_page", 20, type=int)
 
     # partner = Partner.get(partner_id)
-    all_members = db.session.query(PartnerMember).filter(
-        PartnerMember.partner_id == partner_id
-    )
-    results = all_members.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
+    members: Pagination = (
+        PartnerMember.query.options(
+            joinedload(PartnerMember.user)  # type: ignore
+        )
+        .filter_by(partner_id=partner_id)
+        .paginate(page=q_page, per_page=q_per_page, max_per_page=100)
     )
 
     return {
         "results": [
-            partner_member_orm_to_json(member) for member in results.items
+            partner_member_orm_to_json(member) for member in members.items
         ],
-        "page": results.page,
-        "totalPages": results.pages,
-        "totalResults": results.total,
+        "page": members.page,
+        "totalPages": members.pages,
+        "totalResults": members.total,
     }
 
 
@@ -240,6 +244,7 @@ def add_member_to_partner():
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
+
 def join_organization():
     try:
         body = request.get_json()
@@ -277,6 +282,8 @@ def join_organization():
         }, 500
     finally:
         db.session.close()
+
+
 
 
 # user can leave org they already joined
@@ -425,6 +432,7 @@ def get_invitations():
 
     except Exception as e:
         return str(e)
+
 
 
 # view staged invitations table
