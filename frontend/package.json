@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--openssl-legacy-provider' next dev",
+    "dev": "next dev",
     "build:dev": "env-cmd -f .env.development next build && next export",
     "build:stage": "env-cmd -f .env.staging next build && next export",
     "build:prod": "env-cmd -f .env.production next build && next export",
@@ -17,7 +17,7 @@
     "watch": "jest --watch",
     "fix": "next lint --fix; prettier --write .",
     "check-types": "tsc --noEmit",
-    "storybook": "NODE_OPTIONS='--openssl-legacy-provider' start-storybook -s public -p 6006",
+    "storybook": "start-storybook -s public -p 6006",
     "build-storybook": "build-storybook -s public"
   },
   "lint-staged": {
