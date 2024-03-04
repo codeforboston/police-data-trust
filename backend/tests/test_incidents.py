@@ -1,8 +1,7 @@
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Partner, User, UserRole
-from typing import Any, List
+from backend.database import Incident, Partner, User
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
