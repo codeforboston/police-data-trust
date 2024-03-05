@@ -86,14 +86,34 @@ class StateID(db.Model):
         return f"<StateID {self.id}>"
 
 
+class Employment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
+    agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"))
+    earliest_employment = db.Column(db.Text)
+    latest_employment = db.Column(db.Text)
+    badge_number = db.Column(db.Text)
+    unit = db.Column(db.Text)
+    highest_rank = db.Column(db.Enum(Rank))
+    currently_employed = db.Column(db.Boolean)
+
+    officer = db.relationship("Officer", back_populates="known_employers")
+    agency = db.relationship("Agency", back_populates="known_officers")
+
+    def __repr__(self):
+        return f"<Employment {self.id}>"
+
+
 class Officer(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     first_name = db.Column(db.Text)
+    middle_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
     race = db.Column(db.Text)
     ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     date_of_birth = db.Column(db.Date)
+    known_employers = db.relationship("Employment")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

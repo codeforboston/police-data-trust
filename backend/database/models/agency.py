@@ -20,8 +20,8 @@ class Agency(db.Model):
     hq_city = db.Column(db.Text)
     hq_zip = db.Column(db.Text)
     jurisdiction = db.Column(db.Enum(JURISDICTION))
-    known_officers = db.relationship(
-        "Officer", secondary=agency_officer, backref="known_employers")
+
+    known_officers = db.relationship("Employment", back_populates="agency")
 
     def __repr__(self):
         return f"<Agency {self.name}>"
