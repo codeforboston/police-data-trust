@@ -42,7 +42,7 @@ MIXPANEL_TOKEN=your_mixpanel_token
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
 
-3. Build and run the project with `docker-compose build; docker-compose up -d; docker-compose logs -f app`
+3. Build and run the project with `docker-compose build && docker-compose up -d && docker-compose logs -f`
 
 ## Installation (Frontend Only)
 
