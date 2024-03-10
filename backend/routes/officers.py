@@ -6,11 +6,12 @@ from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
+from backend.database.models.employment import Employment
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
-from ..database import Officer, db, agency_officer
+from ..database import Officer, Employment, db
 from ..schemas import (
     officer_orm_to_json,
     validate,
@@ -63,7 +64,7 @@ def search_officer():
         if body.badgeNumber:
             officer_ids = [
                 result.officer_id for result in db.session.query(
-                    agency_officer
+                    Employment
                     ).filter_by(badge_number=body.badgeNumber).all()
             ]
             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()

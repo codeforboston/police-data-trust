@@ -14,7 +14,9 @@ from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
-from .database.models.officer import Officer
+from .database.models.officer import Officer, StateID
+from .database.models.employment import Employment
+from .database.models.accusation import Accusation
 from .database.models.investigation import Investigation
 from .database.models.legal_case import LegalCase
 from .database.models.attachment import Attachment
@@ -164,7 +166,10 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
-CreateOfficerSchema = schema_create(Officer)
+_BaseCreateOfficerSchema = schema_create(Officer)
+CreateStateIDSchema = schema_create(StateID)
+CreateEmploymentSchema = schema_create(Employment)
+CreateAccusationSchema = schema_create(Accusation)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
@@ -200,6 +205,12 @@ class CreatePartnerMemberSchema(BaseModel):
     user_id: int
     role: MemberRole
     is_active: Optional[bool] = True
+
+
+class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
+    known_employers: Optional[List[CreateEmploymentSchema]]
+    accusations: Optional[List[CreateAccusationSchema]]
+    state_ids: Optional[List[CreateStateIDSchema]]
 
 
 AddMemberSchema = sqlalchemy_to_pydantic(
@@ -246,7 +257,9 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    reported_Officer: Optional[List[_BaseOfficerSchema]]
+    known_employers: List[CreateEmploymentSchema]
+    accusations: List[CreateAccusationSchema]
+    state_ids: List[CreateStateIDSchema]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):

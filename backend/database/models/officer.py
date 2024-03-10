@@ -3,19 +3,6 @@ import enum
 from .. import db
 
 
-class Rank(str, enum.Enum):
-    # TODO: Is this comprehensive?
-    TECHNICIAN = "TECHNICIAN"
-    OFFICER = "OFFICER"
-    DETECTIVE = "DETECTIVE"
-    CORPORAL = "CORPORAL"
-    SERGEANT = "SERGEANT"
-    LIEUTENANT = "LIEUTENANT"
-    CAPTAIN = "CAPTAIN"
-    DEPUTY = "DEPUTY"
-    CHIEF = "CHIEF"
-
-
 class State(str, enum.Enum):
     AL = "AL"
     AK = "AK"
@@ -72,8 +59,8 @@ class State(str, enum.Enum):
 class StateID(db.Model):
     """
     Represents a Statewide ID that follows an offcier even as they move between
-    law enforcement agencies. for an officer. For example, in New York, this
-    would be the Tax ID Number.
+    law enforcement agencies. For example, in New York, this would be
+    the Tax ID Number.
     """
     id = db.Column(db.Integer, primary_key=True)
     officer_id = db.Column(
@@ -86,24 +73,6 @@ class StateID(db.Model):
         return f"<StateID {self.id}>"
 
 
-class Employment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
-    agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"))
-    earliest_employment = db.Column(db.Text)
-    latest_employment = db.Column(db.Text)
-    badge_number = db.Column(db.Text)
-    unit = db.Column(db.Text)
-    highest_rank = db.Column(db.Enum(Rank))
-    currently_employed = db.Column(db.Boolean)
-
-    officer = db.relationship("Officer", back_populates="known_employers")
-    agency = db.relationship("Agency", back_populates="known_officers")
-
-    def __repr__(self):
-        return f"<Employment {self.id}>"
-
-
 class Officer(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     first_name = db.Column(db.Text)
@@ -113,7 +82,9 @@ class Officer(db.Model):
     ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     date_of_birth = db.Column(db.Date)
-    known_employers = db.relationship("Employment")
+    known_employers = db.relationship("Employment", back_populates="officer")
+    accusations = db.relationship("Accusation", back_populates="officer")
+    state_ids = db.relationship("StateID", backref="officer")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

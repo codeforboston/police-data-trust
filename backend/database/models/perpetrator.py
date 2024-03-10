@@ -1,5 +1,5 @@
-from backend.database.models._assoc_tables import perpetrator_officer
-from backend.database.models.officer import Rank, State
+from backend.database.models.officer import State
+from backend.database.models.employment import Rank
 from .. import db
 
 

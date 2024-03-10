@@ -59,7 +59,8 @@ export enum Rank {
   LIEUTENANT = "Lieutenant",
   CAPTAIN = "Captain",
   DEPUTY = "Deputy",
-  CHIEF = "Chief"
+  CHIEF = "Chief",
+  COMMISSIONER = "Commissioner"
 }
 
 export interface Officer {

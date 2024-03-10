@@ -1,5 +1,4 @@
 import enum
-from backend.database.models._assoc_tables import agency_officer
 from .. import db
 
 

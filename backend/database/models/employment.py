@@ -1,5 +1,19 @@
+import enum
 from .. import db
-from backend.database.models.officer import Rank
+
+
+class Rank(str, enum.Enum):
+    # TODO: Is this comprehensive?
+    TECHNICIAN = "TECHNICIAN"
+    OFFICER = "OFFICER"
+    DETECTIVE = "DETECTIVE"
+    CORPORAL = "CORPORAL"
+    SERGEANT = "SERGEANT"
+    LIEUTENANT = "LIEUTENANT"
+    CAPTAIN = "CAPTAIN"
+    DEPUTY = "DEPUTY"
+    CHIEF = "CHIEF"
+    COMMISSIONER = "COMMISSIONER"
 
 
 class Employment(db.Model):
