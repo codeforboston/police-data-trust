@@ -116,7 +116,7 @@ def test_create_incident_exists(
             "email": partner_admin.email ,
             "password": "my_password"
         },
-    ).json["access_token"] 
+    ).json["access_token"]
     # creating new incident
     res = client.post(
         "/api/v1/incidents/create",
