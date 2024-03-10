@@ -47,7 +47,7 @@ class SearchOfficerSchema(BaseModel):
 def search_officer():
     """Search Officers"""
     body: SearchOfficerSchema = request.context.json
-    query = db.session.query('Officer')
+    query = Officer.query
     logger = logging.getLogger("officers")
 
     try:
@@ -55,25 +55,26 @@ def search_officer():
             names = body.officerName.split()
             first_name = names[0] if len(names) > 0 else ''
             last_name = names[1] if len(names) > 1 else ''
-            query = Officer.query.filter(or_(
+            query = query.filter(or_(
                 Officer.first_name.ilike(f"%{first_name}%"),
                 Officer.last_name.ilike(f"%{last_name}%")
             ))
 
         if body.badgeNumber:
             officer_ids = [
-                result.officer_id for result in db.session.query(
-                    agency_officer
-                    ).filter_by(badge_number=body.badgeNumber).all()
+                result.officer_id for result in db.session.query(agency_officer).filter_by(badge_number=body.badgeNumber).all()
             ]
-            query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
+            query = query.filter(Officer.id.in_(officer_ids))
 
     except Exception as e:
         abort(422, description=str(e))
 
-    results = query.paginate(
-        page=body.page, per_page=body.perPage, max_per_page=100
-    )
+    # Perform pagination on the query
+    page = body.page
+    per_page = body.perPage
+    max_per_page = 100
+    results = query.paginate(page=page, per_page=per_page, max_per_page=max_per_page)
+
 
     try:
         track_to_mp(request, "search_officer", {
