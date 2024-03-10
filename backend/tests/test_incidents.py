@@ -5,6 +5,8 @@ import pytest
 from backend.database import Incident, Partner, PrivacyStatus, User
 from typing import Any
 
+member_email = "joe@partner.com"
+example_password = "my_password"
 mock_partners = {
     "cpdp": {"name": "Citizens Police Data Project"},
     "mpv": {"name": "Mapping Police Violence"},
@@ -53,18 +55,25 @@ mock_incidents = {
 
 
 @pytest.fixture
-def example_incidents(db_session, client, contributor_access_token):
+def example_incidents(db_session, client , partner_admin):
     for id, mock in mock_partners.items():
         db_session.add(Partner(**mock))
         db_session.commit()
 
     created = {}
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email ,
+            "password": "my_password"
+        },
+    ).json["access_token"]
     for name, mock in mock_incidents.items():
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
             headers={
-                "Authorization": "Bearer {0}".format(contributor_access_token)
+                "Authorization": "Bearer {0}".format(access_token)
             },
         )
         assert res.status_code == 200
@@ -73,9 +82,6 @@ def example_incidents(db_session, client, contributor_access_token):
 
 
 def test_create_incident(db_session, example_incidents):
-    # TODO: test that the User actually has permission to create an
-    # incident for the partner
-    # expected = mock_incidents["domestic"]
     created = example_incidents["domestic"]
 
     incident_obj = (
@@ -88,7 +94,95 @@ def test_create_incident(db_session, example_incidents):
             incident_obj.perpetrators[i].id == created["perpetrators"][i]["id"]
         )
     assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
-    # assert incident_obj.source == expected["source"]
+    assert incident_obj.location == created["location"]
+    assert incident_obj.description == created["description"]
+
+
+"""
+test for creating a new incident and
+creating same incident
+"""
+
+
+def test_create_incident_exists(
+        client,
+        partner_admin,
+
+):
+    created = {}
+    access_token = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email ,
+            "password": "my_password"
+        },
+    ).json["access_token"] 
+    # creating new incident
+    res = client.post(
+        "/api/v1/incidents/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=mock_incidents["domestic"]
+    )
+    created["domestic"] = res.json
+    domestic_instance = created["domestic"]
+    print(created)
+    assert res.status_code == 200
+    expected = mock_incidents["domestic"]
+    incident_obj = Incident.query.filter_by(
+        time_of_incident=expected["time_of_incident"]
+    ).first()
+    date_format = '%Y-%m-%d %H:%M:%S'
+    date_obj = datetime.strptime(
+        expected["time_of_incident"],
+        date_format)
+    assert incident_obj.time_of_incident == date_obj
+    for i in [0, 1]:
+        assert (
+            incident_obj.perpetrators[i].id ==
+            domestic_instance["perpetrators"][i]["id"]
+        )
+    assert (incident_obj.use_of_force[0].id ==
+            domestic_instance["use_of_force"][0]["id"])
+    assert incident_obj.location == domestic_instance["location"]
+    assert incident_obj.description == domestic_instance["description"]
+
+    # creating the same incident
+    # should not be able to create incident
+    res = client.post(
+        "/api/v1/incidents/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=mock_incidents["domestic"]
+    )
+
+    assert res.status_code == 409
+
+
+"""
+creating incident when user
+does not have permission
+"""
+
+
+def test_create_incident_no_permission(
+        client,
+        example_user
+
+):
+    access_token = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": "my_password"
+        },
+    ).json["access_token"]
+    print(access_token)
+    # creating new incident
+    res = client.post(
+        "/api/v1/incidents/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=mock_incidents["domestic"]
+    )
+    assert res.status_code == 403
 
 
 def test_get_incident(app, client, db_session, access_token):
