@@ -113,8 +113,9 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'first_name',
-    'last_name'
+    'known_employers',
+    'accusations',
+    'state_ids',
 ]
 
 _partner_list_attrs = ["reported_incidents"]
@@ -302,6 +303,31 @@ def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
             "victims",
         },
     )
+
+
+def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
+    """Convert the JSON officer into an ORM instance
+
+    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
+    around. sqlalchemy won't convert nested dictionaries into the corresponding
+    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
+    roll our own recursive conversion if we can get the ORM model class
+    associated with a schema instance.
+    """
+
+    converters = {
+        "state_ids": StateID,
+        "known_employers": Employment,
+    }
+    orm_attrs = officer.dict()
+    for k, v in orm_attrs.items():
+        is_dict = isinstance(v, dict)
+        is_list = isinstance(v, list)
+        if is_dict:
+            orm_attrs[k] = converters[k](**v)
+        elif is_list and len(v) > 0:
+            orm_attrs[k] = [converters[k](**d) for d in v]
+    return Officer(**orm_attrs)
 
 
 def officer_orm_to_json(officer: Officer) -> dict:

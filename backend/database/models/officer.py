@@ -1,6 +1,6 @@
 import enum
 
-from .. import db
+from ..core import db, CrudMixin
 
 
 class State(str, enum.Enum):
@@ -70,10 +70,10 @@ class StateID(db.Model):
     value = db.Column(db.Text)  # e.g. "958938"
 
     def __repr__(self):
-        return f"<StateID {self.id}>"
+        return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(db.Model):
+class Officer(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     first_name = db.Column(db.Text)
     middle_name = db.Column(db.Text)
