@@ -292,7 +292,7 @@ def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
 
 
 def officer_orm_to_json(officer: Officer) -> dict:
-    return IncidentSchema.from_orm(officer).dict(
+    return OfficerSchema.from_orm(officer).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists
     )
