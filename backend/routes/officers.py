@@ -62,7 +62,8 @@ def search_officer():
 
         if body.badgeNumber:
             officer_ids = [
-                result.officer_id for result in db.session.query(agency_officer).filter_by(badge_number=body.badgeNumber).all()
+                result.officer_id for result in db.session.query(agency_officer)
+                .filter_by(badge_number=body.badgeNumber).all()
             ]
             query = query.filter(Officer.id.in_(officer_ids))
 
@@ -73,8 +74,8 @@ def search_officer():
     page = body.page
     per_page = body.perPage
     max_per_page = 100
-    results = query.paginate(page=page, per_page=per_page, max_per_page=max_per_page)
-
+    results = query.paginate(page=page, per_page=per_page,
+                              max_per_page=max_per_page)
 
     try:
         track_to_mp(request, "search_officer", {
