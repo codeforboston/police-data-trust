@@ -1,8 +1,13 @@
 from __future__ import annotations
-from datetime import datetime
 
 import pytest
-from backend.database import Officer, Agency, Employment, Accusation, Incident, Partner
+from backend.database import (
+    Officer,
+    Agency,
+    Accusation,
+    Incident,
+    Partner
+)
 from typing import Any
 
 mock_officers = {
@@ -135,7 +140,8 @@ def example_officers(db_session, client, contributor_access_token):
     for name, mock in mock_agencies.items():
         db_session.add(Agency(**mock))
         db_session.commit()
-        agencies[name] = db_session.query(Agency).filter(Agency.name == mock["name"]).first()
+        agencies[name] = db_session.query(
+            Agency).filter(Agency.name == mock["name"]).first()
 
     created = {}
     for name, mock in mock_officers.items():
@@ -164,7 +170,8 @@ def example_employment(db_session, example_officers):
 
 
 @pytest.fixture
-def example_accusations(db_session, client, contributor_access_token, example_officers):
+def example_accusations(db_session, client,
+                        contributor_access_token, example_officers):
     officers, agencies = example_officers
     incidents = {}
     accusations = {}
@@ -225,7 +232,8 @@ def test_get_officer(app, client, db_session, access_token):
     assert res.json["first_name"] == fname
     assert res.json["last_name"] == lname
 
-""" 
+
+"""
 @pytest.mark.parametrize(
     ("query", "expected_officer_names"),
     [
@@ -284,6 +292,7 @@ def test_search_officers(
     assert res.json["totalPages"] == 1
     assert res.json["totalResults"] == len(expected_officer_names)
  """
+
 
 def test_get_officers(client: Any, access_token: str):
     res = client.get(

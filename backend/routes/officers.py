@@ -11,7 +11,7 @@ from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
-from ..database import Officer, Employment, db
+from ..database import Officer, db
 from ..schemas import (
     CreateOfficerSchema,
     officer_orm_to_json,
@@ -175,7 +175,8 @@ def get_all_officers():
     )
 
     return {
-        "results": [officer_orm_to_json(officer) for officer in pagination.items],
+        "results": [
+            officer_orm_to_json(officer) for officer in pagination.items],
         "page": pagination.page,
         "totalPages": pagination.pages,
         "totalResults": pagination.total,
