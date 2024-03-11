@@ -74,8 +74,9 @@ def search_officer():
     page = body.page
     per_page = body.perPage
     max_per_page = 100
-    results = query.paginate(page=page, per_page=per_page,
-                              max_per_page=max_per_page)
+    results = query.paginate(page=page,
+                             per_page=per_page,
+                             max_per_page=max_per_page)
 
     try:
         track_to_mp(request, "search_officer", {
