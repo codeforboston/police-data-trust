@@ -49,35 +49,62 @@ def get_partners(partner_id: int):
 @min_role_required(UserRole.PUBLIC)
 @validate(json=CreatePartnerSchema)
 def create_partner():
-    """Create a contributing partner.
+    """Create a contributing partner."""
 
-    Cannot be called in production environments
-    """
-    if current_app.env == "production":
-        abort(418)
+    body = request.context.json
+    if (
+        body.name is not None
+        and body.url is not None
+        and body.contact_email is not None
+        and body.name != ""
+        and body.url != ""
+        and body.contact_email != ""
+    ):
+        try:
+            partner = partner_to_orm(body)
+        except Exception:
+            abort(400)
+        partner_query_email = Partner.query.filter_by(
+            contact_email=body.contact_email).first()
+        partner_query_url = Partner.query.filter_by(url=body.url).first()
+        if partner_query_email:
+            return {
+                    "status": "error",
+                    "message": "Error. Entered email or url details "
+                               + "matches existing record.",
 
-    try:
-        partner = partner_to_orm(request.context.json)
-    except Exception:
-        abort(400)
+                }, 400
+        if partner_query_url:
+            return {
+                    "status": "error",
+                    "message": "Error. Entered email or url details "
+                               + "matches existing record.",
+                }, 400
+        """
+        add to database if all fields are present
+        and instance not already in db.
+        """
+        created = partner.create()
+        resp = partner_orm_to_json(created)
 
-    created = partner.create()
-    make_admin = PartnerMember(
-        partner_id=created.id,
-        user_id=get_jwt()["sub"],
-        role=MemberRole.ADMIN,
-    )
-    make_admin.create()
+        make_admin = PartnerMember(
+            partner_id=created.id,
+            user_id=get_jwt()["sub"],
+            role=MemberRole.ADMIN,
+        )
+        make_admin.create()
 
-    track_to_mp(
-        request,
-        "create_partner",
-        {
+        track_to_mp(request, "create_partner", {
             "partner_name": partner.name,
-            "partner_contact": partner.contact_email,
-        },
-    )
-    return partner_orm_to_json(created)
+            "partner_contact": partner.contact_email
+        })
+        return resp
+    else:
+        return {
+                "status": "error",
+                "message": "Failed to create partner. " +
+                           "Please include all of the following"
+        }, 400
 
 
 @bp.route("/", methods=["GET"])
