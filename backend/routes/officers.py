@@ -57,14 +57,14 @@ def search_officer():
     try:
         if body.name:
             names = body.officerName.split()
-            if len(names) == 0:
+            if len(names) == 1:
                 query = Officer.query.filter(
                     or_(
                         Officer.first_name.ilike(f"%{body.officerName}%"),
                         Officer.last_name.ilike(f"%{body.officerName}%")
                     )
                 )
-            elif len(names) == 1:
+            elif len(names) == 2:
                 query = Officer.query.filter(
                     or_(
                         Officer.first_name.ilike(f"%{names[0]}%"),
