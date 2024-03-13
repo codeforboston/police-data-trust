@@ -14,7 +14,9 @@ from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
-from .database.models.officer import Officer
+from .database.models.officer import Officer, StateID
+from .database.models.employment import Employment
+from .database.models.accusation import Accusation
 from .database.models.investigation import Investigation
 from .database.models.legal_case import LegalCase
 from .database.models.attachment import Attachment
@@ -111,8 +113,9 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'first_name',
-    'last_name'
+    'known_employers',
+    'accusations',
+    'state_ids',
 ]
 
 _partner_list_attrs = ["reported_incidents"]
@@ -164,7 +167,10 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
-CreateOfficerSchema = schema_create(Officer)
+_BaseCreateOfficerSchema = schema_create(Officer)
+CreateStateIDSchema = schema_create(StateID)
+CreateEmploymentSchema = schema_create(Employment)
+CreateAccusationSchema = schema_create(Accusation)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
@@ -200,6 +206,12 @@ class CreatePartnerMemberSchema(BaseModel):
     user_id: int
     role: MemberRole
     is_active: Optional[bool] = True
+
+
+class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
+    known_employers: Optional[List[CreateEmploymentSchema]]
+    accusations: Optional[List[CreateAccusationSchema]]
+    state_ids: Optional[List[CreateStateIDSchema]]
 
 
 AddMemberSchema = sqlalchemy_to_pydantic(
@@ -246,7 +258,9 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    reported_Officer: Optional[List[_BaseOfficerSchema]]
+    known_employers: List[CreateEmploymentSchema]
+    accusations: List[CreateAccusationSchema]
+    state_ids: List[CreateStateIDSchema]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
@@ -291,8 +305,33 @@ def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
     )
 
 
+def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
+    """Convert the JSON officer into an ORM instance
+
+    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
+    around. sqlalchemy won't convert nested dictionaries into the corresponding
+    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
+    roll our own recursive conversion if we can get the ORM model class
+    associated with a schema instance.
+    """
+
+    converters = {
+        "state_ids": StateID,
+        "known_employers": Employment,
+    }
+    orm_attrs = officer.dict()
+    for k, v in orm_attrs.items():
+        is_dict = isinstance(v, dict)
+        is_list = isinstance(v, list)
+        if is_dict:
+            orm_attrs[k] = converters[k](**v)
+        elif is_list and len(v) > 0:
+            orm_attrs[k] = [converters[k](**d) for d in v]
+    return Officer(**orm_attrs)
+
+
 def officer_orm_to_json(officer: Officer) -> dict:
-    return IncidentSchema.from_orm(officer).dict(
+    return OfficerSchema.from_orm(officer).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists
     )
