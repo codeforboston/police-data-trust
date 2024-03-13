@@ -1,7 +1,7 @@
 version: "3"
 services:
   db:
-    image: postgres:13.2 #AWS RDS latest version
+    image: postgres:16.1 #AWS RDS latest version
     env_file:
       - ".env"
     volumes:

@@ -31,4 +31,4 @@ class Resp(BaseModel):
 def healthcheck():
     """Verifies service health and returns the api version"""
     check_db()
-    return ({"apiVersion": spec.config.VERSION}, 200)
+    return {"apiVersion": spec.config.version}, 200

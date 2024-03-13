@@ -2,7 +2,7 @@
 # requirements, so this image starts with the same image as the database
 # containers and installs the same version of python as the api containers
 
-FROM postgres:13.2 as base
+FROM postgres:16.1 as base
 
 RUN apt-get update && apt-get install -y \
     make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
@@ -15,7 +15,7 @@ SHELL ["bash", "-lc"]
 RUN curl https://pyenv.run | bash && \
     echo 'export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
 
-ENV PYTHON_VERSION=3.8.11
+ENV PYTHON_VERSION=3.12.2
 RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
 RUN pip install pip-tools
 

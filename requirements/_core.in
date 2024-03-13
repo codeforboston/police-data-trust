@@ -17,7 +17,7 @@ pytest-mock
 python-dotenv
 flask-user<0.7
 wtforms
-SQLAlchemy==1.3.23
+SQLAlchemy==1.4.51
 flask-wtf
 flask-babelex
 PyYAML

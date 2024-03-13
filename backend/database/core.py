@@ -9,6 +9,7 @@ from typing import Any, Optional
 
 import click
 import pandas as pd
+import psycopg
 import psycopg2.errors
 from flask import abort, current_app
 from flask.cli import AppGroup, with_appcontext
@@ -122,7 +123,7 @@ def create_database(
 
     try:
         cursor.execute(f"CREATE DATABASE {database};")
-    except psycopg2.errors.lookup("42P04"):
+    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
         click.echo(f"Database {database!r} already exists.")
     else:
         click.echo(f"Created database {database!r}.")

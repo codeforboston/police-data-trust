@@ -12,7 +12,7 @@ Install all of the following programs onto your computer:
 
 **Required:**
 
-- [Python 3.8](https://www.python.org/downloads/)
+- [Python 3.12](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (first time setup guide [here](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup))
 - [Postgres](https://www.postgresql.org/) _(see installation instructions below)_
 - _(OSX only)_ [Homebrew](https://brew.sh/)
