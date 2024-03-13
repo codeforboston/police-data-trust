@@ -91,6 +91,9 @@ class User(db.Model, UserMixin, CrudMixin):
         "PartnerMember", back_populates="user", lazy="select")
     member_of = association_proxy("partner_association", "partner")
 
+    # Officer Accusations
+    accusations = db.relationship("Accusation", backref="user")
+
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
 

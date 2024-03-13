@@ -1,5 +1,5 @@
-from backend.database.models._assoc_tables import perpetrator_officer
-from backend.database.models.officer import Rank, State
+from backend.database.models.officer import State
+from backend.database.models.employment import Rank
 from .. import db
 
 
@@ -20,7 +20,7 @@ class Perpetrator(db.Model):
     state_id_name = db.Column(db.Text)
     role = db.Column(db.Text)
     suspects = db.relationship(
-        "Officer", secondary=perpetrator_officer, backref="accusations")
+        "Accusation", back_populates="perpetrator")
 
     def __repr__(self):
         return f"<Perpetrator {self.id}>"
