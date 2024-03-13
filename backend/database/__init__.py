@@ -19,6 +19,8 @@ from .models.legal_case import *
 from .models.attachment import *
 from .models.perpetrator import *
 from .models.officer import *
+from .models.employment import *
+from .models.accusation import *
 from .models.participant import *
 from .models.tag import *
 from .models.result_of_stop import *
