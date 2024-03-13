@@ -61,7 +61,7 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
-coverage==7.4.2
+coverage==7.4.3
     # via pytest-cov
 debugpy==1.8.1
     # via ipykernel
@@ -71,7 +71,7 @@ defusedxml==0.7.1
     # via nbconvert
 dnspython==2.6.1
     # via email-validator
-email-validator==2.1.0
+email-validator==2.1.1
     # via -r requirements/_core.in
 entrypoints==0.4
     # via
@@ -237,7 +237,7 @@ numpy==1.26.4
     #   pandas
 openpyxl==3.0.9
     # via -r requirements/_core.in
-packaging==23.2
+packaging==24.0
     # via
     #   bleach
     #   pytest
@@ -261,7 +261,7 @@ pexpect==4.9.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pip-tools==7.4.0
+pip-tools==7.4.1
     # via -r requirements/_core.in
 pluggy==1.4.0
     # via pytest
@@ -314,11 +314,11 @@ pygments==2.17.2
     #   qtconsole
 pyjwt==2.1.0
     # via flask-jwt-extended
-pyparsing==3.1.1
+pyparsing==3.1.2
     # via packaging
 pyrsistent==0.20.0
     # via jsonschema
-pytest==8.0.1
+pytest==8.1.1
     # via
     #   -r requirements/_core.in
     #   pytest-cov
@@ -338,7 +338,7 @@ pytest-mock==3.12.0
     #   pytest-flask-sqlalchemy
 pytest-postgresql==5.1.0
     # via -r requirements/_core.in
-python-dateutil==2.8.2
+python-dateutil==2.9.0
     # via
     #   alembic
     #   jupyter-client
@@ -400,7 +400,7 @@ sqlalchemy-utils==0.37.7
     # via flask-db
 stack-data==0.6.3
     # via ipython
-terminado==0.18.0
+terminado==0.18.1
     # via notebook
 testpath==0.6.0
     # via nbconvert
@@ -416,7 +416,7 @@ tornado==6.4
     #   jupyter-client
     #   notebook
     #   terminado
-traitlets==5.14.1
+traitlets==5.14.2
     # via
     #   ipykernel
     #   ipython
@@ -429,7 +429,7 @@ traitlets==5.14.1
     #   nbformat
     #   notebook
     #   qtconsole
-typing-extensions==4.9.0
+typing-extensions==4.10.0
     # via pydantic
 ua-parser==0.18.0
     # via -r requirements/_core.in
