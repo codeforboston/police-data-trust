@@ -3,7 +3,6 @@ import enum
 
 
 class LegalCaseType(str, enum.Enum):
-    # TODO: Do we want string enumerations to be all caps? i.e. CIVIL = "CIVIL"
     CIVIL = "CIVIL"
     CRIMINAL = "CRIMINAL"
 
@@ -15,15 +14,10 @@ class LegalCase(db.Model):
     jurisdiction = db.Column(db.String)
     judge = db.Column(db.String)
     docket_number = db.Column(db.String)
-    # TODO: Foreign key to officer/victim?
     defendant = db.Column(db.String)
-    defendant_council = db.relationship(
-        "Attorney", backref="legal_case_defendant", uselist=False
-    )
+    defendant_council = db.Column(db.String)
     plaintiff = db.Column(db.String)
-    plaintiff_council = db.relationship(
-        "Attorney", backref="legal_case_plaintiff", uselist=False
-    )
+    plaintiff_council = db.Column(db.String)
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     outcome = db.Column(db.String)
