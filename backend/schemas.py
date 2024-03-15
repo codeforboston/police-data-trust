@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from enum import Enum
 import textwrap
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, root_validator
@@ -9,7 +8,6 @@ from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
 from sqlalchemy.ext.declarative import DeclarativeMeta
-from sqlalchemy.exc import DataError
 
 from .database import User
 from .database.models.action import Action
@@ -175,6 +173,7 @@ class _AgencyMixin(BaseModel):
             if not values.get(i):
                 values[i] = []
         return values
+
 
 def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
