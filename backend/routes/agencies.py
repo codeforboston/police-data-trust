@@ -71,7 +71,10 @@ def get_agency(agency_id: int):
     agency = db.session.query(Agency).get(agency_id)
     if agency is None:
         abort(404, description="Agency not found")
-    return agency_orm_to_json(agency)
+    try:
+        return agency_orm_to_json(agency)
+    except Exception as e:
+        abort(500, description=str(e))
 
 
 # Update agency profile
@@ -148,13 +151,16 @@ def get_all_agencies():
         page=q_page, per_page=q_per_page, max_per_page=100
     )
 
-    return {
-        "results": [
-            agency_orm_to_json(agency) for agency in pagination.items],
-        "page": pagination.page,
-        "totalPages": pagination.pages,
-        "totalResults": pagination.total,
-    }
+    try:
+        return {
+            "results": [
+                agency_orm_to_json(agency) for agency in pagination.items],
+            "page": pagination.page,
+            "totalPages": pagination.pages,
+            "totalResults": pagination.total,
+        }
+    except Exception as e:
+        abort(500, description=str(e))
 
 
 # Get agency officers (In Progress)
@@ -172,7 +178,7 @@ def get_agency_officers(agency_id: int):
     try:
         agency = db.session.query(Agency).get(agency_id)
 
-        all_officers = agency.known_officers
+        all_officers = agency.officers
 
         pagination = all_officers.paginate(
             page=q_page, per_page=q_per_page, max_per_page=100

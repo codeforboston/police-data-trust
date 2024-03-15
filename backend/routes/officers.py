@@ -115,7 +115,7 @@ def search_officer():
         abort(500, description=str(e))
 
 
-@bp.route("/create", methods=["POST"])
+@bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateOfficerSchema)
@@ -125,8 +125,8 @@ def create_officer():
 
     try:
         officer = officer_to_orm(request.context.json)
-    except Exception:
-        abort(400)
+    except Exception as e:
+        abort(400, description=str(e))
 
     created = officer.create()
 

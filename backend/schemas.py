@@ -113,13 +113,16 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'known_employers',
+    'employers',
+    'agency_association'
     'accusations',
+    'perpetrator_association',
     'state_ids',
 ]
 
 _agency_list_attributes = [
-    'known_officers',
+    'officer_association',
+    'officers'
 ]
 
 _partner_list_attrs = ["reported_incidents"]
@@ -223,7 +226,7 @@ class CreatePartnerMemberSchema(BaseModel):
 
 
 class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
-    known_employers: Optional[List[CreateEmploymentSchema]]
+    agency_association: Optional[List[CreateEmploymentSchema]]
     accusations: Optional[List[CreateAccusationSchema]]
     state_ids: Optional[List[CreateStateIDSchema]]
 
@@ -282,13 +285,13 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    known_employers: List[CreateEmploymentSchema]
-    accusations: List[CreateAccusationSchema]
+    agency_association: List[CreateEmploymentSchema]
+    perpetrator_association: List[CreateAccusationSchema]
     state_ids: List[CreateStateIDSchema]
 
 
 class AgencySchema(_BaseAgencySchema, _AgencyMixin):
-    known_officers: List[CreateEmploymentSchema]
+    officer_association: List[CreateEmploymentSchema]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
@@ -345,7 +348,7 @@ def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
 
     converters = {
         "state_ids": StateID,
-        "known_employers": Employment,
+        "agency_association": Employment,
     }
     orm_attrs = officer.dict()
     for k, v in orm_attrs.items():

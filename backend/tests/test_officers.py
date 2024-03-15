@@ -17,7 +17,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": []
+        "agency_association": []
     },
     "light": {
         "first_name": "Decent",
@@ -25,7 +25,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": []
+        "agency_association": []
     },
     "none": {
         "first_name": "Good",
@@ -33,7 +33,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": []
+        "agency_association": []
     },
 }
 
@@ -145,9 +145,10 @@ def example_officers(db_session, client, contributor_access_token):
 
     created = {}
     for name, mock in mock_officers.items():
-        mock["known_employers"].append(mock_employment[name])
+        # mock["agency_association"].append(mock_employment[name])
+        assert len(mock["agency_association"]) == 1
         res = client.post(
-            "/api/v1/officers/create",
+            "/api/v1/officers/",
             json=mock,
             headers={
                 "Authorization": "Bearer {0}".format(contributor_access_token)
@@ -165,7 +166,7 @@ def example_employment(db_session, example_officers):
         officer_obj = (
             db_session.query(Officer).filter(Incident.id == id).first()
         )
-        officer_obj.known_employers.append()
+        officer_obj.agency_association.append()
         db_session.commit()
 
 
@@ -210,7 +211,7 @@ def test_create_officer(db_session, example_officers):
     assert officer_obj.last_name == created["last_name"]
     assert officer_obj.race == created["race"]
     assert officer_obj.ethnicity == created["ethnicity"]
-    assert len(officer_obj.known_employers) == 1
+    assert len(officer_obj.agency_association) == 1
 
 
 def test_get_officer(app, client, db_session, access_token):
