@@ -20,6 +20,7 @@ class CI_String(TypeDecorator):
     """Case-insensitive String subclass definition"""
 
     impl = String
+    cache_ok = True
 
     def __init__(self, length, **kwargs):
         if kwargs.get("collate"):
@@ -69,7 +70,8 @@ class User(db.Model, UserMixin, CrudMixin):
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
     email = db.Column(
-        CI_String(255, collate="NOCASE"), nullable=False, unique=True
+        CI_String(255, collate="NOCASE"),
+        nullable=False, unique=True
     )
     email_confirmed_at = db.Column(db.DateTime())
     password = db.Column(db.String(255), nullable=False, server_default="")
