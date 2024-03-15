@@ -69,7 +69,8 @@ class User(db.Model, UserMixin, CrudMixin):
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
     email = db.Column(
-        CI_String(255, collate="NOCASE"), nullable=False, unique=True
+        CI_String(255, collate="NOCASE", cache_ok=True),
+        nullable=False, unique=True
     )
     email_confirmed_at = db.Column(db.DateTime())
     password = db.Column(db.String(255), nullable=False, server_default="")
