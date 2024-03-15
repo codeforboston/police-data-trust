@@ -27,8 +27,8 @@ class Employment(db.Model):
     highest_rank = db.Column(db.Enum(Rank))
     currently_employed = db.Column(db.Boolean)
 
-    officer = db.relationship("Officer", back_populates="known_employers")
-    agency = db.relationship("Agency", back_populates="known_officers")
+    officer = db.relationship("Officer", back_populates="agency_association")
+    agency = db.relationship("Agency", back_populates="officer_association")
 
     def __repr__(self):
         return f"<Employment {self.id}>"
