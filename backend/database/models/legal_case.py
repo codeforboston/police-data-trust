@@ -14,15 +14,10 @@ class LegalCase(db.Model):
     jurisdiction = db.Column(db.String)
     judge = db.Column(db.String)
     docket_number = db.Column(db.String)
-    defendant = db.Relationship(
-        "Officer", back_populates="defendant_cases")
-    defendant_council = db.relationship(
-        "Attorney", back_populates="defendant_cases"
-    )
+    defendant = db.Column(db.String)
+    defendant_council = db.Column(db.String)
     plaintiff = db.Column(db.String)
-    plaintiff_council = db.relationship(
-        "Attorney", backref="plaintiff_cases"
-    )
+    plaintiff_council = db.Column(db.String)
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     outcome = db.Column(db.String)
