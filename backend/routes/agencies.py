@@ -37,7 +37,7 @@ class AddOfficerSchema(BaseModel):
 
 
 class AddOfficerListSchema(BaseModel):
-    officers: Optional[List[AddOfficerSchema]] = None
+    officers: List[AddOfficerSchema]
 
 
 # Create agency profile
@@ -183,13 +183,14 @@ def get_all_agencies():
         abort(500, description=str(e))
 
 
-# Add Officer Employment Information
+# Add officer employment information
 @bp.route("/<int:agency_id>/officers", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=AddOfficerListSchema)
 def add_officer_to_agency(agency_id: int):
     """Add any number of officer employment records to an agency.
+    Must be a Contributor to add officers to an agency.
     """
     agency = db.session.query(Agency).get(agency_id)
     if agency is None:

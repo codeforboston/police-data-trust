@@ -493,4 +493,3 @@ def test_delete_officer_no_user_role(
     )
     assert res.status_code == 403
 """
-
