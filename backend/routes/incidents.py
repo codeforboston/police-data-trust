@@ -11,6 +11,7 @@ from flask_jwt_extended import get_jwt
 from pydantic import BaseModel
 from typing import Any
 
+
 from ..database import (
     Incident,
     db,
@@ -38,43 +39,6 @@ def get_incident(incident_id: int):
     """Get a single incident by ID."""
 
     return incident_orm_to_json(Incident.get(incident_id))
-
-
-@bp.route("/create", methods=["POST"])
-@jwt_required()
-@min_role_required(UserRole.CONTRIBUTOR)
-@contributor_has_partner()
-@validate(json=CreateIncidentSchema)
-def create_incident():
-    """Create a single incident.
-    """
-    body = request.context.json
-    jwt_decoded: dict[str, str] = get_jwt()
-    user_id = jwt_decoded["sub"]
-    permission = PartnerMember.query.filter(
-        PartnerMember.user_id == user_id,
-        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
-    ).first()
-    if permission is None:
-        abort(403)
-
-    existing_incident = Incident.query.filter_by(
-        source_id=body.source_id,
-        time_of_incident=body.time_of_incident,
-        longitude=body.longitude,
-        latitude=body.latitude,
-        location=body.location,
-    ).first()
-    if existing_incident:
-        abort(409, "Incident already exists")
-    try:
-        incident = incident_to_orm(body)
-    except Exception:
-        abort(400)
-
-    created = incident.create()
-    track_to_mp(request, "create_incident", {"source_id": incident.source_id})
-    return incident_orm_to_json(created)
 
 
 class SearchIncidentsSchema(BaseModel):
@@ -255,3 +219,40 @@ def delete_incident(incident_id: int):
     incident.delete()
 
     return {"message": "Incident deleted successfully"}, 204
+
+
+@bp.route("/create", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@contributor_has_partner()
+@validate(json=CreateIncidentSchema)
+def create_incident():
+    """Create a single incident.
+    """
+    body = request.context.json
+    jwt_decoded: dict[str, str] = get_jwt()
+    user_id = jwt_decoded["sub"]
+    permission = PartnerMember.query.filter(
+        PartnerMember.user_id == user_id,
+        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    ).first()
+    if permission is None:
+        abort(403)
+
+    existing_incident = Incident.query.filter_by(
+        source_id=body.source_id,
+        time_of_incident=body.time_of_incident,
+        longitude=body.longitude,
+        latitude=body.latitude,
+        location=body.location,
+    ).first()
+    if existing_incident:
+        abort(409, "Incident already exists")
+    try:
+        incident = incident_to_orm(body)
+    except Exception:
+        abort(400)
+
+    created = incident.create()
+    track_to_mp(request, "create_incident", {"source_id": incident.source_id})
+    return incident_orm_to_json(created)

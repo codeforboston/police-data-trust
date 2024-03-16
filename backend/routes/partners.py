@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from backend.auth.jwt import min_role_required
+from backend.auth.jwt import min_role_required, contributor_has_partner
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
 from flask import Blueprint, abort, current_app, request, jsonify
@@ -16,6 +16,7 @@ from ..database import (
     db,
     Invitation,
     StagedInvitation,
+    Incident,
 )
 from ..dto import InviteUserDTO
 from flask_mail import Message
@@ -27,7 +28,10 @@ from ..schemas import (
     partner_to_orm,
     validate,
     AddMemberSchema,
-    partner_member_to_orm
+    partner_member_to_orm,
+    CreateIncidentSchema,
+    incident_orm_to_json,
+    incident_to_orm
 )
 
 
@@ -68,6 +72,13 @@ def create_partner():
         role=MemberRole.ADMIN,
     )
     make_admin.create()
+
+    # update to UserRole contributor status
+    user_id = get_jwt()["sub"]
+    user = User.query.filter_by(
+        id=user_id
+    ).first()
+    user.role = UserRole.CONTRIBUTOR
 
     track_to_mp(
         request,
@@ -399,6 +410,11 @@ def role_change():
         if user_found and user_found.role != "Administrator":
             user_found.role = body["role"]
             db.session.commit()
+            if body["role"] == "Adminstrator" or body["role"] == "Publisher":
+                user_instance = User.query.filter_by(
+                    id=body["user_id"]
+                ).first()
+                user_instance.role = UserRole.CONTRIBUTOR
             return {
                 "status" : "ok",
                 "message" : "Role has been updated!"
@@ -406,7 +422,8 @@ def role_change():
         else:
             return {
                 "status" : "Error",
-                "message" : "User not found in this organization"
+                "message" : ("User not found in this organization or can't\
+                change the role of Admin")
             }, 400
     except Exception as e:
         db.session.rollback
@@ -520,3 +537,40 @@ def add_member_to_partner_testing(partner_id: int):
         },
     )
     return partner_member_orm_to_json(created)
+
+
+@bp.route("/create-incident", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@contributor_has_partner()
+@validate(json=CreateIncidentSchema)
+def create_incident():
+    """Create a single incident.
+    """
+    body = request.context.json
+    jwt_decoded: dict[str, str] = get_jwt()
+    user_id = jwt_decoded["sub"]
+    permission = PartnerMember.query.filter(
+        PartnerMember.user_id == user_id,
+        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    ).first()
+    if permission is None:
+        abort(403)
+
+    existing_incident = Incident.query.filter_by(
+        source_id=body.source_id,
+        time_of_incident=body.time_of_incident,
+        longitude=body.longitude,
+        latitude=body.latitude,
+        location=body.location,
+    ).first()
+    if existing_incident:
+        abort(409, "Incident already exists")
+    try:
+        incident = incident_to_orm(body)
+    except Exception:
+        abort(400)
+
+    created = incident.create()
+    track_to_mp(request, "create_incident", {"source_id": incident.source_id})
+    return incident_orm_to_json(created)

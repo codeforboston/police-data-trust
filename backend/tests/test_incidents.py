@@ -55,25 +55,18 @@ mock_incidents = {
 
 
 @pytest.fixture
-def example_incidents(db_session, client , partner_admin):
+def example_incidents(db_session, client , contributor_access_token):
     for id, mock in mock_partners.items():
         db_session.add(Partner(**mock))
         db_session.commit()
 
     created = {}
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email ,
-            "password": "my_password"
-        },
-    ).json["access_token"]
     for name, mock in mock_incidents.items():
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
             headers={
-                "Authorization": "Bearer {0}".format(access_token)
+                "Authorization": "Bearer {0}".format(contributor_access_token)
             },
         )
         assert res.status_code == 200
@@ -125,7 +118,6 @@ def test_create_incident_exists(
     )
     created["domestic"] = res.json
     domestic_instance = created["domestic"]
-    print(created)
     assert res.status_code == 200
     expected = mock_incidents["domestic"]
     incident_obj = Incident.query.filter_by(
