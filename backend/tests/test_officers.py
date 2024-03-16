@@ -1,40 +1,32 @@
 from __future__ import annotations
 
-import pytest
+import math
 from backend.database import (
     Officer,
-    Agency,
-    Accusation,
-    Incident,
-    Partner
 )
-from typing import Any
 
 mock_officers = {
-    "severe": {
-        "first_name": "Bad",
-        "last_name": "Cop",
+    "john": {
+        "first_name": "John",
+        "last_name": "Doe",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "M",
-        "agency_association": []
+        "gender": "M"
     },
-    "light": {
-        "first_name": "Decent",
-        "last_name": "Cop",
+    "hazel": {
+        "first_name": "Hazel",
+        "last_name": "Nutt",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "M",
-        "agency_association": []
+        "gender": "F"
     },
-    "none": {
-        "first_name": "Good",
-        "last_name": "Cop",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M",
-        "agency_association": []
-    },
+    "frank": {
+        "first_name": "Frank",
+        "last_name": "Furter",
+        "race": "Black",
+        "ethnicity": "African American",
+        "gender": "M"
+    }
 }
 
 mock_agencies = {
@@ -57,25 +49,24 @@ mock_agencies = {
 }
 
 mock_employment = {
-    "severe": {
+    "john": {
         "agency": "Chicago Police Department",
         "earliest_employment": "2015-03-14 00:00:00",
         "badge_number": "1234",
         "currently_employed": True
     },
-    "light": {
+    "hazel": {
         "agency": "Chicago Police Department",
         "earliest_employment": "2018-08-12 00:00:00",
         "badge_number": "5678",
         "currently_employed": True
     },
-    "none": {
+    "frank": {
         "agency": "New York Police Department",
         "earliest_employment": "2019-05-03 00:00:00",
         "badge_number": "1234",
         "currently_employed": True
     }
-
 }
 
 mock_incidents = {
@@ -134,104 +125,57 @@ mock_accusations = {
 }
 
 
-@pytest.fixture
-def example_officers(db_session, client, contributor_access_token):
-    agencies = {}
-    for name, mock in mock_agencies.items():
-        db_session.add(Agency(**mock))
-        db_session.commit()
-        agencies[name] = db_session.query(
-            Agency).filter(Agency.name == mock["name"]).first()
+def test_create_officer(
+        db_session,
+        client,
+        contributor_access_token,
+        example_agency):
 
-    created = {}
-    for name, mock in mock_officers.items():
-        # mock["agency_association"].append(mock_employment[name])
-        assert len(mock["agency_association"]) == 1
-        res = client.post(
-            "/api/v1/officers/",
-            json=mock,
-            headers={
-                "Authorization": "Bearer {0}".format(contributor_access_token)
-            },
-        )
-        assert res.status_code == 200
-        created[name] = res.json
-
-    return created, agencies
-
-
-@pytest.fixture
-def example_employment(db_session, example_officers):
-    for id, officer in example_officers.items():
-        officer_obj = (
-            db_session.query(Officer).filter(Incident.id == id).first()
-        )
-        officer_obj.agency_association.append()
-        db_session.commit()
-
-
-@pytest.fixture
-def example_accusations(db_session, client,
-                        contributor_access_token, example_officers):
-    officers, agencies = example_officers
-    incidents = {}
-    accusations = {}
-    perpetrators = {}
-
-    for id, mock in mock_partners.items():
-        db_session.add(Partner(**mock))
-        db_session.commit()
-
-    for id, mock in mock_incidents.items():
-        obj = Incident(**mock)
-        db_session.add(obj)
-        db_session.commit()
-        incidents[id] = obj
-        perpetrators[id] = obj.perpetrators[0].id
-
-    for id, mock in mock_accusations.items():
-        obj = Accusation(**mock)
-        obj.perpetrator_id = perpetrators[id]
-        obj.officer_id = officers[id]["id"]
-        db_session.add(obj)
-        db_session.commit()
-        accusations[id] = obj
-
-    return incidents, accusations
-
-
-def test_create_officer(db_session, example_officers):
-    officers, agencies = example_officers
-    created = officers["severe"]
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "race": "White",
+        "ethnicity": "Non-Hispanic",
+        "gender": "M",
+        "agency_association": [
+            {
+                "agency_id": example_agency.id,
+                "earliest_employment": "2015-03-14 00:00:00",
+                "badge_number": "8349",
+                "currently_employed": True
+            }
+        ]
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    response = res.json
 
     officer_obj = (
-        db_session.query(Officer).filter(Officer.id == created["id"]).first()
+        db_session.query(Officer).filter(Officer.id == response["id"]).first()
     )
-    assert officer_obj.first_name == created["first_name"]
-    assert officer_obj.last_name == created["last_name"]
-    assert officer_obj.race == created["race"]
-    assert officer_obj.ethnicity == created["ethnicity"]
+    assert officer_obj.first_name == request["first_name"]
+    assert officer_obj.last_name == request["last_name"]
+    assert officer_obj.race == request["race"]
+    assert officer_obj.ethnicity == request["ethnicity"]
     assert len(officer_obj.agency_association) == 1
+    assert officer_obj.agency_association[0].badge_number == request[
+        "agency_association"][0]["badge_number"]
+    assert officer_obj.agency_association[0].agency_id == example_agency.id
 
 
-def test_get_officer(app, client, db_session, access_token):
-    # Create an officer in the database
-    fname = "John"
-    lname = "Doe"
-
-    obj = Officer(
-        first_name=fname,
-        last_name=lname
-    )
-    db_session.add(obj)
-    db_session.commit()
-
+def test_get_officer(client, db_session, example_officer, access_token):
     # Test that we can get it
-    res = client.get(f"/api/v1/officers/{obj.id}")
+    res = client.get(f"/api/v1/officers/{example_officer.id}")
 
     assert res.status_code == 200
-    assert res.json["first_name"] == fname
-    assert res.json["last_name"] == lname
+    assert res.json["first_name"] == example_officer.first_name
+    assert res.json["last_name"] == example_officer.last_name
 
 
 """
@@ -295,24 +239,43 @@ def test_search_officers(
  """
 
 
-def test_get_officers(client: Any, access_token: str):
+def test_get_officers(client, db_session, access_token):
+    # Create Officers in the database
+    for name, mock in mock_officers.items():
+        db_session.add(Officer(**mock))
+    db_session.commit()
+
     res = client.get(
         "/api/v1/officers/",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
 
     assert res.status_code == 200
-    assert res.json["results"] == []
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
-    assert res.json["totalPages"] == 0
-    assert res.json["totalResults"] == 0
+    assert res.json["totalPages"] == 1
+    assert res.json["totalResults"] == len(mock_officers)
+
+    test_officer = res.json["results"][0]
+    single_res = client.get(
+        f"/api/v1/officers/{test_officer['id']}",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert test_officer == single_res.json
 
 
-def test_officer_pagination(client, example_officers, access_token):
+def test_officer_pagination(client, db_session, access_token):
+    # Create Officers in the database
+    created_officers = []
+    for name, mock in mock_officers.items():
+        db_session.add(Officer(**mock))
+        created_officers.append(Officer(**mock))
+    db_session.commit()
+
     per_page = 1
-    created, agencies = example_officers
-    expected_total_pages = len(created)
-    actual_ids = set()
+    expected_total_pages = math.ceil(len(mock_officers)//per_page)
+
     for page in range(1, expected_total_pages + 1):
         res = client.get(
             "/api/v1/officers/",
@@ -323,13 +286,8 @@ def test_officer_pagination(client, example_officers, access_token):
         assert res.status_code == 200
         assert res.json["page"] == page
         assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == len(created)
-
-        officers = res.json["results"]
-        assert len(officers) == per_page
-        actual_ids.add(officers[0]["id"])
-
-    assert actual_ids == set(i["id"] for i in created.values())
+        assert res.json["totalResults"] == len(mock_officers)
+        assert len(res.json["results"]) == per_page
 
     res = client.get(
         "/api/v1/officers/",

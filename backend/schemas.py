@@ -117,6 +117,7 @@ _officer_list_attributes = [
     'agency_association'
     'accusations',
     'perpetrator_association',
+    'accusations',
     'state_ids',
 ]
 
@@ -227,7 +228,7 @@ class CreatePartnerMemberSchema(BaseModel):
 
 class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
     agency_association: Optional[List[CreateEmploymentSchema]]
-    accusations: Optional[List[CreateAccusationSchema]]
+    perpetrator_association: Optional[List[CreateAccusationSchema]]
     state_ids: Optional[List[CreateStateIDSchema]]
 
 
@@ -350,14 +351,20 @@ def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
         "state_ids": StateID,
         "agency_association": Employment,
     }
-    orm_attrs = officer.dict()
-    for k, v in orm_attrs.items():
-        is_dict = isinstance(v, dict)
-        is_list = isinstance(v, list)
-        if is_dict:
-            orm_attrs[k] = converters[k](**v)
-        elif is_list and len(v) > 0:
-            orm_attrs[k] = [converters[k](**d) for d in v]
+    try:
+        orm_attrs = officer.dict()
+    except Exception:
+        raise Exception(f"Error creating dict from officer: {officer}")
+    try:
+        for k, v in orm_attrs.items():
+            is_dict = isinstance(v, dict)
+            is_list = isinstance(v, list)
+            if is_dict:
+                orm_attrs[k] = converters[k](**v)
+            elif is_list and len(v) > 0:
+                orm_attrs[k] = [converters[k](**d) for d in v]
+    except Exception:
+        raise Exception(f"Error converting {k}, {v}")
     return Officer(**orm_attrs)
 
 
