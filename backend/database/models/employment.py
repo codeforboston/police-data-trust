@@ -1,5 +1,5 @@
 import enum
-from .. import db
+from .. import db, CrudMixin
 
 
 class Rank(str, enum.Enum):
@@ -16,7 +16,7 @@ class Rank(str, enum.Enum):
     COMMISSIONER = "COMMISSIONER"
 
 
-class Employment(db.Model):
+class Employment(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)
     officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
     agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"))

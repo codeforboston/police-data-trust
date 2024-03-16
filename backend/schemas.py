@@ -114,7 +114,7 @@ _incident_list_attrs = [
 
 _officer_list_attributes = [
     'employers',
-    'agency_association'
+    'agency_association',
     'accusations',
     'perpetrator_association',
     'accusations',
@@ -265,6 +265,7 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+EmploymentSchema = schema_get(Employment)
 UserSchema = schema_get(User, exclude=["password", "id"])
 
 
@@ -396,6 +397,18 @@ def agency_to_orm(agency: CreateAgencySchema) -> Agency:
 
 def agency_orm_to_json(agency: Agency) -> dict:
     return AgencySchema.from_orm(agency).dict(
+        exclude_none=True,
+    )
+
+
+def employment_to_orm(employment: CreateEmploymentSchema) -> Employment:
+    """Convert the JSON employment into an ORM instance"""
+    orm_attrs = employment.dict()
+    return Employment(**orm_attrs)
+
+
+def employment_orm_to_json(employment: Employment) -> Dict[str, Any]:
+    return EmploymentSchema.from_orm(employment).dict(
         exclude_none=True,
     )
 

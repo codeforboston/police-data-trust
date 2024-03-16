@@ -131,6 +131,7 @@ def test_create_officer(
         contributor_access_token,
         example_agency):
 
+    # Test that we can create an officer with an agency association
     request = {
         "first_name": "Max",
         "last_name": "Payne",
@@ -163,10 +164,37 @@ def test_create_officer(
     assert officer_obj.last_name == request["last_name"]
     assert officer_obj.race == request["race"]
     assert officer_obj.ethnicity == request["ethnicity"]
-    assert len(officer_obj.agency_association) == 1
+    assert len(officer_obj.agency_association) == len(
+        request["agency_association"])
     assert officer_obj.agency_association[0].badge_number == request[
         "agency_association"][0]["badge_number"]
     assert officer_obj.agency_association[0].agency_id == example_agency.id
+
+    # Test that we can create an officer without an agency association
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "race": "White",
+        "ethnicity": "Non-Hispanic",
+        "gender": "M"
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    response = res.json
+
+    officer_obj = (
+        db_session.query(Officer).filter(Officer.id == response["id"]).first()
+    )
+    assert officer_obj.first_name == request["first_name"]
+    assert officer_obj.last_name == request["last_name"]
+    assert officer_obj.race == request["race"]
+    assert officer_obj.ethnicity == request["ethnicity"]
 
 
 def test_get_officer(client, db_session, example_officer, access_token):
@@ -464,27 +492,5 @@ def test_delete_officer_no_user_role(
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 403
+"""
 
-
-def test_delete_officer_nonexsitent_officer(
-    client: Any,
-    partner_publisher: User,
-):
-    \"""
-    Test that a partner member can't delete an incident
-    with a invalid incident id.
-    \"""
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_publisher.email,
-            "password": "my_password",
-        },
-    ).json["access_token"]
-
-    # Make a request to delete the officer
-    res = client.delete(
-        f"/api/v1/officers/{999}",
-        headers={"Authorization": f"Bearer {access_token}"},
-    )
-    assert res.status_code == 404 """
