@@ -1,12 +1,15 @@
 import logging
-from operator import or_
+from operator import or_, and_
 from typing import Optional, List
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
-from backend.database.models.employment import Employment
+from backend.database.models.employment import (
+    Employment,
+    merge_employment_records
+)
 from backend.database.models.agency import Agency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -49,9 +52,9 @@ class SearchOfficerSchema(BaseModel):
 
 class AddEmploymentSchema(BaseModel):
     agency_id: int
+    badge_number: str
     officer_id: Optional[int]
     highest_rank: Optional[str]
-    badge_number: Optional[str]
     earliest_employment: Optional[str]
     latest_employment: Optional[str]
     unit: Optional[str]
@@ -285,9 +288,35 @@ def update_employment(officer_id: int):
                     "reason": "Agency not found"
                 })
             else:
-                record.officer_id = officer_id
-                employment = employment_to_orm(record)
-                created.append(employment.create())
+                employments = db.session.query(Employment).filter(
+                    and_(
+                        and_(
+                            Employment.officer_id == officer_id,
+                            Employment.agency_id == record.agency_id
+                        ),
+                        Employment.badge_number == record.badge_number
+                    )
+                )
+                if employments is not None:
+                    # If the officer already has a records for this agency,
+                    # we need to update the earliest and latest employment dates
+                    employment = employment_to_orm(record)
+                    employment.officer_id = officer_id
+                    employment = merge_employment_records(
+                        employments.all() + [employment],
+                        unit=record.unit,
+                        currently_employed=record.currently_employed
+                    )
+
+                    # Delete the old records and replace them with the new one
+                    employments.delete()
+                    created.append(employment.create())
+                else:
+                    record.officer_id = officer_id
+                    employment = employment_to_orm(record)
+                    created.append(employment.create())
+                # Commit before iterating to the next record
+                db.session.commit()
         except Exception as e:
             failed.append({
                 "agency_id": record.agency_id,
