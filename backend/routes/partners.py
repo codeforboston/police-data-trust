@@ -93,6 +93,12 @@ def create_partner():
             role=MemberRole.ADMIN,
         )
         make_admin.create()
+        # update to UserRole contributor status
+        user_id = get_jwt()["sub"]
+        user = User.query.filter_by(
+            id=user_id
+        ).first()
+        user.role = UserRole.CONTRIBUTOR
 
         track_to_mp(request, "create_partner", {
             "partner_name": partner.name,

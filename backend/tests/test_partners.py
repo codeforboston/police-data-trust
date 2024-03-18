@@ -185,6 +185,44 @@ def test_create_partner(db_session, example_user, example_partners):
     assert association_obj.is_administrator() is True
 
 
+def test_create_partner_role_change(
+        client,
+        example_user
+
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name" : "Example Partner 1",
+            "url": "examplep.com",
+            "contact_email": "example_p@gmail.com",
+        }
+    )
+    assert res.status_code == 200
+    partner_member_obj = Partner.query.filter_by(
+        url="examplep.com"
+    ).first()
+
+    assert partner_member_obj.name == "Example Partner 1"
+    assert partner_member_obj.url == "examplep.com"
+    assert partner_member_obj.contact_email == "example_p@gmail.com"
+
+    # Check if UserRole in updated
+    user = User.query.filter_by(
+        email=example_user.email
+    ).first()
+    assert user.role == UserRole.CONTRIBUTOR
+
+
 def test_get_partner(client, db_session, access_token):
     # Create a partner in the database
     partner_name = "Test Partner"
