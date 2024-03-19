@@ -1,4 +1,4 @@
-import * as React from "react"
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
 import {
   ProfileInfo,
   ProfileNav,
@@ -12,9 +12,36 @@ import { requireAuth } from "../../helpers"
 import { ProfileMenu } from "../../models/profile"
 import { Layout } from "../../shared-components"
 import styles from "./profile.module.css"
+import { useProfileTab } from "./useProfileTab"
 
-export default requireAuth(function Profile() {
-  const [activePage, setActivePage] = React.useState(ProfileMenu.USER_INFO)
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { query } = context
+  const initialTab: ProfileMenu = Object.values(ProfileMenu).includes(query.tab as ProfileMenu)
+    ? (query.tab as ProfileMenu)
+    : ProfileMenu.USER_INFO
+
+  if (initialTab !== query.tab) {
+    // An invalid tab was requested,
+    // Redirect to ProfileMenu.USER_INFO tab
+    return {
+      redirect: {
+        destination: `/profile?tab=${initialTab}`,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      initialTab
+    }
+  }
+}
+
+export default requireAuth(function Profile({
+  initialTab
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [activePage, handleTabChange] = useProfileTab(initialTab)
 
   const ActivePageComp = (function (menuItem: ProfileMenu) {
     switch (menuItem) {
@@ -38,7 +65,7 @@ export default requireAuth(function Profile() {
   return (
     <Layout>
       <div className={styles.profileWrapper}>
-        <ProfileNav activePage={activePage} setActivePage={setActivePage} />
+        <ProfileNav activePage={activePage} setActivePage={handleTabChange} />
         <ActivePageComp />
       </div>
     </Layout>
