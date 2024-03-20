@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:12-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -22,11 +22,11 @@ jobs:
         ports:
           - 5432:5432
     steps:
-    - uses: actions/checkout@v2
-    - name: Python 3.8 Setup
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    - name: Python 3.12 Setup
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.8
+        python-version: 3.12
     - name: Install dependencies
       run: |
         sudo apt-get update

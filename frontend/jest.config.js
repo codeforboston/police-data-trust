@@ -9,7 +9,9 @@ const esmNodeModules = [
   "delaunator",
   "robust-predicates",
   "node-fetch",
-  "fetch-blob"
+  "fetch-blob",
+  "copy-anything", // dependency of @tanstack/react-query-devtools
+  "is-what" // dependency of @tanstack/react-query-devtools
 ]
 
 module.exports = {

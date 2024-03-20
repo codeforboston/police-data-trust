@@ -1,19 +1,22 @@
+from __future__ import annotations
+
 import textwrap
 from typing import Any, Dict, List, Optional
-
 from pydantic import BaseModel, root_validator
 from pydantic.main import ModelMetaclass
 from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
-from sqlalchemy.ext.declarative.api import DeclarativeMeta
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from .database import User
 from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency
-from .database.models.officer import Officer
+from .database.models.officer import Officer, StateID
+from .database.models.employment import Employment
+from .database.models.accusation import Accusation
 from .database.models.investigation import Investigation
 from .database.models.legal_case import LegalCase
 from .database.models.attachment import Attachment
@@ -81,7 +84,7 @@ spec = SpecTree(
             data={
                 "type": "http",
                 "scheme": "bearer",
-                "bearerFormat": {"JWT": []},
+                "bearerFormat": "JWT",
             },
         ),
     ],
@@ -109,6 +112,12 @@ _incident_list_attrs = [
     "legal_case",
 ]
 
+_officer_list_attributes = [
+    'known_employers',
+    'accusations',
+    'state_ids',
+]
+
 _partner_list_attrs = ["reported_incidents"]
 
 
@@ -122,6 +131,16 @@ class _IncidentMixin(BaseModel):
         """
         values = {**values}  # convert mappings to base dict type.
         for i in _incident_list_attrs:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
+class _OfficerMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        values = {**values}  # convert mappings to base dict type.
+        for i in _officer_list_attributes:
             if not values.get(i):
                 values[i] = []
         return values
@@ -148,7 +167,10 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
-CreateOfficerSchema = schema_create(Officer)
+_BaseCreateOfficerSchema = schema_create(Officer)
+CreateStateIDSchema = schema_create(StateID)
+CreateEmploymentSchema = schema_create(Employment)
+CreateAccusationSchema = schema_create(Accusation)
 CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
@@ -186,6 +208,12 @@ class CreatePartnerMemberSchema(BaseModel):
     is_active: Optional[bool] = True
 
 
+class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
+    known_employers: Optional[List[CreateEmploymentSchema]]
+    accusations: Optional[List[CreateAccusationSchema]]
+    state_ids: Optional[List[CreateStateIDSchema]]
+
+
 AddMemberSchema = sqlalchemy_to_pydantic(
     PartnerMember, exclude=["id", "date_joined", "partner", "user"]
 )
@@ -197,7 +225,8 @@ def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 
 _BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
-PartnerMemberSchema = schema_get(PartnerMember)
+_BaseOfficerSchema = schema_get(Officer)
+_BasePartnerMemberSchema = schema_get(PartnerMember)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -208,6 +237,11 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+UserSchema = schema_get(User, exclude=["password", "id"])
+
+
+class PartnerMemberSchema(_BasePartnerMemberSchema):
+    user: UserSchema
 
 
 class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
@@ -223,11 +257,14 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
     legal_case: List[LegalCaseSchema]
 
 
+class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
+    known_employers: List[CreateEmploymentSchema]
+    accusations: List[CreateAccusationSchema]
+    state_ids: List[CreateStateIDSchema]
+
+
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
     reported_incidents: List[IncidentSchema]
-
-
-UserSchema = sqlalchemy_to_pydantic(User, exclude=["password", "id"])
 
 
 def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
@@ -252,7 +289,7 @@ def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
     return Incident(**orm_attrs)
 
 
-def incident_orm_to_json(incident: Incident) -> dict:
+def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
     return IncidentSchema.from_orm(incident).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists
@@ -265,6 +302,38 @@ def incident_orm_to_json(incident: Incident) -> dict:
             "tags",
             "victims",
         },
+    )
+
+
+def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
+    """Convert the JSON officer into an ORM instance
+
+    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
+    around. sqlalchemy won't convert nested dictionaries into the corresponding
+    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
+    roll our own recursive conversion if we can get the ORM model class
+    associated with a schema instance.
+    """
+
+    converters = {
+        "state_ids": StateID,
+        "known_employers": Employment,
+    }
+    orm_attrs = officer.dict()
+    for k, v in orm_attrs.items():
+        is_dict = isinstance(v, dict)
+        is_list = isinstance(v, list)
+        if is_dict:
+            orm_attrs[k] = converters[k](**v)
+        elif is_list and len(v) > 0:
+            orm_attrs[k] = [converters[k](**d) for d in v]
+    return Officer(**orm_attrs)
+
+
+def officer_orm_to_json(officer: Officer) -> dict:
+    return OfficerSchema.from_orm(officer).dict(
+        exclude_none=True,
+        # Exclude a bunch of currently-unused empty lists
     )
 
 
@@ -304,7 +373,7 @@ def partner_member_to_orm(
     return PartnerMember(**orm_attrs)
 
 
-def partner_member_orm_to_json(partner_member: PartnerMember) -> dict:
+def partner_member_orm_to_json(partner_member: PartnerMember) -> Dict[str, Any]:
     return PartnerMemberSchema.from_orm(partner_member).dict(
         exclude_none=True,
     )

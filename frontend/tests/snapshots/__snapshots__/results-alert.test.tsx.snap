@@ -3,6 +3,9 @@
 exports[`renders no results alert correctly 1`] = `
 <div>
   <div
+    style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+  />
+  <div
     class="outerBox"
     role="alert"
   >
@@ -47,6 +50,9 @@ exports[`renders no results alert correctly 1`] = `
 
 exports[`renders no search params alert correctly 1`] = `
 <div>
+  <div
+    style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+  />
   <div
     class="outerBox"
     role="alert"

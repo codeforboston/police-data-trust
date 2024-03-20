@@ -42,7 +42,7 @@ MIXPANEL_TOKEN=your_mixpanel_token
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
 
-3. Build and run the project with `docker-compose build; docker-compose up -d; docker-compose logs -f app`
+3. Build and run the project with `docker-compose build && docker-compose up -d && docker-compose logs -f`
 
 ## Installation (Frontend Only)
 
@@ -67,7 +67,7 @@ You'll need to replace `police-data-trust-api-1` with the name of the container 
 docker container ls
 CONTAINER ID   IMAGE                   COMMAND                  CREATED              STATUS              PORTS                    NAMES
 c0cf********   police-data-trust-api   "/bin/sh -c '/wait &…"   About a minute ago   Up About a minute   0.0.0.0:5001->5001/tcp   police-data-trust-api-1
-5e6f********   postgres:13.2           "docker-entrypoint.s…"   3 days ago           Up About a minute   0.0.0.0:5432->5432/tcp   police-data-trust-db-1
+5e6f********   postgres:16.1           "docker-entrypoint.s…"   3 days ago           Up About a minute   0.0.0.0:5432->5432/tcp   police-data-trust-db-1
 dacd********   police-data-trust-web   "docker-entrypoint.s…"   3 days ago           Up About a minute   0.0.0.0:3000->3000/tcp   police-data-trust-web-1
 ```
 

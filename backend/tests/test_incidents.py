@@ -1,7 +1,9 @@
+from __future__ import annotations
 from datetime import datetime
 
 import pytest
-from backend.database import Incident, Partner
+from backend.database import Incident, Partner, PrivacyStatus, User
+from typing import Any
 
 mock_partners = {
     "cpdp": {"name": "Citizens Police Data Project"},
@@ -61,8 +63,9 @@ def example_incidents(db_session, client, contributor_access_token):
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
-            headers={"Authorization":
-                     "Bearer {0}".format(contributor_access_token)},
+            headers={
+                "Authorization": "Bearer {0}".format(contributor_access_token)
+            },
         )
         assert res.status_code == 200
         created[name] = res.json
@@ -81,8 +84,9 @@ def test_create_incident(db_session, example_incidents):
 
     assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
     for i in [0, 1]:
-        assert incident_obj.perpetrators[i].id == \
-            created["perpetrators"][i]["id"]
+        assert (
+            incident_obj.perpetrators[i].id == created["perpetrators"][i]["id"]
+        )
     assert incident_obj.use_of_force[0].id == created["use_of_force"][0]["id"]
     # assert incident_obj.source == expected["source"]
 
@@ -187,5 +191,193 @@ def test_incident_pagination(client, example_incidents, access_token):
         "/api/v1/incidents/search",
         json={"perPage": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 404
+
+
+def test_get_incidents(client: Any, access_token: str):
+    res = client.get(
+        "/api/v1/incidents/",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert res.json["results"] == []
+    assert res.json["page"] == 1
+    assert res.json["totalPages"] == 0
+    assert res.json["totalResults"] == 0
+
+
+def test_get_incidents_pulic(
+    client: Any,
+    access_token: str,
+    example_incidents_private_public: list[Incident],
+):
+    """
+    Test that a regular user can see public incidents.
+    """
+
+    res = client.get(
+        "/api/v1/incidents/",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    public_incidents_count = len(
+        [
+            i
+            for i in example_incidents_private_public
+            if i.privacy_filter == PrivacyStatus.PUBLIC
+        ]
+    )
+    assert res.status_code == 200
+    assert len(res.json["results"]) == public_incidents_count
+    assert res.json["page"] == 1
+    assert res.json["totalPages"] == 1
+    assert res.json["totalResults"] == public_incidents_count
+
+
+def test_get_incidents_pulic_pagination(
+    client: Any,
+    access_token: str,
+    example_incidents_private_public: list[Incident],
+):
+    """
+    Test that pagination works for public incidents.
+    """
+    res = client.get(
+        "/api/v1/incidents/?per_page=1",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    public_incidents_count = len(
+        [
+            i
+            for i in example_incidents_private_public
+            if i.privacy_filter == PrivacyStatus.PUBLIC
+        ]
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["page"] == 1
+    assert res.json["totalPages"] == public_incidents_count
+    assert res.json["totalResults"] == public_incidents_count
+
+    res = client.get(
+        "/api/v1/incidents/?per_page=1&page=2",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 0
+    assert res.json["page"] == 2
+    assert res.json["totalPages"] == public_incidents_count
+    assert res.json["totalResults"] == public_incidents_count
+
+
+def test_get_incidents_private(
+    client: Any,
+    access_token: str,
+    example_partner_member: Partner,
+    example_incidents_private_public: list[Incident],
+):
+    """
+    Test that a partner member can see private incidents.
+    """
+    res = client.get(
+        f"/api/v1/incidents/?partner_id={example_partner_member.id}",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == len(example_incidents_private_public)
+    assert res.json["page"] == 1
+    assert res.json["totalPages"] == 1
+    assert res.json["totalResults"] == len(example_incidents_private_public)
+
+
+def test_get_incidents_unauthorized(client: Any):
+    res = client.get("/api/v1/incidents/")
+    assert res.status_code == 401
+
+
+def test_get_invalid_partner_id(client: Any, access_token: str):
+    res = client.get(
+        "/api/v1/incidents/?partner_id=999999",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 404
+    assert res.json["message"] == "Partner not found"
+
+
+def test_delete_incident(
+    client: Any,
+    partner_publisher: User,
+    example_partner: Partner,
+    example_incidents_private_public: list[Incident],
+):
+    """
+    Test that a partner member can delete an incident.
+    """
+
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": "my_password",
+        },
+    ).json["access_token"]
+
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/incidents/{example_incidents_private_public[0].id}"
+        + f"?partner_id={example_partner.id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 204
+
+    # Verify that the incident is deleted
+    deleted_incident = Incident.query.get(
+        example_incidents_private_public[0].id
+    )
+    assert deleted_incident is None
+
+
+def test_delete_incident_no_user_role(
+    client: Any,
+    access_token: str,
+):
+    """
+    Test that a user without atlest CONTRIBUTOR role
+    can't delete an incident.
+    """
+    # Make a request to delete the incident
+    res = client.delete(
+        "/api/v1/incidents/1",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 403
+
+
+def test_delete_incident_nonexsitent_incident(
+    client: Any,
+    partner_publisher: User,
+):
+    """
+    Test that a partner member can't delete an incident
+    with a invalid incident id.
+    """
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": "my_password",
+        },
+    ).json["access_token"]
+
+    # Make a request to delete the incident
+    res = client.delete(
+        f"/api/v1/incidents/{999}",
+        headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 404
