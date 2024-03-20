@@ -12,7 +12,7 @@ import { requireAuth } from "../../helpers"
 import { ProfileMenu } from "../../models/profile"
 import { Layout } from "../../shared-components"
 import styles from "./profile.module.css"
-import { useProfileTab } from "./useProfileTab"
+import { useProfileTab } from "../../helpers/hooks/useProfileTab"
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { query } = context
