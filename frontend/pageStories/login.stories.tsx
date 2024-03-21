@@ -7,7 +7,7 @@ export default {
   component: UserLogin
 } as ComponentMeta<typeof UserLogin>
 
-const Template: ComponentStory<typeof UserLogin> = (args) => <UserLogin {...args} />
+const Template: ComponentStory<typeof UserLogin> = (args: any) => <UserLogin {...args} />
 
 export const Login = Template.bind({})
 Login.parameters = {

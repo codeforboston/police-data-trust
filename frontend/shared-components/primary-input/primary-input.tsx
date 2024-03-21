@@ -90,7 +90,7 @@ export default function PrimaryInput({
       {!isValid && (
         <FormLevelError
           errorId={errorId}
-          errorMessage={errors[inputName].message || defaultErrorMessage}
+          errorMessage={(errors[inputName].message as string) || defaultErrorMessage}
         />
       )}
     </div>

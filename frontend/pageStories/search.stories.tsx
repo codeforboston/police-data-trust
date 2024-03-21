@@ -6,6 +6,6 @@ export default {
   component: Dashboard
 } as ComponentMeta<typeof Dashboard>
 
-const Template: ComponentStory<typeof Dashboard> = (args) => <Dashboard {...args} />
+const Template: ComponentStory<typeof Dashboard> = (args: any) => <Dashboard {...args} />
 
 export const Default = Template.bind({})
