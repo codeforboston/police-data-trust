@@ -13,7 +13,7 @@ from .database import User
 from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
-from .database.models.agency import Agency, Jurisdiction, Jurisdiction
+from .database.models.agency import Agency, Jurisdiction
 from .database.models.officer import Officer, StateID
 from .database.models.employment import Employment
 from .database.models.accusation import Accusation

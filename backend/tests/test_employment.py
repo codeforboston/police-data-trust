@@ -89,6 +89,7 @@ def example_agencies(db_session):
     db_session.commit()
     return agencies
 
+
 @pytest.fixture
 def example_officers(db_session):
     officers = {}
