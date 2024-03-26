@@ -113,13 +113,17 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'known_employers',
+    'employers',
+    'agency_association',
+    'accusations',
+    'perpetrator_association',
     'accusations',
     'state_ids',
 ]
 
 _agency_list_attributes = [
-    'known_officers',
+    'officer_association',
+    'officers'
 ]
 
 _partner_list_attrs = ["reported_incidents"]
@@ -223,8 +227,8 @@ class CreatePartnerMemberSchema(BaseModel):
 
 
 class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
-    known_employers: Optional[List[CreateEmploymentSchema]]
-    accusations: Optional[List[CreateAccusationSchema]]
+    agency_association: Optional[List[CreateEmploymentSchema]]
+    perpetrator_association: Optional[List[CreateAccusationSchema]]
     state_ids: Optional[List[CreateStateIDSchema]]
 
 
@@ -261,6 +265,7 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+EmploymentSchema = schema_get(Employment)
 UserSchema = schema_get(User, exclude=["password", "id"])
 
 
@@ -282,13 +287,13 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    known_employers: List[CreateEmploymentSchema]
-    accusations: List[CreateAccusationSchema]
+    agency_association: List[CreateEmploymentSchema]
+    perpetrator_association: List[CreateAccusationSchema]
     state_ids: List[CreateStateIDSchema]
 
 
 class AgencySchema(_BaseAgencySchema, _AgencyMixin):
-    known_officers: List[CreateEmploymentSchema]
+    officer_association: List[CreateEmploymentSchema]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
@@ -345,16 +350,22 @@ def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
 
     converters = {
         "state_ids": StateID,
-        "known_employers": Employment,
+        "agency_association": Employment,
     }
-    orm_attrs = officer.dict()
-    for k, v in orm_attrs.items():
-        is_dict = isinstance(v, dict)
-        is_list = isinstance(v, list)
-        if is_dict:
-            orm_attrs[k] = converters[k](**v)
-        elif is_list and len(v) > 0:
-            orm_attrs[k] = [converters[k](**d) for d in v]
+    try:
+        orm_attrs = officer.dict()
+    except Exception:
+        raise Exception(f"Error creating dict from officer: {officer}")
+    try:
+        for k, v in orm_attrs.items():
+            is_dict = isinstance(v, dict)
+            is_list = isinstance(v, list)
+            if is_dict:
+                orm_attrs[k] = converters[k](**v)
+            elif is_list and len(v) > 0:
+                orm_attrs[k] = [converters[k](**d) for d in v]
+    except Exception:
+        raise Exception(f"Error converting {k}, {v}")
     return Officer(**orm_attrs)
 
 
@@ -386,6 +397,18 @@ def agency_to_orm(agency: CreateAgencySchema) -> Agency:
 
 def agency_orm_to_json(agency: Agency) -> dict:
     return AgencySchema.from_orm(agency).dict(
+        exclude_none=True,
+    )
+
+
+def employment_to_orm(employment: CreateEmploymentSchema) -> Employment:
+    """Convert the JSON employment into an ORM instance"""
+    orm_attrs = employment.dict()
+    return Employment(**orm_attrs)
+
+
+def employment_orm_to_json(employment: Employment) -> Dict[str, Any]:
+    return EmploymentSchema.from_orm(employment).dict(
         exclude_none=True,
     )
 

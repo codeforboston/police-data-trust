@@ -1,23 +1,48 @@
 import logging
 
+from operator import and_
+from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
+from backend.database.models.officer import Officer
+from backend.database.models.employment import (
+    merge_employment_records,
+    Employment
+)
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from sqlalchemy.exc import DataError
+from pydantic import BaseModel
 
 from ..database import Agency, db
 from ..schemas import (
     CreateAgencySchema,
     agency_orm_to_json,
     officer_orm_to_json,
+    employment_to_orm,
+    employment_orm_to_json,
     agency_to_orm,
     validate,
 )
 
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
+
+
+class AddOfficerSchema(BaseModel):
+    officer_id: int
+    badge_number: str
+    agency_id: Optional[int]
+    highest_rank: Optional[str]
+    earliest_employment: Optional[str]
+    latest_employment: Optional[str]
+    unit: Optional[str]
+    currently_employed: bool = True
+
+
+class AddOfficerListSchema(BaseModel):
+    officers: List[AddOfficerSchema]
 
 
 # Create agency profile
@@ -71,7 +96,10 @@ def get_agency(agency_id: int):
     agency = db.session.query(Agency).get(agency_id)
     if agency is None:
         abort(404, description="Agency not found")
-    return agency_orm_to_json(agency)
+    try:
+        return agency_orm_to_json(agency)
+    except Exception as e:
+        abort(500, description=str(e))
 
 
 # Update agency profile
@@ -148,42 +176,123 @@ def get_all_agencies():
         page=q_page, per_page=q_per_page, max_per_page=100
     )
 
-    return {
-        "results": [
-            agency_orm_to_json(agency) for agency in pagination.items],
-        "page": pagination.page,
-        "totalPages": pagination.pages,
-        "totalResults": pagination.total,
-    }
+    try:
+        return {
+            "results": [
+                agency_orm_to_json(agency) for agency in pagination.items],
+            "page": pagination.page,
+            "totalPages": pagination.pages,
+            "totalResults": pagination.total,
+        }
+    except Exception as e:
+        abort(500, description=str(e))
 
 
-# Get agency officers (In Progress)
+# Add officer employment information
+@bp.route("/<int:agency_id>/officers", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate(json=AddOfficerListSchema)
+def add_officer_to_agency(agency_id: int):
+    """Add any number of officer employment records to an agency.
+    Must be a Contributor to add officers to an agency.
+    """
+    agency = db.session.query(Agency).get(agency_id)
+    if agency is None:
+        abort(404, description="Agency not found")
+
+    records = request.context.json.officers
+
+    created = []
+    failed = []
+    for record in records:
+        try:
+            officer = db.session.query(Officer).get(
+                record.officer_id)
+            if officer is None:
+                failed.append({
+                    "officer_id": record.officer_id,
+                    "reason": "Officer not found"
+                })
+            else:
+                employments = db.session.query(Employment).filter(
+                    and_(
+                        and_(
+                            Employment.officer_id == record.officer_id,
+                            Employment.agency_id == agency_id
+                        ),
+                        Employment.badge_number == record.badge_number
+                    )
+                )
+                if employments is not None:
+                    # If the officer already has a records for this agency,
+                    # we need to update the earliest and latest employment dates
+                    employment = employment_to_orm(record)
+                    employment.agency_id = agency_id
+                    employment = merge_employment_records(
+                        employments.all() + [employment],
+                        unit=record.unit,
+                        currently_employed=record.currently_employed
+                    )
+
+                    # Delete the old records and replace them with the new one
+                    employments.delete()
+                    created.append(employment.create())
+                else:
+                    record.agency_id = agency_id
+                    employment = employment_to_orm(record)
+                    created.append(employment.create())
+        except Exception as e:
+            failed.append({
+                "officer_id": record.officer_id,
+                "reason": str(e)
+            })
+    try:
+        track_to_mp(
+            request,
+            "add_officers_to_agency",
+            {
+                "agency_id": agency.id,
+                "officers_added": len(created),
+                "officers_failed": len(failed)
+            },
+        )
+        return {
+            "created": [
+                employment_orm_to_json(item) for item in created],
+            "failed": failed,
+            "totalCreated": len(created),
+            "totalFailed": len(failed),
+        }
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+# Get agency officers
 @bp.route("/<int:agency_id>/officers", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate()
 def get_agency_officers(agency_id: int):
     """Get all officers for an agency.
+    Pagination currently isn't enabled due to the use of an association proxy.
     """
-    args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+    # args = request.args
+    # q_page = args.get("page", 1, type=int)
+    # q_per_page = args.get("per_page", 20, type=int)
+    # TODO: Add pagination
 
     try:
         agency = db.session.query(Agency).get(agency_id)
 
-        all_officers = agency.known_officers
+        all_officers = agency.officers
 
-        pagination = all_officers.paginate(
-            page=q_page, per_page=q_per_page, max_per_page=100
-        )
+        return {
+            "results": [
+                officer_orm_to_json(officer) for officer in all_officers],
+            "page": 1,
+            "totalPages": 1,
+            "totalResults": len(all_officers),
+        }
     except Exception as e:
         abort(400, description=str(e))
-
-    return {
-        "results": [
-            officer_orm_to_json(officer) for officer in pagination.items],
-        "page": pagination.page,
-        "totalPages": pagination.pages,
-        "totalResults": pagination.total,
-    }

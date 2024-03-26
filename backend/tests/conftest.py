@@ -11,6 +11,8 @@ from backend.database import (
     MemberRole,
     Incident,
     PrivacyStatus,
+    Agency,
+    Officer,
 )
 from datetime import datetime
 from pytest_postgresql.janitor import DatabaseJanitor
@@ -88,6 +90,32 @@ def example_partner(db_session: Any):
     db_session.add(partner)
     db_session.commit()
     return partner
+
+
+@pytest.fixture
+def example_agency(db_session: Any):
+    agency = Agency(
+        name="Example Agency",
+        website_url="www.example.com",
+        hq_city="New York",
+        hq_address="123 Main St",
+        hq_zip="10001",
+        jurisdiction="MUNICIPAL"
+    )
+    db_session.add(agency)
+    db_session.commit()
+    return agency
+
+
+@pytest.fixture
+def example_officer(db_session: Any):
+    officer = Officer(
+        first_name="John",
+        last_name="Doe",
+    )
+    db_session.add(officer)
+    db_session.commit()
+    return officer
 
 
 @pytest.fixture  # type: ignore

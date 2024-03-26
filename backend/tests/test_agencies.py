@@ -1,4 +1,5 @@
 import pytest
+import math
 from backend.database import Agency
 
 
@@ -101,26 +102,17 @@ def test_unauthorized_create_agency(client, access_token):
     assert res.status_code == 403
 
 
-def test_get_agency(client, db_session, access_token):
-    # Create a agency in the database
-    agency_name = "Test Agency"
-    agency_url = "https://testagency.com"
-
-    obj = Agency(name=agency_name, website_url=agency_url)
-    db_session.add(obj)
-    db_session.commit()
-    assert obj.id is not None
-
-    # Test that we can get it
+def test_get_agency(client, access_token, example_agency):
+    # Test that we can get example_agency
     res = client.get(
-        f"/api/v1/agencies/{obj.id}",
+        f"/api/v1/agencies/{example_agency.id}",
         headers={"Authorization": "Bearer {0}".format(access_token)})
     assert res.status_code == 200
-    assert res.json["name"] == agency_name
-    assert res.json["website_url"] == agency_url
+    assert res.json["name"] == example_agency.name
+    assert res.json["website_url"] == example_agency.website_url
 
 
-def test_get_all_agencies(client, db_session, access_token, example_agencies):
+def test_get_all_agencies(client, access_token, example_agencies):
     # Create agencies in the database
     agencies = example_agencies
 
@@ -131,11 +123,17 @@ def test_get_all_agencies(client, db_session, access_token, example_agencies):
     )
     assert res.status_code == 200
     assert res.json["results"].__len__() == agencies.__len__()
+    test_agency = res.json["results"][0]
+    single_res = client.get(
+        f"/api/v1/agencies/{test_agency['id']}",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert test_agency == single_res.json
 
 
 def test_agency_pagination(client, example_agencies, access_token):
     per_page = 1
-    expected_total_pages = len(example_agencies)
+    expected_total_pages = math.ceil(len(example_agencies)//per_page)
     actual_ids = set()
     for page in range(1, expected_total_pages + 1):
         res = client.get(
