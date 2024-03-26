@@ -52,6 +52,18 @@ mock_incidents = {
         "source": "Citizens Police Data Project",
     },
 }
+updated_incident = {
+        "domestic": {
+            "time_of_incident": "2021-03-14 01:05:09",
+            "description": "Robbery",
+            "perpetrators": [
+                {"first_name": "Susie", "last_name": "Suserson"},
+                {"first_name": "Lisa", "last_name": "Wong"},
+            ],
+            "use_of_force": [{"item": "Injurious restraint"}],
+            "location": "123 Brattle St, City, State",
+        }
+    }
 
 
 @pytest.fixture
@@ -167,7 +179,6 @@ def test_create_incident_no_permission(
             "password": "my_password"
         },
     ).json["access_token"]
-    print(access_token)
     # creating new incident
     res = client.post(
         "/api/v1/incidents/create",
@@ -467,3 +478,115 @@ def test_delete_incident_nonexsitent_incident(
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 404
+
+
+"""
+test cases for updating incidents
+"""
+
+
+def test_update_incident(
+        client,
+        partner_publisher,
+):
+    """
+    Test to ensure existing incidents are updated
+    correctly after
+    """
+    created = {}
+    access_token = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": "my_password"
+        },
+    ).json["access_token"]
+    res = client.post(
+        "/api/v1/incidents/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=mock_incidents["domestic"]
+    )
+    incident_obj = Incident.query.filter_by(
+            description="Domestic disturbance",
+            time_of_incident=datetime(2021, 3, 14, 1, 5, 9)
+        ).first()
+    incident_id = incident_obj.id
+
+    res = client.patch(
+        f"/api/v1/incidents/update-incident/{incident_id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=updated_incident["domestic"]
+    )
+    assert res.status_code == 200
+
+    # make sure previous incident is deleted
+    deleted_incident = Incident.query.filter_by(
+            description="Domestic disturbance",
+            time_of_incident=datetime(2021, 3, 14, 1, 5, 9)
+        ).first()
+    assert deleted_incident is None
+    created["domestic"] = res.json
+    # query updated incident object from DB
+    incident_obj = Incident.query.filter_by(
+            description="Robbery",
+            time_of_incident=datetime(2021, 3, 14, 1, 5, 9)
+        ).first()
+
+    # assertions to make sure the update has taken place
+
+    assert incident_obj.time_of_incident == datetime(2021, 3, 14, 1, 5, 9)
+    for i in [0, 1]:
+        assert (
+            incident_obj.perpetrators[i].id
+            == created["domestic"]["perpetrators"][i]["id"])
+    assert (incident_obj.use_of_force[0].id ==
+            created["domestic"]["use_of_force"][0]["id"])
+    assert incident_obj.location == created["domestic"]["location"]
+    assert incident_obj.description == (
+        created["domestic"]["description"])
+
+
+def test_update_incident_nonexistent_incident(
+        client,
+        partner_publisher
+):
+    """
+    Test to ensure error is thrown when non-existent
+    incident asked for update
+    """
+    access_token = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_publisher.email,
+            "password": "my_password"
+        },
+    ).json["access_token"]
+
+    res = client.patch(
+        f"/api/v1/incidents/update-incident/{999}",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=updated_incident["domestic"]
+    )
+    assert res.status_code == 400
+
+
+def test_update_incident_no_permission(
+        client,
+        example_user
+):
+    """
+    Permission is required to update
+    """
+    access_token = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": "my_password"
+        },
+    ).json["access_token"]
+    res = client.patch(
+        f"/api/v1/incidents/update-incident/{999}",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=updated_incident["domestic"]
+    )
+    assert res.status_code == 403

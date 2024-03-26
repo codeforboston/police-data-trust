@@ -256,3 +256,37 @@ def create_incident():
     created = incident.create()
     track_to_mp(request, "create_incident", {"source_id": incident.source_id})
     return incident_orm_to_json(created)
+
+
+@bp.route("update-incident/<int:incident_id>", methods=["PATCH"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate(json=CreateIncidentSchema)
+def update_incident(incident_id):
+    """
+    updating a single incident
+    """
+    body = request.context.json
+    jwt_decoded: dict[str, str] = get_jwt()
+    user_id = jwt_decoded["sub"]
+    permission = PartnerMember.query.filter(
+        PartnerMember.user_id == user_id,
+        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    ).first()
+    if permission is None:
+        abort(403)
+    incident_obj = Incident.query.get(
+        incident_id
+    )
+    if incident_obj:
+        db.session.delete(incident_obj)
+        db.session.commit()
+        incident = incident_to_orm(body)
+        created = incident.create()
+        return incident_orm_to_json(created)
+    else:
+        res = {
+            "status": "Error",
+            "message": "Incident to update not found"
+        }, 400
+        return res
