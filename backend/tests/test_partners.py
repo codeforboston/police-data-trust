@@ -703,6 +703,36 @@ def test_role_change(
         partner_id=example_partner.id,
     ).first()
     assert role_change.role == "Publisher" and role_change is not None
+    """assertion to see if UserRole is updated to Contributor
+    after MemberRole changed to Admin or Publisher
+    """
+    user_instance = User.query.filter_by(
+        id=example_members["member2"]["user_id"]
+    ).first()
+    assert user_instance.role == UserRole.CONTRIBUTOR
+
+    res = client.patch(
+        "/api/v1/partners/role_change",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "user_id" : example_members["member2"]["user_id"],
+            "partner_id": example_partner.id,
+            "role": "Administrator"
+        }
+    )
+    assert res.status_code == 200
+    role_change = PartnerMember.query.filter_by(
+        user_id=example_members["member2"]["user_id"],
+        partner_id=example_partner.id,
+    ).first()
+    assert role_change.role == "Administrator" and role_change is not None
+    """assertion to see if UserRole is updated to Contributor
+    after MemberRole changed to Admin or Publisher
+    """
+    user_instance = User.query.filter_by(
+        id=example_members["member2"]["user_id"]
+    ).first()
+    assert user_instance.role == UserRole.CONTRIBUTOR
 
 
 """

@@ -27,7 +27,7 @@ from ..schemas import (
     partner_to_orm,
     validate,
     AddMemberSchema,
-    partner_member_to_orm
+    partner_member_to_orm,
 )
 
 
@@ -68,6 +68,13 @@ def create_partner():
         role=MemberRole.ADMIN,
     )
     make_admin.create()
+
+    # update to UserRole contributor status
+    user_id = get_jwt()["sub"]
+    user = User.query.filter_by(
+        id=user_id
+    ).first()
+    user.role = UserRole.CONTRIBUTOR
 
     track_to_mp(
         request,
@@ -399,6 +406,11 @@ def role_change():
         if user_found and user_found.role != "Administrator":
             user_found.role = body["role"]
             db.session.commit()
+            if body["role"] == "Adminstrator" or body["role"] == "Publisher":
+                user_instance = User.query.filter_by(
+                    id=body["user_id"]
+                ).first()
+                user_instance.role = UserRole.CONTRIBUTOR
             return {
                 "status" : "ok",
                 "message" : "Role has been updated!"
@@ -406,7 +418,8 @@ def role_change():
         else:
             return {
                 "status" : "Error",
-                "message" : "User not found in this organization"
+                "message" : ("User not found in this organization or can't\
+                change the role of Admin")
             }, 400
     except Exception as e:
         db.session.rollback
