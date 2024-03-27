@@ -148,9 +148,7 @@ class TestOfficers(TestCase):
         res = client.post(
             "/api/v1/officers/",
             json=request,
-            headers={
-                "Authorization": "Bearer {0}".format(contributor_access_token)
-            },
+            headers={"Authorization": f"Bearer {contributor_access_token}"},
         )
         self.assertEqual(res.status_code, 200)
         response = res.json
@@ -187,9 +185,7 @@ class TestOfficers(TestCase):
         res = client.post(
             "/api/v1/officers/",
             json=request,
-            headers={
-                "Authorization": "Bearer {0}".format(contributor_access_token)
-            },
+            headers={"Authorization": f"Bearer {contributor_access_token}"},
         )
         self.assertEqual(res.status_code, 200)
         response = res.json
@@ -244,7 +240,7 @@ class TestOfficers(TestCase):
         res = client.post(
             "/api/v1/officers/search",
             json=query,
-            headers={"Authorization": "Bearer {0}".format(access_token)},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
         self.assertEqual(res.status_code, 200)
 
@@ -280,7 +276,7 @@ class TestOfficers(TestCase):
 
         res = client.get(
             "/api/v1/officers/",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
 
         self.assertEqual(res.status_code, 200)
@@ -293,7 +289,7 @@ class TestOfficers(TestCase):
         test_officer = res.json["results"][0]
         single_res = client.get(
             f"/api/v1/officers/{test_officer['id']}",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
         self.assertEqual(test_officer, single_res.json)
 
@@ -312,7 +308,7 @@ class TestOfficers(TestCase):
             res = client.get(
                 "/api/v1/officers/",
                 query_string={"per_page": per_page, "page": page},
-                headers={"Authorization": "Bearer {0}".format(access_token)},
+                headers={"Authorization": f"Bearer {access_token}"},
             )
 
             self.assertEqual(res.status_code, 200)
@@ -327,7 +323,7 @@ class TestOfficers(TestCase):
                 "perPage": per_page,
                 "page": expected_total_pages + 1,
             },
-            headers={"Authorization": "Bearer {0}".format(access_token)},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
         self.assertEqual(res.status_code, 404)
 
@@ -335,7 +331,7 @@ class TestOfficers(TestCase):
     def test_get_accusations(self, client: Any, access_token: str):
         res = client.get(
             "/api/v1/officers/",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         self.assertEqual(res.status_code, 200)
@@ -355,7 +351,7 @@ class TestOfficers(TestCase):
         \"""
         res = client.get(
             "/api/v1/officers/?per_page=1",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         public_incidents_count = len(
@@ -374,7 +370,7 @@ class TestOfficers(TestCase):
     
         res = client.get(
             "/api/v1/officers/?per_page=1&page=2",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         self.assertEqual(res.status_code, 200)
@@ -395,7 +391,7 @@ class TestOfficers(TestCase):
     
         res = client.get(
             "/api/v1/officers/",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         public_incidents_count = len(
@@ -422,7 +418,7 @@ class TestOfficers(TestCase):
         \"""
         res = client.get(
             "/api/v1/officers/?per_page=1",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         public_incidents_count = len(
@@ -441,7 +437,7 @@ class TestOfficers(TestCase):
     
         res = client.get(
             "/api/v1/officers/?per_page=1&page=2",
-            headers={"Authorization ": "Bearer {0}".format(access_token)},
+            headers={"Authorization ": f"Bearer {access_token}"},
         )
     
         self.assertEqual(res.status_code, 200)

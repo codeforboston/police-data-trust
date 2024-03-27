@@ -216,12 +216,12 @@ class TestPartners(TestCase):
         obj = Partner(name=partner_name, url=partner_url)
         db_session.add(obj)
         db_session.commit()
-        assert obj.id is not None
+        self.assertIsNotNone(obj.id)
 
         # Test that we can get it
         res = client.get(f"/api/v1/partners/{obj.id}")
-        assert res.json["name"] == partner_name
-        assert res.json["url"] == partner_url
+        self.assertEqual(res.json["name"], partner_name)
+        self.assertEqual(res.json["url"], partner_url)
 
     def test_get_all_partners(self, client, example_partners):
         # Create partners in the database
@@ -229,7 +229,7 @@ class TestPartners(TestCase):
 
         # Test that we can get partners
         res = client.get("/api/v1/partners/")
-        assert res.json["results"].__len__() == created.__len__()
+        self.assertEqual(len(res.json["results"]), len(created))
 
     def test_partner_pagination(self, client, example_partners, access_token):
         per_page = 1
@@ -241,16 +241,18 @@ class TestPartners(TestCase):
                 headers={"Authorization": f"Bearer {access_token}"},
             )
 
-            assert res.status_code == 200
-            assert res.json["page"] == page
-            assert res.json["totalPages"] == expected_total_pages
-            assert res.json["totalResults"] == expected_total_pages
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.json["page"], page)
+            self.assertEqual(res.json["totalPages"], expected_total_pages)
+            self.assertEqual(res.json["totalResults"], expected_total_pages)
 
             incidents = res.json["results"]
-            assert len(incidents) == per_page
+            self.assertEqual(len(incidents), per_page)
             actual_ids.add(incidents[0]["id"])
 
-        assert actual_ids == set(i["id"] for i in example_partners.values())
+        self.assertSetEqual(
+            actual_ids, {i["id"] for i in example_partners.values()}
+        )
 
         res = client.get(
             (
@@ -259,7 +261,7 @@ class TestPartners(TestCase):
             ),
             headers={"Authorization": f"Bearer {access_token}"},
         )
-        assert res.status_code == 404
+        self.assertEqual(res.status_code, 404)
 
         # def test_add_member_to_partner(db_session, example_members):
         # created = example_members["publisher"]
@@ -323,9 +325,9 @@ class TestPartners(TestCase):
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
-        assert res.status_code == 200
-        assert res.json["results"].__len__() == users.__len__()
-        # assert res.json["results"][0]["user"]["email"] == member_obj.email
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), len(users))
+        # self.assertEqual(res.json["results"][0]["user"]["email"], member_obj.email)
 
     def test_join_organization(
         self,
@@ -389,7 +391,7 @@ class TestPartners(TestCase):
         )
 
         # verify status code
-        assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
 
         """
         Verify record has been added to
@@ -400,11 +402,10 @@ class TestPartners(TestCase):
             partner_id=example_partner.id,
         ).first()
 
-        assert (
-            partner_member_obj.user_id
-            == example_members["publisher"]["user_id"]
+        self.assertEqual(
+            partner_member_obj.user_id, example_members["publisher"]["user_id"]
         )
-        assert partner_member_obj.partner_id == example_partner.id
+        self.assertEqual(partner_member_obj.partner_id, example_partner.id)
 
         """
         Record in Invitation Table has to
@@ -416,7 +417,7 @@ class TestPartners(TestCase):
             user_id=example_members["publisher"]["user_id"],
         ).first()
 
-        assert invitation_check is None
+        self.assertIsNone(invitation_check)
 
     """
     Test for when a user is trying to
@@ -430,7 +431,6 @@ class TestPartners(TestCase):
         partner_publisher: User,
         example_partner: Partner,
         example_members,
-        db_session,
     ):
         access_token = client.post(
             "api/v1/auth/login",
@@ -453,7 +453,7 @@ class TestPartners(TestCase):
         )
 
         # verify status code
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
 
     def test_leave_endpoint(
         self,
@@ -461,7 +461,6 @@ class TestPartners(TestCase):
         partner_publisher: User,
         example_partner: Partner,
         example_members,
-        db_session,
     ):
         """
         Can leave org user is already part
@@ -483,13 +482,13 @@ class TestPartners(TestCase):
                 "partner_id": example_partner.id,
             },
         )
-        assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
         # verify item has been deleted using endpoint
         deleted = PartnerMember.query.filter_by(
             user_id=example_members["publisher"]["user_id"],
             partner_id=example_partner.id,
         ).first()
-        assert deleted is None
+        self.assertIsNone(deleted)
 
         """
         Cannot leave org one has not joined
@@ -503,7 +502,7 @@ class TestPartners(TestCase):
             },
         )
 
-        assert res.status_code == 400
+        self.assertEqual(res.status_code == 400)
 
     # test:only admin can remove members
     def test_remove_member_admin(
@@ -512,7 +511,6 @@ class TestPartners(TestCase):
         example_members,
         example_partner,
         partner_admin,
-        db_session,
     ):
         """
         Test cases:
@@ -538,12 +536,12 @@ class TestPartners(TestCase):
                 "partner_id": example_partner.id,
             },
         )
-        assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
         removed = PartnerMember.query.filter_by(
             user_id=example_members["publisher"]["user_id"],
             partner_id=example_partner.id,
         ).first()
-        assert removed is None
+        self.assertIsNone(removed)
 
     # test admins cannot remove other admins
     def test_remove_member_admin2(
@@ -552,7 +550,6 @@ class TestPartners(TestCase):
         example_members,
         example_partner,
         partner_admin,
-        db_session,
     ):
         # log in as admin
         access_token = client.post(
@@ -570,12 +567,12 @@ class TestPartners(TestCase):
                 "partner_id": example_partner.id,
             },
         )
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         removed = PartnerMember.query.filter_by(
             user_id=example_members["admin2"]["user_id"],
             partner_id=example_partner.id,
         ).first()
-        assert removed is not None
+        self.assertIsNotNone(removed)
 
     # admins trying to remove records that don't exist
     def test_remove_member_admin3(
@@ -601,12 +598,12 @@ class TestPartners(TestCase):
             },
         )
 
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         removed = PartnerMember.query.filter_by(
             user_id=99999999,
             partner_id=99999999,
         ).first()
-        assert removed is None
+        self.assertIsNone(removed)
 
     """
     withdrawing invitations that exist
@@ -641,7 +638,7 @@ class TestPartners(TestCase):
                 "partner_id": example_partner.id,
             },
         )
-        assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
         query = (
             db_session.query(Invitation)
             .filter_by(
@@ -650,7 +647,7 @@ class TestPartners(TestCase):
             )
             .first()
         )
-        assert query is None
+        self.assertIsNone(query)
 
     """
     withdrawing invitations that don't exist
@@ -677,7 +674,7 @@ class TestPartners(TestCase):
                 "partner_id": example_partner.id,
             },
         )
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         query = (
             db_session.query(Invitation)
             .filter_by(
@@ -686,7 +683,7 @@ class TestPartners(TestCase):
             )
             .first()
         )
-        assert query is None
+        self.assertIsNone(query)
 
     # normal:all conditions met
 
@@ -707,12 +704,13 @@ class TestPartners(TestCase):
                 "role": "Publisher",
             },
         )
-        assert res.status_code == 200
+        self.assertEqual(res.status_code, 200)
         role_change = PartnerMember.query.filter_by(
             user_id=example_members["member2"]["user_id"],
             partner_id=example_partner.id,
         ).first()
-        assert role_change.role == "Publisher" and role_change is not None
+        self.assertIsNotNone(role_change)
+        self.assertEqual(role_change.role, "Publisher")
 
     """
     admin cannot change the role
@@ -736,12 +734,13 @@ class TestPartners(TestCase):
                 "role": "Publisher",
             },
         )
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         role_change = PartnerMember.query.filter_by(
             user_id=example_members["admin2"]["user_id"],
             partner_id=example_partner.id,
         ).first()
-        assert role_change.role != "Publisher" and role_change is not None
+        self.assertIsNotNone(role_change)
+        self.assertNotEqual(role_change.role, "Publisher")
 
     """
     Rest of the role change tests
@@ -769,12 +768,12 @@ class TestPartners(TestCase):
                 "role": "Publisher",
             },
         )
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         role_change_instance = PartnerMember.query.filter_by(
             user_id=float("inf"),
             partner_id=example_partner.id,
         ).first()
-        assert role_change_instance is None
+        self.assertIsNone(role_change_instance)
 
     def test_role_change2(self, client, partner_admin, example_members):
         access_token = client.post(
@@ -791,12 +790,12 @@ class TestPartners(TestCase):
                 "role": "Publisher",
             },
         )
-        assert res.status_code == 400
+        self.assertEqual(res.status_code, 400)
         role_change_instance = PartnerMember.query.filter_by(
             user_id=example_members["member2"]["user_id"],
             partner_id=-1,
         ).first()
-        assert role_change_instance is None
+        self.assertIsNone(role_change_instance)
 
     def test_role_change3(
         self,
