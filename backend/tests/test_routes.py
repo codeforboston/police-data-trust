@@ -1,9 +1,10 @@
-import pytest
+from unittest import TestCase
 
 
-@pytest.mark.parametrize(
-    ("page", "expected_status_code"),
-    [("/", 200), ("/api/v1/healthcheck", 200)],
-)
-def test_simple_routes(client, page, expected_status_code):
-    assert client.get(page).status_code == expected_status_code
+class TestRoutes(TestCase):
+    def test_routes(self):
+        for page, expected_status_code in {
+            "/": 200,
+            "/api/v1/healthcheck": 200
+        }.items():
+            self.assertEqual(client.get(page).status_code, expected_status_code)

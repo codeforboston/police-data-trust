@@ -35,8 +35,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get(
         "MAIL_DEFAULT_SENDER",
-        "National Police Data Coalition <{email}>".format(
-              email=MAIL_USERNAME),
+        f"National Police Data Coalition <{MAIL_USERNAME}>",
     )
 
     """

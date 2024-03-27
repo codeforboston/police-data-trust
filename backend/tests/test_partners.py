@@ -3,7 +3,7 @@ from backend.auth import user_manager
 from backend.database import Partner, PartnerMember, MemberRole, Invitation
 from backend.database.models.user import User, UserRole
 from datetime import datetime
-
+from unittest import TestCase
 
 publisher_email = "pub@partner.com"
 inactive_email = "lurker@partner.com"
@@ -48,13 +48,13 @@ mock_users = {
         "email": member_email,
         "password": example_password,
     },
-    "admin2" : {
-        "email" : admin2_email,
-        "password" : example_password
+    "admin2": {
+        "email": admin2_email,
+        "password": example_password
     },
-    "member2" : {
-        "email" : member2_email,
-        "password" : example_password
+    "member2": {
+        "email": member2_email,
+        "password": example_password
     }
 }
 
@@ -79,15 +79,15 @@ mock_members = {
         "role": MemberRole.MEMBER,
         "is_active": True,
     },
-    "admin2" : {
+    "admin2": {
         "user_email": admin_email,
         "role": MemberRole.ADMIN,
         "is_active": True,
     },
-    "member2" : {
+    "member2": {
         "user_email": member2_email,
-        "role" : MemberRole.MEMBER,
-        "is_active" : True
+        "role": MemberRole.MEMBER,
+        "is_active": True
     }
 }
 
@@ -100,7 +100,7 @@ def example_partners(client, access_token):
         res = client.post(
             "/api/v1/partners/create",
             json=mock,
-            headers={"Authorization": "Bearer {0}".format(access_token)},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
         assert res.status_code == 200
         created[id] = res.json
@@ -148,7 +148,7 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
             f"/api/v1/partners/{partner_obj.id}/members/add",
             json=req,
             headers={
-                "Authorization": "Bearer {0}".format(p_admin_access_token)
+                "Authorization": f"Bearer {p_admin_access_token}"
             },
         )
         assert res.status_code == 200
@@ -156,822 +156,806 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
     return created
 
 
-def test_create_partner(db_session, example_user, example_partners):
-    created = example_partners["mpv"]
+@pytest.mark.usefixtures("example_members", "example_partners")
+class TestPartners(TestCase):
+    def test_create_partner(self, db_session, example_user, example_partners):
+        created = example_partners["mpv"]
 
-    partner_obj = (
-        db_session.query(Partner)
-        .filter(Partner.name == created["name"])
-        .first()
-    )
-
-    user_obj = (
-        db_session.query(User).filter(User.email == example_user.email).first()
-    )
-
-    association_obj = (
-        db_session.query(PartnerMember)
-        .filter(
-            PartnerMember.partner_id == partner_obj.id,
-            PartnerMember.user_id == user_obj.id,
+        partner_obj = (
+            db_session.query(Partner)
+            .filter(Partner.name == created["name"])
+            .first()
         )
-        .first()
-    )
 
-    assert partner_obj.name == created["name"]
-    assert partner_obj.url == created["url"]
-    assert partner_obj.contact_email == created["contact_email"]
-    assert association_obj is not None
-    assert association_obj.is_administrator() is True
+        user_obj = (
+            db_session.query(User).filter(User.email == example_user.email).first()
+        )
 
+        association_obj = (
+            db_session.query(PartnerMember)
+            .filter(
+                PartnerMember.partner_id == partner_obj.id,
+                PartnerMember.user_id == user_obj.id,
+            )
+            .first()
+        )
 
-def test_create_partner_role_change(
+        self.assertEqual(partner_obj.name, created["name"])
+        self.assertEqual(partner_obj.url, created["url"])
+        self.assertEqual(partner_obj.contact_email, created["contact_email"])
+        self.assertIsNotNone(association_obj)
+        self.assertTrue(association_obj.is_administrator())
+
+    def test_create_partner_role_change(
+        self,
         client,
         example_user
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": example_user.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": example_user.email,
-            "password": example_password
-        },
-    ).json["access_token"]
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "Example Partner 1",
+                "url": "examplep.com",
+                "contact_email": "example_p@gmail.com",
+            }
+        )
+        self.assertEqual(res.status_code, 200)
+        partner_member_obj = Partner.query.filter_by(
+            url="examplep.com"
+        ).first()
 
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name" : "Example Partner 1",
-            "url": "examplep.com",
-            "contact_email": "example_p@gmail.com",
-        }
-    )
-    assert res.status_code == 200
-    partner_member_obj = Partner.query.filter_by(
-        url="examplep.com"
-    ).first()
+        self.assertEqual(partner_member_obj.name, "Example Partner 1")
+        self.assertEqual(partner_member_obj.url, "examplep.com")
+        self.assertEqual(partner_member_obj.contact_email, "example_p@gmail.com")
 
-    assert partner_member_obj.name == "Example Partner 1"
-    assert partner_member_obj.url == "examplep.com"
-    assert partner_member_obj.contact_email == "example_p@gmail.com"
+        # Check if UserRole in updated
+        user = User.query.filter_by(
+            email=example_user.email
+        ).first()
+        self.assertEqual(user.role, UserRole.CONTRIBUTOR)
 
-    # Check if UserRole in updated
-    user = User.query.filter_by(
-        email=example_user.email
-    ).first()
-    assert user.role == UserRole.CONTRIBUTOR
+    def test_get_partner(self, client, db_session, access_token):
+        # Create a partner in the database
+        partner_name = "Test Partner"
+        partner_url = "https://testpartner.com"
 
+        obj = Partner(name=partner_name, url=partner_url)
+        db_session.add(obj)
+        db_session.commit()
+        assert obj.id is not None
 
-def test_get_partner(client, db_session, access_token):
-    # Create a partner in the database
-    partner_name = "Test Partner"
-    partner_url = "https://testpartner.com"
+        # Test that we can get it
+        res = client.get(f"/api/v1/partners/{obj.id}")
+        assert res.json["name"] == partner_name
+        assert res.json["url"] == partner_url
 
-    obj = Partner(name=partner_name, url=partner_url)
-    db_session.add(obj)
-    db_session.commit()
-    assert obj.id is not None
+    def test_get_all_partners(self, client, example_partners):
+        # Create partners in the database
+        created = example_partners
 
-    # Test that we can get it
-    res = client.get(f"/api/v1/partners/{obj.id}")
-    assert res.json["name"] == partner_name
-    assert res.json["url"] == partner_url
+        # Test that we can get partners
+        res = client.get("/api/v1/partners/")
+        assert res.json["results"].__len__() == created.__len__()
 
+    def test_partner_pagination(self, client, example_partners, access_token):
+        per_page = 1
+        expected_total_pages = len(example_partners)
+        actual_ids = set()
+        for page in range(1, expected_total_pages + 1):
+            res = client.get(
+                f"/api/v1/partners/?per_page={per_page}&page={page}",
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
 
-def test_get_all_partners(client, example_partners):
-    # Create partners in the database
-    created = example_partners
+            assert res.status_code == 200
+            assert res.json["page"] == page
+            assert res.json["totalPages"] == expected_total_pages
+            assert res.json["totalResults"] == expected_total_pages
 
-    # Test that we can get partners
-    res = client.get("/api/v1/partners/")
-    assert res.json["results"].__len__() == created.__len__()
+            incidents = res.json["results"]
+            assert len(incidents) == per_page
+            actual_ids.add(incidents[0]["id"])
 
+        assert actual_ids == set(i["id"] for i in example_partners.values())
 
-def test_partner_pagination(client, example_partners, access_token):
-    per_page = 1
-    expected_total_pages = len(example_partners)
-    actual_ids = set()
-    for page in range(1, expected_total_pages + 1):
         res = client.get(
-            f"/api/v1/partners/?per_page={per_page}&page={page}",
-            headers={"Authorization": "Bearer {0}".format(access_token)},
+            (
+                f"/api/v1/partners/?per_page={per_page}"
+                f"&page={expected_total_pages + 1}"
+            ),
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        assert res.status_code == 404
+
+        # def test_add_member_to_partner(db_session, example_members):
+        # created = example_members["publisher"]
+
+        # partner_member_obj = (
+        #     db_session.query(PartnerMember)
+        #     .filter(PartnerMember.id == created["id"])
+        #     .first()
+        # )
+
+        # assert partner_member_obj.partner_id == created["partner_id"]
+        # assert partner_member_obj.email == created["email"]
+        # assert partner_member_obj.role == created["role"]
+        """
+        Write tests for inviting users/adding members to partners after
+        establishing permanent mail server
+        """
+
+    def test_get_partner_members(
+            self, db_session, client, example_partner, example_user, admin_user, access_token
+    ):
+        # Create partners in the database
+        users = []
+        partner_obj = (
+            db_session.query(Partner)
+            .filter(Partner.name == example_partner.name)
+            .first()
+        )
+
+        member_obj = (
+            db_session.query(User).filter(User.email == example_user.email).first()
+        )
+
+        admin_obj = (
+            db_session.query(User).filter(User.email == admin_user.email).first()
+        )
+
+        users.append(member_obj)
+        users.append(admin_obj)
+
+        for user in users:
+            association_obj = PartnerMember(
+                partner_id=partner_obj.id, user_id=user.id
+            )
+            db_session.add(association_obj)
+            db_session.commit()
+
+        # Test that we can get partners
+        res = client.get(
+            f"/api/v1/partners/{partner_obj.id}/members/",
+            headers={"Authorization": f"Bearer {access_token}"},
         )
 
         assert res.status_code == 200
-        assert res.json["page"] == page
-        assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == expected_total_pages
+        assert res.json["results"].__len__() == users.__len__()
+        # assert res.json["results"][0]["user"]["email"] == member_obj.email
 
-        incidents = res.json["results"]
-        assert len(incidents) == per_page
-        actual_ids.add(incidents[0]["id"])
+    def test_join_organization(
+            self,
+            client,
+            partner_publisher: User,
+            example_partner: Partner,
+            example_members,
+            db_session
+    ):
+        """
+        Two test scenarios
+        User already in the organization
+        User not in the organization
+        """
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_publisher.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+        """
+        Join Endpoint requires the Invitation
+        Table to populated using the /invite endpoint
+        Adding a record to the Invitation Table manually
+        """
+        invite = Invitation(
+            partner_id=example_partner.id,
+            user_id=example_members["publisher"]["user_id"],
+            role="Member"
 
-    assert actual_ids == set(i["id"] for i in example_partners.values())
-
-    res = client.get(
-        (
-            f"/api/v1/partners/?per_page={per_page}"
-            f"&page={expected_total_pages + 1}"
-        ),
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 404
-
-
-# def test_add_member_to_partner(db_session, example_members):
-    # created = example_members["publisher"]
-
-    # partner_member_obj = (
-    #     db_session.query(PartnerMember)
-    #     .filter(PartnerMember.id == created["id"])
-    #     .first()
-    # )
-
-    # assert partner_member_obj.partner_id == created["partner_id"]
-    # assert partner_member_obj.email == created["email"]
-    # assert partner_member_obj.role == created["role"]
-    """
-    Write tests for inviting users/adding members to partners after
-    establishing permanent mail server
-    """
-
-
-def test_get_partner_members(
-    db_session, client, example_partner, example_user, admin_user, access_token
-):
-    # Create partners in the database
-    users = []
-    partner_obj = (
-        db_session.query(Partner)
-        .filter(Partner.name == example_partner.name)
-        .first()
-    )
-
-    member_obj = (
-        db_session.query(User).filter(User.email == example_user.email).first()
-    )
-
-    admin_obj = (
-        db_session.query(User).filter(User.email == admin_user.email).first()
-    )
-
-    users.append(member_obj)
-    users.append(admin_obj)
-
-    for user in users:
-        association_obj = PartnerMember(
-            partner_id=partner_obj.id, user_id=user.id
         )
-        db_session.add(association_obj)
+        db_session.add(invite)
         db_session.commit()
 
-    # Test that we can get partners
-    res = client.get(
-        f"/api/v1/partners/{partner_obj.id}/members/",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
+        """
+        Deleting existing PartnerMember record
+        for "user_id=example_members["publisher"]["user_id"],
+         partner_id=example_partner.id" as it
+        has already been added to the PartnerMember
+        Table using the "example_members function above
+    
+        In theory, records should only be added to
+        PartnerMember table using the /invite endpoint,
+        and after users have accepted their invites.
+        """
+        db_session.query(PartnerMember).filter_by(
+            user_id=example_members["publisher"]["user_id"],
+            partner_id=example_partner.id
+        ).delete()
+        db_session.commit()
+        res = client.post(
+            "/api/v1/partners/join",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["publisher"]["user_id"],
+                "partner_id": example_partner.id,
+                "role": "Member",
+                "date_joined": datetime.now(),
+                "is_active": True
+            }
+        )
 
-    assert res.status_code == 200
-    assert res.json["results"].__len__() == users.__len__()
-    # assert res.json["results"][0]["user"]["email"] == member_obj.email
+        # verify status code
+        assert res.status_code == 200
 
+        """
+        Verify record has been added to
+        Partner Member table after /join endpoint
+        """
+        partner_member_obj = PartnerMember.query.filter_by(
+            user_id=example_members["publisher"]["user_id"],
+            partner_id=example_partner.id
+        ).first()
 
-def test_join_organization(
-    client,
-    partner_publisher: User,
-    example_partner: Partner,
-    example_members,
-    db_session
-):
-    """
-    Two test scenarios
-    User already in the organization
-    User not in the organization
-    """
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_publisher.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-    """
-    Join Endpoint requires the Invitation
-    Table to populated using the /invite endpoint
-    Adding a record to the Invitation Table manually
-    """
-    invite = Invitation(
-        partner_id=example_partner.id,
-        user_id=example_members["publisher"]["user_id"],
-        role="Member"
+        assert partner_member_obj.user_id == example_members["publisher"]["user_id"]
+        assert partner_member_obj.partner_id == example_partner.id
 
-    )
-    db_session.add(invite)
-    db_session.commit()
+        """
+        Record in Invitation Table has to
+        be deleted after /join endpoint
+        Verifying that this is happening correctly
+        """
+        invitation_check = Invitation.query.filter_by(
+            partner_id=example_partner.id,
+            user_id=example_members["publisher"]["user_id"]
+        ).first()
 
-    """
-    Deleting existing PartnerMember record
-    for "user_id=example_members["publisher"]["user_id"],
-     partner_id=example_partner.id" as it
-    has already been added to the PartnerMember
-    Table using the "example_members function above
-
-    In theory, records should only be added to
-    PartnerMember table using the /invite endpoint,
-    and after users have accepted their invites.
-    """
-    db_session.query(PartnerMember).filter_by(
-        user_id=example_members["publisher"]["user_id"],
-        partner_id=example_partner.id
-    ).delete()
-    db_session.commit()
-    res = client.post(
-        "/api/v1/partners/join",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["publisher"]["user_id"],
-            "partner_id": example_partner.id,
-            "role": "Member",
-            "date_joined": datetime.now(),
-            "is_active" : True
-        }
-    )
-
-    # verify status code
-    assert res.status_code == 200
+        assert invitation_check is None
 
     """
-    Verify record has been added to
-    Partner Member table after /join endpoint
+    Test for when a user is trying to
+    join an organization but they are already
+    added to the organization
     """
-    partner_member_obj = PartnerMember.query.filter_by(
-        user_id=example_members["publisher"]["user_id"],
-        partner_id=example_partner.id
-    ).first()
 
-    assert partner_member_obj.user_id == example_members["publisher"]["user_id"]
-    assert partner_member_obj.partner_id == example_partner.id
+    def test_join_organization_user_exists(
+            self,
+            client,
+            partner_publisher: User,
+            example_partner: Partner,
+            example_members,
+            db_session
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_publisher.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        res = client.post(
+            "/api/v1/partners/join",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["publisher"]["user_id"],
+                "partner_id": example_partner.id,
+                "role": "Member",
+                "date_joined": datetime.now(),
+                "is_active": True
+            }
+        )
+
+        # verify status code
+        assert res.status_code == 400
+
+    def test_leave_endpoint(
+            self,
+            client,
+            partner_publisher: User,
+            example_partner: Partner,
+            example_members,
+            db_session
+    ):
+        """
+        Can leave org user is already part
+        of
+        """
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_publisher.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        res = client.delete(
+            "/api/v1/partners/leave",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["publisher"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+        assert res.status_code == 200
+        # verify item has been deleted using endpoint
+        deleted = PartnerMember.query.filter_by(
+            user_id=example_members["publisher"]["user_id"],
+            partner_id=example_partner.id
+        ).first()
+        assert deleted is None
+
+        """
+        Cannot leave org one has not joined
+        """
+        res = client.delete(
+            "/api/v1/partners/leave",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["publisher"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+
+        assert res.status_code == 400
+
+    # test:only admin can remove members
+    def test_remove_member_admin(
+            self,
+            client,
+            example_members,
+            example_partner,
+            partner_admin,
+            db_session
+    ):
+        """
+        Test cases:
+        1)Only Admins can remove members
+        2)Handle Members in the Partner Org
+        assert DB changes
+        3)Handle Members not in the Partner Org
+        assert DB changes
+
+        """
+        # log in as admin
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        # use remove_member endpoint as admin
+        res = client.delete(
+            "/api/v1/partners/remove_member",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["publisher"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+        assert res.status_code == 200
+        removed = PartnerMember.query.filter_by(
+            user_id=example_members["publisher"]["user_id"],
+            partner_id=example_partner.id
+        ).first()
+        assert removed is None
+
+    # test admins cannot remove other admins
+    def test_remove_member_admin2(
+            self,
+            client,
+            example_members,
+            example_partner,
+            partner_admin,
+            db_session
+    ):
+        # log in as admin
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        # use remove_member endpoint as admin\
+        # trying to remove admin as well
+        res = client.delete(
+            "/api/v1/partners/remove_member",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["admin2"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+        assert res.status_code == 400
+        removed = PartnerMember.query.filter_by(
+            user_id=example_members["admin2"]["user_id"],
+            partner_id=example_partner.id,
+        ).first()
+        assert removed is not None
+
+    # admins trying to remove records that don't exist
+    def test_remove_member_admin3(
+            self,
+            client,
+            partner_admin,
+    ):
+        # log in as admin
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        # use remove_member endpoint as admin\
+        # trying to remove record that does not\
+        # exist
+        res = client.delete(
+            "/api/v1/partners/remove_member",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": 99999999,
+                "partner_id": 9999999,
+            }
+        )
+
+        assert res.status_code == 400
+        removed = PartnerMember.query.filter_by(
+            user_id=99999999,
+            partner_id=99999999,
+        ).first()
+        assert removed is None
 
     """
-    Record in Invitation Table has to
-    be deleted after /join endpoint
-    Verifying that this is happening correctly
+    withdrawing invitations that exist
     """
-    invitation_check = Invitation.query.filter_by(
-        partner_id=example_partner.id,
-        user_id=example_members["publisher"]["user_id"]
-    ).first()
 
-    assert invitation_check is None
+    def test_withdraw_invitation(
+            self,
+            client,
+            partner_admin,
+            db_session,
+            example_partner,
+            example_members,
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
+        invite = Invitation(
+            partner_id=example_partner.id,
+            user_id=example_members["member2"]["user_id"],
+            role="Member"
 
-"""
-Test for when a user is trying to
-join an organization but they are already
-added to the organization
-"""
+        )
+        db_session.add(invite)
+        db_session.commit()
 
-
-def test_join_organization_user_exists(
-    client,
-    partner_publisher: User,
-    example_partner: Partner,
-    example_members,
-    db_session
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_publisher.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.post(
-        "/api/v1/partners/join",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["publisher"]["user_id"],
-            "partner_id": example_partner.id,
-            "role": "Member",
-            "date_joined": datetime.now(),
-            "is_active" : True
-        }
-    )
-
-    # verify status code
-    assert res.status_code == 400
-
-
-def test_leave_endpoint(
-    client,
-    partner_publisher: User,
-    example_partner: Partner,
-    example_members,
-    db_session
-):
-    """
-    Can leave org user is already part
-    of
-    """
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_publisher.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.delete(
-        "/api/v1/partners/leave",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["publisher"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
-    assert res.status_code == 200
-    # verify item has been deleted using endpoint
-    deleted = PartnerMember.query.filter_by(
-        user_id=example_members["publisher"]["user_id"],
-        partner_id=example_partner.id
-    ).first()
-    assert deleted is None
+        res = client.delete(
+            "/api/v1/partners/withdraw_invitation",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["member2"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+        assert res.status_code == 200
+        query = db_session.query(Invitation).filter_by(
+            user_id=example_members["member2"]["user_id"],
+            partner_id=example_partner.id
+        ).first()
+        assert query is None
 
     """
-    Cannot leave org one hasnot joined
+    withdrawing invitations that don't exist
     """
-    res = client.delete(
-        "/api/v1/partners/leave",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["publisher"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
 
-    assert res.status_code == 400
+    def test_withdraw_invitation1(
+            self,
+            client,
+            partner_admin,
+            db_session,
+            example_members,
+            example_partner,
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-# test:only admin can remove members
+        res = client.delete(
+            "/api/v1/partners/withdraw_invitation",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["member2"]["user_id"],
+                "partner_id": example_partner.id,
+            }
+        )
+        assert res.status_code == 400
+        query = db_session.query(Invitation).filter_by(
+            user_id=example_members["member2"]["user_id"],
+            partner_id=example_partner.id
+        ).first()
+        assert query is None
 
+    # normal:all conditions met
 
-def test_remove_member_admin(
-    client,
-    example_members,
-    example_partner,
-    partner_admin,
-    db_session
-):
+    def test_role_change(
+            self,
+            client,
+            partner_admin,
+            example_partner,
+            example_members
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        res = client.patch(
+            "/api/v1/partners/role_change",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["member2"]["user_id"],
+                "partner_id": example_partner.id,
+                "role": "Publisher"
+            }
+        )
+        assert res.status_code == 200
+        role_change = PartnerMember.query.filter_by(
+            user_id=example_members["member2"]["user_id"],
+            partner_id=example_partner.id,
+        ).first()
+        assert role_change.role == "Publisher" and role_change is not None
+
     """
-    Test cases:
-    1)Only Admins can remove members
-    2)Handle Members in the Partner Org
-    assert DB changes
-    3)Handle Members not in the Parter Org
-    assert DB changes
+    admin cannot change the role
+    of another admin
+    """
+
+    def test_role_change5(
+            self,
+            client,
+            partner_admin,
+            example_partner,
+            example_members
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+
+        res = client.patch(
+            "/api/v1/partners/role_change",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["admin2"]["user_id"],
+                "partner_id": example_partner.id,
+                "role": "Publisher"
+            }
+        )
+        assert res.status_code == 400
+        role_change = PartnerMember.query.filter_by(
+            user_id=example_members["admin2"]["user_id"],
+            partner_id=example_partner.id,
+        ).first()
+        assert role_change.role != "Publisher" and role_change is not None
 
     """
-    # log in as admin
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
+    Rest of the role change tests
+    are for requests where the partner_id/
+    user_id is not found
+    """
 
-    # use remove_member endpoint as admin
-    res = client.delete(
-        "/api/v1/partners/remove_member",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["publisher"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
-    assert res.status_code == 200
-    removed = PartnerMember.query.filter_by(
-        user_id=example_members["publisher"]["user_id"],
-        partner_id=example_partner.id
-    ).first()
-    assert removed is None
+    def test_role_change1(
+            self,
+            client,
+            partner_admin,
+            example_partner,
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-# test admins cannot remove other admins
+        res = client.patch(
+            "/api/v1/partners/role_change",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": float("inf"),
+                "partner_id": example_partner.id,
+                "role": "Publisher"
+            }
+        )
+        assert res.status_code == 400
+        role_change_instance = PartnerMember.query.filter_by(
+            user_id=float("inf"),
+            partner_id=example_partner.id,
+        ).first()
+        assert role_change_instance is None
 
+    def test_role_change2(
+            self,
+            client,
+            partner_admin,
+            example_members
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-def test_remove_member_admin2(
-    client,
-    example_members,
-    example_partner,
-    partner_admin,
-    db_session
-):
-    # log in as admin
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
+        res = client.patch(
+            "/api/v1/partners/role_change",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": example_members["member2"]["user_id"],
+                "partner_id": -1,
+                "role": "Publisher"
+            }
+        )
+        assert res.status_code == 400
+        role_change_instance = PartnerMember.query.filter_by(
+            user_id=example_members["member2"]["user_id"],
+            partner_id=-1,
+        ).first()
+        assert role_change_instance is None
 
-    # use remove_member endpoint as admin\
-    # trying to remove admin as well
-    res = client.delete(
-        "/api/v1/partners/remove_member",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["admin2"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
-    assert res.status_code == 400
-    removed = PartnerMember.query.filter_by(
-        user_id=example_members["admin2"]["user_id"],
-        partner_id=example_partner.id,
-    ).first()
-    assert removed is not None
+    def test_role_change3(
+            self,
+            client,
+            partner_admin,
+    ):
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-# admins trying to remove records that don't exist
+        res = client.patch(
+            "/api/v1/partners/role_change",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "user_id": -1,
+                "partner_id": -1,
+                "role": "Publisher"
+            }
+        )
+        self.assertEqual(res.status_code, 400)
+        role_change_instance = PartnerMember.query.filter_by(
+            user_id=-1,
+            partner_id=-1,
+        ).first()
+        self.assertIsNone(role_change_instance)
 
+    """
+    Test for creating a new partner
+    and adding existing partner already created
+    """
+    def test_create_new_partner(
+            self,
+            client,
+            partner_admin
 
-def test_remove_member_admin3(
-    client,
-    partner_admin,
-):
-    # log in as admin
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
+    ):
+        # test for creating new partner
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
 
-    # use remove_member endpoint as admin\
-    # trying to remove record that does not\
-    # exist
-    res = client.delete(
-        "/api/v1/partners/remove_member",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : 99999999,
-            "partner_id": 9999999,
-        }
-    )
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "Citizens Police Data Project",
+                "url": "https://cpdp.co",
+                "contact_email": "tech@invisible.institute",
+            }
+        )
+        self.assertEqual(res.status_code, 200)
+        partner_obj = Partner.query.filter_by(
+            url="https://cpdp.co"
+        ).first()
+        self.assertEqual(partner_obj.name, "Citizens Police Data Project")
+        self.assertEqual(partner_obj.url, "https://cpdp.co")
+        self.assertEqual(partner_obj.contact_email, "tech@invisible.institute")
 
-    assert res.status_code == 400
-    removed = PartnerMember.query.filter_by(
-        user_id=99999999,
-        partner_id=99999999,
-    ).first()
-    assert removed is None
+        # test for adding duplicate partner that already exists
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "Citizens Police Data Project",
+                "url": "https://cpdp.co",
+                "contact_email": "tech@invisible.institute",
+            }
+        )
+        self.assertEqual(res.status_code, 400)
 
-
-"""
-withdrawing invitations that exist
-"""
-
-
-def test_withdraw_invitation(
-        client,
-        partner_admin,
-        db_session,
-        example_partner,
-        example_members,
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    invite = Invitation(
-        partner_id=example_partner.id,
-        user_id=example_members["member2"]["user_id"],
-        role="Member"
-
-    )
-    db_session.add(invite)
-    db_session.commit()
-
-    res = client.delete(
-        "/api/v1/partners/withdraw_invitation",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["member2"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
-    assert res.status_code == 200
-    query = db_session.query(Invitation).filter_by(
-        user_id=example_members["member2"]["user_id"],
-        partner_id=example_partner.id
-    ).first()
-    assert query is None
-
-
-"""
-withdrawing invitations that don't exist
-"""
-
-
-def test_withdraw_invitation1(
-        client,
-        partner_admin,
-        db_session,
-        example_members,
-        example_partner,
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.delete(
-        "/api/v1/partners/withdraw_invitation",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["member2"]["user_id"],
-            "partner_id": example_partner.id,
-        }
-    )
-    assert res.status_code == 400
-    query = db_session.query(Invitation).filter_by(
-        user_id=example_members["member2"]["user_id"],
-        partner_id=example_partner.id
-    ).first()
-    assert query is None
-
-# normal:all conditions met
-
-
-def test_role_change(
-        client,
-        partner_admin,
-        example_partner,
-        example_members
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.patch(
-        "/api/v1/partners/role_change",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["member2"]["user_id"],
-            "partner_id": example_partner.id,
-            "role": "Publisher"
-        }
-    )
-    assert res.status_code == 200
-    role_change = PartnerMember.query.filter_by(
-        user_id=example_members["member2"]["user_id"],
-        partner_id=example_partner.id,
-    ).first()
-    assert role_change.role == "Publisher" and role_change is not None
-
-
-"""
-admin cannot change the role
-of another admin
-"""
-
-
-def test_role_change5(
-        client,
-        partner_admin,
-        example_partner,
-        example_members
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.patch(
-        "/api/v1/partners/role_change",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["admin2"]["user_id"],
-            "partner_id": example_partner.id,
-            "role": "Publisher"
-        }
-    )
-    assert res.status_code == 400
-    role_change = PartnerMember.query.filter_by(
-        user_id=example_members["admin2"]["user_id"],
-        partner_id=example_partner.id,
-    ).first()
-    assert role_change.role != "Publisher" and role_change is not None
-
-
-"""
-Rest of the role change tests
-are for requests where the partner_id/
-user_id is not found
-"""
-
-
-def test_role_change1(
-        client,
-        partner_admin,
-        example_partner,
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.patch(
-        "/api/v1/partners/role_change",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : float("inf"),
-            "partner_id": example_partner.id,
-            "role": "Publisher"
-        }
-    )
-    assert res.status_code == 400
-    role_change_instance = PartnerMember.query.filter_by(
-        user_id=float("inf"),
-        partner_id=example_partner.id,
-    ).first()
-    assert role_change_instance is None
-
-
-def test_role_change2(
-        client,
-        partner_admin,
-        example_members
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.patch(
-        "/api/v1/partners/role_change",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : example_members["member2"]["user_id"],
-            "partner_id": -1,
-            "role": "Publisher"
-        }
-    )
-    assert res.status_code == 400
-    role_change_instance = PartnerMember.query.filter_by(
-        user_id=example_members["member2"]["user_id"],
-        partner_id=-1,
-    ).first()
-    assert role_change_instance is None
-
-
-def test_role_change3(
-        client,
-        partner_admin,
-):
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.patch(
-        "/api/v1/partners/role_change",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "user_id" : -1,
-            "partner_id": -1,
-            "role": "Publisher"
-        }
-    )
-    assert res.status_code == 400
-    role_change_instance = PartnerMember.query.filter_by(
-        user_id=-1,
-        partner_id=-1,
-    ).first()
-    assert role_change_instance is None
-
-
-"""
-Test for creating a new partner
-and adding existing partner already created
-"""
-
-
-def test_create_new_partner(
+    """
+    Validation tests for creating
+    new partners
+    """
+    def test_create_partner_validation(
+        self,
         client,
         partner_admin
+    ):
+        # adding partner with blank fields
+        access_token = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_admin.email,
+                "password": example_password
+            },
+        ).json["access_token"]
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "",
+                "url": "https://cpdp.co",
+                "contact_email": "tech@invisible.institute",
+            }
+        )
+        self.assertEqual(res.status_code, 400)
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "Citizens Police Data Project",
+                "url": "",
+                "contact_email": "tech@invisible.institute",
+            }
+        )
+        self.assertEqual(res.status_code, 400)
 
-):
-    # test for creating new partner
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name": "Citizens Police Data Project",
-            "url": "https://cpdp.co",
-            "contact_email": "tech@invisible.institute",
-        }
-    )
-    assert res.status_code == 200
-    partner_obj = Partner.query.filter_by(
-        url="https://cpdp.co"
-    ).first()
-    assert partner_obj.name == "Citizens Police Data Project"
-    assert partner_obj.url == "https://cpdp.co"
-    assert partner_obj.contact_email == "tech@invisible.institute"
-
-    # test for adding duplicate partner that already exists
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name": "Citizens Police Data Project",
-            "url": "https://cpdp.co",
-            "contact_email": "tech@invisible.institute",
-        }
-    )
-    assert res.status_code == 400
-
-
-"""
-Validation tests for creating
-new partners
-"""
-
-
-def test_create_partner_validation(
-        client,
-        partner_admin
-):
-    # adding partner with blank fields
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_admin.email,
-            "password": example_password
-        },
-    ).json["access_token"]
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name": "",
-            "url": "https://cpdp.co",
-            "contact_email": "tech@invisible.institute",
-        }
-    )
-    assert res.status_code == 400
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name": "Citizens Police Data Project",
-            "url": "",
-            "contact_email": "tech@invisible.institute",
-        }
-    )
-    assert res.status_code == 400
-
-    res = client.post(
-        "/api/v1/partners/create",
-        headers={"Authorization": f"Bearer {access_token}"},
-        json={
-            "name": "Citizens Police Data Project",
-            "url": None ,
-            "contact_email": "tech@invisible.institute",
-        }
-    )
-    assert res.status_code == 400
+        res = client.post(
+            "/api/v1/partners/create",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={
+                "name": "Citizens Police Data Project",
+                "url": None,
+                "contact_email": "tech@invisible.institute",
+            }
+        )
+        self.assertEqual(res.status_code, 400)

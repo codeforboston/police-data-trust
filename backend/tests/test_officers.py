@@ -1,4 +1,5 @@
 from __future__ import annotations
+from unittest import TestCase
 
 import math
 from backend.database import (
@@ -125,371 +126,368 @@ mock_accusations = {
 }
 
 
-def test_create_officer(
+class TestOfficers(TestCase):
+    def test_create_officer(
+        self,
         db_session,
         client,
         contributor_access_token,
         example_agency):
 
-    # Test that we can create an officer with an agency association
-    request = {
-        "first_name": "Max",
-        "last_name": "Payne",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M",
-        "agency_association": [
-            {
-                "agency_id": example_agency.id,
-                "earliest_employment": "2015-03-14 00:00:00",
-                "badge_number": "8349",
-                "currently_employed": True
-            }
-        ]
-    }
-    res = client.post(
-        "/api/v1/officers/",
-        json=request,
-        headers={
-            "Authorization": "Bearer {0}".format(contributor_access_token)
-        },
-    )
-    assert res.status_code == 200
-    response = res.json
-
-    officer_obj = (
-        db_session.query(Officer).filter(Officer.id == response["id"]).first()
-    )
-    assert officer_obj.first_name == request["first_name"]
-    assert officer_obj.last_name == request["last_name"]
-    assert officer_obj.race == request["race"]
-    assert officer_obj.ethnicity == request["ethnicity"]
-    assert len(officer_obj.agency_association) == len(
-        request["agency_association"])
-    assert officer_obj.agency_association[0].badge_number == request[
-        "agency_association"][0]["badge_number"]
-    assert officer_obj.agency_association[0].agency_id == example_agency.id
-
-    # Test that we can create an officer without an agency association
-    request = {
-        "first_name": "Max",
-        "last_name": "Payne",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M"
-    }
-    res = client.post(
-        "/api/v1/officers/",
-        json=request,
-        headers={
-            "Authorization": "Bearer {0}".format(contributor_access_token)
-        },
-    )
-    assert res.status_code == 200
-    response = res.json
-
-    officer_obj = (
-        db_session.query(Officer).filter(Officer.id == response["id"]).first()
-    )
-    assert officer_obj.first_name == request["first_name"]
-    assert officer_obj.last_name == request["last_name"]
-    assert officer_obj.race == request["race"]
-    assert officer_obj.ethnicity == request["ethnicity"]
-
-
-def test_get_officer(client, db_session, example_officer, access_token):
-    # Test that we can get it
-    res = client.get(f"/api/v1/officers/{example_officer.id}")
-
-    assert res.status_code == 200
-    assert res.json["first_name"] == example_officer.first_name
-    assert res.json["last_name"] == example_officer.last_name
-
-
-"""
-@pytest.mark.parametrize(
-    ("query", "expected_officer_names"),
-    [
-        (
-            {},
-            ["severe", "light", "none"],
-        ),
-        (
-            {"location": "New York"},
-            ["none"],
-        ),
-        (
-            {
-                "badgeNumber": "1234"
-            },
-            ["severe", "none"],
-        ),
-        (
-            {
-                "name": "Decent",
-            },
-            ["light"],
-        ),
-    ],
-)
-def test_search_officers(
-    client, example_officers, access_token, query, expected_officer_names
-):
-    res = client.post(
-        "/api/v1/officers/search",
-        json=query,
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 200
-
-    # Match the results to the known dataset and assert that all the expected
-    # results are present
-    actual_officers = res.json["results"]
-
-    def officer_name(officer):
-        return next(
-            (
-                k
-                for k, v in example_officers.items()
-                if v["id"] == officer["id"]
-            ),
-            None,
-        )
-
-    actual_incident_names = list(
-        filter(None, map(officer_name, actual_officers))
-    )
-    assert set(actual_incident_names) == set(expected_officer_names)
-
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == 1
-    assert res.json["totalResults"] == len(expected_officer_names)
- """
-
-
-def test_get_officers(client, db_session, access_token):
-    # Create Officers in the database
-    for name, mock in mock_officers.items():
-        db_session.add(Officer(**mock))
-    db_session.commit()
-
-    res = client.get(
-        "/api/v1/officers/",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-
-    assert res.status_code == 200
-    assert res.json["results"][0]["first_name"] is not None
-    assert res.json["results"][0]["last_name"] is not None
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == 1
-    assert res.json["totalResults"] == len(mock_officers)
-
-    test_officer = res.json["results"][0]
-    single_res = client.get(
-        f"/api/v1/officers/{test_officer['id']}",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert test_officer == single_res.json
-
-
-def test_officer_pagination(client, db_session, access_token):
-    # Create Officers in the database
-    created_officers = []
-    for name, mock in mock_officers.items():
-        db_session.add(Officer(**mock))
-        created_officers.append(Officer(**mock))
-    db_session.commit()
-
-    per_page = 1
-    expected_total_pages = math.ceil(len(mock_officers)//per_page)
-
-    for page in range(1, expected_total_pages + 1):
-        res = client.get(
+        # Test that we can create an officer with an agency association
+        request = {
+            "first_name": "Max",
+            "last_name": "Payne",
+            "race": "White",
+            "ethnicity": "Non-Hispanic",
+            "gender": "M",
+            "agency_association": [
+                {
+                    "agency_id": example_agency.id,
+                    "earliest_employment": "2015-03-14 00:00:00",
+                    "badge_number": "8349",
+                    "currently_employed": True
+                }
+            ]
+        }
+        res = client.post(
             "/api/v1/officers/",
-            query_string={"per_page": per_page, "page": page},
+            json=request,
+            headers={
+                "Authorization": "Bearer {0}".format(contributor_access_token)
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        response = res.json
+
+        officer_obj = (
+            db_session.query(Officer).filter(Officer.id == response["id"]).first()
+        )
+        self.assertEqual(officer_obj.first_name, request["first_name"])
+        self.assertEqual(officer_obj.last_name, request["last_name"])
+        self.assertEqual(officer_obj.race, request["race"])
+        self.assertEqual(officer_obj.ethnicity, request["ethnicity"])
+        self.assertEqual(len(officer_obj.agency_association),
+                         len(request["agency_association"]))
+        self.assertEqual(officer_obj.agency_association[0].badge_number,
+                         request["agency_association"][0]["badge_number"])
+        self.assertEqual(officer_obj.agency_association[0].agency_id, example_agency.id)
+
+        # Test that we can create an officer without an agency association
+        request = {
+            "first_name": "Max",
+            "last_name": "Payne",
+            "race": "White",
+            "ethnicity": "Non-Hispanic",
+            "gender": "M"
+        }
+        res = client.post(
+            "/api/v1/officers/",
+            json=request,
+            headers={
+                "Authorization": "Bearer {0}".format(contributor_access_token)
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        response = res.json
+
+        officer_obj = (
+            db_session.query(Officer).filter(Officer.id == response["id"]).first()
+        )
+        self.assertEqual(officer_obj.first_name, request["first_name"])
+        self.assertEqual(officer_obj.last_name, request["last_name"])
+        self.assertEqual(officer_obj.race, request["race"])
+        self.assertEqual(officer_obj.ethnicity, request["ethnicity"])
+
+    def test_get_officer(self, client, example_officer, access_token):
+        # Test that we can get it
+        res = client.get(f"/api/v1/officers/{example_officer.id}")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json["first_name"], example_officer.first_name)
+        self.assertEqual(res.json["last_name"], example_officer.last_name)
+
+    """
+    @pytest.mark.parametrize(
+        ("query", "expected_officer_names"),
+        [
+            (
+                {},
+                ["severe", "light", "none"],
+            ),
+            (
+                {"location": "New York"},
+                ["none"],
+            ),
+            (
+                {
+                    "badgeNumber": "1234"
+                },
+                ["severe", "none"],
+            ),
+            (
+                {
+                    "name": "Decent",
+                },
+                ["light"],
+            ),
+        ],
+    )
+    def test_search_officers(
+        self, client, example_officers, access_token, query, expected_officer_names
+    ):
+        res = client.post(
+            "/api/v1/officers/search",
+            json=query,
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
+        self.assertEqual(res.status_code, 200)
 
-        assert res.status_code == 200
-        assert res.json["page"] == page
-        assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == len(mock_officers)
-        assert len(res.json["results"]) == per_page
+        # Match the results to the known dataset and assert that all the expected
+        # results are present
+        actual_officers = res.json["results"]
 
-    res = client.get(
-        "/api/v1/officers/",
-        query_string={"perPage": per_page, "page": expected_total_pages + 1},
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
-    assert res.status_code == 404
+        def officer_name(officer):
+            return next(
+                (
+                    k
+                    for k, v in example_officers.items()
+                    if v["id"] == officer["id"]
+                ),
+                None,
+            )
 
+        actual_incident_names = list(
+            filter(None, map(officer_name, actual_officers))
+        )
+        self.assertSetEqual(set(actual_incident_names), set(expected_officer_names))
 
-"""
-def test_get_accusations(client: Any, access_token: str):
-    res = client.get(
-        "/api/v1/officers/",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], 1)
+        self.assertEqual(res.json["totalResults"], len(expected_officer_names))
+     """
 
-    assert res.status_code == 200
-    assert res.json["results"] == []
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == 0
-    assert res.json["totalResults"] == 0
+    def test_get_officers(self, client, db_session, access_token):
+        # Create Officers in the database
+        for name, mock in mock_officers.items():
+            db_session.add(Officer(**mock))
+        db_session.commit()
 
+        res = client.get(
+            "/api/v1/officers/",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
 
-def test_get_accusations_pagination(
-    client: Any,
-    access_token: str,
-    example_incidents_private_public: list[Incident],
-):
-    \"""
-    Test that pagination works for public incidents.
-    \"""
-    res = client.get(
-        "/api/v1/officers/?per_page=1",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(res.json["results"][0]["first_name"])
+        self.assertIsNotNone(res.json["results"][0]["last_name"])
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], 1)
+        self.assertEqual(res.json["totalResults"], len(mock_officers))
 
-    public_incidents_count = len(
-        [
-            i
-            for i in example_incidents_private_public
-            if i.privacy_filter == PrivacyStatus.PUBLIC
-        ]
-    )
+        test_officer = res.json["results"][0]
+        single_res = client.get(
+            f"/api/v1/officers/{test_officer['id']}",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+        self.assertEqual(test_officer, single_res.json)
 
-    assert res.status_code == 200
-    assert len(res.json["results"]) == 1
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == public_incidents_count
-    assert res.json["totalResults"] == public_incidents_count
+    def test_officer_pagination(self, client, db_session, access_token):
+        # Create Officers in the database
+        created_officers = []
+        for name, mock in mock_officers.items():
+            db_session.add(Officer(**mock))
+            created_officers.append(Officer(**mock))
+        db_session.commit()
 
-    res = client.get(
-        "/api/v1/officers/?per_page=1&page=2",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
+        per_page = 1
+        expected_total_pages = math.ceil(len(mock_officers)//per_page)
 
-    assert res.status_code == 200
-    assert len(res.json["results"]) == 0
-    assert res.json["page"] == 2
-    assert res.json["totalPages"] == public_incidents_count
-    assert res.json["totalResults"] == public_incidents_count
+        for page in range(1, expected_total_pages + 1):
+            res = client.get(
+                "/api/v1/officers/",
+                query_string={"per_page": per_page, "page": page},
+                headers={"Authorization": "Bearer {0}".format(access_token)},
+            )
 
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.json["page"], page)
+            self.assertEqual(res.json["totalPages"], expected_total_pages)
+            self.assertEqual(res.json["totalResults"], len(mock_officers))
+            self.assertEqual(len(res.json["results"]), per_page)
 
-def test_get_employers(
-    client: Any,
-    access_token: str,
-    example_incidents_private_public: list[Incident],
-):
-    \"""
-    Test that a regular user can see public incidents.
-    \"""
+        res = client.get(
+            "/api/v1/officers/",
+            query_string={"perPage": per_page, "page": expected_total_pages + 1},
+            headers={"Authorization": "Bearer {0}".format(access_token)},
+        )
+        self.assertEqual(res.status_code, 404)
 
-    res = client.get(
-        "/api/v1/officers/",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
+    """
+    def test_get_accusations(self, client: Any, access_token: str):
+        res = client.get(
+            "/api/v1/officers/",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        self.assertEqual(res.status_code, 200)
+        self.assertListEqual(res.json["results"], [])
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], 0)
+        self.assertEqual(res.json["totalResults"], 0)
 
-    public_incidents_count = len(
-        [
-            i
-            for i in example_incidents_private_public
-            if i.privacy_filter == PrivacyStatus.PUBLIC
-        ]
-    )
-    assert res.status_code == 200
-    assert len(res.json["results"]) == public_incidents_count
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == 1
-    assert res.json["totalResults"] == public_incidents_count
+    def test_get_accusations_pagination(
+        self,
+        client: Any,
+        access_token: str,
+        example_incidents_private_public: list[Incident],
+    ):
+        \"""
+        Test that pagination works for public incidents.
+        \"""
+        res = client.get(
+            "/api/v1/officers/?per_page=1",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        public_incidents_count = len(
+            [
+                i
+                for i in example_incidents_private_public
+                if i.privacy_filter == PrivacyStatus.PUBLIC
+            ]
+        )
+    
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), 1)
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], public_incidents_count)
+        self.assertEqual(res.json["totalResults"], public_incidents_count)
+    
+        res = client.get(
+            "/api/v1/officers/?per_page=1&page=2",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), 0)
+        self.assertEqual(res.json["page"], 2)
+        self.assertEqual(res.json["totalPages"], public_incidents_count)
+        self.assertEqual(res.json["totalResults"], public_incidents_count)
 
+    def test_get_employers(
+        self,
+        client: Any,
+        access_token: str,
+        example_incidents_private_public: list[Incident],
+    ):
+        \"""
+        Test that a regular user can see public incidents.
+        \"""
+    
+        res = client.get(
+            "/api/v1/officers/",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        public_incidents_count = len(
+            [
+                i
+                for i in example_incidents_private_public
+                if i.privacy_filter == PrivacyStatus.PUBLIC
+            ]
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), public_incidents_count)
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], 1)
+        self.assertEqual(res.json["totalResults"], public_incidents_count)
 
-def test_get_employers_pagination(
-    client: Any,
-    access_token: str,
-    example_incidents_private_public: list[Incident],
-):
-    \"""
-    Test that pagination works for public incidents.
-    \"""
-    res = client.get(
-        "/api/v1/officers/?per_page=1",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
+    def test_get_employers_pagination(
+        self,
+        client: Any,
+        access_token: str,
+        example_incidents_private_public: list[Incident],
+    ):
+        \"""
+        Test that pagination works for public incidents.
+        \"""
+        res = client.get(
+            "/api/v1/officers/?per_page=1",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        public_incidents_count = len(
+            [
+                i
+                for i in example_incidents_private_public
+                if i.privacy_filter == PrivacyStatus.PUBLIC
+            ]
+        )
+    
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), 1)
+        self.assertEqual(res.json["page"], 1)
+        self.assertEqual(res.json["totalPages"], public_incidents_count)
+        self.assertEqual(res.json["totalResults"], public_incidents_count)
+    
+        res = client.get(
+            "/api/v1/officers/?per_page=1&page=2",
+            headers={"Authorization ": "Bearer {0}".format(access_token)},
+        )
+    
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.json["results"]), 0)
+        self.assertEqual(res.json["page"], 2)
+        self.assertEqual(res.json["totalPages"], public_incidents_count)
+        self.assertEqual(res.json["totalResults"], public_incidents_count)
 
-    public_incidents_count = len(
-        [
-            i
-            for i in example_incidents_private_public
-            if i.privacy_filter == PrivacyStatus.PUBLIC
-        ]
-    )
+    def test_delete_officer(
+        self,
+        client: Any,
+        partner_publisher: User,
+        example_partner: Partner,
+        example_incidents_private_public: list[Incident],
+    ):
+        \"""
+        Test that a partner member can delete an incident.
+        \"""
+    
+        access_token = res = client.post(
+            "api/v1/auth/login",
+            json={
+                "email": partner_publisher.email,
+                "password": "my_password",
+            },
+        ).json["access_token"]
+    
+        # Make a request to delete the incident
+        res = client.delete(
+            f"/api/v1/officers/{example_incidents_private_public[0].id}"
+            + f"?partner_id={example_partner.id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        self.assertEqual(res.status_code, 204)
+    
+        # Verify that the incident is deleted
+        deleted_incident = Incident.query.get(
+            example_incidents_private_public[0].id
+        )
+        self.assertIsNone(deleted_incident)
 
-    assert res.status_code == 200
-    assert len(res.json["results"]) == 1
-    assert res.json["page"] == 1
-    assert res.json["totalPages"] == public_incidents_count
-    assert res.json["totalResults"] == public_incidents_count
-
-    res = client.get(
-        "/api/v1/officers/?per_page=1&page=2",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-
-    assert res.status_code == 200
-    assert len(res.json["results"]) == 0
-    assert res.json["page"] == 2
-    assert res.json["totalPages"] == public_incidents_count
-    assert res.json["totalResults"] == public_incidents_count
-
-
-def test_delete_officer(
-    client: Any,
-    partner_publisher: User,
-    example_partner: Partner,
-    example_incidents_private_public: list[Incident],
-):
-    \"""
-    Test that a partner member can delete an incident.
-    \"""
-
-    access_token = res = client.post(
-        "api/v1/auth/login",
-        json={
-            "email": partner_publisher.email,
-            "password": "my_password",
-        },
-    ).json["access_token"]
-
-    # Make a request to delete the incident
-    res = client.delete(
-        f"/api/v1/officers/{example_incidents_private_public[0].id}"
-        + f"?partner_id={example_partner.id}",
-        headers={"Authorization": f"Bearer {access_token}"},
-    )
-    assert res.status_code == 204
-
-    # Verify that the incident is deleted
-    deleted_incident = Incident.query.get(
-        example_incidents_private_public[0].id
-    )
-    assert deleted_incident is None
-
-
-def test_delete_officer_no_user_role(
-    client: Any,
-    access_token: str,
-):
-    \"""
-    Test that a user without atlest CONTRIBUTOR role
-    can't delete an incident.
-    \"""
-    # Make a request to delete the incident
-    res = client.delete(
-        "/api/v1/officers/1",
-        headers={"Authorization": f"Bearer {access_token}"},
-    )
-    assert res.status_code == 403
-"""
+    def test_delete_officer_no_user_role(
+        self,
+        client: Any,
+        access_token: str,
+    ):
+        \"""
+        Test that a user without atlest CONTRIBUTOR role
+        can't delete an incident.
+        \"""
+        # Make a request to delete the incident
+        res = client.delete(
+            "/api/v1/officers/1",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        self.assertEqual(res.status_code, 403)
+    """
