@@ -223,8 +223,8 @@ class TestOfficers(TestCase):
             )
             self.assertEqual(res.status_code, 200)
 
-            # Match the results to the known dataset and assert that all the expected
-            # results are present
+            # Match the results to the known dataset and assert that
+            # all the expected results are present
             actual_officers = res.json["results"]
 
             def officer_name(officer):
