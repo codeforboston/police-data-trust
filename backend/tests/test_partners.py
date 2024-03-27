@@ -327,7 +327,9 @@ class TestPartners(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json["results"]), len(users))
-        # self.assertEqual(res.json["results"][0]["user"]["email"], member_obj.email)
+        # self.assertEqual(
+        #     res.json["results"][0]["user"]["email"], member_obj.email
+        # )
 
     def test_join_organization(
         self,
@@ -368,7 +370,7 @@ class TestPartners(TestCase):
          partner_id=example_partner.id" as it
         has already been added to the PartnerMember
         Table using the "example_members function above
-    
+
         In theory, records should only be added to
         PartnerMember table using the /invite endpoint,
         and after users have accepted their invites.

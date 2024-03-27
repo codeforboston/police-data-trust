@@ -209,64 +209,47 @@ class TestOfficers(TestCase):
         self.assertEqual(res.json["last_name"], example_officer.last_name)
 
     """
-    @pytest.mark.parametrize(
-        ("query", "expected_officer_names"),
-        [
-            (
-                {},
-                ["severe", "light", "none"],
-            ),
-            (
-                {"location": "New York"},
-                ["none"],
-            ),
-            (
-                {
-                    "badgeNumber": "1234"
-                },
-                ["severe", "none"],
-            ),
-            (
-                {
-                    "name": "Decent",
-                },
-                ["light"],
-            ),
-        ],
-    )
-    def test_search_officers(
-        self, client, example_officers, access_token, query, expected_officer_names
-    ):
-        res = client.post(
-            "/api/v1/officers/search",
-            json=query,
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-        self.assertEqual(res.status_code, 200)
+    def test_search_officers(self, client, example_officers, access_token):
+        for query, expected_officer_names in {
+            {}: ["severe", "light", "none"],
+            {"location": "New York"}: ["none"],
+            {"badgeNumber": "1234"}: ["severe", "none"],
+            {"name": "Decent"}: ["light"],
+        }.items():
+            res = client.post(
+                "/api/v1/officers/search",
+                json=query,
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
+            self.assertEqual(res.status_code, 200)
 
-        # Match the results to the known dataset and assert that all the expected
-        # results are present
-        actual_officers = res.json["results"]
+            # Match the results to the known dataset and assert that all the expected
+            # results are present
+            actual_officers = res.json["results"]
 
-        def officer_name(officer):
-            return next(
-                (
-                    k
-                    for k, v in example_officers.items()
-                    if v["id"] == officer["id"]
-                ),
-                None,
+            def officer_name(officer):
+                return next(
+                    (
+                        k
+                        for k, v in example_officers.items()
+                        if v["id"] == officer["id"]
+                    ),
+                    None,
+                )
+
+            actual_incident_names = list(
+                filter(None, map(officer_name, actual_officers))
+            )
+            self.assertSetEqual(
+                set(actual_incident_names), set(expected_officer_names)
             )
 
-        actual_incident_names = list(
-            filter(None, map(officer_name, actual_officers))
-        )
-        self.assertSetEqual(set(actual_incident_names), set(expected_officer_names))
-
-        self.assertEqual(res.json["page"], 1)
-        self.assertEqual(res.json["totalPages"], 1)
-        self.assertEqual(res.json["totalResults"], len(expected_officer_names))
-     """
+            self.assertEqual(res.json["page"], 1)
+            self.assertEqual(res.json["totalPages"], 1)
+            self.assertEqual(
+                res.json["totalResults"], len(expected_officer_names)
+            )
+    """
 
     def test_get_officers(self, client, db_session, access_token):
         # Create Officers in the database
@@ -333,7 +316,7 @@ class TestOfficers(TestCase):
             "/api/v1/officers/",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         self.assertEqual(res.status_code, 200)
         self.assertListEqual(res.json["results"], [])
         self.assertEqual(res.json["page"], 1)
@@ -353,7 +336,7 @@ class TestOfficers(TestCase):
             "/api/v1/officers/?per_page=1",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         public_incidents_count = len(
             [
                 i
@@ -361,18 +344,18 @@ class TestOfficers(TestCase):
                 if i.privacy_filter == PrivacyStatus.PUBLIC
             ]
         )
-    
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json["results"]), 1)
         self.assertEqual(res.json["page"], 1)
         self.assertEqual(res.json["totalPages"], public_incidents_count)
         self.assertEqual(res.json["totalResults"], public_incidents_count)
-    
+
         res = client.get(
             "/api/v1/officers/?per_page=1&page=2",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json["results"]), 0)
         self.assertEqual(res.json["page"], 2)
@@ -388,12 +371,12 @@ class TestOfficers(TestCase):
         \"""
         Test that a regular user can see public incidents.
         \"""
-    
+
         res = client.get(
             "/api/v1/officers/",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         public_incidents_count = len(
             [
                 i
@@ -420,7 +403,7 @@ class TestOfficers(TestCase):
             "/api/v1/officers/?per_page=1",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         public_incidents_count = len(
             [
                 i
@@ -428,18 +411,18 @@ class TestOfficers(TestCase):
                 if i.privacy_filter == PrivacyStatus.PUBLIC
             ]
         )
-    
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json["results"]), 1)
         self.assertEqual(res.json["page"], 1)
         self.assertEqual(res.json["totalPages"], public_incidents_count)
         self.assertEqual(res.json["totalResults"], public_incidents_count)
-    
+
         res = client.get(
             "/api/v1/officers/?per_page=1&page=2",
             headers={"Authorization ": f"Bearer {access_token}"},
         )
-    
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.json["results"]), 0)
         self.assertEqual(res.json["page"], 2)
@@ -456,7 +439,7 @@ class TestOfficers(TestCase):
         \"""
         Test that a partner member can delete an incident.
         \"""
-    
+
         access_token = res = client.post(
             "api/v1/auth/login",
             json={
@@ -464,7 +447,7 @@ class TestOfficers(TestCase):
                 "password": "my_password",
             },
         ).json["access_token"]
-    
+
         # Make a request to delete the incident
         res = client.delete(
             f"/api/v1/officers/{example_incidents_private_public[0].id}"
@@ -472,7 +455,7 @@ class TestOfficers(TestCase):
             headers={"Authorization": f"Bearer {access_token}"},
         )
         self.assertEqual(res.status_code, 204)
-    
+
         # Verify that the incident is deleted
         deleted_incident = Incident.query.get(
             example_incidents_private_public[0].id
