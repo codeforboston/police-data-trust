@@ -98,7 +98,8 @@ def register():
                 new_invitation = Invitation(
                     user_id=user.id,
                     role=instance.role,
-                    partner_id=instance.partner_id)
+                    partner_id=instance.partner_id,
+                )
                 db.session.add(new_invitation)
             db.session.commit()
             StagedInvitation.query.filter_by(email=user.email).delete()
@@ -113,10 +114,14 @@ def register():
         )
         set_access_cookies(resp, token)
 
-        track_to_mp(request, "register", {
-            'user_id': user.id,
-            'success': True,
-        })
+        track_to_mp(
+            request,
+            "register",
+            {
+                "user_id": user.id,
+                "success": True,
+            },
+        )
         return resp, 200
     # In case of missing fields, return error message indicating
     # required fields.

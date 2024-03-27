@@ -8,7 +8,7 @@ from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
 from backend.database.models.employment import (
     Employment,
-    merge_employment_records
+    merge_employment_records,
 )
 from backend.database.models.agency import Agency
 from flask import Blueprint, abort, request
@@ -42,8 +42,8 @@ class SearchOfficerSchema(BaseModel):
         schema_extra = {
             "example": {
                 "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
+                "location": "New York",
+                "badgeNumber": 1234,
                 "page": 1,
                 "perPage": 20,
             }
@@ -73,7 +73,7 @@ class AddEmploymentListSchema(BaseModel):
 def search_officer():
     """Search Officers"""
     body: SearchOfficerSchema = request.context.json
-    query = db.session.query('Officer')
+    query = db.session.query("Officer")
     logger = logging.getLogger("officers")
 
     try:
@@ -83,14 +83,14 @@ def search_officer():
                 query = Officer.query.filter(
                     or_(
                         Officer.first_name.ilike(f"%{body.officerName}%"),
-                        Officer.last_name.ilike(f"%{body.officerName}%")
+                        Officer.last_name.ilike(f"%{body.officerName}%"),
                     )
                 )
             elif len(names) == 2:
                 query = Officer.query.filter(
                     or_(
                         Officer.first_name.ilike(f"%{names[0]}%"),
-                        Officer.last_name.ilike(f"%{names[1]}%")
+                        Officer.last_name.ilike(f"%{names[1]}%"),
                     )
                 )
             else:
@@ -98,15 +98,16 @@ def search_officer():
                     or_(
                         Officer.first_name.ilike(f"%{names[0]}%"),
                         Officer.middle_name.ilike(f"%{names[1]}%"),
-                        Officer.last_name.ilike(f"%{names[2]}%")
+                        Officer.last_name.ilike(f"%{names[2]}%"),
                     )
                 )
 
         if body.badgeNumber:
             officer_ids = [
-                result.officer_id for result in db.session.query(
-                    Employment
-                    ).filter_by(badge_number=body.badgeNumber).all()
+                result.officer_id
+                for result in db.session.query(Employment)
+                .filter_by(badge_number=body.badgeNumber)
+                .all()
             ]
             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
 
@@ -118,10 +119,11 @@ def search_officer():
     )
 
     try:
-        track_to_mp(request, "search_officer", {
-            "officername": body.officerName,
-            "badgeNumber": body.badgeNumber
-        })
+        track_to_mp(
+            request,
+            "search_officer",
+            {"officername": body.officerName, "badgeNumber": body.badgeNumber},
+        )
     except MixpanelException as e:
         logger.error(e)
     try:
@@ -143,8 +145,7 @@ def search_officer():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateOfficerSchema)
 def create_officer():
-    """Create an officer profile.
-    """
+    """Create an officer profile."""
 
     try:
         officer = officer_to_orm(request.context.json)
@@ -156,9 +157,7 @@ def create_officer():
     track_to_mp(
         request,
         "create_officer",
-        {
-            "officer_id": officer.id
-        },
+        {"officer_id": officer.id},
     )
     return officer_orm_to_json(created)
 
@@ -169,8 +168,7 @@ def create_officer():
 @min_role_required(UserRole.PUBLIC)
 @validate()
 def get_officer(officer_id: int):
-    """Get an officer profile.
-    """
+    """Get an officer profile."""
     officer = db.session.query(Officer).get(officer_id)
     if officer is None:
         abort(404, description="Officer not found")
@@ -199,7 +197,8 @@ def get_all_officers():
 
     return {
         "results": [
-            officer_orm_to_json(officer) for officer in pagination.items],
+            officer_orm_to_json(officer) for officer in pagination.items
+        ],
         "page": pagination.page,
         "totalPages": pagination.pages,
         "totalResults": pagination.total,
@@ -212,8 +211,7 @@ def get_all_officers():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateOfficerSchema)
 def update_officer(officer_id: int):
-    """Update an officer profile.
-    """
+    """Update an officer profile."""
     officer = db.session.query(Officer).get(officer_id)
     if officer is None:
         abort(404, description="Officer not found")
@@ -226,9 +224,7 @@ def update_officer(officer_id: int):
     track_to_mp(
         request,
         "update_officer",
-        {
-            "officer_id": officer.id
-        },
+        {"officer_id": officer.id},
     )
     return officer_orm_to_json(officer)
 
@@ -251,9 +247,7 @@ def delete_officer(officer_id: int):
         track_to_mp(
             request,
             "delete_officer",
-            {
-                "officer_id": officer.id
-            },
+            {"officer_id": officer.id},
         )
         return {"message": "Officer deleted successfully"}
     except Exception as e:
@@ -280,21 +274,22 @@ def update_employment(officer_id: int):
     failed = []
     for record in records:
         try:
-            agency = db.session.query(Agency).get(
-                record.agency_id)
+            agency = db.session.query(Agency).get(record.agency_id)
             if agency is None:
-                failed.append({
-                    "agency_id": record.agency_id,
-                    "reason": "Agency not found"
-                })
+                failed.append(
+                    {
+                        "agency_id": record.agency_id,
+                        "reason": "Agency not found",
+                    }
+                )
             else:
                 employments = db.session.query(Employment).filter(
                     and_(
                         and_(
                             Employment.officer_id == officer_id,
-                            Employment.agency_id == record.agency_id
+                            Employment.agency_id == record.agency_id,
                         ),
-                        Employment.badge_number == record.badge_number
+                        Employment.badge_number == record.badge_number,
                     )
                 )
                 if employments is not None:
@@ -305,7 +300,7 @@ def update_employment(officer_id: int):
                     employment = merge_employment_records(
                         employments.all() + [employment],
                         unit=record.unit,
-                        currently_employed=record.currently_employed
+                        currently_employed=record.currently_employed,
                     )
 
                     # Delete the old records and replace them with the new one
@@ -318,10 +313,7 @@ def update_employment(officer_id: int):
                 # Commit before iterating to the next record
                 db.session.commit()
         except Exception as e:
-            failed.append({
-                "agency_id": record.agency_id,
-                "reason": str(e)
-            })
+            failed.append({"agency_id": record.agency_id, "reason": str(e)})
 
     track_to_mp(
         request,
@@ -329,13 +321,12 @@ def update_employment(officer_id: int):
         {
             "officer_id": officer.id,
             "agencies_added": len(created),
-            "agencies_failed": len(failed)
+            "agencies_failed": len(failed),
         },
     )
     try:
         return {
-            "created": [
-                employment_orm_to_json(item) for item in created],
+            "created": [employment_orm_to_json(item) for item in created],
             "failed": failed,
             "totalCreated": len(created),
             "totalFailed": len(failed),
@@ -350,8 +341,7 @@ def update_employment(officer_id: int):
 @min_role_required(UserRole.PUBLIC)
 @validate()
 def get_employment(officer_id: int):
-    """Retrieve an officer's employment history.
-    """
+    """Retrieve an officer's employment history."""
     args = request.args
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
@@ -362,7 +352,8 @@ def get_employment(officer_id: int):
 
     try:
         employments = db.session.query(Employment).filter(
-            Employment.officer_id == officer_id)
+            Employment.officer_id == officer_id
+        )
 
         pagination = employments.paginate(
             page=q_page, per_page=q_per_page, max_per_page=100
@@ -370,8 +361,9 @@ def get_employment(officer_id: int):
 
         return {
             "results": [
-                employment_orm_to_json(
-                    employment) for employment in pagination.items],
+                employment_orm_to_json(employment)
+                for employment in pagination.items
+            ],
             "page": pagination.page,
             "totalPages": pagination.pages,
             "totalResults": pagination.total,

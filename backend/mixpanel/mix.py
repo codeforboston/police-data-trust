@@ -16,11 +16,13 @@ def track_to_mp(request, event_name, properties):
 
     # Set parsed values as properties.
     # You can also parse out the browser/device/os versions.
-    properties.update({
-        "$browser": parsed["user_agent"]["family"],
-        "$device": parsed["device"]["family"],
-        "$os": parsed["os"]["family"],
-    })
+    properties.update(
+        {
+            "$browser": parsed["user_agent"]["family"],
+            "$device": parsed["device"]["family"],
+            "$os": parsed["os"]["family"],
+        }
+    )
 
     if "user_id" not in properties:
         user_id = get_jwt()["sub"]

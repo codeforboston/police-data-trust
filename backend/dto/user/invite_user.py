@@ -12,4 +12,4 @@ class MemberRole(str, Enum):
 class InviteUserDTO(BaseModel):
     partner_id: int
     email: EmailStr
-    role:  MemberRole
+    role: MemberRole

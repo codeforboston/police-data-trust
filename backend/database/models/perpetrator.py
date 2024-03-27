@@ -21,7 +21,8 @@ class Perpetrator(db.Model):
     state_id_name = db.Column(db.Text)
     role = db.Column(db.Text)
     officer_association = db.relationship(
-        "Accusation", back_populates="perpetrator")
+        "Accusation", back_populates="perpetrator"
+    )
     suspects = association_proxy("officer_association", "officer")
 
     def __repr__(self):

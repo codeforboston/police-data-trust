@@ -1,4 +1,5 @@
 """Define the SQL classes for Users."""
+
 from __future__ import annotations  # allows type hinting of class itself
 import enum
 from datetime import datetime
@@ -63,7 +64,6 @@ class PrivacyStatus(str, enum.Enum):
 
 
 class Incident(db.Model, CrudMixin):
-
     """The incident table is the fact table."""
 
     # Just a note: this only explicitly used for type hinting

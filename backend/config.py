@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
 
@@ -35,8 +36,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get(
         "MAIL_DEFAULT_SENDER",
-        "National Police Data Coalition <{email}>".format(
-              email=MAIL_USERNAME),
+        f"National Police Data Coalition <{MAIL_USERNAME}>",
     )
 
     """
@@ -61,8 +61,7 @@ class Config(object):
 
     FRONTEND_PORT = os.environ.get("PDT_WEB_PORT", "3000")
     FRONTEND_URL = os.environ.get(
-        "FRONTEND_URL",
-        "http://localhost:" + FRONTEND_PORT
+        "FRONTEND_URL", "http://localhost:" + FRONTEND_PORT
     )
 
     @property
