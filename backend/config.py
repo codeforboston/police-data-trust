@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
 
@@ -60,8 +61,7 @@ class Config(object):
 
     FRONTEND_PORT = os.environ.get("PDT_WEB_PORT", "3000")
     FRONTEND_URL = os.environ.get(
-        "FRONTEND_URL",
-        "http://localhost:" + FRONTEND_PORT
+        "FRONTEND_URL", "http://localhost:" + FRONTEND_PORT
     )
 
     @property

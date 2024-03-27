@@ -64,10 +64,8 @@ def get_highest_rank(records: list[Employment]):
 
 
 def merge_employment_records(
-        records: list[Employment],
-        unit: str = None,
-        currently_employed: bool = None
-        ):
+    records: list[Employment], unit: str = None, currently_employed: bool = None
+):
     """
     Merge employment records for a single officer
     and agency into a single record.

@@ -8,7 +8,7 @@ from backend.database.models.user import UserRole
 from backend.database.models.officer import Officer
 from backend.database.models.employment import (
     merge_employment_records,
-    Employment
+    Employment,
 )
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -69,7 +69,7 @@ def create_agency():
         logger.error(f"DataError: {e}")
         abort(
             400,
-            description="Invalid Agency. Please include a valid jurisdiction."
+            description="Invalid Agency. Please include a valid jurisdiction.",
         )
     except Exception as e:
         logger.error(f"Error: {e}")
@@ -78,9 +78,7 @@ def create_agency():
     track_to_mp(
         request,
         "create_agency",
-        {
-            "name": agency.name
-        },
+        {"name": agency.name},
     )
     return agency_orm_to_json(created)
 
@@ -91,8 +89,7 @@ def create_agency():
 @min_role_required(UserRole.PUBLIC)
 @validate()
 def get_agency(agency_id: int):
-    """Get an agency profile.
-    """
+    """Get an agency profile."""
     agency = db.session.query(Agency).get(agency_id)
     if agency is None:
         abort(404, description="Agency not found")
@@ -108,8 +105,7 @@ def get_agency(agency_id: int):
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate()
 def update_agency(agency_id: int):
-    """Update an agency profile.
-    """
+    """Update an agency profile."""
     agency = db.session.query(Agency).get(agency_id)
     if agency is None:
         abort(404, description="Agency not found")
@@ -117,13 +113,7 @@ def update_agency(agency_id: int):
     try:
         agency.update(request.context.json)
         db.session.commit()
-        track_to_mp(
-            request,
-            "update_agency",
-            {
-                "name": agency.name
-            }
-        )
+        track_to_mp(request, "update_agency", {"name": agency.name})
         return agency_orm_to_json(agency)
     except Exception as e:
         abort(400, description=str(e))
@@ -147,9 +137,7 @@ def delete_agency(agency_id: int):
         track_to_mp(
             request,
             "delete_agency",
-            {
-                "name": agency.name
-            },
+            {"name": agency.name},
         )
         return {"message": "Agency deleted successfully"}
     except Exception as e:
@@ -179,7 +167,8 @@ def get_all_agencies():
     try:
         return {
             "results": [
-                agency_orm_to_json(agency) for agency in pagination.items],
+                agency_orm_to_json(agency) for agency in pagination.items
+            ],
             "page": pagination.page,
             "totalPages": pagination.pages,
             "totalResults": pagination.total,
@@ -207,21 +196,22 @@ def add_officer_to_agency(agency_id: int):
     failed = []
     for record in records:
         try:
-            officer = db.session.query(Officer).get(
-                record.officer_id)
+            officer = db.session.query(Officer).get(record.officer_id)
             if officer is None:
-                failed.append({
-                    "officer_id": record.officer_id,
-                    "reason": "Officer not found"
-                })
+                failed.append(
+                    {
+                        "officer_id": record.officer_id,
+                        "reason": "Officer not found",
+                    }
+                )
             else:
                 employments = db.session.query(Employment).filter(
                     and_(
                         and_(
                             Employment.officer_id == record.officer_id,
-                            Employment.agency_id == agency_id
+                            Employment.agency_id == agency_id,
                         ),
-                        Employment.badge_number == record.badge_number
+                        Employment.badge_number == record.badge_number,
                     )
                 )
                 if employments is not None:
@@ -232,7 +222,7 @@ def add_officer_to_agency(agency_id: int):
                     employment = merge_employment_records(
                         employments.all() + [employment],
                         unit=record.unit,
-                        currently_employed=record.currently_employed
+                        currently_employed=record.currently_employed,
                     )
 
                     # Delete the old records and replace them with the new one
@@ -243,10 +233,7 @@ def add_officer_to_agency(agency_id: int):
                     employment = employment_to_orm(record)
                     created.append(employment.create())
         except Exception as e:
-            failed.append({
-                "officer_id": record.officer_id,
-                "reason": str(e)
-            })
+            failed.append({"officer_id": record.officer_id, "reason": str(e)})
     try:
         track_to_mp(
             request,
@@ -254,12 +241,11 @@ def add_officer_to_agency(agency_id: int):
             {
                 "agency_id": agency.id,
                 "officers_added": len(created),
-                "officers_failed": len(failed)
+                "officers_failed": len(failed),
             },
         )
         return {
-            "created": [
-                employment_orm_to_json(item) for item in created],
+            "created": [employment_orm_to_json(item) for item in created],
             "failed": failed,
             "totalCreated": len(created),
             "totalFailed": len(failed),
@@ -289,7 +275,8 @@ def get_agency_officers(agency_id: int):
 
         return {
             "results": [
-                officer_orm_to_json(officer) for officer in all_officers],
+                officer_orm_to_json(officer) for officer in all_officers
+            ],
             "page": 1,
             "totalPages": 1,
             "totalResults": len(all_officers),

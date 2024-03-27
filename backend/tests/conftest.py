@@ -100,7 +100,7 @@ def example_agency(db_session: Any):
         hq_city="New York",
         hq_address="123 Main St",
         hq_zip="10001",
-        jurisdiction="MUNICIPAL"
+        jurisdiction="MUNICIPAL",
     )
     db_session.add(agency)
     db_session.commit()
@@ -163,7 +163,7 @@ def example_incidents(
     db_session: Any,
     example_partner: Partner,
     example_partner_publisher: Partner,
-) :
+):
     incidents = [
         Incident(
             source_id=example_partner.id,

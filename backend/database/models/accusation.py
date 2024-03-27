@@ -11,9 +11,11 @@ class Accusation(db.Model):
 
     attachments = db.relationship("Attachment", backref="accusation")
     perpetrator = db.relationship(
-        "Perpetrator", back_populates="officer_association")
+        "Perpetrator", back_populates="officer_association"
+    )
     officer = db.relationship(
-        "Officer", back_populates="perpetrator_association")
+        "Officer", back_populates="perpetrator_association"
+    )
 
     def __repr__(self):
         return f"<Employment {self.id}>"

@@ -64,9 +64,7 @@ def example_incidents(db_session, client, contributor_access_token):
         res = client.post(
             "/api/v1/incidents/create",
             json=mock,
-            headers={
-                "Authorization": f"Bearer {contributor_access_token}"
-            },
+            headers={"Authorization": f"Bearer {contributor_access_token}"},
         )
         assert res.status_code == 200
         created[name] = res.json
@@ -81,13 +79,19 @@ class TestIncidents(TestCase):
         created = example_incidents["domestic"]
 
         incident_obj = (
-            db_session.query(Incident).filter(Incident.id == created["id"]).first()
+            db_session.query(Incident)
+            .filter(Incident.id == created["id"])
+            .first()
         )
 
-        self.assertEqual(incident_obj.time_of_incident, datetime(2021, 3, 14, 1, 5, 9))
+        self.assertEqual(
+            incident_obj.time_of_incident, datetime(2021, 3, 14, 1, 5, 9)
+        )
         for ix, perp in enumerate(incident_obj.perpetrators):
             self.assertEqual(perp.id, created["perpetrators"][ix]["id"])
-        self.assertEqual(incident_obj.use_of_force[0].id, created["use_of_force"][0]["id"])
+        self.assertEqual(
+            incident_obj.use_of_force[0].id, created["use_of_force"][0]["id"]
+        )
         # assert incident_obj.source == expected["source"]
 
     def test_get_incident(self, app, client, db_session, access_token):
@@ -103,9 +107,7 @@ class TestIncidents(TestCase):
         res = client.get(f"/api/v1/incidents/get/{obj.id}")
         self.assertEqual(res.json["time_of_incident"], incident_date_str)
 
-    def test_search_incidents(
-        self, client, example_incidents, access_token
-    ):
+    def test_search_incidents(self, client, example_incidents, access_token):
         for query, expected_incident_names in {
             {}: ["domestic", "traffic", "firearm", "missing_fields"],
             {"location": "Chicago"}: ["domestic", "firearm"],
@@ -136,11 +138,15 @@ class TestIncidents(TestCase):
             actual_incident_names = list(
                 filter(None, map(incident_name, actual_incidents))
             )
-            self.assertSetEqual(set(actual_incident_names), set(expected_incident_names))
+            self.assertSetEqual(
+                set(actual_incident_names), set(expected_incident_names)
+            )
 
             self.assertEqual(res.json["page"], 1)
             self.assertEqual(res.json["totalPages"], 1)
-            self.assertEqual(res.json["totalResults"], len(expected_incident_names))
+            self.assertEqual(
+                res.json["totalResults"], len(expected_incident_names)
+            )
 
     def test_incident_pagination(self, client, example_incidents, access_token):
         per_page = 1
@@ -162,7 +168,9 @@ class TestIncidents(TestCase):
             self.assertEqual(len(incidents), per_page)
             actual_ids.add(incidents[0]["id"])
 
-        self.assertSetEqual(actual_ids, {i["id"] for i in example_incidents.values()})
+        self.assertSetEqual(
+            actual_ids, {i["id"] for i in example_incidents.values()}
+        )
 
         res = client.post(
             "/api/v1/incidents/search",
@@ -266,10 +274,14 @@ class TestIncidents(TestCase):
         )
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(res.json["results"]), len(example_incidents_private_public))
+        self.assertEqual(
+            len(res.json["results"]), len(example_incidents_private_public)
+        )
         self.assertEqual(res.json["page"], 1)
         self.assertEqual(res.json["totalPages"], 1)
-        self.assertEqual(res.json["totalResults"], len(example_incidents_private_public))
+        self.assertEqual(
+            res.json["totalResults"], len(example_incidents_private_public)
+        )
 
     def test_get_incidents_unauthorized(self, client: Any):
         res = client.get("/api/v1/incidents/")

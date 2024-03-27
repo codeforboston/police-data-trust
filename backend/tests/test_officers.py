@@ -12,22 +12,22 @@ mock_officers = {
         "last_name": "Doe",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "M"
+        "gender": "M",
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "F"
+        "gender": "F",
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
         "race": "Black",
         "ethnicity": "African American",
-        "gender": "M"
-    }
+        "gender": "M",
+    },
 }
 
 mock_agencies = {
@@ -37,7 +37,7 @@ mock_agencies = {
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL"
+        "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
@@ -45,8 +45,8 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL"
-    }
+        "jurisdiction": "MUNICIPAL",
+    },
 }
 
 mock_employment = {
@@ -54,20 +54,20 @@ mock_employment = {
         "agency": "Chicago Police Department",
         "earliest_employment": "2015-03-14 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "hazel": {
         "agency": "Chicago Police Department",
         "earliest_employment": "2018-08-12 00:00:00",
         "badge_number": "5678",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "frank": {
         "agency": "New York Police Department",
         "earliest_employment": "2019-05-03 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
-    }
+        "currently_employed": True,
+    },
 }
 
 mock_incidents = {
@@ -103,36 +103,31 @@ mock_incidents = {
     },
 }
 
-mock_partners = {
-    "cpdp": {"name": "Citizens Police Data Project"}
-}
+mock_partners = {"cpdp": {"name": "Citizens Police Data Project"}}
 
 mock_accusations = {
     "domestic": {
         "officer": "light",
         "date_created": "2023-03-14 01:05:09",
-        "basis": "Name Match"
+        "basis": "Name Match",
     },
     "traffic": {
         "officer": "severe",
         "date_created": "2023-10-01 00:00:00",
-        "basis": "Name Match"
+        "basis": "Name Match",
     },
     "firearm": {
         "officer": "severe",
         "date_created": "2023-10-05 00:00:00",
-        "basis": "Name Match"
+        "basis": "Name Match",
     },
 }
 
 
 class TestOfficers(TestCase):
     def test_create_officer(
-        self,
-        db_session,
-        client,
-        contributor_access_token,
-        example_agency):
+        self, db_session, client, contributor_access_token, example_agency
+    ):
 
         # Test that we can create an officer with an agency association
         request = {
@@ -146,9 +141,9 @@ class TestOfficers(TestCase):
                     "agency_id": example_agency.id,
                     "earliest_employment": "2015-03-14 00:00:00",
                     "badge_number": "8349",
-                    "currently_employed": True
+                    "currently_employed": True,
                 }
-            ]
+            ],
         }
         res = client.post(
             "/api/v1/officers/",
@@ -161,17 +156,25 @@ class TestOfficers(TestCase):
         response = res.json
 
         officer_obj = (
-            db_session.query(Officer).filter(Officer.id == response["id"]).first()
+            db_session.query(Officer)
+            .filter(Officer.id == response["id"])
+            .first()
         )
         self.assertEqual(officer_obj.first_name, request["first_name"])
         self.assertEqual(officer_obj.last_name, request["last_name"])
         self.assertEqual(officer_obj.race, request["race"])
         self.assertEqual(officer_obj.ethnicity, request["ethnicity"])
-        self.assertEqual(len(officer_obj.agency_association),
-                         len(request["agency_association"]))
-        self.assertEqual(officer_obj.agency_association[0].badge_number,
-                         request["agency_association"][0]["badge_number"])
-        self.assertEqual(officer_obj.agency_association[0].agency_id, example_agency.id)
+        self.assertEqual(
+            len(officer_obj.agency_association),
+            len(request["agency_association"]),
+        )
+        self.assertEqual(
+            officer_obj.agency_association[0].badge_number,
+            request["agency_association"][0]["badge_number"],
+        )
+        self.assertEqual(
+            officer_obj.agency_association[0].agency_id, example_agency.id
+        )
 
         # Test that we can create an officer without an agency association
         request = {
@@ -179,7 +182,7 @@ class TestOfficers(TestCase):
             "last_name": "Payne",
             "race": "White",
             "ethnicity": "Non-Hispanic",
-            "gender": "M"
+            "gender": "M",
         }
         res = client.post(
             "/api/v1/officers/",
@@ -192,7 +195,9 @@ class TestOfficers(TestCase):
         response = res.json
 
         officer_obj = (
-            db_session.query(Officer).filter(Officer.id == response["id"]).first()
+            db_session.query(Officer)
+            .filter(Officer.id == response["id"])
+            .first()
         )
         self.assertEqual(officer_obj.first_name, request["first_name"])
         self.assertEqual(officer_obj.last_name, request["last_name"])
@@ -301,7 +306,7 @@ class TestOfficers(TestCase):
         db_session.commit()
 
         per_page = 1
-        expected_total_pages = math.ceil(len(mock_officers)//per_page)
+        expected_total_pages = math.ceil(len(mock_officers) // per_page)
 
         for page in range(1, expected_total_pages + 1):
             res = client.get(
@@ -318,7 +323,10 @@ class TestOfficers(TestCase):
 
         res = client.get(
             "/api/v1/officers/",
-            query_string={"perPage": per_page, "page": expected_total_pages + 1},
+            query_string={
+                "perPage": per_page,
+                "page": expected_total_pages + 1,
+            },
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
         self.assertEqual(res.status_code, 404)

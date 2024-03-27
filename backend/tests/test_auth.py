@@ -22,8 +22,12 @@ class TestAuth(TestCase):
             )
 
             db_user = db_session.query(User).filter(email == User.email).first()
-            self.assertTrue(("Set-Cookie" in res.headers) is (expected_status_code == 200))
-            self.assertTrue((db_user is not None) is (expected_status_code == 200))
+            self.assertTrue(
+                ("Set-Cookie" in res.headers) is (expected_status_code == 200)
+            )
+            self.assertTrue(
+                (db_user is not None) is (expected_status_code == 200)
+            )
             self.assertEqual(res.status_code, expected_status_code)
 
     def test_login(self, client, example_user):
@@ -40,7 +44,9 @@ class TestAuth(TestCase):
                 },
             )
 
-            self.assertTrue(("Set-Cookie" in res.headers) is (expected_status_code == 200))
+            self.assertTrue(
+                ("Set-Cookie" in res.headers) is (expected_status_code == 200)
+            )
             self.assertEqual(res.status_code, expected_status_code)
 
     def test_jwt(self, client, db_session, example_user):
@@ -66,7 +72,9 @@ class TestAuth(TestCase):
             json={"email": example_user.email, "password": "my_password"},
         )
 
-        client.set_cookie(domain="localhost", key="access_token_cookie", value="")
+        client.set_cookie(
+            domain="localhost", key="access_token_cookie", value=""
+        )
 
         test_res = client.get(
             "api/v1/auth/whoami",
@@ -102,8 +110,12 @@ class TestAuth(TestCase):
                 email = example_user.email
             else:
                 email = "fake@email.com"
-            res = client.post("api/v1/auth/forgotPassword", json={"email": email})
-            mock_send_reset_password_email.assert_called_once_with(mock.ANY, email)
+            res = client.post(
+                "api/v1/auth/forgotPassword", json={"email": email}
+            )
+            mock_send_reset_password_email.assert_called_once_with(
+                mock.ANY, email
+            )
             if use_correct_email:
                 mock_send_forgot_password_email.assert_called_once_with(
                     example_user, mock.ANY, mock.ANY

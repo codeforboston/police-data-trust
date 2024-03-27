@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -27,7 +26,7 @@ from ..schemas import (
     partner_to_orm,
     validate,
     AddMemberSchema,
-    partner_member_to_orm
+    partner_member_to_orm,
 )
 
 
@@ -65,21 +64,21 @@ def create_partner():
         except Exception:
             abort(400)
         partner_query_email = Partner.query.filter_by(
-            contact_email=body.contact_email).first()
+            contact_email=body.contact_email
+        ).first()
         partner_query_url = Partner.query.filter_by(url=body.url).first()
         if partner_query_email:
             return {
-                    "status": "error",
-                    "message": "Error. Entered email or url details "
-                               + "matches existing record.",
-
-                }, 400
+                "status": "error",
+                "message": "Error. Entered email or url details "
+                + "matches existing record.",
+            }, 400
         if partner_query_url:
             return {
-                    "status": "error",
-                    "message": "Error. Entered email or url details "
-                               + "matches existing record.",
-                }, 400
+                "status": "error",
+                "message": "Error. Entered email or url details "
+                + "matches existing record.",
+            }, 400
         """
         add to database if all fields are present
         and instance not already in db.
@@ -95,21 +94,23 @@ def create_partner():
         make_admin.create()
         # update to UserRole contributor status
         user_id = get_jwt()["sub"]
-        user = User.query.filter_by(
-            id=user_id
-        ).first()
+        user = User.query.filter_by(id=user_id).first()
         user.role = UserRole.CONTRIBUTOR
 
-        track_to_mp(request, "create_partner", {
-            "partner_name": partner.name,
-            "partner_contact": partner.contact_email
-        })
+        track_to_mp(
+            request,
+            "create_partner",
+            {
+                "partner_name": partner.name,
+                "partner_contact": partner.contact_email,
+            },
+        )
         return resp
     else:
         return {
-                "status": "error",
-                "message": "Failed to create partner. " +
-                           "Please include all of the following"
+            "status": "error",
+            "message": "Failed to create partner. "
+            + "Please include all of the following",
         }, 400
 
 
@@ -200,77 +201,93 @@ def add_member_to_partner():
     jwt_decoded = get_jwt()
 
     current_user = User.get(jwt_decoded["sub"])
-    association = db.session.query(PartnerMember).filter(
-        PartnerMember.user_id == current_user.id,
-        PartnerMember.partner_id == body.partner_id,
-    ).first()
+    association = (
+        db.session.query(PartnerMember)
+        .filter(
+            PartnerMember.user_id == current_user.id,
+            PartnerMember.partner_id == body.partner_id,
+        )
+        .first()
+    )
     if (
         association is None
         or not association.is_administrator()
         or not association.partner_id == body.partner_id
     ):
         abort(403)
-    mail = current_app.extensions.get('mail')
+    mail = current_app.extensions.get("mail")
     user = User.query.filter_by(email=body.email).first()
     if user is not None:
         invitation_exists = Invitation.query.filter_by(
-            partner_id=body.partner_id, user_id=user.id).first()
+            partner_id=body.partner_id, user_id=user.id
+        ).first()
         if invitation_exists:
             return {
                 "status": "error",
-                "message": "Invitation already sent to this user!"
+                "message": "Invitation already sent to this user!",
             }, 500
         else:
             try:
                 new_invitation = Invitation(
-                    partner_id=body.partner_id, user_id=user.id, role=body.role)
+                    partner_id=body.partner_id, user_id=user.id, role=body.role
+                )
                 db.session.add(new_invitation)
                 db.session.commit()
 
-                msg = Message("Invitation to join NPDC partner organization!",
-                              sender=TestingConfig.MAIL_USERNAME,
-                              recipients=[body.email])
+                msg = Message(
+                    "Invitation to join NPDC partner organization!",
+                    sender=TestingConfig.MAIL_USERNAME,
+                    recipients=[body.email],
+                )
                 msg.body = """You are a registered user of NPDC and were invited
                 to a partner organization. Please log on to accept or decline
                 the invitation at https://dev.nationalpolicedata.org/."""
                 mail.send(msg)
                 return {
                     "status": "ok",
-                    "message": "User notified of their invitation!"
+                    "message": "User notified of their invitation!",
                 }, 200
 
             except Exception:
                 return {
                     "status": "error",
-                    "message": "Something went wrong! Please try again!"
+                    "message": "Something went wrong! Please try again!",
                 }, 500
     else:
         try:
 
             new_staged_invite = StagedInvitation(
-                partner_id=body.partner_id, email=body.email, role=body.role)
+                partner_id=body.partner_id, email=body.email, role=body.role
+            )
             db.session.add(new_staged_invite)
             db.session.commit()
-            msg = Message("Invitation to join NPDC index!",
-                          sender=TestingConfig.MAIL_USERNAME,
-                          recipients=[body.email])
+            msg = Message(
+                "Invitation to join NPDC index!",
+                sender=TestingConfig.MAIL_USERNAME,
+                recipients=[body.email],
+            )
             msg.body = """You are not a registered user of NPDC and were
                         invited to a partner organization. Please register
                         with NPDC index at
                         https://dev.nationalpolicedata.org/."""
             mail.send(msg)
 
-            return {
-                "status": "ok",
-                "message": """User is not registered with the NPDC index.
-                 Email sent to user notifying them to register."""
-            }, 200
+            return (
+                {
+                    "status": "ok",
+                    "message": """User is not registered with the NPDC index.
+                 Email sent to user notifying them to register.""",
+                },
+                200,
+            )
 
         except Exception:
             return {
                 "status": "error",
-                "message": "Something went wrong! Please try again!"
+                "message": "Something went wrong! Please try again!",
             }, 500
+
+
 # user can join org they were invited to
 
 
@@ -281,12 +298,12 @@ def join_organization():
     try:
         body = request.get_json()
         user_exists = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]).first()
+            user_id=body["user_id"], partner_id=body["partner_id"]
+        ).first()
         if user_exists:
             return {
-                "status" : "Error",
-                "message": "User already in the organization"
+                "status": "Error",
+                "message": "User already in the organization",
             }, 400
         else:
             new_member = PartnerMember(
@@ -294,26 +311,24 @@ def join_organization():
                 partner_id=body["partner_id"],
                 role=body["role"],
                 date_joined=datetime.now(),
-                is_active=True
+                is_active=True,
             )
             db.session.add(new_member)
             db.session.commit()
             Invitation.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]).delete()
+                user_id=body["user_id"], partner_id=body["partner_id"]
+            ).delete()
             db.session.commit()
             return {
                 "status": "ok",
-                "message": "Successfully joined partner organization"
-            } , 200
+                "message": "Successfully joined partner organization",
+            }, 200
     except Exception:
         db.session.rollback()
-        return {
-            "status": "Error",
-            "message": "Something went wrong!"
-        }, 500
+        return {"status": "Error", "message": "Something went wrong!"}, 500
     finally:
         db.session.close()
+
 
 # user can leave org they already joined
 
@@ -328,55 +343,52 @@ def leave_organization():
     try:
         body = request.get_json()
         result = PartnerMember.query.filter_by(
-            user_id=body["user_id"], partner_id=body["partner_id"]).delete()
+            user_id=body["user_id"], partner_id=body["partner_id"]
+        ).delete()
         db.session.commit()
         if result > 0:
             return {
                 "status": "ok",
-                "message": "Succesfully left organization"
+                "message": "Succesfully left organization",
             }, 200
         else:
             return {
                 "status": "Error",
-                "message": "Not a member of this organization"
+                "message": "Not a member of this organization",
             }, 400
     except Exception:
         db.session.rollback()
-        return {
-            "status": "Error",
-            "message": "Something went wrong!"
-        }
+        return {"status": "Error", "message": "Something went wrong!"}
     finally:
         db.session.close()
+
 
 # admin can remove any member from a partner organization
 
 
-@bp.route("/remove_member", methods=['DELETE'])
+@bp.route("/remove_member", methods=["DELETE"])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 def remove_member():
     body = request.get_json()
     try:
         user_found = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
+            user_id=body["user_id"], partner_id=body["partner_id"]
+        ).first()
         if user_found and user_found.role != MemberRole.ADMIN:
             PartnerMember.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]).delete()
+                user_id=body["user_id"], partner_id=body["partner_id"]
+            ).delete()
             db.session.commit()
             return {
-                "status" : "ok",
-                "message" : "Member successfully deleted from Organization"
-            } , 200
+                "status": "ok",
+                "message": "Member successfully deleted from Organization",
+            }, 200
         else:
             return {
-                "status" : "Error",
-                "message" : "Member is not part of the Organization"
-
-            } , 400
+                "status": "Error",
+                "message": "Member is not part of the Organization",
+            }, 400
     except Exception as e:
         db.session.rollback()
         return str(e)
@@ -385,32 +397,29 @@ def remove_member():
 
 
 # admin can withdraw invitations that have been sent out
-@bp.route("/withdraw_invitation", methods=['DELETE'])
+@bp.route("/withdraw_invitation", methods=["DELETE"])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 def withdraw_invitation():
     body = request.get_json()
     try:
         user_found = Invitation.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
+            user_id=body["user_id"], partner_id=body["partner_id"]
+        ).first()
         if user_found:
             Invitation.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]
+                user_id=body["user_id"], partner_id=body["partner_id"]
             ).delete()
             db.session.commit()
             return {
-                "status" : "ok",
-                "message" : "Member's invitation withdrawn from Organization"
-            } , 200
+                "status": "ok",
+                "message": "Member's invitation withdrawn from Organization",
+            }, 200
         else:
             return {
-                "status" : "Error",
-                "message" : "Member is not invited to the Organization"
-
-            } , 400
+                "status": "Error",
+                "message": "Member is not invited to the Organization",
+            }, 400
     except Exception as e:
         db.session.rollback()
         return str(e)
@@ -426,20 +435,16 @@ def role_change():
     body = request.get_json()
     try:
         user_found = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
+            user_id=body["user_id"], partner_id=body["partner_id"]
+        ).first()
         if user_found and user_found.role != "Administrator":
             user_found.role = body["role"]
             db.session.commit()
-            return {
-                "status" : "ok",
-                "message" : "Role has been updated!"
-            }, 200
+            return {"status": "ok", "message": "Role has been updated!"}, 200
         else:
             return {
-                "status" : "Error",
-                "message" : "User not found in this organization"
+                "status": "Error",
+                "message": "User not found in this organization",
             }, 400
     except Exception as e:
         db.session.rollback
@@ -467,6 +472,7 @@ def get_invitations():
 
 # view staged invitations table
 
+
 @bp.route("/stagedinvitations", methods=["GET"])
 @jwt_required()
 @validate()
@@ -477,15 +483,15 @@ def stagedinvitations():
     staged_invitations = StagedInvitation.query.all()
     invitations_data = [
         {
-            'id': staged_invitation.id,
-            'email': staged_invitation.email,
-            'role': staged_invitation.role,
-            'partner_id': staged_invitation.partner_id,
+            "id": staged_invitation.id,
+            "email": staged_invitation.email,
+            "role": staged_invitation.role,
+            "partner_id": staged_invitation.partner_id,
         }
         for staged_invitation in staged_invitations
     ]
 
-    return jsonify({'staged_invitations': invitations_data})
+    return jsonify({"staged_invitations": invitations_data})
 
 
 @bp.route("/<int:partner_id>/members/add", methods=["POST"])

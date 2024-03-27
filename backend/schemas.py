@@ -113,18 +113,15 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'employers',
-    'agency_association',
-    'accusations',
-    'perpetrator_association',
-    'accusations',
-    'state_ids',
+    "employers",
+    "agency_association",
+    "accusations",
+    "perpetrator_association",
+    "accusations",
+    "state_ids",
 ]
 
-_agency_list_attributes = [
-    'officer_association',
-    'officers'
-]
+_agency_list_attributes = ["officer_association", "officers"]
 
 _partner_list_attrs = ["reported_incidents"]
 
@@ -379,9 +376,7 @@ def officer_orm_to_json(officer: Officer) -> dict:
 def agency_to_orm(agency: CreateAgencySchema) -> Agency:
     """Convert the JSON agency into an ORM instance"""
     try:
-        converters = {
-            "jurisdiction": Jurisdiction
-        }
+        converters = {"jurisdiction": Jurisdiction}
         orm_attrs = agency.dict()
         for k, v in orm_attrs.items():
             is_dict = isinstance(v, dict)

@@ -70,8 +70,7 @@ class User(db.Model, UserMixin, CrudMixin):
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
     email = db.Column(
-        CI_String(255, collate="NOCASE"),
-        nullable=False, unique=True
+        CI_String(255, collate="NOCASE"), nullable=False, unique=True
     )
     email_confirmed_at = db.Column(db.DateTime())
     password = db.Column(db.String(255), nullable=False, server_default="")
@@ -90,7 +89,8 @@ class User(db.Model, UserMixin, CrudMixin):
 
     # Data Partner Relationships
     partner_association = db.relationship(
-        "PartnerMember", back_populates="user", lazy="select")
+        "PartnerMember", back_populates="user", lazy="select"
+    )
     member_of = association_proxy("partner_association", "partner")
 
     # Officer Accusations

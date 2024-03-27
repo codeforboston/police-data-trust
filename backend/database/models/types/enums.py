@@ -1,4 +1,5 @@
 """Enumerations shared across multiple models are defined here."""
+
 import enum
 
 
