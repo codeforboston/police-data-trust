@@ -306,7 +306,7 @@ class TestIncidents(TestCase):
         Test that a partner member can delete an incident.
         """
 
-        access_token = res = client.post(
+        access_token = client.post(
             "api/v1/auth/login",
             json={
                 "email": partner_publisher.email,

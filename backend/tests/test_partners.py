@@ -507,7 +507,7 @@ class TestPartners(TestCase):
             },
         )
 
-        self.assertEqual(res.status_code == 400)
+        self.assertEqual(res.status_code, 400)
 
     # test:only admin can remove members
     def test_remove_member_admin(

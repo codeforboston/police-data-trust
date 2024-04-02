@@ -67,12 +67,8 @@ def example_agencies(db_session):
     return agencies
 
 
-@pytest.mark.usefixtures("client",
-                         "contributor_access_token",
-                         "db_session", "example_agency",
-                         "example_agencies",
-                         "access_token")
 class TestAgencies(TestCase):
+    @pytest.mark.usefixtures("db_session", "client", "contributor_access_token")
     def test_create_agency(self, db_session, client, contributor_access_token):
         test_agency = mock_agencies["cpd"]
 
@@ -97,6 +93,7 @@ class TestAgencies(TestCase):
         self.assertEqual(agency_obj.hq_zip, test_agency["hq_zip"])
         self.assertEqual(agency_obj.jurisdiction, test_agency["jurisdiction"])
 
+    @pytest.mark.usefixtures("client", "access_token")
     def test_unauthorized_create_agency(self, client, access_token):
         test_agency = mock_agencies["cpd"]
 
@@ -107,6 +104,7 @@ class TestAgencies(TestCase):
         )
         self.assertEqual(res.status_code, 403)
 
+    @pytest.mark.usefixtures("client", "access_token", "example_agency")
     def test_get_agency(self, client, access_token, example_agency):
         # Test that we can get example_agency
         res = client.get(
@@ -117,6 +115,7 @@ class TestAgencies(TestCase):
         self.assertEqual(res.json["name"], example_agency.name)
         self.assertEqual(res.json["website_url"], example_agency.website_url)
 
+    @pytest.mark.usefixtures("client", "access_token", "example_agencies")
     def test_get_all_agencies(self, client, access_token, example_agencies):
         # Create agencies in the database
         agencies = example_agencies
@@ -135,6 +134,7 @@ class TestAgencies(TestCase):
         )
         self.assertEqual(test_agency, single_res.json)
 
+    @pytest.mark.usefixtures("client", "example_agencies", "access_token")
     def test_agency_pagination(self, client, example_agencies, access_token):
         per_page = 1
         expected_total_pages = math.ceil(len(example_agencies) // per_page)
