@@ -185,6 +185,44 @@ def test_create_partner(db_session, example_user, example_partners):
     assert association_obj.is_administrator() is True
 
 
+def test_create_partner_role_change(
+        client,
+        example_user
+
+):
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_user.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name" : "Example Partner 1",
+            "url": "examplep.com",
+            "contact_email": "example_p@gmail.com",
+        }
+    )
+    assert res.status_code == 200
+    partner_member_obj = Partner.query.filter_by(
+        url="examplep.com"
+    ).first()
+
+    assert partner_member_obj.name == "Example Partner 1"
+    assert partner_member_obj.url == "examplep.com"
+    assert partner_member_obj.contact_email == "example_p@gmail.com"
+
+    # Check if UserRole in updated
+    user = User.query.filter_by(
+        email=example_user.email
+    ).first()
+    assert user.role == UserRole.CONTRIBUTOR
+
+
 def test_get_partner(client, db_session, access_token):
     # Create a partner in the database
     partner_name = "Test Partner"
@@ -836,3 +874,104 @@ def test_role_change3(
         partner_id=-1,
     ).first()
     assert role_change_instance is None
+
+
+"""
+Test for creating a new partner
+and adding existing partner already created
+"""
+
+
+def test_create_new_partner(
+        client,
+        partner_admin
+
+):
+    # test for creating new partner
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name": "Citizens Police Data Project",
+            "url": "https://cpdp.co",
+            "contact_email": "tech@invisible.institute",
+        }
+    )
+    assert res.status_code == 200
+    partner_obj = Partner.query.filter_by(
+        url="https://cpdp.co"
+    ).first()
+    assert partner_obj.name == "Citizens Police Data Project"
+    assert partner_obj.url == "https://cpdp.co"
+    assert partner_obj.contact_email == "tech@invisible.institute"
+
+    # test for adding duplicate partner that already exists
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name": "Citizens Police Data Project",
+            "url": "https://cpdp.co",
+            "contact_email": "tech@invisible.institute",
+        }
+    )
+    assert res.status_code == 400
+
+
+"""
+Validation tests for creating
+new partners
+"""
+
+
+def test_create_partner_validation(
+        client,
+        partner_admin
+):
+    # adding partner with blank fields
+    access_token = res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": partner_admin.email,
+            "password": example_password
+        },
+    ).json["access_token"]
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name": "",
+            "url": "https://cpdp.co",
+            "contact_email": "tech@invisible.institute",
+        }
+    )
+    assert res.status_code == 400
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name": "Citizens Police Data Project",
+            "url": "",
+            "contact_email": "tech@invisible.institute",
+        }
+    )
+    assert res.status_code == 400
+
+    res = client.post(
+        "/api/v1/partners/create",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={
+            "name": "Citizens Police Data Project",
+            "url": None ,
+            "contact_email": "tech@invisible.institute",
+        }
+    )
+    assert res.status_code == 400

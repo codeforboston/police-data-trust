@@ -35,7 +35,10 @@ export default function USAStateInput() {
         ))}
       </datalist>
       {!isValid && (
-        <FormLevelError errorId={errorId} errorMessage={errors[inputName].message || "Invalid"} />
+        <FormLevelError
+          errorId={errorId}
+          errorMessage={(errors[inputName].message as string) || "Invalid"}
+        />
       )}
     </div>
   )

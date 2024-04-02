@@ -7,6 +7,6 @@ export default {
   component: ProfileType
 } as ComponentMeta<typeof ProfileType>
 
-const Template: ComponentStory<typeof ProfileType> = (args) => <ProfileType {...args} />
+const Template: ComponentStory<typeof ProfileType> = (args: any) => <ProfileType {...args} />
 
 export const Default = Template.bind({})

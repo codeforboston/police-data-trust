@@ -10,8 +10,10 @@ class Accusation(db.Model):
     basis = db.Column(db.Text)
 
     attachments = db.relationship("Attachment", backref="accusation")
-    perpetrator = db.relationship("Perpetrator", back_populates="suspects")
-    officer = db.relationship("Officer", back_populates="accusations")
+    perpetrator = db.relationship(
+        "Perpetrator", back_populates="officer_association")
+    officer = db.relationship(
+        "Officer", back_populates="perpetrator_association")
 
     def __repr__(self):
         return f"<Employment {self.id}>"

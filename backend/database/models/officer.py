@@ -1,6 +1,7 @@
 import enum
 
 from ..core import db, CrudMixin
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 class State(str, enum.Enum):
@@ -82,9 +83,15 @@ class Officer(db.Model, CrudMixin):
     ethnicity = db.Column(db.Text)
     gender = db.Column(db.Text)
     date_of_birth = db.Column(db.Date)
-    known_employers = db.relationship("Employment", back_populates="officer")
-    accusations = db.relationship("Accusation", back_populates="officer")
     state_ids = db.relationship("StateID", backref="officer")
+
+    agency_association = db.relationship(
+        "Employment", back_populates="officer")
+    employers = association_proxy("agency_association", "agency")
+
+    perpetrator_association = db.relationship(
+        "Accusation", back_populates="officer")
+    accusations = association_proxy("perpetrator_association", "perpetrator")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

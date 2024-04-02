@@ -8,6 +8,8 @@ export default {
   component: ResponseTextArea
 } as ComponentMeta<typeof ResponseTextArea>
 
-const Template: ComponentStory<typeof ResponseTextArea> = (args) => <ResponseTextArea {...args} />
+const Template: ComponentStory<typeof ResponseTextArea> = (args: any) => (
+  <ResponseTextArea {...args} />
+)
 
 export const Default = Template.bind({})

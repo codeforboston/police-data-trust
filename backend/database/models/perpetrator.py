@@ -1,6 +1,7 @@
 from backend.database.models.officer import State
 from backend.database.models.employment import Rank
 from .. import db
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 class Perpetrator(db.Model):
@@ -19,8 +20,9 @@ class Perpetrator(db.Model):
     state_id_state = db.Column(db.Enum(State))
     state_id_name = db.Column(db.Text)
     role = db.Column(db.Text)
-    suspects = db.relationship(
+    officer_association = db.relationship(
         "Accusation", back_populates="perpetrator")
+    suspects = association_proxy("officer_association", "officer")
 
     def __repr__(self):
         return f"<Perpetrator {self.id}>"

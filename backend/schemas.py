@@ -13,7 +13,7 @@ from .database import User
 from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
-from .database.models.agency import Agency
+from .database.models.agency import Agency, Jurisdiction
 from .database.models.officer import Officer, StateID
 from .database.models.employment import Employment
 from .database.models.accusation import Accusation
@@ -113,9 +113,17 @@ _incident_list_attrs = [
 ]
 
 _officer_list_attributes = [
-    'known_employers',
+    'employers',
+    'agency_association',
+    'accusations',
+    'perpetrator_association',
     'accusations',
     'state_ids',
+]
+
+_agency_list_attributes = [
+    'officer_association',
+    'officers'
 ]
 
 _partner_list_attrs = ["reported_incidents"]
@@ -161,6 +169,16 @@ class _PartnerMixin(BaseModel):
         return values
 
 
+class _AgencyMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        values = {**values}  # convert mappings to base dict type.
+        for i in _agency_list_attributes:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
 def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
 
@@ -168,10 +186,10 @@ def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
 _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
 _BaseCreateOfficerSchema = schema_create(Officer)
+_BaseCreateAgencySchema = schema_create(Agency)
 CreateStateIDSchema = schema_create(StateID)
 CreateEmploymentSchema = schema_create(Employment)
 CreateAccusationSchema = schema_create(Accusation)
-CreateAgencySchema = schema_create(Agency)
 CreateVictimSchema = schema_create(Victim)
 CreatePerpetratorSchema = schema_create(Perpetrator)
 CreateSourceDetailsSchema = schema_create(SourceDetails)
@@ -209,9 +227,18 @@ class CreatePartnerMemberSchema(BaseModel):
 
 
 class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
-    known_employers: Optional[List[CreateEmploymentSchema]]
-    accusations: Optional[List[CreateAccusationSchema]]
+    agency_association: Optional[List[CreateEmploymentSchema]]
+    perpetrator_association: Optional[List[CreateAccusationSchema]]
     state_ids: Optional[List[CreateStateIDSchema]]
+
+
+class CreateAgencySchema(_BaseCreateAgencySchema, _AgencyMixin):
+    name: str
+    jurisdiction: str
+    website_url: Optional[str]
+    hq_address: Optional[str]
+    hq_city: Optional[str]
+    hq_zip: Optional[str]
 
 
 AddMemberSchema = sqlalchemy_to_pydantic(
@@ -227,6 +254,7 @@ _BasePartnerSchema = schema_get(Partner)
 _BaseIncidentSchema = schema_get(Incident)
 _BaseOfficerSchema = schema_get(Officer)
 _BasePartnerMemberSchema = schema_get(PartnerMember)
+_BaseAgencySchema = schema_get(Agency)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -237,6 +265,7 @@ ResultOfStopSchema = schema_get(ResultOfStop)
 ActionSchema = schema_get(Action)
 UseOfForceSchema = schema_get(UseOfForce)
 LegalCaseSchema = schema_get(LegalCase)
+EmploymentSchema = schema_get(Employment)
 UserSchema = schema_get(User, exclude=["password", "id"])
 
 
@@ -258,9 +287,13 @@ class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
 
 
 class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    known_employers: List[CreateEmploymentSchema]
-    accusations: List[CreateAccusationSchema]
+    agency_association: List[CreateEmploymentSchema]
+    perpetrator_association: List[CreateAccusationSchema]
     state_ids: List[CreateStateIDSchema]
+
+
+class AgencySchema(_BaseAgencySchema, _AgencyMixin):
+    officer_association: List[CreateEmploymentSchema]
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
@@ -317,16 +350,22 @@ def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
 
     converters = {
         "state_ids": StateID,
-        "known_employers": Employment,
+        "agency_association": Employment,
     }
-    orm_attrs = officer.dict()
-    for k, v in orm_attrs.items():
-        is_dict = isinstance(v, dict)
-        is_list = isinstance(v, list)
-        if is_dict:
-            orm_attrs[k] = converters[k](**v)
-        elif is_list and len(v) > 0:
-            orm_attrs[k] = [converters[k](**d) for d in v]
+    try:
+        orm_attrs = officer.dict()
+    except Exception:
+        raise Exception(f"Error creating dict from officer: {officer}")
+    try:
+        for k, v in orm_attrs.items():
+            is_dict = isinstance(v, dict)
+            is_list = isinstance(v, list)
+            if is_dict:
+                orm_attrs[k] = converters[k](**v)
+            elif is_list and len(v) > 0:
+                orm_attrs[k] = [converters[k](**d) for d in v]
+    except Exception:
+        raise Exception(f"Error converting {k}, {v}")
     return Officer(**orm_attrs)
 
 
@@ -334,6 +373,43 @@ def officer_orm_to_json(officer: Officer) -> dict:
     return OfficerSchema.from_orm(officer).dict(
         exclude_none=True,
         # Exclude a bunch of currently-unused empty lists
+    )
+
+
+def agency_to_orm(agency: CreateAgencySchema) -> Agency:
+    """Convert the JSON agency into an ORM instance"""
+    try:
+        converters = {
+            "jurisdiction": Jurisdiction
+        }
+        orm_attrs = agency.dict()
+        for k, v in orm_attrs.items():
+            is_dict = isinstance(v, dict)
+            is_list = isinstance(v, list)
+            if is_dict:
+                orm_attrs[k] = converters[k](**v)
+            elif is_list and len(v) > 0:
+                orm_attrs[k] = [converters[k](**d) for d in v]
+        return Agency(**orm_attrs)
+    except Exception as e:
+        raise e
+
+
+def agency_orm_to_json(agency: Agency) -> dict:
+    return AgencySchema.from_orm(agency).dict(
+        exclude_none=True,
+    )
+
+
+def employment_to_orm(employment: CreateEmploymentSchema) -> Employment:
+    """Convert the JSON employment into an ORM instance"""
+    orm_attrs = employment.dict()
+    return Employment(**orm_attrs)
+
+
+def employment_orm_to_json(employment: Employment) -> Dict[str, Any]:
+    return EmploymentSchema.from_orm(employment).dict(
+        exclude_none=True,
     )
 
 
