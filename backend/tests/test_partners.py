@@ -148,7 +148,7 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
     return created
 
 
-@pytest.mark.usefixtures("example_members", "example_partners")
+@pytest.mark.usefixtures("example_members", "example_partners", "client", "partner_admin")
 class TestPartners(TestCase):
     def test_create_partner(self, db_session, example_user, example_partners):
         created = example_partners["mpv"]

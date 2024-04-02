@@ -67,6 +67,11 @@ def example_agencies(db_session):
     return agencies
 
 
+@pytest.mark.usefixtures("client",
+                         "contributor_access_token",
+                         "db_session", "example_agency",
+                         "example_agencies",
+                         "access_token")
 class TestAgencies(TestCase):
     def test_create_agency(self, db_session, client, contributor_access_token):
         test_agency = mock_agencies["cpd"]
