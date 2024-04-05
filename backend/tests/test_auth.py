@@ -148,3 +148,61 @@ def test_reset_password(client, example_user, use_correct_token):
 
 def test_access_token_fixture(access_token):
     assert len(access_token) > 0
+
+
+"""
+Forgot username test
+"""
+
+
+def test_forgot_username(
+        client,
+        db_session
+
+):
+    """
+    register a new user
+    use the forgot email/username endpoint to see
+    if email is sent
+    """
+
+    res = client.post(
+        "api/v1/auth/register",
+        json={
+            "email": "lostxjack@gmail.com",
+            "password": "examplepassword123",
+            "phoneNumber": "123456789"
+        },
+    )
+    res = client.post(
+        "api/v1/auth/forgotUsername",
+        json={
+            "phoneNumber": "123456789"
+        },
+    )
+    res.status_code == 200
+
+
+"""Phone Number doesnot exist in DB
+"""
+
+
+def test_forgot_username_no_phone(
+        client,
+):
+    """
+    register a new user
+    use the forgot email/username endpoint to see
+    if email is sent
+    """
+    res = client.post(
+        "api/v1/auth/forgotUsername",
+        json={
+            "phoneNumber": "123456789"
+        },
+    )
+    assert res.status_code == 400
+    user_obj = User.query.filter_by(
+        phone_number="123456789"
+    ).first()
+    assert user_obj is None

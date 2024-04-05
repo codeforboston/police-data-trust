@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_cors import cross_origin
 from flask_jwt_extended import (
     create_access_token,
@@ -13,6 +13,8 @@ from ..mixpanel.mix import track_to_mp
 from ..database import User, UserRole, db, Invitation, StagedInvitation
 from ..dto import LoginUserDTO, RegisterUserDTO
 from ..schemas import UserSchema, validate
+from flask_mail import Message
+from ..config import TestingConfig
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
@@ -198,3 +200,47 @@ def reset_password():
     user.password = user_manager.hash_password(body.password)
     db.session.commit()
     return {"message": "Password successfully changed"}, 200
+
+
+class PhoneDTO(BaseModel):
+    phoneNumber : str
+
+
+"""
+Endpoint to use when user has forgotten their
+Username/Email
+Username in this case is email of the user
+"""
+
+
+@bp.route("/forgotUsername", methods=["POST"])
+@validate(auth=False, json=PhoneDTO)
+def send_email():
+    body: PhoneDTO = request.context.json
+    if not body.phoneNumber:
+        return {
+            "status": "Error",
+            "message": "Message request body empty"
+        }, 400
+    user_obj = User.query.filter_by(
+        phone_number=body.phoneNumber
+    ).first()
+    mail = current_app.extensions.get('mail')
+    if not user_obj:
+        return {
+            "status" : "Error",
+            "message" : "No account with the request phone number found"
+        }, 400
+    else:
+        # change TestingConfig email to Production Config in Prod
+        msg = Message("Your Username for National Police Data Coalition",
+                      sender=TestingConfig.MAIL_USERNAME,
+                      recipients=['paul@mailtrap.io'])
+        msg.body = f"The account email associated with {body.phoneNumber} is \
+                    {user_obj.email}"
+        mail.send(msg)
+        return {
+                "status": "ok",
+                "message" : "Email sent to the user notifying them \
+                    of their username"
+        } , 200
