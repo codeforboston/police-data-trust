@@ -1,3 +1,4 @@
+bcrypt==3.2.2
 black
 celery
 flake8
