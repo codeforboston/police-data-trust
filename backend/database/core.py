@@ -85,7 +85,7 @@ def db_cli(ctx: click.Context):
         user=current_app.config["POSTGRES_USER"],
         password=current_app.config["POSTGRES_PASSWORD"],
         host=current_app.config["POSTGRES_HOST"],
-        port=current_app.config["POSTGRES_PORT"],
+        port=current_app.config["PGPORT"],
         dbname="postgres",
     )
     conn.autocommit = True

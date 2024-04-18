@@ -27,17 +27,7 @@ This method uses Docker to run the complete application stack.
 
 1. Make sure that [Docker](https://www.docker.com) is installed on your machine.
 
-2. Create a `.env` file in the root of your local project folder, and add your preferred PostgreSQL username and password:
-
-```
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=police_data
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-PDT_API_PORT=5000
-MIXPANEL_TOKEN=your_mixpanel_token
-```
+2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and add your preferred PostgreSQL username and password:
 
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
