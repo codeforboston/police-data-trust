@@ -16,7 +16,7 @@ class Config(object):
         hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
     POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
-    POSTGRES_PORT = os.environ.get("POSTGRES_PORT", 5432)
+    PGPORT = os.environ.get("PGPORT", 5432)
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
@@ -71,7 +71,7 @@ class Config(object):
             self.POSTGRES_USER,
             self.POSTGRES_PASSWORD,
             self.POSTGRES_HOST,
-            self.POSTGRES_PORT,
+            self.PGPORT,
             self.POSTGRES_DB,
         )
 

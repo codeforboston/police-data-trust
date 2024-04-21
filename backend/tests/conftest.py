@@ -32,7 +32,7 @@ def database():
     janitor = DatabaseJanitor(
         cfg.POSTGRES_USER,
         cfg.POSTGRES_HOST,
-        cfg.POSTGRES_PORT,
+        cfg.PGPORT,
         cfg.POSTGRES_DB,
         9.6,
         cfg.POSTGRES_PASSWORD,
