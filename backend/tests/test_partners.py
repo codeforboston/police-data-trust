@@ -975,3 +975,4 @@ def test_create_partner_validation(
         }
     )
     assert res.status_code == 400
+
