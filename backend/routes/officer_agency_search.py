@@ -1,7 +1,10 @@
 from sqlalchemy.sql.functions import GenericFunction
+
+from backend.database.models.user import UserRole
 from ..database import SearchView, db
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended.view_decorators import jwt_required
+from backend.auth.jwt import min_role_required
 
 
 class TSRank(GenericFunction):
@@ -23,7 +26,8 @@ DEFAULT_PER_PAGE = 5
 
 
 @bp.route("/", methods=["POST"])
-@jwt_required()
+@jwt_required
+@min_role_required(UserRole.PUBLIC)
 def search():
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
