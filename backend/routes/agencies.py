@@ -6,12 +6,12 @@ from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.officer import Officer
+from flask_jwt_extended.view_decorators import jwt_required
 from backend.database.models.employment import (
     merge_employment_records,
     Employment
 )
 from flask import Blueprint, abort, request
-from flask_jwt_extended.view_decorators import jwt_required
 from sqlalchemy.exc import DataError
 from pydantic import BaseModel
 
@@ -47,7 +47,7 @@ class AddOfficerListSchema(BaseModel):
 
 # Create agency profile
 @bp.route("/", methods=["POST"])
-@jwt_required()
+@jwt_required
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateAgencySchema)
 def create_agency():

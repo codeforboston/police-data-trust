@@ -1,7 +1,7 @@
 """fulltext
 
 Revision ID: 9c0b77dbee14
-Revises: 
+Revises:
 Create Date: 2024-04-21 02:53:30.947416
 
 """
