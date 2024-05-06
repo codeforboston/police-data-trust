@@ -47,7 +47,7 @@ class AddOfficerListSchema(BaseModel):
 
 # Create agency profile
 @bp.route("/", methods=["POST"])
-@jwt_required
+@jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate(json=CreateAgencySchema)
 def create_agency():
