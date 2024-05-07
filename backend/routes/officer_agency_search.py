@@ -14,13 +14,6 @@ class TSRank(GenericFunction):
 
 
 bp = Blueprint("search_route", __name__, url_prefix="/api/v1/search")
-"""
-TODO:
-Convert search function to endpoint,
-Pagination support,
-API request:return specifications,
-"""
-
 
 DEFAULT_PER_PAGE = 5
 
