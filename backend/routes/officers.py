@@ -10,8 +10,9 @@ from backend.database.models.employment import (
     Employment,
     merge_employment_records
 )
+from backend.database.models.officer import OfficerJoinView
 from backend.database.models.agency import Agency
-from flask import Blueprint, abort, request
+from flask import Blueprint, abort, jsonify, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
@@ -378,3 +379,73 @@ def get_employment(officer_id: int):
         }
     except Exception as e:
         abort(400, description=str(e))
+
+
+DEFAULT_PER_PAGE = 5
+
+"""
+Search officers by state
+"""
+
+
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@bp.route("/search_wlocation", methods=["POST"])
+def search_state():
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
+    search_term = request.args.get('search_term')
+    query = db.session.query(
+        db.distinct(OfficerJoinView.id),
+        OfficerJoinView.officer_first_name,
+        OfficerJoinView.officer_middle_name,
+        OfficerJoinView.officer_last_name,
+        OfficerJoinView.officer_date_of_birth,
+        OfficerJoinView.stateID_state,
+        OfficerJoinView.stateID_value,
+        db.func.max(db.func.full_text.ts_rank(
+            db.func.setweight(
+                db.func.coalesce(
+                    OfficerJoinView.tsv_stateID_state, ''), 'A')
+            , db.func.to_tsquery(
+                        search_term,
+                        postgresql_regconfig='english'
+                        )
+        )).label('rank')
+    ).filter(db.or_(
+        OfficerJoinView.tsv_stateID_state.match(
+            search_term,
+            postgresql_regconfig='english'),
+    )).group_by(
+        OfficerJoinView.id,
+        OfficerJoinView.officer_first_name,
+        OfficerJoinView.officer_middle_name,
+        OfficerJoinView.officer_last_name,
+        OfficerJoinView.officer_date_of_birth,
+        OfficerJoinView.stateID_state,
+        OfficerJoinView.stateID_value
+    ).order_by(db.text('rank DESC')).all()
+    results = []
+    for search_result in query:
+        result_dict = {
+                "first_name" : search_result.officer_first_name,
+                "middle_name" : search_result.officer_middle_name,
+                "last_name" : search_result.officer_last_name,
+                "date_of_birth" : search_result.officer_date_of_birth,
+                "stateID_state" : search_result.stateID_state,
+                "stateID_value" : search_result.stateID_value,
+        }
+        results.append(result_dict)
+    start_index = (page - 1) * per_page
+    end_index = min(start_index + per_page, len(results))
+    paginated_results = results[start_index:end_index]
+    response = {
+                "page": page,
+                "per_page": per_page,
+                "total_results": len(results),
+                "results": paginated_results
+        }
+    try:
+        return jsonify(response)
+    except Exception as e:
+        return (500, str(e))

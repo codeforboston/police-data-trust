@@ -311,7 +311,6 @@ location based agency search
 """
 
 
-@jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @bp.route("/search", methods=["POST"])
 def search():

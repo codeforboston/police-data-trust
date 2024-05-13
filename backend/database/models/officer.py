@@ -2,6 +2,7 @@ import enum
 
 from ..core import db, CrudMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.dialects.postgresql import TSVECTOR
 
 
 class State(str, enum.Enum):
@@ -95,3 +96,16 @@ class Officer(db.Model, CrudMixin):
 
     def __repr__(self):
         return f"<Officer {self.id}>"
+
+
+class OfficerJoinView(db.Model):
+    __tablename__ = 'officer_view'
+    __table_args__ = {'info': dict(is_view=True)}
+    id = db.Column(db.Integer, primary_key=True)  # officer id
+    officer_first_name = db.Column(db.Text)
+    officer_middle_name = db.Column(db.Text)
+    officer_last_name = db.Column(db.Text)
+    officer_date_of_birth = db.Column(db.Date)
+    stateID_state = db.Column(db.Enum(State))  # e.g. "NY"
+    tsv_stateID_state = db.Column(TSVECTOR)
+    stateID_value = db.Column(db.Text)  # e.g. "958938"

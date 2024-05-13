@@ -46,6 +46,15 @@ mock_agencies = {
         "hq_city": "New York",
         "hq_zip": "10038",
         "jurisdiction": "MUNICIPAL"
+    },
+    "nhpd" : {
+        "name": "New Haven Police Department",
+        "website_url": "https://www.newhavenct.gov/government/ \
+                    departments-divisions/new-haven-police-department",
+        "hq_address": "1 Union Avenue",
+        "hq_city": "New Haven",
+        "hq_zip": "06519",
+        "jurisdiction": "MUNICIPAL"
     }
 }
 
