@@ -24,7 +24,11 @@ index_set = [
     "tsv_stateID_state"
 ]
 
-
+"""
+Creates materialized postgres view of the join of Officer
+table and StateID table with additional TSV columns to aid
+full text search on "state".
+"""
 def upgrade():
     # grab a connection to the database
     conn = op.get_bind()
@@ -58,6 +62,10 @@ def upgrade():
         )
 
     # refresh materialzied view trigger
+    """
+    trigger updates view when new records are
+    added to either stateID or officer tables
+    """
     conn.execute(sa.sql.text('''
         CREATE OR REPLACE FUNCTION trig_refresh_officer_view() RETURNS trigger AS
         $$

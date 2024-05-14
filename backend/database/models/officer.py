@@ -98,6 +98,15 @@ class Officer(db.Model, CrudMixin):
         return f"<Officer {self.id}>"
 
 
+"""
+joined view that combines the 
+attributes of StateID and Officer tables 
+to allow for full text search on officer 
+information. Contains a TSVector column to aid
+full text search by location(State)
+"""
+
+
 class OfficerJoinView(db.Model):
     __tablename__ = 'officer_view'
     __table_args__ = {'info': dict(is_view=True)}

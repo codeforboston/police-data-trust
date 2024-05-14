@@ -384,7 +384,8 @@ def get_employment(officer_id: int):
 DEFAULT_PER_PAGE = 5
 
 """
-Search officers by state
+API endpoint to allow searching officer information
+by State.
 """
 
 
@@ -392,9 +393,11 @@ Search officers by state
 @min_role_required(UserRole.PUBLIC)
 @bp.route("/search_wlocation", methods=["POST"])
 def search_state():
+    # get request parameters
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
     search_term = request.args.get('search_term')
+    # query to search for relevant officers on the joined view
     query = db.session.query(
         db.distinct(OfficerJoinView.id),
         OfficerJoinView.officer_first_name,
@@ -425,6 +428,7 @@ def search_state():
         OfficerJoinView.stateID_state,
         OfficerJoinView.stateID_value
     ).order_by(db.text('rank DESC')).all()
+    # returning results and pagination
     results = []
     for search_result in query:
         result_dict = {

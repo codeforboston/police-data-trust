@@ -298,6 +298,13 @@ def get_agency_officers(agency_id: int):
         abort(400, description=str(e))
 
 
+"""
+TSRank function ranks the search results
+by most relevant in regard to the search term
+that is provided.
+"""
+
+
 class TSRank(GenericFunction):
     package = 'full_text'
     name = 'ts_rank'
@@ -306,17 +313,22 @@ class TSRank(GenericFunction):
 
 DEFAULT_PER_PAGE = 5
 
+
 """
-location based agency search
+Agency search endpoint.
+Allows for searching on Agencies by Location (Address, City, Zip)
+Returns ranked results relevant to search term.
 """
 
 
 @min_role_required(UserRole.PUBLIC)
 @bp.route("/search", methods=["POST"])
 def search():
+    # getting request parameters
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
     search_term = request.args.get('search_term')
+    # query to search using location attributes on db
     query = db.session.query(
         db.distinct(AgencyView.agency_id),
         AgencyView.agency_name,
@@ -359,6 +371,8 @@ def search():
         AgencyView.agency_hq_zip,
         AgencyView.agency_jurisdiction
     ).order_by(db.text('rank DESC')).all()
+
+    # returning queried results and pagination
     results = []
     for search_result in query:
         result_dict = {
