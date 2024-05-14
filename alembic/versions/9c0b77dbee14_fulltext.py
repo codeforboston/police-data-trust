@@ -74,7 +74,7 @@ def upgrade():
             postgresql_using='gin'
         )
 
-    # refresh materialzied view trigger
+    # refresh materialized view trigger
     conn.execute(sa.sql.text('''
         CREATE OR REPLACE FUNCTION trig_refresh_search_view() RETURNS trigger AS
         $$
