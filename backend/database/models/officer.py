@@ -99,7 +99,7 @@ class Officer(db.Model, CrudMixin):
 
 
 """
-joined view that combines the 
+joined view that combines the
 attributes of StateID and Officer tables
 to allow for full text search on officer
 information. Contains a TSVector column to aid
