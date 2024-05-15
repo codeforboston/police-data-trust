@@ -80,6 +80,7 @@ jobs:
         tags: latest,${{ needs.setup_env.outputs.IMAGE_TAG }}
         dockerfile: ${{ env.DOCKERFILE }}
         path: ${{ env.DOCKER_PATH }}
+        extra_build_args: "--platform=linux/arm64"
   deploy:
     name: Deploy to AWS ECS
     runs-on: ubuntu-latest
