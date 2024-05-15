@@ -70,7 +70,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
     - name: Build & Push Image to ECR
-      uses: mikeyavorsky/aws-ecr-action@v5
+      uses: mikeyavorsky/aws-ecr-action@master
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
