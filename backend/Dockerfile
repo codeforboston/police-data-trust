@@ -1,6 +1,6 @@
 FROM python:3-slim-bullseye AS base
 
-RUN apt-get update && apt-get install curl -y && apt-get install g++ libpq-dev gcc -y
+RUN apt-get update && apt-get install curl -y && apt-get install g++ libpq-dev gcc python3-dev -y
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.12.1/wait /wait
 RUN chmod +x /wait

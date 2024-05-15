@@ -2,6 +2,9 @@
 # docker build -t police-data-trust-backend-dev -f backend/Dockerfile.cloud .
 FROM python:3-slim-bullseye
 
+# required for pandas
+RUN apt-get update -y && apt-get install gcc g++ python3-dev -y
+
 WORKDIR /app/
 
 ARG PDT_API_PORT=5000
