@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 from backend.database import (
     Officer,
+    OfficerJoinModel
 )
 
 mock_officers = {
@@ -26,8 +27,37 @@ mock_officers = {
         "race": "Black",
         "ethnicity": "African American",
         "gender": "M"
+    },
+    "kenny" : {
+        "first_name": "Kenny",
+        "last_name" : "Liu",
+        "race" : "Asian",
+        "ethnicity" : "Chinese American",
+        "gender" : "M"
+    },
+    "chuck" : {
+        "first_name": "Chuck",
+        "last_name" : "Rhoades",
+        "race" : "White",
+        "ethnicity" : "Non-Hispanic",
+        "gender" : "M"
+    },
+    "chuck2" : {
+        "first_name" : "Chuck",
+        "last_name" : "Bartowski",
+        "race" : "White",
+        "ethnicity" : "Non-Hispanic",
+        "gender" : "M"
+    },
+    "john2" : {
+        "first_name" : "John",
+        "last_name" : "Wick",
+        "race" : "White",
+        "ethnicity" : "Non-Hispanic",
+        "gender" : "M"
     }
 }
+
 
 mock_agencies = {
     "cpd": {
@@ -122,6 +152,55 @@ mock_accusations = {
         "date_created": "2023-10-05 00:00:00",
         "basis": "Name Match"
     },
+}
+
+"""
+manually add records to the OfficerJoin Model to test Location search feature 
+for Officers
+"""
+
+mock_officer_joined = {
+    "chuck" : {
+        "officer_first_name": "Frank",
+        "officer_middle_name" : "NA",
+        "officer_last_name" : "Furter",
+        "officer_date_of_birth" : "1995-12-31",
+        "stateID_state" : "NY",
+        "stateID_value" : "99999"
+    },
+    "frank" : {
+        "officer_first_name": "Chuck",
+        "officer_middle_name" : "NA",
+        "officer_last_name" : "Rhoades",
+        "officer_date_of_birth" : "1990-04-24",
+        "stateID_state" : "NY",
+        "stateID_value" : "23445"
+    },
+    "kenny" : {
+        "officer_first_name": "Kenny",
+        "officer_middle_name" : "Wang",
+        "officer_last_name" : "Liu",
+        "officer_date_of_birth" : "1999-06-01",
+        "stateID_state" : "OH",
+        "stateID_value" : "23123"
+    },
+    "john" : {
+        "officer_first_name": "John",
+        "officer_middle_name" : "Bach",
+        "officer_last_name" : "Doe",
+        "officer_date_of_birth" : "1992-08-12",
+        "stateID_state" : "CA",
+        "stateID_value" : "13421"
+    },
+    "hazel" : {
+        "officer_first_name": "Hazel",
+        "officer_middle_name" : "NA",
+        "officer_last_name" : "Nutt",
+        "officer_date_of_birth" : "1997-01-01",
+        "stateID_state" : "CA",
+        "stateID_value" : "99823"
+    },
+
 }
 
 
@@ -493,3 +572,22 @@ def test_delete_officer_no_user_role(
     )
     assert res.status_code == 403
 """
+
+
+def test_officer_search_location(db_session, client, contributor_access_token):
+    for name, mock in mock_officer_joined.items():
+        db_session.add(OfficerJoinModel(**mock))
+    db_session.commit()
+
+    res = client.post(
+        "/api/v1/officers/search_wlocation_test",
+        json={
+            "page": 1,
+            "per_page" : 10,
+            "search_term" : "NY"
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200

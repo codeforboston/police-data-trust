@@ -118,3 +118,14 @@ class OfficerJoinView(db.Model):
     stateID_state = db.Column(db.Enum(State))  # e.g. "NY"
     tsv_stateID_state = db.Column(TSVECTOR)
     stateID_value = db.Column(db.Text)  # e.g. "958938"
+
+
+class OfficerJoinModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # officer id
+    officer_first_name = db.Column(db.Text)
+    officer_middle_name = db.Column(db.Text)
+    officer_last_name = db.Column(db.Text)
+    officer_date_of_birth = db.Column(db.Date)
+    stateID_state = db.Column(db.Enum(State))  # e.g. "NY"
+    tsv_stateID_state = db.Column(TSVECTOR)
+    stateID_value = db.Column(db.Text)  # e.g. "958938"

@@ -1,3 +1,4 @@
+# from datetime import datetime
 import logging
 from operator import or_, and_
 from typing import Optional, List
@@ -10,7 +11,7 @@ from backend.database.models.employment import (
     Employment,
     merge_employment_records
 )
-from backend.database.models.officer import OfficerJoinView
+from backend.database.models.officer import OfficerJoinView, OfficerJoinModel
 from backend.database.models.agency import Agency
 from flask import Blueprint, abort, jsonify, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -427,6 +428,129 @@ def search_state():
         OfficerJoinView.officer_date_of_birth,
         OfficerJoinView.stateID_state,
         OfficerJoinView.stateID_value
+    ).order_by(db.text('rank DESC')).all()
+    # returning results and pagination
+    results = []
+    for search_result in query:
+        result_dict = {
+                "first_name" : search_result.officer_first_name,
+                "middle_name" : search_result.officer_middle_name,
+                "last_name" : search_result.officer_last_name,
+                "date_of_birth" : search_result.officer_date_of_birth,
+                "stateID_state" : search_result.stateID_state,
+                "stateID_value" : search_result.stateID_value,
+        }
+        results.append(result_dict)
+    start_index = (page - 1) * per_page
+    end_index = min(start_index + per_page, len(results))
+    paginated_results = results[start_index:end_index]
+    response = {
+                "page": page,
+                "per_page": per_page,
+                "total_results": len(results),
+                "results": paginated_results
+        }
+    try:
+        return jsonify(response)
+    except Exception as e:
+        return (500, str(e))
+
+
+"""
+API to add to Joined Model
+"""
+
+
+# @jwt_required()
+# @min_role_required(UserRole.PUBLIC)
+# @bp.route("/addOfficerJoin", methods=["POST"])
+# def addOfficerJoined():
+
+#     body = request.get_json()
+#     # assume body is not None while validating
+#     officer_first_name = body['officer_first_name']
+#     officer_middle_name = body['officer_middle_name']
+#     officer_last_name = body['officer_last_name']
+#     officer_date_of_birth = body['officer_date_of_birth']
+#     stateID_state = body['stateID_state']
+#     stateID_value = body['stateID_value']
+
+#     try:
+#         officer_date_of_birth = datetime.strptime(
+#             officer_date_of_birth,
+#             '%Y-%m-%d').date()
+#     except ValueError:
+#         return jsonify(
+#             {"error": "Invalid date format, should be YYYY-MM-DD"}
+#             ), 400
+#     if not all([officer_first_name,
+#                 officer_last_name,
+#                 officer_date_of_birth,
+#                 stateID_state,
+#                 stateID_value]):
+#         return jsonify({"error": "Missing required fields"}), 400
+
+#     new_officer = OfficerJoinModel(
+#         officer_first_name=officer_first_name,
+#         officer_middle_name=officer_middle_name,
+#         officer_last_name=officer_last_name,
+#         officer_date_of_birth=officer_date_of_birth,
+#         stateID_state=stateID_state,
+#         stateID_value=stateID_value
+#     )
+
+#     db.session.add(new_officer)
+#     db.session.commit()
+
+#     return {
+#         "message": "Officer Joined Model instance added successfully"
+#     }, 201
+
+"""
+Search API for testing purpose
+Interacts with the OfficerJoin Model View directly
+instead of interacting with the Materialized View
+"""
+
+
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@bp.route("/search_wlocation_test", methods=["POST"])
+def search_state_test():
+    # get request parameters
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
+    search_term = request.args.get('search_term')
+    # query to search for relevant officers on the joined view
+    query = db.session.query(
+        db.distinct(OfficerJoinModel.id),
+        OfficerJoinModel.officer_first_name,
+        OfficerJoinModel.officer_middle_name,
+        OfficerJoinModel.officer_last_name,
+        OfficerJoinModel.officer_date_of_birth,
+        OfficerJoinModel.stateID_state,
+        OfficerJoinModel.stateID_value,
+        db.func.max(db.func.full_text.ts_rank(
+            db.func.setweight(
+                db.func.coalesce(
+                    OfficerJoinModel.tsv_stateID_state, ''), 'A')
+            , db.func.to_tsquery(
+                        search_term,
+                        postgresql_regconfig='english'
+                        )
+        )).label('rank')
+    ).filter(db.or_(
+        OfficerJoinModel.tsv_stateID_state.match(
+            search_term,
+            postgresql_regconfig='english'),
+    )).group_by(
+        OfficerJoinModel.id,
+        OfficerJoinModel.officer_first_name,
+        OfficerJoinModel.officer_middle_name,
+        OfficerJoinModel.officer_last_name,
+        OfficerJoinModel.officer_date_of_birth,
+        OfficerJoinModel.stateID_state,
+        OfficerJoinModel.stateID_value
     ).order_by(db.text('rank DESC')).all()
     # returning results and pagination
     results = []
