@@ -20,6 +20,7 @@ class Agency(db.Model, CrudMixin):
     hq_city = db.Column(db.Text)
     hq_zip = db.Column(db.Text)
     jurisdiction = db.Column(db.Enum(Jurisdiction))
+    units = db.relationship('Unit', backref='agency')
     # total_officers = db.Column(db.Integer)
 
     officer_association = db.relationship("Employment", back_populates="agency")
