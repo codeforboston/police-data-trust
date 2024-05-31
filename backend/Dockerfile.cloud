@@ -13,7 +13,7 @@ COPY requirements/prod.txt .
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN arch=$(arch) && \
 	file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
-	url="https://files.pythonhosted.org/packages/b0/85/f95b5f322e1ae13b7ed7e97bd999160fa003424711ab4dc8344b8772c270/${file}" && \
+	url="https://pypi.debian.net/pandas/${file}" && \
 	wget ${url} && \
 	sed -i "s/pandas==1.5.3/${file}/" prod.txt
 RUN pip install --no-cache-dir -r prod.txt
