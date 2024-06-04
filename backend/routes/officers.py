@@ -570,7 +570,7 @@ def search_state_test():
     response = {
                 "page": page,
                 "per_page": per_page,
-                "total_results": len(results),
+                "total_results": len(query),
                 "results": paginated_results
         }
     try:

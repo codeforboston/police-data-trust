@@ -1,4 +1,6 @@
 from __future__ import annotations
+from backend.database.core import db
+
 
 import math
 from backend.database import (
@@ -155,25 +157,27 @@ mock_accusations = {
 }
 
 """
-manually add records to the OfficerJoin Model to test Location search feature 
+manually add records to the OfficerJoin Model to test Location search feature
 for Officers
 """
 
 mock_officer_joined = {
-    "chuck" : {
+    "frank" : {
         "officer_first_name": "Frank",
         "officer_middle_name" : "NA",
         "officer_last_name" : "Furter",
         "officer_date_of_birth" : "1995-12-31",
         "stateID_state" : "NY",
+        "tsv_stateID_state" : "'ny':1",
         "stateID_value" : "99999"
     },
-    "frank" : {
+    "chuck" : {
         "officer_first_name": "Chuck",
         "officer_middle_name" : "NA",
         "officer_last_name" : "Rhoades",
         "officer_date_of_birth" : "1990-04-24",
         "stateID_state" : "NY",
+        "tsv_stateID_state" : "'ny':1",
         "stateID_value" : "23445"
     },
     "kenny" : {
@@ -182,6 +186,7 @@ mock_officer_joined = {
         "officer_last_name" : "Liu",
         "officer_date_of_birth" : "1999-06-01",
         "stateID_state" : "OH",
+        "tsv_stateID_state" : "'oh':1",
         "stateID_value" : "23123"
     },
     "john" : {
@@ -189,6 +194,7 @@ mock_officer_joined = {
         "officer_middle_name" : "Bach",
         "officer_last_name" : "Doe",
         "officer_date_of_birth" : "1992-08-12",
+        "tsv_stateID_state" : "'ca':1",
         "stateID_state" : "CA",
         "stateID_value" : "13421"
     },
@@ -197,6 +203,7 @@ mock_officer_joined = {
         "officer_middle_name" : "NA",
         "officer_last_name" : "Nutt",
         "officer_date_of_birth" : "1997-01-01",
+        "tsv_stateID_state" : "'ca':1",
         "stateID_state" : "CA",
         "stateID_value" : "99823"
     },
@@ -572,22 +579,77 @@ def test_delete_officer_no_user_role(
     )
     assert res.status_code == 403
 """
+"""
+Tests for the Officers based on location
+"""
 
 
-def test_officer_search_location(db_session, client, contributor_access_token):
+def test_officer_search_location(client, contributor_access_token):
     for name, mock in mock_officer_joined.items():
-        db_session.add(OfficerJoinModel(**mock))
-    db_session.commit()
-
+        db.session.add(OfficerJoinModel(**mock))
+        db.session.commit()
+    "search when search_term is empty"
     res = client.post(
-        "/api/v1/officers/search_wlocation_test",
+        "/api/v1/officers/search_wlocation_test?per_page=10&page=1&search_term=", # noqa
         json={
-            "page": 1,
-            "per_page" : 10,
-            "search_term" : "NY"
         },
         headers={
             "Authorization": "Bearer {0}".format(contributor_access_token)
         },
     )
     assert res.status_code == 200
+    assert res.json["results"] == []
+    """
+    search for state NY
+    """
+    res = client.post(
+        "/api/v1/officers/search_wlocation_test?per_page=10&page=1&search_term=ny", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+    """
+    total two results should result
+    when search_term is passed with the "ny"
+    as there are two officers as given by
+    mock_officers_joined
+    """
+    ny_query = res.json["results"]
+    assert len(ny_query) == 2
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+    assert ny_query[0]["first_name"] == "Frank"
+    assert ny_query[0]["stateID_state"] == "NY"
+    assert ny_query[1]["first_name"] == "Chuck"
+    assert ny_query[1]["stateID_state"] == "NY"
+
+    """
+    search for OH instance
+    """
+    res = client.post(
+        "/api/v1/officers/search_wlocation_test?per_page=10&page=1&search_term=oh", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+
+    oh_query = res.json["results"]
+    assert len(oh_query) == 1
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+    assert oh_query[0]["first_name"] == "Kenny"
+    assert oh_query[0]["stateID_state"] == "OH"

@@ -57,3 +57,16 @@ class AgencyView(db.Model):
     # officer_association = db.relationship("Employment",
     # back_populates="agency_view")
     # officers = association_proxy("officer_association", "officer")
+
+
+class AgencySearch(db.Model):
+    agency_id = db.Column(db.Integer, primary_key=True)
+    agency_name = db.Column(db.Text)
+    agency_website_url = db.Column(db.Text)
+    agency_hq_address = db.Column(db.Text)
+    tsv_agency_hq_address = db.Column(TSVECTOR)
+    agency_hq_city = db.Column(db.Text)
+    tsv_agency_hq_city = db.Column(TSVECTOR)
+    agency_hq_zip = db.Column(db.Text)
+    tsv_agency_hq_zip = db.Column(TSVECTOR)
+    agency_jurisdiction = db.Column(db.Enum(Jurisdiction))

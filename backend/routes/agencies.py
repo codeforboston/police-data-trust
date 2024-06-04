@@ -15,7 +15,7 @@ from flask_jwt_extended.view_decorators import jwt_required
 from sqlalchemy.exc import DataError
 from pydantic import BaseModel
 
-from ..database import Agency, db, AgencyView
+from ..database import Agency, db, AgencyView, AgencySearch
 from ..schemas import (
     CreateAgencySchema,
     agency_orm_to_json,
@@ -370,6 +370,90 @@ def search():
         AgencyView.agency_hq_city,
         AgencyView.agency_hq_zip,
         AgencyView.agency_jurisdiction
+    ).order_by(db.text('rank DESC')).all()
+
+    # returning queried results and pagination
+    results = []
+    for search_result in query:
+        result_dict = {
+                "name" : search_result.agency_name,
+                "url" : search_result.agency_website_url,
+                "hq_address" : search_result.agency_hq_address,
+                "hq_city" : search_result.agency_hq_city,
+                "hq_zipcode" : search_result.agency_hq_zip,
+                "jurisdiction" : search_result.agency_jurisdiction,
+        }
+        results.append(result_dict)
+    start_index = (page - 1) * per_page
+    end_index = min(start_index + per_page, len(results))
+    paginated_results = results[start_index:end_index]
+    response = {
+                "page": page,
+                "per_page": per_page,
+                "total_results": len(results),
+                "results": paginated_results
+        }
+    try:
+        return jsonify(response)
+    except Exception as e:
+        return (500, str(e))
+
+
+"""
+Agency search by location
+test API
+"""
+
+
+@min_role_required(UserRole.PUBLIC)
+@bp.route("/test_search", methods=["POST"])
+def test_agency_search():
+    # getting request parameters
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
+    search_term = request.args.get('search_term')
+    # query to search using location attributes on db
+    query = db.session.query(
+        db.distinct(AgencySearch.agency_id),
+        AgencySearch.agency_name,
+        AgencySearch.agency_website_url,
+        AgencySearch.agency_hq_address,
+        AgencySearch.agency_hq_city,
+        AgencySearch.agency_hq_zip,
+        AgencySearch.agency_jurisdiction,
+        db.func.max(db.func.full_text.ts_rank(
+            db.func.setweight(
+                db.func.coalesce(
+                    AgencySearch.tsv_agency_hq_address, ''), 'A')
+            .concat(
+                db.func.setweight(db.func.coalesce(
+                    AgencySearch.tsv_agency_hq_city, ''), 'A'))
+            .concat(
+                db.func.setweight(db.func.coalesce(
+                    AgencySearch.tsv_agency_hq_zip, ''), 'A')
+                    ), db.func.to_tsquery(
+                        search_term,
+                        postgresql_regconfig='english'
+                        )
+        )).label('rank')
+    ).filter(db.or_(
+        AgencySearch.tsv_agency_hq_address.match(
+            search_term,
+            postgresql_regconfig='english'),
+        AgencySearch.tsv_agency_hq_city.match(
+            search_term,
+            postgresql_regconfig='english'),
+        AgencySearch.tsv_agency_hq_zip.match(
+            search_term,
+            postgresql_regconfig='english'),
+    )).group_by(
+        AgencySearch.agency_id,
+        AgencySearch.agency_name,
+        AgencySearch.agency_website_url,
+        AgencySearch.agency_hq_address,
+        AgencySearch.agency_hq_city,
+        AgencySearch.agency_hq_zip,
+        AgencySearch.agency_jurisdiction
     ).order_by(db.text('rank DESC')).all()
 
     # returning queried results and pagination

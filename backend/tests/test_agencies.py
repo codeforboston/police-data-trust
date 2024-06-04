@@ -1,6 +1,7 @@
 import pytest
 import math
-from backend.database import Agency
+from backend.database import Agency, AgencySearch
+from backend.database.core import db
 
 
 mock_officers = {
@@ -55,6 +56,57 @@ mock_agencies = {
         "hq_city": "New Haven",
         "hq_zip": "06519",
         "jurisdiction": "MUNICIPAL"
+    }
+}
+
+mock_agency_joined = {
+    "pst": {
+        "agency_id": 2,
+        "agency_name": "Pearson Specter Litt",
+        "agency_website_url": "psl.com",
+        "agency_hq_address": "123 PSL St",
+        "tsv_agency_hq_address": "'123':1 'psl':2 'st':3",
+        "agency_hq_city": "Vancouver",
+        "tsv_agency_hq_city": "'vancouv':1",
+        "agency_hq_zip": "12345",
+        "tsv_agency_hq_zip": "'12345':1",
+        "agency_jurisdiction": "PRIVATE"
+    },
+    "us_ag_sd": {
+        "agency_id": 3,
+        "agency_name": "US AG Southern District",
+        "agency_website_url": "ags.com",
+        "agency_hq_address": "5th Avenue,Manhattan",
+        "tsv_agency_hq_address": "'5th':1 'avenu':2 'manhattan':3",
+        "agency_hq_city": "New York",
+        "tsv_agency_hq_city": "'new':1 'york':2",
+        "agency_hq_zip": "222",
+        "tsv_agency_hq_zip": "'222':1",
+        "agency_jurisdiction": "STATE"
+    },
+    "us_ag_ed" : {
+        "agency_id": 4,
+        "agency_name": "US AG Eastern District",
+        "agency_website_url": "ags_south.com",
+        "agency_hq_address": "6th Avenue, Albany",
+        "tsv_agency_hq_address": "'6th':1 'albani':3 'avenu':2",
+        "agency_hq_city": "Albany",
+        "tsv_agency_hq_city": "'albani':1",
+        "agency_hq_zip": "567",
+        "tsv_agency_hq_zip": "'567':1",
+        "agency_jurisdiction": "STATE"
+    },
+    "hs" : {
+        "agency_id": 5,
+        "agency_name": "Harvey Specter",
+        "agency_website_url": "harvey.com",
+        "agency_hq_address": "Jane St, Greenwich Village",
+        "tsv_agency_hq_address": "'greenwich':3 'jane':1 'st':2 'villag':4",
+        "agency_hq_city": "New York",
+        "tsv_agency_hq_city": "'new':1 'york':2",
+        "agency_hq_zip": "123",
+        "tsv_agency_hq_zip": "'123':1",
+        "agency_jurisdiction": "STATE"
     }
 }
 
@@ -169,3 +221,86 @@ def test_agency_pagination(client, example_agencies, access_token):
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 404
+
+
+def test_agency_search_location(client, contributor_access_token):
+    for name, mock in mock_agency_joined.items():
+        db.session.add(AgencySearch(**mock))
+        db.session.commit()
+
+    "search when search_term is empty"
+    res = client.post(
+        "/api/v1/agencies/test_search?per_page=10&page=1&search_term=", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] == []
+    """
+    search for Agency at location Jane Street, NY
+    """
+    res = client.post(
+        "/api/v1/agencies/test_search?per_page=10&page=1&search_term=Jane", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+    """
+    total one results should result
+    when search_term is passed with the "Jane"
+    as there is one agency located in "Jane Street,
+    Greenwich Village"
+    """
+    query = res.json["results"]
+    assert len(query) == 1
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+    assert query[0]["name"] == "Harvey Specter"
+    assert query[0]["hq_address"] == "Jane St, Greenwich Village"
+    assert query[0]["hq_city"] == "New York"
+    """
+    search for Agency with address starting with 123
+    """
+
+    res = client.post(
+        "/api/v1/agencies/test_search?per_page=10&page=1&search_term=123", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+    """
+    total two results should result
+    when search_term is passed with the "123"
+    as there are two agencies involved with
+    "123" as there address
+    """
+    query = res.json["results"]
+    assert len(query) == 2
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+    assert query[0]["name"] == "Pearson Specter Litt"
+    assert query[0]["hq_address"] == "123 PSL St"
+    assert query[0]["hq_zipcode"] == "12345"
+    assert query[0]["hq_city"] == "Vancouver"
+
+    assert query[1]["name"] == "Harvey Specter"
+    assert query[1]["hq_address"] == "Jane St, Greenwich Village"
+    assert query[1]["hq_city"] == "New York"
+    assert query[1]["hq_zipcode"] == "123"
