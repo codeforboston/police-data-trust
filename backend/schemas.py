@@ -123,6 +123,7 @@ _officer_list_attributes = [
 ]
 
 _agency_list_attributes = [
+    'units',
     'officer_association',
     'officers'
 ]
@@ -188,6 +189,7 @@ _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
 _BaseCreateOfficerSchema = schema_create(Officer)
 _BaseCreateAgencySchema = schema_create(Agency)
+CreateUnitSchema = schema_create(Unit)
 CreateStateIDSchema = schema_create(StateID)
 CreateEmploymentSchema = schema_create(Employment)
 CreateAccusationSchema = schema_create(Accusation)
@@ -256,6 +258,7 @@ _BaseIncidentSchema = schema_get(Incident)
 _BaseOfficerSchema = schema_get(Officer)
 _BasePartnerMemberSchema = schema_get(PartnerMember)
 _BaseAgencySchema = schema_get(Agency)
+_BaseUnitSchema = schema_get(Unit)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -294,7 +297,12 @@ class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
 
 
 class AgencySchema(_BaseAgencySchema, _AgencyMixin):
+    units: List[CreateUnitSchema]
     officer_association: List[CreateEmploymentSchema]
+
+
+class UnitSchema(_BaseUnitSchema):
+    pass
 
 
 class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
