@@ -66,6 +66,7 @@ def get_highest_rank(records: list[Employment]):
 
 def merge_employment_records(
         records: list[Employment],
+        unit: str = None,
         currently_employed: bool = None
         ):
     """
@@ -85,15 +86,17 @@ def merge_employment_records(
     """
     earliest_employment, latest_employment = get_employment_range(records)
     highest_rank = get_highest_rank(records)
+    if unit is None:
+        unit = records[0].unit
     if currently_employed is None:
         currently_employed = records[0].currently_employed
     return Employment(
         officer_id=records[0].officer_id,
         agency_id=records[0].agency_id,
-        unit_id=records[0].unit_id,
         badge_number=records[0].badge_number,
         earliest_employment=earliest_employment,
         latest_employment=latest_employment,
+        unit=unit,
         highest_rank=highest_rank,
         currently_employed=currently_employed,
     )
