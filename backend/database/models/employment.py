@@ -29,7 +29,7 @@ class Employment(db.Model, CrudMixin):
 
     officer = db.relationship("Officer", back_populates="agency_association")
     agency = db.relationship("Agency", back_populates="officer_association")
-    unit = db.relationship("Unit", backref="unit_association")
+    unit = db.relationship("Unit", back_populates="officer_association")
 
     def __repr__(self):
         return f"<Employment {self.id}>"
@@ -90,10 +90,10 @@ def merge_employment_records(
     return Employment(
         officer_id=records[0].officer_id,
         agency_id=records[0].agency_id,
+        unit_id=records[0].unit_id,
         badge_number=records[0].badge_number,
         earliest_employment=earliest_employment,
         latest_employment=latest_employment,
-        unit=records[0].unit_id,
         highest_rank=highest_rank,
         currently_employed=currently_employed,
     )

@@ -1,6 +1,6 @@
-from ..core import db, CrudMixin
 from enum import Enum
 from sqlalchemy.ext.associationproxy import association_proxy
+from ..core import CrudMixin, db
 
 
 class Jurisdiction(str, Enum):
@@ -20,8 +20,9 @@ class Agency(db.Model, CrudMixin):
     hq_city = db.Column(db.Text)
     hq_zip = db.Column(db.Text)
     jurisdiction = db.Column(db.Enum(Jurisdiction))
-    units = db.relationship('Unit', backref='agency')
     # total_officers = db.Column(db.Integer)
+
+    units = db.relationship("Unit", back_populates="agency")
 
     officer_association = db.relationship("Employment", back_populates="agency")
     officers = association_proxy("officer_association", "officer")
