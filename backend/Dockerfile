@@ -1,4 +1,4 @@
-FROM python:3-slim-bullseye AS base
+FROM python:3-slim-bookworm AS base
 
 RUN apt-get update && apt-get install curl -y && apt-get install g++ libpq-dev gcc python3-dev -y
 
