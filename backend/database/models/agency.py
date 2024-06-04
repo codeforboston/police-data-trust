@@ -1,6 +1,6 @@
+from ..core import CrudMixin, db
 from enum import Enum
 from sqlalchemy.ext.associationproxy import association_proxy
-from ..core import CrudMixin, db
 
 
 class Jurisdiction(str, Enum):
