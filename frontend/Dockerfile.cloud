@@ -2,7 +2,7 @@
 # From repository root folder
 # docker build --build-arg ENV=development -t police-data-trust-frontend-dev -f frontend/Dockerfile.cloud ./frontend
 
-FROM node:16.12.0-buster as builder
+FROM node:16-bookworm as builder
 
 WORKDIR /app/
 ARG ENV

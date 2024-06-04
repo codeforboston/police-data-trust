@@ -1,4 +1,4 @@
-FROM node:16.12.0-buster
+FROM node:16-bookworm
 
 WORKDIR /app/
 
