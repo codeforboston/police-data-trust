@@ -3,14 +3,20 @@
 FROM python:3-slim-bullseye
 
 # required for pandas
-RUN apt-get update -y && apt-get install gcc g++ python3-dev -y
+RUN apt-get update -y && apt-get install gcc g++ python3-dev wget -y
 
 WORKDIR /app/
 
 ARG PDT_API_PORT=5000
 
 COPY requirements/prod.txt .
-RUN pip install -r prod.txt
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN arch=$(arch) && \
+	file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
+	url="https://pypi.debian.net/pandas/${file}" && \
+	wget ${url} && \
+	sed -i "s/pandas==1.5.3/${file}/" prod.txt
+RUN pip install --no-cache-dir -r prod.txt
 
 COPY . .
 
