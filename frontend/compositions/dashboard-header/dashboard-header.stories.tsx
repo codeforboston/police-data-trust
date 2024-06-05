@@ -1,5 +1,5 @@
 import React from "react"
-import { StoryFn, Meta } from "@storybook/react"
+import { Story, Meta } from "@storybook/react"
 import { DashboardHeader } from ".."
 
 export default {
@@ -7,7 +7,7 @@ export default {
   component: DashboardHeader
 } as Meta<typeof DashboardHeader>
 
-const Template: StoryFn<typeof DashboardHeader> = (args: any) => <DashboardHeader {...args} />
+const Template: Story<typeof DashboardHeader> = (args: any) => <DashboardHeader {...args} />
 
 export const Default = Template.bind({})
 Default.parameters = {

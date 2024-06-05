@@ -30,8 +30,8 @@ export function useAuth() {
 /**
  * Renders the given component if authenticated, otherwise redirects to login.
  */
-export function requireAuth(Component: () => JSX.Element) {
-  return function ProtectedRoute() {
+export function requireAuth<T>(Component: (props: T) => JSX.Element) {
+  return function ProtectedRoute(props: T) {
     const { user } = useAuth()
     const router = useRouter()
     const login = "/login"
@@ -42,7 +42,7 @@ export function requireAuth(Component: () => JSX.Element) {
       }
     })
 
-    return user ? <Component /> : null
+    return user ? <Component {...props} /> : null
   }
 }
 

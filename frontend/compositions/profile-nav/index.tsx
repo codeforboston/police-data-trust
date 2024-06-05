@@ -1,10 +1,9 @@
-import * as React from "react"
 import { ProfileMenu, profileMenuItems } from "../../models/profile"
 import styles from "./profile-nav.module.css"
 
 interface ProfileNavProps {
   activePage: ProfileMenu
-  setActivePage: React.Dispatch<React.SetStateAction<ProfileMenu>>
+  setActivePage: (newTab: ProfileMenu) => void
 }
 
 export default function ProfileNav({ activePage, setActivePage }: ProfileNavProps) {
