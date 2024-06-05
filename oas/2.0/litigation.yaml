@@ -1,0 +1,363 @@
+openapi: "3.0.3"
+info:
+  title: "Litigation"
+  description: "API Description"
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedfata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - cookieAuth: []
+tags:
+  - name: "Litigation"
+    description: "Litigation API"
+  - name: "Documents"
+    description: "Document API"
+paths:
+  /litigation:
+    get:
+      tags:
+        - "Litigation"
+      summary: "Get all Litigation"
+      operationId: "getLitigation"
+      description: >
+        Get a list of all litigation cases. This endpoint supports
+        pagination to limit the number of results returned.
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number"
+          required: false
+          schema:
+            type: "integer"
+        - name: "limit"
+          in: "query"
+          description: "Number of items per page"
+          required: false
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/LitigationList"
+    post:
+      tags:
+        - "Litigation"
+      summary: "Create new Litigation"
+      operationId: "createLitigation"
+      description: >
+        Create a new litigation case. This endpoint requires a
+        case title and docket number to be provided. User must
+        be a contributor to create a litigation record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLitigation"
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Litigation'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /litigation/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the litigation
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - "Litigation"
+      summary: "Get Litigation by ID"
+      operationId: "getLitigationById"
+      description: >
+        Retrieve a single litigation case by ID.
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Litigation"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    patch:
+      tags:
+        - "Litigation"
+      summary: "Update Litigation"
+      operationId: "UpdateLitigation"
+      description: >
+        Update an existing litigation case. The user must be a
+        contributor to update a litigation record.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLitigation"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Litigation"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    delete:
+      tags:
+        - "Litigation"
+      summary: "Delete Litigation by ID"
+      operationId: "deleteLitigationById"
+      description: >
+        Delete a single litigation case by ID. The user must be a
+        contributor from the same organization that initially submitted
+        a litigation record to delete it.
+      responses:
+        "204":
+          description: "No content"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /litigation/{id}/documents:
+    parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of the litigation"
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - "Documents"
+      summary: "Get Documents"
+      operationId: "getLitigationDocuments"
+      description: >
+        Get a list of documents associated with a litigation.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/DocumentList"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    post:
+      tags:
+        - "Documents"
+      summary: "Add Document"
+      operationId: "createLitigationDocument"
+      description: >
+        Add a new document to a litigation.
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the litigation"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDocument"
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /litigation/{id}/documents/{document_id}:
+    parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of the Litigation"
+        required: true
+        schema:
+          type: string
+      - name: "document_id"
+        in: "path"
+        description: "ID of the document"
+        required: true
+        schema:
+          type: string
+    get:
+      summary: "Get Document by ID"
+      operationId: "getDocumentById"
+      description: >
+        Retrieve a single document associated with a litigation.
+      tags:
+        - "Documents"
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+components:
+  schemas:
+    BaseLitigation:
+      type: "object"
+      properties:
+        case_title:
+          type: "string"
+          description: >
+            The case title or caption for this litigation. Should
+            contain the names of the parties involved.
+        docket_number:
+          type: "string"
+          description: >
+            The docket number for this litigation. This is the
+            unique identifier for the case in the court system.
+        court_level:
+          type: "string"
+          description: >
+            The level of the court where this litigation is being
+            heard. This could be a state court, federal court, or
+            other court system.
+        jurisdiction:
+          type: "string"
+          description: >
+            The geographical or subject matter jurisdiction (e.g., 
+            Eastern District, Northern District, County name for 
+            state courts) of the court where litigation is being
+            heard.
+        state:
+          type: "string"
+          description: >
+            The state where this litigation is being heard. This
+            should be the two-letter abbreviation for the state.
+        description:
+          type: "string"
+          description: >
+            A description of the litigation. This could include
+            a summary of the case, the legal issues involved, or
+            other relevant information.
+        start_date:
+          type: "string"
+          format: "date"
+          description: >
+            The date when this litigation was filed or initiated.
+        end_date:
+          type: "string"
+          format: "date"
+          description: >
+            The date when this litigation was resolved or closed.
+        settlement_amount:
+          type: "number"
+          description: >
+            The amount of any settlement or judgment in this
+            litigation. This should be in USD.
+        url:
+          type: "string"
+          format: "uri"
+          description: >
+            A URL to more information about this litigation. This
+            could be a link to a court website such as
+            [Court Listener](https://www.courtlistener.com/),
+            [PACER](https://www.pacer.gov/), or other legal research
+            resources.
+    CreateLitigation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseLitigation"
+        - type: object
+        - required:
+          - case_title
+          - docket_number
+    UpdateLitigation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseLitigation"
+    Litigation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseLitigation"
+        - type: object
+        - required: 
+          - case_title
+          - docket_number
+          properties:
+            id:
+              type: "string"
+              description: "The id of the litigation"
+            documents:
+              type: "string"
+              description: "A link to retrieve the documents associated with this litigation"
+    LitigationList:
+      allOf: 
+        -  $ref: ../common/pagination.yaml#/components/schemas/PaginatedResponse
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Litigation"
+    BaseDocument:
+      type: "object"
+      properties:
+        title:
+          type: "string"
+          description: "The title of the document"
+        description:
+          type: "string"
+          description: "A description of the document"
+        url:
+          type: "string"
+          format: "uri"
+          description: "A URL to the document"
+    CreateDocument:
+      allOf: 
+        - $ref: "#/components/schemas/BaseDocument"
+        - type: "object"
+        - required:
+          - title
+          - url
+    Document:
+      allOf: 
+        - $ref: "#/components/schemas/BaseDocument"
+        - type: "object"
+        - required:
+          - title
+          - url
+          - id
+        - properties:
+            id:
+              type: "string"
+              description: "The id of the document"
+    DocumentList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Document"
+        
