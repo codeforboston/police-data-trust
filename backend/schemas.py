@@ -129,6 +129,7 @@ _agency_list_attributes = [
 ]
 
 _unit_list_attributes = [
+    'agency',
     'officer_association',
     'officers'
 ]
@@ -181,6 +182,16 @@ class _AgencyMixin(BaseModel):
     def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         values = {**values}  # convert mappings to base dict type.
         for i in _agency_list_attributes:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
+class _UnitMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        values = {**values}  # convert mappings to base dict type.
+        for i in _unit_list_attributes:
             if not values.get(i):
                 values[i] = []
         return values
@@ -251,6 +262,14 @@ class CreateAgencySchema(_BaseCreateAgencySchema, _AgencyMixin):
 
 class CreateUnitSchema(_BaseCreateUnitSchema, _UnitMixin):
     name: str
+    website_url: Optional[str]
+    phone: Optional[str]
+    email: Optional[str]
+    description: Optional[str]
+    address: Optional[str]
+    zip: Optional[str]
+    agency_url: Optional[str]
+    officers_url: Optional[str]
     agency_id: int
 
 
