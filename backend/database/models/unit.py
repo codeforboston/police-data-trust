@@ -1,8 +1,8 @@
-from ..core import db
+from ..core import CrudMixin, db
 from sqlalchemy.ext.associationproxy import association_proxy
 
 
-class Unit(db.Model):
+class Unit(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     agency_id = db.Column(db.Integer, db.ForeignKey('agency.id'))
