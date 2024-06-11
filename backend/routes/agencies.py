@@ -231,7 +231,6 @@ def add_officer_to_agency(agency_id: int):
                     employment.agency_id = agency_id
                     employment = merge_employment_records(
                         employments.all() + [employment],
-                        unit=record.unit,
                         currently_employed=record.currently_employed
                     )
 
