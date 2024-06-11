@@ -270,6 +270,7 @@ class CreateUnitSchema(_BaseCreateUnitSchema, _UnitMixin):
     zip: Optional[str]
     agency_url: Optional[str]
     officers_url: Optional[str]
+    commander_id: int
     agency_id: int
 
 

@@ -14,7 +14,7 @@ class Unit(db.Model, CrudMixin):
     agency_url = db.Column(db.Text)
     officers_url = db.Column(db.Text)
 
-    commander = db.Column(db.Integer, db.ForeignKey('officer.id'))
+    commander_id = db.Column(db.Integer, db.ForeignKey('officer.id'))
     agency_id = db.Column(db.Integer, db.ForeignKey('agency.id'))
 
     agency = db.relationship("Agency", back_populates="units")
