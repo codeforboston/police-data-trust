@@ -11,6 +11,7 @@ from backend.database.core import execute_query
 #  Alembic only does a couple models, not all of them.
 
 from .models.agency import *
+from .models.unit import *
 from .models.attorney import *
 from .models.case_document import *
 from .models.incident import *
