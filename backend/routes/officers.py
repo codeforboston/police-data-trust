@@ -304,7 +304,6 @@ def update_employment(officer_id: int):
                     employment.officer_id = officer_id
                     employment = merge_employment_records(
                         employments.all() + [employment],
-                        unit=record.unit,
                         currently_employed=record.currently_employed
                     )
 

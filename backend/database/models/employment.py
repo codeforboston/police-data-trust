@@ -20,15 +20,16 @@ class Employment(db.Model, CrudMixin):
     id = db.Column(db.Integer, primary_key=True)
     officer_id = db.Column(db.Integer, db.ForeignKey("officer.id"))
     agency_id = db.Column(db.Integer, db.ForeignKey("agency.id"))
+    unit_id = db.Column(db.Integer, db.ForeignKey("unit.id"))
     earliest_employment = db.Column(db.Text)
     latest_employment = db.Column(db.Text)
     badge_number = db.Column(db.Text)
-    unit = db.Column(db.Text)
     highest_rank = db.Column(db.Enum(Rank))
     currently_employed = db.Column(db.Boolean)
 
     officer = db.relationship("Officer", back_populates="agency_association")
     agency = db.relationship("Agency", back_populates="officer_association")
+    unit = db.relationship("Unit", back_populates="officer_association")
 
     def __repr__(self):
         return f"<Employment {self.id}>"
@@ -65,7 +66,6 @@ def get_highest_rank(records: list[Employment]):
 
 def merge_employment_records(
         records: list[Employment],
-        unit: str = None,
         currently_employed: bool = None
         ):
     """
@@ -85,17 +85,15 @@ def merge_employment_records(
     """
     earliest_employment, latest_employment = get_employment_range(records)
     highest_rank = get_highest_rank(records)
-    if unit is None:
-        unit = records[0].unit
     if currently_employed is None:
         currently_employed = records[0].currently_employed
     return Employment(
         officer_id=records[0].officer_id,
         agency_id=records[0].agency_id,
+        unit_id=records[0].unit_id,
         badge_number=records[0].badge_number,
         earliest_employment=earliest_employment,
         latest_employment=latest_employment,
-        unit=unit,
         highest_rank=highest_rank,
         currently_employed=currently_employed,
     )

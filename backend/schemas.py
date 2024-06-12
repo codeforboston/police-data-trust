@@ -14,6 +14,7 @@ from .database.models.action import Action
 from .database.models.partner import Partner, PartnerMember, MemberRole
 from .database.models.incident import Incident, SourceDetails
 from .database.models.agency import Agency, Jurisdiction
+from .database.models.unit import Unit
 from .database.models.officer import Officer, StateID
 from .database.models.employment import Employment
 from .database.models.accusation import Accusation
@@ -122,6 +123,13 @@ _officer_list_attributes = [
 ]
 
 _agency_list_attributes = [
+    'units',
+    'officer_association',
+    'officers'
+]
+
+_unit_list_attributes = [
+    'agency',
     'officer_association',
     'officers'
 ]
@@ -179,6 +187,16 @@ class _AgencyMixin(BaseModel):
         return values
 
 
+class _UnitMixin(BaseModel):
+    @root_validator(pre=True)
+    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        values = {**values}  # convert mappings to base dict type.
+        for i in _unit_list_attributes:
+            if not values.get(i):
+                values[i] = []
+        return values
+
+
 def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
     return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
 
@@ -187,6 +205,7 @@ _BaseCreatePartnerSchema = schema_create(Partner)
 _BaseCreateIncidentSchema = schema_create(Incident)
 _BaseCreateOfficerSchema = schema_create(Officer)
 _BaseCreateAgencySchema = schema_create(Agency)
+_BaseCreateUnitSchema = schema_create(Unit)
 CreateStateIDSchema = schema_create(StateID)
 CreateEmploymentSchema = schema_create(Employment)
 CreateAccusationSchema = schema_create(Accusation)
@@ -241,6 +260,20 @@ class CreateAgencySchema(_BaseCreateAgencySchema, _AgencyMixin):
     hq_zip: Optional[str]
 
 
+class CreateUnitSchema(_BaseCreateUnitSchema, _UnitMixin):
+    name: str
+    website_url: Optional[str]
+    phone: Optional[str]
+    email: Optional[str]
+    description: Optional[str]
+    address: Optional[str]
+    zip: Optional[str]
+    agency_url: Optional[str]
+    officers_url: Optional[str]
+    commander_id: int
+    agency_id: int
+
+
 AddMemberSchema = sqlalchemy_to_pydantic(
     PartnerMember, exclude=["id", "date_joined", "partner", "user"]
 )
@@ -255,6 +288,7 @@ _BaseIncidentSchema = schema_get(Incident)
 _BaseOfficerSchema = schema_get(Officer)
 _BasePartnerMemberSchema = schema_get(PartnerMember)
 _BaseAgencySchema = schema_get(Agency)
+_BaseUnitSchema = schema_get(Unit)
 VictimSchema = schema_get(Victim)
 PerpetratorSchema = schema_get(Perpetrator)
 TagSchema = schema_get(Tag)
@@ -293,6 +327,11 @@ class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
 
 
 class AgencySchema(_BaseAgencySchema, _AgencyMixin):
+    units: List[CreateUnitSchema]
+    officer_association: List[CreateEmploymentSchema]
+
+
+class UnitSchema(_BaseUnitSchema):
     officer_association: List[CreateEmploymentSchema]
 
 
@@ -397,6 +436,18 @@ def agency_to_orm(agency: CreateAgencySchema) -> Agency:
 
 def agency_orm_to_json(agency: Agency) -> dict:
     return AgencySchema.from_orm(agency).dict(
+        exclude_none=True,
+    )
+
+
+def unit_to_orm(unit: CreateUnitSchema) -> Unit:
+    """Convert the JSON unit into an ORM instance"""
+    orm_attrs = unit.dict()
+    return Unit(**orm_attrs)
+
+
+def unit_orm_to_json(unit: Unit) -> dict:
+    return UnitSchema.from_orm(unit).dict(
         exclude_none=True,
     )
 
