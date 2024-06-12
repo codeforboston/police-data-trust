@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider next dev",
     "build:dev": "NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env.development next build && next export",
     "build:stage": "NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env.staging next build && next export",
     "build:prod": "NODE_OPTIONS=--openssl-legacy-provider env-cmd -f .env.production next build && next export",
