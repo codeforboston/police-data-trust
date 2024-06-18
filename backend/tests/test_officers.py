@@ -583,6 +583,10 @@ def test_delete_officer_no_user_role(
 Tests for the Officers based on location
 """
 
+"""
+Function to test Offcier Search based on location.
+"""
+
 
 def test_officer_search_location(client, contributor_access_token):
     for name, mock in mock_officer_joined.items():

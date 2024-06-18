@@ -120,6 +120,17 @@ class OfficerJoinView(db.Model):
     stateID_value = db.Column(db.Text)  # e.g. "958938"
 
 
+"""
+joined model resembling 'OfficerJoinView' that combines the
+attributes of StateID and Officer tables
+to allow for full text search on officer
+information. Contains a TSVector column to aid
+full text search by location(State)
+
+Using for testing PyTest testing purposes
+"""
+
+
 class OfficerJoinModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # officer id
     officer_first_name = db.Column(db.Text)

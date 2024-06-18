@@ -328,6 +328,7 @@ def search():
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
     search_term = request.args.get('search_term')
+    tsv_query_term = '|'.join(search_term.split())
     # query to search using location attributes on db
     query = db.session.query(
         db.distinct(AgencyView.agency_id),
@@ -348,19 +349,19 @@ def search():
                 db.func.setweight(db.func.coalesce(
                     AgencyView.tsv_agency_hq_zip, ''), 'A')
                     ), db.func.to_tsquery(
-                        search_term,
+                        tsv_query_term,
                         postgresql_regconfig='english'
                         )
         )).label('rank')
     ).filter(db.or_(
         AgencyView.tsv_agency_hq_address.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
         AgencyView.tsv_agency_hq_city.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
         AgencyView.tsv_agency_hq_zip.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
     )).group_by(
         AgencyView.agency_id,
@@ -401,7 +402,7 @@ def search():
 
 """
 Agency search by location
-test API
+For test purposes to test with Pytest
 """
 
 
@@ -412,6 +413,7 @@ def test_agency_search():
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', DEFAULT_PER_PAGE))
     search_term = request.args.get('search_term')
+    tsv_query_term = '|'.join(search_term.split())
     # query to search using location attributes on db
     query = db.session.query(
         db.distinct(AgencySearch.agency_id),
@@ -432,19 +434,19 @@ def test_agency_search():
                 db.func.setweight(db.func.coalesce(
                     AgencySearch.tsv_agency_hq_zip, ''), 'A')
                     ), db.func.to_tsquery(
-                        search_term,
+                        tsv_query_term,
                         postgresql_regconfig='english'
                         )
         )).label('rank')
     ).filter(db.or_(
         AgencySearch.tsv_agency_hq_address.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
         AgencySearch.tsv_agency_hq_city.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
         AgencySearch.tsv_agency_hq_zip.match(
-            search_term,
+            tsv_query_term,
             postgresql_regconfig='english'),
     )).group_by(
         AgencySearch.agency_id,

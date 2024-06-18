@@ -223,6 +223,13 @@ def test_agency_pagination(client, example_agencies, access_token):
     assert res.status_code == 404
 
 
+"""
+Test function to ensure that Agency based location
+search is working correctly.
+Supports multiple words in search term
+"""
+
+
 def test_agency_search_location(client, contributor_access_token):
     for name, mock in mock_agency_joined.items():
         db.session.add(AgencySearch(**mock))
@@ -304,3 +311,79 @@ def test_agency_search_location(client, contributor_access_token):
     assert query[1]["hq_address"] == "Jane St, Greenwich Village"
     assert query[1]["hq_city"] == "New York"
     assert query[1]["hq_zipcode"] == "123"
+
+    """
+    search for Agency with address "New york"
+    Ensure two words in search term work
+    """
+
+    res = client.post(
+        "/api/v1/agencies/test_search?per_page=10&page=1&search_term=New%20york", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+    """
+    total two results should result
+    when search_term is passed with the "New york"
+    as there are two agencies involved with
+    "New york" as there address
+    """
+    query = res.json["results"]
+    assert len(query) == 2
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+
+    assert query[1]["name"] == "Harvey Specter"
+    assert query[1]["hq_address"] == "Jane St, Greenwich Village"
+    assert query[1]["hq_city"] == "New York"
+    assert query[1]["hq_zipcode"] == "123"
+
+    assert query[0]["name"] == "US AG Southern District"
+    assert query[0]["hq_address"] == "5th Avenue,Manhattan"
+    assert query[0]["hq_city"] == "New York"
+    assert query[0]["hq_zipcode"] == "222"
+    """
+    search for Agency with address "5th Avenue"
+    Ensure two words in search term work
+    """
+
+    res = client.post(
+        "/api/v1/agencies/test_search?per_page=10&page=1&search_term=5th%20Avenue", # noqa
+        json={
+        },
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["results"] is not None
+    """
+    total two results should result
+    when search_term is passed with the "5th Avenue"
+    as there are two agencies involved with
+    "5th Avenue" as there address
+    """
+    query = res.json["results"]
+    assert len(query) == 2
+
+    """
+    assertions to see if the query results match
+    with the expected values
+    """
+    assert query[0]["name"] == "US AG Southern District"
+    assert query[0]["hq_address"] == "5th Avenue,Manhattan"
+    assert query[0]["hq_city"] == "New York"
+    assert query[0]["hq_zipcode"] == "222"
+
+    assert query[1]["name"] == "US AG Eastern District"
+    assert query[1]["hq_address"] == "6th Avenue, Albany"
+    assert query[1]["hq_city"] == "Albany"
+    assert query[1]["hq_zipcode"] == "567"
