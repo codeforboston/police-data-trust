@@ -15,7 +15,7 @@ x-readme:
   proxy-enabled: true
   samples-enabled: true
 security:
-  - cookieAuth: []
+  - bearerAuth: []
 tags:
   - name: "Agencies"
     description: "API for managing agencies"
@@ -41,7 +41,7 @@ paths:
     post:
       summary: "Create Agency"
       operationId: "createAgency"
-      description: "Create a single agency. User must be a contributor."
+      description: "Create a new law enforement agency. The user must be a contributor."
       tags: 
         -  Agencies
       requestBody: 
@@ -255,6 +255,11 @@ paths:
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     BaseAgency:
       type: "object"

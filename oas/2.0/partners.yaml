@@ -15,7 +15,7 @@ x-readme:
   proxy-enabled: true
   samples-enabled: true
 security:
-  - cookieAuth: []
+  - bearerAuth: []
 tags:
   - name: "Partners"
     description: "Partners API"
@@ -127,6 +127,11 @@ paths:
           $ref: '../common/error.yaml#/components/responses/notFoundError'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     BasePartner:
       type: "object"

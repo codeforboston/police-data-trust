@@ -15,7 +15,7 @@ x-readme:
   proxy-enabled: true
   samples-enabled: true
 security:
-  - cookieAuth: []
+  - bearerAuth: []
 tags:
   - name: "Litigation"
     description: "Litigation API"
@@ -29,21 +29,37 @@ paths:
       summary: "Get all Litigation"
       operationId: "getLitigation"
       description: >
-        Get a list of all litigation cases. This endpoint supports
+        Get a list of all litigation cases. You can use query parameters to filter the results by
+        including by forum, the officers involved, or the date range.
+        This endpoint supports
         pagination to limit the number of results returned.
       parameters:
-        - name: "page"
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - name: "court_level"
           in: "query"
-          description: "Page number"
-          required: false
+          description: "Filter by court level"
           schema:
-            type: "integer"
-        - name: "limit"
+            type: "string"
+        - name: "jurisdiction"
           in: "query"
-          description: "Number of items per page"
-          required: false
+          description: "Filter by jurisdiction"
           schema:
-            type: "integer"
+            type: "string"
+        - name: "state"
+          in: "query"
+          description: "Filter by state"
+          schema:
+            type: "string"
+        - name: defendants
+          in: "query"
+          description: >
+            Filter by defendants. Include a comma seperated list
+            of the IDs of the officers whos cases you want returned.
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: "Successful response"
@@ -223,8 +239,65 @@ paths:
                 $ref: '#/components/schemas/Document'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /litigation/{id}/disposition:
+    parameters: 
+      - name: id
+        in: path
+        description: ID of the litigation
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - "Litigation"
+      summary: "Add Disposition"
+      operationId: "createDisposition"
+      description: >
+        Add a new disposition to a litigation.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Disposition"
+      responses:
+        200:
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Litigation'
+        400:
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        404:
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    Disposition:
+      type: "object"
+      properties:
+        disposition:
+          type: "string"
+          description: >
+            The disposition of the litigation.
+        desceripton:
+          type: "string"
+          description: >
+            A description of the disposition. This could include
+            the terms of a settlement, the amount of a judgment,
+            or other relevant information.
+        date:
+          type: "string"
+          format: "date"
+          description: >
+            The date when this disposition was reached.
+      required: 
+        -  disposition
+        -  date
     BaseLitigation:
       type: "object"
       properties:
@@ -267,11 +340,13 @@ components:
           format: "date"
           description: >
             The date when this litigation was filed or initiated.
-        end_date:
-          type: "string"
-          format: "date"
+        dispositions:
+          type: "array"
           description: >
-            The date when this litigation was resolved or closed.
+            A list of any dispositions in this litigation. This
+            could include a settlement, judgment, or other outcome.
+          items:
+            $ref: "#/components/schemas/Disposition"
         settlement_amount:
           type: "number"
           description: >
@@ -290,19 +365,44 @@ components:
       allOf: 
         - $ref: "#/components/schemas/BaseLitigation"
         - type: object
+        - properties: 
+            defendants:
+              type: "array"
+              items:
+                type: "string"
+              description: >
+                A list containing the IDs of any officers who are named
+                as defendants in the litigation.
         - required:
           - case_title
           - docket_number
+          - defendants
+          - court_level
+          - jurisdiction
+          - state
     UpdateLitigation:
       allOf: 
         - $ref: "#/components/schemas/BaseLitigation"
+        - type: object
+          properties:
+            defendants:
+              type: array
+              items:
+                type: string
+              description: >
+                A list containing the IDs of any officers who are named
+                as defendants in the litigation.
     Litigation:
       allOf: 
         - $ref: "#/components/schemas/BaseLitigation"
         - type: object
-        - required: 
-          - case_title
-          - docket_number
+          required: 
+            - case_title
+            - docket_number
+            - defendants
+            - court_level
+            - jurisdiction
+            - state
           properties:
             id:
               type: "string"
@@ -310,6 +410,12 @@ components:
             documents:
               type: "string"
               description: "A link to retrieve the documents associated with this litigation"
+            defendants:
+              type: "array"
+              description: >
+                A list of any officers who are named as defendants in the litigation.
+              items:
+                $ref: officers.yaml#/components/schemas/Officer
     LitigationList:
       allOf: 
         -  $ref: ../common/pagination.yaml#/components/schemas/PaginatedResponse
