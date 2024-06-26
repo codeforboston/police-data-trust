@@ -67,7 +67,7 @@ pymdown-extensions==10.8.1
     #   mkdocs-material
 python-dateutil==2.9.0.post0
     # via
-    #   ghp-import
+    #   ghp-importer
     #   mkdocs-macros-plugin
 pyyaml==6.0.1
     # via

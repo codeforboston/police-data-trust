@@ -1,7 +1,7 @@
 """This file defines the database connection, plus some terminal commands for
 setting up and tearing down the database.
 
-Do not import anything directly from `backend.database._core`. Instead, import
+Do not importer anything directly from `backend.database._core`. Instead, importer
 from `backend.database`.
 """
 import os
