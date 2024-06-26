@@ -33,6 +33,9 @@ def create_app(config: Optional[str] = None):
     # def _():
     #     db.create_all()
 
+    # start background processor for SQS imports
+
+
     return app
 
 

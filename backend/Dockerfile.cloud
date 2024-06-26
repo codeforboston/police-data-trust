@@ -15,7 +15,7 @@ RUN arch=$(arch) && \
 	file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
 	url="https://pypi.debian.net/pandas/${file}" && \
 	wget ${url} && \
-	sed -i "s/pandas==1.5.3/${file}/" prod.txt
+	sed -i "s/pandas==2.2.2/${file}/" prod.txt
 RUN pip install --no-cache-dir -r prod.txt
 
 COPY . .
