@@ -1,5 +1,6 @@
 bcrypt==3.2.2
 black
+boto3
 celery
 flake8
 flask
@@ -36,3 +37,4 @@ spectree
 jupyter
 mixpanel
 ua-parser
+ujson

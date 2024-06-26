@@ -14,10 +14,10 @@ You can also run the scraper in Docker:
 
 ```bash
 # From the base of the repository
-docker-compose build api
-docker-compose run -u $(id -u) api flask scrape
+docker compose build api
+docker compose run -u $(id -u) api flask scrape
 # Stop the database service
-docker-compose down
+docker compose down
 ```
 
 You may see several warnings about mixed types. The script could also take several minutes.
