@@ -3,7 +3,7 @@ module.exports = {
   plugins: ["inline-react-svg"],
   env: {
     test: {
-      plugins: ["transform-dynamic-import"]
+      plugins: ["transform-dynamic-importer"]
     }
   }
 }

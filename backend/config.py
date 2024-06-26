@@ -65,6 +65,8 @@ class Config(object):
         "http://localhost:" + FRONTEND_PORT
     )
 
+    SCRAPER_SQS_QUEUE_NAME = os.environ.get("SCRAPER_SQS_QUEUE_NAME")
+
     @property
     def SQLALCHEMY_DATABASE_URI(self):
         return "postgresql://%s:%s@%s:%s/%s" % (
