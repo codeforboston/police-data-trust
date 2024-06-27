@@ -82,7 +82,7 @@ python -m pytest
 
 The current frontend tests can be found in the GitHub Actions workflow file [frontend-checks.yml](https://github.com/codeforboston/police-data-trust/blob/0488d03c2ecc01ba774cf512b1ed2f476441948b/.github/workflows/frontend-checks.yml)
 
-To run the tests locally, first start the application with dockerccompose. Then open up a command line interface to the running container:
+To run the tests locally, first start the application with docker compose. Then open up a command line interface to the running container:
 
 ```
 docker exec -it "police-data-trust-web-1" /bin/bash
