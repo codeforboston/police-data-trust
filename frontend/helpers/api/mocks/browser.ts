@@ -3,7 +3,7 @@ import { handlers, rejectUnhandledApiRequests } from "./handlers"
 
 export const worker = setupWorker(...handlers)
 
-/** Starts worker, convenience for conditional importer */
+/** Starts worker, convenience for conditional import */
 export const startWorker = () => {
   worker.start({
     onUnhandledRequest: rejectUnhandledApiRequests

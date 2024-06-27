@@ -1,7 +1,7 @@
 """This file defines the database connection, plus some terminal commands for
 setting up and tearing down the database.
 
-Do not importer anything directly from `backend.database._core`. Instead, importer
+Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
 import os
@@ -61,9 +61,9 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
     """Run SQL from a file. It will return a Pandas DataFrame if it selected
     anything; otherwise it will return None.
 
-    I do not recommend you use this function too often. In general we should be
+    I do not recommend you use this function too often. In general, we should be
     using the SQLAlchemy ORM. That said, it's a nice convenience, and there are
-    times where this function is genuinely something you want to run.
+    times when this function is genuinely something you want to run.
     """
     with open(os.path.join(QUERIES_DIR, secure_filename(filename))) as f:
         query = f.read()
