@@ -30,12 +30,12 @@ example_password = "my_password"
 def database():
     cfg = TestingConfig()
     janitor = DatabaseJanitor(
-        cfg.POSTGRES_USER,
-        cfg.POSTGRES_HOST,
-        cfg.PGPORT,
-        cfg.POSTGRES_DB,
-        9.6,
-        cfg.POSTGRES_PASSWORD,
+        user=cfg.POSTGRES_USER,
+        host=cfg.POSTGRES_HOST,
+        port=cfg.PGPORT,
+        dbname=cfg.POSTGRES_DB,
+        version=16.3,
+        password=cfg.POSTGRES_PASSWORD,
     )
 
     try:
