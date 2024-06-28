@@ -1,5 +1,5 @@
 #!/bin/bash
-# TODO: Postgres db is not set up in this script. It is set up in the init script for docker-compose.
+# TODO: Postgres db is not set up in this script. It is set up in the init script for docker compose.
 
 function get_python_exec() {
   # Get a Python executable that can run this app.

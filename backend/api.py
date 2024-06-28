@@ -16,6 +16,7 @@ from backend.routes.agencies import bp as agencies_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
+from backend.importer.loop import Importer
 
 
 def create_app(config: Optional[str] = None):
@@ -32,6 +33,11 @@ def create_app(config: Optional[str] = None):
     # @app.before_first_request
     # def _():
     #     db.create_all()
+
+    # start background processor for SQS imports
+    if config_obj.SCRAPER_SQS_QUEUE_NAME:
+        importer = Importer(queue_name=config_obj.SCRAPER_SQS_QUEUE_NAME)
+        importer.start()
 
     return app
 

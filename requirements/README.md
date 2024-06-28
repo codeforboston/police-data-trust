@@ -20,7 +20,7 @@ python -m pip install -r requirements/dev_unix.txt
 
 ```bash
 cd requirements
-docker-compose up --build --force-recreate
+docker compose up --build --force-recreate
 ```
 
 If you run the application natively, first install the pip-compile tool:
