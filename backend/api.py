@@ -35,8 +35,9 @@ def create_app(config: Optional[str] = None):
     #     db.create_all()
 
     # start background processor for SQS imports
-    importer = Importer(queue_name=config_obj.SCRAPER_SQS_QUEUE_NAME)
-    importer.start()
+    if config_obj.SCRAPER_SQS_QUEUE_NAME:
+        importer = Importer(queue_name=config_obj.SCRAPER_SQS_QUEUE_NAME)
+        importer.start()
 
     return app
 
