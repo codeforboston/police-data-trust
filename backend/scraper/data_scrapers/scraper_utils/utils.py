@@ -6,6 +6,9 @@ import backend.database as md
 from backend.database import db
 from backend.api import create_app
 
+from mock import patch
+
+patch("boto3.client").start()
 app = create_app("development")
 
 
