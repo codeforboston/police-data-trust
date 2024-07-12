@@ -1,0 +1,23 @@
+components:
+  schemas:
+    ErrorResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          description: "A message describing the error."
+      required:
+        - message
+  responses:
+    validationError:
+      description: "Validation error"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    notFoundError:
+      description: "Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
