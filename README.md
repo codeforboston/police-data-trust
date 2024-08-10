@@ -35,7 +35,7 @@ This method uses Docker to run the complete application stack.
 3. Build and run the project.
 
 ```
-docker compose build && docker compose up -d && docker compose logs -f
+docker-compose build && docker-compose up -d && docker-compose logs -f
 ```
 
 ## Installation (Frontend Only)
