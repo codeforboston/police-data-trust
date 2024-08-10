@@ -32,7 +32,11 @@ This method uses Docker to run the complete application stack.
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
 
-3. Build and run the project with `docker compose build && docker compose up -d && docker compose logs -f`
+3. Build and run the project.
+
+```
+docker compose build && docker compose up -d && docker compose logs -f
+```
 
 ## Installation (Frontend Only)
 
