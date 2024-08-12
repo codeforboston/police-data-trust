@@ -117,7 +117,7 @@ jobs:
         container-name: ${{ needs.setup_env.outputs.AWS_APPENV }}
         image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.setup_env.outputs.AWS_APPENV }}:${{ needs.setup_env.outputs.IMAGE_TAG }}
     - name: Deploy Amazon ECS
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
         task-definition: ${{ steps.task-definition.outputs.task-definition }}
         service: ${{ needs.setup_env.outputs.AWS_APPENV }}
