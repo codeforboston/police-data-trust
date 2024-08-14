@@ -19,7 +19,7 @@ from .database.models.officer import Officer, StateID
 from .database.models.employment import Employment
 from .database.models.accusation import Accusation
 from .database.models.investigation import Investigation
-from .database.models.legal_case import LegalCase
+from .database.models.litigation import LegalCase
 from .database.models.attachment import Attachment
 from .database.models.perpetrator import Perpetrator
 from .database.models.participant import Participant

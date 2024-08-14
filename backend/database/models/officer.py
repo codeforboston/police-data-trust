@@ -1,7 +1,11 @@
 import enum
 
-from ..core import db, CrudMixin
-from sqlalchemy.ext.associationproxy import association_proxy
+from neomodel import (
+    StructuredNode,
+    RelationshipTo, RelationshipFrom, Relationship,
+    StringProperty, DateProperty,
+    UniqueIDProperty
+)
 
 
 class State(str, enum.Enum):
@@ -57,41 +61,38 @@ class State(str, enum.Enum):
     WY = "WY"
 
 
-class StateID(db.Model):
+class StateID(StructuredNode):
     """
     Represents a Statewide ID that follows an offcier even as they move between
     law enforcement agencies. For example, in New York, this would be
     the Tax ID Number.
     """
-    id = db.Column(db.Integer, primary_key=True)
-    officer_id = db.Column(
-        db.Integer, db.ForeignKey("officer.id"))
-    id_name = db.Column(db.Text)  # e.g. "Tax ID Number"
-    state = db.Column(db.Enum(State))  # e.g. "NY"
-    value = db.Column(db.Text)  # e.g. "958938"
+    id_name = StringProperty()  # e.g. "Tax ID Number"
+    state = StringProperty()  # e.g. "NY"
+    value = StringProperty()  # e.g. "958938"
+    officer = RelationshipFrom('Officer', "HAS_STATE_ID")
 
     def __repr__(self):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)  # officer id
-    first_name = db.Column(db.Text)
-    middle_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
-    race = db.Column(db.Text)
-    ethnicity = db.Column(db.Text)
-    gender = db.Column(db.Text)
-    date_of_birth = db.Column(db.Date)
-    state_ids = db.relationship("StateID", backref="officer")
+class Officer(StructuredNode):
+    uid = UniqueIDProperty()
+    first_name = StringProperty()
+    middle_name = StringProperty()
+    last_name = StringProperty()
+    race = StringProperty()
+    ethnicity = StringProperty()
+    gender = StringProperty()
+    date_of_birth = DateProperty()
 
-    agency_association = db.relationship(
-        "Employment", back_populates="officer")
-    employers = association_proxy("agency_association", "agency")
-
-    perpetrator_association = db.relationship(
-        "Accusation", back_populates="officer")
-    accusations = association_proxy("perpetrator_association", "perpetrator")
+    # Relationships
+    state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
+    units = Relationship('Unit', "MEMBER_OF")
+    litigation = Relationship('Litigation', "NAMED_IN")
+    allegations = Relationship('Allegation', "ACCUSED_OF")
+    investigations = Relationship('Investigation', "LEAD_BY")
+    commands = Relationship('Unit', "COMMANDS")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

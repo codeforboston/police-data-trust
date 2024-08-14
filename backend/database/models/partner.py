@@ -4,6 +4,12 @@ from sqlalchemy.orm import RelationshipProperty
 from ..core import db, CrudMixin
 from enum import Enum
 from datetime import datetime
+from neomodel import (
+    StructuredNode, StructuredRel,
+    RelationshipTo, RelationshipFrom, Relationship,
+    StringProperty, DateTimeProperty,
+    UniqueIDProperty, BooleanProperty
+)
 
 
 class MemberRole(str, Enum):
@@ -60,21 +66,14 @@ class StagedInvitation(db.Model):
         }
 
 
-class PartnerMember(db.Model, CrudMixin):
+class PartnerMember(StructuredRel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    __tablename__ = "partner_user"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey("partner.id"), primary_key=True
-    )
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    user = db.relationship("User", back_populates="partner_association")
-    partner = db.relationship("Partner", back_populates="member_association")
-    role = db.Column(db.Enum(MemberRole))
-    date_joined = db.Column(db.DateTime)
-    is_active = db.Column(db.Boolean)
+    uid = UniqueIDProperty()
+    role = StringProperty(choices=[e.value for e in MemberRole])
+    date_joined = DateTimeProperty()
+    is_active = BooleanProperty()
 
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
@@ -89,27 +88,20 @@ class PartnerMember(db.Model, CrudMixin):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<PartnerMember( \
-        id={self.id}, \
-        partner_id={self.partner_id}, \
-        user_id={self.user_id})>"
+        id={self.uid}>"
 
 
-class Partner(db.Model, CrudMixin):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class Partner(StructuredNode):
+    uid = UniqueIDProperty()
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text)
-    url = db.Column(db.Text)
-    contact_email = db.Column(db.Text)
-    reported_incidents: RelationshipProperty[int] = db.relationship(
-        "Incident", backref="source", lazy="select"
-    )
-    member_association: RelationshipProperty[PartnerMember] = db.relationship(
-        "PartnerMember", back_populates="partner", lazy="select"
-    )
-    members = association_proxy("member_association", "user")
+    name = StringProperty()
+    url = StringProperty()
+    contact_email = StringProperty()
+
+    # Relationships
+    members = RelationshipFrom("User", "IS_MEMBER", model=PartnerMember)
+    complaints = RelationshipTo("Complaint", "REPORTED", model="BaseSourceRel")
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<Partner {self.id}>"
+        return f"<Partner {self.uid}>"

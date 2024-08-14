@@ -5,7 +5,7 @@ Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
 import os
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar, Type
 
 import click
 import pandas as pd
@@ -18,10 +18,11 @@ from psycopg2 import connect
 from psycopg2.extensions import connection
 from sqlalchemy.exc import ResourceClosedError
 from werkzeug.utils import secure_filename
+from neomodel import config as neo_config, db as neo_db
+from neo4j import GraphDatabase
 
 from ..config import TestingConfig
 from ..utils import dev_only
-from typing import TypeVar, Type
 
 db = SQLAlchemy()
 
@@ -188,3 +189,36 @@ def delete_database(conn: connection, test_db: bool):
         click.echo(f"Database {database!r} does not exist.")
     else:
         click.echo(f"Database {database!r} was deleted.")
+
+
+# Neo4j commands
+@click.group("neo4j", cls=AppGroup)
+@with_appcontext
+@click.pass_context
+def neo4j_cli(ctx: click.Context):
+    """Collection of Neo4j database commands."""
+    neo4j_conn = GraphDatabase.driver(
+        current_app.config["NEO4J_BOLT_URL"],
+        auth=(
+            current_app.config["NEO4J_USERNAME"],
+            current_app.config["NEO4J_PASSWORD"],
+        ),
+    )
+    ctx.obj = neo4j_conn
+
+
+@neo4j_cli.command("create")
+@with_appcontext
+def neo4j_create():
+    """Create the Neo4j database or ensure it is ready."""
+    # Example logic to create a constraint or ensure the database is ready
+    neo_db.cypher_query("CREATE CONSTRAINT ON (n:Node) ASSERT n.uid IS UNIQUE;")
+    click.echo("Neo4j database setup complete.")
+
+
+@neo4j_cli.command("delete")
+@with_appcontext
+def neo4j_delete():
+    """Delete all nodes and relationships in the Neo4j database."""
+    neo_db.cypher_query("MATCH (n) DETACH DELETE n")
+    click.echo("Neo4j database cleared.")

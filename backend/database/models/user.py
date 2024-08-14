@@ -9,6 +9,12 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.types import String, TypeDecorator
 from ..core import CrudMixin
 from enum import Enum
+from neomodel import (
+    StructuredNode,
+    RelationshipTo, RelationshipFrom, Relationship,
+    StringProperty, DateProperty,
+    UniqueIDProperty
+)
 
 
 fs_mixin = FlaskSerialize(db)
@@ -62,7 +68,7 @@ class UserRole(str, Enum):
 class User(db.Model, UserMixin, CrudMixin):
     """The SQL dataclass for an Incident."""
 
-    id = db.Column(db.Integer, primary_key=True)
+    uid = UniqueIDProperty()
     active = db.Column(
         "is_active", db.Boolean(), nullable=False, server_default="1"
     )
@@ -73,7 +79,7 @@ class User(db.Model, UserMixin, CrudMixin):
         CI_String(255, collate="NOCASE"),
         nullable=False, unique=True
     )
-    email_confirmed_at = db.Column(db.DateTime())
+    email_confirmed_at = DateProperty()
     password = db.Column(db.String(255), nullable=False, server_default="")
 
     # User information
@@ -84,17 +90,12 @@ class User(db.Model, UserMixin, CrudMixin):
         CI_String(100, collate="NOCASE"), nullable=False, server_default=""
     )
 
-    role = db.Column(db.Enum(UserRole))
+    role = StringProperty(choices=[e.value for e in UserRole])
 
-    phone_number = db.Column(db.Text)
+    phone_number = StringProperty()
 
     # Data Partner Relationships
-    partner_association = db.relationship(
-        "PartnerMember", back_populates="user", lazy="select")
-    member_of = association_proxy("partner_association", "partner")
-
-    # Officer Accusations
-    accusations = db.relationship("Accusation", backref="user")
+    partners = Relationship("Partner", "MEMBER_OF", model="PartnerMember")
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))

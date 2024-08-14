@@ -38,3 +38,5 @@ jupyter
 mixpanel
 ua-parser
 ujson
+neo4j
+neomodel

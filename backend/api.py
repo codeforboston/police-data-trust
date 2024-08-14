@@ -17,6 +17,7 @@ from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
+from neomodel import config as neo_config
 
 
 def create_app(config: Optional[str] = None):
@@ -44,6 +45,17 @@ def create_app(config: Optional[str] = None):
 
 def register_extensions(app: Flask):
     db.init_app(app)
+
+    # Neo4j setup
+    config_obj = get_config_from_env(app.env)
+    neo_url = "bolt://{user}:{pw}@{url}:{port}".format(
+        user=config_obj.GRAPH_USER,
+        pw=config_obj.GRAPH_PASSWORD,
+        url=config_obj.GRAPH_URI,
+        port=config_obj.GRAPH_PORT
+    )
+    neo_config.DATABASE_URL = neo_url
+
     spec.register(app)
     user_manager.init_app(app)
     jwt.init_app(app)
@@ -54,7 +66,11 @@ def register_extensions(app: Flask):
 def register_commands(app: Flask):
     """Register Click commands to the app instance."""
 
-    app.cli.add_command(db_cli)
+    # SQLAlchemy commands
+    # app.cli.add_command(db_cli)
+
+    # Neomodel commands
+    @app.cli.command("neoload")
 
     @app.cli.command(
         "seed",

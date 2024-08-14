@@ -20,6 +20,11 @@ class Config(object):
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
+    GRAPH_URI = os.environ.get("GRAPH_URI", "localhost")
+    GRAPH_PORT = os.environ.get("GRAPH_PORT", 5000)
+    GRAPH_USER = os.environ.get("GRAPH_USER", "neo4j")
+    GRAPH_PASSWORD = os.environ.get("GRAPH_PASSWORD", "password")
+    GRAPH_DB = os.environ.get("GRAPH_DB", "police_data")
 
     # Flask-Mail SMTP server settings
     """

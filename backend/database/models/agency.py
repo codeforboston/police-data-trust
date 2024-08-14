@@ -1,6 +1,12 @@
-from ..core import CrudMixin, db
 from enum import Enum
-from sqlalchemy.ext.associationproxy import association_proxy
+from neomodel import (
+    StructuredNode,
+    StructuredRel,
+    StringProperty,
+    RelationshipTo,
+    DateProperty,
+    UniqueIdProperty
+)
 
 
 class Jurisdiction(str, Enum):
@@ -12,20 +18,24 @@ class Jurisdiction(str, Enum):
     OTHER = "OTHER"
 
 
-class Agency(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    website_url = db.Column(db.Text)
-    hq_address = db.Column(db.Text)
-    hq_city = db.Column(db.Text)
-    hq_zip = db.Column(db.Text)
-    jurisdiction = db.Column(db.Enum(Jurisdiction))
-    # total_officers = db.Column(db.Integer)
+class Agency(StructuredNode):
+    uid = UniqueIdProperty()
+    name = StringProperty()
+    website_url = StringProperty()
+    hq_address = StringProperty()
+    hq_city = StringProperty()
+    hq_zip = StringProperty()
+    phone = StringProperty()
+    email = StringProperty()
+    description = StringProperty()
+    jurisdiction = StringProperty()
 
-    units = db.relationship("Unit", back_populates="agency")
-
-    officer_association = db.relationship("Employment", back_populates="agency")
-    officers = association_proxy("officer_association", "officer")
+    # Relationships
+    units = RelationshipTo("Unit", "HAS_UNIT", model="UnitAssociation")
 
     def __repr__(self):
         return f"<Agency {self.name}>"
+
+
+class UnitAssociation(StructuredRel):
+    etsablished_date = DateProperty()

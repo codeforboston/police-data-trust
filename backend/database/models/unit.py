@@ -1,25 +1,39 @@
-from ..core import CrudMixin, db
-from sqlalchemy.ext.associationproxy import association_proxy
+from neomodel import (
+    StructuredNode,
+    StructuredRel,
+    StringProperty,
+    RelationshipTo,
+    RelationshipFrom,
+    DateProperty,
+    UniqueIdProperty,
+    BooleanProperty
+)
 
 
-class Unit(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    website_url = db.Column(db.Text)
-    phone = db.Column(db.Text)
-    email = db.Column(db.Text)
-    description = db.Column(db.Text)
-    address = db.Column(db.Text)
-    zip = db.Column(db.Text)
-    agency_url = db.Column(db.Text)
-    officers_url = db.Column(db.Text)
+class Unit(StructuredNode):
+    uid = UniqueIdProperty()
+    name = StringProperty()
+    website_url = StringProperty()
+    phone = StringProperty()
+    email = StringProperty()
+    description = StringProperty()
+    address = StringProperty()
+    zip = StringProperty()
+    agency_url = StringProperty()
+    officers_url = StringProperty()
 
-    commander_id = db.Column(db.Integer, db.ForeignKey('officer.id'))
-    agency_id = db.Column(db.Integer, db.ForeignKey('agency.id'))
-
-    agency = db.relationship("Agency", back_populates="units")
-    officer_association = db.relationship('Employment', back_populates='unit')
-    officers = association_proxy('officer_association', 'officer')
+    # Relationships
+    commander = RelationshipTo("Officer", "COMMANDED_BY")
+    agency = RelationshipFrom("Agency", "HAS_UNIT", model="UnitAssociation")
+    officers = RelationshipTo("Officer", "MEMBER_OF", model="UnitMembership")
 
     def __repr__(self):
         return f"<Unit {self.name}>"
+
+
+class UnitMembership(StructuredRel):
+    earliest_date = DateProperty()
+    latest_date = DateProperty()
+    badge_number = StringProperty()
+    highest_rank = StringProperty()
+    current_member = BooleanProperty()
