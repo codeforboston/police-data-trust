@@ -121,7 +121,7 @@ def get_config_from_env(env: str) -> Config:
     variable.
 
     Args:
-        env: (str) A string. Usually this is from `app.env` inside of the
+        env: (str) A string. Usually this is from `app.env` in the
              `create_app` function, which in turn is set by the environment
              variable `FLASK_ENV`.
     Returns:
