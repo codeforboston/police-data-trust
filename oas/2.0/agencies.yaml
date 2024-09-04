@@ -367,7 +367,7 @@ components:
           description: "Zip code of the unit"
         commander:
           type: "string"
-          description: "The Officer ID of the unit's commander"
+          description: "The Officer UID of the unit's commander"
     Unit:
       allOf: 
         - $ref: "#/components/schemas/BaseUnit"
@@ -413,7 +413,7 @@ components:
           description: "The badge number of the officer"
         unit_id:
           type: "string"
-          description: "The ID of the unit the officer is assigned to."
+          description: "The UID of the unit the officer is assigned to."
         highest_rank:
           type: "string"
           description: "The highest rank the officer has held during their employment."

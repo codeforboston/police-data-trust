@@ -57,18 +57,18 @@ paths:
                 $ref: '#/components/schemas/Officer'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /officers/{id}:
+  /officers/{uid}:
     parameters: 
-      - name: id
+      - name: uid
         in: path
-        description: ID of the officer
+        description: UID of the officer
         required: true
         schema:
           type: string
     get:
       tags:
         - "Officers"
-      summary: "Get officer by id"
+      summary: "Get officer by uid"
       operationId: "getOfficerById"
       responses:
         "200":
@@ -105,11 +105,11 @@ paths:
         - "Officers"
       summary: "Delete an officer"
       operationId: "deleteOfficer"
-      description: "Delete an officer by id"
+      description: "Delete an officer by uid"
       parameters:
-        - name: "id"
+        - name: "uid"
           in: "path"
-          description: "ID of officer to delete"
+          description: "UID of officer to delete"
           required: true
           schema:
             type: "integer"
@@ -119,11 +119,11 @@ paths:
           description: "No content"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /officers/{id}/employment:
+  /officers/{uid}/employment:
     parameters: 
-      - name: id
+      - name: uid
         in: path
-        description: ID of the officer
+        description: UID of the officer
         required: true
         schema:
           type: string
@@ -176,13 +176,13 @@ components:
       properties:
         officer_id:
           type: "string"
-          description: "The ID of the officer."
+          description: "The UID of the officer."
         agency_id:
           type: "string"
-          description: "The ID of the agency the officer is employed by."
+          description: "The UID of the agency the officer is employed by."
         unit_id:
           type: "string"
-          description: "The ID of the unit the officer is assigned to."
+          description: "The UID of the unit the officer is assigned to."
         earliest_employment:
           type: "string"
           format: "date"
@@ -212,7 +212,7 @@ components:
       properties:
         agency_id:
           type: "string"
-          description: "The id of the agency that could not be added."
+          description: "The uid of the agency that could not be added."
         reason:
           type: "string"
           description: "The reason the employment record could not be added"
@@ -229,9 +229,9 @@ components:
         - $ref: "#/components/schemas/BaseEmployment"
         - type: "object"
         - properties:
-            id:
+            uid:
               type: "string"
-              description: "The id of the employment record"
+              description: "The uid of the employment record"
     AddEmploymentResponse:
       type: object
       required: 
@@ -309,9 +309,9 @@ components:
         - $ref: "#/components/schemas/BaseOfficer"
         - type: "object"
         - properties:
-            id:
+            uid:
               type: "string"
-              description: "The id of the officer"
+              description: "The uid of the officer"
             employment_history:
               type: "string"
               description: "A link to retrieve the employment history of the officer"
@@ -333,7 +333,7 @@ components:
     StateId:
       type: "object"
       properties:
-        id:
+        uid:
           type: "string"
           description: "The UUID of this state id"
         state:

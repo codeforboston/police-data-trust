@@ -18,7 +18,7 @@ security:
   - bearerAuth: []
 tags:
   - name: "Complaints"
-    description: "Complaint related endpoints"
+    description: "Complaints API"
 paths:
   /complaints/{complaint_id}:
     parameters:
@@ -28,9 +28,9 @@ paths:
         schema:
           type: string
     get:
-      summary: "Get Complaint"
       tags: 
         - "Complaints"
+      summary: "Get Complaint"
       operationId: "getComplaint"
       description: >
         Returns information about a single complaint.
@@ -44,9 +44,9 @@ paths:
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
     patch: 
-      summary: "Update Complaint"
       tags: 
         - "Complaints"
+      summary: "Update Complaint"
       operationId: "updateComplaint"
       description: >
         Update a single complaint. Only an admin of the contributing
@@ -73,9 +73,9 @@ paths:
       
   /complaints:
     post:
-      summary: "Create Complaint"
       tags: 
         - "Complaints"
+      summary: "Create Complaint"
       operationId: "createComplaint"
       description: >
         Create a single complaint. User must be a
@@ -97,9 +97,9 @@ paths:
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
     get:
-      summary: "Get all Complaints"
       tags: 
         - "Complaints"
+      summary: "Get all Complaints"
       operationId: "getComplaints"
       description: >
        Returns all complaints in the database. Filters can be applied
@@ -189,13 +189,13 @@ components:
           properties:
             source_id:
               type: "string"
-              description: "The ID of the partner that reported the complaint."
+              description: "The UID of the partner that reported the complaint."
             civilian_review_board_id:
               type: "string"
-              description: "The ID of the civilian review board that reviewed the complaint."
+              description: "The UID of the civilian review board that reviewed the complaint."
             police_witnesses:
               type: "array"
-              description: "The id of any police witnesses associated with the complaint."
+              description: "The UID of any police witnesses associated with the complaint."
               items:
                 type: "string"
             allegations:
@@ -220,13 +220,13 @@ components:
           properties:
             source_id:
               type: "string"
-              description: "The ID of the partner that reported the complaint."
+              description: "The UID of the partner that reported the complaint."
             civilian_review_board_id:
               type: "string"
-              description: "The ID of the civilian review board that reviewed the complaint."
+              description: "The UID of the civilian review board that reviewed the complaint."
             police_witnesses:
               type: "array"
-              description: "The id of any police witnesses associated with the complaint."
+              description: "The uid of any police witnesses associated with the complaint."
               items:
                 type: "string"
             allegations:
@@ -250,7 +250,7 @@ components:
         - $ref: "#/components/schemas/BaseComplaint"
         - type: "object"
           required:
-            - id
+            - uid
             - created_at
             - updated_at
             - source_id
@@ -264,7 +264,7 @@ components:
             - police_witnesses
             - civilian_witnesses
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the complaint."
             created_at:
@@ -345,13 +345,13 @@ components:
           properties:
             perpetrator_id:
               type: "string"
-              description: "The ID of the officer the allegation is made against."
+              description: "The UID of the officer the allegation is made against."
     Allegation:
       allOf: 
         - $ref: "#/components/schemas/BaseAllegation"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the allegation."
             perpetrator:
@@ -375,7 +375,7 @@ components:
       properties:
         officer_id:
           type: "string"
-          description: "The ID of the officer the penalty is associated with."
+          description: "The UID of the officer the penalty is associated with."
         description:
           type: "string"
           description: "A description of the penalty."
@@ -397,13 +397,13 @@ components:
           properties:
             officer_id:
               type: "string"
-              description: "The ID of the officer who preformed the investigation."
+              description: "The UID of the officer who preformed the investigation."
     Investigation:
       allOf: 
         - $ref: "#/components/schemas/BaseInvestigation"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the investigation."
             officer:
@@ -435,7 +435,7 @@ components:
     ReviewBoard:
       type: "object"
       properties:
-        id:
+        uid:
           type: "string"
           description: "Unique identifier for the review board."
         name:

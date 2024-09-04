@@ -90,9 +90,9 @@ paths:
                 $ref: '#/components/schemas/Litigation'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /litigation/{id}:
+  /litigation/{uid}:
     parameters:
-      - name: id
+      - name: uid
         in: path
         description: ID of the litigation
         required: true
@@ -152,9 +152,9 @@ paths:
           description: "No content"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /litigation/{id}/documents:
+  /litigation/{uid}/documents:
     parameters:
-      - name: "id"
+      - name: "uid"
         in: "path"
         description: "ID of the litigation"
         required: true
@@ -187,7 +187,7 @@ paths:
       description: >
         Add a new document to a litigation.
       parameters:
-        - name: "id"
+        - name: "uid"
           in: "path"
           description: "ID of the litigation"
           required: true
@@ -209,9 +209,9 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /litigation/{id}/documents/{document_id}:
+  /litigation/{uid}/documents/{document_id}:
     parameters:
-      - name: "id"
+      - name: "uid"
         in: "path"
         description: "ID of the Litigation"
         required: true
@@ -239,9 +239,9 @@ paths:
                 $ref: '#/components/schemas/Document'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /litigation/{id}/disposition:
+  /litigation/{uid}/disposition:
     parameters: 
-      - name: id
+      - name: uid
         in: path
         description: ID of the litigation
         required: true
@@ -404,9 +404,9 @@ components:
             - jurisdiction
             - state
           properties:
-            id:
+            uid:
               type: "string"
-              description: "The id of the litigation"
+              description: "The uid of the litigation"
             documents:
               type: "string"
               description: "A link to retrieve the documents associated with this litigation"
@@ -452,11 +452,11 @@ components:
         - required:
           - title
           - url
-          - id
+          - uid
         - properties:
-            id:
+            uid:
               type: "string"
-              description: "The id of the document"
+              description: "The uid of the document"
     DocumentList:
       allOf: 
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'

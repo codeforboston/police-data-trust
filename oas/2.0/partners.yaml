@@ -54,11 +54,11 @@ paths:
                 $ref: '#/components/schemas/Partner'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /partners/{id}:
+  /partners/{uid}:
     parameters: 
-      - name: id
+      - name: uid
         in: path
-        description: ID of the partner
+        description: UID of the partner
         required: true
         schema:
           type: string
@@ -99,11 +99,11 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /partners/{id}/members:
+  /partners/{uid}/members:
     parameters: 
-      - name: id
+      - name: uid
         in: path
-        description: ID of the partner
+        description: UID of the partner
         required: true
         schema:
           type: string
@@ -160,7 +160,7 @@ components:
         - $ref: "#/components/schemas/BasePartner"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the partner."
             members:
@@ -204,7 +204,7 @@ components:
         - $ref: "#/components/schemas/MemberBase"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the user."
             date_joined:
