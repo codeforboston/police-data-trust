@@ -1,15 +1,16 @@
 from __future__ import annotations  # allows type hinting of class itself
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.orm import RelationshipProperty
 from ..core import db, CrudMixin
+from backend.database.base_node import BaseNode
 from enum import Enum
 from datetime import datetime
 from neomodel import (
     StructuredNode, StructuredRel,
-    RelationshipTo, RelationshipFrom, Relationship,
+    RelationshipTo, RelationshipFrom,
     StringProperty, DateTimeProperty,
-    UniqueIDProperty, BooleanProperty
+    UniqueIdProperty, BooleanProperty,
+    EmailProperty
 )
+from backend.database.models.complaint import BaseSourceRel
 
 
 class MemberRole(str, Enum):
@@ -30,37 +31,39 @@ class MemberRole(str, Enum):
         else:
             return 5
 
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
 
-class Invitation(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey('partner.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    role = db.Column(db.Enum(MemberRole), nullable=False)
-    is_accepted = db.Column(db.Boolean, default=False)
+
+class Invitation(StructuredNode):
+    role = StringProperty(choices=MemberRole.choices())
+    is_accepted = BooleanProperty(default=False)
     # default to not accepted invite
+
+    partner = RelationshipFrom("Partner", "INVITED_TO")
+    user = RelationshipFrom("User", "WAS_INVITED")
 
     def serialize(self):
         return {
             'id': self.id,
-            'partner_id': self.partner_id,
-            'user_id': self.user_id,
+            'partner': self.partner,
+            'user': self.user,
             'role': self.role,
             'is_accepted': self.is_accepted,
         }
 
 
-class StagedInvitation(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey('partner.id'), primary_key=True)
-    email = db.Column(db.String, unique=True, primary_key=True)
-    role = db.Column(db.Enum(MemberRole), nullable=False)
+class StagedInvitation(StructuredNode):
+    role = StringProperty(choices=MemberRole.choices())
+    email = EmailProperty()
+
+    partner = RelationshipFrom("Partner", "INVITATION_TO")
 
     def serialize(self):
         return {
             'id': self.id,
-            'partner_id': self.partner_id,
+            'partner_id': self.partner,
             'email': self.email,
             'role': self.role
         }
@@ -70,10 +73,10 @@ class PartnerMember(StructuredRel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    uid = UniqueIDProperty()
-    role = StringProperty(choices=[e.value for e in MemberRole])
-    date_joined = DateTimeProperty()
-    is_active = BooleanProperty()
+    uid = UniqueIdProperty()
+    role = StringProperty(choices=MemberRole.choices(), required=True)
+    date_joined = DateTimeProperty(default=datetime.now())
+    is_active = BooleanProperty(default=True)
 
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
@@ -91,8 +94,8 @@ class PartnerMember(StructuredRel):
         id={self.uid}>"
 
 
-class Partner(StructuredNode):
-    uid = UniqueIDProperty()
+class Partner(BaseNode):
+    uid = UniqueIdProperty()
 
     name = StringProperty()
     url = StringProperty()
@@ -100,7 +103,7 @@ class Partner(StructuredNode):
 
     # Relationships
     members = RelationshipFrom("User", "IS_MEMBER", model=PartnerMember)
-    complaints = RelationshipTo("Complaint", "REPORTED", model="BaseSourceRel")
+    complaints = RelationshipTo("Complaint", "REPORTED", model=BaseSourceRel)
 
     def __repr__(self):
         """Represent instance as a unique string."""

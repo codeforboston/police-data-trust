@@ -1,10 +1,7 @@
 from backend.database.core import db
 from backend.database import User, UserRole
 from backend.auth import user_manager
-from backend.database.models.incident import Incident, PrivacyStatus
-from backend.database.models.perpetrator import Perpetrator
 from backend.database.models.partner import Partner, PartnerMember, MemberRole
-from backend.database.models.use_of_force import UseOfForce
 from random import choice
 from datetime import datetime
 
@@ -29,7 +26,7 @@ def create_partner(partner: Partner) -> Partner:
     return partner
 
 
-def create_incident(key=1, date="10-01-2019", lon=84, lat=34, partner_id=1):
+""" def create_incident(key=1, date="10-01-2019", lon=84, lat=34, partner_id=1):
     incident = Incident(
         source_id=partner_id,
         privacy_filter=choice([PrivacyStatus.PUBLIC, PrivacyStatus.PRIVATE]),
@@ -61,7 +58,7 @@ def create_incident(key=1, date="10-01-2019", lon=84, lat=34, partner_id=1):
     exists = db.session.query(Incident).filter_by(id=key).first() is not None
 
     if not exists:
-        incident.create()
+        incident.create() """
 
 
 def create_seeds():
@@ -120,62 +117,7 @@ def create_seeds():
             ],
         )
     )
-    create_incident(
-        key=1,
-        date="10-01-2019",
-        lon=-84.362576,
-        lat=33.7589748,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=2,
-        date="11-01-2019",
-        lon=-118.1861128,
-        lat=33.76702,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=3,
-        date="12-01-2019",
-        lon=-117.8827321,
-        lat=33.800308,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=4,
-        date="03-15-2020",
-        lon=-118.1690197,
-        lat=33.8338271,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=5,
-        date="04-15-2020",
-        lon=-83.9007382,
-        lat=33.8389977,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=6,
-        date="08-10-2020",
-        lon=-84.2687574,
-        lat=33.9009798,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=7,
-        date="10-01-2020",
-        lon=-118.40853,
-        lat=33.9415889,
-        partner_id=partner.id,
-    )
-    create_incident(
-        key=8,
-        date="10-15-2020",
-        lon=-84.032149,
-        lat=33.967774,
-        partner_id=partner.id,
-    )
+    # Create Complaints here
 
 
-create_seeds()
+# create_seeds()

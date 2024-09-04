@@ -1,10 +1,11 @@
 import enum
+from backend.database.base_node import BaseNode
 
 from neomodel import (
     StructuredNode,
     RelationshipTo, RelationshipFrom, Relationship,
     StringProperty, DateProperty,
-    UniqueIDProperty
+    UniqueIdProperty
 )
 
 
@@ -76,8 +77,8 @@ class StateID(StructuredNode):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(StructuredNode):
-    uid = UniqueIDProperty()
+class Officer(BaseNode):
+    uid = UniqueIdProperty()
     first_name = StringProperty()
     middle_name = StringProperty()
     last_name = StringProperty()
@@ -88,7 +89,7 @@ class Officer(StructuredNode):
 
     # Relationships
     state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = Relationship('Unit', "MEMBER_OF")
+    units = Relationship('Unit', "MEMBER_OF_UNIT")
     litigation = Relationship('Litigation', "NAMED_IN")
     allegations = Relationship('Allegation', "ACCUSED_OF")
     investigations = Relationship('Investigation', "LEAD_BY")

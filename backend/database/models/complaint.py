@@ -19,8 +19,8 @@ class RecordTypeEnum(str, Enum):
     news = "news"
     government = "government"
 
-
-class BaseSourceModel(BaseModel):
+# Pydantic Models
+""" class BaseSourceModel(BaseModel):
     record_type: RecordTypeEnum
 
     class Config:
@@ -143,11 +143,11 @@ class ComplaintModel(BaseModel):
 
     # Relationships
     source: BaseSourceModel
-    location: LocationModel
-    civilian_review_board: CivilianReviewBoardModel
-    civlian_witnesses: List[CivilianModel]
-    police_witnesses: List[OfficerModel]
-    attachments: List[AttachmentModel]
+    location: "LocationModel"
+    # civilian_review_board: CivilianReviewBoardModel
+    civlian_witnesses: List["CivilianModel"]
+    police_witnesses: List["OfficerModel"]
+    attachments: List["AttachmentModel"]
     allegations: List[AllegationModel]
     investigations: List[InvestigationModel]
     penalties: List[PenaltyModel]
@@ -158,8 +158,10 @@ class ComplaintModel(BaseModel):
         if 'received_date' in values and v:
             assert v >= values['received_date'], 'closed_date must be after received_date'
         return v
+ """
 
 
+# Neo4j Models
 class BaseSourceRel(StructuredRel):
     record_type = StringProperty()
 

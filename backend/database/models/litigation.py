@@ -12,6 +12,10 @@ class LegalCaseType(str, enum.Enum):
     CIVIL = "CIVIL"
     CRIMINAL = "CRIMINAL"
 
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
+
 
 class Litigation(StructuredNode):
     uid = UniqueIdProperty()
@@ -25,7 +29,7 @@ class Litigation(StructuredNode):
     settlement_date = DateProperty()
     settlement_amount = StringProperty()
     url = StringProperty()
-    case_type = StringProperty(choices=[e.value for e in LegalCaseType])
+    case_type = StringProperty(choices=LegalCaseType.choices())
 
     # Relationships
     documents = RelationshipTo("Document", "RELATED_TO")

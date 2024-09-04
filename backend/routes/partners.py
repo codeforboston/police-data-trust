@@ -1,4 +1,5 @@
 
+import logging
 from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -21,13 +22,7 @@ from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
 from ..schemas import (
-    CreatePartnerSchema,
-    partner_orm_to_json,
-    partner_member_orm_to_json,
-    partner_to_orm,
-    validate,
-    AddMemberSchema,
-    partner_member_to_orm
+    validate
 )
 
 
@@ -38,17 +33,20 @@ bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate()
-def get_partners(partner_id: int):
+def get_partners(partner_id: str):
     """Get a single partner by ID."""
-
-    return partner_orm_to_json(Partner.get(partner_id))
+    p = Partner.nodes.get_or_none(uid=partner_id)
+    if p is None:
+        abort(404, description="Partner not found")
+    return p.to_json()
 
 
 @bp.route("/create", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate(json=CreatePartnerSchema)
+# @validate(json=CreatePartnerSchema)
 def create_partner():
+    logger = logging.getLogger("create_partner")
     """Create a contributing partner."""
 
     body = request.context.json
@@ -61,50 +59,31 @@ def create_partner():
         and body.contact_email != ""
     ):
         try:
-            partner = partner_to_orm(body)
+            # Creates a new instance of the Partner and saves it to the DB
+            new_p = Partner.from_dict(body)
         except Exception:
             abort(400)
-        partner_query_email = Partner.query.filter_by(
-            contact_email=body.contact_email).first()
-        partner_query_url = Partner.query.filter_by(url=body.url).first()
-        if partner_query_email:
-            return {
-                    "status": "error",
-                    "message": "Error. Entered email or url details "
-                               + "matches existing record.",
-
-                }, 400
-        if partner_query_url:
-            return {
-                    "status": "error",
-                    "message": "Error. Entered email or url details "
-                               + "matches existing record.",
-                }, 400
         """
         add to database if all fields are present
         and instance not already in db.
         """
-        created = partner.create()
-        resp = partner_orm_to_json(created)
-
-        make_admin = PartnerMember(
-            partner_id=created.id,
-            user_id=get_jwt()["sub"],
-            role=MemberRole.ADMIN,
+        new_p.members.connect(
+            # Return the User object for the currently logged in user
+            User.get(uid=get_jwt()["sub"]),
+            {
+                "role": MemberRole.ADMIN
+            }
         )
-        make_admin.create()
         # update to UserRole contributor status
         user_id = get_jwt()["sub"]
-        user = User.query.filter_by(
-            id=user_id
-        ).first()
+        user = User.nodes.get(uid=user_id)
         user.role = UserRole.CONTRIBUTOR
 
         track_to_mp(request, "create_partner", {
-            "partner_name": partner.name,
-            "partner_contact": partner.contact_email
+            "partner_name": new_p.name,
+            "partner_contact": new_p.contact_email
         })
-        return resp
+        return new_p.to_json()
     else:
         return {
                 "status": "error",
@@ -127,13 +106,13 @@ def get_all_partners():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    all_partners = db.session.query(Partner)
+    all_partners = Partner.nodes.all()
     results = all_partners.paginate(
         page=q_page, per_page=q_per_page, max_per_page=100
     )
 
     return {
-        "results": [partner_orm_to_json(partner) for partner in results.items],
+        "results": [partner.to_json() for partner in results.items],
         "page": results.page,
         "totalPages": results.pages,
         "totalResults": results.total,
@@ -154,18 +133,18 @@ def get_partner_members(partner_id: int):
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    # partner = Partner.get(partner_id)
+    p = Partner.nodes.get_or_none(uid=partner_id)
+    if p is None:
+        abort(404, description="Partner not found")
+
+    all_members = p.fetch_relations('members').all()
     members: Pagination = (
-        PartnerMember.query.options(
-            joinedload(PartnerMember.user)  # type: ignore
-        )
-        .filter_by(partner_id=partner_id)
-        .paginate(page=q_page, per_page=q_per_page, max_per_page=100)
+        all_members.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
     )
 
     return {
         "results": [
-            partner_member_orm_to_json(member) for member in members.items
+            member.to_json() for member in members.items
         ],
         "page": members.page,
         "totalPages": members.pages,
@@ -486,70 +465,3 @@ def stagedinvitations():
     ]
 
     return jsonify({'staged_invitations': invitations_data})
-
-
-@bp.route("/<int:partner_id>/members/add", methods=["POST"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-@validate(json=AddMemberSchema)
-def add_member_to_partner_testing(partner_id: int):
-    """Add a member to a partner.
-
-    TODO: Allow the API to accept a user email instad of a user id
-    TODO: Use the partner ID from the API path instead of the request body
-    The `partner_member_to_orm` function seems very picky about the input.
-    I wasn't able to get it to accept a dict or a PartnerMember object.
-
-    Cannot be called in production environments
-    """
-    if current_app.env == "production":
-        abort(418)
-
-    # Ensure that the user has premission to add a member to this partner.
-    jwt_decoded = get_jwt()
-
-    current_user = User.get(jwt_decoded["sub"])
-    association = (
-        db.session.query(PartnerMember)
-        .filter(
-            PartnerMember.user_id == current_user.id,
-            PartnerMember.partner_id == partner_id,
-        )
-        .first()
-    )
-
-    if (
-        association is None
-        or not association.is_administrator()
-        or not association.partner_id == partner_id
-    ):
-        abort(403)
-
-    # TODO: Allow the API to accept a user email instad of a user id
-    # user_obj = User.get_by_email(request.context.json.user_email)
-    # if user_obj is None:
-    #     abort(400)
-
-    # new_member = PartnerMember(
-    #     partner_id=partner_id,
-    #     user_id=user_obj.id,
-    #     role=request.context.json.role,
-    # )
-
-    try:
-        partner_member = partner_member_to_orm(request.context.json)
-    except Exception:
-        abort(400)
-
-    created = partner_member.create()
-
-    track_to_mp(
-        request,
-        "add_partner_member",
-        {
-            "partner_id": partner_id,
-            "user_id": partner_member.user_id,
-            "role": partner_member.role,
-        },
-    )
-    return partner_member_orm_to_json(created)

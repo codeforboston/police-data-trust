@@ -12,7 +12,7 @@ from ..auth import min_role_required, user_manager
 from ..mixpanel.mix import track_to_mp
 from ..database import User, UserRole, db, Invitation, StagedInvitation
 from ..dto import LoginUserDTO, RegisterUserDTO
-from ..schemas import UserSchema, validate
+from ..schemas import validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
@@ -29,9 +29,9 @@ def login():
 
     # Verify user
     if body.password is not None and body.email is not None:
-        user = User.query.filter_by(email=body.email).first()
+        user = User.nodes.first_or_none(email=body.email)
         if user is not None and user.verify_password(body.password):
-            token = create_access_token(identity=user.id)
+            token = create_access_token(identity=user.uid)
             resp = jsonify(
                 {
                     "message": "Successfully logged in.",
@@ -68,7 +68,7 @@ def register():
     body: RegisterUserDTO = request.context.json
 
     # Check to see if user already exists
-    user = User.query.filter_by(email=body.email).first()
+    user = User.nodes.first_or_none(email=body.email)
     if user is not None:
         return {
             "status": "ok",
@@ -84,25 +84,22 @@ def register():
             role=UserRole.PUBLIC,
             phone_number=body.phoneNumber,
         )
-        db.session.add(user)
-        db.session.commit()
-        token = create_access_token(identity=user.id)
+        user.save()
+        token = create_access_token(identity=user.uid)
 
         """
         code to handle adding staged_invitations-->invitations for users
         who have just signed up for NPDC
         """
-        staged_invite = StagedInvitation.query.filter_by(email=user.email).all()
+        staged_invite = StagedInvitation.nodes.filter(email=user.email)
         if staged_invite is not None and len(staged_invite) > 0:
             for instance in staged_invite:
                 new_invitation = Invitation(
-                    user_id=user.id,
+                    user_uid=user.uid,
                     role=instance.role,
-                    partner_id=instance.partner_id)
-                db.session.add(new_invitation)
-            db.session.commit()
-            StagedInvitation.query.filter_by(email=user.email).delete()
-            db.session.commit()
+                    partner_uid=instance.partner_id)
+                new_invitation.save()
+                instance.delete()
 
         resp = jsonify(
             {
@@ -114,7 +111,7 @@ def register():
         set_access_cookies(resp, token)
 
         track_to_mp(request, "register", {
-            'user_id': user.id,
+            'user_id': user.uid,
             'success': True,
         })
         return resp, 200
@@ -166,7 +163,7 @@ def logout():
 def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
-    return UserSchema.from_orm(User.get(current_identity)).dict()
+    return User.nodes.get(uid=current_identity).to_dict()
 
 
 class EmailDTO(BaseModel):

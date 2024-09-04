@@ -1,4 +1,5 @@
 from enum import Enum
+from backend.database.base_node import BaseNode
 from neomodel import (
     StructuredNode,
     StructuredRel,
@@ -7,6 +8,7 @@ from neomodel import (
     DateProperty,
     UniqueIdProperty
 )
+from backend.database.models.unit_agency import UnitAssociation
 
 
 class Jurisdiction(str, Enum):
@@ -18,7 +20,7 @@ class Jurisdiction(str, Enum):
     OTHER = "OTHER"
 
 
-class Agency(StructuredNode):
+class Agency(BaseNode):
     uid = UniqueIdProperty()
     name = StringProperty()
     website_url = StringProperty()
@@ -31,11 +33,7 @@ class Agency(StructuredNode):
     jurisdiction = StringProperty()
 
     # Relationships
-    units = RelationshipTo("Unit", "HAS_UNIT", model="UnitAssociation")
+    units = RelationshipTo("Unit", "HAS_UNIT", model=UnitAssociation)
 
     def __repr__(self):
         return f"<Agency {self.name}>"
-
-
-class UnitAssociation(StructuredRel):
-    etsablished_date = DateProperty()

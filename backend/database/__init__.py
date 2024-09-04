@@ -11,14 +11,13 @@ from neomodel import config as neo_config
 #  because we want to do baby steps-- one model at a time. This ensures that
 #  Alembic only does a couple models, not all of them.
 
-# SQLAlchemy models
-from .models.agency import *
+# Neomodel models
+from .models.officer import *
 from .models.unit import *
-from .models.incident import *
+from .models.agency import *
 from .models.complaint import *
 from .models.litigation import *
 from .models.attachment import *
-from .models.officer import *
 from .models.civilian import *
 from .models.user import *
 from .models.partner import *

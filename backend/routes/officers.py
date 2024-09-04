@@ -6,10 +6,6 @@ from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from backend.database.models.user import UserRole
-from backend.database.models.employment import (
-    Employment,
-    merge_employment_records
-)
 from backend.database.models.agency import Agency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -17,12 +13,7 @@ from pydantic import BaseModel
 
 from ..database import Officer, db
 from ..schemas import (
-    CreateOfficerSchema,
-    officer_orm_to_json,
-    officer_to_orm,
-    employment_to_orm,
-    employment_orm_to_json,
-    validate,
+    validate
 )
 
 
@@ -141,26 +132,24 @@ def search_officer():
 @bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-@validate(json=CreateOfficerSchema)
+#@validate(json=CreateOfficerSchema)
 def create_officer():
     """Create an officer profile.
     """
 
     try:
-        officer = officer_to_orm(request.context.json)
+        officer = Officer.from_dict(request.context.json)
     except Exception as e:
         abort(400, description=str(e))
-
-    created = officer.create()
 
     track_to_mp(
         request,
         "create_officer",
         {
-            "officer_id": officer.id
+            "officer_id": officer.uid
         },
     )
-    return officer_orm_to_json(created)
+    return officer.to_json()
 
 
 # Get an officer profile
@@ -171,10 +160,10 @@ def create_officer():
 def get_officer(officer_id: int):
     """Get an officer profile.
     """
-    officer = db.session.query(Officer).get(officer_id)
-    if officer is None:
+    o = Officer.nodes.get_or_none(uid=officer_id)
+    if o is None:
         abort(404, description="Officer not found")
-    return officer_orm_to_json(officer)
+    return o.to_json()
 
 
 # Get all officers
@@ -192,7 +181,7 @@ def get_all_officers():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    all_officers = db.session.query(Officer)
+    all_officers = Officer.nodes.all()
     pagination = all_officers.paginate(
         page=q_page, per_page=q_per_page, max_per_page=100
     )
@@ -210,16 +199,16 @@ def get_all_officers():
 @bp.route("/<int:officer_id>", methods=["PUT"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-@validate(json=CreateOfficerSchema)
+#@validate(json=CreateOfficerSchema)
 def update_officer(officer_id: int):
     """Update an officer profile.
     """
-    officer = db.session.query(Officer).get(officer_id)
-    if officer is None:
+    o = Officer.nodes.get_or_none(uid=officer_id)
+    if o is None:
         abort(404, description="Officer not found")
 
     try:
-        officer.update(request.context.json)
+        o = Officer.from_dict(request.context.json)
     except Exception as e:
         abort(400, description=str(e))
 
@@ -230,7 +219,7 @@ def update_officer(officer_id: int):
             "officer_id": officer.id
         },
     )
-    return officer_orm_to_json(officer)
+    return o.to_json()
 
 
 # Delete an officer profile
@@ -242,17 +231,17 @@ def delete_officer(officer_id: int):
     """Delete an officer profile.
     Must be an admin to delete an officer.
     """
-    officer = db.session.query(Officer).get(officer_id)
-    if officer is None:
+    o = Officer.nodes.get_or_none(uid=officer_id)
+    if o is None:
         abort(404, description="Officer not found")
     try:
-        db.session.delete(officer)
-        db.session.commit()
+        uid = o.uid
+        o.delete()
         track_to_mp(
             request,
             "delete_officer",
             {
-                "officer_id": officer.id
+                "officer_id": uid
             },
         )
         return {"message": "Officer deleted successfully"}
@@ -260,120 +249,119 @@ def delete_officer(officer_id: int):
         abort(400, description=str(e))
 
 
-# Update an officer's employment history
-@bp.route("/<int:officer_id>/employment", methods=["PUT"])
-@jwt_required()
-@min_role_required(UserRole.CONTRIBUTOR)
-@validate(json=AddEmploymentListSchema)
-def update_employment(officer_id: int):
-    """Update an officer's employment history.
-    Must be a contributor to update an officer's employment history.
-    May include multiple records in the request body.
-    """
-    officer = db.session.query(Officer).get(officer_id)
-    if officer is None:
-        abort(404, description="Officer not found")
+# # Update an officer's employment history
+# @bp.route("/<int:officer_id>/employment", methods=["PUT"])
+# @jwt_required()
+# @min_role_required(UserRole.CONTRIBUTOR)
+# @validate(json=AddEmploymentListSchema)
+# def update_employment(officer_id: int):
+#     """Update an officer's employment history.
+#     Must be a contributor to update an officer's employment history.
+#     May include multiple records in the request body.
+#     """
+#     o = Officer.nodes.get_or_none(uid=officer_id)
+#     if o is None:
+#         abort(404, description="Officer not found")
 
-    records = request.context.json.agencies
+#     records = request.context.json.agencies
 
-    created = []
-    failed = []
-    for record in records:
-        try:
-            agency = db.session.query(Agency).get(
-                record.agency_id)
-            if agency is None:
-                failed.append({
-                    "agency_id": record.agency_id,
-                    "reason": "Agency not found"
-                })
-            else:
-                employments = db.session.query(Employment).filter(
-                    and_(
-                        and_(
-                            Employment.officer_id == officer_id,
-                            Employment.agency_id == record.agency_id
-                        ),
-                        Employment.badge_number == record.badge_number
-                    )
-                )
-                if employments is not None:
-                    # If the officer already has a records for this agency,
-                    # we need to update the earliest and latest employment dates
-                    employment = employment_to_orm(record)
-                    employment.officer_id = officer_id
-                    employment = merge_employment_records(
-                        employments.all() + [employment],
-                        currently_employed=record.currently_employed
-                    )
+#     created = []
+#     failed = []
+#     for record in records:
+#         try:
+#             agency = Agency.nodes.get_or_none(uid=record.agency_id)
+#             if agency is None:
+#                 failed.append({
+#                     "agency_id": record.agency_id,
+#                     "reason": "Agency not found"
+#                 })
+#             else:
+#                 employments = db.session.query(Employment).filter(
+#                     and_(
+#                         and_(
+#                             Employment.officer_id == officer_id,
+#                             Employment.agency_id == record.agency_id
+#                         ),
+#                         Employment.badge_number == record.badge_number
+#                     )
+#                 )
+#                 if employments is not None:
+#                     # If the officer already has a records for this agency,
+#                     # we need to update the earliest and latest employment dates
+#                     employment = employment_to_orm(record)
+#                     employment.officer_id = officer_id
+#                     employment = merge_employment_records(
+#                         employments.all() + [employment],
+#                         currently_employed=record.currently_employed
+#                     )
 
-                    # Delete the old records and replace them with the new one
-                    employments.delete()
-                    created.append(employment.create())
-                else:
-                    record.officer_id = officer_id
-                    employment = employment_to_orm(record)
-                    created.append(employment.create())
-                # Commit before iterating to the next record
-                db.session.commit()
-        except Exception as e:
-            failed.append({
-                "agency_id": record.agency_id,
-                "reason": str(e)
-            })
+#                     # Delete the old records and replace them with the new one
+#                     employments.delete()
+#                     created.append(employment.create())
+#                 else:
+#                     record.officer_id = officer_id
+#                     employment = employment_to_orm(record)
+#                     created.append(employment.create())
+#                 # Commit before iterating to the next record
+#                 db.session.commit()
+#         except Exception as e:
+#             failed.append({
+#                 "agency_id": record.agency_id,
+#                 "reason": str(e)
+#             })
 
-    track_to_mp(
-        request,
-        "update_employment",
-        {
-            "officer_id": officer.id,
-            "agencies_added": len(created),
-            "agencies_failed": len(failed)
-        },
-    )
-    try:
-        return {
-            "created": [
-                employment_orm_to_json(item) for item in created],
-            "failed": failed,
-            "totalCreated": len(created),
-            "totalFailed": len(failed),
-        }
-    except Exception as e:
-        abort(400, description=str(e))
+#     track_to_mp(
+#         request,
+#         "update_employment",
+#         {
+#             "officer_id": officer.id,
+#             "agencies_added": len(created),
+#             "agencies_failed": len(failed)
+#         },
+#     )
+#     try:
+#         return {
+#             "created": [
+#                 employment_orm_to_json(item) for item in created],
+#             "failed": failed,
+#             "totalCreated": len(created),
+#             "totalFailed": len(failed),
+#         }
+#     except Exception as e:
+#         abort(400, description=str(e))
 
 
-# Retrieve an officer's employment history
-@bp.route("/<int:officer_id>/employment", methods=["GET"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-@validate()
-def get_employment(officer_id: int):
-    """Retrieve an officer's employment history.
-    """
-    args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+# # Retrieve an officer's employment history
+# @bp.route("/<int:officer_id>/employment", methods=["GET"])
+# @jwt_required()
+# @min_role_required(UserRole.PUBLIC)
+# @validate()
+# def get_employment(officer_id: int):
+#     """Retrieve an officer's employment history.
+#     """
+#     args = request.args
+#     q_page = args.get("page", 1, type=int)
+#     q_per_page = args.get("per_page", 20, type=int)
 
-    officer = db.session.query(Officer).get(officer_id)
-    if officer is None:
-        abort(404, description="Officer not found")
+#     officer = db.session.query(Officer).get(officer_id)
+#     if officer is None:
+#         abort(404, description="Officer not found")
 
-    try:
-        employments = db.session.query(Employment).filter(
-            Employment.officer_id == officer_id)
+#     try:
+#         employments = db.session.query(Employment).filter(
+#             Employment.officer_id == officer_id)
 
-        pagination = employments.paginate(
-            page=q_page, per_page=q_per_page, max_per_page=100
-        )
+#         pagination = employments.paginate(
+#             page=q_page, per_page=q_per_page, max_per_page=100
+#         )
 
-        return {
-            "results": [
-                employment_orm_to_json(
-                    employment) for employment in pagination.items],
-            "page": pagination.page,
-            "totalPages": pagination.pages,
-            "totalResults": pagination.total,
-        }
-    except Exception as e:
-        abort(400, description=str(e))
+#         return {
+#             "results": [
+#                 employment_orm_to_json(
+#                     employment) for employment in pagination.items],
+#             "page": pagination.page,
+#             "totalPages": pagination.pages,
+#             "totalResults": pagination.total,
+#         }
+#     except Exception as e:
+#         abort(400, description=str(e))

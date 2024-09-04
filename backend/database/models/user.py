@@ -12,9 +12,10 @@ from enum import Enum
 from neomodel import (
     StructuredNode,
     RelationshipTo, RelationshipFrom, Relationship,
-    StringProperty, DateProperty,
-    UniqueIDProperty
+    StringProperty, DateProperty, BooleanProperty,
+    UniqueIdProperty, EmailProperty
 )
+from backend.database.models.partner import PartnerMember
 
 
 fs_mixin = FlaskSerialize(db)
@@ -63,42 +64,40 @@ class UserRole(str, Enum):
         else:
             return 4
 
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
+
 
 # Define the User data-model.
-class User(db.Model, UserMixin, CrudMixin):
+class User(StructuredNode):
     """The SQL dataclass for an Incident."""
 
-    uid = UniqueIDProperty()
-    active = db.Column(
-        "is_active", db.Boolean(), nullable=False, server_default="1"
-    )
+    uid = UniqueIdProperty()
+    active = BooleanProperty(default=True)
 
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
-    email = db.Column(
-        CI_String(255, collate="NOCASE"),
-        nullable=False, unique=True
-    )
+    email = EmailProperty(required=True, unique_index=True)
     email_confirmed_at = DateProperty()
-    password = db.Column(db.String(255), nullable=False, server_default="")
+    password = StringProperty(required=True)
 
     # User information
-    first_name = db.Column(
-        CI_String(100, collate="NOCASE"), nullable=False, server_default=""
-    )
-    last_name = db.Column(
-        CI_String(100, collate="NOCASE"), nullable=False, server_default=""
-    )
+    first_name = StringProperty(required=True)
+    last_name = StringProperty(required=True)
 
-    role = StringProperty(choices=[e.value for e in UserRole])
+    role = StringProperty(choices=UserRole.choices(), default=UserRole.PUBLIC)
 
     phone_number = StringProperty()
 
     # Data Partner Relationships
-    partners = Relationship("Partner", "MEMBER_OF", model="PartnerMember")
+    partners = Relationship("Partner", "MEMBER_OF_PARTNER", model=PartnerMember)
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
 
     def get_by_email(email):
-        return User.query.filter(User.email == email).first()
+        try:
+            return User.nodes.get(email=email)
+        except User.DoesNotExist:
+            return None

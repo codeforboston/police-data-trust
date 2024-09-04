@@ -10,7 +10,7 @@ from backend.database import db_cli
 from backend.auth import user_manager, jwt, refresh_token
 from backend.schemas import spec
 from backend.routes.partners import bp as partners_bp
-from backend.routes.incidents import bp as incidents_bp
+# from backend.routes.incidents import bp as incidents_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
 from backend.routes.auth import bp as auth_bp
@@ -151,7 +151,7 @@ def register_commands(app: Flask):
 
 def register_routes(app: Flask):
     app.register_blueprint(partners_bp)
-    app.register_blueprint(incidents_bp)
+    # app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(healthcheck_bp)
     app.register_blueprint(officers_bp)
