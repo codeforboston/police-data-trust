@@ -209,7 +209,7 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /litigation/{uid}/documents/{document_id}:
+  /litigation/{uid}/documents/{document_uid}:
     parameters:
       - name: "uid"
         in: "path"
@@ -217,7 +217,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: "document_id"
+      - name: "document_uid"
         in: "path"
         description: "ID of the document"
         required: true

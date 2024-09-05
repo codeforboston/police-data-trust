@@ -58,9 +58,9 @@ paths:
                 $ref: "#/components/schemas/Agency"
         "400":
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /agencies/{agency_id}:
+  /agencies/{agency_uid}:
     parameters:
-      - name: "agency_id"
+      - name: "agency_uid"
         in: "path"
         description: "The id of the agency you want to retrieve."
         required: true
@@ -101,9 +101,9 @@ paths:
                 $ref: '#/components/schemas/Agency'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /agencies/{agency_id}/officers:
+  /agencies/{agency_uid}/officers:
     parameters:
-      - name: "agency_id"
+      - name: "agency_uid"
         in: "path"
         description: "The id of the agency you want to retrieve."
         required: true
@@ -152,9 +152,9 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /agencies/{agency_id}/units:
+  /agencies/{agency_uid}/units:
     parameters:
-      - name: "agency_id"
+      - name: "agency_uid"
         in: "path"
         description: "The id of the agency you want to retrieve."
         required: true
@@ -197,15 +197,15 @@ paths:
                 $ref: "#/components/schemas/CreateUnit"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /agencies/{agency_id}/units/{unit_id}:
+  /agencies/{agency_uid}/units/{unit_uid}:
     parameters:
-      - name: "agency_id"
+      - name: "agency_uid"
         in: "path"
         description: "The id of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
-      - name: "unit_id"
+      - name: "unit_uid"
         in: "path"
         description: "The id of the agency you want to retrieve."
         required: true
@@ -219,7 +219,7 @@ paths:
       tags: 
         -  Units
       parameters:
-        - name: "agency_id"
+        - name: "agency_uid"
           in: "path"
           description: "The id of the agency you want to retrieve units for."
           required: true
@@ -394,10 +394,10 @@ components:
     AddOfficer:
       type: object
       required: 
-        - officer_id
+        - officer_uid
         - badge_number
       properties:
-        officer_id:
+        officer_uid:
           type: "string"
           description: "The id of the officer"
         earliest_employment:
@@ -411,7 +411,7 @@ components:
         badge_number:
           type: "string"
           description: "The badge number of the officer"
-        unit_id:
+        unit_uid:
           type: "string"
           description: "The UID of the unit the officer is assigned to."
         highest_rank:
@@ -432,7 +432,7 @@ components:
     AddOfficerFailed:
       type: object
       properties:
-        officer_id:
+        officer_uid:
           type: "string"
           description: "The id of the officer"
         reason:

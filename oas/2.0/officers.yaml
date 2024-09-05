@@ -174,13 +174,13 @@ components:
     BaseEmployment:
       type: "object"
       properties:
-        officer_id:
+        officer_uid:
           type: "string"
           description: "The UID of the officer."
-        agency_id:
+        agency_uid:
           type: "string"
           description: "The UID of the agency the officer is employed by."
-        unit_id:
+        unit_uid:
           type: "string"
           description: "The UID of the unit the officer is assigned to."
         earliest_employment:
@@ -205,12 +205,12 @@ components:
         - $ref: "#/components/schemas/BaseEmployment"
         - type: "object"
         - required:
-          - agency_id
+          - agency_uid
           - badge_number
     AddEmploymentFailed:
       type: object
       properties:
-        agency_id:
+        agency_uid:
           type: "string"
           description: "The uid of the agency that could not be added."
         reason:

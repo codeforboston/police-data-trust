@@ -20,9 +20,9 @@ tags:
   - name: "Complaints"
     description: "Complaints API"
 paths:
-  /complaints/{complaint_id}:
+  /complaints/{complaint_uid}:
     parameters:
-      - name: complaint_id
+      - name: complaint_uid
         in: path
         required: true
         schema:
@@ -187,10 +187,10 @@ components:
         - $ref: "#/components/schemas/BaseComplaint"
         - type: object
           properties:
-            source_id:
+            source_uid:
               type: "string"
               description: "The UID of the partner that reported the complaint."
-            civilian_review_board_id:
+            civilian_review_board_uid:
               type: "string"
               description: "The UID of the civilian review board that reviewed the complaint."
             police_witnesses:
@@ -218,10 +218,10 @@ components:
         - $ref: "#/components/schemas/BaseComplaint"
         - type: object
           properties:
-            source_id:
+            source_uid:
               type: "string"
               description: "The UID of the partner that reported the complaint."
-            civilian_review_board_id:
+            civilian_review_board_uid:
               type: "string"
               description: "The UID of the civilian review board that reviewed the complaint."
             police_witnesses:
@@ -253,7 +253,7 @@ components:
             - uid
             - created_at
             - updated_at
-            - source_id
+            - source_uid
             - category
             - incident_date
             - recieved_date
@@ -343,7 +343,7 @@ components:
         - $ref: "#/components/schemas/BaseAllegation"
         - type: object
           properties:
-            perpetrator_id:
+            perpetrator_uid:
               type: "string"
               description: "The UID of the officer the allegation is made against."
     Allegation:
@@ -373,7 +373,7 @@ components:
     CreatePenalty:
       type: "object"
       properties:
-        officer_id:
+        officer_uid:
           type: "string"
           description: "The UID of the officer the penalty is associated with."
         description:
@@ -395,7 +395,7 @@ components:
         - $ref: "#/components/schemas/BaseInvestigation"
         - type: object
           properties:
-            officer_id:
+            officer_uid:
               type: "string"
               description: "The UID of the officer who preformed the investigation."
     Investigation:

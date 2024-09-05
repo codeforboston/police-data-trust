@@ -181,10 +181,10 @@ components:
     MemberBase:
       type: "object"
       properties:
-        partner_id:
+        partner_uid:
           type: "string"
           description: "Unique identifier for the partner."
-        user_id:
+        user_uid:
           type: "string"
           description: "Unique identifier for the user."
         role:
@@ -217,8 +217,8 @@ components:
         - type: "object"
           required: 
             - role
-            - user_id
-            - partner_id
+            - user_uid
+            - partner_uid
     MemberList:
       allOf:
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
