@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Any, Union
 
 
 class BaseAgency(BaseModel):
-    id: Optional[str] = Field(None, description="Unique identifier for the agency")
+    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -16,7 +16,7 @@ class BaseAgency(BaseModel):
 
 
 class CreateAgency(BaseAgency, BaseModel):
-    id: Optional[str] = Field(None, description="Unique identifier for the agency")
+    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -29,7 +29,7 @@ class CreateAgency(BaseAgency, BaseModel):
 
 
 class UpdateAgency(BaseAgency, BaseModel):
-    id: Optional[str] = Field(None, description="Unique identifier for the agency")
+    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -46,7 +46,7 @@ class AgencyList(PaginatedResponse, BaseModel):
 
 
 class Agency(BaseAgency, BaseModel):
-    id: Optional[str] = Field(None, description="Unique identifier for the agency")
+    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -103,7 +103,7 @@ class Unit(BaseUnit, BaseModel):
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
     commander: Optional[str] = Field(None, description="The Officer UID of the unit's commander")
-    id: Optional[str] = Field(None, description="Unique identifier for the unit")
+    uid: Optional[str] = Field(None, description="Unique identifier for the unit")
     agency_url: Optional[str] = Field(None, description="URL to get the agency that this unit belongs to.")
     officers_url: Optional[str] = Field(None, description="URL to get a list of officers for this unit.")
 
@@ -113,7 +113,7 @@ class UnitList(PaginatedResponse, BaseModel):
 
 
 class AddOfficer(BaseModel):
-    officer_uid: str = Field(..., description="The id of the officer")
+    officer_uid: str = Field(..., description="The uid of the officer")
     earliest_employment: Optional[str] = Field(None, description="The earliest date of employment")
     latest_employment: Optional[str] = Field(None, description="The latest date of employment")
     badge_number: str = Field(..., description="The badge number of the officer")
@@ -127,7 +127,7 @@ class AddOfficerList(BaseModel):
 
 
 class AddOfficerFailed(BaseModel):
-    officer_uid: Optional[str] = Field(None, description="The id of the officer")
+    officer_uid: Optional[str] = Field(None, description="The uid of the officer")
     reason: Optional[str] = Field(None, description="The reason the employment record could not be added")
 
 

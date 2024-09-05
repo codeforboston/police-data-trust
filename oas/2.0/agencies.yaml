@@ -62,14 +62,14 @@ paths:
     parameters:
       - name: "agency_uid"
         in: "path"
-        description: "The id of the agency you want to retrieve."
+        description: "The uid of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
     get:
       summary: "Get Agency"
       operationId: "getAgency"
-      description: "Get a single agency by id."
+      description: "Get a single agency by uid."
       tags: 
         -  Agencies
       responses:
@@ -105,7 +105,7 @@ paths:
     parameters:
       - name: "agency_uid"
         in: "path"
-        description: "The id of the agency you want to retrieve."
+        description: "The uid of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
@@ -156,7 +156,7 @@ paths:
     parameters:
       - name: "agency_uid"
         in: "path"
-        description: "The id of the agency you want to retrieve."
+        description: "The uid of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
@@ -201,13 +201,13 @@ paths:
     parameters:
       - name: "agency_uid"
         in: "path"
-        description: "The id of the agency you want to retrieve."
+        description: "The uid of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
       - name: "unit_uid"
         in: "path"
-        description: "The id of the agency you want to retrieve."
+        description: "The uid of the agency you want to retrieve."
         required: true
         schema:
           type: "string"
@@ -221,7 +221,7 @@ paths:
       parameters:
         - name: "agency_uid"
           in: "path"
-          description: "The id of the agency you want to retrieve units for."
+          description: "The uid of the agency you want to retrieve units for."
           required: true
           schema:
             type: "string"
@@ -264,7 +264,7 @@ components:
     BaseAgency:
       type: "object"
       properties:
-        id:
+        uid:
           type: "string"
           description: "Unique identifier for the agency"
         name:
@@ -322,7 +322,7 @@ components:
         - $ref: "#/components/schemas/BaseAgency"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the agency"
             officers_url:
@@ -373,7 +373,7 @@ components:
         - $ref: "#/components/schemas/BaseUnit"
         - type: "object"
           properties:
-            id:
+            uid:
               type: "string"
               description: "Unique identifier for the unit"
             agency_url:
@@ -399,7 +399,7 @@ components:
       properties:
         officer_uid:
           type: "string"
-          description: "The id of the officer"
+          description: "The uid of the officer"
         earliest_employment:
           type: "string"
           format: "date"
@@ -434,7 +434,7 @@ components:
       properties:
         officer_uid:
           type: "string"
-          description: "The id of the officer"
+          description: "The uid of the officer"
         reason:
           type: "string"
           description: "The reason the employment record could not be added"
