@@ -12,6 +12,8 @@ anyio==4.3.0
     # via
     #   httpx
     #   jupyter-server
+appnope==0.1.4
+    # via ipykernel
 argon2-cffi==23.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
@@ -144,8 +146,6 @@ flask-wtf==1.2.1
     #   flask-user
 fqdn==1.5.1
     # via jsonschema
-greenlet==3.0.3
-    # via sqlalchemy
 gunicorn==21.2.0
     # via -r requirements/_core.in
 h11==0.14.0

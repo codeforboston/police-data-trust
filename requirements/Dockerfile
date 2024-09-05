@@ -15,7 +15,7 @@ SHELL ["bash", "-lc"]
 RUN curl https://pyenv.run | bash && \
     echo 'export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
 
-ENV PYTHON_VERSION=3.12.4
+ENV PYTHON_VERSION=3.12.5
 RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
 RUN pip install -U pip-tools
 
