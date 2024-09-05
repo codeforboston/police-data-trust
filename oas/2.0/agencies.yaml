@@ -335,11 +335,20 @@ components:
       allOf:
         - $ref: "#/components/schemas/BaseUnit"
         - type: "object"
+          properties:
+            commander_uid:
+              type: "string"
+              description: "The UID of the unit's current commander."
           required:
             - name
     UpdateUnit:
       allOf: 
-        -  $ref: "#/components/schemas/BaseUnit"
+        - $ref: "#/components/schemas/BaseUnit"
+        - type: object
+          properties:
+            commander_uid:
+              type: string
+              description: The UID of the unit's current commander.
     BaseUnit:
       type: object
       description: "Base properties for a unit"
@@ -365,9 +374,6 @@ components:
         zip:
           type: "string"
           description: "Zip code of the unit"
-        commander:
-          type: "string"
-          description: "The Officer UID of the unit's commander"
     Unit:
       allOf: 
         - $ref: "#/components/schemas/BaseUnit"
@@ -376,6 +382,15 @@ components:
             uid:
               type: "string"
               description: "Unique identifier for the unit"
+            commander:
+              allOf:
+                - $ref: officers.yaml#/components/schemas/Officer
+                - type: object
+                  description: The current commander of the unit.
+            commander_history_url:
+              type: string
+              description: -|
+                URL that returns the past commanders of the unit and the period of their respective commands.
             agency_url:
               type: "string"
               description: "URL to get the agency that this unit belongs to."
@@ -396,6 +411,7 @@ components:
       required: 
         - officer_uid
         - badge_number
+        - unit_uid
       properties:
         officer_uid:
           type: "string"
@@ -417,9 +433,10 @@ components:
         highest_rank:
           type: "string"
           description: "The highest rank the officer has held during their employment."
-        currently_employed:
-          type: "boolean"
-          description: "Whether the officer is currently employed by this agency."
+        commander:
+          type: boolean
+          description: -|
+            If true, this officer will be added as the commander of the unit for the specified time period.
     AddOfficerList:
       type: object
       required: 

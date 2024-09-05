@@ -9,8 +9,8 @@ class BaseEmployment(BaseModel):
     earliest_employment: Optional[str] = Field(None, description="The earliest date of employment")
     latest_employment: Optional[str] = Field(None, description="The latest date of employment")
     badge_number: Optional[str] = Field(None, description="The badge number of the officer")
-    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during their employment.")
-    currently_employed: Optional[bool] = Field(None, description="Whether the officer is currently employed by this agency.")
+    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during this employment.")
+    commander: Optional[bool] = Field(None, description="Indicates that the officer commanded the unit during this employment.")
 
 
 class AddEmployment(BaseEmployment, BaseModel):
@@ -20,8 +20,8 @@ class AddEmployment(BaseEmployment, BaseModel):
     earliest_employment: Optional[str] = Field(None, description="The earliest date of employment")
     latest_employment: Optional[str] = Field(None, description="The latest date of employment")
     badge_number: Optional[str] = Field(None, description="The badge number of the officer")
-    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during their employment.")
-    currently_employed: Optional[bool] = Field(None, description="Whether the officer is currently employed by this agency.")
+    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during this employment.")
+    commander: Optional[bool] = Field(None, description="Indicates that the officer commanded the unit during this employment.")
 
 
 class AddEmploymentFailed(BaseModel):
@@ -30,7 +30,7 @@ class AddEmploymentFailed(BaseModel):
 
 
 class AddEmploymentList(BaseModel):
-    agencies: Optional[List[AddEmployment]] = Field(None, description="The agencies to add to the officer's employment history.")
+    agencies: Optional[List[AddEmployment]] = Field(None, description="The units to add to the officer's employment history.")
 
 
 class Employment(BaseEmployment, BaseModel):
@@ -40,9 +40,8 @@ class Employment(BaseEmployment, BaseModel):
     earliest_employment: Optional[str] = Field(None, description="The earliest date of employment")
     latest_employment: Optional[str] = Field(None, description="The latest date of employment")
     badge_number: Optional[str] = Field(None, description="The badge number of the officer")
-    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during their employment.")
-    currently_employed: Optional[bool] = Field(None, description="Whether the officer is currently employed by this agency.")
-    uid: Optional[str] = Field(None, description="The uid of the employment record")
+    highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during this employment.")
+    commander: Optional[bool] = Field(None, description="Indicates that the officer commanded the unit during this employment.")
 
 
 class AddEmploymentResponse(BaseModel):

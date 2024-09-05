@@ -46,7 +46,6 @@ class UpdateComplaint(BaseComplaint, BaseModel):
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
     attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
-    source_uid: Optional[str] = Field(None, description="The UID of the partner that reported the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The uid of any police witnesses associated with the complaint.")
     allegations: Optional[List[CreateAllegation]] = Field(None, description="The allegations associated with the complaint.")
@@ -128,14 +127,14 @@ class BaseInvestigation(BaseModel):
 class CreateInvestigation(BaseInvestigation, BaseModel):
     start_date: Optional[str] = Field(None, description="The date the investigation started.")
     end_date: Optional[str] = Field(None, description="The date the investigation ended.")
-    officer_uid: Optional[str] = Field(None, description="The UID of the officer who preformed the investigation.")
+    investigator_uid: Optional[str] = Field(None, description="The UID of the officer who preformed the investigation.")
 
 
 class Investigation(BaseInvestigation, BaseModel):
     start_date: Optional[str] = Field(None, description="The date the investigation started.")
     end_date: Optional[str] = Field(None, description="The date the investigation ended.")
     uid: Optional[str] = Field(None, description="Unique identifier for the investigation.")
-    officer: Optional[Officer] = Field(None, description="The officer who preformed the investigation.")
+    investigator: Optional[Officer] = Field(None, description="The officer who preformed the investigation.")
 
 
 class Civilian(BaseModel):
@@ -149,6 +148,7 @@ class ReviewBoard(BaseModel):
     name: Optional[str] = Field(None, description="The name of the review board.")
     city: Optional[str] = Field(None, description="The city the review board is located in.")
     state: Optional[str] = Field(None, description="The state the review board is located in.")
+    url: Optional[str] = Field(None, description="The website URL for the review board.")
 
 
 class Attachemnts(BaseModel):

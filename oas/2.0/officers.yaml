@@ -196,16 +196,16 @@ components:
           description: "The badge number of the officer"
         highest_rank:
           type: "string"
-          description: "The highest rank the officer has held during their employment."
-        currently_employed:
-          type: "boolean"
-          description: "Whether the officer is currently employed by this agency."
+          description: "The highest rank the officer has held during this employment."
+        commander:
+          type: boolean
+          description: Indicates that the officer commanded the unit during this employment.
     AddEmployment:
       allOf: 
         - $ref: "#/components/schemas/BaseEmployment"
         - type: "object"
         - required:
-          - agency_uid
+          - unit_uid
           - badge_number
     AddEmploymentFailed:
       type: object
@@ -221,17 +221,12 @@ components:
       properties:
         agencies:
           type: "array"
-          description: "The agencies to add to the officer's employment history."
+          description: "The units to add to the officer's employment history."
           items:
             $ref: "#/components/schemas/AddEmployment"
     Employment:
       allOf: 
         - $ref: "#/components/schemas/BaseEmployment"
-        - type: "object"
-        - properties:
-            uid:
-              type: "string"
-              description: "The uid of the employment record"
     AddEmploymentResponse:
       type: object
       required: 

@@ -218,9 +218,6 @@ components:
         - $ref: "#/components/schemas/BaseComplaint"
         - type: object
           properties:
-            source_uid:
-              type: "string"
-              description: "The UID of the partner that reported the complaint."
             civilian_review_board_uid:
               type: "string"
               description: "The UID of the civilian review board that reviewed the complaint."
@@ -395,7 +392,7 @@ components:
         - $ref: "#/components/schemas/BaseInvestigation"
         - type: object
           properties:
-            officer_uid:
+            investigator_uid:
               type: "string"
               description: "The UID of the officer who preformed the investigation."
     Investigation:
@@ -406,7 +403,7 @@ components:
             uid:
               type: "string"
               description: "Unique identifier for the investigation."
-            officer:
+            investigator:
               allOf: 
                 - $ref: officers.yaml#/components/schemas/Officer
                 - type: "object"
@@ -447,6 +444,9 @@ components:
         state:
           type: "string"
           description: "The state the review board is located in."
+        url:
+          type: string
+          description: The website URL for the review board.
     Attachemnts:
       type: "object"
       properties:

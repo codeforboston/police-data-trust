@@ -61,14 +61,14 @@ class Agency(BaseAgency, BaseModel):
 
 
 class CreateUnit(BaseUnit, BaseModel):
-    name: Optional[str] = Field(None, description="Name of the unit")
+    name: str = Field(..., description="Name of the unit")
     website_url: Optional[str] = Field(None, description="Website of the unit")
     phone: Optional[str] = Field(None, description="Phone number of the unit")
     email: Optional[str] = Field(None, description="Email of the unit")
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
-    commander: Optional[str] = Field(None, description="The Officer UID of the unit's commander")
+    commander_uid: Optional[str] = Field(None, description="The UID of the unit's current commander.")
 
 
 class UpdateUnit(BaseUnit, BaseModel):
@@ -79,7 +79,7 @@ class UpdateUnit(BaseUnit, BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
-    commander: Optional[str] = Field(None, description="The Officer UID of the unit's commander")
+    commander_uid: Optional[str] = Field(None, description="The UID of the unit's current commander.")
 
 
 class BaseUnit(BaseModel):
@@ -91,7 +91,6 @@ class BaseUnit(BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
-    commander: Optional[str] = Field(None, description="The Officer UID of the unit's commander")
 
 
 class Unit(BaseUnit, BaseModel):
@@ -102,8 +101,9 @@ class Unit(BaseUnit, BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
-    commander: Optional[str] = Field(None, description="The Officer UID of the unit's commander")
     uid: Optional[str] = Field(None, description="Unique identifier for the unit")
+    commander: Optional[Officer] = Field(None, description="The current commander of the unit.")
+    commander_history_url: Optional[str] = Field(None, description="-| URL that returns the past commanders of the unit and the period of their respective commands.")
     agency_url: Optional[str] = Field(None, description="URL to get the agency that this unit belongs to.")
     officers_url: Optional[str] = Field(None, description="URL to get a list of officers for this unit.")
 
@@ -117,9 +117,9 @@ class AddOfficer(BaseModel):
     earliest_employment: Optional[str] = Field(None, description="The earliest date of employment")
     latest_employment: Optional[str] = Field(None, description="The latest date of employment")
     badge_number: str = Field(..., description="The badge number of the officer")
-    unit_uid: Optional[str] = Field(None, description="The UID of the unit the officer is assigned to.")
+    unit_uid: str = Field(..., description="The UID of the unit the officer is assigned to.")
     highest_rank: Optional[str] = Field(None, description="The highest rank the officer has held during their employment.")
-    currently_employed: Optional[bool] = Field(None, description="Whether the officer is currently employed by this agency.")
+    commander: Optional[bool] = Field(None, description="-| If true, this officer will be added as the commander of the unit for the specified time period.")
 
 
 class AddOfficerList(BaseModel):
