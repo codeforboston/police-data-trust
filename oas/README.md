@@ -41,3 +41,14 @@ Generating model code for AddOfficerFailed
 Generating model code for AddOfficerResponse
 Pydantic models have been successfully generated and saved to 'pydantic/agencies.py'.
 ```
+
+## Caveats
+
+### Polymorphism
+The converter doesn't handle polymorphic propeties yet. There's been a bit of effort put
+into making sure it can follow 'allOf' refrences, but I haven't done any investigation
+into how it handles 'oneOf' refs. For example, `SourceDetails` on complaints.
+
+### External File Refrences
+The generator only looks at one file at a time. It will not follow refernces to other
+files. The generator currently just assumes that those references exist and are valid.
