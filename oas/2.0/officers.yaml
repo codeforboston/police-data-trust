@@ -4,7 +4,7 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedfata.org/api/v1"
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
     description: "Development environment"
   - url: "https://stage-api.nationalpolicedata.org/api/v1"
     description: "Staging environment"
