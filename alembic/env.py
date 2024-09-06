@@ -1,3 +1,4 @@
+# flake8:noqa
 from logging.config import fileConfig
 
 from alembic import context
@@ -6,7 +7,9 @@ from sqlalchemy import pool
 
 from backend.api import create_app
 from backend.database import db
-
+from backend.database.models.officer import Officer
+from backend.database.models.officer import StateID
+from backend.database.models.agency import Agency
 
 # There's no access to current_app here so we must create our own app.
 app = create_app()
