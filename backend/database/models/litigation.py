@@ -1,4 +1,4 @@
-import enum
+from backend.database.neo_classes import ExportableNode, PropertyEnum
 from neomodel import (
     StructuredNode,
     StringProperty,
@@ -8,16 +8,12 @@ from neomodel import (
 )
 
 
-class LegalCaseType(str, enum.Enum):
+class LegalCaseType(str, PropertyEnum):
     CIVIL = "CIVIL"
     CRIMINAL = "CRIMINAL"
 
-    @classmethod
-    def choices(cls):
-        return {item.value: item.name for item in cls}
 
-
-class Litigation(StructuredNode):
+class Litigation(ExportableNode):
     uid = UniqueIdProperty()
     case_title = StringProperty()
     docket_number = StringProperty()
@@ -40,7 +36,7 @@ class Litigation(StructuredNode):
         return f"<Litigation {self.uid}:{self.case_title}>"
 
 
-class Document(StructuredNode):
+class Document(ExportableNode):
     uid = UniqueIdProperty()
     title = StringProperty()
     description = StringProperty()

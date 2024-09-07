@@ -1,5 +1,4 @@
-import enum
-from backend.database.base_node import BaseNode
+from backend.database.neo_classes import ExportableNode, PropertyEnum
 
 from neomodel import (
     StructuredNode,
@@ -9,7 +8,7 @@ from neomodel import (
 )
 
 
-class State(str, enum.Enum):
+class State(str, PropertyEnum):
     AL = "AL"
     AK = "AK"
     AZ = "AZ"
@@ -69,7 +68,7 @@ class StateID(StructuredNode):
     the Tax ID Number.
     """
     id_name = StringProperty()  # e.g. "Tax ID Number"
-    state = StringProperty()  # e.g. "NY"
+    state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
     officer = RelationshipFrom('Officer', "HAS_STATE_ID")
 
@@ -77,7 +76,7 @@ class StateID(StructuredNode):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(BaseNode):
+class Officer(ExportableNode):
     uid = UniqueIdProperty()
     first_name = StringProperty()
     middle_name = StringProperty()

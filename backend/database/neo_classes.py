@@ -1,12 +1,20 @@
 import json
+from enum import Enum
 from neomodel import (
     StructuredNode, RelationshipTo,
     RelationshipFrom, Relationship
 )
-from neomodel.exceptions import DoesNotExist, UniqueProperty
+from neomodel.exceptions import DoesNotExist
 
 
-class BaseNode(StructuredNode):
+class PropertyEnum(Enum):
+
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
+
+
+class ExportableNode(StructuredNode):
     def to_dict(self):
         # Collect all properties dynamically
         node_props = {
@@ -25,7 +33,7 @@ class BaseNode(StructuredNode):
 
     def to_json(self):
         return json.dumps(self.to_dict())
-    
+
     @classmethod
     def from_dict(cls, data):
         """

@@ -1,11 +1,11 @@
+from backend.database.neo_classes import ExportableNode
 from neomodel import (
-    StructuredNode,
     StringProperty,
     UniqueIdProperty,
 )
 
 
-class Attachment(StructuredNode):
+class Attachment(ExportableNode):
     uid = UniqueIdProperty()
     title = StringProperty()
     hash = StringProperty()

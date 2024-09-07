@@ -1,7 +1,6 @@
 from __future__ import annotations  # allows type hinting of class itself
-from ..core import db, CrudMixin
-from backend.database.base_node import BaseNode
-from enum import Enum
+# from ..core import db, CrudMixin
+from backend.database.neo_classes import ExportableNode, PropertyEnum
 from datetime import datetime
 from neomodel import (
     StructuredNode, StructuredRel,
@@ -13,7 +12,7 @@ from neomodel import (
 from backend.database.models.complaint import BaseSourceRel
 
 
-class MemberRole(str, Enum):
+class MemberRole(str, PropertyEnum):
     ADMIN = "Administrator"
     PUBLISHER = "Publisher"
     MEMBER = "Member"
@@ -31,10 +30,6 @@ class MemberRole(str, Enum):
         else:
             return 5
 
-    @classmethod
-    def choices(cls):
-        return {item.value: item.name for item in cls}
-
 
 class Invitation(StructuredNode):
     role = StringProperty(choices=MemberRole.choices())
@@ -42,7 +37,8 @@ class Invitation(StructuredNode):
     # default to not accepted invite
 
     partner = RelationshipFrom("Partner", "INVITED_TO")
-    user = RelationshipFrom("User", "WAS_INVITED")
+    user = RelationshipFrom(
+        "backend.database.models.user.User", "WAS_INVITED")
 
     def serialize(self):
         return {
@@ -94,16 +90,20 @@ class PartnerMember(StructuredRel):
         id={self.uid}>"
 
 
-class Partner(BaseNode):
+class Partner(ExportableNode):
     uid = UniqueIdProperty()
 
-    name = StringProperty()
+    name = StringProperty(unique_index=True)
     url = StringProperty()
     contact_email = StringProperty()
 
     # Relationships
-    members = RelationshipFrom("User", "IS_MEMBER", model=PartnerMember)
-    complaints = RelationshipTo("Complaint", "REPORTED", model=BaseSourceRel)
+    members = RelationshipFrom(
+        "backend.database.models.user.User",
+        "IS_MEMBER", model=PartnerMember)
+    complaints = RelationshipTo(
+        "backend.database.models.complaint.Complaint",
+        "REPORTED", model=BaseSourceRel)
 
     def __repr__(self):
         """Represent instance as a unique string."""

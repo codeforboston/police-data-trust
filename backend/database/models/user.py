@@ -3,15 +3,14 @@
 import bcrypt
 from backend.database.core import db
 from flask_serialize.flask_serialize import FlaskSerialize
-from flask_user import UserMixin
+# from flask_user import UserMixin
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.ext.associationproxy import association_proxy
+# from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.types import String, TypeDecorator
-from ..core import CrudMixin
-from enum import Enum
+# from ..core import CrudMixin
+from backend.database.neo_classes import ExportableNode, PropertyEnum
 from neomodel import (
-    StructuredNode,
-    RelationshipTo, RelationshipFrom, Relationship,
+    Relationship,
     StringProperty, DateProperty, BooleanProperty,
     UniqueIdProperty, EmailProperty
 )
@@ -48,7 +47,7 @@ def compile_ci_string(element, compiler, **kwargs):
         return base_visit
 
 
-class UserRole(str, Enum):
+class UserRole(str, PropertyEnum):
     PUBLIC = "Public"
     PASSPORT = "Passport"
     CONTRIBUTOR = "Contributor"
@@ -64,15 +63,9 @@ class UserRole(str, Enum):
         else:
             return 4
 
-    @classmethod
-    def choices(cls):
-        return {item.value: item.name for item in cls}
-
 
 # Define the User data-model.
-class User(StructuredNode):
-    """The SQL dataclass for an Incident."""
-
+class User(ExportableNode):
     uid = UniqueIdProperty()
     active = BooleanProperty(default=True)
 
@@ -91,7 +84,9 @@ class User(StructuredNode):
     phone_number = StringProperty()
 
     # Data Partner Relationships
-    partners = Relationship("Partner", "MEMBER_OF_PARTNER", model=PartnerMember)
+    partners = Relationship(
+        'backend.database.models.partner.Partner',
+        "MEMBER_OF_PARTNER", model=PartnerMember)
 
     def verify_password(self, pw):
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))

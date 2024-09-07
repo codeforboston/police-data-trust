@@ -13,7 +13,6 @@ from neomodel import config as neo_config
 
 # Neomodel models
 from .models.officer import *
-from .models.unit import *
 from .models.agency import *
 from .models.complaint import *
 from .models.litigation import *

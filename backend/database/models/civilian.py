@@ -13,5 +13,7 @@ class Civilian(StructuredNode):
     gender = StringProperty()
 
     # Relationships
-    complaints = RelationshipTo("Complaint", "COMPLAINED_OF")
-    witnessed_complaints = RelationshipTo("Complaint", "WITNESSED")
+    complaints = RelationshipTo(
+        "backend.database.models.complaint.Complaint", "COMPLAINED_OF")
+    witnessed_complaints = RelationshipTo(
+        "backend.database.models.complaint.Complaint", "WITNESSED")

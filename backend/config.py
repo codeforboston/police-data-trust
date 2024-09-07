@@ -23,6 +23,7 @@ class Config(object):
     GRAPH_URI = os.environ.get("GRAPH_URI", "localhost")
     GRAPH_PORT = os.environ.get("GRAPH_PORT", 5000)
     GRAPH_USER = os.environ.get("GRAPH_USER", "neo4j")
+    GRAPH_NM_URI = os.environ.get("GRAPH_NM_URI", "localhost:7687")
     GRAPH_PASSWORD = os.environ.get("GRAPH_PASSWORD", "password")
     GRAPH_DB = os.environ.get("GRAPH_DB", "police_data")
 

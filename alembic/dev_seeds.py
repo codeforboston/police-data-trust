@@ -2,63 +2,88 @@ from backend.database.core import db
 from backend.database import User, UserRole
 from backend.auth import user_manager
 from backend.database.models.partner import Partner, PartnerMember, MemberRole
+from backend.database.models.officer import Officer
+from backend.database.models.agency import Agency, Unit
+from backend.database.models.complaint import Complaint, RecordType
 from random import choice
 from datetime import datetime
 
 
 def create_user(user):
     user_exists = (
-        db.session.query(User).filter_by(email=user.email).first() is not None
+        User.nodes.get_or_none(email=user.email) is not None
     )
 
     if not user_exists:
-        user.create()
+        user.save()
 
 
 def create_partner(partner: Partner) -> Partner:
     partner_exists = (
-        db.session.query(Partner).filter_by(id=partner.id).first() is not None
+        Partner.nodes.get_or_none(name=partner.name) is not None
     )
 
     if not partner_exists:
-        partner.create()
-
+        partner.save()
     return partner
 
 
-""" def create_incident(key=1, date="10-01-2019", lon=84, lat=34, partner_id=1):
-    incident = Incident(
-        source_id=partner_id,
-        privacy_filter=choice([PrivacyStatus.PUBLIC, PrivacyStatus.PRIVATE]),
-        date_record_created=f"{date} 00:00:00",
-        time_of_incident=f"{date} 00:00:00",
-        time_confidence="1",
-        complaint_date=f"{date} 00:00:00",
-        closed_date=f"{date} 00:00:00",
-        location=f"Test location {key}",
-        longitude=lon,
-        latitude=lat,
-        description=f"Test description {key}",
-        stop_type="Traffic",
-        call_type="Emergency",
-        has_attachments=False,
-        from_report=True,
-        was_victim_arrested=True,
-        arrest_id=1,
-        criminal_case_brought=True,
-        case_id=1,
-        perpetrators=[
-            Perpetrator(
-                first_name=f"TestFirstName {key}",
-                last_name=f"TestLastName {key}",
-            )
-        ],
-        use_of_force=[UseOfForce(item=f"gunshot {key}")],
+def create_officer(officer: Officer, unit_uid) -> Officer:
+    officer_exists = (
+        # Officer.nodes.get_or_none() is not None
+        # TODO
     )
-    exists = db.session.query(Incident).filter_by(id=key).first() is not None
 
-    if not exists:
-        incident.create() """
+    if not officer_exists:
+        officer.save()
+    return officer
+
+
+def create_agency(agency: Agency) -> Agency:
+    agency_exists = (
+        Agency.nodes.get_or_none(name=agency.name) is not None
+    )
+
+    if not agency_exists:
+        agency.save()
+    return agency
+
+
+def create_unit(unit: Unit, agency_uid) -> Unit:
+    agency = Agency.nodes.get_or_none(uid=agency_uid)
+
+    if agency is not None:
+        unit_exists = (
+            agency.units.search(name=unit.name).first() is not None
+        )
+        if not unit_exists:
+            unit.save()
+            unit.agency.connect(agency).save()
+    return unit
+
+
+def create_complaint(
+        partner_uid,
+        complaint,
+        allegations=None,
+        location=None):
+    partner = Partner.nodes.get_or_none(uid=partner_uid)
+
+    if partner is not None:
+        complaint.save()
+        complaint.source.connect(
+            partner,
+            {'record_type': RecordType.personal}
+        ).save()
+
+        if allegations is not None:
+            for allegation in allegations:
+                allegation.save()
+                complaint.allegations.connect(allegation).save()
+
+        if location is not None:
+            location.save()
+            complaint.location.connect(location).save()
 
 
 def create_seeds():
@@ -66,7 +91,7 @@ def create_seeds():
         User(
             email="test@example.com",
             password=user_manager.hash_password("password"),
-            role=UserRole.PUBLIC,
+            role=UserRole.PUBLIC.value,
             first_name="Test",
             last_name="Example",
             phone_number="(123) 456-7890",
@@ -76,7 +101,7 @@ def create_seeds():
         User(
             email="contributor@example.com",
             password=user_manager.hash_password("password"),
-            role=UserRole.CONTRIBUTOR,
+            role=UserRole.CONTRIBUTOR.value,
             first_name="Contributor",
             last_name="Example",
             phone_number="(123) 456-7890",
@@ -86,7 +111,7 @@ def create_seeds():
         User(
             email="admin@example.com",
             password=user_manager.hash_password("password"),
-            role=UserRole.ADMIN,
+            role=UserRole.ADMIN.value,
             first_name="Admin",
             last_name="Example",
             phone_number="(012) 345-6789",
@@ -96,7 +121,7 @@ def create_seeds():
         User(
             email="passport@example.com",
             password=user_manager.hash_password("password"),
-            role=UserRole.PASSPORT,
+            role=UserRole.PASSPORT.value,
             first_name="Passport",
             last_name="Example",
             phone_number="(012) 345-6789",
@@ -106,18 +131,9 @@ def create_seeds():
         Partner(
             name="Mapping Police Violence",
             url="https://mappingpoliceviolence.us",
-            contact_email="info@campaignzero.org",
-            member_association=[
-                PartnerMember(
-                    user_id=1,
-                    role=MemberRole.MEMBER,
-                    date_joined=datetime.now(),
-                    is_active=True,
-                )
-            ],
+            contact_email="info@campaignzero.org"
         )
     )
-    # Create Complaints here
 
 
-# create_seeds()
+create_seeds()
