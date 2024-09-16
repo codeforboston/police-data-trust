@@ -17,7 +17,7 @@ services:
     build:
       context: ./frontend
       args:
-        PDT_WEB_PORT: ${PDT_WEB_PORT:-3000}
+        NPDI_WEB_PORT: ${NPDI_WEB_PORT:-3000}
     volumes:
       - ./frontend:/app
       # Prevents the host node_modules from clobbering the image's
@@ -26,7 +26,7 @@ services:
       NEXT_PUBLIC_API_MODE: real
       NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5000}/api/v1
     ports:
-      - ${PDT_WEB_PORT:-3000}:${PDT_WEB_PORT:-3000}
+      - ${NPDI_WEB_PORT:-3000}:${NPDI_WEB_PORT:-3000}
   api:
     build:
       context: .
