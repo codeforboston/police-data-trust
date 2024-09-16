@@ -270,15 +270,23 @@ components:
         last_name:
           type: "string"
           description: "Last name of the officer"
-        race:
-          type: "string"
-          description: "The race of the officer"
         ethnicity:
           type: "string"
           description: "The ethnicity of the officer"
+          enum:
+            - American Indian or Alaska Native
+            - Asian
+            - Black or African American
+            - Hispanic or Latino
+            - Native Hawaiian or Other Pacific Islander
+            - White
         gender:
           type: "string"
           description: "The gender of the officer"
+          enum:
+            - Male
+            - Female
+            - Other
         date_of_birth:
           type: "string"
           format: "date"

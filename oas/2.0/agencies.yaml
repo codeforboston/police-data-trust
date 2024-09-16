@@ -374,6 +374,10 @@ components:
         zip:
           type: "string"
           description: "Zip code of the unit"
+        date_established:
+          type: string
+          description: The date that this unit was established by its parent agency.
+          format: date
     Unit:
       allOf: 
         - $ref: "#/components/schemas/BaseUnit"

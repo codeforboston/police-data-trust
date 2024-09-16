@@ -359,6 +359,9 @@ components:
     Penalty:
       type: "object"
       properties:
+        uid:
+          type: string
+          description: UUID for the penalty.
         officer:
           allOf: 
             - $ref: officers.yaml#/components/schemas/Officer
@@ -367,6 +370,9 @@ components:
         description:
           type: "string"
           description: "A description of the penalty."
+        date_assesed:
+          type: string
+          format: date
     CreatePenalty:
       type: "object"
       properties:
@@ -414,21 +420,23 @@ components:
         age:
           type: "string"
           description: "Age range of the individual."
-        race:
+        ethnicity:
           type: "string"
-          description: "The race of the individual."
+          description: "The ethnicity of the individual."
           enum:
-            - "White"
-            - "Black"
-            - "Hispanic"
-            - "Asian"
-            - "Native American"
-            - "Other"
+            - American Indian or Alaska Native
+            - Asian
+            - Black or African American
+            - Hispanic or Latino
+            - Native Hawaiian or Other Pacific Islander
+            - White
         gender:
           type: "string"
+          description: The gender of the individual.
           enum:
             - Male
             - Female
+            - Other
     ReviewBoard:
       type: "object"
       properties:
