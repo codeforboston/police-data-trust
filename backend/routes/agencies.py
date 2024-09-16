@@ -7,7 +7,6 @@ from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
-from sqlalchemy.exc import DataError
 from pydantic import BaseModel
 
 from ..database import Agency, db

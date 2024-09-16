@@ -5,190 +5,163 @@ Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
 import os
-from typing import Any, Optional, TypeVar, Type
+import json
+from typing import Any, Optional, TypeVar, Type, List
+from enum import Enum
 
 import click
 import pandas as pd
-import psycopg
-import psycopg2.errors
 from flask import abort, current_app
 from flask.cli import AppGroup, with_appcontext
-from flask_sqlalchemy import SQLAlchemy
-from psycopg2 import connect
-from psycopg2.extensions import connection
-from sqlalchemy.exc import ResourceClosedError
 from werkzeug.utils import secure_filename
-from neomodel import config as neo_config, db as neo_db
+from neomodel import (
+    db, RelationshipTo,
+    RelationshipFrom, Relationship
+)
 from neo4j import GraphDatabase
+from neomodel.exceptions import DoesNotExist
 
 from ..config import TestingConfig
 from ..utils import dev_only
 
-db = SQLAlchemy()
 
-T = TypeVar("T")
+T = TypeVar("T", bound="JsonSerializable")
 
 
-class CrudMixin:
-    """Mix me into a database model whose CRUD operations you want to expose in
-    a convenient manner.
-    """
+class JsonSerializable:
+    """Mix me into a database model to make it JSON serializable."""
 
-    def create(self: T, refresh: bool = True) -> T:
-        db.session.add(self)
-        db.session.commit()
-        if refresh:
-            db.session.refresh(self)
-        return self
+    def to_dict(self, include_relationships=True):
+        """
+        Convert the node instance into a dictionary.
+        Args:
+            include_relationships (bool): Whether to include
+            relationships in the output.
+        
+        Returns:
+            dict: A dictionary representation of the node.
+        """
+        # Serialize node properties using deflate to handle conversions
+        node_props = self.deflate(self.__properties__)
 
-    def delete(self) -> None:
-        db.session.delete(self)
-        db.session.commit()
+        # Optionally add related nodes
+        if include_relationships:
+            for rel_name, rel_manager in self.__all_relationships__().items():
+                related_nodes = rel_manager.all()
+                node_props[rel_name] = [
+                    node.to_dict(include_relationships=False)
+                    for node in related_nodes
+                ]
+
+        return node_props
+
+    def to_json(self):
+        """Convert the node instance into a JSON string."""
+        return json.dumps(self.to_dict())
 
     @classmethod
-    def get(cls: Type[T], id: Any, abort_if_null: bool = True) -> Optional[T]:
-        obj = db.session.query(cls).get(id)
+    def from_dict(cls: Type[T], data: dict) -> T:
+        """
+        Creates or updates an instance of the model from a dictionary.
+        
+        Args:
+            data (dict): A dictionary containing data for the model instance.
+        
+        Returns:
+            Instance of the model.
+        """
+        instance = None
+
+        # Handle unique properties to find existing instances
+        unique_props = {
+            prop: data.get(prop)
+            for prop in cls.__all_properties__() if prop in data and data.get(
+                prop)
+        }
+
+        if unique_props:
+            try:
+                instance = cls.nodes.get(**unique_props)
+                # Update existing instance
+                for key, value in data.items():
+                    if key in instance.__all_properties__():
+                        setattr(instance, key, value)
+            except DoesNotExist:
+                # No existing instance, create a new one
+                instance = cls(**unique_props)
+        else:
+            instance = cls()
+
+        # Set properties
+        for key, value in data.items():
+            if key in instance.__all_properties__():
+                setattr(instance, key, value)
+
+        # Handle relationships if they exist in the dictionary
+        for rel_name, rel_manager in cls.__all_relationships__().items():
+            if rel_name in data:
+                related_nodes = data[rel_name]
+                if isinstance(related_nodes, list):
+                    # Assume related_nodes is a list of dictionaries
+                    for rel_data in related_nodes:
+                        related_instance = rel_manager.definition[
+                            'node_class'].from_dict(rel_data)
+                        getattr(instance, rel_name).connect(related_instance)
+                else:
+                    # Assume related_nodes is a single dictionary
+                    related_instance = rel_manager.definition[
+                        'node_class'].from_dict(related_nodes)
+                    getattr(instance, rel_name).connect(related_instance)
+
+        instance.save()
+        return instance
+
+    @classmethod
+    def __all_properties__(cls) -> List[str]:
+        """Get a list of all properties defined in the class."""
+        return [prop_name for prop_name in cls.__dict__ if isinstance(
+            cls.__dict__[prop_name], property)]
+
+    @classmethod
+    def __all_relationships__(cls) -> dict:
+        """Get all relationships defined in the class."""
+        return {
+            rel_name: rel_manager for rel_name, rel_manager in cls.__dict__.items()
+            if isinstance(
+                rel_manager, (RelationshipTo, RelationshipFrom, Relationship))
+        }
+
+    @classmethod
+    def get(cls: Type[T], uid: Any, abort_if_null: bool = True) -> Optional[T]:
+        """
+        Get a model instance by its UID, returning None if
+        not found (or aborting).
+
+        Args:
+            uid: Unique identifier for the node (could be Neo4j internal ID
+             or custom UUID).
+            abort_if_null (bool): Whether to abort if the node is not found.
+
+        Returns:
+            Optional[T]: An instance of the model or None.
+        """
+        obj = cls.nodes.get_or_none(uid=uid)
         if obj is None and abort_if_null:
             abort(404)
         return obj  # type: ignore
 
 
+# Update Enums to work well with NeoModel
+class PropertyEnum(Enum):
+    """Mix me into an Enum to convert the options to a dictionary."""
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
+
+
 QUERIES_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "queries")
 )
-
-
-def execute_query(filename: str) -> Optional[pd.DataFrame]:
-    """Run SQL from a file. It will return a Pandas DataFrame if it selected
-    anything; otherwise it will return None.
-
-    I do not recommend you use this function too often. In general, we should be
-    using the SQLAlchemy ORM. That said, it's a nice convenience, and there are
-    times when this function is genuinely something you want to run.
-    """
-    with open(os.path.join(QUERIES_DIR, secure_filename(filename))) as f:
-        query = f.read()
-    with db.engine.connect() as conn:
-        res = conn.execute(query)
-        try:
-            df = pd.DataFrame(res.fetchall(), columns=res.keys())
-            return df
-        except ResourceClosedError:
-            return None
-
-
-@click.group("psql", cls=AppGroup)
-@with_appcontext
-@click.pass_context
-def db_cli(ctx: click.Context):
-    """Collection of database commands."""
-    conn = connect(
-        user=current_app.config["POSTGRES_USER"],
-        password=current_app.config["POSTGRES_PASSWORD"],
-        host=current_app.config["POSTGRES_HOST"],
-        port=current_app.config["PGPORT"],
-        dbname="postgres",
-    )
-    conn.autocommit = True
-    ctx.obj = conn
-
-
-pass_psql_admin_connection = click.make_pass_decorator(connection)
-
-
-@db_cli.command("create")
-@click.option(
-    "--overwrite/--no-overwrite",
-    default=False,
-    is_flag=True,
-    show_default=True,
-    help="If true, overwrite the database if it exists.",
-)
-@pass_psql_admin_connection
-@click.pass_context
-@dev_only
-def create_database(
-    ctx: click.Context, conn: connection, overwrite: bool = False
-):
-    """Create the database from nothing."""
-    database = current_app.config["POSTGRES_DB"]
-    cursor = conn.cursor()
-
-    if overwrite:
-        cursor.execute(
-            f"SELECT bool_or(datname = '{database}') FROM pg_database;"
-        )
-        exists = cursor.fetchall()[0][0]
-        if exists:
-            ctx.invoke(delete_database)
-
-    try:
-        cursor.execute(f"CREATE DATABASE {database};")
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
-        click.echo(f"Database {database!r} already exists.")
-    else:
-        click.echo(f"Created database {database!r}.")
-
-
-@db_cli.command("init")
-def init_database():
-    """Initialize the database schemas.
-
-    Run this after the database has been created.
-    """
-    database = current_app.config["POSTGRES_DB"]
-    db.create_all()
-    click.echo(f"Initialized the database {database!r}.")
-
-
-@db_cli.command("gen-examples")
-def gen_examples_command():
-    """Generate 2 incident examples in the database."""
-    execute_query("example_incidents.sql")
-    click.echo("Added 2 example incidents to the database.")
-
-
-@db_cli.command("delete")
-@click.option(
-    "--test-db",
-    "-t",
-    default=False,
-    is_flag=True,
-    help=f"Deletes the database {TestingConfig.POSTGRES_DB!r}.",
-)
-@pass_psql_admin_connection
-@dev_only
-def delete_database(conn: connection, test_db: bool):
-    """Delete the database."""
-    if test_db:
-        database = TestingConfig.POSTGRES_DB
-    else:
-        database = current_app.config["POSTGRES_DB"]
-
-    cursor = conn.cursor()
-
-    # Don't validate name for `police_data_test`.
-    if database != TestingConfig.POSTGRES_DB:
-        # Make sure we want to do this.
-        click.echo(f"Are you sure you want to delete database {database!r}?")
-        click.echo(
-            "Type in the database name '"
-            + click.style(database, fg="red")
-            + "' to confirm"
-        )
-        confirmation = click.prompt("Database name")
-        if database != confirmation:
-            click.echo(
-                "The input does not match. " "The database will not be deleted."
-            )
-            return None
-
-    try:
-        cursor.execute(f"DROP DATABASE {database};")
-    except psycopg2.errors.lookup("3D000"):
-        click.echo(f"Database {database!r} does not exist.")
-    else:
-        click.echo(f"Database {database!r} was deleted.")
 
 
 # Neo4j commands
@@ -198,10 +171,10 @@ def delete_database(conn: connection, test_db: bool):
 def neo4j_cli(ctx: click.Context):
     """Collection of Neo4j database commands."""
     neo4j_conn = GraphDatabase.driver(
-        current_app.config["NEO4J_BOLT_URL"],
+        current_app.config["GRAPH_NM_URI"],
         auth=(
-            current_app.config["NEO4J_USERNAME"],
-            current_app.config["NEO4J_PASSWORD"],
+            current_app.config["GRAPH_USER"],
+            current_app.config["GRAPH_PASSWORD"],
         ),
     )
     ctx.obj = neo4j_conn
@@ -212,7 +185,7 @@ def neo4j_cli(ctx: click.Context):
 def neo4j_create():
     """Create the Neo4j database or ensure it is ready."""
     # Example logic to create a constraint or ensure the database is ready
-    neo_db.cypher_query("CREATE CONSTRAINT ON (n:Node) ASSERT n.uid IS UNIQUE;")
+    db.cypher_query("CREATE CONSTRAINT ON (n:Node) ASSERT n.uid IS UNIQUE;")
     click.echo("Neo4j database setup complete.")
 
 
@@ -220,5 +193,5 @@ def neo4j_create():
 @with_appcontext
 def neo4j_delete():
     """Delete all nodes and relationships in the Neo4j database."""
-    neo_db.cypher_query("MATCH (n) DETACH DELETE n")
+    db.cypher_query("MATCH (n) DETACH DELETE n")
     click.echo("Neo4j database cleared.")

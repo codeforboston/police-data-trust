@@ -2,49 +2,13 @@
 
 import bcrypt
 from backend.database.core import db
-from flask_serialize.flask_serialize import FlaskSerialize
-# from flask_user import UserMixin
-from sqlalchemy.ext.compiler import compiles
-# from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.types import String, TypeDecorator
-# from ..core import CrudMixin
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database import JsonSerializable, PropertyEnum
 from neomodel import (
-    Relationship,
+    Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
     UniqueIdProperty, EmailProperty
 )
 from backend.database.models.partner import PartnerMember
-
-
-fs_mixin = FlaskSerialize(db)
-
-
-# Creating this class as NOCASE collation is not compatible with ordinary
-# SQLAlchemy Strings
-class CI_String(TypeDecorator):
-    """Case-insensitive String subclass definition"""
-
-    impl = String
-    cache_ok = True
-
-    def __init__(self, length, **kwargs):
-        if kwargs.get("collate"):
-            if kwargs["collate"].upper() not in ["BINARY", "NOCASE", "RTRIM"]:
-                raise TypeError(
-                    "%s is not a valid SQLite collation" % kwargs["collate"]
-                )
-            self.collation = kwargs.pop("collate").upper()
-        super(CI_String, self).__init__(length=length, **kwargs)
-
-
-@compiles(CI_String, "sqlite")
-def compile_ci_string(element, compiler, **kwargs):
-    base_visit = compiler.visit_string(element, **kwargs)
-    if element.collation:
-        return "%s COLLATE %s" % (base_visit, element.collation)
-    else:
-        return base_visit
 
 
 class UserRole(str, PropertyEnum):
@@ -65,7 +29,7 @@ class UserRole(str, PropertyEnum):
 
 
 # Define the User data-model.
-class User(ExportableNode):
+class User(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     active = BooleanProperty(default=True)
 
@@ -79,7 +43,8 @@ class User(ExportableNode):
     first_name = StringProperty(required=True)
     last_name = StringProperty(required=True)
 
-    role = StringProperty(choices=UserRole.choices(), default=UserRole.PUBLIC)
+    role = StringProperty(
+        choices=UserRole.choices(), default=UserRole.PUBLIC.value)
 
     phone_number = StringProperty()
 
@@ -88,11 +53,29 @@ class User(ExportableNode):
         'backend.database.models.partner.Partner',
         "MEMBER_OF_PARTNER", model=PartnerMember)
 
-    def verify_password(self, pw):
+    def verify_password(self, pw: str) -> bool:
+        """
+        Verify the user's password using bcrypt.
+        Args:
+            pw (str): The password to verify.
+
+        Returns:
+            bool: True if the password is correct, False otherwise.
+        """
         return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
 
-    def get_by_email(email):
+    @classmethod
+    def get_by_email(cls, email: str) -> "User":
+        """
+        Get a user by their email address.
+
+        Args:
+            email (str): The user's email.
+
+        Returns:
+            User: The User instance if found, otherwise None.
+        """
         try:
-            return User.nodes.get(email=email)
-        except User.DoesNotExist:
+            return cls.nodes.get_or_none(email=email)
+        except cls.DoesNotExist:
             return None

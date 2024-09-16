@@ -1,16 +1,9 @@
 from __future__ import annotations
 
 import textwrap
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, root_validator
-from pydantic.main import ModelMetaclass
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
 from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
-from sqlalchemy.ext.declarative import DeclarativeMeta
 
-from .database import User
-from .database.models.partner import PartnerMember, MemberRole
 
 spec = SpecTree(
     "flask",
@@ -74,19 +67,3 @@ spec = SpecTree(
         ),
     ],
 )
-
-
-def validate(auth=True, **kwargs):
-    if not auth:
-        # Disable security for the route
-        kwargs["security"] = {}
-
-    return spec.validate(**kwargs)
-
-
-def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
-    return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
-
-
-def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
-    return sqlalchemy_to_pydantic(model_type, **kwargs)
