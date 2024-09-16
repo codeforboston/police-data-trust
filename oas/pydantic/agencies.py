@@ -68,6 +68,7 @@ class CreateUnit(BaseUnit, BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
+    date_established: Optional[str] = Field(None, description="The date that this unit was established by its parent agency.")
     commander_uid: Optional[str] = Field(None, description="The UID of the unit's current commander.")
 
 
@@ -79,6 +80,7 @@ class UpdateUnit(BaseUnit, BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
+    date_established: Optional[str] = Field(None, description="The date that this unit was established by its parent agency.")
     commander_uid: Optional[str] = Field(None, description="The UID of the unit's current commander.")
 
 
@@ -91,6 +93,7 @@ class BaseUnit(BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
+    date_established: Optional[str] = Field(None, description="The date that this unit was established by its parent agency.")
 
 
 class Unit(BaseUnit, BaseModel):
@@ -101,6 +104,7 @@ class Unit(BaseUnit, BaseModel):
     description: Optional[str] = Field(None, description="Description of the unit")
     address: Optional[str] = Field(None, description="Street address of the unit")
     zip: Optional[str] = Field(None, description="Zip code of the unit")
+    date_established: Optional[str] = Field(None, description="The date that this unit was established by its parent agency.")
     uid: Optional[str] = Field(None, description="Unique identifier for the unit")
     commander: Optional[Officer] = Field(None, description="The current commander of the unit.")
     commander_history_url: Optional[str] = Field(None, description="-| URL that returns the past commanders of the unit and the period of their respective commands.")

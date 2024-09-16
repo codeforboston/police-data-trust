@@ -110,8 +110,10 @@ class Allegation(BaseAllegation, BaseModel):
 
 
 class Penalty(BaseModel):
+    uid: Optional[str] = Field(None, description="UUID for the penalty.")
     officer: Optional[Officer] = Field(None, description="The officer who the penalty is associated with.")
     description: Optional[str] = Field(None, description="A description of the penalty.")
+    date_assesed: Optional[str] = None
 
 
 class CreatePenalty(BaseModel):
@@ -139,8 +141,8 @@ class Investigation(BaseInvestigation, BaseModel):
 
 class Civilian(BaseModel):
     age: Optional[str] = Field(None, description="Age range of the individual.")
-    race: Optional[str] = Field(None, description="The race of the individual.")
-    gender: Optional[str] = None
+    ethnicity: Optional[str] = Field(None, description="The ethnicity of the individual.")
+    gender: Optional[str] = Field(None, description="The gender of the individual.")
 
 
 class ReviewBoard(BaseModel):
