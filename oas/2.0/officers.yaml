@@ -1,0 +1,350 @@
+openapi: "3.0.3"
+info:
+  title: "Officers"
+  description: "API Description"
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Officers"
+    description: "Officer related endpoints"
+  - name: "Employment History"
+    description: "Employment related endpoints"
+paths:
+  /officers:
+    get:
+      tags:
+        - "Officers"
+      summary: "Get all officers"
+      operationId: "getOfficers"
+      parameters: 
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfficerList"
+    post:
+      tags: 
+        -  Officers
+      summary: "Create a new officer"
+      operationId: "createOfficer"
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/CreateOfficer"
+      responses:
+        '201':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Officer'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /officers/{uid}:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the officer
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - "Officers"
+      summary: "Get officer by uid"
+      operationId: "getOfficerById"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Officer"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    patch:
+      tags:
+        - "Officers"
+      summary: "Update an existing officer"
+      operationId: "updateOfficer"
+      requestBody:
+        description: "Officer object that needs to be updated"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Officer"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Officer"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+    delete:
+      tags:
+        - "Officers"
+      summary: "Delete an officer"
+      operationId: "deleteOfficer"
+      description: "Delete an officer by uid"
+      parameters:
+        - name: "uid"
+          in: "path"
+          description: "UID of officer to delete"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "No content"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /officers/{uid}/employment:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the officer
+        required: true
+        schema:
+          type: string
+    get:
+      summary: "Get Employment History"
+      operationId: "getEmploymentHistory"
+      description: >
+        Get employment history for an officer. This includes all the agencies
+        the officer has worked for.
+      tags:
+        - "Employment History"
+      responses: 
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmploymentList'
+    put:
+      summary: "Update Employment History"
+      operationId: "updateEmploymentHistory"
+      description: >
+        Update the employment history for an officer. This includes all the agencies
+        the officer has worked for.
+      tags:
+        - "Employment History"
+      requestBody:
+        content: 
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/AddEmploymentList'
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/EmploymentList'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BaseEmployment:
+      type: "object"
+      properties:
+        officer_uid:
+          type: "string"
+          description: "The UID of the officer."
+        agency_uid:
+          type: "string"
+          description: "The UID of the agency the officer is employed by."
+        unit_uid:
+          type: "string"
+          description: "The UID of the unit the officer is assigned to."
+        earliest_employment:
+          type: "string"
+          format: "date"
+          description: "The earliest date of employment"
+        latest_employment:
+          type: "string"
+          format: "date"
+          description: "The latest date of employment"
+        badge_number:
+          type: "string"
+          description: "The badge number of the officer"
+        highest_rank:
+          type: "string"
+          description: "The highest rank the officer has held during this employment."
+        commander:
+          type: boolean
+          description: Indicates that the officer commanded the unit during this employment.
+    AddEmployment:
+      allOf: 
+        - $ref: "#/components/schemas/BaseEmployment"
+        - type: "object"
+        - required:
+          - unit_uid
+          - badge_number
+    AddEmploymentFailed:
+      type: object
+      properties:
+        agency_uid:
+          type: "string"
+          description: "The uid of the agency that could not be added."
+        reason:
+          type: "string"
+          description: "The reason the employment record could not be added"
+    AddEmploymentList:
+      type: object
+      properties:
+        agencies:
+          type: "array"
+          description: "The units to add to the officer's employment history."
+          items:
+            $ref: "#/components/schemas/AddEmployment"
+    Employment:
+      allOf: 
+        - $ref: "#/components/schemas/BaseEmployment"
+    AddEmploymentResponse:
+      type: object
+      required: 
+        - created
+        - failed
+        - total_created
+        - total_failed
+      properties:
+        created:
+          type: array
+          items:
+            $ref: "#/components/schemas/Employment"
+        failed:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddEmploymentFailed"
+        total_created:
+          type: integer
+          minimum: 0
+        total_failed:
+          type: integer
+          minimum: 0
+    EmploymentList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Employment"
+    BaseOfficer:
+      type: "object"
+      properties:
+        first_name:
+          type: "string"
+          description: "First name of the officer"
+        middle_name:
+          type: "string"
+          description: "Middle name of the officer"
+        last_name:
+          type: "string"
+          description: "Last name of the officer"
+        ethnicity:
+          type: "string"
+          description: "The ethnicity of the officer"
+          enum:
+            - American Indian or Alaska Native
+            - Asian
+            - Black or African American
+            - Hispanic or Latino
+            - Native Hawaiian or Other Pacific Islander
+            - White
+        gender:
+          type: "string"
+          description: "The gender of the officer"
+          enum:
+            - Male
+            - Female
+            - Other
+        date_of_birth:
+          type: "string"
+          format: "date"
+          description: "The date of birth of the officer"
+        state_ids:
+          type: "array"
+          description: "The state ids of the officer"
+          items:
+            $ref: "#/components/schemas/StateId"
+    CreateOfficer:
+      allOf:
+        - $ref: "#/components/schemas/BaseOfficer"
+        - type: "object"
+        - required:
+          - first_name
+          - last_name
+    UpdateOfficer:
+      allOf:
+        - $ref: "#/components/schemas/BaseOfficer"
+        - type: "object"
+    Officer:
+      allOf: 
+        - $ref: "#/components/schemas/BaseOfficer"
+        - type: "object"
+        - properties:
+            uid:
+              type: "string"
+              description: "The uid of the officer"
+            employment_history:
+              type: "string"
+              description: "A link to retrieve the employment history of the officer"
+            allegations:
+              type: "string"
+              description: "A link to retrieve the allegations against the officer"
+            litigation:
+              type: "string"
+              description: "A link to retrieve the litigation against the officer"
+    OfficerList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Officer"
+    StateId:
+      type: "object"
+      properties:
+        uid:
+          type: "string"
+          description: "The UUID of this state id"
+        state:
+          type: "string"
+          description: "The state of the state id"
+        id_name:
+          type: "string"
+          description: "The name of the id. For example, Tax ID, Driver's License, etc."
+        value:
+          type: "string"
+          description: "The value of the id."

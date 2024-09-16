@@ -1,0 +1,230 @@
+openapi: "3.0.3"
+info:
+  title: "Partners"
+  description: "API Description"
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Partners"
+    description: "Partners API"
+paths:
+  /partners:
+    get:
+      tags:
+        - "Partners"
+      summary: "Get all partners"
+      operationId: "getPartners"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/PartnerList"
+    post:
+      tags:
+        - "Partners"
+      summary: "Create a new partner"
+      operationId: "createPartner"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePartner"
+      responses:
+        '201':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /partners/{uid}:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the partner
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - "Partners"
+      summary: "Get Partner"
+      operationId: "getPartnerById"
+      description: >
+        Returns a single partner.
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    patch:
+      tags:
+        - "Partners"
+      summary: "Update an existing partner"
+      operationId: "updatePartner"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePartner"
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /partners/{uid}/members:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the partner
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Partners
+      summary: "Get all members"
+      operationId: "getMembers"
+      description: >
+        Returns a list of all users who are members of a partner.
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/MemberList'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BasePartner:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "Name of the partner organization."
+        url:
+          type: "string"
+          description: "Website URL of the partner."
+        contact_email:
+          type: "string"
+          description: "Contact email for the partner organization."
+    CreatePartner:
+      allOf:
+        - $ref: "#/components/schemas/BasePartner"
+        - type: "object"
+          required: 
+            - name
+            - contact_email
+    UpdatePartner:
+      allOf: 
+        -  $ref: "#/components/schemas/BasePartner"
+    Partner:
+      allOf:
+        - $ref: "#/components/schemas/BasePartner"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the partner."
+            members:
+              type: string
+              description: "Url to get all members of the partner."
+            reported_incidents:
+              type: string
+              description: "Url to get all incidents reported by the partner."
+    PartnerList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Partner"
+    MemberBase:
+      type: "object"
+      properties:
+        partner_uid:
+          type: "string"
+          description: "Unique identifier for the partner."
+        user_uid:
+          type: "string"
+          description: "Unique identifier for the user."
+        role:
+          type: "string"
+          description: "Role of the user."
+          enum: [
+            "Administrator",
+            "Publisher",
+            "Member",
+            "Subscriber"
+          ]
+        is_active:
+          type: "boolean"
+          description: "Whether the user is active."
+    Member:
+      allOf:
+        - $ref: "#/components/schemas/MemberBase"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the user."
+            date_joined:
+              type: "string"
+              format: "date-time"
+              description: "Date the user joined the partner organizaation."
+    AddMember:
+      allOf: 
+        - $ref: "#/components/schemas/MemberBase"
+        - type: "object"
+          required: 
+            - role
+            - user_uid
+            - partner_uid
+    MemberList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Member"

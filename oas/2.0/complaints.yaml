@@ -1,0 +1,565 @@
+openapi: "3.0.3"
+info:
+  title: "Complaints"
+  description: "API Description"
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Complaints"
+    description: "Complaints API"
+paths:
+  /complaints/{complaint_uid}:
+    parameters:
+      - name: complaint_uid
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Get Complaint"
+      operationId: "getComplaint"
+      description: >
+        Returns information about a single complaint.
+      responses:
+        "200":
+          description: "A complaint object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    patch: 
+      tags: 
+        - "Complaints"
+      summary: "Update Complaint"
+      operationId: "updateComplaint"
+      description: >
+        Update a single complaint. Only an admin of the contributing
+        organization or the original user who submitted the complaint
+        can update the complaint.
+      requestBody:
+        description: "Complaint object that needs to be updated in the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateComplaint"
+      responses:
+        "200":
+          description: "A complaint object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+      
+  /complaints:
+    post:
+      tags: 
+        - "Complaints"
+      summary: "Create Complaint"
+      operationId: "createComplaint"
+      description: >
+        Create a single complaint. User must be a
+        contributor to create an complaint.
+      requestBody:
+        description: "Complaint object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateComplaint"
+      responses:
+        "200":
+          description: "A JSON array of user names"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Get all Complaints"
+      operationId: "getComplaints"
+      description: >
+       Returns all complaints in the database. Filters can be applied
+       to narrow down the results.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "A JSON array of complaint objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplaintList"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BaseComplaint:
+      type: "object"
+      description: "Base complaint object"
+      properties:
+        source_details:
+          $ref: '#/components/schemas/SourceDetails'
+        category:
+          type: "string"
+          description: "The category of the complaint."
+        incident_date:
+          type: "string"
+          format: "date-time"
+          description: "The date and time the incident occurred."
+        recieved_date:
+          type: "string"
+          format: "date-time"
+          description: "The date and time the complaint was received by the reporting partner."
+        closed_date:
+          type: "string"
+          format: "date-time"
+          description: "The date and time the complaint was closed."
+        location:
+          type: object
+          properties:
+            address1:
+              type: "string"
+              description: "The address of the incident."
+            address2:
+              type: "string"
+              description: "The address of the incident."
+            city:
+              type: "string"
+              description: "The city of the incident."
+            state:
+              type: "string"
+              description: "The state of the incident."
+            zip:
+              type: "string"
+              description: "The zip code of the incident."
+            latitude:
+              type: "number"
+              description: "The latitude of the incident."
+            longitude:
+              type: "number"
+              description: "The longitude of the incident."
+        reason_for_contact:
+          type: "string"
+          description: "The reason for the contact."
+        outcome_of_contact:
+          type: "string"
+          description: "The outcome of the contact."
+        civilian_witnesses:
+          type: array
+          description: "The civilian witnesses associated with the complaint."
+          items: 
+            $ref: "#/components/schemas/Civilian"
+        attachements:
+          type: "array"
+          description: "Documents and multimeida associated with the complaint."
+          items:
+            $ref: "#/components/schemas/Attachemnts"
+    CreateComplaint:
+      allOf: 
+        - $ref: "#/components/schemas/BaseComplaint"
+        - type: object
+          properties:
+            source_uid:
+              type: "string"
+              description: "The UID of the partner that reported the complaint."
+            civilian_review_board_uid:
+              type: "string"
+              description: "The UID of the civilian review board that reviewed the complaint."
+            police_witnesses:
+              type: "array"
+              description: "The UID of any police witnesses associated with the complaint."
+              items:
+                type: "string"
+            allegations:
+              type: "array"
+              description: "The allegations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreateAllegation"
+            investigations:
+              type: "array"
+              description: "The investigations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreateInvestigation"
+            penalties:
+              type: "array"
+              description: "The penalties associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreatePenalty"
+    UpdateComplaint:
+      allOf: 
+        - $ref: "#/components/schemas/BaseComplaint"
+        - type: object
+          properties:
+            civilian_review_board_uid:
+              type: "string"
+              description: "The UID of the civilian review board that reviewed the complaint."
+            police_witnesses:
+              type: "array"
+              description: "The uid of any police witnesses associated with the complaint."
+              items:
+                type: "string"
+            allegations:
+              type: "array"
+              description: "The allegations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreateAllegation"
+            investigations:
+              type: "array"
+              description: "The investigations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreateInvestigation"
+            penalties:
+              type: "array"
+              description: "The penalties associated with the complaint."
+              items:
+                $ref: "#/components/schemas/CreatePenalty"
+
+    Complaint:
+      allOf:
+        - $ref: "#/components/schemas/BaseComplaint"
+        - type: "object"
+          required:
+            - uid
+            - created_at
+            - updated_at
+            - source_uid
+            - category
+            - incident_date
+            - recieved_date
+            - location
+            - allegations
+            - penalties
+            - investigations
+            - police_witnesses
+            - civilian_witnesses
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the complaint."
+            created_at:
+              type: "string"
+              format: "date-time"
+              description: "Date and time the complaint was created."
+            updated_at:
+              type: "string"
+              format: "date-time"
+              description: "Date and time the complaint was last updated."
+            source:
+              allOf: 
+                - $ref: partners.yaml#/components/schemas/Partner
+                - type: "object"
+                  description: "The partner that reported the complaint."
+            civilian_review_board:
+              allOf: 
+                -  $ref: '#/components/schemas/ReviewBoard'
+                - type: "object"
+                  description: "The civilian review board that reviewed the complaint."
+            police_witnesses:
+              type: "array"
+              description: "The police witnesses associated with the complaint."
+              items:
+                $ref: officers.yaml#/components/schemas/Officer
+            allegations:
+              type: "array"
+              description: "The allegations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/Allegation"
+            investigations:
+              type: "array"
+              description: "The investigations associated with the complaint."
+              items:
+                $ref: "#/components/schemas/Investigation"
+            penalties:
+              type: "array"
+              description: "The penalties associated with the complaint."
+              items:
+                $ref: "#/components/schemas/Penalty"
+    ComplaintList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              description: "List of complaints."
+              items:
+                $ref: "#/components/schemas/Complaint"
+    BaseAllegation:
+      type: "object"
+      properties:
+        complaintant:
+          allOf: 
+            -  $ref: "#/components/schemas/Civilian"
+            - type: "object"
+              description: "Demographic information of the individual who filed the complaint."
+        allegation:
+          type: "string"
+          description: "The allegation made by the complaintant."
+        recomended_finding:
+          type: "string"
+          description: "The finding recomended by the review board."
+        recomended_outcome:
+          type: "string"
+          description: "The outcome recomended by the review board."
+        finding:
+          type: "string"
+          description: "The legal finding."
+        outcome:
+          type: "string"
+          description: "The final outcome of the allegation."
+    CreateAllegation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseAllegation"
+        - type: object
+          properties:
+            perpetrator_uid:
+              type: "string"
+              description: "The UID of the officer the allegation is made against."
+    Allegation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseAllegation"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the allegation."
+            perpetrator:
+              allOf: 
+                - $ref: officers.yaml#/components/schemas/Officer
+                - type: "object"
+                  description: The officer who the allegation is made against.
+    Penalty:
+      type: "object"
+      properties:
+        uid:
+          type: string
+          description: UUID for the penalty.
+        officer:
+          allOf: 
+            - $ref: officers.yaml#/components/schemas/Officer
+            - type: "object"
+              description: "The officer who the penalty is associated with."
+        description:
+          type: "string"
+          description: "A description of the penalty."
+        date_assesed:
+          type: string
+          format: date
+    CreatePenalty:
+      type: "object"
+      properties:
+        officer_uid:
+          type: "string"
+          description: "The UID of the officer the penalty is associated with."
+        description:
+          type: "string"
+          description: "A description of the penalty."
+    BaseInvestigation:
+      type: object
+      properties:
+        start_date:
+          type: "string"
+          format: "date-time"
+          description: "The date the investigation started."
+        end_date:
+          type: "string"
+          format: "date-time"
+          description: "The date the investigation ended."
+    CreateInvestigation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseInvestigation"
+        - type: object
+          properties:
+            investigator_uid:
+              type: "string"
+              description: "The UID of the officer who preformed the investigation."
+    Investigation:
+      allOf: 
+        - $ref: "#/components/schemas/BaseInvestigation"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the investigation."
+            investigator:
+              allOf: 
+                - $ref: officers.yaml#/components/schemas/Officer
+                - type: "object"
+                  description: "The officer who preformed the investigation."
+    Civilian:
+      type: "object"
+      properties:
+        age:
+          type: "string"
+          description: "Age range of the individual."
+        ethnicity:
+          type: "string"
+          description: "The ethnicity of the individual."
+          enum:
+            - American Indian or Alaska Native
+            - Asian
+            - Black or African American
+            - Hispanic or Latino
+            - Native Hawaiian or Other Pacific Islander
+            - White
+        gender:
+          type: "string"
+          description: The gender of the individual.
+          enum:
+            - Male
+            - Female
+            - Other
+    ReviewBoard:
+      type: "object"
+      properties:
+        uid:
+          type: "string"
+          description: "Unique identifier for the review board."
+        name:
+          type: "string"
+          description: "The name of the review board."
+        city:
+          type: "string"
+          description: "The city the review board is located in."
+        state:
+          type: "string"
+          description: "The state the review board is located in."
+        url:
+          type: string
+          description: The website URL for the review board.
+    Attachemnts:
+      type: "object"
+      properties:
+        type:
+          type: "string"
+          description: "The type of attachment."
+        url:
+          type: "string"
+          description: "The url of the attachment."
+        description:
+          type: "string"
+          description: "A description of the attachment."
+    SourceDetails:
+      oneOf: 
+        - $ref: '#/components/schemas/LegalAction'
+        - $ref: '#/components/schemas/PersonalAccount'
+        - $ref: '#/components/schemas/NewsReport'
+        - $ref: '#/components/schemas/GovernmentRecord'
+      discriminator: 
+        propertyName: record_type
+        mapping:
+          Legal Action: '#/components/schemas/LegalAction'
+          Personal Account: '#/components/schemas/PersonalAccount'
+          News Report: '#/components/schemas/NewsReport'
+          Government Record: '#/components/schemas/GovernmentRecord'
+      type: "object"
+      properties:
+        record_type:
+          type: "string"
+          description: "The type of record the complaint is associated with."
+          enum:
+            - Legal Action
+            - Personal Account
+            - News Report
+            - Government Record
+    LegalAction:
+      type: "object"
+      properties:
+        record_type:
+          type: "string"
+          description: "The type of record the complaint is associated with."
+          enum:
+            - Legal Action
+        court:
+          type: "string"
+          description: "The court the legal action was filed in."
+        judge:
+          type: "string"
+          description: "The judge who presided over the case."
+        docket_number:
+          type: "string"
+          description: "The docket number of the case."
+        date_of_action:
+          type: "string"
+          format: "date-time"
+          description: "The date the legal action was filed."
+    PersonalAccount:
+      type: "object"
+      properties:
+        record_type:
+          type: "string"
+          description: "The type of record the complaint is associated with."
+          enum:
+            - Personal Account
+    GovernmentRecord:
+      type: "object"
+      properties:
+        record_type:
+          type: "string"
+          description: "The type of record the complaint is associated with."
+          enum:
+            - Government Record
+        reporting_agency:
+          type: "string"
+          description: "The agency that reported the record."
+        reporting_agency_url:
+          type: "string"
+          description: "The url of the agency that reported the record."
+        reporting_agency_email:
+          type: "string"
+          description: "The email of the agency that reported the record."
+    NewsReport:
+      type: "object"
+      properties:
+        record_type:
+          type: "string"
+          description: "The type of record the complaint is associated with."
+          enum:
+            - News Report
+        publication_name:
+          type: "string"
+          description: "The name of the publication."
+        publication_date:
+          type: "string"
+          format: "date-time"
+          description: "The date the publication was released."
+        publication_url:
+          type: "string"
+          description: "The url of the publication."
+        author:
+          type: "string"
+          description: "The author of the publication."
+        author_url:
+          type: "string"
+          description: "The url of the author."
+        author_email:
+          type: "string"
+          description: "The email of the author."

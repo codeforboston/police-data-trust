@@ -1,0 +1,483 @@
+openapi: "3.0.3"
+info:
+  title: "Agencies"
+  description: "API Description"
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Agencies"
+    description: "API for managing agencies"
+  - name: "Units"
+    description: "API for managing the units and officers of an agency."
+paths:
+  /agencies:
+    get:
+      summary: "Get Agencies"
+      operationId: "getAgencies"
+      description: "Get a list of all agencies"
+      tags: 
+        -  Agencies
+      responses:
+        "200":
+          description: "A JSON array of agency objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgencyList"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+    post:
+      summary: "Create Agency"
+      operationId: "createAgency"
+      description: "Create a new law enforement agency. The user must be a contributor."
+      tags: 
+        -  Agencies
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/CreateAgency"
+      responses:
+        "201":
+          description: "Returns the created agency object."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agency"
+        "400":
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /agencies/{agency_uid}:
+    parameters:
+      - name: "agency_uid"
+        in: "path"
+        description: "The uid of the agency you want to retrieve."
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get Agency"
+      operationId: "getAgency"
+      description: "Get a single agency by uid."
+      tags: 
+        -  Agencies
+      responses:
+        "200":
+          description: "An agency object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agency"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    patch:
+      summary: "Update Agency"
+      operationId: "updateAgency"
+      description: "Update a single agency. User must be a contributor."
+      tags: 
+        -  Agencies
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/UpdateAgency"
+      responses:
+        '200':
+          description: 'Returns the updated agency object.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agency'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /agencies/{agency_uid}/officers:
+    parameters:
+      - name: "agency_uid"
+        in: "path"
+        description: "The uid of the agency you want to retrieve."
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get Officers"
+      operationId: "getOfficers"
+      description: >
+        Get a list of all of the officers who have been employed
+        by a given agency.
+      tags: 
+        -  Units
+      responses:
+        "200":
+          description: "A JSON array of officer objects"
+          content:
+            application/json:
+              schema:
+                $ref: officers.yaml#/components/schemas/OfficerList
+    put: 
+      summary: "Add Employment Records"
+      operationId: "addOfficers"
+      description: >
+        Adds officer employment records to an agency. Can only
+        add records for officers that already exist in the database.
+        User must be a contributor.
+      tags: 
+        -  Units
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddOfficerList"
+      responses: 
+        '200':
+          description: >
+            Returns the updated employment records. The response also includes
+            information about any records that could not be added.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddOfficerResponse'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /agencies/{agency_uid}/units:
+    parameters:
+      - name: "agency_uid"
+        in: "path"
+        description: "The uid of the agency you want to retrieve."
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get Units"
+      operationId: "getUnits"
+      description: "Get a list of all units for a given agency."
+      tags: 
+        -  Units
+      responses:
+        "200":
+          description: "A JSON array of unit objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnitList"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+    post:
+      summary: "Create Unit"
+      operationId: "createUnit"
+      description: "Adds a unit or command to an existing agency. User must be a contributor."
+      tags: 
+        -  Units
+      requestBody:
+        description: "Officer object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUnit"
+      responses:
+        "201":
+          description: "A JSON array of Unit objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUnit"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /agencies/{agency_uid}/units/{unit_uid}:
+    parameters:
+      - name: "agency_uid"
+        in: "path"
+        description: "The uid of the agency you want to retrieve."
+        required: true
+        schema:
+          type: "string"
+      - name: "unit_uid"
+        in: "path"
+        description: "The uid of the agency you want to retrieve."
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get Unit"
+      operationId: "getUnit"
+      description: >
+        Retrieve detailed information about a single unit.
+      tags: 
+        -  Units
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve units for."
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "A JSON array of unit objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unit"
+    patch:
+      summary: "Update Unit"
+      operationId: "updateUnit"
+      description: "Update an existing unit. User must be a contributor."
+      tags: 
+        -  Units
+      requestBody:
+        description: "Fields that need to be updated."
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUnit"
+      responses:
+        "200":
+          description: "A JSON array of Unit objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unit"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BaseAgency:
+      type: "object"
+      properties:
+        uid:
+          type: "string"
+          description: "Unique identifier for the agency"
+        name:
+          type: "string"
+          description: "Name of the agency"
+        hq_address:
+          type: "string"
+          description: "Address of the agency"
+        hq_city:
+          type: "string"
+          description: "City of the agency"
+        hq_state:
+          type: "string"
+          description: "State of the agency"
+        hq_zip:
+          type: "string"
+          description: "Zip code of the agency"
+        jurisdiction:
+          type: "string"
+          description: "Jurisdiction of the agency"
+        phone:
+          type: "string"
+          description: "Phone number of the agency"
+        email:
+          type: "string"
+          description: "Email of the agency"
+        website_url:
+          type: "string"
+          description: "Website of the agency"
+    CreateAgency:
+      allOf: 
+        - $ref: "#/components/schemas/BaseAgency"
+        - type: "object"
+          required:
+            - name
+            - hq_address
+            - hq_city
+            - hq_zip
+            - jurisdiction
+            - website_url
+    UpdateAgency:
+      allOf: 
+        -  $ref: "#/components/schemas/BaseAgency"
+    AgencyList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Agency"
+    Agency:
+      allOf:
+        - $ref: "#/components/schemas/BaseAgency"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the agency"
+            officers_url:
+              type: "string"
+              description: "URL to get a list of officers for this agency"
+            units_url:
+              type: "string"
+              description: "URL to get a list of units for this agency"
+    CreateUnit:
+      allOf:
+        - $ref: "#/components/schemas/BaseUnit"
+        - type: "object"
+          properties:
+            commander_uid:
+              type: "string"
+              description: "The UID of the unit's current commander."
+          required:
+            - name
+    UpdateUnit:
+      allOf: 
+        - $ref: "#/components/schemas/BaseUnit"
+        - type: object
+          properties:
+            commander_uid:
+              type: string
+              description: The UID of the unit's current commander.
+    BaseUnit:
+      type: object
+      description: "Base properties for a unit"
+      properties:
+        name:
+          type: "string"
+          description: "Name of the unit"
+        website_url:
+          type: "string"
+          description: "Website of the unit"
+        phone:
+          type: "string"
+          description: "Phone number of the unit"
+        email:
+          type: "string"
+          description: "Email of the unit"
+        description:
+          type: "string"
+          description: "Description of the unit"
+        address:
+          type: "string"
+          description: "Street address of the unit"
+        zip:
+          type: "string"
+          description: "Zip code of the unit"
+        date_established:
+          type: string
+          description: The date that this unit was established by its parent agency.
+          format: date
+    Unit:
+      allOf: 
+        - $ref: "#/components/schemas/BaseUnit"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the unit"
+            commander:
+              allOf:
+                - $ref: officers.yaml#/components/schemas/Officer
+                - type: object
+                  description: The current commander of the unit.
+            commander_history_url:
+              type: string
+              description: -|
+                URL that returns the past commanders of the unit and the period of their respective commands.
+            agency_url:
+              type: "string"
+              description: "URL to get the agency that this unit belongs to."
+            officers_url:
+              type: "string"
+              description: "URL to get a list of officers for this unit."
+    UnitList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Unit"
+    AddOfficer:
+      type: object
+      required: 
+        - officer_uid
+        - badge_number
+        - unit_uid
+      properties:
+        officer_uid:
+          type: "string"
+          description: "The uid of the officer"
+        earliest_employment:
+          type: "string"
+          format: "date"
+          description: "The earliest date of employment"
+        latest_employment:
+          type: "string"
+          format: "date"
+          description: "The latest date of employment"
+        badge_number:
+          type: "string"
+          description: "The badge number of the officer"
+        unit_uid:
+          type: "string"
+          description: "The UID of the unit the officer is assigned to."
+        highest_rank:
+          type: "string"
+          description: "The highest rank the officer has held during their employment."
+        commander:
+          type: boolean
+          description: -|
+            If true, this officer will be added as the commander of the unit for the specified time period.
+    AddOfficerList:
+      type: object
+      required: 
+        - officers
+      properties:
+        officers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddOfficer"
+    AddOfficerFailed:
+      type: object
+      properties:
+        officer_uid:
+          type: "string"
+          description: "The uid of the officer"
+        reason:
+          type: "string"
+          description: "The reason the employment record could not be added"
+    AddOfficerResponse:
+      type: object
+      required: 
+        - created
+        - failed
+        - total_created
+        - total_failed
+      properties:
+        created:
+          type: array
+          items:
+            $ref: officers.yaml#/components/schemas/Employment
+        failed:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddOfficerFailed"
+        total_created:
+          type: integer
+          minimum: 0
+        total_failed:
+          type: integer
+          minimum: 0
