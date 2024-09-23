@@ -132,10 +132,8 @@ flask-serialize==1.5.2
     # via -r requirements/_core.in
 flask-sqlalchemy==2.5.1
     # via
-    #   -r requirements/_core.in
     #   flask-db
     #   flask-user
-    #   pytest-flask-sqlalchemy
 flask-user==0.6.21
     # via -r requirements/_core.in
 flask-wtf==1.2.1
@@ -144,7 +142,7 @@ flask-wtf==1.2.1
     #   flask-user
 fqdn==1.5.1
     # via jsonschema
-greenlet==3.0.3
+greenlet==3.1.1
     # via sqlalchemy
 gunicorn==21.2.0
     # via -r requirements/_core.in
@@ -321,7 +319,6 @@ packaging==24.0
     #   jupyterlab-server
     #   nbconvert
     #   pytest
-    #   pytest-flask-sqlalchemy
     #   qtconsole
     #   qtpy
 pandas==2.2.2
@@ -380,10 +377,7 @@ pycryptodome==3.10.1
 pydantic==1.10.14
     # via
     #   -r requirements/_core.in
-    #   pydantic-sqlalchemy
     #   spectree
-pydantic-sqlalchemy==0.0.9
-    # via -r requirements/_core.in
 pyflakes==3.2.0
     # via flake8
 pygments==2.17.2
@@ -403,19 +397,14 @@ pytest==8.2.2
     #   -r requirements/_core.in
     #   pytest-cov
     #   pytest-env
-    #   pytest-flask-sqlalchemy
     #   pytest-mock
     #   pytest-postgresql
 pytest-cov==5.0.0
     # via -r requirements/_core.in
 pytest-env==1.1.3
     # via -r requirements/_core.in
-pytest-flask-sqlalchemy==1.1.0
-    # via -r requirements/_core.in
 pytest-mock==3.14.0
-    # via
-    #   -r requirements/_core.in
-    #   pytest-flask-sqlalchemy
+    # via -r requirements/_core.in
 pytest-postgresql==6.0.0
     # via -r requirements/_core.in
 python-dateutil==2.9.0
@@ -494,12 +483,9 @@ spectree==1.2.9
     # via -r requirements/_core.in
 sqlalchemy==1.4.51
     # via
-    #   -r requirements/_core.in
     #   alembic
     #   flask-db
     #   flask-sqlalchemy
-    #   pydantic-sqlalchemy
-    #   pytest-flask-sqlalchemy
     #   sqlalchemy-utils
 sqlalchemy-utils==0.37.7
     # via flask-db
