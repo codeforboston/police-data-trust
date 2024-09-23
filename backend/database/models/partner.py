@@ -1,12 +1,18 @@
 from __future__ import annotations  # allows type hinting of class itself
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.orm import RelationshipProperty
-from ..core import db, CrudMixin
-from enum import Enum
+# from ..core import db, CrudMixin
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from datetime import datetime
+from neomodel import (
+    StructuredNode, StructuredRel,
+    RelationshipTo, RelationshipFrom,
+    StringProperty, DateTimeProperty,
+    UniqueIdProperty, BooleanProperty,
+    EmailProperty
+)
+from backend.database.models.complaint import BaseSourceRel
 
 
-class MemberRole(str, Enum):
+class MemberRole(str, PropertyEnum):
     ADMIN = "Administrator"
     PUBLISHER = "Publisher"
     MEMBER = "Member"
@@ -25,56 +31,52 @@ class MemberRole(str, Enum):
             return 5
 
 
-class Invitation(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey('partner.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    role = db.Column(db.Enum(MemberRole), nullable=False)
-    is_accepted = db.Column(db.Boolean, default=False)
+class Invitation(StructuredNode):
+    role = StringProperty(choices=MemberRole.choices())
+    is_accepted = BooleanProperty(default=False)
     # default to not accepted invite
+
+    partner = RelationshipFrom("Partner", "INVITED_TO")
+    user = RelationshipFrom(
+        "backend.database.models.user.User", "EXTENDED_TO")
+    extender = RelationshipFrom(
+        "backend.database.models.user.User", "EXTENDED_BY")
 
     def serialize(self):
         return {
             'id': self.id,
-            'partner_id': self.partner_id,
-            'user_id': self.user_id,
+            'partner': self.partner,
+            'user': self.user,
             'role': self.role,
             'is_accepted': self.is_accepted,
         }
 
 
-class StagedInvitation(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey('partner.id'), primary_key=True)
-    email = db.Column(db.String, unique=True, primary_key=True)
-    role = db.Column(db.Enum(MemberRole), nullable=False)
+class StagedInvitation(StructuredNode):
+    role = StringProperty(choices=MemberRole.choices())
+    email = EmailProperty()
+
+    partner = RelationshipFrom("Partner", "INVITATION_TO")
+    extender = RelationshipFrom(
+        "backend.database.models.user.User", "EXTENDED_BY")
 
     def serialize(self):
         return {
             'id': self.id,
-            'partner_id': self.partner_id,
+            'partner_id': self.partner,
             'email': self.email,
             'role': self.role
         }
 
 
-class PartnerMember(db.Model, CrudMixin):
+class PartnerMember(StructuredRel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    __tablename__ = "partner_user"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    partner_id = db.Column(
-        db.Integer, db.ForeignKey("partner.id"), primary_key=True
-    )
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    user = db.relationship("User", back_populates="partner_association")
-    partner = db.relationship("Partner", back_populates="member_association")
-    role = db.Column(db.Enum(MemberRole))
-    date_joined = db.Column(db.DateTime)
-    is_active = db.Column(db.Boolean)
+    uid = UniqueIdProperty()
+    role = StringProperty(choices=MemberRole.choices(), required=True)
+    date_joined = DateTimeProperty(default=datetime.now())
+    is_active = BooleanProperty(default=True)
 
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
@@ -89,27 +91,28 @@ class PartnerMember(db.Model, CrudMixin):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<PartnerMember( \
-        id={self.id}, \
-        partner_id={self.partner_id}, \
-        user_id={self.user_id})>"
+        id={self.uid}>"
 
 
-class Partner(db.Model, CrudMixin):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class Partner(StructuredNode, JsonSerializable):
+    uid = UniqueIdProperty()
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text)
-    url = db.Column(db.Text)
-    contact_email = db.Column(db.Text)
-    reported_incidents: RelationshipProperty[int] = db.relationship(
-        "Incident", backref="source", lazy="select"
-    )
-    member_association: RelationshipProperty[PartnerMember] = db.relationship(
-        "PartnerMember", back_populates="partner", lazy="select"
-    )
-    members = association_proxy("member_association", "user")
+    name = StringProperty(unique_index=True)
+    url = StringProperty()
+    contact_email = StringProperty()
+
+    # Relationships
+    members = RelationshipFrom(
+        "backend.database.models.user.User",
+        "IS_MEMBER", model=PartnerMember)
+    complaints = RelationshipTo(
+        "backend.database.models.complaint.Complaint",
+        "REPORTED", model=BaseSourceRel)
+    invitations = RelationshipTo(
+        "Invitation", "HAS_PENDING_INVITATION")
+    staged_invitations = RelationshipTo(
+        "StagedInvitation", "_PENDING_STAGED_INVITATION")
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<Partner {self.id}>"
+        return f"<Partner {self.uid}>"

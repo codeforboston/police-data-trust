@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from flask_jwt_extended import (
@@ -7,18 +8,17 @@ from flask_jwt_extended import (
     set_access_cookies,
     unset_access_cookies,
 )
+from ..auth import min_role_required
 from pydantic.main import BaseModel
-from ..auth import min_role_required, user_manager
 from ..mixpanel.mix import track_to_mp
-from ..database import User, UserRole, db, Invitation, StagedInvitation
+from ..database import User, UserRole, Invitation, StagedInvitation
 from ..dto import LoginUserDTO, RegisterUserDTO
-from ..schemas import UserSchema, validate
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
 @bp.route("/login", methods=["POST"])
-@validate(auth=False, json=LoginUserDTO)
+# @validate(auth=False, json=LoginUserDTO)
 def login():
     """Sign in with email and password.
 
@@ -29,9 +29,9 @@ def login():
 
     # Verify user
     if body.password is not None and body.email is not None:
-        user = User.query.filter_by(email=body.email).first()
+        user = User.nodes.first_or_none(email=body.email)
         if user is not None and user.verify_password(body.password):
-            token = create_access_token(identity=user.id)
+            token = create_access_token(identity=user.uid)
             resp = jsonify(
                 {
                     "message": "Successfully logged in.",
@@ -58,7 +58,7 @@ def login():
 
 
 @bp.route("/register", methods=["POST"])
-@validate(auth=False, json=RegisterUserDTO)
+# @validate(auth=False, json=RegisterUserDTO)
 def register():
     """Register for a new public account.
 
@@ -66,9 +66,10 @@ def register():
     """
 
     body: RegisterUserDTO = request.context.json
+    logger = logging.getLogger("user_register")
 
     # Check to see if user already exists
-    user = User.query.filter_by(email=body.email).first()
+    user = User.nodes.first_or_none(email=body.email)
     if user is not None:
         return {
             "status": "ok",
@@ -78,31 +79,28 @@ def register():
     if body.password is not None and body.email is not None:
         user = User(
             email=body.email,
-            password=user_manager.hash_password(body.password),
+            password=User.hash_password(body.password),
             first_name=body.firstName,
             last_name=body.lastName,
             role=UserRole.PUBLIC,
             phone_number=body.phoneNumber,
         )
-        db.session.add(user)
-        db.session.commit()
-        token = create_access_token(identity=user.id)
+        user.save()
+        token = create_access_token(identity=user.uid)
 
         """
         code to handle adding staged_invitations-->invitations for users
         who have just signed up for NPDC
         """
-        staged_invite = StagedInvitation.query.filter_by(email=user.email).all()
+        staged_invite = StagedInvitation.nodes.filter(email=user.email)
         if staged_invite is not None and len(staged_invite) > 0:
             for instance in staged_invite:
                 new_invitation = Invitation(
-                    user_id=user.id,
+                    user_uid=user.uid,
                     role=instance.role,
-                    partner_id=instance.partner_id)
-                db.session.add(new_invitation)
-            db.session.commit()
-            StagedInvitation.query.filter_by(email=user.email).delete()
-            db.session.commit()
+                    partner_uid=instance.partner_id)
+                new_invitation.save()
+                instance.delete()
 
         resp = jsonify(
             {
@@ -113,8 +111,9 @@ def register():
         )
         set_access_cookies(resp, token)
 
+        logger.info(f"User {user.uid} registered successfully.")
         track_to_mp(request, "register", {
-            'user_id': user.id,
+            'user_id': user.uid,
             'success': True,
         })
         return resp, 200
@@ -134,7 +133,7 @@ def register():
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required()
-@validate()
+# @validate()
 def refresh_token():
     """Refreshes the currently-authenticated user's access token."""
 
@@ -150,7 +149,7 @@ def refresh_token():
 
 
 @bp.route("/logout", methods=["POST"])
-@validate(auth=False)
+# @validate(auth=False)
 def logout():
     """Unsets access cookies."""
     resp = jsonify({"message": "successfully logged out"})
@@ -162,11 +161,11 @@ def logout():
 @cross_origin()
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+# @validate()
 def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
-    return UserSchema.from_orm(User.get(current_identity)).dict()
+    return User.nodes.get(uid=current_identity).to_dict()
 
 
 class EmailDTO(BaseModel):
@@ -174,11 +173,17 @@ class EmailDTO(BaseModel):
 
 
 @bp.route("/forgotPassword", methods=["POST"])
-@validate(auth=False, json=EmailDTO)
+# @validate(auth=False, json=EmailDTO)
 def send_reset_email():
     body: EmailDTO = request.context.json
-    print(user_manager.find_user_by_email(body.email))
-    user_manager.send_reset_password_email(body.email)
+    logger = logging.getLogger("user_forgot_password")
+    user = User.get_by_email(body.email)
+    if user is not None:
+        print(user)
+        user.send_reset_password_email(body.email)
+        logger.info(f"User {user.uid} requested a password reset.")
+    else:
+        logger.info(f"Invalid email address {body.email}.")
     # always 200 so you cant use this endpoint to find emails of users
     return {}, 200
 
@@ -187,14 +192,13 @@ class PasswordDTO(BaseModel):
     password: str
 
 
-@bp.route("/resetPassword", methods=["POST"])
+@bp.route("/setPassword", methods=["POST"])
 @jwt_required()
-@validate(auth=True, json=PasswordDTO)
+# @validate(auth=True, json=PasswordDTO)
 def reset_password():
     body: PasswordDTO = request.context.json
     # NOTE: 401s if the user or token is not valid
     # NOTE: This token follows the logged in user token lifespan
     user = User.get(get_jwt_identity())
-    user.password = user_manager.hash_password(body.password)
-    db.session.commit()
+    user.set_password(body.password)
     return {"message": "Password successfully changed"}, 200

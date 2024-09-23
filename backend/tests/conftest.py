@@ -1,8 +1,6 @@
-import psycopg.errors
-import psycopg2.errors
 import pytest
+from unittest.mock import patch, MagicMock
 from backend.api import create_app
-from backend.auth import user_manager
 from backend.config import TestingConfig
 from backend.database import User, UserRole, db
 from backend.database import (
@@ -26,37 +24,35 @@ contributor_email = "contributor@email.com"
 example_password = "my_password"
 
 
-@pytest.fixture(scope="session")
-def database():
-    cfg = TestingConfig()
-    janitor = DatabaseJanitor(
-        user=cfg.POSTGRES_USER,
-        host=cfg.POSTGRES_HOST,
-        port=cfg.PGPORT,
-        dbname=cfg.POSTGRES_DB,
-        version=16.3,
-        password=cfg.POSTGRES_PASSWORD,
-    )
-
-    try:
-        janitor.init()
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
-        pass
-
-    yield
-
-    janitor.drop()
+@pytest.fixture
+def mock_cypher_query():
+    with patch('neomodel.db.cypher_query') as mock_query:
+        # Set default behavior for the mock query
+        mock_query.return_value = ([], None)
+        yield mock_query
 
 
-@pytest.fixture(scope="session")
-def app(database):
-    app = create_app(config="testing")
-    # The app should be ready! Provide the app instance here.
-    # Use the app context to make testing easier.
-    # The main time where providing app context can cause false positives is
-    # when testing CLI commands that don't pass the app context.
-    with app.app_context():
-        yield app
+@pytest.fixture
+def mock_neomodel_save():
+    with patch('neomodel.StructuredNode.save') as mock_save:
+        yield mock_save
+
+
+@pytest.fixture
+def mock_neomodel_delete():
+    with patch('neomodel.StructuredNode.delete') as mock_delete:
+        yield mock_delete
+
+
+@pytest.fixture
+def mock_neo4j_driver():
+    with patch('neo4j.GraphDatabase.driver') as mock_driver:
+        mock_session = MagicMock()
+        mock_driver.return_value.session.return_value = mock_session
+
+        # Set default behavior for session.run
+        mock_session.run.return_value = MagicMock()
+        yield mock_session.run
 
 
 @pytest.fixture
@@ -64,11 +60,11 @@ def client(app):
     return app.test_client()
 
 
-@pytest.fixture
+""" @pytest.fixture
 def example_user(db_session):
     user = User(
         email=example_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.PUBLIC,
         first_name="first",
         last_name="last",
@@ -285,7 +281,7 @@ def example_incidents_private_public(
 def admin_user(db_session):
     user = User(
         email=admin_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.ADMIN,
         first_name="admin",
         last_name="last",
@@ -300,7 +296,7 @@ def admin_user(db_session):
 def partner_admin(db_session, example_partner):
     user = User(
         email=p_admin_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR,  # This is not a system admin,
         # so we can't use ADMIN here
         first_name="contributor",
@@ -326,7 +322,7 @@ def partner_admin(db_session, example_partner):
 def partner_publisher(db_session: Any, example_partner: PartnerMember):
     user = User(
         email=contributor_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR,
         first_name="contributor",
         last_name="last",
@@ -382,7 +378,7 @@ def contributor_access_token(client, partner_publisher):
         },
     )
     assert res.status_code == 200
-    return res.json["access_token"]
+    return res.json["access_token"] """
 
 
 @pytest.fixture
@@ -390,14 +386,14 @@ def cli_runner(app):
     return app.test_cli_runner()
 
 
-@pytest.fixture(scope="session")
-def _db(app):
-    """See this:
+# @pytest.fixture(scope="session")
+# def _db(app):
+#     """See this:
 
-    https://github.com/jeancochrane/pytest-flask-sqlalchemy
+#     https://github.com/jeancochrane/pytest-flask-sqlalchemy
 
-    Basically, this '_db' fixture is required for the above extension to work.
-    We use this extension to allow for easy testing of the database.
-    """
-    db.create_all()
-    yield db
+#     Basically, this '_db' fixture is required for the above extension to work.
+#     We use this extension to allow for easy testing of the database.
+#     """
+#     db.create_all()
+#     yield db

@@ -288,6 +288,12 @@ nbformat==5.9.2
     #   jupyter-server
     #   nbclient
     #   nbconvert
+neo4j==5.19.0
+    # via
+    #   -r requirements/_core.in
+    #   neomodel
+neomodel==5.3.2
+    # via -r requirements/_core.in
 nest-asyncio==1.6.0
     # via ipykernel
 notebook==7.1.0
@@ -424,7 +430,9 @@ python-dotenv==1.0.1
 python-json-logger==2.0.7
     # via jupyter-events
 pytz==2024.1
-    # via pandas
+    # via
+    #   neo4j
+    #   pandas
 pyyaml==6.0.1
     # via
     #   -r requirements/_core.in

@@ -1,5 +1,4 @@
 import pytest
-from backend.auth import user_manager
 from backend.database import Partner, PartnerMember, MemberRole, Invitation
 from backend.database.models.user import User, UserRole
 from datetime import datetime
@@ -115,7 +114,7 @@ def example_members(client, db_session, example_partner, p_admin_access_token):
     for id, mock in mock_users.items():
         user = User(
             email=mock["email"],
-            password=user_manager.hash_password(example_password),
+            password=User.hash_password(example_password),
             role=UserRole.PUBLIC,
             first_name=id,
             last_name="user",

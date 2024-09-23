@@ -1,9 +1,16 @@
-from ..core import CrudMixin, db
-from enum import Enum
-from sqlalchemy.ext.associationproxy import association_proxy
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
+from neomodel import (
+    StructuredNode,
+    StructuredRel,
+    StringProperty,
+    RelationshipTo,
+    RelationshipFrom,
+    DateProperty,
+    UniqueIdProperty
+)
 
 
-class Jurisdiction(str, Enum):
+class Jurisdiction(str, PropertyEnum):
     FEDERAL = "FEDERAL"
     STATE = "STATE"
     COUNTY = "COUNTY"
@@ -12,20 +19,53 @@ class Jurisdiction(str, Enum):
     OTHER = "OTHER"
 
 
-class Agency(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    website_url = db.Column(db.Text)
-    hq_address = db.Column(db.Text)
-    hq_city = db.Column(db.Text)
-    hq_zip = db.Column(db.Text)
-    jurisdiction = db.Column(db.Enum(Jurisdiction))
-    # total_officers = db.Column(db.Integer)
+class UnitMembership(StructuredRel):
+    earliest_date = DateProperty()
+    latest_date = DateProperty()
+    badge_number = StringProperty()
+    highest_rank = StringProperty()
 
-    units = db.relationship("Unit", back_populates="agency")
 
-    officer_association = db.relationship("Employment", back_populates="agency")
-    officers = association_proxy("officer_association", "officer")
+class Unit(StructuredNode):
+    uid = UniqueIdProperty()
+    name = StringProperty()
+    website_url = StringProperty()
+    phone = StringProperty()
+    email = StringProperty()
+    description = StringProperty()
+    address = StringProperty()
+    zip = StringProperty()
+    agency_url = StringProperty()
+    officers_url = StringProperty()
+    date_etsablished = DateProperty()
+
+    # Relationships
+    agency = RelationshipFrom("Agency", "ESTABLISHED_BY")
+    commander = RelationshipTo(
+        "backend.database.models.officer.Officer",
+        "COMMANDED_BY", model=UnitMembership)
+    officers = RelationshipTo(
+        "backend.database.models.officer.Officer",
+        "MEMBER_OF", model=UnitMembership)
+
+    def __repr__(self):
+        return f"<Unit {self.name}>"
+
+
+class Agency(StructuredNode, JsonSerializable):
+    uid = UniqueIdProperty()
+    name = StringProperty(unique_index=True)
+    website_url = StringProperty()
+    hq_address = StringProperty()
+    hq_city = StringProperty()
+    hq_zip = StringProperty()
+    phone = StringProperty()
+    email = StringProperty()
+    description = StringProperty()
+    jurisdiction = StringProperty(choices=Jurisdiction.choices())
+
+    # Relationships
+    units = RelationshipTo("Unit", "HAS_UNIT")
 
     def __repr__(self):
         return f"<Agency {self.name}>"

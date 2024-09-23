@@ -1,6 +1,4 @@
-from ..database import db, User
-from flask_user import SQLAlchemyAdapter
-from flask_user import UserManager
+from ..database import User
 from datetime import timezone, datetime
 from flask_jwt_extended import (
     get_jwt,
@@ -8,9 +6,16 @@ from flask_jwt_extended import (
     get_jwt_identity,
     set_access_cookies,
 )
-from flask import current_app
+from flask import current_app, jsonify
 
-user_manager = UserManager(SQLAlchemyAdapter(db, User))
+
+def login_user(email, password):
+    user = User.get_by_email(email)
+    if not user or not user.verify_password(password):
+        return jsonify({"msg": "Bad email or password"}), 401
+
+    access_token = create_access_token(identity=user.uid)
+    return jsonify(access_token=access_token)
 
 
 def refresh_token(response):
