@@ -1,5 +1,5 @@
 # flake8: noqa: F401
-from backend.database.core import db, db_cli, execute_query
+from backend.database.core import db_cli, execute_query
 
 # Neo4j / NeoModel related imports
 from neomodel import config as neo_config

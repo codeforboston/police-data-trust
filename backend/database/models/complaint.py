@@ -1,5 +1,5 @@
 """Define the Classes for Complaints."""
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from neomodel import (
     StructuredNode,
     StructuredRel,
@@ -48,7 +48,7 @@ class GovernmentSourceRel(BaseSourceRel):
     reporting_agency_email = StringProperty()
 
 
-class Complaint(ExportableNode):
+class Complaint(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     category = StringProperty()
     incident_date = DateProperty()

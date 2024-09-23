@@ -1,11 +1,12 @@
-from backend.database.neo_classes import ExportableNode
+from backend.database.neo_classes import JsonSerializable
 from neomodel import (
     StringProperty,
     UniqueIdProperty,
+    StructuredNode
 )
 
 
-class Attachment(ExportableNode):
+class Attachment(JsonSerializable, StructuredNode):
     uid = UniqueIdProperty()
     title = StringProperty()
     hash = StringProperty()

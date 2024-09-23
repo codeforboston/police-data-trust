@@ -1,8 +1,8 @@
 """Define the SQL classes for Users."""
 
 import bcrypt
-from backend.database.core import db
-from backend.database import JsonSerializable, PropertyEnum
+from werkzeug.security import generate_password_hash, check_password_hash
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from neomodel import (
     Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
@@ -37,7 +37,7 @@ class User(StructuredNode, JsonSerializable):
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
     email = EmailProperty(required=True, unique_index=True)
     email_confirmed_at = DateProperty()
-    password = StringProperty(required=True)
+    password_hash = StringProperty(required=True)
 
     # User information
     first_name = StringProperty(required=True)
@@ -52,6 +52,15 @@ class User(StructuredNode, JsonSerializable):
     partners = Relationship(
         'backend.database.models.partner.Partner',
         "MEMBER_OF_PARTNER", model=PartnerMember)
+    received_invitations = Relationship(
+        'backend.database.models.partner.Invitation',
+        "RECIEVED")
+    extended_invitations = Relationship(
+        'backend.database.models.partner.Invitation',
+        "EXTENDED")
+    entended_staged_invitations = Relationship(
+        'backend.database.models.partner.StagedInvitation',
+        "EXTENDED")
 
     def verify_password(self, pw: str) -> bool:
         """
@@ -62,7 +71,41 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             bool: True if the password is correct, False otherwise.
         """
-        return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
+        # return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
+        return check_password_hash(self.password_hash, pw)
+
+    def set_password(self, pw: str):
+        """
+        Set the user's password.
+        Args:
+            pw (str): The password to set.
+        """
+        self.password_hash = User.hash_password(pw)
+
+    def send_email_verification(self):
+        """
+        Send an email verification link to the user.
+        """
+        pass
+
+    def send_password_reset(self):
+        """
+        Send a password reset link to the user.
+        """
+        pass
+
+    @classmethod
+    def hash_password(cls, pw: str) -> str:
+        """
+        Hash a password.
+        Args:
+            pw (str): The password to hash.
+
+        Returns:
+            str: The hashed password.
+        """
+        # return bcrypt.hashpw(pw.encode("utf8"), bcrypt.gensalt()).decode("utf8")
+        return generate_password_hash(pw)
 
     @classmethod
     def get_by_email(cls, email: str) -> "User":

@@ -5,14 +5,10 @@ from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
+from backend.database.models.agency import Agency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
-
-from ..database import Agency, db
-from ..schemas import (
-    validate,
-)
 
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
@@ -65,7 +61,7 @@ def create_agency():
 @bp.route("/<int:agency_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+# @validate()
 def get_agency(agency_id: int):
     """Get an agency profile.
     """
@@ -82,7 +78,7 @@ def get_agency(agency_id: int):
 @bp.route("/<int:agency_id>", methods=["PUT"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-@validate()
+# @validate()
 def update_agency(agency_id: int):
     """Update an agency profile.
     """
@@ -92,7 +88,6 @@ def update_agency(agency_id: int):
 
     try:
         agency = Agency.from_dict(request.context.json)
-        db.session.commit()
         track_to_mp(
             request,
             "update_agency",
@@ -109,7 +104,7 @@ def update_agency(agency_id: int):
 @bp.route("/<int:agency_id>", methods=["DELETE"])
 @jwt_required()
 @min_role_required(UserRole.ADMIN)
-@validate()
+# @validate()
 def delete_agency(agency_id: int):
     """Delete an agency profile.
     Must be an admin to delete an agency.
@@ -136,7 +131,7 @@ def delete_agency(agency_id: int):
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+# @validate()
 def get_all_agencies():
     """Get all agencies.
     Accepts Query Parameters for pagination:

@@ -1,6 +1,4 @@
-from backend.database.core import db
 from backend.database import User, UserRole
-from backend.auth import user_manager
 from backend.database.models.partner import Partner, PartnerMember, MemberRole
 from backend.database.models.officer import Officer
 from backend.database.models.agency import Agency, Unit
@@ -90,7 +88,7 @@ def create_seeds():
     create_user(
         User(
             email="test@example.com",
-            password=user_manager.hash_password("password"),
+            password_hash=User.hash_password("password"),
             role=UserRole.PUBLIC.value,
             first_name="Test",
             last_name="Example",
@@ -100,7 +98,7 @@ def create_seeds():
     create_user(
         User(
             email="contributor@example.com",
-            password=user_manager.hash_password("password"),
+            password_hash=User.hash_password("password"),
             role=UserRole.CONTRIBUTOR.value,
             first_name="Contributor",
             last_name="Example",
@@ -110,7 +108,7 @@ def create_seeds():
     create_user(
         User(
             email="admin@example.com",
-            password=user_manager.hash_password("password"),
+            password_hash=User.hash_password("password"),
             role=UserRole.ADMIN.value,
             first_name="Admin",
             last_name="Example",
@@ -120,7 +118,7 @@ def create_seeds():
     create_user(
         User(
             email="passport@example.com",
-            password=user_manager.hash_password("password"),
+            password_hash=User.hash_password("password"),
             role=UserRole.PASSPORT.value,
             first_name="Passport",
             last_name="Example",

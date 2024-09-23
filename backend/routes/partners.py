@@ -14,16 +14,12 @@ from ..database import (
     Partner,
     PartnerMember,
     MemberRole,
-    db,
     Invitation,
     StagedInvitation,
 )
 from ..dto import InviteUserDTO
 from flask_mail import Message
 from ..config import TestingConfig
-from ..schemas import (
-    validate
-)
 
 
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
@@ -32,7 +28,7 @@ bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 @bp.route("/<int:partner_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+# @validate()
 def get_partners(partner_id: str):
     """Get a single partner by ID."""
     p = Partner.nodes.get_or_none(uid=partner_id)
@@ -95,7 +91,7 @@ def create_partner():
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()
+# @validate()
 def get_all_partners():
     """Get all partners.
     Accepts Query Parameters for pagination:
@@ -122,7 +118,7 @@ def get_all_partners():
 @bp.route("/<int:partner_id>/members/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate()  # type: ignore
+# @validate()  # type: ignore
 def get_partner_members(partner_id: int):
     """Get all members of a partner.
     Accepts Query ParaFmeters for pagination:
@@ -173,44 +169,51 @@ def get_partner_members(partner_id: int):
 @bp.route("/invite", methods=["POST"])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
-@validate(auth=True, json=InviteUserDTO)
+# @validate(auth=True, json=InviteUserDTO)
 def add_member_to_partner():
     body: InviteUserDTO = request.context.json
+    logger = logging.getLogger("add_member_to_partner")
     jwt_decoded = get_jwt()
 
     current_user = User.get(jwt_decoded["sub"])
-    association = db.session.query(PartnerMember).filter(
-        PartnerMember.user_id == current_user.id,
-        PartnerMember.partner_id == body.partner_id,
-    ).first()
+    membership = current_user.partners.search(
+        uid=body.partner_id).first()
+
     if (
-        association is None
-        or not association.is_administrator()
-        or not association.partner_id == body.partner_id
+        membership is None
+        or not membership.is_administrator()
     ):
         abort(403)
     mail = current_app.extensions.get('mail')
-    user = User.query.filter_by(email=body.email).first()
-    if user is not None:
-        invitation_exists = Invitation.query.filter_by(
-            partner_id=body.partner_id, user_id=user.id).first()
+    invited_user = User.get_by_email(email=body.email)
+    partner = Partner.nodes.get_or_none(uid=body.partner_id)
+    if partner is None:
+        return {
+            "status": "error",
+            "message": "Partner not found!"
+        }, 404
+    if invited_user is not None:
+        invitation_exists = partner.invitations.is_connected(
+            invited_user)
         if invitation_exists:
             return {
                 "status": "error",
                 "message": "Invitation already sent to this user!"
-            }, 500
+            }, 409
         else:
             try:
                 new_invitation = Invitation(
-                    partner_id=body.partner_id, user_id=user.id, role=body.role)
-                db.session.add(new_invitation)
-                db.session.commit()
+                    role=body.role
+                ).save()
+                partner.invitations.connect(new_invitation).save()
+                invited_user.received_invitations.connect(new_invitation).save()
+                current_user.extended_invitations.connect(new_invitation).save()
 
                 msg = Message("Invitation to join NPDC partner organization!",
                               sender=TestingConfig.MAIL_USERNAME,
                               recipients=[body.email])
-                msg.body = """You are a registered user of NPDC and were invited
-                to a partner organization. Please log on to accept or decline
+                msg.body = """You have been invited
+                to a join a partner organization. Please log on to accept or decline
                 the invitation at https://dev.nationalpolicedata.org/."""
                 mail.send(msg)
                 return {
@@ -218,26 +221,38 @@ def add_member_to_partner():
                     "message": "User notified of their invitation!"
                 }, 200
 
-            except Exception:
+            except Exception as e:
+                logger.exception(f"Failed to send invitation: {e}")
                 return {
                     "status": "error",
                     "message": "Something went wrong! Please try again!"
                 }, 500
     else:
         try:
+            existing_invitation = partner.staged_invitations.search(
+                email=body.email
+            ).first()
+            if existing_invitation is not None:
+                return {
+                    "status": "error",
+                    "message": "Invitation already sent to this user!"
+                }, 409
+            else:
+                new_staged_invite = StagedInvitation(
+                    email=body.email, role=body.role).save()
+                partner.staged_invitations.connect(new_staged_invite).save()
+                current_user.extended_staged_invitations.connect(
+                    new_staged_invite).save()
 
-            new_staged_invite = StagedInvitation(
-                partner_id=body.partner_id, email=body.email, role=body.role)
-            db.session.add(new_staged_invite)
-            db.session.commit()
-            msg = Message("Invitation to join NPDC index!",
-                          sender=TestingConfig.MAIL_USERNAME,
-                          recipients=[body.email])
-            msg.body = """You are not a registered user of NPDC and were
-                        invited to a partner organization. Please register
-                        with NPDC index at
-                        https://dev.nationalpolicedata.org/."""
-            mail.send(msg)
+                msg = Message(
+                    "Invitation to join NPDC index!",
+                    sender=TestingConfig.MAIL_USERNAME,
+                    recipients=[body.email])
+                msg.body = """You have been
+                            invited to a partner organization. Please register
+                            with NPDC index at
+                            https://dev.nationalpolicedata.org/."""
+                mail.send(msg)
 
             return {
                 "status": "ok",
@@ -245,71 +260,87 @@ def add_member_to_partner():
                  Email sent to user notifying them to register."""
             }, 200
 
-        except Exception:
+        except Exception as e:
+            logger.exception(f"Failed to send invitation: {e}")
             return {
                 "status": "error",
                 "message": "Something went wrong! Please try again!"
             }, 500
+
+
 # user can join org they were invited to
-
-
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def join_organization():
+    logger = logging.getLogger("join_organization")
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    partner = Partner.nodes.get_or_none(uid=body["partner_id"])
+    if partner is None:
+        return {
+            "status": "error",
+            "message": "Partner not found!"
+        }, 404
+
+    invitations = current_user.invitations.all() 
+    # TODO: Confirm that the user has a valid invitation to this organization.
+    # If not, return a 403 error.
+    # Note: currently inivtations are implemented as a Node... Perhaps a
+    # relationship would be more appropriate.
     try:
         body = request.get_json()
-        user_exists = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]).first()
-        if user_exists:
+        membership = current_user.partners.search(
+            uid=body["partner_id"]
+        ).first()
+        if membership is not None:
             return {
-                "status" : "Error",
+                "status" : "Conflict",
                 "message": "User already in the organization"
-            }, 400
+            }, 409
         else:
-            new_member = PartnerMember(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"],
-                role=body["role"],
-                date_joined=datetime.now(),
-                is_active=True
-            )
-            db.session.add(new_member)
-            db.session.commit()
-            Invitation.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]).delete()
-            db.session.commit()
+            current_user.partners.connect(
+                partner,
+                {
+                    "role": body["role"]
+                }
+            ).save()
+
+            # TODO: Remove the invitation from the user's list of invitations
+            logger.info(f"User {current_user.uid} joined {partner.name}")
             return {
                 "status": "ok",
                 "message": "Successfully joined partner organization"
             } , 200
-    except Exception:
-        db.session.rollback()
+    except Exception as e:
+        logger.exception(f"Failed to join organization: {e}")
         return {
             "status": "Error",
             "message": "Something went wrong!"
         }, 500
-    finally:
-        db.session.close()
+
 
 # user can leave org they already joined
-
-
 @bp.route("/leave", methods=["DELETE"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def leave_organization():
     """
-    remove from PartnerMember table
+    Disconnect the user from the partner organization.
     """
+    logger = logging.getLogger("leave_organization")
     try:
         body = request.get_json()
-        result = PartnerMember.query.filter_by(
-            user_id=body["user_id"], partner_id=body["partner_id"]).delete()
-        db.session.commit()
-        if result > 0:
+        jwt_decoded = get_jwt()
+        current_user = User.get(jwt_decoded["sub"])
+        partner = current_user.partners.search(
+            uid=body["partner_id"]
+        ).first()
+        if partner is not None:
+            current_user.partners.disconnect(
+                partner
+            ).save()
+            logger.info(f"User {current_user.uid} left {partner.name}")
             return {
                 "status": "ok",
                 "message": "Succesfully left organization"
@@ -319,149 +350,170 @@ def leave_organization():
                 "status": "Error",
                 "message": "Not a member of this organization"
             }, 400
-    except Exception:
-        db.session.rollback()
+    except Exception as e:
+        logger.exception(
+            f"User {current_user.uid} failed to leave organization: {e}")
         return {
             "status": "Error",
             "message": "Something went wrong!"
         }
-    finally:
-        db.session.close()
+
 
 # admin can remove any member from a partner organization
-
-
 @bp.route("/remove_member", methods=['DELETE'])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 def remove_member():
     body = request.get_json()
+    logger = logging.getLogger("remove_member")
+    partner = Partner.nodes.get_or_none(uid=body["partner_id"])
+    current_user = User.get(get_jwt()["sub"])
+    user_to_remove = User.get(body["user_id"])
+    if partner is None:
+        return {
+            "status": "error",
+            "message": "Partner not found!"
+        }, 404
+    if user_to_remove is None:
+        return {
+            "status": "error",
+            "message": "User not found!"
+        }, 404
+    c_user_membership = current_user.partners.relationship(
+        partner
+    ).first()
+    if c_user_membership is None or not c_user_membership.is_administrator():
+        return {
+            "status": "Unauthorized",
+            "message": "Not authorized to remove members!"
+        }, 403
+    user_membership = user_to_remove.partners.relationship(
+        partner
+    ).first()
+    if user_membership is None:
+        return {
+            "status": "error",
+            "message": "User not a member of this organization!"
+        }, 404
     try:
-        user_found = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
-        if user_found and user_found.role != MemberRole.ADMIN:
-            PartnerMember.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]).delete()
-            db.session.commit()
-            return {
-                "status" : "ok",
-                "message" : "Member successfully deleted from Organization"
-            } , 200
-        else:
-            return {
-                "status" : "Error",
-                "message" : "Member is not part of the Organization"
-
-            } , 400
+        partner.members.disconnect(user_to_remove).save()
+        user_to_remove.partners.disconnect(partner).save()
+        return {
+            "status" : "ok",
+            "message" : "Member successfully deleted from Organization"
+        } , 200
     except Exception as e:
-        db.session.rollback()
-        return str(e)
-    finally:
-        db.session.close()
+        logger.exception(
+            "Failed to remove user {} from {}: {}".format(
+                user_to_remove.uid,
+                partner.name,
+                e
+            ))
+        return {
+            "status" : "Error",
+            "message" : "Something went wrong!"
+        }, 500
 
 
-# admin can withdraw invitations that have been sent out
-@bp.route("/withdraw_invitation", methods=['DELETE'])
-@jwt_required()
-@min_role_required(MemberRole.ADMIN)
-def withdraw_invitation():
-    body = request.get_json()
-    try:
-        user_found = Invitation.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
-        if user_found:
-            Invitation.query.filter_by(
-                user_id=body["user_id"],
-                partner_id=body["partner_id"]
-            ).delete()
-            db.session.commit()
-            return {
-                "status" : "ok",
-                "message" : "Member's invitation withdrawn from Organization"
-            } , 200
-        else:
-            return {
-                "status" : "Error",
-                "message" : "Member is not invited to the Organization"
+# # admin can withdraw invitations that have been sent out
+# @bp.route("/withdraw_invitation", methods=['DELETE'])
+# @jwt_required()
+# @min_role_required(MemberRole.ADMIN)
+# def withdraw_invitation():
+#     body = request.get_json()
+#     try:
+#         user_found = Invitation.query.filter_by(
+#             user_id=body["user_id"],
+#             partner_id=body["partner_id"]
+#             ).first()
+#         if user_found:
+#             Invitation.query.filter_by(
+#                 user_id=body["user_id"],
+#                 partner_id=body["partner_id"]
+#             ).delete()
+#             db.session.commit()
+#             return {
+#                 "status" : "ok",
+#                 "message" : "Member's invitation withdrawn from Organization"
+#             } , 200
+#         else:
+#             return {
+#                 "status" : "Error",
+#                 "message" : "Member is not invited to the Organization"
 
-            } , 400
-    except Exception as e:
-        db.session.rollback()
-        return str(e)
-    finally:
-        db.session.close()
-
-
-# admin can change roles of any user
-@bp.route("/role_change", methods=["PATCH"])
-@jwt_required()
-@min_role_required(MemberRole.ADMIN)
-def role_change():
-    body = request.get_json()
-    try:
-        user_found = PartnerMember.query.filter_by(
-            user_id=body["user_id"],
-            partner_id=body["partner_id"]
-            ).first()
-        if user_found and user_found.role != "Administrator":
-            user_found.role = body["role"]
-            db.session.commit()
-            return {
-                "status" : "ok",
-                "message" : "Role has been updated!"
-            }, 200
-        else:
-            return {
-                "status" : "Error",
-                "message" : "User not found in this organization"
-            }, 400
-    except Exception as e:
-        db.session.rollback
-        return str(e)
-    finally:
-        db.session.close()
+#             } , 400
+#     except Exception as e:
+#         db.session.rollback()
+#         return str(e)
+#     finally:
+#         db.session.close()
 
 
-# view invitations table
-@bp.route("/invitations", methods=["GET"])
-@jwt_required()
-@validate()
-# only defined for testing environment
-def get_invitations():
-    if current_app.env == "production":
-        abort(418)
-    try:
-        all_records = Invitation.query.all()
-        records_list = [record.serialize() for record in all_records]
-        return jsonify(records_list)
+# # admin can change roles of any user
+# @bp.route("/role_change", methods=["PATCH"])
+# @jwt_required()
+# @min_role_required(MemberRole.ADMIN)
+# def role_change():
+#     body = request.get_json()
+#     try:
+#         user_found = PartnerMember.query.filter_by(
+#             user_id=body["user_id"],
+#             partner_id=body["partner_id"]
+#             ).first()
+#         if user_found and user_found.role != "Administrator":
+#             user_found.role = body["role"]
+#             db.session.commit()
+#             return {
+#                 "status" : "ok",
+#                 "message" : "Role has been updated!"
+#             }, 200
+#         else:
+#             return {
+#                 "status" : "Error",
+#                 "message" : "User not found in this organization"
+#             }, 400
+#     except Exception as e:
+#         db.session.rollback
+#         return str(e)
+#     finally:
+#         db.session.close()
 
-    except Exception as e:
-        return str(e)
+
+# # view invitations table
+# @bp.route("/invitations", methods=["GET"])
+# @jwt_required()
+# @validate()
+# # only defined for testing environment
+# def get_invitations():
+#     if current_app.env == "production":
+#         abort(418)
+#     try:
+#         all_records = Invitation.query.all()
+#         records_list = [record.serialize() for record in all_records]
+#         return jsonify(records_list)
+
+#     except Exception as e:
+#         return str(e)
 
 
-# view staged invitations table
+# # view staged invitations table
 
-@bp.route("/stagedinvitations", methods=["GET"])
-@jwt_required()
-@validate()
-# only defined for testing environment
-def stagedinvitations():
-    if current_app.env == "production":
-        abort(418)
-    staged_invitations = StagedInvitation.query.all()
-    invitations_data = [
-        {
-            'id': staged_invitation.id,
-            'email': staged_invitation.email,
-            'role': staged_invitation.role,
-            'partner_id': staged_invitation.partner_id,
-        }
-        for staged_invitation in staged_invitations
-    ]
+# @bp.route("/stagedinvitations", methods=["GET"])
+# @jwt_required()
+# @validate()
+# # only defined for testing environment
+# def stagedinvitations():
+#     if current_app.env == "production":
+#         abort(418)
+#     staged_invitations = StagedInvitation.query.all()
+#     invitations_data = [
+#         {
+#             'id': staged_invitation.id,
+#             'email': staged_invitation.email,
+#             'role': staged_invitation.role,
+#             'partner_id': staged_invitation.partner_id,
+#         }
+#         for staged_invitation in staged_invitations
+#     ]
 
-    return jsonify({'staged_invitations': invitations_data})
+#     return jsonify({'staged_invitations': invitations_data})

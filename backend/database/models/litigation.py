@@ -1,4 +1,4 @@
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from neomodel import (
     StructuredNode,
     StringProperty,
@@ -13,7 +13,7 @@ class LegalCaseType(str, PropertyEnum):
     CRIMINAL = "CRIMINAL"
 
 
-class Litigation(ExportableNode):
+class Litigation(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     case_title = StringProperty()
     docket_number = StringProperty()
@@ -36,7 +36,7 @@ class Litigation(ExportableNode):
         return f"<Litigation {self.uid}:{self.case_title}>"
 
 
-class Document(ExportableNode):
+class Document(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     title = StringProperty()
     description = StringProperty()

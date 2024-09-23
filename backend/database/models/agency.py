@@ -1,4 +1,4 @@
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from neomodel import (
     StructuredNode,
     StructuredRel,
@@ -52,7 +52,7 @@ class Unit(StructuredNode):
         return f"<Unit {self.name}>"
 
 
-class Agency(ExportableNode):
+class Agency(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     name = StringProperty(unique_index=True)
     website_url = StringProperty()

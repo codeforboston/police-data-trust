@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from backend.api import create_app
-from backend.auth import user_manager
 from backend.config import TestingConfig
 from backend.database import User, UserRole, db
 from backend.database import (
@@ -65,7 +64,7 @@ def client(app):
 def example_user(db_session):
     user = User(
         email=example_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.PUBLIC,
         first_name="first",
         last_name="last",
@@ -282,7 +281,7 @@ def example_incidents_private_public(
 def admin_user(db_session):
     user = User(
         email=admin_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.ADMIN,
         first_name="admin",
         last_name="last",
@@ -297,7 +296,7 @@ def admin_user(db_session):
 def partner_admin(db_session, example_partner):
     user = User(
         email=p_admin_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR,  # This is not a system admin,
         # so we can't use ADMIN here
         first_name="contributor",
@@ -323,7 +322,7 @@ def partner_admin(db_session, example_partner):
 def partner_publisher(db_session: Any, example_partner: PartnerMember):
     user = User(
         email=contributor_email,
-        password=user_manager.hash_password(example_password),
+        password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR,
         first_name="contributor",
         last_name="last",

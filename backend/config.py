@@ -74,14 +74,23 @@ class Config(object):
     SCRAPER_SQS_QUEUE_NAME = os.environ.get("SCRAPER_SQS_QUEUE_NAME")
 
     @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        return "postgresql://%s:%s@%s:%s/%s" % (
-            self.POSTGRES_USER,
-            self.POSTGRES_PASSWORD,
-            self.POSTGRES_HOST,
-            self.PGPORT,
-            self.POSTGRES_DB,
+    def NEO4J_BOLT_URI(self):
+        return "bolt://{user}:{pw}@{url}:{port}".format(
+            user=self.GRAPH_USER,
+            pw=self.GRAPH_PASSWORD,
+            url=self.GRAPH_URI,
+            port=self.GRAPH_PORT
         )
+
+    # @property
+    # def SQLALCHEMY_DATABASE_URI(self):
+    #     return "postgresql://%s:%s@%s:%s/%s" % (
+    #         self.POSTGRES_USER,
+    #         self.POSTGRES_PASSWORD,
+    #         self.POSTGRES_HOST,
+    #         self.PGPORT,
+    #         self.POSTGRES_DB,
+    #     )
 
     @property
     def MIXPANEL_TOKEN(self):

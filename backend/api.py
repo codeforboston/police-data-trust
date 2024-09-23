@@ -4,10 +4,10 @@ import click
 from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from backend.config import get_config_from_env
-from backend.database import db
 from backend.database import db_cli
-from backend.auth import user_manager, jwt, refresh_token
+from backend.auth import jwt, refresh_token
 from backend.schemas import spec
 from backend.routes.partners import bp as partners_bp
 # from backend.routes.incidents import bp as incidents_bp
@@ -45,8 +45,6 @@ def create_app(config: Optional[str] = None):
 
 
 def register_extensions(app: Flask):
-    db.init_app(app)
-
     # Neo4j setup
     # Driver setup
     db_driver = GraphDatabase.driver(
@@ -75,7 +73,9 @@ def register_extensions(app: Flask):
     neo_config.DATABASE_URL = neo_url
 
     spec.register(app)
-    user_manager.init_app(app)
+    # login_manager.init_app(app)
+    # TODO: Add the correct route info
+    # login_manager.login_view = 'auth.login'
     jwt.init_app(app)
     Mail(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})

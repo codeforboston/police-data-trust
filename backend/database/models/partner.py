@@ -1,6 +1,6 @@
 from __future__ import annotations  # allows type hinting of class itself
 # from ..core import db, CrudMixin
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 from datetime import datetime
 from neomodel import (
     StructuredNode, StructuredRel,
@@ -38,7 +38,9 @@ class Invitation(StructuredNode):
 
     partner = RelationshipFrom("Partner", "INVITED_TO")
     user = RelationshipFrom(
-        "backend.database.models.user.User", "WAS_INVITED")
+        "backend.database.models.user.User", "EXTENDED_TO")
+    extender = RelationshipFrom(
+        "backend.database.models.user.User", "EXTENDED_BY")
 
     def serialize(self):
         return {
@@ -55,6 +57,8 @@ class StagedInvitation(StructuredNode):
     email = EmailProperty()
 
     partner = RelationshipFrom("Partner", "INVITATION_TO")
+    extender = RelationshipFrom(
+        "backend.database.models.user.User", "EXTENDED_BY")
 
     def serialize(self):
         return {
@@ -90,7 +94,7 @@ class PartnerMember(StructuredRel):
         id={self.uid}>"
 
 
-class Partner(ExportableNode):
+class Partner(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
 
     name = StringProperty(unique_index=True)
@@ -104,6 +108,10 @@ class Partner(ExportableNode):
     complaints = RelationshipTo(
         "backend.database.models.complaint.Complaint",
         "REPORTED", model=BaseSourceRel)
+    invitations = RelationshipTo(
+        "Invitation", "HAS_PENDING_INVITATION")
+    staged_invitations = RelationshipTo(
+        "StagedInvitation", "_PENDING_STAGED_INVITATION")
 
     def __repr__(self):
         """Represent instance as a unique string."""

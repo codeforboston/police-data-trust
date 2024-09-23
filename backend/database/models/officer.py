@@ -1,4 +1,4 @@
-from backend.database.neo_classes import ExportableNode, PropertyEnum
+from backend.database.neo_classes import JsonSerializable, PropertyEnum
 
 from neomodel import (
     StructuredNode,
@@ -76,7 +76,7 @@ class StateID(StructuredNode):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(ExportableNode):
+class Officer(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     first_name = StringProperty()
     middle_name = StringProperty()
