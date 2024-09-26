@@ -4,10 +4,11 @@ from typing import List, Optional, Dict, Any, Union
 
 class BaseComplaint(BaseModel):
     """Base complaint object"""
+    record_id: Optional[str] = Field(None, description="The ID that was given to this complaint by the orginal source of the data.")
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting partner.")
+    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
@@ -17,17 +18,18 @@ class BaseComplaint(BaseModel):
 
 
 class CreateComplaint(BaseComplaint, BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this complaint by the orginal source of the data.")
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting partner.")
+    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
     attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
-    source_uid: Optional[str] = Field(None, description="The UID of the partner that reported the complaint.")
+    source_uid: Optional[str] = Field(None, description="The UID of the source that reported the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The UID of any police witnesses associated with the complaint.")
     allegations: Optional[List[CreateAllegation]] = Field(None, description="The allegations associated with the complaint.")
@@ -36,10 +38,11 @@ class CreateComplaint(BaseComplaint, BaseModel):
 
 
 class UpdateComplaint(BaseComplaint, BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this complaint by the orginal source of the data.")
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting partner.")
+    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
@@ -54,10 +57,11 @@ class UpdateComplaint(BaseComplaint, BaseModel):
 
 
 class Complaint(BaseComplaint, BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this complaint by the orginal source of the data.")
     source_details: Optional[SourceDetails] = None
     category: str = Field(..., description="The category of the complaint.")
     incident_date: str = Field(..., description="The date and time the incident occurred.")
-    recieved_date: str = Field(..., description="The date and time the complaint was received by the reporting partner.")
+    recieved_date: str = Field(..., description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Dict[str, Any] = ...
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
@@ -67,7 +71,7 @@ class Complaint(BaseComplaint, BaseModel):
     uid: str = Field(..., description="Unique identifier for the complaint.")
     created_at: str = Field(..., description="Date and time the complaint was created.")
     updated_at: str = Field(..., description="Date and time the complaint was last updated.")
-    source: Optional[Partner] = Field(None, description="The partner that reported the complaint.")
+    source: Optional[Source] = Field(None, description="The source that reported the complaint.")
     civilian_review_board: Optional[ReviewBoard] = Field(None, description="The civilian review board that reviewed the complaint.")
     police_witnesses: List[Officer] = Field(..., description="The police witnesses associated with the complaint.")
     allegations: List[Allegation] = Field(..., description="The allegations associated with the complaint.")
@@ -80,8 +84,11 @@ class ComplaintList(PaginatedResponse, BaseModel):
 
 
 class BaseAllegation(BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this allegation by the orginal source of the data.")
     complaintant: Optional[Civilian] = Field(None, description="Demographic information of the individual who filed the complaint.")
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
+    type: Optional[str] = Field(None, description="The type of allegation.")
+    sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
     recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
     recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")
@@ -89,8 +96,11 @@ class BaseAllegation(BaseModel):
 
 
 class CreateAllegation(BaseAllegation, BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this allegation by the orginal source of the data.")
     complaintant: Optional[Civilian] = Field(None, description="Demographic information of the individual who filed the complaint.")
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
+    type: Optional[str] = Field(None, description="The type of allegation.")
+    sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
     recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
     recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")
@@ -99,8 +109,11 @@ class CreateAllegation(BaseAllegation, BaseModel):
 
 
 class Allegation(BaseAllegation, BaseModel):
+    record_id: Optional[str] = Field(None, description="The ID that was given to this allegation by the orginal source of the data.")
     complaintant: Optional[Civilian] = Field(None, description="Demographic information of the individual who filed the complaint.")
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
+    type: Optional[str] = Field(None, description="The type of allegation.")
+    sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
     recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
     recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")

@@ -3,7 +3,6 @@ from typing import List, Optional, Dict, Any, Union
 
 
 class BaseAgency(BaseModel):
-    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -16,7 +15,6 @@ class BaseAgency(BaseModel):
 
 
 class CreateAgency(BaseAgency, BaseModel):
-    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -29,7 +27,6 @@ class CreateAgency(BaseAgency, BaseModel):
 
 
 class UpdateAgency(BaseAgency, BaseModel):
-    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -46,7 +43,6 @@ class AgencyList(PaginatedResponse, BaseModel):
 
 
 class Agency(BaseAgency, BaseModel):
-    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     name: Optional[str] = Field(None, description="Name of the agency")
     hq_address: Optional[str] = Field(None, description="Address of the agency")
     hq_city: Optional[str] = Field(None, description="City of the agency")
@@ -56,6 +52,7 @@ class Agency(BaseAgency, BaseModel):
     phone: Optional[str] = Field(None, description="Phone number of the agency")
     email: Optional[str] = Field(None, description="Email of the agency")
     website_url: Optional[str] = Field(None, description="Website of the agency")
+    uid: Optional[str] = Field(None, description="Unique identifier for the agency")
     officers_url: Optional[str] = Field(None, description="URL to get a list of officers for this agency")
     units_url: Optional[str] = Field(None, description="URL to get a list of units for this agency")
 
