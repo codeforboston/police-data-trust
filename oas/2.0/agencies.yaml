@@ -264,9 +264,6 @@ components:
     BaseAgency:
       type: "object"
       properties:
-        uid:
-          type: "string"
-          description: "Unique identifier for the agency"
         name:
           type: "string"
           description: "Name of the agency"
@@ -323,8 +320,8 @@ components:
         - type: "object"
           properties:
             uid:
-              type: "string"
-              description: "Unique identifier for the agency"
+              type: string
+              description: Unique identifier for the agency
             officers_url:
               type: "string"
               description: "URL to get a list of officers for this agency"

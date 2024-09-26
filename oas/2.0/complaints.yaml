@@ -125,6 +125,9 @@ components:
       type: "object"
       description: "Base complaint object"
       properties:
+        record_id:
+          type: string
+          description: The ID that was given to this complaint by the orginal source of the data.
         source_details:
           $ref: '#/components/schemas/SourceDetails'
         category:
@@ -315,6 +318,9 @@ components:
     BaseAllegation:
       type: "object"
       properties:
+        record_id:
+          type: string
+          description: The ID that was given to this allegation by the orginal source of the data.
         complaintant:
           allOf: 
             -  $ref: "#/components/schemas/Civilian"
@@ -323,6 +329,12 @@ components:
         allegation:
           type: "string"
           description: "The allegation made by the complaintant."
+        type:
+          type: string
+          description: The type of allegation.
+        sub_type:
+          type: string
+          description: The sub type of the allegation.
         recomended_finding:
           type: "string"
           description: "The finding recomended by the review board."
