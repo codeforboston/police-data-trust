@@ -1,6 +1,6 @@
 openapi: "3.0.3"
 info:
-  title: "Partners"
+  title: "Source"
   description: "API Description"
   version: "0.1.0"
 servers:
@@ -17,15 +17,15 @@ x-readme:
 security:
   - bearerAuth: []
 tags:
-  - name: "Partners"
-    description: "Partners API"
+  - name: "Sources"
+    description: "Sources API"
 paths:
-  /partners:
+  /sources:
     get:
       tags:
-        - "Partners"
-      summary: "Get all partners"
-      operationId: "getPartners"
+        - "Sources"
+      summary: "Get all sources"
+      operationId: "getSources"
       responses:
         "200":
           description: "Successful operation"
@@ -37,8 +37,8 @@ paths:
                   $ref: "#/components/schemas/PartnerList"
     post:
       tags:
-        - "Partners"
-      summary: "Create a new partner"
+        - "Sources"
+      summary: "Create a new source"
       operationId: "createPartner"
       requestBody:
         content:
@@ -51,37 +51,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Partner'
+                $ref: '#/components/schemas/Source'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /partners/{uid}:
+  /sources/{uid}:
     parameters: 
       - name: uid
         in: path
-        description: UID of the partner
+        description: UID of the source
         required: true
         schema:
           type: string
     get:
       tags:
-        - "Partners"
-      summary: "Get Partner"
+        - "Sources"
+      summary: "Get Source"
       operationId: "getPartnerById"
       description: >
-        Returns a single partner.
+        Returns a single source.
       responses:
         '200':
           description: "Successful operation"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Partner"
+                $ref: "#/components/schemas/Source"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
     patch:
       tags:
-        - "Partners"
-      summary: "Update an existing partner"
+        - "Sources"
+      summary: "Update an existing source"
       operationId: "updatePartner"
       requestBody:
         content:
@@ -94,26 +94,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Partner'
+                $ref: '#/components/schemas/Source'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-  /partners/{uid}/members:
+  /sources/{uid}/members:
     parameters: 
       - name: uid
         in: path
-        description: UID of the partner
+        description: UID of the source
         required: true
         schema:
           type: string
     get:
       tags:
-        - Partners
+        - Sources
       summary: "Get all members"
       operationId: "getMembers"
       description: >
-        Returns a list of all users who are members of a partner.
+        Returns a list of all users who are members of a source.
       responses:
         '200':
           description: 'Successful operation'
@@ -138,13 +138,13 @@ components:
       properties:
         name:
           type: "string"
-          description: "Name of the partner organization."
+          description: "Name of the source organization."
         url:
           type: "string"
-          description: "Website URL of the partner."
+          description: "Website URL of the source."
         contact_email:
           type: "string"
-          description: "Contact email for the partner organization."
+          description: "Contact email for the source organization."
     CreatePartner:
       allOf:
         - $ref: "#/components/schemas/BasePartner"
@@ -155,20 +155,20 @@ components:
     UpdatePartner:
       allOf: 
         -  $ref: "#/components/schemas/BasePartner"
-    Partner:
+    Source:
       allOf:
         - $ref: "#/components/schemas/BasePartner"
         - type: "object"
           properties:
             uid:
               type: "string"
-              description: "Unique identifier for the partner."
+              description: "Unique identifier for the source."
             members:
               type: string
-              description: "Url to get all members of the partner."
-            reported_incidents:
+              description: "Url to get all members of the source."
+            reported_complaints:
               type: string
-              description: "Url to get all incidents reported by the partner."
+              description: "Url to get all complaints reported by the source."
     PartnerList:
       allOf:
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
@@ -177,13 +177,13 @@ components:
             results:
               type: "array"
               items:
-                $ref: "#/components/schemas/Partner"
+                $ref: "#/components/schemas/Source"
     MemberBase:
       type: "object"
       properties:
-        partner_uid:
+        source_uid:
           type: "string"
-          description: "Unique identifier for the partner."
+          description: "Unique identifier for the source."
         user_uid:
           type: "string"
           description: "Unique identifier for the user."
@@ -210,7 +210,7 @@ components:
             date_joined:
               type: "string"
               format: "date-time"
-              description: "Date the user joined the partner organizaation."
+              description: "Date the user joined the source organizaation."
     AddMember:
       allOf: 
         - $ref: "#/components/schemas/MemberBase"
@@ -218,7 +218,7 @@ components:
           required: 
             - role
             - user_uid
-            - partner_uid
+            - source_uid
     MemberList:
       allOf:
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'

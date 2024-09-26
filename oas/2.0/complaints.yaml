@@ -140,7 +140,7 @@ components:
         recieved_date:
           type: "string"
           format: "date-time"
-          description: "The date and time the complaint was received by the reporting partner."
+          description: "The date and time the complaint was received by the reporting source."
         closed_date:
           type: "string"
           format: "date-time"
@@ -192,7 +192,7 @@ components:
           properties:
             source_uid:
               type: "string"
-              description: "The UID of the partner that reported the complaint."
+              description: "The UID of the source that reported the complaint."
             civilian_review_board_uid:
               type: "string"
               description: "The UID of the civilian review board that reviewed the complaint."
@@ -277,9 +277,9 @@ components:
               description: "Date and time the complaint was last updated."
             source:
               allOf: 
-                - $ref: partners.yaml#/components/schemas/Partner
+                - $ref: sources.yaml#/components/schemas/Source
                 - type: "object"
-                  description: "The partner that reported the complaint."
+                  description: "The source that reported the complaint."
             civilian_review_board:
               allOf: 
                 -  $ref: '#/components/schemas/ReviewBoard'
