@@ -186,11 +186,11 @@ components:
         earliest_employment:
           type: "string"
           format: "date"
-          description: "The earliest date of employment"
+          description: "The earliest known date of employment"
         latest_employment:
           type: "string"
           format: "date"
-          description: "The latest date of employment"
+          description: "The latest known date of employment"
         badge_number:
           type: "string"
           description: "The badge number of the officer"
@@ -270,6 +270,9 @@ components:
         last_name:
           type: "string"
           description: "Last name of the officer"
+        suffix:
+          type: "string"
+          description: "Suffix of the officer's name"
         ethnicity:
           type: "string"
           description: "The ethnicity of the officer"
