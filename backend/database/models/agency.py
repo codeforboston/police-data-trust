@@ -54,7 +54,7 @@ class Unit(StructuredNode):
 
 class Agency(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True)
+    name = StringProperty()
     website_url = StringProperty()
     hq_address = StringProperty()
     hq_city = StringProperty()

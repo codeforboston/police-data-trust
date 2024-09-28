@@ -81,6 +81,7 @@ class Officer(StructuredNode, JsonSerializable):
     first_name = StringProperty()
     middle_name = StringProperty()
     last_name = StringProperty()
+    suffix = StringProperty()
     race = StringProperty()
     ethnicity = StringProperty()
     gender = StringProperty()

@@ -50,6 +50,7 @@ class GovernmentSourceRel(BaseSourceRel):
 
 class Complaint(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
+    record_id = StringProperty()
     category = StringProperty()
     incident_date = DateProperty()
     recieved_date = DateProperty()
@@ -75,7 +76,10 @@ class Complaint(StructuredNode, JsonSerializable):
 
 class Allegation(StructuredNode):
     uid = UniqueIdProperty()
+    record_id = StringProperty()
     allegation = StringProperty()
+    type = StringProperty()
+    subsype = StringProperty()
     recommended_finding = StringProperty()
     recommended_outcome = StringProperty()
     finding = StringProperty()

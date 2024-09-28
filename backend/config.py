@@ -96,11 +96,6 @@ class Config(object):
     def MIXPANEL_TOKEN(self):
         return os.environ.get("MIXPANEL_TOKEN", None)
 
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
-
-    FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
-
 
 class DevelopmentConfig(Config):
     ENV = "development"
