@@ -13,25 +13,28 @@ from pydantic.main import BaseModel
 from ..mixpanel.mix import track_to_mp
 from ..database import User, UserRole, Invitation, StagedInvitation
 from ..dto import LoginUserDTO, RegisterUserDTO
+from ..schemas import validate_request
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
 @bp.route("/login", methods=["POST"])
-# @validate(auth=False, json=LoginUserDTO)
+@validate_request(LoginUserDTO)
 def login():
     """Sign in with email and password.
 
     Returns an access token and sets cookies.
     """
+    logger = logging.getLogger("user_login")
 
-    body: LoginUserDTO = request.context.json
+    body: LoginUserDTO = request.validated_body
 
     # Verify user
     if body.password is not None and body.email is not None:
         user = User.nodes.first_or_none(email=body.email)
         if user is not None and user.verify_password(body.password):
             token = create_access_token(identity=user.uid)
+            logger.info(f"User {user.uid} logged in successfully.")
             resp = jsonify(
                 {
                     "message": "Successfully logged in.",
@@ -58,15 +61,14 @@ def login():
 
 
 @bp.route("/register", methods=["POST"])
-# @validate(auth=False, json=RegisterUserDTO)
+@validate_request(RegisterUserDTO)
 def register():
     """Register for a new public account.
 
     If successful, also performs login.
     """
-
-    body: RegisterUserDTO = request.context.json
     logger = logging.getLogger("user_register")
+    body: RegisterUserDTO = request.validated_body
 
     # Check to see if user already exists
     user = User.nodes.first_or_none(email=body.email)
@@ -79,11 +81,10 @@ def register():
     if body.password is not None and body.email is not None:
         user = User(
             email=body.email,
-            password=User.hash_password(body.password),
-            first_name=body.firstName,
-            last_name=body.lastName,
-            role=UserRole.PUBLIC,
-            phone_number=body.phoneNumber,
+            password_hash=User.hash_password(body.password),
+            first_name=body.firstname,
+            last_name=body.lastname,
+            phone_number=body.phone_number,
         )
         user.save()
         token = create_access_token(identity=user.uid)
@@ -133,7 +134,6 @@ def register():
 
 @bp.route("/refresh", methods=["POST"])
 @jwt_required()
-# @validate()
 def refresh_token():
     """Refreshes the currently-authenticated user's access token."""
 
@@ -149,7 +149,7 @@ def refresh_token():
 
 
 @bp.route("/logout", methods=["POST"])
-# @validate(auth=False)
+@jwt_required()
 def logout():
     """Unsets access cookies."""
     resp = jsonify({"message": "successfully logged out"})
@@ -161,7 +161,6 @@ def logout():
 @cross_origin()
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def test_auth():
     """Returns the currently-authenticated user."""
     current_identity = get_jwt_identity()
@@ -173,9 +172,9 @@ class EmailDTO(BaseModel):
 
 
 @bp.route("/forgotPassword", methods=["POST"])
-# @validate(auth=False, json=EmailDTO)
+@validate_request(EmailDTO)
 def send_reset_email():
-    body: EmailDTO = request.context.json
+    body: EmailDTO = request.validated_body
     logger = logging.getLogger("user_forgot_password")
     user = User.get_by_email(body.email)
     if user is not None:
@@ -194,11 +193,13 @@ class PasswordDTO(BaseModel):
 
 @bp.route("/setPassword", methods=["POST"])
 @jwt_required()
-# @validate(auth=True, json=PasswordDTO)
+@validate_request(PasswordDTO)
 def reset_password():
-    body: PasswordDTO = request.context.json
+    logger = logging.getLogger("user_reset_password")
+    body: PasswordDTO = request.validated_body
     # NOTE: 401s if the user or token is not valid
     # NOTE: This token follows the logged in user token lifespan
     user = User.get(get_jwt_identity())
     user.set_password(body.password)
+    logger.info(f"User {user.uid} reset their password.")
     return {"message": "Password successfully changed"}, 200
