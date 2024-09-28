@@ -102,9 +102,9 @@ def register_commands(app: Flask):
     @dev_only
     def seed(ctx: click.Context):
         """Seed the database."""
-        from alembic.dev_seeds import create_seeds
-
-        create_seeds()
+        # from alembic.dev_seeds import create_seeds
+        # create_seeds()
+        pass
 
     @app.cli.command(
         "pip-compile",
