@@ -1,6 +1,6 @@
 openapi: "3.0.3"
 info:
-  title: "Source"
+  title: "Sources"
   description: "API Description"
   version: "0.1.0"
 servers:
