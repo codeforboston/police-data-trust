@@ -1,4 +1,7 @@
 from __future__ import annotations
+from functools import wraps
+from flask import request, jsonify
+from pydantic import BaseModel, ValidationError
 
 import textwrap
 from spectree import SecurityScheme, SpecTree
@@ -67,3 +70,32 @@ spec = SpecTree(
         ),
     ],
 )
+
+
+# A decorator to validate request bodies using Pydantic models
+def validate_request(model: BaseModel):
+    """
+    Validate the request body using a Pydantic model.
+
+    Args:
+        model (BaseModel): The Pydantic model to use for validation.
+
+    Returns:
+        function: A decorator function that validates the request body.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            try:
+                body = model(**request.json)
+            except ValidationError as e:
+                return jsonify({
+                    "status": "Unprocessable Entity",
+                    "message": "Invalid request body",
+                    "errors": e.errors(),
+                }), 422
+
+            request.validated_body = body
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
