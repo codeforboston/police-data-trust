@@ -4,10 +4,11 @@ from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
+from ..schemas import validate_request, paginate_results, ordered_jsonify
+from .tmp.pydantic.partners import CreatePartner
 from flask import Blueprint, abort, current_app, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from flask_sqlalchemy import Pagination
 from sqlalchemy.orm import joinedload
 
 from ..database import (
@@ -25,7 +26,7 @@ from ..config import TestingConfig
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 
 
-@bp.route("/<int:partner_id>", methods=["GET"])
+@bp.route("/<partner_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 # @validate()
@@ -37,15 +38,17 @@ def get_partners(partner_id: str):
     return p.to_json()
 
 
-@bp.route("/create", methods=["POST"])
+@bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate(json=CreatePartnerSchema)
+@validate_request(CreatePartner)
 def create_partner():
-    logger = logging.getLogger("create_partner")
     """Create a contributing partner."""
+    logger = logging.getLogger("create_partner")
+    body: CreatePartner = request.validated_body
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
 
-    body = request.context.json
     if (
         body.name is not None
         and body.url is not None
@@ -54,26 +57,25 @@ def create_partner():
         and body.url != ""
         and body.contact_email != ""
     ):
+
+        # Creates a new instance of the Partner and saves it to the DB
         try:
-            # Creates a new instance of the Partner and saves it to the DB
-            new_p = Partner.from_dict(body)
-        except Exception:
-            abort(400)
-        """
-        add to database if all fields are present
-        and instance not already in db.
-        """
+            new_p = Partner.from_dict(body.dict())
+        except Exception as e:
+            abort(
+                400,
+                description=f"Failed to create partner: {e}")
+        # Connects the current user to the new partner as an admin
         new_p.members.connect(
-            # Return the User object for the currently logged in user
-            User.get(uid=get_jwt()["sub"]),
+            current_user,
             {
-                "role": MemberRole.ADMIN
+                "role": MemberRole.ADMIN.value
             }
         )
         # update to UserRole contributor status
-        user_id = get_jwt()["sub"]
-        user = User.nodes.get(uid=user_id)
-        user.role = UserRole.CONTRIBUTOR
+        current_user.role = UserRole.CONTRIBUTOR.value
+        current_user.save()
+        logger.info(f"User {current_user.uid} created partner {new_p.name}")
 
         track_to_mp(request, "create_partner", {
             "partner_name": new_p.name,
@@ -91,7 +93,6 @@ def create_partner():
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def get_all_partners():
     """Get all partners.
     Accepts Query Parameters for pagination:
@@ -103,16 +104,9 @@ def get_all_partners():
     q_per_page = args.get("per_page", 20, type=int)
 
     all_partners = Partner.nodes.all()
-    results = all_partners.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
-    )
+    results = paginate_results(all_partners, q_page, q_per_page)
 
-    return {
-        "results": [partner.to_json() for partner in results.items],
-        "page": results.page,
-        "totalPages": results.pages,
-        "totalResults": results.total,
-    }
+    return ordered_jsonify(results), 200
 
 
 @bp.route("/<int:partner_id>/members/", methods=["GET"])
