@@ -5,10 +5,13 @@ from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
-from backend.database.models.user import UserRole
+from backend.schemas import validate_request, ordered_jsonify, paginate_results
+from backend.database.models.user import UserRole, User
 from backend.database.models.agency import Agency
 from backend.database.models.officer import Officer
+from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request
+from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
 
@@ -128,16 +131,21 @@ class AddEmploymentListSchema(BaseModel):
 @bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-#@validate(json=CreateOfficerSchema)
+@validate_request(CreateOfficer)
 def create_officer():
     """Create an officer profile.
     """
+    logger = logging.getLogger("create_officer")
+    body: CreateOfficer = request.validated_body
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
 
-    try:
-        officer = Officer.from_dict(request.context.json)
-    except Exception as e:
-        abort(400, description=str(e))
+    # try:
+    officer = Officer.from_dict(body.dict())
+    # except Exception as e:
+    #     abort(400, description=str(e))
 
+    logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
     track_to_mp(
         request,
         "create_officer",
@@ -149,10 +157,9 @@ def create_officer():
 
 
 # Get an officer profile
-@bp.route("/<int:officer_id>", methods=["GET"])
+@bp.route("/<officer_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def get_officer(officer_id: int):
     """Get an officer profile.
     """
@@ -166,7 +173,6 @@ def get_officer(officer_id: int):
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def get_all_officers():
     """Get all officers.
     Accepts Query Parameters for pagination:
@@ -178,24 +184,16 @@ def get_all_officers():
     q_per_page = args.get("per_page", 20, type=int)
 
     all_officers = Officer.nodes.all()
-    pagination = all_officers.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
-    )
+    results = paginate_results(all_officers, q_page, q_per_page)
 
-    return {
-        "results": [
-            officer_orm_to_json(officer) for officer in pagination.items],
-        "page": pagination.page,
-        "totalPages": pagination.pages,
-        "totalResults": pagination.total,
-    }
+    return ordered_jsonify(results), 200
 
 
 # Update an officer profile
 @bp.route("/<int:officer_id>", methods=["PUT"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-#@validate(json=CreateOfficerSchema)
+@validate_request(UpdateOfficer)
 def update_officer(officer_id: int):
     """Update an officer profile.
     """

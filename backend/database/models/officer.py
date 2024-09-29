@@ -77,6 +77,13 @@ class StateID(StructuredNode):
 
 
 class Officer(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "first_name", "middle_name",
+        "last_name", "suffix",
+        "race", "ethnicity", "gender",
+        "date_of_birth"
+    ]
+
     uid = UniqueIdProperty()
     first_name = StringProperty()
     middle_name = StringProperty()
@@ -89,11 +96,16 @@ class Officer(StructuredNode, JsonSerializable):
 
     # Relationships
     state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = Relationship('Unit', "MEMBER_OF_UNIT")
-    litigation = Relationship('Litigation', "NAMED_IN")
-    allegations = Relationship('Allegation', "ACCUSED_OF")
-    investigations = Relationship('Investigation', "LEAD_BY")
-    commands = Relationship('Unit', "COMMANDS")
+    units = Relationship(
+        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
+    litigation = Relationship(
+        'backend.database.models.litigation.Litigation', "NAMED_IN")
+    allegations = Relationship(
+        'backend.database.models.complaint.Allegation', "ACCUSED_OF")
+    investigations = Relationship(
+        'backend.database.models.complaint.Investigation', "LEAD_BY")
+    commands = Relationship(
+        'backend.database.models.agency.Unit', "COMMANDS")
 
     def __repr__(self):
         return f"<Officer {self.id}>"

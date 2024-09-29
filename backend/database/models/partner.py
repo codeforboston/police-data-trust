@@ -78,6 +78,15 @@ class PartnerMember(StructuredRel):
     date_joined = DateTimeProperty(default=datetime.now())
     is_active = BooleanProperty(default=True)
 
+    @property
+    def role_enum(self) -> MemberRole:
+        """
+        Get the role as a MemberRole enum.
+        Returns:
+            MemberRole: The role as a MemberRole enum.
+        """
+        return MemberRole(self.role)
+
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
 

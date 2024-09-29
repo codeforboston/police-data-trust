@@ -29,7 +29,6 @@ bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 @bp.route("/<partner_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def get_partners(partner_id: str):
     """Get a single partner by ID."""
     p = Partner.nodes.get_or_none(uid=partner_id)
