@@ -1,6 +1,6 @@
 from __future__ import annotations  # allows type hinting of class itself
 # from ..core import db, CrudMixin
-from backend.database.neo_classes import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum
 from datetime import datetime
 from neomodel import (
     StructuredNode, StructuredRel,
@@ -95,6 +95,10 @@ class PartnerMember(StructuredRel):
 
 
 class Partner(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "name", "url",
+        "contact_email"
+    ]
     uid = UniqueIdProperty()
 
     name = StringProperty(unique_index=True)

@@ -1,5 +1,5 @@
 """Define the Classes for Complaints."""
-from backend.database.neo_classes import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     StructuredNode,
     StructuredRel,

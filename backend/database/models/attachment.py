@@ -1,4 +1,4 @@
-from backend.database.neo_classes import JsonSerializable
+from backend.schemas import JsonSerializable
 from neomodel import (
     StringProperty,
     UniqueIdProperty,

@@ -2,7 +2,7 @@
 
 import bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
-from backend.database.neo_classes import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
@@ -30,6 +30,13 @@ class UserRole(str, PropertyEnum):
 
 # Define the User data-model.
 class User(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["password_hash"]
+    __property_order__ = [
+        "uid", "first_name", "last_name",
+        "email", "email_confirmed_at",
+        "phone_number", "role", "active"
+    ]
+
     uid = UniqueIdProperty()
     active = BooleanProperty(default=True)
 
@@ -93,6 +100,15 @@ class User(StructuredNode, JsonSerializable):
         Send a password reset link to the user.
         """
         pass
+
+    @property
+    def role_enum(self) -> UserRole:
+        """
+        Get the user's role as an enum.
+        Returns:
+            UserRole: The user's role as an enum.
+        """
+        return UserRole(self.role)
 
     @classmethod
     def hash_password(cls, pw: str) -> str:
