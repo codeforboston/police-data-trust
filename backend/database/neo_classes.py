@@ -1,10 +1,12 @@
 import json
 from typing import Any, Optional, TypeVar, Type, List
+from collections import OrderedDict
 from enum import Enum
-from flask import abort
+from flask import abort, jsonify
 from neomodel import (
     RelationshipTo,
-    RelationshipFrom, Relationship
+    RelationshipFrom, Relationship,
+    RelationshipManager, RelationshipDefinition
 )
 from neomodel.exceptions import DoesNotExist
 
@@ -23,53 +25,86 @@ class PropertyEnum(Enum):
 # Makes a StructuredNode convertible to and from JSON and Dicts
 class JsonSerializable:
     """Mix me into a database model to make it JSON serializable."""
+    __hidden_properties__ = []
+    __property_order__ = []
 
-    def to_dict(self, include_relationships=True):
+    def to_dict(self, include_relationships=True,
+                exclude_fields=None):
         """
         Convert the node instance into a dictionary.
         Args:
             include_relationships (bool): Whether to include
             relationships in the output.
-        
+
+            exclude_fields (list): List of fields to exclude
+            from serialization.
+
+            field_order (list): List of fields to order the
+            output by.
+
         Returns:
             dict: A dictionary representation of the node.
         """
-        # Serialize node properties using deflate to handle conversions
-        node_props = self.deflate(self.__properties__)
+        exclude_fields = exclude_fields or []
+        field_order = self.__property_order__
+
+        all_excludes = set(
+            self.__hidden_properties__).union(set(exclude_fields))
+
+        all_props = self.defined_properties()
+        node_props = OrderedDict()
+
+        if field_order:
+            ordered_props = [prop for prop in field_order if prop in all_props]
+        else:
+            ordered_props = list(all_props.keys())
+
+        # Serialize node properties
+        for prop_name in ordered_props:
+            if prop_name not in all_excludes:
+                value = getattr(self, prop_name, None)
+                node_props[prop_name] = value
 
         # Optionally add related nodes
         if include_relationships:
-            for rel_name, rel_manager in self.__all_relationships__().items():
-                related_nodes = rel_manager.all()
-                node_props[rel_name] = [
-                    node.to_dict(include_relationships=False)
-                    for node in related_nodes
-                ]
-
+            relationships = {
+                key: value for key, value in self.__class__.__dict__.items()
+                if isinstance(value, RelationshipDefinition)
+            }
+            for key in relationships:
+                if key in all_excludes:
+                    continue
+                rel_manager = getattr(self, key, None)
+                if isinstance(rel_manager, RelationshipManager):
+                    related_nodes = rel_manager.all()
+                    node_props[key] = [
+                        node.to_dict(include_relationships=False)
+                        for node in related_nodes
+                    ]
         return node_props
 
     def to_json(self):
         """Convert the node instance into a JSON string."""
-        return json.dumps(self.to_dict())
+        return jsonify(self.to_dict())
 
     @classmethod
     def from_dict(cls: Type[T], data: dict) -> T:
         """
         Creates or updates an instance of the model from a dictionary.
-        
+
         Args:
             data (dict): A dictionary containing data for the model instance.
-        
+
         Returns:
             Instance of the model.
         """
         instance = None
+        all_props = cls.defined_properties()
 
         # Handle unique properties to find existing instances
         unique_props = {
             prop: data.get(prop)
-            for prop in cls.__all_properties__() if prop in data and data.get(
-                prop)
+            for prop in all_props if prop in data
         }
 
         if unique_props:
@@ -77,7 +112,7 @@ class JsonSerializable:
                 instance = cls.nodes.get(**unique_props)
                 # Update existing instance
                 for key, value in data.items():
-                    if key in instance.__all_properties__():
+                    if key in instance.__all_properties__:
                         setattr(instance, key, value)
             except DoesNotExist:
                 # No existing instance, create a new one
@@ -87,25 +122,38 @@ class JsonSerializable:
 
         # Set properties
         for key, value in data.items():
-            if key in instance.__all_properties__():
+            if key in all_props:
                 setattr(instance, key, value)
 
         # Handle relationships if they exist in the dictionary
-        for rel_name, rel_manager in cls.__all_relationships__().items():
-            if rel_name in data:
-                related_nodes = data[rel_name]
-                if isinstance(related_nodes, list):
-                    # Assume related_nodes is a list of dictionaries
-                    for rel_data in related_nodes:
-                        related_instance = rel_manager.definition[
-                            'node_class'].from_dict(rel_data)
-                        getattr(instance, rel_name).connect(related_instance)
-                else:
-                    # Assume related_nodes is a single dictionary
-                    related_instance = rel_manager.definition[
-                        'node_class'].from_dict(related_nodes)
-                    getattr(instance, rel_name).connect(related_instance)
+        for key, value in data.items():
+            if key.endswith("_uid"):
+                rel_name = key[:-4]
 
+                # See if a relationship manager exists for the pair
+                if isinstance(
+                    getattr(cls, rel_name, None), RelationshipManager
+                ):
+                    rel_manager = getattr(instance, rel_name)
+
+                    # Fetch the related node by its unique identifier
+                    related_node_class = rel_manager.definition['node_class']
+                    try:
+                        related_instance = related_node_class.nodes.get(
+                            uid=value)
+                        rel_manager.connect(related_instance)
+                    except DoesNotExist:
+                        raise ValueError(f"Related {related_node_class.__name__} with UID {value} not found.")
+            # Handle relationship properties
+            if key.endswith("_details"):
+                rel_name = key[:-8]
+                if isinstance(getattr(cls, rel_name, None), RelationshipManager):
+                    rel_manager = getattr(instance, rel_name)
+                    if rel_manager.exists():
+                        relationship = rel_manager.relationship(related_instance)
+                        setattr(relationship, key, value)
+                        relationship.save()
+        # Save the instance
         instance.save()
         return instance
 

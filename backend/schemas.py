@@ -2,6 +2,7 @@ from __future__ import annotations
 from functools import wraps
 from flask import request, jsonify
 from pydantic import BaseModel, ValidationError
+from .database.neo_classes import JsonSerializable
 
 import textwrap
 from spectree import SecurityScheme, SpecTree
@@ -99,3 +100,36 @@ def validate_request(model: BaseModel):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+
+def paginate_response(
+        data: list[JsonSerializable],
+        page: int, per_page: int, max_per_page: int = 100):
+    """
+    Paginate a list of data and return a reponse dict. Items in the list must
+    implement the JsonSerializable interface.
+
+    Args:
+        data (list): The list of data to paginate.
+        page (int): The page number to return.
+        per_page (int): The number of items per page.
+        max_per_page (int): The maximum number of items per page.
+
+    Returns:
+        dict: The paginated data.
+            results (list): The list of paginated data.
+            page (int): The current page number.
+            per_page (int): The number of items per page.
+            total (int): The total number of items.
+    """
+    if per_page > max_per_page:
+        per_page = max_per_page
+    start = (page - 1) * per_page
+    end = start + per_page
+    results = data[start:end]
+    return {
+        "results": [item.to_dict() for item in results],
+        "page": page,
+        "per_page": per_page,
+        "total": len(data),
+    }
