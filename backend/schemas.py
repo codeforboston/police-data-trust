@@ -12,7 +12,8 @@ from spectree.models import Server
 from neomodel import (
     RelationshipTo,
     RelationshipFrom, Relationship,
-    RelationshipManager, RelationshipDefinition
+    RelationshipManager, RelationshipDefinition,
+    UniqueIdProperty
 )
 from neomodel.exceptions import DoesNotExist
 
@@ -277,9 +278,16 @@ class JsonSerializable:
         all_props = cls.defined_properties()
 
         # Handle unique properties to find existing instances
+        unique_properties = {
+            name: prop for name, prop in all_props.items()
+            if getattr(
+                prop, 'unique_index', False) or isinstance(
+                    prop, UniqueIdProperty)
+        }
         unique_props = {
-            prop: data.get(prop)
-            for prop in all_props if prop in data
+            prop_name: data.get(prop_name)
+            for prop_name in unique_properties
+            if prop_name in data and data.get(prop_name) is not None
         }
 
         if unique_props:
@@ -287,7 +295,7 @@ class JsonSerializable:
                 instance = cls.nodes.get(**unique_props)
                 # Update existing instance
                 for key, value in data.items():
-                    if key in instance.__all_properties__:
+                    if key in all_props:
                         setattr(instance, key, value)
             except DoesNotExist:
                 # No existing instance, create a new one
