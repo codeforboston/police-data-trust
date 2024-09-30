@@ -85,6 +85,11 @@ spec = SpecTree(
 T = TypeVar("T", bound="JsonSerializable")
 
 
+class NodeConflictException(Exception):
+    """Exception raised when a node already exists in the database."""
+    pass
+
+
 # Function that replaces jsonify to properly handle OrderedDicts
 def ordered_jsonify(*args, **kwargs):
     """
@@ -264,7 +269,7 @@ class JsonSerializable:
         return ordered_jsonify(self.to_dict())
 
     @classmethod
-    def from_dict(cls: Type[T], data: dict) -> T:
+    def from_dict(cls: Type[T], data: dict, uid=None) -> T:
         """
         Creates or updates an instance of the model from a dictionary.
 
@@ -276,36 +281,40 @@ class JsonSerializable:
         """
         instance = None
         all_props = cls.defined_properties()
-
-        # Handle unique properties to find existing instances
-        unique_properties = {
-            name: prop for name, prop in all_props.items()
-            if getattr(
-                prop, 'unique_index', False) or isinstance(
-                    prop, UniqueIdProperty)
-        }
-        unique_props = {
-            prop_name: data.get(prop_name)
-            for prop_name in unique_properties
-            if prop_name in data and data.get(prop_name) is not None
-        }
-
-        if unique_props:
-            try:
-                instance = cls.nodes.get(**unique_props)
-                # Update existing instance
-                for key, value in data.items():
-                    if key in all_props:
-                        setattr(instance, key, value)
-            except DoesNotExist:
-                # No existing instance, create a new one
-                instance = cls(**unique_props)
+        if uid:
+            # Find the instance by its UID
+            instance = cls.nodes.get_or_none(uid=uid)
         else:
-            instance = cls()
+            # Handle unique properties to find existing instances
+            unique_properties = {
+                name: prop for name, prop in all_props.items()
+                if getattr(
+                    prop, 'unique_index', False) or isinstance(
+                        prop, UniqueIdProperty)
+            }
+            unique_props = {
+                prop_name: data.get(prop_name)
+                for prop_name in unique_properties
+                if prop_name in data and data.get(prop_name) is not None
+            }
 
+            if unique_props:
+                try:
+                    instance = cls.nodes.get(**unique_props)
+                    # If the instance exists, raise an error.
+                    raise NodeConflictException(
+                        "{} {} already exists".format(
+                            cls.__name__,
+                            instance.uid
+                        ) + " with matching unique properties.")
+                except DoesNotExist:
+                    # No existing instance, create a new one
+                    instance = cls(**unique_props)
+            else:
+                instance = cls()
         # Set properties
         for key, value in data.items():
-            if key in all_props:
+            if key in all_props and value is not None:
                 setattr(instance, key, value)
 
         # Handle relationships if they exist in the dictionary
