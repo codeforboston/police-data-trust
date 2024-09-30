@@ -3,9 +3,13 @@ import logging
 from operator import and_
 from typing import Optional, List
 from backend.auth.jwt import min_role_required
+from backend.schemas import (
+    validate_request, paginate_results, ordered_jsonify,
+    NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
+from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
@@ -33,16 +37,19 @@ class AddOfficerListSchema(BaseModel):
 @bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-#@validate(json=CreateAgencySchema)
+@validate_request(CreateAgency)
 def create_agency():
     logger = logging.getLogger("create_agency")
     """Create an agency profile.
     User must be a Contributor to create an agency.
     Must include a name and jurisdiction.
     """
+    body: CreateAgency = request.validated_body
 
     try:
-        agency = Agency.from_dict(request.context.json)
+        agency = Agency.from_dict(body.dict())
+    except NodeConflictException:
+        abort(409, description="Agency already exists")
     except Exception as e:
         logger.error(f"Error, Agency.from_dict: {e}")
         abort(400)
@@ -58,13 +65,13 @@ def create_agency():
 
 
 # Get agency profile
-@bp.route("/<int:agency_id>", methods=["GET"])
+@bp.route("/<agency_id>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
-def get_agency(agency_id: int):
+def get_agency(agency_id: str):
     """Get an agency profile.
     """
+    logger = logging.getLogger("get_agency")
     agency = Agency.nodes.get_or_none(uid=agency_id)
     if agency is None:
         abort(404, description="Agency not found")
@@ -75,19 +82,22 @@ def get_agency(agency_id: int):
 
 
 # Update agency profile
-@bp.route("/<int:agency_id>", methods=["PUT"])
+@bp.route("/<agency_uid>", methods=["PUT"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-# @validate()
-def update_agency(agency_id: int):
+@validate_request(UpdateAgency)
+def update_agency(agency_uid: str):
     """Update an agency profile.
     """
-    agency = Agency.nodes.get_or_none(uid=agency_id)
+    logger = logging.getLogger("update_agency")
+    body: UpdateAgency = request.validated_body
+    agency = Agency.nodes.get_or_none(uid=agency_uid)
     if agency is None:
         abort(404, description="Agency not found")
 
     try:
-        agency = Agency.from_dict(request.context.json)
+        agency = Agency.from_dict(body.dict(), agency_uid)
+        agency.refresh()
         track_to_mp(
             request,
             "update_agency",
@@ -101,11 +111,10 @@ def update_agency(agency_id: int):
 
 
 # Delete agency profile
-@bp.route("/<int:agency_id>", methods=["DELETE"])
+@bp.route("/<agency_id>", methods=["DELETE"])
 @jwt_required()
 @min_role_required(UserRole.ADMIN)
-# @validate()
-def delete_agency(agency_id: int):
+def delete_agency(agency_id: str):
     """Delete an agency profile.
     Must be an admin to delete an agency.
     """
@@ -131,7 +140,6 @@ def delete_agency(agency_id: int):
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()
 def get_all_agencies():
     """Get all agencies.
     Accepts Query Parameters for pagination:
@@ -143,20 +151,9 @@ def get_all_agencies():
     q_per_page = args.get("per_page", 20, type=int)
 
     all_agencies = Agency.nodes.all()
-    pagination = all_agencies.paginate(
-        page=q_page, per_page=q_per_page, max_per_page=100
-    )
+    results = paginate_results(all_agencies, q_page, q_per_page)
 
-    try:
-        return {
-            "results": [
-                agency.to_json() for agency in pagination.items],
-            "page": pagination.page,
-            "totalPages": pagination.pages,
-            "totalResults": pagination.total,
-        }
-    except Exception as e:
-        abort(500, description=str(e))
+    return ordered_jsonify(results), 200
 
 
 # # Add officer employment information

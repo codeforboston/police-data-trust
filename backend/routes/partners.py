@@ -4,8 +4,10 @@ from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
-from ..schemas import validate_request, paginate_results, ordered_jsonify
-from .tmp.pydantic.partners import CreatePartner
+from ..schemas import (
+    validate_request, paginate_results, ordered_jsonify,
+    NodeConflictException)
+from .tmp.pydantic.partners import CreatePartner, UpdatePartner
 from flask import Blueprint, abort, current_app, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
@@ -26,12 +28,12 @@ from ..config import TestingConfig
 bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
 
 
-@bp.route("/<partner_id>", methods=["GET"])
+@bp.route("/<partner_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_partners(partner_id: str):
-    """Get a single partner by ID."""
-    p = Partner.nodes.get_or_none(uid=partner_id)
+def get_partners(partner_uid: str):
+    """Get a single partner by UID."""
+    p = Partner.nodes.get_or_none(uid=partner_uid)
     if p is None:
         abort(404, description="Partner not found")
     return p.to_json()
@@ -60,6 +62,8 @@ def create_partner():
         # Creates a new instance of the Partner and saves it to the DB
         try:
             new_p = Partner.from_dict(body.dict())
+        except NodeConflictException:
+            abort(409, description="Partner already exists")
         except Exception as e:
             abort(
                 400,
@@ -72,8 +76,9 @@ def create_partner():
             }
         )
         # update to UserRole contributor status
-        current_user.role = UserRole.CONTRIBUTOR.value
-        current_user.save()
+        if current_user.role_enum.get_value() < UserRole.CONTRIBUTOR.get_value():
+            current_user.role = UserRole.CONTRIBUTOR.value
+            current_user.save()
         logger.info(f"User {current_user.uid} created partner {new_p.name}")
 
         track_to_mp(request, "create_partner", {
@@ -106,6 +111,33 @@ def get_all_partners():
     results = paginate_results(all_partners, q_page, q_per_page)
 
     return ordered_jsonify(results), 200
+
+
+@bp.route("/<partner_uid>", methods=["PATCH"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@validate_request(UpdatePartner)
+def update_partner(partner_uid: str):
+    """Update a partner's information."""
+    body: UpdatePartner = request.validated_body
+    current_user = User.get(get_jwt()["sub"])
+    p = Partner.nodes.get_or_none(uid=partner_uid)
+    if p is None:
+        abort(404, description="Partner not found")
+
+    if p.members.is_connected(current_user):
+        rel = p.members.relationship(current_user)
+        if not rel.is_administrator():
+            abort(403, description="Not authorized to update partner")
+    else:
+        abort(403, description="Not authorized to update partner")
+
+    try:
+        p.from_dict(body.dict(), partner_uid)
+        p.refresh()
+        return p.to_json()
+    except Exception as e:
+        abort(400, description=str(e))
 
 
 @bp.route("/<int:partner_id>/members/", methods=["GET"])

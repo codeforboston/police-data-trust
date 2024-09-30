@@ -157,13 +157,13 @@ def create_officer():
 
 
 # Get an officer profile
-@bp.route("/<officer_id>", methods=["GET"])
+@bp.route("/<officer_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_officer(officer_id: int):
+def get_officer(officer_uid: int):
     """Get an officer profile.
     """
-    o = Officer.nodes.get_or_none(uid=officer_id)
+    o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
     return o.to_json()
@@ -190,19 +190,21 @@ def get_all_officers():
 
 
 # Update an officer profile
-@bp.route("/<int:officer_id>", methods=["PUT"])
+@bp.route("/<officer_uid>", methods=["PUT"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateOfficer)
-def update_officer(officer_id: int):
+def update_officer(officer_uid: str):
     """Update an officer profile.
     """
-    o = Officer.nodes.get_or_none(uid=officer_id)
+    body: UpdateOfficer = request.validated_body
+    o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
 
     try:
-        o = Officer.from_dict(request.context.json)
+        o = Officer.from_dict(body.dict(), officer_uid)
+        o.refresh()
     except Exception as e:
         abort(400, description=str(e))
 
@@ -217,15 +219,14 @@ def update_officer(officer_id: int):
 
 
 # Delete an officer profile
-@bp.route("/<int:officer_id>", methods=["DELETE"])
+@bp.route("/<officer_uid>", methods=["DELETE"])
 @jwt_required()
 @min_role_required(UserRole.ADMIN)
-# @validate()
-def delete_officer(officer_id: int):
+def delete_officer(officer_uid: str):
     """Delete an officer profile.
     Must be an admin to delete an officer.
     """
-    o = Officer.nodes.get_or_none(uid=officer_id)
+    o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
     try:
