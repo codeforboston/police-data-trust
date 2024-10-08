@@ -1,5 +1,4 @@
 import psycopg.errors
-import psycopg2.errors
 import pytest
 from backend.api import create_app
 from backend.auth import user_manager
@@ -34,13 +33,13 @@ def database():
         host=cfg.POSTGRES_HOST,
         port=cfg.PGPORT,
         dbname=cfg.POSTGRES_DB,
-        version=16.3,
+        version=16.4,
         password=cfg.POSTGRES_PASSWORD,
     )
 
     try:
         janitor.init()
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
+    except psycopg.errors.DuplicateDatabase:
         pass
 
     yield
