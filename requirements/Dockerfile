@@ -1,4 +1,4 @@
-# psycopg2 requires postgres development files in order to compile the
+# psycopg requires postgres development files in order to compile the
 # requirements, so this image starts with the same image as the database
 # containers and installs the same version of python as the api containers
 
