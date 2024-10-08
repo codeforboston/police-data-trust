@@ -6,7 +6,7 @@ flake8
 flask
 flask-sqlalchemy
 gunicorn
-pandas==2.2.2
+pandas==2.2.3
 pip-tools
 pydantic
 pydantic-sqlalchemy
@@ -19,7 +19,7 @@ pytest-mock
 python-dotenv
 flask-user<0.7
 wtforms
-SQLAlchemy==1.4.51
+SQLAlchemy==1.4.54
 flask-wtf
 flask-babelex
 PyYAML
