@@ -1,4 +1,4 @@
-bcrypt==3.2.2
+bcrypt
 black
 boto3
 celery
