@@ -10,12 +10,10 @@ from typing import Any, Optional
 import click
 import pandas as pd
 import psycopg
-import psycopg2.errors
 from flask import abort, current_app
 from flask.cli import AppGroup, with_appcontext
 from flask_sqlalchemy import SQLAlchemy
-from psycopg2 import connect
-from psycopg2.extensions import connection
+from psycopg import connect, connection
 from sqlalchemy.exc import ResourceClosedError
 from werkzeug.utils import secure_filename
 
@@ -123,7 +121,7 @@ def create_database(
 
     try:
         cursor.execute(f"CREATE DATABASE {database};")
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
+    except psycopg.errors.DuplicateDatabase:
         click.echo(f"Database {database!r} already exists.")
     else:
         click.echo(f"Created database {database!r}.")
@@ -184,7 +182,7 @@ def delete_database(conn: connection, test_db: bool):
 
     try:
         cursor.execute(f"DROP DATABASE {database};")
-    except psycopg2.errors.lookup("3D000"):
+    except psycopg.errors.InvalidCatalogName:
         click.echo(f"Database {database!r} does not exist.")
     else:
         click.echo(f"Database {database!r} was deleted.")

@@ -1,3 +1,2 @@
 -r _core.in
-psycopg2-binary
 psycopg-binary
