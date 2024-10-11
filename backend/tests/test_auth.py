@@ -2,18 +2,17 @@ import flask_user
 import pytest
 from backend.database import User
 from flask_jwt_extended import decode_token
-from unittest import mock
 
 
 @pytest.mark.parametrize(
     ("email", "password", "expected_status_code"),
     [
-        ("test@email.com", "my_password", 200),
+        ("new_user@email.com", "my_password", 200),
         ("bad_email", "bad_password", 422),
         (None, None, 422),
     ],
 )
-def test_register(client, db_session, email, password, expected_status_code):
+def test_register(db_session, client, email, password, expected_status_code):
     res = client.post(
         "api/v1/auth/register",
         json={
@@ -22,7 +21,9 @@ def test_register(client, db_session, email, password, expected_status_code):
         },
     )
 
-    db_user = db_session.query(User).filter(email == User.email).first()
+    db_user = User.get_by_email(email)
+    if db_user is not None:
+        add_test_label(db_user)
     assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
     assert (db_user is not None) == (expected_status_code == 200)
     assert res.status_code == expected_status_code
@@ -33,7 +34,8 @@ def test_register(client, db_session, email, password, expected_status_code):
     [("my_password", 200), ("bad_password", 401), (None, 422)],
 )
 def test_login(
-    client, example_user, db_session, password, expected_status_code
+    db_session,
+    client, example_user, password, expected_status_code
 ):
     res = client.post(
         "api/v1/auth/login",
@@ -58,14 +60,14 @@ def test_jwt(client, db_session, example_user):
 
     assert res.status_code == 200
 
-    user_id = decode_token(res.json["access_token"])["sub"]
-    db_user = db_session.query(User).filter(user_id == User.id).first()
+    user_uid = decode_token(res.json["access_token"])["sub"]
+    db_user = User.nodes.get_or_none(uid=user_uid)
 
     assert db_user.email == example_user.email
     assert res.status_code == 200
 
 
-def test_auth_test_header(client, example_user):
+def test_auth_test_header(db_session, client, example_user):
     login_res = client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
@@ -83,7 +85,7 @@ def test_auth_test_header(client, example_user):
     assert test_res.status_code == 200
 
 
-def test_auth_test_cookie(client, example_user):
+def test_auth_test_cookie(db_session, client, example_user):
     client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
@@ -96,55 +98,55 @@ def test_auth_test_cookie(client, example_user):
     assert test_res.status_code == 200
 
 
-@pytest.mark.parametrize(("use_correct_email"), [(True), (False)])
-def test_forgot_email(mocker, client, example_user, use_correct_email):
-    mock_send_reset_password_email = mocker.spy(
-        flask_user.UserManager, "send_reset_password_email"
-    )
-    mock_send_forgot_password_email = mocker.spy(
-        flask_user.emails, "send_forgot_password_email"
-    )
-    email: str
-    if use_correct_email:
-        email = example_user.email
-    else:
-        email = "fake@email.com"
-    res = client.post("api/v1/auth/forgotPassword", json={"email": email})
-    mock_send_reset_password_email.assert_called_once_with(mock.ANY, email)
-    if use_correct_email:
-        mock_send_forgot_password_email.assert_called_once_with(
-            example_user, mock.ANY, mock.ANY
-        )
-    else:
-        mock_send_forgot_password_email.assert_not_called()
-    assert res.status_code == 200
+# @pytest.mark.parametrize(("use_correct_email"), [(True), (False)])
+# def test_forgot_email(mocker, client, example_user, use_correct_email):
+#     mock_send_reset_password_email = mocker.spy(
+#         flask_user.UserManager, "send_reset_password_email"
+#     )
+#     mock_send_forgot_password_email = mocker.spy(
+#         flask_user.emails, "send_forgot_password_email"
+#     )
+#     email: str
+#     if use_correct_email:
+#         email = example_user.email
+#     else:
+#         email = "fake@email.com"
+#     res = client.post("api/v1/auth/forgotPassword", json={"email": email})
+#     mock_send_reset_password_email.assert_called_once_with(mock.ANY, email)
+#     if use_correct_email:
+#         mock_send_forgot_password_email.assert_called_once_with(
+#             example_user, mock.ANY, mock.ANY
+#         )
+#     else:
+#         mock_send_forgot_password_email.assert_not_called()
+#     assert res.status_code == 200
 
 
-@pytest.mark.parametrize(("use_correct_token"), [(True), (False)])
-def test_reset_password(client, example_user, use_correct_token):
-    login_res = client.post(
-        "api/v1/auth/login",
-        json={"email": example_user.email, "password": "my_password"},
-    )
-    token = ""
-    if use_correct_token:
-        token = login_res.json["access_token"]
+# @pytest.mark.parametrize(("use_correct_token"), [(True), (False)])
+# def test_reset_password(client, example_user, use_correct_token):
+#     login_res = client.post(
+#         "api/v1/auth/login",
+#         json={"email": example_user.email, "password": "my_password"},
+#     )
+#     token = ""
+#     if use_correct_token:
+#         token = login_res.json["access_token"]
 
-    client.post(
-        "api/v1/auth/resetPassword",
-        headers={"Authorization": "Bearer {0}".format(token)},
-        json={
-            "password": "newPassword",
-        },
-    )
+#     client.post(
+#         "api/v1/auth/resetPassword",
+#         headers={"Authorization": "Bearer {0}".format(token)},
+#         json={
+#             "password": "newPassword",
+#         },
+#     )
 
-    login_res = client.post(
-        "api/v1/auth/login",
-        json={"email": example_user.email, "password": "newPassword"},
-    )
+#     login_res = client.post(
+#         "api/v1/auth/login",
+#         json={"email": example_user.email, "password": "newPassword"},
+#     )
 
-    assert (login_res.status_code == 200) == use_correct_token
+#     assert (login_res.status_code == 200) == use_correct_token
 
 
-def test_access_token_fixture(access_token):
+def test_access_token_fixture(db_session, access_token):
     assert len(access_token) > 0

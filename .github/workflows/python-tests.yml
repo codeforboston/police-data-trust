@@ -8,19 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:16-alpine
+      test_db:
+        image: neo4j:5.23-community
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: police_data_test
+          GRAPH_USER: neo4j
+          GRAPH_PASSWORD: neo4j
+          GRAPH_DB: police_data_test
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --env NEO4J_AUTH=neo4j/neo4j
         ports:
-          - 5432:5432
+          - 7687:7687
     steps:
     - uses: actions/checkout@v4
     - name: Python 3.12 Setup
@@ -38,7 +35,8 @@ jobs:
     - name: Run tests
       run: python -m pytest
       env:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: police_data
+        GRAPH_USER: neo4j
+        GRAPH_PASSWORD: neo4j
+        GRAPH_DB: police_data_test
+        GRAPH_URI: test_db
         MIXPANEL_TOKEN: mixpanel_token
