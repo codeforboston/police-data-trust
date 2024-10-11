@@ -1,5 +1,4 @@
 import pytest
-from testcontainers.neo4j import Neo4jContainer
 from neo4j import GraphDatabase
 from neomodel import config, db
 from backend.api import create_app

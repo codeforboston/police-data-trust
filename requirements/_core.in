@@ -33,5 +33,6 @@ jupyter
 mixpanel
 ua-parser
 ujson
-neo4j==5.24
+testcontainers
+neo4j
 neomodel==5.3.3
