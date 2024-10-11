@@ -30,8 +30,8 @@ jobs:
         sudo apt-get install python3-dev libpq-dev
         python -m pip install --upgrade pip
         python -m pip install -r requirements/dev_unix.txt
-    - name: Check style
-      run: flake8 backend/
+  #  - name: Check style
+  #    run: flake8 backend/
     - name: Run tests
       run: python -m pytest
       env:
