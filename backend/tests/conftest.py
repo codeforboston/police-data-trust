@@ -49,6 +49,17 @@ def db_session(test_db_driver):
         yield session
 
 
+@pytest.fixture(scope="session")
+def app(test_db_driver):
+    app = create_app(config="testing")
+    # The app should be ready! Provide the app instance here.
+    # Use the app context to make testing easier.
+    # The main time where providing app context can cause false positives is
+    # when testing CLI commands that don't pass the app context.
+    with app.app_context():
+        yield app
+
+
 # This function must be called for every new test node created
 def add_test_label(node):
     query = "MATCH (n) WHERE id(n) = $node_id SET n:TestData"
