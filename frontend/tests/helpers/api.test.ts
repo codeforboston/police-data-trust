@@ -25,9 +25,9 @@ describe("api", () => {
         active: true,
         email: "test@example.com",
         emailConfirmedAt: null,
-        firstName: "Test",
-        lastName: "Example",
-        phoneNumber: "(123) 456-7890",
+        firstname: "Test",
+        lastname: "Example",
+        phone_number: "(123) 456-7890",
         role: "Public"
       })
     })
@@ -43,9 +43,9 @@ describe("api", () => {
       const newUser: api.NewUser = {
         email: uniqueEmail(),
         password: "password",
-        firstName: "June",
-        lastName: "Grey",
-        phoneNumber: "(555) 555-5555"
+        firstname: "June",
+        lastname: "Grey",
+        phone_number: "(555) 555-5555"
       }
 
       const accessToken = await api.register(newUser)
@@ -53,17 +53,17 @@ describe("api", () => {
       const user = await api.whoami({ accessToken })
 
       expect(user.email).toEqual(newUser.email)
-      expect(user.firstName).toEqual(newUser.firstName)
-      expect(user.lastName).toEqual(newUser.lastName)
-      expect(user.phoneNumber).toEqual(newUser.phoneNumber)
+      expect(user.firstname).toEqual(newUser.firstname)
+      expect(user.lastname).toEqual(newUser.lastname)
+      expect(user.phone_number).toEqual(newUser.phone_number)
     })
 
     it("rejects existing accounts", async () => {
       const newUser: api.NewUser = {
         email: EXISTING_TEST_USER.email,
         password: "password",
-        firstName: "June",
-        lastName: "Grey"
+        firstname: "June",
+        lastname: "Grey"
       }
 
       let error = await api.register(newUser).catch((e) => e)

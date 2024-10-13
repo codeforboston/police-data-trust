@@ -71,9 +71,9 @@ export const handlers = [
         active: user.active,
         email: user.email,
         email_confirmed_at: user.emailConfirmedAt,
-        first_name: user.firstName,
-        last_name: user.lastName,
-        phone_number: user.phoneNumber,
+        first_name: user.firstname,
+        last_name: user.lastname,
+        phone_number: user.phone_number,
         role: user.role
       })
     )

@@ -8,9 +8,9 @@ export const EXISTING_TEST_USER: TestUser = {
   emailConfirmedAt: null,
   email: "test@example.com",
   password: "password",
-  firstName: "Test",
-  lastName: "Example",
-  phoneNumber: "(123) 456-7890",
+  firstname: "Test",
+  lastname: "Example",
+  phone_number: "(123) 456-7890",
   role: "Public"
 }
 
