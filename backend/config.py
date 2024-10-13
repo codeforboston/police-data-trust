@@ -119,7 +119,11 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     ENV = "testing"
     TESTING = True
-    POSTGRES_DB = "police_data_test"
+    GRAPH_DB = "police_data_test"
+    GRAPH_URI = "localhost"
+    GRAPH_PORT = 7687
+    GRAPH_USER = "neo4j"
+    GRAPH_PASSWORD = "test_pwd"
     SECRET_KEY = "my-secret-key"
     JWT_SECRET_KEY = "my-jwt-secret-key"
     MIXPANEL_TOKEN = "mixpanel-token"

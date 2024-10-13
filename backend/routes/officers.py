@@ -29,7 +29,7 @@ class SearchOfficerSchema(BaseModel):
 
     class Config:
         extra = "forbid"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "officerName": "John Doe",
                 "location" : "New York",

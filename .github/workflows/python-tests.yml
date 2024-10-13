@@ -11,11 +11,14 @@ jobs:
       test_db:
         image: neo4j:5.23-community
         env:
-          GRAPH_USER: neo4j
-          GRAPH_PASSWORD: neo4j
-          GRAPH_DB: police_data_test
+          NEO4J_AUTH: neo4j/test_pwd
         ports:
           - 7687:7687
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p test_pwd 'RETURN 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v4
     - name: Python 3.12 Setup
@@ -34,7 +37,10 @@ jobs:
       run: python -m pytest
       env:
         GRAPH_USER: neo4j
-        GRAPH_PASSWORD: neo4j
-        GRAPH_DB: police_data_test
-        GRAPH_URI: test_db
+        GRAPH_PASSWORD: test_pwd
+        GRAPH_URI: localhost
+        GRAPH_PORT: 7687
         MIXPANEL_TOKEN: mixpanel_token
+    - name: Output Neo4j logs
+      if: failure()
+      run: docker logs $(docker ps -q --filter ancestor=neo4j:5.23-community)

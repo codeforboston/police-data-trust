@@ -74,9 +74,9 @@ def register():
     user = User.nodes.first_or_none(email=body.email)
     if user is not None:
         return {
-            "status": "ok",
+            "status": "Conflict",
             "message": "Error. Email matches existing account.",
-        }, 400
+        }, 409
     # Verify all fields included and create user
     if body.password is not None and body.email is not None:
         user = User(
@@ -105,7 +105,7 @@ def register():
 
         resp = jsonify(
             {
-                "status": "ok",
+                "status": "OK",
                 "message": "Successfully registered.",
                 "access_token": token,
             }
@@ -126,10 +126,10 @@ def register():
         if key not in body.keys() or body.get(key) is None:
             missing_fields.append(key)
     return {
-        "status": "ok",
+        "status": "Unprocessable Entity",
         "message": "Failed to register. Please include the following"
         " fields: " + ", ".join(missing_fields),
-    }, 400
+    }, 422
 
 
 @bp.route("/refresh", methods=["POST"])

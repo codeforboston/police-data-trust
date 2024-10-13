@@ -73,7 +73,7 @@ class SearchIncidentsSchema(BaseModel):
 
     class Config:
         extra = "forbid"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "description": "Test description",
                 "dateEnd": "2019-12-01",

@@ -181,7 +181,7 @@ def get_partner_members(partner_id: int):
 
     class Config:
         extra = "forbid"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "user_email": "member@partner.org",
                 "role": "ADMIN",

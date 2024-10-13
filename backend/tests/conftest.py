@@ -37,6 +37,7 @@ def test_db_driver():
         url=cfg.GRAPH_URI,
         port=cfg.GRAPH_PORT
     )
+    print(f"Connecting to test database at {test_db_url}")
     config.DATABASE_URL = test_db_url
 
     yield db_driver
