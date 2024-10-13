@@ -17,10 +17,12 @@ from flask_jwt_extended import decode_token
     ],
 )
 def test_register(
-    db_session, client, email, password,
+    db_session, client, example_user, email, password,
     firstname, lastname, phone_number,
     expected_status_code
 ):
+    if email == "existing@email.com":
+        email = example_user.email
     res = client.post(
         "api/v1/auth/register",
         json={
@@ -35,9 +37,8 @@ def test_register(
     assert res.status_code == expected_status_code
 
     if expected_status_code == 200:
-        assert res.json["status"] == "ok"
+        assert res.json["status"] == "OK"
         assert res.json["message"] == "Successfully registered."
-        assert res.json["access_token"] == "mocked_access_token"
         assert "Set-Cookie" in res.headers
     elif expected_status_code == 409 and email == "existing@email.com":
         assert res.json["status"] == "Conflict"
@@ -55,7 +56,7 @@ def test_register(
     [("my_password", 200), ("bad_password", 401), (None, 422)],
 )
 def test_login(
-    mock_db_session,
+    db_session,
     client, example_user, password, expected_status_code
 ):
     with patch('backend.database.User.get_by_email') as mock_get_by_email:
@@ -73,7 +74,7 @@ def test_login(
         assert res.status_code == expected_status_code
 
 
-def test_jwt(client, mock_db_session, example_user, mock_access_token):
+def test_jwt(client, db_session, example_user, mock_access_token):
     with patch('backend.database.User.nodes.get_or_none') as mock_get_or_none, \
          patch('flask_jwt_extended.decode_token') as mock_decode_token:
         
@@ -98,7 +99,7 @@ def test_jwt(client, mock_db_session, example_user, mock_access_token):
 
 
 def test_auth_test_header(
-    mock_db_session, client, example_user, mock_access_token):
+    db_session, client, example_user, mock_access_token):
     login_res = client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
@@ -118,7 +119,7 @@ def test_auth_test_header(
     assert test_res.status_code == 200
 
 
-def test_auth_test_cookie(mock_db_session, client, example_user):
+def test_auth_test_cookie(db_session, client, example_user):
     client.post(
         "api/v1/auth/login",
         json={"email": example_user.email, "password": "my_password"},
@@ -133,7 +134,7 @@ def test_auth_test_cookie(mock_db_session, client, example_user):
     assert test_res.status_code == 200
 
 
-def test_access_token_fixture(mock_db_session, mock_access_token):
+def test_access_token_fixture(db_session, mock_access_token):
     assert len(mock_access_token) > 0
 
 

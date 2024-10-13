@@ -127,7 +127,7 @@ def register():
             missing_fields.append(key)
     return {
         "status": "Unprocessable Entity",
-        "message": "Failed to register. Please include the following"
+        "message": "Invalid request body. Please include the following"
         " fields: " + ", ".join(missing_fields),
     }, 422
 

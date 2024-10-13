@@ -63,8 +63,8 @@ def app(test_db_driver):
 
 # This function must be called for every new test node created
 def add_test_label(node):
-    query = "MATCH (n) WHERE id(n) = $node_id SET n:TestData"
-    params = {'node_id': node.id}
+    query = "MATCH (n) WHERE elementId(n) = $node_id SET n:TestData"
+    params = {'node_id': node.element_id}
     db.cypher_query(query, params)
 
 
@@ -72,12 +72,12 @@ def add_test_label(node):
 def add_test_property_to_rel(start_node, rel_type, end_node):
     query = f"""
     MATCH (a)-[r:{rel_type}]-(b)
-    WHERE id(a) = $start_id AND id(b) = $end_id
+    WHERE elementId(a) = $start_id AND elementId(b) = $end_id
     SET r.test_data = true
     """
     params = {
-        'start_id': start_node.id,
-        'end_id': end_node.id
+        'start_id': start_node.element_id,
+        'end_id': end_node.element_id
     }
     db.cypher_query(query, params)
 
@@ -153,7 +153,7 @@ def example_partner_member(example_user: User):
         contact_email="example_test@example.ca",
         member_association=[
             PartnerMember(
-                user_id=example_user.id,
+                user_id=example_user.uid,
                 role=MemberRole.MEMBER.value,
                 date_joined=datetime.now(),
                 is_active=True,
