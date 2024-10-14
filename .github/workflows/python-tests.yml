@@ -13,7 +13,7 @@ jobs:
         env:
           NEO4J_AUTH: neo4j/test_pwd
         ports:
-          - 7687:7687
+          - 7688:7687
         options: >-
           --health-cmd "cypher-shell -u neo4j -p test_pwd 'RETURN 1'"
           --health-interval 10s
@@ -38,8 +38,7 @@ jobs:
       env:
         GRAPH_USER: neo4j
         GRAPH_PASSWORD: test_pwd
-        GRAPH_URI: localhost
-        GRAPH_PORT: 7687
+        GRAPH_NM_URI: localhost:7688
         MIXPANEL_TOKEN: mixpanel_token
     - name: Output Neo4j logs
       if: failure()

@@ -25,23 +25,18 @@ example_password = "my_password"
 def test_db_driver():
     cfg = TestingConfig()
 
-    db_driver = GraphDatabase.driver(
-        f"bolt://{cfg.GRAPH_URI}",
+    uri = f"bolt://{cfg.GRAPH_NM_URI}"
+    print(f"Driver URI: {uri}")
+    test_driver = GraphDatabase.driver(
+        uri,
         auth=(
             cfg.GRAPH_USER,
             cfg.GRAPH_PASSWORD
         ))
-    test_db_url = "bolt://{user}:{pw}@{url}:{port}".format(
-        user=cfg.GRAPH_USER,
-        pw=cfg.GRAPH_PASSWORD,
-        url=cfg.GRAPH_URI,
-        port=cfg.GRAPH_PORT
-    )
-    print(f"Connecting to test database at {test_db_url}")
-    config.DATABASE_URL = test_db_url
-
-    yield db_driver
-    db_driver.close()
+    print(test_driver.get_server_info().address)
+    test_driver.verify_connectivity()
+    yield test_driver
+    test_driver.close()
 
 
 @pytest.fixture
@@ -51,12 +46,13 @@ def db_session(test_db_driver):
 
 
 @pytest.fixture(scope="session")
-def app(test_db_driver):
+def app():
     app = create_app(config="testing")
     # The app should be ready! Provide the app instance here.
     # Use the app context to make testing easier.
     # The main time where providing app context can cause false positives is
     # when testing CLI commands that don't pass the app context.
+    print("App created.")
     with app.app_context():
         yield app
 

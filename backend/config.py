@@ -15,13 +15,6 @@ class Config(object):
     TOKEN_EXPIRATION = timedelta(
         hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
-    # POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
-    # PGPORT = os.environ.get("PGPORT", 5432)
-    # POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
-    # POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
-    # POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
-    GRAPH_URI = os.environ.get("GRAPH_URI", "localhost")
-    GRAPH_PORT = os.environ.get("GRAPH_PORT", 7687)
     GRAPH_USER = os.environ.get("GRAPH_USER", "neo4j")
     GRAPH_NM_URI = os.environ.get("GRAPH_NM_URI", "localhost:7687")
     GRAPH_PASSWORD = os.environ.get("GRAPH_PASSWORD", "password")
@@ -75,22 +68,11 @@ class Config(object):
 
     @property
     def NEO4J_BOLT_URI(self):
-        return "bolt://{user}:{pw}@{url}:{port}".format(
+        return "bolt://{user}:{pw}@{uri}".format(
             user=self.GRAPH_USER,
             pw=self.GRAPH_PASSWORD,
-            url=self.GRAPH_URI,
-            port=self.GRAPH_PORT
+            uri=self.GRAPH_NM_URI
         )
-
-    # @property
-    # def SQLALCHEMY_DATABASE_URI(self):
-    #     return "postgresql://%s:%s@%s:%s/%s" % (
-    #         self.POSTGRES_USER,
-    #         self.POSTGRES_PASSWORD,
-    #         self.POSTGRES_HOST,
-    #         self.PGPORT,
-    #         self.POSTGRES_DB,
-    #     )
 
     @property
     def MIXPANEL_TOKEN(self):
@@ -120,8 +102,7 @@ class TestingConfig(Config):
     ENV = "testing"
     TESTING = True
     GRAPH_DB = "police_data_test"
-    GRAPH_URI = "localhost"
-    GRAPH_PORT = 7687
+    GRAPH_NM_URI = os.environ.get("GRAPH_TEST_URI", "test-neo4j:7687")
     GRAPH_USER = "neo4j"
     GRAPH_PASSWORD = "test_pwd"
     SECRET_KEY = "my-secret-key"

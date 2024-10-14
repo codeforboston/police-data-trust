@@ -64,11 +64,10 @@ def register_extensions(app: Flask):
         raise e
 
     # Neomodel setup
-    neo_url = "bolt://{user}:{pw}@{url}:{port}".format(
+    neo_url = "bolt://{user}:{pw}@{uri}".format(
         user=app.config["GRAPH_USER"],
         pw=app.config["GRAPH_PASSWORD"],
-        url=app.config["GRAPH_URI"],
-        port=app.config["GRAPH_PORT"]
+        uri=app.config["GRAPH_NM_URI"]
     )
     neo_config.DATABASE_URL = neo_url
 

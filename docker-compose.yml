@@ -1,6 +1,6 @@
 services:
   db:
-    image: neo4j:5.23-community #Neo4j image
+    image: neo4j:5.23-community
     env_file:
       - ".env"
     volumes:
@@ -13,6 +13,17 @@ services:
       - "7687:7687"   # Bolt port for database access
     environment:
       - NEO4J_AUTH=neo4j/${GRAPH_PASSWORD:-password}
+  test-neo4j:
+    image: neo4j:5.23-community
+    profiles:
+      - test
+    env_file:
+      - ".env"
+    environment:
+      - NEO4J_AUTH=neo4j/test_pwd
+    ports:
+      - "7475:7474"
+      - "7688:7687"
   web:
     build:
       context: ./frontend
@@ -47,7 +58,6 @@ services:
       WAIT_HOSTS: db:7687
     ports:
       - ${NPDI_API_PORT:-5000}:${NPDI_API_PORT:-5000}
-
 volumes:
   neo4j: {}
   neo4j_logs: {}
