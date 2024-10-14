@@ -19,6 +19,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        volumes:
+          - ../../testdb-init:/docker-entrypoint-initdb.d
     steps:
     - uses: actions/checkout@v4
     - name: Python 3.12 Setup
