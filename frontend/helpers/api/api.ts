@@ -7,17 +7,17 @@ export interface User {
   role: string
   email: string
   emailConfirmedAt?: string
-  firstName?: string
-  lastName?: string
-  phoneNumber?: string
+  firstname?: string
+  lastname?: string
+  phone_number?: string
 }
 
 export interface NewUser {
   email: string
   password: string
-  firstName?: string
-  lastName?: string
-  phoneNumber?: string
+  firstname?: string
+  lastname?: string
+  phone_number?: string
 }
 
 export interface LoginCredentials {
@@ -168,9 +168,9 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
     active,
     email,
     emailConfirmedAt: email_confirmed_at,
-    firstName: first_name,
-    lastName: last_name,
-    phoneNumber: phone_number,
+    firstname: first_name,
+    lastname: last_name,
+    phone_number: phone_number,
     role: role
   }))
 }

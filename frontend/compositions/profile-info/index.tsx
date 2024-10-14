@@ -13,7 +13,7 @@ export default function ProfileInfo() {
   const { user } = useAuth()
   // temp
   const userData = publicUser(user)
-  const { firstName, lastName, email, phone } = userData
+  const { firstname, lastname, email, phone } = userData
 
   if (editMode) {
     return <EditProfileInfo cancelEditMode={() => setEditMode(false)} />
@@ -33,11 +33,11 @@ export default function ProfileInfo() {
         <main className={dataView}>
           <div className={dataCell}>
             <div className={label}>First name:</div>
-            <div className={dataField}>{firstName}</div>
+            <div className={dataField}>{firstname}</div>
           </div>
           <div className={dataCell}>
             <div className={label}>Last name:</div>
-            <div className={dataField}>{lastName}</div>
+            <div className={dataField}>{lastname}</div>
           </div>
           <div className={dataBreak}></div>
           <div className={dataCell}>

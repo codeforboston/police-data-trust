@@ -43,8 +43,8 @@ export enum UserRoles {
 // User Information
 export interface UserDataType {
   active: boolean
-  firstName: string
-  lastName: string
+  firstname: string
+  lastname: string
   email: string
   phone: string
   role: UserRoles
@@ -52,54 +52,54 @@ export interface UserDataType {
 
 export const emptyUser: UserDataType = {
   active: false,
-  firstName: "",
-  lastName: "",
+  firstname: "",
+  lastname: "",
   email: "",
   phone: "",
   role: 0
 }
 
 export const publicUser = (user: User): UserDataType => ({
-  firstName: user.firstName || "",
-  lastName: user.lastName || "",
+  firstname: user.firstname || "",
+  lastname: user.lastname || "",
   email: user.email,
-  phone: user.phoneNumber,
+  phone: user.phone_number,
   active: user.active,
   role: UserRoles.PUBLIC
 })
 
 export const passportUser = (user: User): UserDataType => ({
-  firstName: user.firstName || "",
-  lastName: user.lastName || "",
+  firstname: user.firstname || "",
+  lastname: user.lastname || "",
   email: user.email,
-  phone: user.phoneNumber,
+  phone: user.phone_number,
   active: user.active,
   role: UserRoles.PASSPORT
 })
 
 export const contributorUser = (user: User): UserDataType => ({
-  firstName: user.firstName || "",
-  lastName: user.lastName || "",
+  firstname: user.firstname || "",
+  lastname: user.lastname || "",
   email: user.email,
-  phone: user.phoneNumber,
+  phone: user.phone_number,
   active: user.active,
   role: UserRoles.CONTRIBUTOR
 })
 
 export const adminUser = (user: User): UserDataType => ({
-  firstName: user.firstName || "",
-  lastName: user.lastName || "",
+  firstname: user.firstname || "",
+  lastname: user.lastname || "",
   email: user.email,
-  phone: user.phoneNumber,
+  phone: user.phone_number,
   active: user.active,
   role: UserRoles.ADMIN
 })
 
 export const someUser = (user: User, role: UserRoles): UserDataType => ({
-  firstName: user.firstName || "",
-  lastName: user.lastName || "",
+  firstname: user.firstname || "",
+  lastname: user.lastname || "",
   email: user.email,
-  phone: user.phoneNumber,
+  phone: user.phone_number,
   active: user.active,
   role: role
 })

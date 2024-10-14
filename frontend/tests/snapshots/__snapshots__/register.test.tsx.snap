@@ -54,7 +54,7 @@ exports[`renders Register correctly 1`] = `
             class="defaultInputContainer inputContainer undefined"
           >
             <label
-              for="firstNameInput"
+              for="First NameInput"
             >
               First Name:
             </label>
@@ -62,8 +62,8 @@ exports[`renders Register correctly 1`] = `
               aria-invalid="false"
               aria-required="true"
               class="inputField"
-              id="firstNameInput"
-              name="firstName"
+              id="First NameInput"
+              name="First Name"
               type="text"
               value=""
             />
@@ -72,7 +72,7 @@ exports[`renders Register correctly 1`] = `
             class="defaultInputContainer inputContainer undefined"
           >
             <label
-              for="lastNameInput"
+              for="Last NameInput"
             >
               Last Name:
             </label>
@@ -80,8 +80,8 @@ exports[`renders Register correctly 1`] = `
               aria-invalid="false"
               aria-required="true"
               class="inputField"
-              id="lastNameInput"
-              name="lastName"
+              id="Last NameInput"
+              name="Last Name"
               type="text"
               value=""
             />
@@ -112,7 +112,7 @@ exports[`renders Register correctly 1`] = `
             class="defaultInputContainer inputContainer undefined"
           >
             <label
-              for="phoneNumberInput"
+              for="Phone NumberInput"
             >
               Phone Number:
             </label>
@@ -120,8 +120,8 @@ exports[`renders Register correctly 1`] = `
               aria-invalid="false"
               aria-required="true"
               class="inputField"
-              id="phoneNumberInput"
-              name="phoneNumber"
+              id="Phone NumberInput"
+              name="Phone Number"
               type="tel"
               value=""
             />

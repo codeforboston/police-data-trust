@@ -5,51 +5,17 @@ Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
 import os
-from typing import Any, Optional
+from typing import Optional
 
 import click
 import pandas as pd
-import psycopg
-import psycopg2.errors
-from flask import abort, current_app
+from flask import current_app
 from flask.cli import AppGroup, with_appcontext
-from flask_sqlalchemy import SQLAlchemy
-from psycopg2 import connect
-from psycopg2.extensions import connection
-from sqlalchemy.exc import ResourceClosedError
 from werkzeug.utils import secure_filename
+from neomodel import install_all_labels
+from neo4j import Driver
 
-from ..config import TestingConfig
 from ..utils import dev_only
-from typing import TypeVar, Type
-
-db = SQLAlchemy()
-
-T = TypeVar("T")
-
-
-class CrudMixin:
-    """Mix me into a database model whose CRUD operations you want to expose in
-    a convenient manner.
-    """
-
-    def create(self: T, refresh: bool = True) -> T:
-        db.session.add(self)
-        db.session.commit()
-        if refresh:
-            db.session.refresh(self)
-        return self
-
-    def delete(self) -> None:
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def get(cls: Type[T], id: Any, abort_if_null: bool = True) -> Optional[T]:
-        obj = db.session.query(cls).get(id)
-        if obj is None and abort_if_null:
-            abort(404)
-        return obj  # type: ignore
 
 
 QUERIES_DIR = os.path.abspath(
@@ -58,41 +24,44 @@ QUERIES_DIR = os.path.abspath(
 
 
 def execute_query(filename: str) -> Optional[pd.DataFrame]:
-    """Run SQL from a file. It will return a Pandas DataFrame if it selected
-    anything; otherwise it will return None.
+    """Run a Cypher query from a file using the provided Neo4j connection.
 
-    I do not recommend you use this function too often. In general, we should be
-    using the SQLAlchemy ORM. That said, it's a nice convenience, and there are
-    times when this function is genuinely something you want to run.
+    It returns a Pandas DataFrame if the query yields results; otherwise,
+    it returns None.
     """
-    with open(os.path.join(QUERIES_DIR, secure_filename(filename))) as f:
+    # Read the query from the file
+    query_path = os.path.join(QUERIES_DIR, secure_filename(filename))
+    with open(query_path, 'r') as f:
         query = f.read()
-    with db.engine.connect() as conn:
-        res = conn.execute(query)
-        try:
-            df = pd.DataFrame(res.fetchall(), columns=res.keys())
+
+    # Get the Neo4j driver
+    neo4j_conn = current_app.config['DB_DRIVER']
+
+    # Execute the query using the existing connection
+    with neo4j_conn.session() as session:
+        result = session.run(query)
+        records = list(result)
+
+        if records:
+            # Convert Neo4j records to a list of dictionaries
+            data = [record.data() for record in records]
+            # Create a DataFrame
+            df = pd.DataFrame(data)
             return df
-        except ResourceClosedError:
+        else:
             return None
 
 
-@click.group("psql", cls=AppGroup)
+@click.group("neo4j", cls=AppGroup)
 @with_appcontext
 @click.pass_context
-def db_cli(ctx: click.Context):
-    """Collection of database commands."""
-    conn = connect(
-        user=current_app.config["POSTGRES_USER"],
-        password=current_app.config["POSTGRES_PASSWORD"],
-        host=current_app.config["POSTGRES_HOST"],
-        port=current_app.config["PGPORT"],
-        dbname="postgres",
-    )
-    conn.autocommit = True
-    ctx.obj = conn
+def db_cli():
+    """Collection of Neo4j database commands."""
+    pass
 
 
-pass_psql_admin_connection = click.make_pass_decorator(connection)
+# Decorator to pass the Neo4j driver
+pass_neo4j_driver = click.make_pass_decorator(Driver)
 
 
 @db_cli.command("create")
@@ -101,50 +70,43 @@ pass_psql_admin_connection = click.make_pass_decorator(connection)
     default=False,
     is_flag=True,
     show_default=True,
-    help="If true, overwrite the database if it exists.",
+    help="If true, overwrite the database by deleting existing data.",
 )
-@pass_psql_admin_connection
-@click.pass_context
+@with_appcontext
 @dev_only
-def create_database(
-    ctx: click.Context, conn: connection, overwrite: bool = False
-):
-    """Create the database from nothing."""
-    database = current_app.config["POSTGRES_DB"]
-    cursor = conn.cursor()
-
+def create_database(overwrite: bool):
+    """Initialize the Neo4j database by setting up constraints and indexes."""
     if overwrite:
-        cursor.execute(
-            f"SELECT bool_or(datname = '{database}') FROM pg_database;"
-        )
-        exists = cursor.fetchall()[0][0]
-        if exists:
-            ctx.invoke(delete_database)
+        # Get the Neo4j driver
+        neo4j_conn = current_app.config['DB_DRIVER']
 
-    try:
-        cursor.execute(f"CREATE DATABASE {database};")
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
-        click.echo(f"Database {database!r} already exists.")
-    else:
-        click.echo(f"Created database {database!r}.")
+        with neo4j_conn.session() as session:
+            session.run("MATCH (n) DETACH DELETE n")
+        click.echo("Existing data deleted from the database.")
+
+    # Install constraints and indexes for all models
+    install_all_labels()
+
+    click.echo("Initialized the Neo4j database with constraints and indexes.")
 
 
 @db_cli.command("init")
+@with_appcontext
 def init_database():
-    """Initialize the database schemas.
+    """Initialize the Neo4j database by setting up constraints and indexes."""
 
-    Run this after the database has been created.
-    """
-    database = current_app.config["POSTGRES_DB"]
-    db.create_all()
-    click.echo(f"Initialized the database {database!r}.")
+    # Install constraints and indexes
+    install_all_labels()
+    click.echo("Initialized the Neo4j database with constraints and indexes.")
 
 
 @db_cli.command("gen-examples")
+@pass_neo4j_driver
 def gen_examples_command():
-    """Generate 2 incident examples in the database."""
-    execute_query("example_incidents.sql")
-    click.echo("Added 2 example incidents to the database.")
+    """Generate example data in the Neo4j database."""
+    # Use your existing execute_query function
+    execute_query("example_data.cypher")
+    click.echo("Added example data to the Neo4j database.")
 
 
 @db_cli.command("delete")
@@ -153,38 +115,22 @@ def gen_examples_command():
     "-t",
     default=False,
     is_flag=True,
-    help=f"Deletes the database {TestingConfig.POSTGRES_DB!r}.",
+    help="Deletes the test database.",
 )
-@pass_psql_admin_connection
+@with_appcontext
 @dev_only
-def delete_database(conn: connection, test_db: bool):
-    """Delete the database."""
+def delete_database(test_db: bool):
+    """Delete all data from the Neo4j database."""
     if test_db:
-        database = TestingConfig.POSTGRES_DB
+        # If you have a separate test database, drop it
+        test_neo4j_conn = current_app.config['DB_DRIVER']
+        test_db_name = current_app.config.get("GRAPH_TEST_DB_NAME", "test")
+        with test_neo4j_conn.session(database="system") as session:
+            session.run(f"DROP DATABASE {test_db_name} IF EXISTS")
+        click.echo(f"Test database {test_db_name!r} was deleted.")
     else:
-        database = current_app.config["POSTGRES_DB"]
-
-    cursor = conn.cursor()
-
-    # Don't validate name for `police_data_test`.
-    if database != TestingConfig.POSTGRES_DB:
-        # Make sure we want to do this.
-        click.echo(f"Are you sure you want to delete database {database!r}?")
-        click.echo(
-            "Type in the database name '"
-            + click.style(database, fg="red")
-            + "' to confirm"
-        )
-        confirmation = click.prompt("Database name")
-        if database != confirmation:
-            click.echo(
-                "The input does not match. " "The database will not be deleted."
-            )
-            return None
-
-    try:
-        cursor.execute(f"DROP DATABASE {database};")
-    except psycopg2.errors.lookup("3D000"):
-        click.echo(f"Database {database!r} does not exist.")
-    else:
-        click.echo(f"Database {database!r} was deleted.")
+        # Delete all data from the default database
+        neo4j_conn = current_app.config['DB_DRIVER']
+        with neo4j_conn.session() as session:
+            session.run("MATCH (n) DETACH DELETE n")
+        click.echo("Deleted all data from the Neo4j database.")

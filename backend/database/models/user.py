@@ -1,47 +1,16 @@
 """Define the SQL classes for Users."""
 
-import bcrypt
-from backend.database.core import db
-from flask_serialize.flask_serialize import FlaskSerialize
-from flask_user import UserMixin
-from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.types import String, TypeDecorator
-from ..core import CrudMixin
-from enum import Enum
+from werkzeug.security import generate_password_hash, check_password_hash
+from backend.schemas import JsonSerializable, PropertyEnum
+from neomodel import (
+    Relationship, StructuredNode,
+    StringProperty, DateProperty, BooleanProperty,
+    UniqueIdProperty, EmailProperty
+)
+from backend.database.models.source import SourceMember
 
 
-fs_mixin = FlaskSerialize(db)
-
-
-# Creating this class as NOCASE collation is not compatible with ordinary
-# SQLAlchemy Strings
-class CI_String(TypeDecorator):
-    """Case-insensitive String subclass definition"""
-
-    impl = String
-    cache_ok = True
-
-    def __init__(self, length, **kwargs):
-        if kwargs.get("collate"):
-            if kwargs["collate"].upper() not in ["BINARY", "NOCASE", "RTRIM"]:
-                raise TypeError(
-                    "%s is not a valid SQLite collation" % kwargs["collate"]
-                )
-            self.collation = kwargs.pop("collate").upper()
-        super(CI_String, self).__init__(length=length, **kwargs)
-
-
-@compiles(CI_String, "sqlite")
-def compile_ci_string(element, compiler, **kwargs):
-    base_visit = compiler.visit_string(element, **kwargs)
-    if element.collation:
-        return "%s COLLATE %s" % (base_visit, element.collation)
-    else:
-        return base_visit
-
-
-class UserRole(str, Enum):
+class UserRole(str, PropertyEnum):
     PUBLIC = "Public"
     PASSPORT = "Passport"
     CONTRIBUTOR = "Contributor"
@@ -59,45 +28,111 @@ class UserRole(str, Enum):
 
 
 # Define the User data-model.
-class User(db.Model, UserMixin, CrudMixin):
-    """The SQL dataclass for an Incident."""
+class User(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["password_hash"]
+    __property_order__ = [
+        "uid", "first_name", "last_name",
+        "email", "email_confirmed_at",
+        "phone_number", "role", "active"
+    ]
 
-    id = db.Column(db.Integer, primary_key=True)
-    active = db.Column(
-        "is_active", db.Boolean(), nullable=False, server_default="1"
-    )
+    uid = UniqueIdProperty()
+    active = BooleanProperty(default=True)
 
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
-    email = db.Column(
-        CI_String(255, collate="NOCASE"),
-        nullable=False, unique=True
-    )
-    email_confirmed_at = db.Column(db.DateTime())
-    password = db.Column(db.String(255), nullable=False, server_default="")
+    email = EmailProperty(required=True, unique_index=True)
+    email_confirmed_at = DateProperty()
+    password_hash = StringProperty(required=True)
 
     # User information
-    first_name = db.Column(
-        CI_String(100, collate="NOCASE"), nullable=False, server_default=""
-    )
-    last_name = db.Column(
-        CI_String(100, collate="NOCASE"), nullable=False, server_default=""
-    )
+    first_name = StringProperty(required=True)
+    last_name = StringProperty(required=True)
 
-    role = db.Column(db.Enum(UserRole))
+    role = StringProperty(
+        choices=UserRole.choices(), default=UserRole.PUBLIC.value)
 
-    phone_number = db.Column(db.Text)
+    phone_number = StringProperty()
 
-    # Data Partner Relationships
-    partner_association = db.relationship(
-        "PartnerMember", back_populates="user", lazy="select")
-    member_of = association_proxy("partner_association", "partner")
+    # Data Source Relationships
+    sources = Relationship(
+        'backend.database.models.source.Source',
+        "MEMBER_OF_SOURCE", model=SourceMember)
+    received_invitations = Relationship(
+        'backend.database.models.source.Invitation',
+        "RECIEVED")
+    extended_invitations = Relationship(
+        'backend.database.models.source.Invitation',
+        "EXTENDED")
+    entended_staged_invitations = Relationship(
+        'backend.database.models.source.StagedInvitation',
+        "EXTENDED")
 
-    # Officer Accusations
-    accusations = db.relationship("Accusation", backref="user")
+    def verify_password(self, pw: str) -> bool:
+        """
+        Verify the user's password using bcrypt.
+        Args:
+            pw (str): The password to verify.
 
-    def verify_password(self, pw):
-        return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
+        Returns:
+            bool: True if the password is correct, False otherwise.
+        """
+        # return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
+        return check_password_hash(self.password_hash, pw)
 
-    def get_by_email(email):
-        return User.query.filter(User.email == email).first()
+    def set_password(self, pw: str):
+        """
+        Set the user's password.
+        Args:
+            pw (str): The password to set.
+        """
+        self.password_hash = User.hash_password(pw)
+
+    def send_email_verification(self):
+        """
+        Send an email verification link to the user.
+        """
+        pass
+
+    def send_password_reset(self):
+        """
+        Send a password reset link to the user.
+        """
+        pass
+
+    @property
+    def role_enum(self) -> UserRole:
+        """
+        Get the user's role as an enum.
+        Returns:
+            UserRole: The user's role as an enum.
+        """
+        return UserRole(self.role)
+
+    @classmethod
+    def hash_password(cls, pw: str) -> str:
+        """
+        Hash a password.
+        Args:
+            pw (str): The password to hash.
+
+        Returns:
+            str: The hashed password.
+        """
+        return generate_password_hash(pw)
+
+    @classmethod
+    def get_by_email(cls, email: str) -> "User":
+        """
+        Get a user by their email address.
+
+        Args:
+            email (str): The user's email.
+
+        Returns:
+            User: The User instance if found, otherwise None.
+        """
+        try:
+            return cls.nodes.get_or_none(email=email)
+        except cls.DoesNotExist:
+            return None

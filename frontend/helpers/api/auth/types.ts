@@ -5,17 +5,17 @@ export interface User {
   role: string
   email: string
   emailConfirmedAt?: string
-  firstName?: string
-  lastName?: string
-  phoneNumber?: string
+  firstname?: string
+  lastname?: string
+  phone_number?: string
 }
 
 export interface NewUser {
   email: string
   password: string
-  firstName?: string
-  lastName?: string
-  phoneNumber?: string
+  firstname?: string
+  lastname?: string
+  phone_number?: string
 }
 
 export interface LoginCredentials {

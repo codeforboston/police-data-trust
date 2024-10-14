@@ -25,10 +25,10 @@ export default function EditProfileInfo({ cancelEditMode }: EditProfileProps) {
     setLoading(true)
     setSubmitError(null)
     const values = {
-      firstName: formValues[FIRST_NAME],
-      lastName: formValues[LAST_NAME],
+      firstname: formValues[FIRST_NAME],
+      lastname: formValues[LAST_NAME],
       emailAddress: formValues[EMAIL_ADDRESS],
-      phoneNumber: formValues[PHONE_NUMBER],
+      phone_number: formValues[PHONE_NUMBER],
       createPw: formValues[CREATE_PASSWORD],
       confirmPw: formValues[CONFIRM_PASSWORD]
     }

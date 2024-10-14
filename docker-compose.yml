@@ -1,44 +1,65 @@
 services:
   db:
-    image: postgres:16 #AWS RDS latest version
+    image: neo4j:5.23-community
     env_file:
       - ".env"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - neo4j:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
     ports:
-      - ${PGPORT:-5432}:${PGPORT:-5432}
+      - "7474:7474"   # HTTP port for Neo4j Browser
+      - "7687:7687"   # Bolt port for database access
+    environment:
+      - NEO4J_AUTH=neo4j/${GRAPH_PASSWORD:-password}
+  test-neo4j:
+    image: neo4j:5.23-community
+    profiles:
+      - test
+    env_file:
+      - ".env"
+    environment:
+      - NEO4J_AUTH=neo4j/test_pwd
+    ports:
+      - "7475:7474"
+      - "7688:7687"
   web:
     build:
       context: ./frontend
       args:
-        PDT_WEB_PORT: ${PDT_WEB_PORT:-3000}
+        NPDI_WEB_PORT: ${NPDI_WEB_PORT:-3000}
     volumes:
       - ./frontend:/app
       # Prevents the host node_modules from clobbering the image's
       - /app/node_modules
     environment:
       NEXT_PUBLIC_API_MODE: real
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:${PDT_API_PORT:-5000}/api/v1
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5000}/api/v1
     ports:
-      - ${PDT_WEB_PORT:-3000}:${PDT_WEB_PORT:-3000}
+      - ${NPDI_WEB_PORT:-3000}:${NPDI_WEB_PORT:-3000}
   api:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
       args:
-        PDT_API_PORT: ${PDT_API_PORT:-5000}
+        NPDI_API_PORT: ${NPDI_API_PORT:-5000}
     volumes:
       - .:/app
     depends_on:
       - db
     environment:
       PYTHONPATH: app/
-      POSTGRES_HOST: db
       FLASK_ENV: ${FLASK_ENV:-development}
-      WAIT_HOSTS: db:${PGPORT:-5432}
+      NEO4J_URI: bolt://db:7687
+      NEO4J_USERNAME: ${GRAPH_USER:-neo4j}
+      NEO4J_PASSWORD: ${GRAPH_PASSWORD:-password}
       MIXPANEL_TOKEN: ${MIXPANEL_TOKEN:-notset}
+      WAIT_HOSTS: db:7687
     ports:
-      - ${PDT_API_PORT:-5000}:${PDT_API_PORT:-5000}
-
+      - ${NPDI_API_PORT:-5000}:${NPDI_API_PORT:-5000}
 volumes:
-  postgres: {}
+  neo4j: {}
+  neo4j_logs: {}
+  neo4j_import: {}
+  neo4j_plugins: {}

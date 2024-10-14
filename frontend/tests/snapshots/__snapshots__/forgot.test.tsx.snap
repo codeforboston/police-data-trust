@@ -46,7 +46,7 @@ exports[`renders Forgot correctly 1`] = `
           class="hidden defaultInputContainer inputContainer undefined"
         >
           <label
-            for="phoneNumberInput"
+            for="Phone NumberInput"
           >
             Phone Number:
           </label>
@@ -54,8 +54,8 @@ exports[`renders Forgot correctly 1`] = `
             aria-invalid="false"
             aria-required="true"
             class="inputField"
-            id="phoneNumberInput"
-            name="phoneNumber"
+            id="Phone NumberInput"
+            name="Phone Number"
             type="tel"
             value=""
           />

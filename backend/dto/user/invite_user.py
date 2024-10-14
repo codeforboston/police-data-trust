@@ -10,6 +10,6 @@ class MemberRole(str, Enum):
 
 
 class InviteUserDTO(BaseModel):
-    partner_id: int
+    source_uid: int
     email: EmailStr
     role:  MemberRole
