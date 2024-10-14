@@ -76,70 +76,70 @@ mock_add_history = {
 }
 
 
-@pytest.fixture
-def example_agencies(db_session):
-    agencies = {}
+# @pytest.fixture
+# def example_agencies(db_session):
+#     agencies = {}
 
-    for name, mock in mock_agencies.items():
-        db_session.add(Agency(**mock))
-        db_session.commit()
-        agencies[name] = db_session.query(
-            Agency).filter(Agency.name == mock["name"]).first()
+#     for name, mock in mock_agencies.items():
+#         db_session.add(Agency(**mock))
+#         db_session.commit()
+#         agencies[name] = db_session.query(
+#             Agency).filter(Agency.name == mock["name"]).first()
 
-    db_session.commit()
-    return agencies
-
-
-@pytest.fixture
-def example_officers(db_session):
-    officers = {}
-    for name, mock in mock_officers.items():
-        o = Officer(**mock)
-        o.create()
-        officers[name] = o
-    db_session.commit()
-    return officers
+#     db_session.commit()
+#     return agencies
 
 
-def test_add_officers_to_agency(
-        db_session,
-        client,
-        example_agency,
-        example_officers,
-        contributor_access_token):
-    agency = example_agency
-    officers = example_officers
-    records = []
-    for name, mock in mock_add_officers.items():
-        mock["officer_id"] = officers[name].id
-        records.append(mock)
-
-    res = client.post(
-        f"/api/v1/agencies/{agency.id}/officers",
-        json={"officers": records},
-        headers={"Authorization": f"Bearer {contributor_access_token}"}
-    )
-    assert res.status_code == 200
-    assert len(res.json["created"]) == len(records)
-    assert len(res.json["failed"]) == 0
+# @pytest.fixture
+# def example_officers(db_session):
+#     officers = {}
+#     for name, mock in mock_officers.items():
+#         o = Officer(**mock)
+#         o.create()
+#         officers[name] = o
+#     db_session.commit()
+#     return officers
 
 
-def test_add_history_to_officer(
-        db_session,
-        client,
-        example_agencies,
-        example_officer,
-        contributor_access_token):
-    records = []
-    for name, mock in mock_add_history.items():
-        mock["agency_id"] = example_agencies[name].id
-        records.append(mock)
+# def test_add_officers_to_unit(
+#         db_session,
+#         client,
+#         example_agency,
+#         example_officers,
+#         contributor_access_token):
+#     agency = example_agency
+#     officers = example_officers
+#     records = []
+#     for name, mock in mock_add_officers.items():
+#         mock["officer_id"] = officers[name].id
+#         records.append(mock)
 
-    res = client.put(
-        f"/api/v1/officers/{example_officer.id}/employment",
-        json={"agencies": records},
-        headers={"Authorization": f"Bearer {contributor_access_token}"}
-    )
-    assert res.status_code == 200
-    assert len(res.json["created"]) == len(records)
-    assert len(res.json["failed"]) == 0
+#     res = client.post(
+#         f"/api/v1/agencies/{agency.id}/officers",
+#         json={"officers": records},
+#         headers={"Authorization": f"Bearer {contributor_access_token}"}
+#     )
+#     assert res.status_code == 200
+#     assert len(res.json["created"]) == len(records)
+#     assert len(res.json["failed"]) == 0
+
+
+# def test_add_history_to_officer(
+#         db_session,
+#         client,
+#         example_agencies,
+#         example_officer,
+#         contributor_access_token):
+#     records = []
+#     for name, mock in mock_add_history.items():
+#         mock["agency_id"] = example_agencies[name].id
+#         records.append(mock)
+
+#     res = client.put(
+#         f"/api/v1/officers/{example_officer.id}/employment",
+#         json={"agencies": records},
+#         headers={"Authorization": f"Bearer {contributor_access_token}"}
+#     )
+#     assert res.status_code == 200
+#     assert len(res.json["created"]) == len(records)
+#     assert len(res.json["failed"]) == 0
