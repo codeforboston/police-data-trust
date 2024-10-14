@@ -129,8 +129,8 @@ export function setAuthForTest(
   user: api.User = {
     active: true,
     email: "testemail@example.com",
-    firstName: "FirstTest",
-    lastName: "LastTest",
+    firstname: "FirstTest",
+    lastname: "LastTest",
     role: "Public"
   },
   accessToken: api.AccessToken = "faketoken"

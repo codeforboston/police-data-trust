@@ -25,7 +25,7 @@ export default requireAuth(function Passport() {
 
   const form = useForm()
   const { user } = useAuth()
-  const userName = [user.firstName, user.lastName].filter(Boolean).join(" ") || "there"
+  const userName = [user.firstname, user.lastname].filter(Boolean).join(" ") || "there"
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [submitSuccess, setSubmitSuccess] = useState(null)
