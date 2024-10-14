@@ -12,7 +12,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 
 from ..database import (
-    Partner,
+    Source,
     MemberRole,
     Invitation,
     StagedInvitation,
@@ -22,17 +22,17 @@ from flask_mail import Message
 from ..config import TestingConfig
 
 
-bp = Blueprint("partner_routes", __name__, url_prefix="/api/v1/partners")
+bp = Blueprint("source_routes", __name__, url_prefix="/api/v1/sources")
 
 
-@bp.route("/<partner_uid>", methods=["GET"])
+@bp.route("/<source_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_partners(partner_uid: str):
-    """Get a single partner by UID."""
-    p = Partner.nodes.get_or_none(uid=partner_uid)
+def get_sources(source_uid: str):
+    """Get a single source by UID."""
+    p = Source.nodes.get_or_none(uid=source_uid)
     if p is None:
-        abort(404, description="Partner not found")
+        abort(404, description="Source not found")
     return p.to_json()
 
 
@@ -40,9 +40,9 @@ def get_partners(partner_uid: str):
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate_request(CreatePartner)
-def create_partner():
-    """Create a contributing partner."""
-    logger = logging.getLogger("create_partner")
+def create_source():
+    """Create a contributing source."""
+    logger = logging.getLogger("create_source")
     body: CreatePartner = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
@@ -56,16 +56,16 @@ def create_partner():
         and body.contact_email != ""
     ):
 
-        # Creates a new instance of the Partner and saves it to the DB
+        # Creates a new instance of the Source and saves it to the DB
         try:
-            new_p = Partner.from_dict(body.dict())
+            new_p = Source.from_dict(body.dict())
         except NodeConflictException:
-            abort(409, description="Partner already exists")
+            abort(409, description="Source already exists")
         except Exception as e:
             abort(
                 400,
-                description=f"Failed to create partner: {e}")
-        # Connects the current user to the new partner as an admin
+                description=f"Failed to create source: {e}")
+        # Connects the current user to the new source as an admin
         new_p.members.connect(
             current_user,
             {
@@ -77,17 +77,17 @@ def create_partner():
                 < UserRole.CONTRIBUTOR.get_value()):
             current_user.role = UserRole.CONTRIBUTOR.value
             current_user.save()
-        logger.info(f"User {current_user.uid} created partner {new_p.name}")
+        logger.info(f"User {current_user.uid} created source {new_p.name}")
 
-        track_to_mp(request, "create_partner", {
-            "partner_name": new_p.name,
-            "partner_contact": new_p.contact_email
+        track_to_mp(request, "create_source", {
+            "source_name": new_p.name,
+            "source_contact": new_p.contact_email
         })
         return new_p.to_json()
     else:
         return {
                 "status": "error",
-                "message": "Failed to create partner. " +
+                "message": "Failed to create source. " +
                            "Please include all of the following"
         }, 400
 
@@ -95,8 +95,8 @@ def create_partner():
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_all_partners():
-    """Get all partners.
+def get_all_sources():
+    """Get all sources.
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
@@ -105,44 +105,44 @@ def get_all_partners():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    all_partners = Partner.nodes.all()
-    results = paginate_results(all_partners, q_page, q_per_page)
+    all_sources = Source.nodes.all()
+    results = paginate_results(all_sources, q_page, q_per_page)
 
     return ordered_jsonify(results), 200
 
 
-@bp.route("/<partner_uid>", methods=["PATCH"])
+@bp.route("/<source_uid>", methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate_request(UpdatePartner)
-def update_partner(partner_uid: str):
-    """Update a partner's information."""
+def update_source(source_uid: str):
+    """Update a source's information."""
     body: UpdatePartner = request.validated_body
     current_user = User.get(get_jwt()["sub"])
-    p = Partner.nodes.get_or_none(uid=partner_uid)
+    p = Source.nodes.get_or_none(uid=source_uid)
     if p is None:
-        abort(404, description="Partner not found")
+        abort(404, description="Source not found")
 
     if p.members.is_connected(current_user):
         rel = p.members.relationship(current_user)
         if not rel.is_administrator():
-            abort(403, description="Not authorized to update partner")
+            abort(403, description="Not authorized to update source")
     else:
-        abort(403, description="Not authorized to update partner")
+        abort(403, description="Not authorized to update source")
 
     try:
-        p.from_dict(body.dict(), partner_uid)
+        p.from_dict(body.dict(), source_uid)
         p.refresh()
         return p.to_json()
     except Exception as e:
         abort(400, description=str(e))
 
 
-@bp.route("/<partner_uid>/members/", methods=["GET"])
+@bp.route("/<source_uid>/members/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_partner_members(partner_uid: int):
-    """Get all members of a partner.
+def get_source_members(source_uid: int):
+    """Get all members of a source.
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
@@ -151,26 +151,26 @@ def get_partner_members(partner_uid: int):
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    p = Partner.nodes.get_or_none(uid=partner_uid)
+    p = Source.nodes.get_or_none(uid=source_uid)
     if p is None:
-        abort(404, description="Partner not found")
+        abort(404, description="Source not found")
 
     all_members = p.members.all()
     results = paginate_results(all_members, q_page, q_per_page)
     return ordered_jsonify(results), 200
 
 
-""" This class currently doesn't work with the `partner_member_to_orm`
+""" This class currently doesn't work with the `source_member_to_orm`
     class AddMemberSchema(BaseModel):
     user_email: str
-    role: Optional[MemberRole] = PartnerMember.get_default_role()
+    role: Optional[MemberRole] = SourceMember.get_default_role()
     is_active: Optional[bool] = True
 
     class Config:
         extra = "forbid"
         json_schema_extra = {
             "example": {
-                "user_email": "member@partner.org",
+                "user_email": "member@source.org",
                 "role": "ADMIN",
             }
         } """
@@ -182,14 +182,14 @@ def get_partner_members(partner_uid: int):
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 # @validate(auth=True, json=InviteUserDTO)
-def add_member_to_partner():
+def add_member_to_source():
     body: InviteUserDTO = request.context.json
-    logger = logging.getLogger("add_member_to_partner")
+    logger = logging.getLogger("add_member_to_source")
     jwt_decoded = get_jwt()
 
     current_user = User.get(jwt_decoded["sub"])
-    membership = current_user.partners.search(
-        uid=body.partner_id).first()
+    membership = current_user.sources.search(
+        uid=body.source_uid).first()
 
     if (
         membership is None
@@ -198,14 +198,14 @@ def add_member_to_partner():
         abort(403)
     mail = current_app.extensions.get('mail')
     invited_user = User.get_by_email(email=body.email)
-    partner = Partner.nodes.get_or_none(uid=body.partner_id)
-    if partner is None:
+    source = Source.nodes.get_or_none(uid=body.source_uid)
+    if source is None:
         return {
             "status": "error",
-            "message": "Partner not found!"
+            "message": "Source not found!"
         }, 404
     if invited_user is not None:
-        invitation_exists = partner.invitations.is_connected(
+        invitation_exists = source.invitations.is_connected(
             invited_user)
         if invitation_exists:
             return {
@@ -217,14 +217,14 @@ def add_member_to_partner():
                 new_invitation = Invitation(
                     role=body.role
                 ).save()
-                partner.invitations.connect(new_invitation).save()
+                source.invitations.connect(new_invitation).save()
                 invited_user.received_invitations.connect(new_invitation).save()
                 current_user.extended_invitations.connect(new_invitation).save()
 
-                msg = Message("Invitation to join NPDC partner organization!",
+                msg = Message("Invitation to join an NPDC source organization!",
                               sender=TestingConfig.MAIL_USERNAME,
                               recipients=[body.email])
-                msg.body = "You have been invited to a join a partner" + \
+                msg.body = "You have been invited to a join a source" + \
                     " organization. Please log on to accept or decline" + \
                     " the invitation at https://dev.nationalpolicedata.org/."
                 mail.send(msg)
@@ -241,7 +241,7 @@ def add_member_to_partner():
                 }, 500
     else:
         try:
-            existing_invitation = partner.staged_invitations.search(
+            existing_invitation = source.staged_invitations.search(
                 email=body.email
             ).first()
             if existing_invitation is not None:
@@ -252,7 +252,7 @@ def add_member_to_partner():
             else:
                 new_staged_invite = StagedInvitation(
                     email=body.email, role=body.role).save()
-                partner.staged_invitations.connect(new_staged_invite).save()
+                source.staged_invitations.connect(new_staged_invite).save()
                 current_user.extended_staged_invitations.connect(
                     new_staged_invite).save()
 
@@ -261,7 +261,7 @@ def add_member_to_partner():
                     sender=TestingConfig.MAIL_USERNAME,
                     recipients=[body.email])
                 msg.body = """You have been
-                            invited to a partner organization. Please register
+                            invited to a source organization. Please register
                             with NPDC index at
                             https://dev.nationalpolicedata.org/."""
                 mail.send(msg)
@@ -290,11 +290,11 @@ def join_organization():
     body: CreatePartner = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
-    partner = Partner.nodes.get_or_none(uid=body["partner_id"])
-    if partner is None:
+    source = Source.nodes.get_or_none(uid=body["source_uid"])
+    if source is None:
         return {
             "status": "error",
-            "message": "Partner not found!"
+            "message": "Source not found!"
         }, 404
 
     # invitations = current_user.invitations.all()
@@ -304,8 +304,8 @@ def join_organization():
     # relationship would be more appropriate.
     try:
         body = request.get_json()
-        membership = current_user.partners.search(
-            uid=body["partner_id"]
+        membership = current_user.sources.search(
+            uid=body["source_uid"]
         ).first()
         if membership is not None:
             return {
@@ -313,18 +313,18 @@ def join_organization():
                 "message": "User already in the organization"
             }, 409
         else:
-            current_user.partners.connect(
-                partner,
+            current_user.sources.connect(
+                source,
                 {
                     "role": body["role"]
                 }
             ).save()
 
             # TODO: Remove the invitation from the user's list of invitations
-            logger.info(f"User {current_user.uid} joined {partner.name}")
+            logger.info(f"User {current_user.uid} joined {source.name}")
             return {
                 "status": "ok",
-                "message": "Successfully joined partner organization"
+                "message": "Successfully joined source organization"
             } , 200
     except Exception as e:
         logger.exception(f"Failed to join organization: {e}")
@@ -340,21 +340,21 @@ def join_organization():
 @min_role_required(UserRole.PUBLIC)
 def leave_organization():
     """
-    Disconnect the user from the partner organization.
+    Disconnect the user from the source organization.
     """
     logger = logging.getLogger("leave_organization")
     try:
         body = request.get_json()
         jwt_decoded = get_jwt()
         current_user = User.get(jwt_decoded["sub"])
-        partner = current_user.partners.search(
-            uid=body["partner_id"]
+        source = current_user.sources.search(
+            uid=body["source_uid"]
         ).first()
-        if partner is not None:
-            current_user.partners.disconnect(
-                partner
+        if source is not None:
+            current_user.sources.disconnect(
+                source
             ).save()
-            logger.info(f"User {current_user.uid} left {partner.name}")
+            logger.info(f"User {current_user.uid} left {source.name}")
             return {
                 "status": "ok",
                 "message": "Succesfully left organization"
@@ -373,36 +373,36 @@ def leave_organization():
         }
 
 
-# admin can remove any member from a partner organization
+# admin can remove any member from a source organization
 @bp.route("/remove_member", methods=['DELETE'])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 def remove_member():
     body = request.get_json()
     logger = logging.getLogger("remove_member")
-    partner = Partner.nodes.get_or_none(uid=body["partner_id"])
+    source = Source.nodes.get_or_none(uid=body["source_uid"])
     current_user = User.get(get_jwt()["sub"])
     user_to_remove = User.get(body["user_id"])
-    if partner is None:
+    if source is None:
         return {
             "status": "error",
-            "message": "Partner not found!"
+            "message": "Source not found!"
         }, 404
     if user_to_remove is None:
         return {
             "status": "error",
             "message": "User not found!"
         }, 404
-    c_user_membership = current_user.partners.relationship(
-        partner
+    c_user_membership = current_user.sources.relationship(
+        source
     ).first()
     if c_user_membership is None or not c_user_membership.is_administrator():
         return {
             "status": "Unauthorized",
             "message": "Not authorized to remove members!"
         }, 403
-    user_membership = user_to_remove.partners.relationship(
-        partner
+    user_membership = user_to_remove.sources.relationship(
+        source
     ).first()
     if user_membership is None:
         return {
@@ -410,8 +410,8 @@ def remove_member():
             "message": "User not a member of this organization!"
         }, 404
     try:
-        partner.members.disconnect(user_to_remove).save()
-        user_to_remove.partners.disconnect(partner).save()
+        source.members.disconnect(user_to_remove).save()
+        user_to_remove.sources.disconnect(source).save()
         return {
             "status" : "ok",
             "message" : "Member successfully deleted from Organization"
@@ -420,7 +420,7 @@ def remove_member():
         logger.exception(
             "Failed to remove user {} from {}: {}".format(
                 user_to_remove.uid,
-                partner.name,
+                source.name,
                 e
             ))
         return {
@@ -438,12 +438,12 @@ def remove_member():
 #     try:
 #         user_found = Invitation.query.filter_by(
 #             user_id=body["user_id"],
-#             partner_id=body["partner_id"]
+#             source_uid=body["source_uid"]
 #             ).first()
 #         if user_found:
 #             Invitation.query.filter_by(
 #                 user_id=body["user_id"],
-#                 partner_id=body["partner_id"]
+#                 source_uid=body["source_uid"]
 #             ).delete()
 #             db.session.commit()
 #             return {
@@ -470,9 +470,9 @@ def remove_member():
 # def role_change():
 #     body = request.get_json()
 #     try:
-#         user_found = PartnerMember.query.filter_by(
+#         user_found = SourceMember.query.filter_by(
 #             user_id=body["user_id"],
-#             partner_id=body["partner_id"]
+#             source_uid=body["source_uid"]
 #             ).first()
 #         if user_found and user_found.role != "Administrator":
 #             user_found.role = body["role"]
@@ -525,7 +525,7 @@ def remove_member():
 #             'id': staged_invitation.id,
 #             'email': staged_invitation.email,
 #             'role': staged_invitation.role,
-#             'partner_id': staged_invitation.partner_id,
+#             'source_uid': staged_invitation.source_uid,
 #         }
 #         for staged_invitation in staged_invitations
 #     ]

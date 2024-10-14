@@ -26,8 +26,8 @@ spec = SpecTree(
         """
         This API provides federated sharing of police data using a searchable
         index of police records. The index only contains information necessary
-        for search and aggregation. NPDC partners contribute to the index while
-        maintaining ownership over the full record. Partners can use the API to
+        for search and aggregation. NPDC sources contribute to the index while
+        maintaining ownership over the full record. Sources can use the API to
         authorize users to access the full records on their systems. This thus
         facilitates federated access control and data ownership.
         """

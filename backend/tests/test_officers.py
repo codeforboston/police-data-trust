@@ -66,7 +66,7 @@ mock_employment = {
     }
 }
 
-mock_partners = {
+mock_sources = {
     "cpdp": {"name": "Citizens Police Data Project"}
 }
 
@@ -347,18 +347,18 @@ def test_get_employers_pagination(
 
 def test_delete_officer(
     client: Any,
-    partner_publisher: User,
-    example_partner: Partner,
+    source_publisher: User,
+    example_source: Source,
     example_incidents_private_public: list[Incident],
 ):
     \"""
-    Test that a partner member can delete an incident.
+    Test that a source member can delete an incident.
     \"""
 
     access_token = res = client.post(
         "api/v1/auth/login",
         json={
-            "email": partner_publisher.email,
+            "email": source_publisher.email,
             "password": "my_password",
         },
     ).json["access_token"]
@@ -366,7 +366,7 @@ def test_delete_officer(
     # Make a request to delete the incident
     res = client.delete(
         f"/api/v1/officers/{example_incidents_private_public[0].id}"
-        + f"?partner_id={example_partner.id}",
+        + f"?source_uid={example_source.id}",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 204

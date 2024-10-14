@@ -7,7 +7,7 @@ from neomodel import (
     StringProperty, DateProperty, BooleanProperty,
     UniqueIdProperty, EmailProperty
 )
-from backend.database.models.partner import PartnerMember
+from backend.database.models.source import SourceMember
 
 
 class UserRole(str, PropertyEnum):
@@ -54,18 +54,18 @@ class User(StructuredNode, JsonSerializable):
 
     phone_number = StringProperty()
 
-    # Data Partner Relationships
-    partners = Relationship(
-        'backend.database.models.partner.Partner',
-        "MEMBER_OF_PARTNER", model=PartnerMember)
+    # Data Source Relationships
+    sources = Relationship(
+        'backend.database.models.source.Source',
+        "MEMBER_OF_SOURCE", model=SourceMember)
     received_invitations = Relationship(
-        'backend.database.models.partner.Invitation',
+        'backend.database.models.source.Invitation',
         "RECIEVED")
     extended_invitations = Relationship(
-        'backend.database.models.partner.Invitation',
+        'backend.database.models.source.Invitation',
         "EXTENDED")
     entended_staged_invitations = Relationship(
-        'backend.database.models.partner.StagedInvitation',
+        'backend.database.models.source.StagedInvitation',
         "EXTENDED")
 
     def verify_password(self, pw: str) -> bool:

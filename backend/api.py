@@ -7,7 +7,7 @@ from flask_cors import CORS
 from backend.config import get_config_from_env
 from backend.auth import jwt, refresh_token
 from backend.schemas import spec
-from backend.routes.partners import bp as partners_bp
+from backend.routes.sources import bp as sources_bp
 # from backend.routes.incidents import bp as incidents_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
@@ -164,7 +164,7 @@ def register_commands(app: Flask):
 
 
 def register_routes(app: Flask):
-    app.register_blueprint(partners_bp)
+    app.register_blueprint(sources_bp)
     # app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(healthcheck_bp)

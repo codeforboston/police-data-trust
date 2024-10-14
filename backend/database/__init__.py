@@ -19,4 +19,4 @@ from .models.litigation import *
 from .models.attachment import *
 from .models.civilian import *
 from .models.user import *
-from .models.partner import *
+from .models.source import *

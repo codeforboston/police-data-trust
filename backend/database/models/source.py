@@ -32,11 +32,12 @@ class MemberRole(str, PropertyEnum):
 
 
 class Invitation(StructuredNode):
+    uid = UniqueIdProperty()
     role = StringProperty(choices=MemberRole.choices())
     is_accepted = BooleanProperty(default=False)
     # default to not accepted invite
 
-    partner = RelationshipFrom("Partner", "INVITED_TO")
+    source_org = RelationshipFrom("Source", "INVITED_TO")
     user = RelationshipFrom(
         "backend.database.models.user.User", "EXTENDED_TO")
     extender = RelationshipFrom(
@@ -45,7 +46,7 @@ class Invitation(StructuredNode):
     def serialize(self):
         return {
             'id': self.id,
-            'partner': self.partner,
+            'source': self.source,
             'user': self.user,
             'role': self.role,
             'is_accepted': self.is_accepted,
@@ -53,23 +54,24 @@ class Invitation(StructuredNode):
 
 
 class StagedInvitation(StructuredNode):
+    uid = UniqueIdProperty()
     role = StringProperty(choices=MemberRole.choices())
     email = EmailProperty()
 
-    partner = RelationshipFrom("Partner", "INVITATION_TO")
+    source_org = RelationshipFrom("Source", "INVITATION_TO")
     extender = RelationshipFrom(
         "backend.database.models.user.User", "EXTENDED_BY")
 
     def serialize(self):
         return {
-            'id': self.id,
-            'partner_id': self.partner,
+            'uid': self.uid,
+            'source_uid': self.source_org,
             'email': self.email,
             'role': self.role
         }
 
 
-class PartnerMember(StructuredRel):
+class SourceMember(StructuredRel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -99,11 +101,11 @@ class PartnerMember(StructuredRel):
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<PartnerMember( \
+        return f"<SourceMember( \
         id={self.uid}>"
 
 
-class Partner(StructuredNode, JsonSerializable):
+class Source(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "name", "url",
         "contact_email"
@@ -117,15 +119,15 @@ class Partner(StructuredNode, JsonSerializable):
     # Relationships
     members = RelationshipFrom(
         "backend.database.models.user.User",
-        "IS_MEMBER", model=PartnerMember)
+        "IS_MEMBER", model=SourceMember)
     complaints = RelationshipTo(
         "backend.database.models.complaint.Complaint",
         "REPORTED", model=BaseSourceRel)
     invitations = RelationshipTo(
         "Invitation", "HAS_PENDING_INVITATION")
     staged_invitations = RelationshipTo(
-        "StagedInvitation", "_PENDING_STAGED_INVITATION")
+        "StagedInvitation", "PENDING_STAGED_INVITATION")
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<Partner {self.uid}>"
+        return f"<Source {self.uid}>"

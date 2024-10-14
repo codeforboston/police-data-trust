@@ -12,7 +12,7 @@ mock_user = {
 
 
 @pytest.fixture
-def existing_user(db_session):
+def existing_user():
     user = User(**mock_user)
     user.save()
     return user
@@ -31,7 +31,7 @@ def existing_user(db_session):
     ],
 )
 def test_register(
-    db_session, client, existing_user, email, password,
+    client, existing_user, email, password,
     firstname, lastname, phone_number,
     expected_status_code
 ):

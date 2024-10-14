@@ -59,7 +59,7 @@ class Complaint(StructuredNode, JsonSerializable):
     outcome_of_contact = StringProperty()
 
     # Relationships
-    source = RelationshipFrom("Partner", "REPORTED", model=BaseSourceRel)
+    source_org = RelationshipFrom("Source", "REPORTED", model=BaseSourceRel)
     location = RelationshipTo("Location", "OCCURRED_AT")
     civlian_witnesses = RelationshipFrom("Civilian", "WITNESSED")
     police_witnesses = RelationshipFrom("Officer", "WITNESSED")

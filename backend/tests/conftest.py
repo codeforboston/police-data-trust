@@ -5,7 +5,7 @@ from backend.api import create_app
 from backend.config import TestingConfig
 from backend.database import User, UserRole
 from backend.database import (
-    Partner,
+    Source,
     MemberRole,
     Jurisdiction,
     Agency,
@@ -17,7 +17,7 @@ example_email = "test@email.com"
 admin_email = "admin@email.com"
 member_email = "member@email.com"
 contributor_email = "contributor@email.com"
-p_admin_email = "admin@partner.com"
+s_admin_email = "admin@source.com"
 example_password = "my_password"
 
 
@@ -115,14 +115,14 @@ def example_user():
 
 
 @pytest.fixture
-def example_partner(scope="session"):
-    partner = Partner(
-        name="Example Partner",
+def example_source(scope="session"):
+    source = Source(
+        name="Example Source",
         url="www.example.com",
         contact_email=contributor_email
     ).save()
-    add_test_property(partner)
-    yield partner
+    add_test_property(source)
+    yield source
 
 
 @pytest.fixture
@@ -150,7 +150,7 @@ def example_officer():
 
 
 @pytest.fixture  # type: ignore
-def example_partner_member(example_partner):
+def example_source_member(example_source):
     member = User(
         email=member_email,
         password_hash=User.hash_password(example_password),
@@ -160,16 +160,16 @@ def example_partner_member(example_partner):
         phone_number="(012) 345-6789",
     ).save()
     add_test_property(member)
-    # Create partner
-    partner = Partner(
-        name="Example Partner Member",
+    # Create source
+    source = Source(
+        name="Example Source Member",
         url="www.example.com",
         contact_email="example_test@example.ca"
     ).save()
-    add_test_property(partner)
+    add_test_property(source)
 
     # Create relationship
-    partner.members.conect(
+    source.members.conect(
         member,
         {
             'role': MemberRole.MEMBER.value,
@@ -177,7 +177,7 @@ def example_partner_member(example_partner):
             'is_active': True
         }
     )
-    add_test_property_to_rel(partner, 'HAS_MEMBER', member)
+    add_test_property_to_rel(source, 'HAS_MEMBER', member)
     yield member
 
 
@@ -193,15 +193,15 @@ def example_contributor():
     ).save()
     add_test_property(contributor)
 
-    partner = Partner(
+    source = Source(
         name="Example Contributor",
         url="www.example.com",
         contact_email="example_test@example.ca"
     ).save()
-    add_test_property(partner)
+    add_test_property(source)
 
     # Create relationship
-    partner.members.connect(
+    source.members.connect(
         contributor,
         {
             'role': MemberRole.PUBLISHER.value,
@@ -209,13 +209,13 @@ def example_contributor():
             'is_active': True
         }
     ).save()
-    add_test_property_to_rel(partner, 'HAS_MEMBER', contributor)
+    add_test_property_to_rel(source, 'HAS_MEMBER', contributor)
     return contributor
 
 
 @pytest.fixture  # type: ignore
 def example_complaints(
-    example_partner: Partner,
+    example_source: Source,
     example_contributor: User,
 ) :
     complaints = []
@@ -225,7 +225,7 @@ def example_complaints(
 
 @pytest.fixture  # type: ignore
 def example_complaints_private_public(
-    example_partner: Partner
+    example_source: Source
 ):
     complaints = [
     ]
@@ -247,9 +247,9 @@ def admin_user():
 
 
 @pytest.fixture
-def partner_admin(example_partner):
+def source_admin(example_source):
     user = User(
-        email=p_admin_email,
+        email=s_admin_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
@@ -258,7 +258,7 @@ def partner_admin(example_partner):
     ).save()
     add_test_property(user)
 
-    example_partner.members.connect(
+    example_source.members.connect(
         user,
         {
             'role': MemberRole.ADMIN.value,
@@ -266,7 +266,7 @@ def partner_admin(example_partner):
             'is_active': True
         }
     )
-    add_test_property_to_rel(example_partner, 'HAS_MEMBER', user)
+    add_test_property_to_rel(example_source, 'HAS_MEMBER', user)
     yield user
 
 
@@ -284,11 +284,11 @@ def access_token(client, example_user):
 
 
 @pytest.fixture
-def p_admin_access_token(client, partner_admin):
+def p_admin_access_token(client, source_admin):
     res = client.post(
         "api/v1/auth/login",
         json={
-            "email": p_admin_email,
+            "email": s_admin_email,
             "password": example_password,
         },
     )
