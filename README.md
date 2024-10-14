@@ -78,6 +78,8 @@ flake8 backend/
 python -m pytest
 ```
 
+For more information on running the tests, see the [backend tests README](./backend/tests/README.md)
+
 ### Front End Tests
 
 The current frontend tests can be found in the GitHub Actions workflow file [frontend-checks.yml](https://github.com/codeforboston/police-data-trust/blob/0488d03c2ecc01ba774cf512b1ed2f476441948b/.github/workflows/frontend-checks.yml)
