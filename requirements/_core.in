@@ -5,16 +5,14 @@ celery
 flake8
 flask
 gunicorn
-pandas==2.2.2
+pandas>=2.2.2
 pip-tools
 pydantic==2.9.2
 pytest
 pytest-env
 pytest-cov
-pytest-postgresql
 pytest-mock
 python-dotenv
-flask-user<0.7
 wtforms
 flask-wtf
 flask-babelex
