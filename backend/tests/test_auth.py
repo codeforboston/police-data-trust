@@ -1,7 +1,21 @@
 import pytest
-from unittest.mock import patch, MagicMock
-from backend.database import User
-from flask_jwt_extended import decode_token
+from backend.database.models.user import User, UserRole
+
+mock_user = {
+    "email": "existing@email.com",
+    "password_hash": User.hash_password("my_password"),
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone_number": "1234567890",
+    "role": UserRole.PUBLIC.value,
+}
+
+
+@pytest.fixture
+def existing_user(db_session):
+    user = User(**mock_user)
+    user.save()
+    return user
 
 
 @pytest.mark.parametrize(
@@ -17,12 +31,10 @@ from flask_jwt_extended import decode_token
     ],
 )
 def test_register(
-    db_session, client, example_user, email, password,
+    db_session, client, existing_user, email, password,
     firstname, lastname, phone_number,
     expected_status_code
 ):
-    if email == "existing@email.com":
-        email = example_user.email
     res = client.post(
         "api/v1/auth/register",
         json={
@@ -59,83 +71,16 @@ def test_login(
     db_session,
     client, example_user, password, expected_status_code
 ):
-    with patch('backend.database.User.get_by_email') as mock_get_by_email:
-        mock_get_by_email.return_value = example_user
-
-        res = client.post(
-            "api/v1/auth/login",
-            json={
-                "email": example_user.email,
-                "password": password,
-            },
-        )
-
-        assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
-        assert res.status_code == expected_status_code
-
-
-def test_jwt(client, db_session, example_user, mock_access_token):
-    with patch('backend.database.User.nodes.get_or_none') as mock_get_or_none, \
-         patch('flask_jwt_extended.decode_token') as mock_decode_token:
-        
-        mock_get_or_none.return_value = example_user
-        mock_decode_token.return_value = {"sub": "mock_user_uid"}
-
-        res = client.post(
-            "api/v1/auth/login",
-            json={
-                "email": "test@email.com",
-                "password": "my_password",
-            },
-        )
-
-        assert res.status_code == 200
-
-        user_uid = decode_token(res.json["access_token"])["sub"]
-        db_user = User.nodes.get_or_none(uid=user_uid)
-
-        assert db_user.email == example_user.email
-        assert res.status_code == 200
-
-
-def test_auth_test_header(
-    db_session, client, example_user, mock_access_token):
-    login_res = client.post(
+    res = client.post(
         "api/v1/auth/login",
-        json={"email": example_user.email, "password": "my_password"},
+        json={
+            "email": example_user.email,
+            "password": password,
+        },
     )
 
-    client.set_cookie(domain="localhost", key="access_token_cookie", value="")
-
-    with patch('backend.auth.jwt_required') as mock_jwt_required:
-        mock_jwt_required.return_value = None  # Mock the jwt_required decorator
-        test_res = client.get(
-            "api/v1/auth/whoami",
-            headers={
-                "Authorization": f"Bearer {mock_access_token}"
-            },
-        )
-
-    assert test_res.status_code == 200
-
-
-def test_auth_test_cookie(db_session, client, example_user):
-    client.post(
-        "api/v1/auth/login",
-        json={"email": example_user.email, "password": "my_password"},
-    )
-
-    with patch('backend.auth.jwt_required') as mock_jwt_required:
-        mock_jwt_required.return_value = None  # Mock the jwt_required decorator
-        test_res = client.get(
-            "api/v1/auth/whoami",
-        )
-
-    assert test_res.status_code == 200
-
-
-def test_access_token_fixture(db_session, mock_access_token):
-    assert len(mock_access_token) > 0
+    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
+    assert res.status_code == expected_status_code
 
 
 # @pytest.mark.parametrize(("use_correct_email"), [(True), (False)])

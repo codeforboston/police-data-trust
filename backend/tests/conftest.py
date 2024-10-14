@@ -1,6 +1,6 @@
 import pytest
 from neo4j import GraphDatabase
-from neomodel import config, db
+from neomodel import db
 from backend.api import create_app
 from backend.config import TestingConfig
 from backend.database import User, UserRole
@@ -57,9 +57,14 @@ def app():
         yield app
 
 
-# This function must be called for every new test node created
-def add_test_label(node):
-    query = "MATCH (n) WHERE elementId(n) = $node_id SET n:TestData"
+@pytest.fixture
+def client(app):
+    return app.test_client()
+
+
+# This function should be called for every new test node created
+def add_test_property(node):
+    query = "MATCH (n) WHERE elementId(n) = $node_id SET n.is_test_data = true"
     params = {'node_id': node.element_id}
     db.cypher_query(query, params)
 
@@ -78,17 +83,25 @@ def add_test_property_to_rel(start_node, rel_type, end_node):
     db.cypher_query(query, params)
 
 
-@pytest.fixture
-def client(app):
-    return app.test_client()
+def is_test_database():
+    query = "MATCH (n:TestMarker {name: 'TEST_DATABASE'}) RETURN n"
+    results, _ = db.cypher_query(query)
+    return bool(results)
 
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_test_data():
     yield
-    # After all tests have run, clean up the test data
-    db.cypher_query('MATCH ()-[r]-() WHERE r.test_data = true DELETE r')
-    db.cypher_query('MATCH (n:TestData) DETACH DELETE n')
+    # Check if this is the test database before performing any deletion
+    if not is_test_database():
+        raise RuntimeError("Attempted to clean up a non-test database! Aborting.")
+
+    # Delete all relationships except those attached to the TestMarker
+    db.cypher_query('MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
+
+    # Delete all nodes except the TestMarker node
+    db.cypher_query('MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n')
+
 
 
 @pytest.fixture
@@ -101,7 +114,7 @@ def example_user():
         last_name="last",
         phone_number="(012) 345-6789",
     ).save()
-    add_test_label(user)
+    add_test_property(user)
     yield user
 
 
@@ -112,7 +125,7 @@ def example_partner():
         url="www.example.com",
         contact_email=contributor_email
     ).save()
-    add_test_label(partner)
+    add_test_property(partner)
     yield partner
 
 
@@ -126,7 +139,7 @@ def example_agency():
         hq_zip="10001",
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
-    add_test_label(agency)
+    add_test_property(agency)
     yield agency
 
 
@@ -136,7 +149,7 @@ def example_officer():
         first_name="John",
         last_name="Doe",
     ).save()
-    add_test_label(officer)
+    add_test_property(officer)
     yield officer
 
 
@@ -156,7 +169,7 @@ def example_partner_member(example_user: User):
             )
         ],
     ).save()
-    add_test_label(partner)
+    add_test_property(partner)
 
     # Create relationship
     partner.members.conect(
@@ -178,8 +191,8 @@ def example_partner_publisher(example_user: User):
         url="www.example.com",
         contact_email="example_test@example.ca"
     ).save()
-    add_test_label(partner)
-    
+    add_test_property(partner)
+
     # Create relationship
     partner.members.connect(
         example_user,
@@ -221,7 +234,7 @@ def admin_user():
         first_name="admin",
         last_name="last",
     ).save()
-    add_test_label(user)
+    add_test_property(user)
     yield user
 
 
@@ -235,7 +248,7 @@ def partner_admin(example_partner):
         last_name="last",
         phone_number="(012) 345-6789",
     ).save()
-    add_test_label(user)
+    add_test_property(user)
 
     example_partner.members.connect(
         user,
