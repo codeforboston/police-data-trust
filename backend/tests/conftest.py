@@ -95,8 +95,6 @@ def cleanup_test_data():
     # Check if this is the test database before performing any deletion
     if not is_test_database():
         raise RuntimeError("Attempted to clean up a non-test database! Aborting.")
-
-    # Delete all relationships except those attached to the TestMarker
     db.cypher_query('MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
 
     # Delete all nodes except the TestMarker node

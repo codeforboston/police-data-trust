@@ -24,6 +24,8 @@ services:
     ports:
       - "7475:7474"
       - "7688:7687"
+    volumes:
+      - ./testdb-init:/docker-entrypoint-initdb.d
   web:
     build:
       context: ./frontend
