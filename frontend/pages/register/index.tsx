@@ -55,7 +55,7 @@ export default function ViewerRegistration() {
   function existingAccount(e?: AxiosError) {
     return (
       e.response?.status === 409 &&
-      e.response?.data?.message?.match(/Email matches existing account/i)
+      e.response?.data?.message?.match(/Error. Email matches existing account./i)
     )
   }
 
