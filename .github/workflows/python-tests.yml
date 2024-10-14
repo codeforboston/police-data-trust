@@ -38,7 +38,7 @@ jobs:
       env:
         GRAPH_USER: neo4j
         GRAPH_PASSWORD: test_pwd
-        GRAPH_NM_URI: localhost:7688
+        GRAPH_TEST_URI: localhost:7688
         MIXPANEL_TOKEN: mixpanel_token
     - name: Output Neo4j logs
       if: failure()
