@@ -140,13 +140,12 @@ def update_partner(partner_uid: str):
         abort(400, description=str(e))
 
 
-@bp.route("/<int:partner_id>/members/", methods=["GET"])
+@bp.route("/<partner_uid>/members/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-# @validate()  # type: ignore
-def get_partner_members(partner_id: int):
+def get_partner_members(partner_uid: int):
     """Get all members of a partner.
-    Accepts Query ParaFmeters for pagination:
+    Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
     """
@@ -154,23 +153,13 @@ def get_partner_members(partner_id: int):
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    p = Partner.nodes.get_or_none(uid=partner_id)
+    p = Partner.nodes.get_or_none(uid=partner_uid)
     if p is None:
         abort(404, description="Partner not found")
 
-    all_members = p.fetch_relations('members').all()
-    members: Pagination = (
-        all_members.paginate(page=q_page, per_page=q_per_page, max_per_page=100)
-    )
-
-    return {
-        "results": [
-            member.to_json() for member in members.items
-        ],
-        "page": members.page,
-        "totalPages": members.pages,
-        "totalResults": members.total,
-    }
+    all_members = p.members.all()
+    results = paginate_results(all_members, q_page, q_per_page)
+    return ordered_jsonify(results), 200
 
 
 """ This class currently doesn't work with the `partner_member_to_orm`

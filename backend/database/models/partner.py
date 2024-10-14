@@ -112,7 +112,7 @@ class Partner(StructuredNode, JsonSerializable):
 
     name = StringProperty(unique_index=True)
     url = StringProperty()
-    contact_email = StringProperty()
+    contact_email = StringProperty(required=True)
 
     # Relationships
     members = RelationshipFrom(

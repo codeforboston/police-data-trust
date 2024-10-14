@@ -116,7 +116,7 @@ def example_user():
 
 
 @pytest.fixture
-def example_partner():
+def example_partner(scope="session"):
     partner = Partner(
         name="Example Partner",
         url="www.example.com",
