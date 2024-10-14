@@ -1,13 +1,10 @@
 import logging
-from operator import or_, and_
 from typing import Optional, List
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
-from mixpanel import MixpanelException
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
-from backend.database.models.agency import Agency
 from backend.database.models.officer import Officer
 from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request
@@ -212,7 +209,7 @@ def update_officer(officer_uid: str):
         request,
         "update_officer",
         {
-            "officer_id": officer.id
+            "officer_id": o.uid
         },
     )
     return o.to_json()
@@ -282,7 +279,8 @@ def delete_officer(officer_uid: str):
 #                 )
 #                 if employments is not None:
 #                     # If the officer already has a records for this agency,
-#                     # we need to update the earliest and latest employment dates
+#                     # we need to update the earliest and
+#                     # latest employment dates
 #                     employment = employment_to_orm(record)
 #                     employment.officer_id = officer_id
 #                     employment = merge_employment_records(

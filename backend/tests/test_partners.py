@@ -1,9 +1,8 @@
 import pytest
 import math
 from flask_jwt_extended import decode_token
-from backend.database import Partner, PartnerMember, MemberRole, Invitation
+from backend.database import Partner, MemberRole
 from backend.database.models.user import User, UserRole
-from datetime import datetime
 
 
 publisher_email = "pub@partner.com"
@@ -300,7 +299,8 @@ def test_get_partner_members(
 #         partner_id=example_partner.id
 #     ).first()
 
-#     assert partner_member_obj.user_id == example_members["publisher"]["user_id"]
+#     assert partner_member_obj.user_id ==
+#           example_members["publisher"]["user_id"]
 #     assert partner_member_obj.partner_id == example_partner.id
 
 #     """

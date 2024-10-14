@@ -27,7 +27,7 @@ class StateID(StructuredNode):
 class Officer(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "middle_name",
-        "last_name", "suffix", "ethnicity", 
+        "last_name", "suffix", "ethnicity",
         "gender", "date_of_birth"
     ]
 

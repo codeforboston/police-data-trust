@@ -1,6 +1,6 @@
 import pytest
 import math
-from backend.database import Agency, Officer, Jurisdiction, Unit
+from backend.database import Agency
 
 
 mock_officers = {
@@ -57,6 +57,7 @@ new_agency = {
     "hq_zip": "10001",
     "jurisdiction": "MUNICIPAL"
 }
+
 
 @pytest.fixture
 def example_agencies(db_session):

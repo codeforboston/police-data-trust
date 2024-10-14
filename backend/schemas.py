@@ -342,11 +342,17 @@ class JsonSerializable:
                             uid=value)
                         rel_manager.connect(related_instance)
                     except DoesNotExist:
-                        raise ValueError(f"Related {related_node_class.__name__} with UID {value} not found.")
+                        raise ValueError(
+                            "Related {} with UID {} not found.".format(
+                                related_node_class.__name__,
+                                value
+                            ))
             # Handle relationship properties
             if key.endswith("_details"):
                 rel_name = key[:-8]
-                if isinstance(getattr(cls, rel_name, None), RelationshipManager):
+                if isinstance(
+                    getattr(cls, rel_name, None), RelationshipManager
+                ):
                     rel_manager = getattr(instance, rel_name)
                     if rel_manager.exists():
                         relationship = rel_manager.relationship(
@@ -367,9 +373,12 @@ class JsonSerializable:
     def __all_relationships__(cls) -> dict:
         """Get all relationships defined in the class."""
         return {
-            rel_name: rel_manager for rel_name, rel_manager in cls.__dict__.items()
+            rel_name: rel_manager
+            for rel_name, rel_manager in cls.__dict__.items()
             if isinstance(
-                rel_manager, (RelationshipTo, RelationshipFrom, Relationship))
+                rel_manager,
+                (RelationshipTo, RelationshipFrom, Relationship)
+            )
         }
 
     @classmethod

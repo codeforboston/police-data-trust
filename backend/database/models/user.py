@@ -1,6 +1,5 @@
 """Define the SQL classes for Users."""
 
-import bcrypt
 from werkzeug.security import generate_password_hash, check_password_hash
 from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
@@ -120,7 +119,6 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             str: The hashed password.
         """
-        # return bcrypt.hashpw(pw.encode("utf8"), bcrypt.gensalt()).decode("utf8")
         return generate_password_hash(pw)
 
     @classmethod

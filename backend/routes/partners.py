@@ -1,6 +1,5 @@
 
 import logging
-from datetime import datetime
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
@@ -14,7 +13,6 @@ from flask_jwt_extended.view_decorators import jwt_required
 
 from ..database import (
     Partner,
-    PartnerMember,
     MemberRole,
     Invitation,
     StagedInvitation,
@@ -75,7 +73,8 @@ def create_partner():
             }
         )
         # update to UserRole contributor status
-        if current_user.role_enum.get_value() < UserRole.CONTRIBUTOR.get_value():
+        if (current_user.role_enum.get_value()
+                < UserRole.CONTRIBUTOR.get_value()):
             current_user.role = UserRole.CONTRIBUTOR.value
             current_user.save()
         logger.info(f"User {current_user.uid} created partner {new_p.name}")
@@ -225,9 +224,9 @@ def add_member_to_partner():
                 msg = Message("Invitation to join NPDC partner organization!",
                               sender=TestingConfig.MAIL_USERNAME,
                               recipients=[body.email])
-                msg.body = """You have been invited
-                to a join a partner organization. Please log on to accept or decline
-                the invitation at https://dev.nationalpolicedata.org/."""
+                msg.body = "You have been invited to a join a partner" + \
+                    " organization. Please log on to accept or decline" + \
+                    " the invitation at https://dev.nationalpolicedata.org/."
                 mail.send(msg)
                 return {
                     "status": "ok",
@@ -285,8 +284,10 @@ def add_member_to_partner():
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
+@validate_request(CreatePartner)
 def join_organization():
     logger = logging.getLogger("join_organization")
+    body: CreatePartner = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
     partner = Partner.nodes.get_or_none(uid=body["partner_id"])
@@ -296,7 +297,7 @@ def join_organization():
             "message": "Partner not found!"
         }, 404
 
-    invitations = current_user.invitations.all() 
+    # invitations = current_user.invitations.all()
     # TODO: Confirm that the user has a valid invitation to this organization.
     # If not, return a 403 error.
     # Note: currently inivtations are implemented as a Node... Perhaps a

@@ -4,9 +4,7 @@ import click
 from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 from backend.config import get_config_from_env
-from backend.database import db_cli
 from backend.auth import jwt, refresh_token
 from backend.schemas import spec
 from backend.routes.partners import bp as partners_bp
@@ -88,7 +86,6 @@ def register_commands(app: Flask):
 
     # Neomodel commands
     @app.cli.command("neoload")
-
     @app.cli.command(
         "seed",
         context_settings=dict(

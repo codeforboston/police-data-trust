@@ -6,7 +6,6 @@ from backend.config import TestingConfig
 from backend.database import User, UserRole
 from backend.database import (
     Partner,
-    PartnerMember,
     MemberRole,
     Jurisdiction,
     Agency,

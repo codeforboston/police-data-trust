@@ -1,6 +1,5 @@
 import logging
 
-from operator import and_
 from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
@@ -71,7 +70,7 @@ def create_agency():
 def get_agency(agency_id: str):
     """Get an agency profile.
     """
-    logger = logging.getLogger("get_agency")
+    # logger = logging.getLogger("get_agency")
     agency = Agency.nodes.get_or_none(uid=agency_id)
     if agency is None:
         abort(404, description="Agency not found")
@@ -89,7 +88,7 @@ def get_agency(agency_id: str):
 def update_agency(agency_uid: str):
     """Update an agency profile.
     """
-    logger = logging.getLogger("update_agency")
+    # logger = logging.getLogger("update_agency")
     body: UpdateAgency = request.validated_body
     agency = Agency.nodes.get_or_none(uid=agency_uid)
     if agency is None:
@@ -194,7 +193,8 @@ def get_all_agencies():
 #                 )
 #                 if employments is not None:
 #                     # If the officer already has a records for this agency,
-#                     # we need to update the earliest and latest employment dates
+#                     # we need to update the earliest and
+#                     # latest employment dates
 #                     employment = employment_to_orm(record)
 #                     employment.agency_id = agency_id
 #                     employment = merge_employment_records(

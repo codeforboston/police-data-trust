@@ -1,6 +1,5 @@
 from flask import Blueprint
 from pydantic import BaseModel
-from spectree import Response
 
 from ..schemas import spec
 

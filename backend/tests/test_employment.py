@@ -1,5 +1,3 @@
-import pytest
-from backend.database import Agency, Officer
 
 
 mock_officers = {

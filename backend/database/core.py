@@ -5,9 +5,7 @@ Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
 import os
-import json
-from typing import Any, Optional, TypeVar, Type, List
-from enum import Enum
+from typing import Optional
 
 import click
 import pandas as pd
@@ -17,7 +15,6 @@ from werkzeug.utils import secure_filename
 from neomodel import install_all_labels
 from neo4j import Driver
 
-from ..config import TestingConfig
 from ..utils import dev_only
 
 
