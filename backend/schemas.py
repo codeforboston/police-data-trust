@@ -1,4 +1,5 @@
 from __future__ import annotations
+import math
 import json
 import textwrap
 from functools import wraps
@@ -112,7 +113,9 @@ def ordered_jsonify(*args, **kwargs):
 
     # Handle the arguments similar to how Flask's jsonify does
     if args and kwargs:
-        raise TypeError('ordered_jsonify() behavior undefined when passed both args and kwargs')
+        raise TypeError(
+            'ordered_jsonify() behavior undefined when' +
+            'passed both args and kwargs')
     elif len(args) == 1:
         data = args[0]
     else:
@@ -164,7 +167,7 @@ def validate_request(model: BaseModel):
 
 def paginate_results(
         data: list[JsonSerializable],
-        page: int, per_page: int, max_per_page: int = 100):
+        page: int, per_page: int = 20, max_per_page: int = 100):
     """
     Paginate a list of data and return a reponse dict. Items in the list must
     implement the JsonSerializable interface.
@@ -184,6 +187,9 @@ def paginate_results(
     """
     if per_page > max_per_page:
         per_page = max_per_page
+    expected_total_pages = math.ceil(len(data) / per_page)
+    if not page <= expected_total_pages:
+        abort(404)
     start = (page - 1) * per_page
     end = start + per_page
     results = data[start:end]
@@ -192,6 +198,7 @@ def paginate_results(
         "page": page,
         "per_page": per_page,
         "total": len(data),
+        "pages": expected_total_pages,
     }
 
 

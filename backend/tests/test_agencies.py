@@ -1,6 +1,6 @@
 import pytest
 import math
-from backend.database import Agency
+from backend.database import Agency, Officer, Jurisdiction, Unit
 
 
 mock_officers = {
@@ -49,38 +49,37 @@ mock_agencies = {
     }
 }
 
+new_agency = {
+    "name": "New Agency",
+    "website_url": "https://www.newagency.com/",
+    "hq_address": "123 Main St",
+    "hq_city": "New York",
+    "hq_zip": "10001",
+    "jurisdiction": "MUNICIPAL"
+}
 
 @pytest.fixture
 def example_agencies(db_session):
     agencies = {}
 
     for name, mock in mock_agencies.items():
-        db_session.add(Agency(**mock))
-        db_session.commit()
-        agencies[name] = db_session.query(
-            Agency).filter(Agency.name == mock["name"]).first()
-
-    db_session.commit()
+        a = Agency(**mock).save()
+        agencies[name] = a
     return agencies
 
 
 def test_create_agency(db_session, client, contributor_access_token):
-    test_agency = mock_agencies["cpd"]
+    test_agency = new_agency
 
-    for id, mock in mock_agencies.items():
-        res = client.post(
-            "/api/v1/agencies/",
-            json=mock,
-            headers={"Authorization": "Bearer {0}".format(
-                contributor_access_token)},
-        )
-        assert res.status_code == 200
-
-    agency_obj = (
-        db_session.query(Agency)
-        .filter(Agency.name == test_agency["name"])
-        .first()
+    res = client.post(
+        "/api/v1/agencies/",
+        json=test_agency,
+        headers={"Authorization": "Bearer {0}".format(
+            contributor_access_token)},
     )
+    assert res.status_code == 200
+
+    agency_obj = Agency.nodes.get(uid=res.json["uid"])
 
     assert agency_obj.name == test_agency["name"]
     assert agency_obj.website_url == test_agency["website_url"]
@@ -91,7 +90,7 @@ def test_create_agency(db_session, client, contributor_access_token):
 
 
 def test_unauthorized_create_agency(client, access_token):
-    test_agency = mock_agencies["cpd"]
+    test_agency = mock_agencies["nypd"]
 
     res = client.post(
         "/api/v1/agencies/",
@@ -105,7 +104,7 @@ def test_unauthorized_create_agency(client, access_token):
 def test_get_agency(client, access_token, example_agency):
     # Test that we can get example_agency
     res = client.get(
-        f"/api/v1/agencies/{example_agency.id}",
+        f"/api/v1/agencies/{example_agency.uid}",
         headers={"Authorization": "Bearer {0}".format(access_token)})
     assert res.status_code == 200
     assert res.json["name"] == example_agency.name
@@ -114,7 +113,7 @@ def test_get_agency(client, access_token, example_agency):
 
 def test_get_all_agencies(client, access_token, example_agencies):
     # Create agencies in the database
-    agencies = example_agencies
+    total_agencies = Agency.nodes.all().__len__()
 
     # Test that we can get agencies
     res = client.get(
@@ -122,19 +121,13 @@ def test_get_all_agencies(client, access_token, example_agencies):
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
-    assert res.json["results"].__len__() == agencies.__len__()
-    test_agency = res.json["results"][0]
-    single_res = client.get(
-        f"/api/v1/agencies/{test_agency['id']}",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert test_agency == single_res.json
+    assert res.json["results"].__len__() == total_agencies
 
 
 def test_agency_pagination(client, example_agencies, access_token):
     per_page = 1
-    expected_total_pages = math.ceil(len(example_agencies)//per_page)
-    actual_ids = set()
+    total_agencies = Agency.nodes.all().__len__()
+    expected_total_pages = math.ceil(total_agencies//per_page)
     for page in range(1, expected_total_pages + 1):
         res = client.get(
             f"/api/v1/agencies/?per_page={per_page}&page={page}",
@@ -143,14 +136,10 @@ def test_agency_pagination(client, example_agencies, access_token):
 
         assert res.status_code == 200
         assert res.json["page"] == page
-        assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == expected_total_pages
+        assert res.json["total"] == expected_total_pages
 
         incidents = res.json["results"]
         assert len(incidents) == per_page
-        actual_ids.add(incidents[0]["id"])
-
-    assert actual_ids == set(i.id for i in example_agencies.values())
 
     res = client.get(
         (

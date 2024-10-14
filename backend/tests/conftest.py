@@ -16,8 +16,9 @@ from datetime import datetime
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
-p_admin_email = "admin@partner.com"
+member_email = "member@email.com"
 contributor_email = "contributor@email.com"
+p_admin_email = "admin@partner.com"
 example_password = "my_password"
 
 
@@ -93,13 +94,11 @@ def is_test_database():
 def cleanup_test_data():
     yield
     # Check if this is the test database before performing any deletion
-    if not is_test_database():
-        raise RuntimeError("Attempted to clean up a non-test database! Aborting.")
-    db.cypher_query('MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
-
-    # Delete all nodes except the TestMarker node
-    db.cypher_query('MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n')
-
+    if is_test_database():
+        # Delete all nodes except the TestMarker node
+        db.cypher_query(
+            'MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
+        db.cypher_query('MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n')
 
 
 @pytest.fixture
@@ -152,38 +151,17 @@ def example_officer():
 
 
 @pytest.fixture  # type: ignore
-def example_partner_member(example_user: User):
-    # Create partner
-    partner = Partner(
-        name="Example Partner Member",
-        url="www.example.com",
-        contact_email="example_test@example.ca",
-        member_association=[
-            PartnerMember(
-                user_id=example_user.uid,
-                role=MemberRole.MEMBER.value,
-                date_joined=datetime.now(),
-                is_active=True,
-            )
-        ],
+def example_partner_member(example_partner):
+    member = User(
+        email=member_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.PUBLIC.value,
+        first_name="member",
+        last_name="last",
+        phone_number="(012) 345-6789",
     ).save()
-    add_test_property(partner)
-
-    # Create relationship
-    partner.members.conect(
-        example_user,
-        {
-            'role': MemberRole.MEMBER.value,
-            'date_joined': datetime.now(),
-            'is_active': True
-        }
-    )
-    add_test_property_to_rel(partner, 'HAS_MEMBER', example_user)
-    yield partner
-
-
-@pytest.fixture  # type: ignore
-def example_partner_publisher(example_user: User):
+    add_test_property(member)
+    # Create partner
     partner = Partner(
         name="Example Partner Member",
         url="www.example.com",
@@ -192,21 +170,54 @@ def example_partner_publisher(example_user: User):
     add_test_property(partner)
 
     # Create relationship
+    partner.members.conect(
+        member,
+        {
+            'role': MemberRole.MEMBER.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
+    )
+    add_test_property_to_rel(partner, 'HAS_MEMBER', member)
+    yield member
+
+
+@pytest.fixture  # type: ignore
+def example_contributor():
+    contributor = User(
+        email=contributor_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.CONTRIBUTOR.value,
+        first_name="contributor",
+        last_name="last",
+        phone_number="(012) 345-6789",
+    ).save()
+    add_test_property(contributor)
+
+    partner = Partner(
+        name="Example Contributor",
+        url="www.example.com",
+        contact_email="example_test@example.ca"
+    ).save()
+    add_test_property(partner)
+
+    # Create relationship
     partner.members.connect(
-        example_user,
+        contributor,
         {
             'role': MemberRole.PUBLISHER.value,
             'date_joined': datetime.now(),
             'is_active': True
         }
-    )
-    add_test_property_to_rel(partner, 'HAS_MEMBER', example_user)
+    ).save()
+    add_test_property_to_rel(partner, 'HAS_MEMBER', contributor)
+    return contributor
 
 
 @pytest.fixture  # type: ignore
 def example_complaints(
     example_partner: Partner,
-    example_partner_publisher: User,
+    example_contributor: User,
 ) :
     complaints = []
 
@@ -287,7 +298,7 @@ def p_admin_access_token(client, partner_admin):
 
 
 @pytest.fixture
-def contributor_access_token(client, partner_publisher):
+def contributor_access_token(client, example_contributor):
     res = client.post(
         "api/v1/auth/login",
         json={
