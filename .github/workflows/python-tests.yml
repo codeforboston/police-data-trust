@@ -15,7 +15,7 @@ jobs:
         ports:
           - 7688:7687
         options: >-
-          --health-cmd "cypher-shell -u neo4j -p test_pwd 'MERGE (n:TestMarker {name: 'TEST_DATABASE'});'"
+          --health-cmd "cypher-shell -u neo4j -p test_pwd 'RETURN 1'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
