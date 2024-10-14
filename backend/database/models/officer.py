@@ -1,4 +1,5 @@
-from backend.schemas import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable
+from backend.database.models.types.enums import State, Ethnicity, Gender
 
 from neomodel import (
     StructuredNode,
@@ -6,59 +7,6 @@ from neomodel import (
     StringProperty, DateProperty,
     UniqueIdProperty
 )
-
-
-class State(str, PropertyEnum):
-    AL = "AL"
-    AK = "AK"
-    AZ = "AZ"
-    AR = "AR"
-    CA = "CA"
-    CO = "CO"
-    CT = "CT"
-    DE = "DE"
-    FL = "FL"
-    GA = "GA"
-    HI = "HI"
-    ID = "ID"
-    IL = "IL"
-    IN = "IN"
-    IA = "IA"
-    KS = "KS"
-    KY = "KY"
-    LA = "LA"
-    ME = "ME"
-    MD = "MD"
-    MA = "MA"
-    MI = "MI"
-    MN = "MN"
-    MS = "MS"
-    MO = "MO"
-    MT = "MT"
-    NE = "NE"
-    NV = "NV"
-    NH = "NH"
-    NJ = "NJ"
-    NM = "NM"
-    NY = "NY"
-    NC = "NC"
-    ND = "ND"
-    OH = "OH"
-    OK = "OK"
-    OR = "OR"
-    PA = "PA"
-    RI = "RI"
-    SC = "SC"
-    SD = "SD"
-    TN = "TN"
-    TX = "TX"
-    UT = "UT"
-    VT = "VT"
-    VA = "VA"
-    WA = "WA"
-    WV = "WV"
-    WI = "WI"
-    WY = "WY"
 
 
 class StateID(StructuredNode):
@@ -79,9 +27,8 @@ class StateID(StructuredNode):
 class Officer(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "middle_name",
-        "last_name", "suffix",
-        "race", "ethnicity", "gender",
-        "date_of_birth"
+        "last_name", "suffix", "ethnicity", 
+        "gender", "date_of_birth"
     ]
 
     uid = UniqueIdProperty()
@@ -89,9 +36,8 @@ class Officer(StructuredNode, JsonSerializable):
     middle_name = StringProperty()
     last_name = StringProperty()
     suffix = StringProperty()
-    race = StringProperty()
-    ethnicity = StringProperty()
-    gender = StringProperty()
+    ethnicity = StringProperty(choices=Ethnicity.choices())
+    gender = StringProperty(choices=Gender.choices())
     date_of_birth = DateProperty()
 
     # Relationships

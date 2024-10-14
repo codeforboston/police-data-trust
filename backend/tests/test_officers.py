@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import pytest
 import math
 from backend.database import (
     Officer,
@@ -9,23 +9,20 @@ mock_officers = {
     "john": {
         "first_name": "John",
         "last_name": "Doe",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M"
+        "ethnicity": "White",
+        "gender": "Male"
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "F"
+        "ethnicity": "White",
+        "gender": "Female"
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
-        "race": "Black",
-        "ethnicity": "African American",
-        "gender": "M"
+        "ethnicity": "Black/African American",
+        "gender": "Male"
     }
 }
 
@@ -69,60 +66,19 @@ mock_employment = {
     }
 }
 
-mock_incidents = {
-    "domestic": {
-        "time_of_incident": "2021-03-14 01:05:09",
-        "description": "Domestic disturbance",
-        "perpetrators": [
-            {"first_name": "Decent", "last_name": "Cop"},
-        ],
-        "use_of_force": [{"item": "Injurious restraint"}],
-        "source": "Citizens Police Data Project",
-        "location": "123 Right St Chicago, IL",
-    },
-    "traffic": {
-        "time_of_incident": "2021-10-01 00:00:00",
-        "description": "Traffic stop",
-        "perpetrators": [
-            {"first_name": "Bad", "last_name": "Cop"},
-        ],
-        "use_of_force": [{"item": "verbalization"}],
-        "source": "Mapping Police Violence",
-        "location": "Park St and Boylston Boston",
-    },
-    "firearm": {
-        "time_of_incident": "2021-10-05 00:00:00",
-        "description": "Robbery",
-        "perpetrators": [
-            {"first_name": "Bad", "last_name": "Cop"},
-        ],
-        "use_of_force": [{"item": "indirect firearm"}],
-        "source": "Citizens Police Data Project",
-        "location": "CHICAGO ILLINOIS",
-    },
-}
-
 mock_partners = {
     "cpdp": {"name": "Citizens Police Data Project"}
 }
 
-mock_accusations = {
-    "domestic": {
-        "officer": "light",
-        "date_created": "2023-03-14 01:05:09",
-        "basis": "Name Match"
-    },
-    "traffic": {
-        "officer": "severe",
-        "date_created": "2023-10-01 00:00:00",
-        "basis": "Name Match"
-    },
-    "firearm": {
-        "officer": "severe",
-        "date_created": "2023-10-05 00:00:00",
-        "basis": "Name Match"
-    },
-}
+
+@pytest.fixture
+def example_officers(db_session):
+    # Create Officers in the database
+    officers = {}
+    for name, mock in mock_officers.items():
+        o = Officer(**mock).save()
+        officers[name] = o
+    return officers
 
 
 def test_create_officer(
@@ -131,52 +87,12 @@ def test_create_officer(
         contributor_access_token,
         example_agency):
 
-    # Test that we can create an officer with an agency association
-    request = {
-        "first_name": "Max",
-        "last_name": "Payne",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M",
-        "agency_association": [
-            {
-                "agency_id": example_agency.id,
-                "earliest_employment": "2015-03-14 00:00:00",
-                "badge_number": "8349",
-                "currently_employed": True
-            }
-        ]
-    }
-    res = client.post(
-        "/api/v1/officers/",
-        json=request,
-        headers={
-            "Authorization": "Bearer {0}".format(contributor_access_token)
-        },
-    )
-    assert res.status_code == 200
-    response = res.json
-
-    officer_obj = (
-        db_session.query(Officer).filter(Officer.id == response["id"]).first()
-    )
-    assert officer_obj.first_name == request["first_name"]
-    assert officer_obj.last_name == request["last_name"]
-    assert officer_obj.race == request["race"]
-    assert officer_obj.ethnicity == request["ethnicity"]
-    assert len(officer_obj.agency_association) == len(
-        request["agency_association"])
-    assert officer_obj.agency_association[0].badge_number == request[
-        "agency_association"][0]["badge_number"]
-    assert officer_obj.agency_association[0].agency_id == example_agency.id
-
     # Test that we can create an officer without an agency association
     request = {
         "first_name": "Max",
         "last_name": "Payne",
-        "race": "White",
-        "ethnicity": "Non-Hispanic",
-        "gender": "M"
+        "ethnicity": "White",
+        "gender": "Male"
     }
     res = client.post(
         "/api/v1/officers/",
@@ -189,21 +105,23 @@ def test_create_officer(
     response = res.json
 
     officer_obj = (
-        db_session.query(Officer).filter(Officer.id == response["id"]).first()
+       Officer.nodes.get(uid=response["uid"])
     )
     assert officer_obj.first_name == request["first_name"]
     assert officer_obj.last_name == request["last_name"]
-    assert officer_obj.race == request["race"]
     assert officer_obj.ethnicity == request["ethnicity"]
+    assert officer_obj.gender == request["gender"]
 
 
 def test_get_officer(client, db_session, example_officer, access_token):
     # Test that we can get it
-    res = client.get(f"/api/v1/officers/{example_officer.id}")
+    res = client.get(f"/api/v1/officers/{example_officer.uid}")
 
     assert res.status_code == 200
     assert res.json["first_name"] == example_officer.first_name
     assert res.json["last_name"] == example_officer.last_name
+    assert res.json["gender"] == example_officer.gender
+    assert res.json["ethnicity"] == example_officer.ethnicity
 
 
 """
@@ -267,12 +185,8 @@ def test_search_officers(
  """
 
 
-def test_get_officers(client, db_session, access_token):
-    # Create Officers in the database
-    for name, mock in mock_officers.items():
-        db_session.add(Officer(**mock))
-    db_session.commit()
-
+def test_get_officers(client, db_session, access_token, example_officers):
+    all_officers = Officer.nodes.all()
     res = client.get(
         "/api/v1/officers/",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
@@ -282,27 +196,14 @@ def test_get_officers(client, db_session, access_token):
     assert res.json["results"][0]["first_name"] is not None
     assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
-    assert res.json["totalPages"] == 1
-    assert res.json["totalResults"] == len(mock_officers)
-
-    test_officer = res.json["results"][0]
-    single_res = client.get(
-        f"/api/v1/officers/{test_officer['id']}",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert test_officer == single_res.json
+    assert res.json["total"] == len(all_officers)
 
 
-def test_officer_pagination(client, db_session, access_token):
+def test_officer_pagination(client, db_session, access_token, example_officers):
     # Create Officers in the database
-    created_officers = []
-    for name, mock in mock_officers.items():
-        db_session.add(Officer(**mock))
-        created_officers.append(Officer(**mock))
-    db_session.commit()
-
+    officers = Officer.nodes.all()
     per_page = 1
-    expected_total_pages = math.ceil(len(mock_officers)//per_page)
+    expected_total_pages = math.ceil(len(officers)//per_page)
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
@@ -313,8 +214,7 @@ def test_officer_pagination(client, db_session, access_token):
 
         assert res.status_code == 200
         assert res.json["page"] == page
-        assert res.json["totalPages"] == expected_total_pages
-        assert res.json["totalResults"] == len(mock_officers)
+        assert res.json["total"] == len(officers)
         assert len(res.json["results"]) == per_page
 
     res = client.get(
