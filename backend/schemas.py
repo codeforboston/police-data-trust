@@ -14,8 +14,9 @@ from neomodel import (
     RelationshipTo,
     RelationshipFrom, Relationship,
     RelationshipManager, RelationshipDefinition,
-    UniqueIdProperty
+    UniqueIdProperty, StructuredRel
 )
+from neomodel.properties import Property
 from neomodel.exceptions import DoesNotExist
 
 
@@ -217,27 +218,25 @@ class JsonSerializable:
     __property_order__ = []
 
     def to_dict(self, include_relationships=True,
-                exclude_fields=None):
+                relationship_limit: int = 20, exclude_fields=None):
         """
-        Convert the node instance into a dictionary.
+        Convert the node instance into a dictionary, including
+        its relationships.
+
         Args:
-            include_relationships (bool): Whether to include
-            relationships in the output.
-
-            exclude_fields (list): List of fields to exclude
-            from serialization.
-
-            field_order (list): List of fields to order the
-            output by.
+            include_relationships (bool): Whether to include relationships in
+            the output. exclude_fields (list): List of fields to exclude from
+            serialization.
 
         Returns:
             dict: A dictionary representation of the node.
         """
         exclude_fields = exclude_fields or []
-        field_order = self.__property_order__
+        field_order = getattr(self, '__property_order__', None)
 
         all_excludes = set(
-            self.__hidden_properties__).union(set(exclude_fields))
+            getattr(self, '__hidden_properties__', [])).union(
+                set(exclude_fields))
 
         all_props = self.defined_properties()
         node_props = OrderedDict()
@@ -250,8 +249,10 @@ class JsonSerializable:
         # Serialize node properties
         for prop_name in ordered_props:
             if prop_name not in all_excludes:
-                value = getattr(self, prop_name, None)
-                node_props[prop_name] = value
+                prop = all_props[prop_name]
+                if isinstance(prop, Property):
+                    value = getattr(self, prop_name, None)
+                    node_props[prop_name] = value
 
         # Optionally add related nodes
         if include_relationships:
@@ -259,16 +260,34 @@ class JsonSerializable:
                 key: value for key, value in self.__class__.__dict__.items()
                 if isinstance(value, RelationshipDefinition)
             }
-            for key in relationships:
+            for key, relationship_def in relationships.items():
                 if key in all_excludes:
                     continue
+
                 rel_manager = getattr(self, key, None)
                 if isinstance(rel_manager, RelationshipManager):
-                    related_nodes = rel_manager.all()
-                    node_props[key] = [
-                        node.to_dict(include_relationships=False)
-                        for node in related_nodes
-                    ]
+                    related_nodes = rel_manager.all()[0:relationship_limit]
+                    # Limit the number of related nodes to serialize
+                    if relationship_def.definition.get('model', None):
+                        # If there is a relationship model, serialize it as well
+                        node_props[key] = [
+                            {
+                                'node': node.to_dict(
+                                    include_relationships=False),
+                                'relationship': rel_manager.relationship(
+                                    node).to_dict() if isinstance(
+                                        rel_manager.relationship(
+                                            node), StructuredRel) else {}
+                            }
+                            for node in related_nodes
+                        ]
+                    else:
+                        # No specific relationship model, just serialize nodes
+                        node_props[key] = [
+                            node.to_dict(include_relationships=False)
+                            for node in related_nodes
+                        ]
+
         return node_props
 
     def to_json(self):

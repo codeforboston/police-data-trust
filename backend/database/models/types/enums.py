@@ -15,6 +15,7 @@ class Ethnicity(str, PropertyEnum):
     AMERICAN_INDIAN_ALASKA_NATIVE = 'American Indian/Alaska Native'
     ASIAN = 'Asian'
     NATIVE_HAWAIIAN_PACIFIC_ISLANDER = 'Native Hawaiian/Pacific Islander'
+    HISPANIC_LATINO = 'Hispanic/Latino'
 
 
 class State(str, PropertyEnum):

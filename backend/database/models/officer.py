@@ -9,7 +9,7 @@ from neomodel import (
 )
 
 
-class StateID(StructuredNode):
+class StateID(StructuredNode, JsonSerializable):
     """
     Represents a Statewide ID that follows an offcier even as they move between
     law enforcement agencies. For example, in New York, this would be

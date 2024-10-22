@@ -1,4 +1,6 @@
 from backend.schemas import JsonSerializable, PropertyEnum
+from backend.database.models.types.enums import State
+
 from neomodel import (
     StructuredNode,
     StructuredRel,
@@ -26,7 +28,7 @@ class UnitMembership(StructuredRel):
     highest_rank = StringProperty()
 
 
-class Unit(StructuredNode):
+class Unit(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
     name = StringProperty()
     website_url = StringProperty()
@@ -34,6 +36,8 @@ class Unit(StructuredNode):
     email = StringProperty()
     description = StringProperty()
     address = StringProperty()
+    city = StringProperty()
+    state = StringProperty(choices=State.choices())
     zip = StringProperty()
     agency_url = StringProperty()
     officers_url = StringProperty()
@@ -58,6 +62,7 @@ class Agency(StructuredNode, JsonSerializable):
     website_url = StringProperty()
     hq_address = StringProperty()
     hq_city = StringProperty()
+    hq_state = StringProperty(choices=State.choices())
     hq_zip = StringProperty()
     phone = StringProperty()
     email = StringProperty()
