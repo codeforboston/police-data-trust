@@ -6,9 +6,9 @@ from neomodel import (
     StructuredRel,
     StringProperty,
     RelationshipTo,
-    RelationshipFrom,
     DateProperty,
-    UniqueIdProperty
+    UniqueIdProperty,
+    One
 )
 
 
@@ -44,7 +44,7 @@ class Unit(StructuredNode, JsonSerializable):
     date_etsablished = DateProperty()
 
     # Relationships
-    agency = RelationshipFrom("Agency", "ESTABLISHED_BY")
+    agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
     commander = RelationshipTo(
         "backend.database.models.officer.Officer",
         "COMMANDED_BY", model=UnitMembership)
@@ -70,7 +70,7 @@ class Agency(StructuredNode, JsonSerializable):
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
 
     # Relationships
-    units = RelationshipTo("Unit", "HAS_UNIT")
+    units = RelationshipTo("Unit", "ESTABLISHED")
 
     def __repr__(self):
         return f"<Agency {self.name}>"

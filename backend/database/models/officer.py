@@ -5,7 +5,7 @@ from neomodel import (
     StructuredNode,
     RelationshipTo, RelationshipFrom, Relationship,
     StringProperty, DateProperty,
-    UniqueIdProperty
+    UniqueIdProperty, One
 )
 
 
@@ -18,7 +18,7 @@ class StateID(StructuredNode, JsonSerializable):
     id_name = StringProperty()  # e.g. "Tax ID Number"
     state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
-    officer = RelationshipFrom('Officer', "HAS_STATE_ID")
+    officer = RelationshipFrom('Officer', "HAS_STATE_ID", cardinality=One)
 
     def __repr__(self):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
