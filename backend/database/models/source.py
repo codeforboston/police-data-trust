@@ -105,6 +105,17 @@ class SourceMember(StructuredRel, JsonSerializable):
         id={self.uid}>"
 
 
+class Citation(StructuredRel, JsonSerializable):
+    uid = UniqueIdProperty()
+    date = DateTimeProperty(default=datetime.now())
+    url = StringProperty()
+    diff = StringProperty()
+
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return f"<Citation {self.uid}>"
+
+
 class Source(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "name", "url",

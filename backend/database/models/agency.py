@@ -1,5 +1,6 @@
 from backend.schemas import JsonSerializable, PropertyEnum
 from backend.database.models.types.enums import State
+from backend.database.models.source import Citation
 
 from neomodel import (
     StructuredNode,
@@ -29,6 +30,8 @@ class UnitMembership(StructuredRel, JsonSerializable):
 
 
 class Unit(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["citations"]
+
     uid = UniqueIdProperty()
     name = StringProperty()
     website_url = StringProperty()
@@ -51,12 +54,16 @@ class Unit(StructuredNode, JsonSerializable):
     officers = RelationshipTo(
         "backend.database.models.officer.Officer",
         "MEMBER_OF", model=UnitMembership)
+    citations = RelationshipTo(
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Unit {self.name}>"
 
 
 class Agency(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["citations"]
+
     uid = UniqueIdProperty()
     name = StringProperty()
     website_url = StringProperty()
@@ -71,6 +78,8 @@ class Agency(StructuredNode, JsonSerializable):
 
     # Relationships
     units = RelationshipTo("Unit", "ESTABLISHED")
+    citations = RelationshipTo(
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Agency {self.name}>"

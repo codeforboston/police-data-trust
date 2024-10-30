@@ -1,5 +1,6 @@
 from backend.schemas import JsonSerializable
 from backend.database.models.types.enums import State, Ethnicity, Gender
+from backend.database.models.source import Citation
 
 from neomodel import (
     StructuredNode,
@@ -30,6 +31,7 @@ class Officer(StructuredNode, JsonSerializable):
         "last_name", "suffix", "ethnicity",
         "gender", "date_of_birth"
     ]
+    __hidden_properties__ = ["citations"]
 
     uid = UniqueIdProperty()
     first_name = StringProperty()
@@ -52,6 +54,8 @@ class Officer(StructuredNode, JsonSerializable):
         'backend.database.models.complaint.Investigation', "LEAD_BY")
     commands = Relationship(
         'backend.database.models.agency.Unit', "COMMANDS")
+    citations = RelationshipTo(
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Officer {self.id}>"
