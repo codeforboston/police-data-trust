@@ -19,7 +19,7 @@ class RecordType(str, PropertyEnum):
 
 
 # Neo4j Models
-class BaseSourceRel(StructuredRel):
+class BaseSourceRel(StructuredRel, JsonSerializable):
     record_type = StringProperty(
         choices=RecordType.choices(),
         required=True

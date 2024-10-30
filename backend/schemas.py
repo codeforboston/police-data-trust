@@ -1,6 +1,7 @@
 from __future__ import annotations
 import math
 import json
+import datetime
 import textwrap
 from functools import wraps
 from enum import Enum
@@ -14,9 +15,8 @@ from neomodel import (
     RelationshipTo,
     RelationshipFrom, Relationship,
     RelationshipManager, RelationshipDefinition,
-    UniqueIdProperty, StructuredRel
+    UniqueIdProperty, StructuredRel, StructuredNode
 )
-from neomodel.properties import Property
 from neomodel.exceptions import DoesNotExist
 
 
@@ -238,24 +238,24 @@ class JsonSerializable:
             getattr(self, '__hidden_properties__', [])).union(
                 set(exclude_fields))
 
-        all_props = self.defined_properties()
-        node_props = OrderedDict()
+        all_props = self.defined_properties(aliases=False, rels=False)
+        obj_props = OrderedDict()
 
         if field_order:
             ordered_props = [prop for prop in field_order if prop in all_props]
         else:
             ordered_props = list(all_props.keys())
 
-        # Serialize node properties
+        # Serialize properties
         for prop_name in ordered_props:
             if prop_name not in all_excludes:
-                prop = all_props[prop_name]
-                if isinstance(prop, Property):
-                    value = getattr(self, prop_name, None)
-                    node_props[prop_name] = value
+                value = getattr(self, prop_name, None)
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    value = value.isoformat()
+                obj_props[prop_name] = value
 
         # Optionally add related nodes
-        if include_relationships:
+        if include_relationships and isinstance(self, StructuredNode):
             relationships = {
                 key: value for key, value in self.__class__.__dict__.items()
                 if isinstance(value, RelationshipDefinition)
@@ -270,7 +270,7 @@ class JsonSerializable:
                     # Limit the number of related nodes to serialize
                     if relationship_def.definition.get('model', None):
                         # If there is a relationship model, serialize it as well
-                        node_props[key] = [
+                        obj_props[key] = [
                             {
                                 'node': node.to_dict(
                                     include_relationships=False),
@@ -283,12 +283,12 @@ class JsonSerializable:
                         ]
                     else:
                         # No specific relationship model, just serialize nodes
-                        node_props[key] = [
+                        obj_props[key] = [
                             node.to_dict(include_relationships=False)
                             for node in related_nodes
                         ]
 
-        return node_props
+        return obj_props
 
     def to_json(self):
         """Convert the node instance into a JSON string."""
@@ -383,13 +383,13 @@ class JsonSerializable:
         return instance
 
     @classmethod
-    def __all_properties__(cls) -> List[str]:
+    def __all_properties_JS__(cls) -> List[str]:
         """Get a list of all properties defined in the class."""
         return [prop_name for prop_name in cls.__dict__ if isinstance(
             cls.__dict__[prop_name], property)]
 
     @classmethod
-    def __all_relationships__(cls) -> dict:
+    def __all_relationships_JS__(cls) -> dict:
         """Get all relationships defined in the class."""
         return {
             rel_name: rel_manager

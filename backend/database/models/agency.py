@@ -21,7 +21,7 @@ class Jurisdiction(str, PropertyEnum):
     OTHER = "OTHER"
 
 
-class UnitMembership(StructuredRel):
+class UnitMembership(StructuredRel, JsonSerializable):
     earliest_date = DateProperty()
     latest_date = DateProperty()
     badge_number = StringProperty()

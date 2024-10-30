@@ -71,7 +71,7 @@ class StagedInvitation(StructuredNode):
         }
 
 
-class SourceMember(StructuredRel):
+class SourceMember(StructuredRel, JsonSerializable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
