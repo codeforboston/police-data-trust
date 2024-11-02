@@ -7,7 +7,7 @@ RUN apt-get update -y && apt-get install gcc g++ python3-dev wget -y
 
 WORKDIR /app/
 
-ARG PDT_API_PORT=5000
+ARG NPDI_API_PORT=5000
 
 COPY requirements/prod.txt .
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -20,8 +20,8 @@ RUN pip install --no-cache-dir -r prod.txt
 
 COPY . .
 
-EXPOSE $PDT_API_PORT
-ENV PDT_API_PORT=$PDT_API_PORT
+EXPOSE $NPDI_API_PORT
+ENV NPDI_API_PORT=$NPDI_API_PORT
 
 ENTRYPOINT [ "./run_cloud.sh" ]
 # ENV FLASK_ENV=${FLASK_ENV:-development}

@@ -15,11 +15,10 @@ class Config(object):
     TOKEN_EXPIRATION = timedelta(
         hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
-    POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
-    PGPORT = os.environ.get("PGPORT", 5432)
-    POSTGRES_USER = os.environ.get("POSTGRES_USER", "postgres")
-    POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "postgres")
-    POSTGRES_DB = os.environ.get("POSTGRES_DB", "police_data")
+    GRAPH_USER = os.environ.get("GRAPH_USER", "neo4j")
+    GRAPH_NM_URI = os.environ.get("GRAPH_NM_URI", "localhost:7687")
+    GRAPH_PASSWORD = os.environ.get("GRAPH_PASSWORD", "password")
+    GRAPH_DB = os.environ.get("GRAPH_DB", "police_data")
 
     # Flask-Mail SMTP server settings
     """
@@ -59,7 +58,7 @@ class Config(object):
     USER_EMAIL_SENDER_NAME = USER_APP_NAME
     USER_EMAIL_SENDER_EMAIL = "noreply@policedatatrust.com"
 
-    FRONTEND_PORT = os.environ.get("PDT_WEB_PORT", "3000")
+    FRONTEND_PORT = os.environ.get("NPDI_WEB_PORT", "3000")
     FRONTEND_URL = os.environ.get(
         "FRONTEND_URL",
         "http://localhost:" + FRONTEND_PORT
@@ -68,23 +67,16 @@ class Config(object):
     SCRAPER_SQS_QUEUE_NAME = os.environ.get("SCRAPER_SQS_QUEUE_NAME")
 
     @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        return "postgresql://%s:%s@%s:%s/%s" % (
-            self.POSTGRES_USER,
-            self.POSTGRES_PASSWORD,
-            self.POSTGRES_HOST,
-            self.PGPORT,
-            self.POSTGRES_DB,
+    def NEO4J_BOLT_URI(self):
+        return "bolt://{user}:{pw}@{uri}".format(
+            user=self.GRAPH_USER,
+            pw=self.GRAPH_PASSWORD,
+            uri=self.GRAPH_NM_URI
         )
 
     @property
     def MIXPANEL_TOKEN(self):
         return os.environ.get("MIXPANEL_TOKEN", None)
-
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
-
-    FLASK_DB_SEEDS_PATH = "alembic/seeds.py"
 
 
 class DevelopmentConfig(Config):
@@ -109,7 +101,10 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     ENV = "testing"
     TESTING = True
-    POSTGRES_DB = "police_data_test"
+    GRAPH_DB = "police_data_test"
+    GRAPH_NM_URI = os.environ.get("GRAPH_TEST_URI", "test-neo4j:7687")
+    GRAPH_USER = "neo4j"
+    GRAPH_PASSWORD = "test_pwd"
     SECRET_KEY = "my-secret-key"
     JWT_SECRET_KEY = "my-jwt-secret-key"
     MIXPANEL_TOKEN = "mixpanel-token"

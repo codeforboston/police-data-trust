@@ -1,32 +1,24 @@
 from __future__ import annotations
-
+import math
+import json
+import datetime
 import textwrap
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, root_validator
-from pydantic.main import ModelMetaclass
-from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+from functools import wraps
+from enum import Enum
+from collections import OrderedDict
+from typing import Any, Optional, TypeVar, Type, List
+from flask import abort, request, jsonify, current_app
+from pydantic import BaseModel, ValidationError
 from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from neomodel import (
+    RelationshipTo,
+    RelationshipFrom, Relationship,
+    RelationshipManager, RelationshipDefinition,
+    UniqueIdProperty, StructuredRel, StructuredNode
+)
+from neomodel.exceptions import DoesNotExist
 
-from .database import User
-from .database.models.action import Action
-from .database.models.partner import Partner, PartnerMember, MemberRole
-from .database.models.incident import Incident, SourceDetails
-from .database.models.agency import Agency, Jurisdiction
-from .database.models.unit import Unit
-from .database.models.officer import Officer, StateID
-from .database.models.employment import Employment
-from .database.models.accusation import Accusation
-from .database.models.investigation import Investigation
-from .database.models.legal_case import LegalCase
-from .database.models.attachment import Attachment
-from .database.models.perpetrator import Perpetrator
-from .database.models.participant import Participant
-from .database.models.result_of_stop import ResultOfStop
-from .database.models.tag import Tag
-from .database.models.use_of_force import UseOfForce
-from .database.models.victim import Victim
 
 spec = SpecTree(
     "flask",
@@ -35,8 +27,8 @@ spec = SpecTree(
         """
         This API provides federated sharing of police data using a searchable
         index of police records. The index only contains information necessary
-        for search and aggregation. NPDC partners contribute to the index while
-        maintaining ownership over the full record. Partners can use the API to
+        for search and aggregation. NPDC sources contribute to the index while
+        maintaining ownership over the full record. Sources can use the API to
         authorize users to access the full records on their systems. This thus
         facilitates federated access control and data ownership.
         """
@@ -92,424 +84,337 @@ spec = SpecTree(
 )
 
 
-def validate(auth=True, **kwargs):
-    if not auth:
-        # Disable security for the route
-        kwargs["security"] = {}
-
-    return spec.validate(**kwargs)
+T = TypeVar("T", bound="JsonSerializable")
 
 
-_incident_list_attrs = [
-    "victims",
-    "perpetrators",
-    "tags",
-    "participants",
-    "attachments",
-    "investigations",
-    "results_of_stop",
-    "actions",
-    "use_of_force",
-    "legal_case",
-]
-
-_officer_list_attributes = [
-    'employers',
-    'agency_association',
-    'accusations',
-    'perpetrator_association',
-    'accusations',
-    'state_ids',
-]
-
-_agency_list_attributes = [
-    'units',
-    'officer_association',
-    'officers'
-]
-
-_unit_list_attributes = [
-    'agency',
-    'officer_association',
-    'officers'
-]
-
-_partner_list_attrs = ["reported_incidents"]
+class NodeConflictException(Exception):
+    """Exception raised when a node already exists in the database."""
+    pass
 
 
-class _IncidentMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """For now it makes things easier to handle the many-to-one
-        relationships in the schema by allowing for None's, but casting to
-        lists prior to validation. In a sense, there is no distinction between
-        Optional[List[...]] vs merely List[...].
-        """
-        values = {**values}  # convert mappings to base dict type.
-        for i in _incident_list_attrs:
-            if not values.get(i):
-                values[i] = []
-        return values
-
-
-class _OfficerMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        values = {**values}  # convert mappings to base dict type.
-        for i in _officer_list_attributes:
-            if not values.get(i):
-                values[i] = []
-        return values
-
-
-class _PartnerMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """For now it makes things easier to handle the many-to-one
-        relationships in the schema by allowing for None's, but casting to
-        lists prior to validation. In a sense, there is no distinction between
-        Optional[List[...]] vs merely List[...].
-        """
-        values = {**values}  # convert mappings to base dict type.
-        for i in _partner_list_attrs:
-            if not values.get(i):
-                values[i] = []
-        return values
-
-
-class _AgencyMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        values = {**values}  # convert mappings to base dict type.
-        for i in _agency_list_attributes:
-            if not values.get(i):
-                values[i] = []
-        return values
-
-
-class _UnitMixin(BaseModel):
-    @root_validator(pre=True)
-    def none_to_list(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        values = {**values}  # convert mappings to base dict type.
-        for i in _unit_list_attributes:
-            if not values.get(i):
-                values[i] = []
-        return values
-
-
-def schema_create(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
-    return sqlalchemy_to_pydantic(model_type, exclude="id", **kwargs)
-
-
-_BaseCreatePartnerSchema = schema_create(Partner)
-_BaseCreateIncidentSchema = schema_create(Incident)
-_BaseCreateOfficerSchema = schema_create(Officer)
-_BaseCreateAgencySchema = schema_create(Agency)
-_BaseCreateUnitSchema = schema_create(Unit)
-CreateStateIDSchema = schema_create(StateID)
-CreateEmploymentSchema = schema_create(Employment)
-CreateAccusationSchema = schema_create(Accusation)
-CreateVictimSchema = schema_create(Victim)
-CreatePerpetratorSchema = schema_create(Perpetrator)
-CreateSourceDetailsSchema = schema_create(SourceDetails)
-CreateTagSchema = schema_create(Tag)
-CreateParticipantSchema = schema_create(Participant)
-CreateAttachmentSchema = schema_create(Attachment)
-CreateInvestigationSchema = schema_create(Investigation)
-CreateResultOfStopSchema = schema_create(ResultOfStop)
-CreateActionSchema = schema_create(Action)
-CreateUseOfForceSchema = schema_create(UseOfForce)
-CreateLegalCaseSchema = schema_create(LegalCase)
-
-
-class CreateIncidentSchema(_BaseCreateIncidentSchema, _IncidentMixin):
-    victims: Optional[List[CreateVictimSchema]]
-    perpetrators: Optional[List[CreatePerpetratorSchema]]
-    tags: Optional[List[CreateTagSchema]]
-    participants: Optional[List[CreateParticipantSchema]]
-    attachments: Optional[List[CreateAttachmentSchema]]
-    investigations: Optional[List[CreateInvestigationSchema]]
-    results_of_stop: Optional[List[CreateResultOfStopSchema]]
-    actions: Optional[List[CreateActionSchema]]
-    use_of_force: Optional[List[CreateUseOfForceSchema]]
-    legal_case: Optional[List[CreateLegalCaseSchema]]
-
-
-class CreatePartnerSchema(_BaseCreatePartnerSchema, _PartnerMixin):
-    reported_incidents: Optional[List[_BaseCreateIncidentSchema]]
-
-
-class CreatePartnerMemberSchema(BaseModel):
-    user_id: int
-    role: MemberRole
-    is_active: Optional[bool] = True
-
-
-class CreateOfficerSchema(_BaseCreateOfficerSchema, _OfficerMixin):
-    agency_association: Optional[List[CreateEmploymentSchema]]
-    perpetrator_association: Optional[List[CreateAccusationSchema]]
-    state_ids: Optional[List[CreateStateIDSchema]]
-
-
-class CreateAgencySchema(_BaseCreateAgencySchema, _AgencyMixin):
-    name: str
-    jurisdiction: str
-    website_url: Optional[str]
-    hq_address: Optional[str]
-    hq_city: Optional[str]
-    hq_zip: Optional[str]
-
-
-class CreateUnitSchema(_BaseCreateUnitSchema, _UnitMixin):
-    name: str
-    website_url: Optional[str]
-    phone: Optional[str]
-    email: Optional[str]
-    description: Optional[str]
-    address: Optional[str]
-    zip: Optional[str]
-    agency_url: Optional[str]
-    officers_url: Optional[str]
-    commander_id: int
-    agency_id: int
-
-
-AddMemberSchema = sqlalchemy_to_pydantic(
-    PartnerMember, exclude=["id", "date_joined", "partner", "user"]
-)
-
-
-def schema_get(model_type: DeclarativeMeta, **kwargs) -> ModelMetaclass:
-    return sqlalchemy_to_pydantic(model_type, **kwargs)
-
-
-_BasePartnerSchema = schema_get(Partner)
-_BaseIncidentSchema = schema_get(Incident)
-_BaseOfficerSchema = schema_get(Officer)
-_BasePartnerMemberSchema = schema_get(PartnerMember)
-_BaseAgencySchema = schema_get(Agency)
-_BaseUnitSchema = schema_get(Unit)
-VictimSchema = schema_get(Victim)
-PerpetratorSchema = schema_get(Perpetrator)
-TagSchema = schema_get(Tag)
-ParticipantSchema = schema_get(Participant)
-AttachmentSchema = schema_get(Attachment)
-InvestigationSchema = schema_get(Investigation)
-ResultOfStopSchema = schema_get(ResultOfStop)
-ActionSchema = schema_get(Action)
-UseOfForceSchema = schema_get(UseOfForce)
-LegalCaseSchema = schema_get(LegalCase)
-EmploymentSchema = schema_get(Employment)
-UserSchema = schema_get(User, exclude=["password", "id"])
-
-
-class PartnerMemberSchema(_BasePartnerMemberSchema):
-    user: UserSchema
-
-
-class IncidentSchema(_BaseIncidentSchema, _IncidentMixin):
-    victims: List[VictimSchema]
-    perpetrators: List[PerpetratorSchema]
-    tags: List[TagSchema]
-    participants: List[ParticipantSchema]
-    attachments: List[AttachmentSchema]
-    investigations: List[InvestigationSchema]
-    results_of_stop: List[ResultOfStopSchema]
-    actions: List[ActionSchema]
-    use_of_force: List[UseOfForceSchema]
-    legal_case: List[LegalCaseSchema]
-
-
-class OfficerSchema(_BaseOfficerSchema, _OfficerMixin):
-    agency_association: List[CreateEmploymentSchema]
-    perpetrator_association: List[CreateAccusationSchema]
-    state_ids: List[CreateStateIDSchema]
-
-
-class AgencySchema(_BaseAgencySchema, _AgencyMixin):
-    units: List[CreateUnitSchema]
-    officer_association: List[CreateEmploymentSchema]
-
-
-class UnitSchema(_BaseUnitSchema):
-    officer_association: List[CreateEmploymentSchema]
-
-
-class PartnerSchema(_BasePartnerSchema, _PartnerMixin):
-    reported_incidents: List[IncidentSchema]
-
-
-def incident_to_orm(incident: CreateIncidentSchema) -> Incident:
-    """Convert the JSON incident into an ORM instance
-
-    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
-    around. sqlalchemy won't convert nested dictionaries into the corresponding
-    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
-    roll our own recursive conversion if we can get the ORM model class
-    associated with a schema instance.
+# Function that replaces jsonify to properly handle OrderedDicts
+def ordered_jsonify(*args, **kwargs):
     """
+    Return a JSON response with OrderedDict objects properly serialized,
+    preserving their order. Behaves like Flask's jsonify.
 
-    converters = {"perpetrators": Perpetrator, "use_of_force": UseOfForce}
-    orm_attrs = incident.dict()
-    for k, v in orm_attrs.items():
-        is_dict = isinstance(v, dict)
-        is_list = isinstance(v, list)
-        if is_dict:
-            orm_attrs[k] = converters[k](**v)
-        elif is_list and len(v) > 0:
-            orm_attrs[k] = [converters[k](**d) for d in v]
-    return Incident(**orm_attrs)
+    Args:
+        *args: The arguments to pass to the function.
+        **kwargs: The keyword arguments to pass to the function.
 
+    Returns:
+        Response: A Flask Response object with the JSON data.
+    """
+    # Determine the indentation and separators based on the app configuration
+    indent = None
+    separators = (',', ':')
+    if current_app.config.get('JSONIFY_PRETTYPRINT_REGULAR', False):
+        indent = 2
+        separators = (', ', ': ')
 
-def incident_orm_to_json(incident: Incident) -> dict[str, Any]:
-    return IncidentSchema.from_orm(incident).dict(
-        exclude_none=True,
-        # Exclude a bunch of currently-unused empty lists
-        exclude={
-            "actions",
-            "investigations",
-            "legal_case",
-            "participants",
-            "results_of_stop",
-            "tags",
-            "victims",
-        },
+    # Handle the arguments similar to how Flask's jsonify does
+    if args and kwargs:
+        raise TypeError(
+            'ordered_jsonify() behavior undefined when' +
+            'passed both args and kwargs')
+    elif len(args) == 1:
+        data = args[0]
+    else:
+        # For multiple arguments, create a list; for kwargs, create a dict
+        data = args if args else kwargs
+
+    # Serialize the data to JSON, ensuring that OrderedDicts preserve order
+    json_str = json.dumps(
+        data,
+        indent=indent,
+        separators=separators,
+    )
+
+    # Create and return the response
+    return current_app.response_class(
+        json_str,
+        mimetype=current_app.config.get('JSONIFY_MIMETYPE', 'application/json')
     )
 
 
-def officer_to_orm(officer: CreateOfficerSchema) -> Officer:
-    """Convert the JSON officer into an ORM instance
-
-    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
-    around. sqlalchemy won't convert nested dictionaries into the corresponding
-    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
-    roll our own recursive conversion if we can get the ORM model class
-    associated with a schema instance.
+# A decorator to validate request bodies using Pydantic models
+def validate_request(model: BaseModel):
     """
+    Validate the request body using a Pydantic model.
 
-    converters = {
-        "state_ids": StateID,
-        "agency_association": Employment,
+    Args:
+        model (BaseModel): The Pydantic model to use for validation.
+
+    Returns:
+        function: A decorator function that validates the request body.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            try:
+                body = model(**request.json)
+            except ValidationError as e:
+                return jsonify({
+                    "status": "Unprocessable Entity",
+                    "message": "Invalid request body",
+                    "errors": e.errors(),
+                }), 422
+
+            request.validated_body = body
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+def paginate_results(
+        data: list[JsonSerializable],
+        page: int, per_page: int = 20, max_per_page: int = 100):
+    """
+    Paginate a list of data and return a reponse dict. Items in the list must
+    implement the JsonSerializable interface.
+
+    Args:
+        data (list): The list of data to paginate.
+        page (int): The page number to return.
+        per_page (int): The number of items per page.
+        max_per_page (int): The maximum number of items per page.
+
+    Returns:
+        dict: The paginated data.
+            results (list): The list of paginated data.
+            page (int): The current page number.
+            per_page (int): The number of items per page.
+            total (int): The total number of items.
+    """
+    if per_page > max_per_page:
+        per_page = max_per_page
+    expected_total_pages = math.ceil(len(data) / per_page)
+    if not page <= expected_total_pages:
+        abort(404)
+    start = (page - 1) * per_page
+    end = start + per_page
+    results = data[start:end]
+    return {
+        "results": [item.to_dict() for item in results],
+        "page": page,
+        "per_page": per_page,
+        "total": len(data),
+        "pages": expected_total_pages,
     }
-    try:
-        orm_attrs = officer.dict()
-    except Exception:
-        raise Exception(f"Error creating dict from officer: {officer}")
-    try:
-        for k, v in orm_attrs.items():
-            is_dict = isinstance(v, dict)
-            is_list = isinstance(v, list)
-            if is_dict:
-                orm_attrs[k] = converters[k](**v)
-            elif is_list and len(v) > 0:
-                orm_attrs[k] = [converters[k](**d) for d in v]
-    except Exception:
-        raise Exception(f"Error converting {k}, {v}")
-    return Officer(**orm_attrs)
 
 
-def officer_orm_to_json(officer: Officer) -> dict:
-    return OfficerSchema.from_orm(officer).dict(
-        exclude_none=True,
-        # Exclude a bunch of currently-unused empty lists
-    )
+# Update Enums to work well with NeoModel
+class PropertyEnum(Enum):
+    """Use this Enum to convert the options to a dictionary."""
+    @classmethod
+    def choices(cls):
+        return {item.value: item.name for item in cls}
 
 
-def agency_to_orm(agency: CreateAgencySchema) -> Agency:
-    """Convert the JSON agency into an ORM instance"""
-    try:
-        converters = {
-            "jurisdiction": Jurisdiction
+# Makes a StructuredNode convertible to and from JSON and Dicts
+class JsonSerializable:
+    """Mix me into a database model to make it JSON serializable."""
+    __hidden_properties__ = []
+    __property_order__ = []
+
+    def to_dict(self, include_relationships=True,
+                relationship_limit: int = 20, exclude_fields=None):
+        """
+        Convert the node instance into a dictionary, including
+        its relationships.
+
+        Args:
+            include_relationships (bool): Whether to include relationships in
+            the output. exclude_fields (list): List of fields to exclude from
+            serialization.
+
+        Returns:
+            dict: A dictionary representation of the node.
+        """
+        exclude_fields = exclude_fields or []
+        field_order = getattr(self, '__property_order__', None)
+
+        all_excludes = set(
+            getattr(self, '__hidden_properties__', [])).union(
+                set(exclude_fields))
+
+        all_props = self.defined_properties(aliases=False, rels=False)
+        obj_props = OrderedDict()
+
+        if field_order:
+            ordered_props = [prop for prop in field_order if prop in all_props]
+        else:
+            ordered_props = list(all_props.keys())
+
+        # Serialize properties
+        for prop_name in ordered_props:
+            if prop_name not in all_excludes:
+                value = getattr(self, prop_name, None)
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    value = value.isoformat()
+                obj_props[prop_name] = value
+
+        # Optionally add related nodes
+        if include_relationships and isinstance(self, StructuredNode):
+            relationships = {
+                key: value for key, value in self.__class__.__dict__.items()
+                if isinstance(value, RelationshipDefinition)
+            }
+            for key, relationship_def in relationships.items():
+                if key in all_excludes:
+                    continue
+
+                rel_manager = getattr(self, key, None)
+                if isinstance(rel_manager, RelationshipManager):
+                    related_nodes = rel_manager.all()[0:relationship_limit]
+                    # Limit the number of related nodes to serialize
+                    if relationship_def.definition.get('model', None):
+                        # If there is a relationship model, serialize it as well
+                        obj_props[key] = [
+                            {
+                                'node': node.to_dict(
+                                    include_relationships=False),
+                                'relationship': rel_manager.relationship(
+                                    node).to_dict() if isinstance(
+                                        rel_manager.relationship(
+                                            node), StructuredRel) else {}
+                            }
+                            for node in related_nodes
+                        ]
+                    else:
+                        # No specific relationship model, just serialize nodes
+                        obj_props[key] = [
+                            node.to_dict(include_relationships=False)
+                            for node in related_nodes
+                        ]
+
+        return obj_props
+
+    def to_json(self):
+        """Convert the node instance into a JSON string."""
+        return ordered_jsonify(self.to_dict())
+
+    @classmethod
+    def from_dict(cls: Type[T], data: dict, uid=None) -> T:
+        """
+        Creates or updates an instance of the model from a dictionary.
+
+        Args:
+            data (dict): A dictionary containing data for the model instance.
+
+        Returns:
+            Instance of the model.
+        """
+        instance = None
+        all_props = cls.defined_properties()
+        if uid:
+            # Find the instance by its UID
+            instance = cls.nodes.get_or_none(uid=uid)
+        else:
+            # Handle unique properties to find existing instances
+            unique_properties = {
+                name: prop for name, prop in all_props.items()
+                if getattr(
+                    prop, 'unique_index', False) or isinstance(
+                        prop, UniqueIdProperty)
+            }
+            unique_props = {
+                prop_name: data.get(prop_name)
+                for prop_name in unique_properties
+                if prop_name in data and data.get(prop_name) is not None
+            }
+
+            if unique_props:
+                try:
+                    instance = cls.nodes.get(**unique_props)
+                    # If the instance exists, raise an error.
+                    raise NodeConflictException(
+                        "{} {} already exists".format(
+                            cls.__name__,
+                            instance.uid
+                        ) + " with matching unique properties.")
+                except DoesNotExist:
+                    # No existing instance, create a new one
+                    instance = cls(**unique_props)
+            else:
+                instance = cls()
+        # Set properties
+        for key, value in data.items():
+            if key in all_props and value is not None:
+                setattr(instance, key, value)
+
+        # Handle relationships if they exist in the dictionary
+        for key, value in data.items():
+            if key.endswith("_uid"):
+                rel_name = key[:-4]
+
+                # See if a relationship manager exists for the pair
+                if isinstance(
+                    getattr(cls, rel_name, None), RelationshipManager
+                ):
+                    rel_manager = getattr(instance, rel_name)
+
+                    # Fetch the related node by its unique identifier
+                    related_node_class = rel_manager.definition['node_class']
+                    try:
+                        related_instance = related_node_class.nodes.get(
+                            uid=value)
+                        rel_manager.connect(related_instance)
+                    except DoesNotExist:
+                        raise ValueError(
+                            "Related {} with UID {} not found.".format(
+                                related_node_class.__name__,
+                                value
+                            ))
+            # Handle relationship properties
+            if key.endswith("_details"):
+                rel_name = key[:-8]
+                if isinstance(
+                    getattr(cls, rel_name, None), RelationshipManager
+                ):
+                    rel_manager = getattr(instance, rel_name)
+                    if rel_manager.exists():
+                        relationship = rel_manager.relationship(
+                            related_instance)
+                        setattr(relationship, key, value)
+                        relationship.save()
+        # Save the instance
+        instance.save()
+        return instance
+
+    @classmethod
+    def __all_properties_JS__(cls) -> List[str]:
+        """Get a list of all properties defined in the class."""
+        return [prop_name for prop_name in cls.__dict__ if isinstance(
+            cls.__dict__[prop_name], property)]
+
+    @classmethod
+    def __all_relationships_JS__(cls) -> dict:
+        """Get all relationships defined in the class."""
+        return {
+            rel_name: rel_manager
+            for rel_name, rel_manager in cls.__dict__.items()
+            if isinstance(
+                rel_manager,
+                (RelationshipTo, RelationshipFrom, Relationship)
+            )
         }
-        orm_attrs = agency.dict()
-        for k, v in orm_attrs.items():
-            is_dict = isinstance(v, dict)
-            is_list = isinstance(v, list)
-            if is_dict:
-                orm_attrs[k] = converters[k](**v)
-            elif is_list and len(v) > 0:
-                orm_attrs[k] = [converters[k](**d) for d in v]
-        return Agency(**orm_attrs)
-    except Exception as e:
-        raise e
 
+    @classmethod
+    def get(cls: Type[T], uid: Any, abort_if_null: bool = True) -> Optional[T]:
+        """
+        Get a model instance by its UID, returning None if
+        not found (or aborting).
 
-def agency_orm_to_json(agency: Agency) -> dict:
-    return AgencySchema.from_orm(agency).dict(
-        exclude_none=True,
-    )
+        Args:
+            uid: Unique identifier for the node (could be Neo4j internal ID
+             or custom UUID).
+            abort_if_null (bool): Whether to abort if the node is not found.
 
-
-def unit_to_orm(unit: CreateUnitSchema) -> Unit:
-    """Convert the JSON unit into an ORM instance"""
-    orm_attrs = unit.dict()
-    return Unit(**orm_attrs)
-
-
-def unit_orm_to_json(unit: Unit) -> dict:
-    return UnitSchema.from_orm(unit).dict(
-        exclude_none=True,
-    )
-
-
-def employment_to_orm(employment: CreateEmploymentSchema) -> Employment:
-    """Convert the JSON employment into an ORM instance"""
-    orm_attrs = employment.dict()
-    return Employment(**orm_attrs)
-
-
-def employment_orm_to_json(employment: Employment) -> Dict[str, Any]:
-    return EmploymentSchema.from_orm(employment).dict(
-        exclude_none=True,
-    )
-
-
-def partner_to_orm(partner: CreatePartnerSchema) -> Partner:
-    """Convert the JSON partner into an ORM instance
-
-    pydantic-sqlalchemy only handles ORM -> JSON conversion, not the other way
-    around. sqlalchemy won't convert nested dictionaries into the corresponding
-    ORM types, so we need to manually perform the JSON -> ORM conversion. We can
-    roll our own recursive conversion if we can get the ORM model class
-    associated with a schema instance.
-    """
-
-    converters = {"reported_incidents": Incident}
-    orm_attrs = partner.dict()
-    for k, v in orm_attrs.items():
-        is_dict = isinstance(v, dict)
-        is_list = isinstance(v, list)
-        if is_dict:
-            orm_attrs[k] = converters[k](**v)
-        elif is_list and len(v) > 0:
-            orm_attrs[k] = [converters[k](**d) for d in v]
-    return Partner(**orm_attrs)
-
-
-def partner_orm_to_json(partner: Partner) -> dict:
-    return PartnerSchema.from_orm(partner).dict(
-        exclude_none=True,
-    )
-
-
-def partner_member_to_orm(
-    partner_member: CreatePartnerMemberSchema,
-) -> PartnerMember:
-    """Convert the JSON partner member into an ORM instance"""
-    orm_attrs = partner_member.dict()
-    return PartnerMember(**orm_attrs)
-
-
-def partner_member_orm_to_json(partner_member: PartnerMember) -> Dict[str, Any]:
-    return PartnerMemberSchema.from_orm(partner_member).dict(
-        exclude_none=True,
-    )
-
-
-def user_orm_to_json(user: User) -> Dict[str, Any]:
-    return UserSchema.from_orm(user).dict(
-        exclude={
-            "password",
-            "email_confirmed_at",
-        }
-    )
+        Returns:
+            Optional[T]: An instance of the model or None.
+        """
+        obj = cls.nodes.get_or_none(uid=uid)
+        if obj is None and abort_if_null:
+            abort(404)
+        return obj  # type: ignore

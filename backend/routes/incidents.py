@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from backend.auth.jwt import min_role_required, contributor_has_partner
+from backend.auth.jwt import min_role_required, contributor_has_source
 from backend.mixpanel.mix import track_to_mp
 from mixpanel import MixpanelException
 from flask import Blueprint, abort, current_app, request
@@ -14,11 +14,11 @@ from typing import Any
 from ..database import (
     Incident,
     db,
-    Partner,
+    Source,
     PrivacyStatus,
     UserRole,
     MemberRole,
-    PartnerMember,
+    SourceMember,
 )
 from ..schemas import (
     CreateIncidentSchema,
@@ -43,7 +43,7 @@ def get_incident(incident_id: int):
 @bp.route("/create", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
-@contributor_has_partner()
+@contributor_has_source()
 @validate(json=CreateIncidentSchema)
 def create_incident():
     """Create a single incident.
@@ -73,7 +73,7 @@ class SearchIncidentsSchema(BaseModel):
 
     class Config:
         extra = "forbid"
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "description": "Test description",
                 "dateEnd": "2019-12-01",
@@ -172,9 +172,9 @@ def get_incidents():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 20, type=int)
 
-    partner: Partner | None = None
+    partner: Source | None = None
     if partner_id:
-        partner = Partner.get(partner_id, False)
+        partner = Source.get(partner_id, False)
         if not partner:
             return {"message": "Partner not found"}, 404
 
@@ -227,9 +227,9 @@ def delete_incident(incident_id: int):
     user_id = jwt_decoded["sub"]
 
     # Check permissions first for security
-    permission = PartnerMember.query.filter(  # type: ignore
-        PartnerMember.user_id == user_id,
-        PartnerMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
+    permission = SourceMember.query.filter(  # type: ignore
+        SourceMember.user_id == user_id,
+        SourceMember.role.in_((MemberRole.PUBLISHER, MemberRole.ADMIN)),
     ).first()
     if not permission:
         abort(403)

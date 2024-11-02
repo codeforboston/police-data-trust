@@ -5,18 +5,18 @@ from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
 from backend.config import get_config_from_env
-from backend.database import db
-from backend.database import db_cli
-from backend.auth import user_manager, jwt, refresh_token
+from backend.auth import jwt, refresh_token
 from backend.schemas import spec
-from backend.routes.partners import bp as partners_bp
-from backend.routes.incidents import bp as incidents_bp
+from backend.routes.sources import bp as sources_bp
+# from backend.routes.incidents import bp as incidents_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
+from neo4j import GraphDatabase
+from neomodel import config as neo_config
 
 
 def create_app(config: Optional[str] = None):
@@ -43,9 +43,36 @@ def create_app(config: Optional[str] = None):
 
 
 def register_extensions(app: Flask):
-    db.init_app(app)
+    # Neo4j setup
+    # Driver setup
+    db_driver = GraphDatabase.driver(
+        f"bolt://{app.config["GRAPH_NM_URI"]}",
+        auth=(
+            app.config["GRAPH_USER"],
+            app.config["GRAPH_PASSWORD"]
+        ))
+
+    try:
+        db_driver.verify_connectivity()
+        app.config['DB_DRIVER'] = db_driver
+        neo_config.DRIVER = app.config['DB_DRIVER']
+        print("Connected to Neo4j")
+    except Exception as e:
+        print(f"Error connecting to Database: {e}")
+        raise e
+
+    # Neomodel setup
+    neo_url = "bolt://{user}:{pw}@{uri}".format(
+        user=app.config["GRAPH_USER"],
+        pw=app.config["GRAPH_PASSWORD"],
+        uri=app.config["GRAPH_NM_URI"]
+    )
+    neo_config.DATABASE_URL = neo_url
+
     spec.register(app)
-    user_manager.init_app(app)
+    # login_manager.init_app(app)
+    # TODO: Add the correct route info
+    # login_manager.login_view = 'auth.login'
     jwt.init_app(app)
     Mail(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -54,8 +81,11 @@ def register_extensions(app: Flask):
 def register_commands(app: Flask):
     """Register Click commands to the app instance."""
 
-    app.cli.add_command(db_cli)
+    # SQLAlchemy commands
+    # app.cli.add_command(db_cli)
 
+    # Neomodel commands
+    @app.cli.command("neoload")
     @app.cli.command(
         "seed",
         context_settings=dict(
@@ -68,9 +98,9 @@ def register_commands(app: Flask):
     @dev_only
     def seed(ctx: click.Context):
         """Seed the database."""
-        from alembic.dev_seeds import create_seeds
-
-        create_seeds()
+        # from alembic.dev_seeds import create_seeds
+        # create_seeds()
+        pass
 
     @app.cli.command(
         "pip-compile",
@@ -134,8 +164,8 @@ def register_commands(app: Flask):
 
 
 def register_routes(app: Flask):
-    app.register_blueprint(partners_bp)
-    app.register_blueprint(incidents_bp)
+    app.register_blueprint(sources_bp)
+    # app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(healthcheck_bp)
     app.register_blueprint(officers_bp)

@@ -35,11 +35,11 @@ export default function ViewerRegistration() {
     setSubmitError(null)
     try {
       await register({
-        firstName: formValues[FIRST_NAME],
-        lastName: formValues[LAST_NAME],
+        firstname: formValues[FIRST_NAME],
+        lastname: formValues[LAST_NAME],
         email: formValues[EMAIL_ADDRESS],
         password: formValues[CREATE_PASSWORD],
-        phoneNumber: formValues[PHONE_NUMBER]
+        phone_number: formValues[PHONE_NUMBER]
       })
     } catch (e) {
       if (existingAccount(e)) {
@@ -54,8 +54,8 @@ export default function ViewerRegistration() {
 
   function existingAccount(e?: AxiosError) {
     return (
-      e.response?.status === 400 &&
-      e.response?.data?.message?.match(/email matches existing account/i)
+      e.response?.status === 409 &&
+      e.response?.data?.message?.match(/Error. Email matches existing account./i)
     )
   }
 

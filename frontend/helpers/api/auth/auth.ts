@@ -53,9 +53,9 @@ export function whoami({ accessToken }: WhoamiRequest): Promise<User> {
     active,
     email,
     emailConfirmedAt: email_confirmed_at,
-    firstName: first_name,
-    lastName: last_name,
-    phoneNumber: phone_number,
+    firstname: first_name,
+    lastname: last_name,
+    phone_number: phone_number,
     role: role
   }))
 }

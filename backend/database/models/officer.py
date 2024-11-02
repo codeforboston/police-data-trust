@@ -1,97 +1,61 @@
-import enum
+from backend.schemas import JsonSerializable
+from backend.database.models.types.enums import State, Ethnicity, Gender
+from backend.database.models.source import Citation
 
-from ..core import db, CrudMixin
-from sqlalchemy.ext.associationproxy import association_proxy
-
-
-class State(str, enum.Enum):
-    AL = "AL"
-    AK = "AK"
-    AZ = "AZ"
-    AR = "AR"
-    CA = "CA"
-    CO = "CO"
-    CT = "CT"
-    DE = "DE"
-    FL = "FL"
-    GA = "GA"
-    HI = "HI"
-    ID = "ID"
-    IL = "IL"
-    IN = "IN"
-    IA = "IA"
-    KS = "KS"
-    KY = "KY"
-    LA = "LA"
-    ME = "ME"
-    MD = "MD"
-    MA = "MA"
-    MI = "MI"
-    MN = "MN"
-    MS = "MS"
-    MO = "MO"
-    MT = "MT"
-    NE = "NE"
-    NV = "NV"
-    NH = "NH"
-    NJ = "NJ"
-    NM = "NM"
-    NY = "NY"
-    NC = "NC"
-    ND = "ND"
-    OH = "OH"
-    OK = "OK"
-    OR = "OR"
-    PA = "PA"
-    RI = "RI"
-    SC = "SC"
-    SD = "SD"
-    TN = "TN"
-    TX = "TX"
-    UT = "UT"
-    VT = "VT"
-    VA = "VA"
-    WA = "WA"
-    WV = "WV"
-    WI = "WI"
-    WY = "WY"
+from neomodel import (
+    StructuredNode,
+    RelationshipTo, RelationshipFrom, Relationship,
+    StringProperty, DateProperty,
+    UniqueIdProperty, One
+)
 
 
-class StateID(db.Model):
+class StateID(StructuredNode, JsonSerializable):
     """
     Represents a Statewide ID that follows an offcier even as they move between
     law enforcement agencies. For example, in New York, this would be
     the Tax ID Number.
     """
-    id = db.Column(db.Integer, primary_key=True)
-    officer_id = db.Column(
-        db.Integer, db.ForeignKey("officer.id"))
-    id_name = db.Column(db.Text)  # e.g. "Tax ID Number"
-    state = db.Column(db.Enum(State))  # e.g. "NY"
-    value = db.Column(db.Text)  # e.g. "958938"
+    id_name = StringProperty()  # e.g. "Tax ID Number"
+    state = StringProperty(choices=State.choices())  # e.g. "NY"
+    value = StringProperty()  # e.g. "958938"
+    officer = RelationshipFrom('Officer', "HAS_STATE_ID", cardinality=One)
 
     def __repr__(self):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(db.Model, CrudMixin):
-    id = db.Column(db.Integer, primary_key=True)  # officer id
-    first_name = db.Column(db.Text)
-    middle_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
-    race = db.Column(db.Text)
-    ethnicity = db.Column(db.Text)
-    gender = db.Column(db.Text)
-    date_of_birth = db.Column(db.Date)
-    state_ids = db.relationship("StateID", backref="officer")
+class Officer(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "first_name", "middle_name",
+        "last_name", "suffix", "ethnicity",
+        "gender", "date_of_birth"
+    ]
+    __hidden_properties__ = ["citations"]
 
-    agency_association = db.relationship(
-        "Employment", back_populates="officer")
-    employers = association_proxy("agency_association", "agency")
+    uid = UniqueIdProperty()
+    first_name = StringProperty()
+    middle_name = StringProperty()
+    last_name = StringProperty()
+    suffix = StringProperty()
+    ethnicity = StringProperty(choices=Ethnicity.choices())
+    gender = StringProperty(choices=Gender.choices())
+    date_of_birth = DateProperty()
 
-    perpetrator_association = db.relationship(
-        "Accusation", back_populates="officer")
-    accusations = association_proxy("perpetrator_association", "perpetrator")
+    # Relationships
+    state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
+    units = Relationship(
+        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
+    litigation = Relationship(
+        'backend.database.models.litigation.Litigation', "NAMED_IN")
+    allegations = Relationship(
+        'backend.database.models.complaint.Allegation', "ACCUSED_OF")
+    investigations = Relationship(
+        'backend.database.models.complaint.Investigation', "LEAD_BY")
+    commands = Relationship(
+        'backend.database.models.agency.Unit', "COMMANDS")
+    citations = RelationshipTo(
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Officer {self.id}>"

@@ -1,60 +1,58 @@
-import psycopg.errors
-import psycopg2.errors
 import pytest
+from neo4j import GraphDatabase
+from neomodel import db
 from backend.api import create_app
-from backend.auth import user_manager
 from backend.config import TestingConfig
-from backend.database import User, UserRole, db
+from backend.database import User, UserRole
 from backend.database import (
-    Partner,
-    PartnerMember,
+    Source,
     MemberRole,
-    Incident,
-    PrivacyStatus,
+    Jurisdiction,
     Agency,
     Officer,
 )
 from datetime import datetime
-from pytest_postgresql.janitor import DatabaseJanitor
-from sqlalchemy import insert
-from typing import Any
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
-p_admin_email = "admin@partner.com"
+member_email = "member@email.com"
 contributor_email = "contributor@email.com"
+s_admin_email = "admin@source.com"
 example_password = "my_password"
 
 
 @pytest.fixture(scope="session")
-def database():
+def test_db_driver():
     cfg = TestingConfig()
-    janitor = DatabaseJanitor(
-        user=cfg.POSTGRES_USER,
-        host=cfg.POSTGRES_HOST,
-        port=cfg.PGPORT,
-        dbname=cfg.POSTGRES_DB,
-        version=16.3,
-        password=cfg.POSTGRES_PASSWORD,
-    )
 
-    try:
-        janitor.init()
-    except (psycopg2.errors.lookup("42P04"), psycopg.errors.DuplicateDatabase):
-        pass
+    uri = f"bolt://{cfg.GRAPH_NM_URI}"
+    print(f"Driver URI: {uri}")
+    test_driver = GraphDatabase.driver(
+        uri,
+        auth=(
+            cfg.GRAPH_USER,
+            cfg.GRAPH_PASSWORD
+        ))
+    print(test_driver.get_server_info().address)
+    test_driver.verify_connectivity()
+    yield test_driver
+    test_driver.close()
 
-    yield
 
-    janitor.drop()
+@pytest.fixture
+def db_session(test_db_driver):
+    with test_db_driver.session() as session:
+        yield session
 
 
 @pytest.fixture(scope="session")
-def app(database):
+def app():
     app = create_app(config="testing")
     # The app should be ready! Provide the app instance here.
     # Use the app context to make testing easier.
     # The main time where providing app context can cause false positives is
     # when testing CLI commands that don't pass the app context.
+    print("App created.")
     with app.app_context():
         yield app
 
@@ -64,286 +62,212 @@ def client(app):
     return app.test_client()
 
 
+# This function should be called for every new test node created
+def add_test_property(node):
+    query = "MATCH (n) WHERE elementId(n) = $node_id SET n.is_test_data = true"
+    params = {'node_id': node.element_id}
+    db.cypher_query(query, params)
+
+
+# This function must be called for every new test relationship created
+def add_test_property_to_rel(start_node, rel_type, end_node):
+    query = f"""
+    MATCH (a)-[r:{rel_type}]-(b)
+    WHERE elementId(a) = $start_id AND elementId(b) = $end_id
+    SET r.test_data = true
+    """
+    params = {
+        'start_id': start_node.element_id,
+        'end_id': end_node.element_id
+    }
+    db.cypher_query(query, params)
+
+
+def is_test_database():
+    query = "MATCH (n:TestMarker {name: 'TEST_DATABASE'}) RETURN n"
+    results, _ = db.cypher_query(query)
+    return bool(results)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_test_data():
+    yield
+    # Check if this is the test database before performing any deletion
+    if is_test_database():
+        # Delete all nodes except the TestMarker node
+        db.cypher_query(
+            'MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
+        db.cypher_query('MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n')
+
+
 @pytest.fixture
-def example_user(db_session):
+def example_user():
     user = User(
         email=example_email,
-        password=user_manager.hash_password(example_password),
-        role=UserRole.PUBLIC,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.PUBLIC.value,
         first_name="first",
         last_name="last",
         phone_number="(012) 345-6789",
-    )
-    db_session.add(user)
-    db_session.commit()
-    return user
+    ).save()
+    add_test_property(user)
+    yield user
 
 
 @pytest.fixture
-def example_partner(db_session: Any):
-    partner = Partner(
-        name="Example Partner",
+def example_source(scope="session"):
+    source = Source(
+        name="Example Source",
         url="www.example.com",
-        contact_email=contributor_email,
-        member_association=[],
-    )
-    db_session.add(partner)
-    db_session.commit()
-    return partner
+        contact_email=contributor_email
+    ).save()
+    add_test_property(source)
+    yield source
 
 
 @pytest.fixture
-def example_agency(db_session: Any):
+def example_agency():
     agency = Agency(
         name="Example Agency",
         website_url="www.example.com",
         hq_city="New York",
         hq_address="123 Main St",
         hq_zip="10001",
-        jurisdiction="MUNICIPAL"
-    )
-    db_session.add(agency)
-    db_session.commit()
-    return agency
+        jurisdiction=Jurisdiction.MUNICIPAL.value
+    ).save()
+    add_test_property(agency)
+    yield agency
 
 
 @pytest.fixture
-def example_officer(db_session: Any):
+def example_officer():
     officer = Officer(
         first_name="John",
         last_name="Doe",
-    )
-    db_session.add(officer)
-    db_session.commit()
-    return officer
+    ).save()
+    add_test_property(officer)
+    yield officer
 
 
 @pytest.fixture  # type: ignore
-def example_partner_member(db_session: Any, example_user: User):
-    partner = Partner(
-        name="Example Partner Member",
-        url="www.example.com",
-        contact_email="example_test@example.ca",
-        member_association=[
-            PartnerMember(
-                user_id=example_user.id,
-                role=MemberRole.MEMBER,
-                date_joined=datetime.now(),
-                is_active=True,
-            )
-        ],
-    )
-    db_session.add(partner)
-    db_session.commit()
-    return partner
-
-
-@pytest.fixture  # type: ignore
-def example_partner_publisher(db_session: Any, example_user: User):
-    partner = Partner(
-        name="Example Partner Member",
-        url="www.example.com",
-        contact_email="example_test@example.ca",
-        member_association=[
-            PartnerMember(
-                user_id=example_user.id,
-                role=MemberRole.PUBLISHER,
-                date_joined=datetime.now(),
-                is_active=True,
-            )
-        ],
-    )
-    db_session.add(partner)
-    db_session.commit()
-    return partner
-
-
-@pytest.fixture  # type: ignore
-def example_incidents(
-    db_session: Any,
-    example_partner: Partner,
-    example_partner_publisher: Partner,
-) :
-    incidents = [
-        Incident(
-            source_id=example_partner.id,
-            privacy_filter=PrivacyStatus.PUBLIC,
-            date_record_created=datetime.now(),
-            time_of_incident=datetime.now(),
-            time_confidence=90,
-            complaint_date=datetime.now().date(),
-            closed_date=datetime.now().date(),
-            location="Location 1",
-            longitude=12.34,
-            latitude=56.78,
-            description="Description 1",
-            stop_type="Stop Type 1",
-            call_type="Call Type 1",
-            has_attachments=True,
-            from_report=True,
-            was_victim_arrested=False,
-            criminal_case_brought=True,
-        ),
-        Incident(
-            source_id=example_partner.id,
-            privacy_filter=PrivacyStatus.PUBLIC,
-            date_record_created=datetime.now(),
-            time_of_incident=datetime.now(),
-            time_confidence=90,
-            complaint_date=datetime.now().date(),
-            closed_date=datetime.now().date(),
-            location="Location 1",
-            longitude=12.34,
-            latitude=56.78,
-            description="Description 1",
-            stop_type="Stop Type 1",
-            call_type="Call Type 1",
-            has_attachments=True,
-            from_report=True,
-            was_victim_arrested=False,
-            criminal_case_brought=True,
-        ),
-        Incident(
-            source_id=example_partner_publisher.id,
-            privacy_filter=PrivacyStatus.PUBLIC,
-            date_record_created=datetime.now(),
-            time_of_incident=datetime.now(),
-            time_confidence=90,
-            complaint_date=datetime.now().date(),
-            closed_date=datetime.now().date(),
-            location="Location 1",
-            longitude=12.34,
-            latitude=56.78,
-            description="Description 1",
-            stop_type="Stop Type 1",
-            call_type="Call Type 1",
-            has_attachments=True,
-            from_report=True,
-            was_victim_arrested=False,
-            criminal_case_brought=True,
-        ),
-    ]
-    for incident in incidents:
-        db_session.add(incident)
-    db_session.commit()
-
-    return incidents
-
-
-@pytest.fixture  # type: ignore
-def example_incidents_private_public(
-    db_session: Any, example_partner_member: Partner
-):
-    incidents = [
-        Incident(
-            source_id=example_partner_member.id,
-            privacy_filter=PrivacyStatus.PUBLIC,
-            date_record_created=datetime.now(),
-            time_of_incident=datetime.now(),
-            time_confidence=90,
-            complaint_date=datetime.now().date(),
-            closed_date=datetime.now().date(),
-            location="Location 1",
-            longitude=12.34,
-            latitude=56.78,
-            description="Description 1",
-            stop_type="Stop Type 1",
-            call_type="Call Type 1",
-            has_attachments=True,
-            from_report=True,
-            was_victim_arrested=False,
-            criminal_case_brought=True,
-        ),
-        Incident(
-            source_id=example_partner_member.id,
-            privacy_filter=PrivacyStatus.PRIVATE,
-            date_record_created=datetime.now(),
-            time_of_incident=datetime.now(),
-            time_confidence=90,
-            complaint_date=datetime.now().date(),
-            closed_date=datetime.now().date(),
-            location="Location 1",
-            longitude=12.34,
-            latitude=56.78,
-            description="Description 1",
-            stop_type="Stop Type 1",
-            call_type="Call Type 1",
-            has_attachments=True,
-            from_report=True,
-            was_victim_arrested=False,
-            criminal_case_brought=True,
-        ),
-    ]
-    for incident in incidents:
-        db_session.add(incident)
-    db_session.commit()
-
-    return incidents
-
-
-@pytest.fixture
-def admin_user(db_session):
-    user = User(
-        email=admin_email,
-        password=user_manager.hash_password(example_password),
-        role=UserRole.ADMIN,
-        first_name="admin",
+def example_source_member(example_source):
+    member = User(
+        email=member_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.PUBLIC.value,
+        first_name="member",
         last_name="last",
+        phone_number="(012) 345-6789",
+    ).save()
+    add_test_property(member)
+    # Create source
+    source = Source(
+        name="Example Source Member",
+        url="www.example.com",
+        contact_email="example_test@example.ca"
+    ).save()
+    add_test_property(source)
+
+    # Create relationship
+    source.members.conect(
+        member,
+        {
+            'role': MemberRole.MEMBER.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
     )
-    db_session.add(user)
-    db_session.commit()
-
-    return user
+    add_test_property_to_rel(source, 'HAS_MEMBER', member)
+    yield member
 
 
-@pytest.fixture
-def partner_admin(db_session, example_partner):
-    user = User(
-        email=p_admin_email,
-        password=user_manager.hash_password(example_password),
-        role=UserRole.CONTRIBUTOR,  # This is not a system admin,
-        # so we can't use ADMIN here
+@pytest.fixture  # type: ignore
+def example_contributor():
+    contributor = User(
+        email=contributor_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
         last_name="last",
         phone_number="(012) 345-6789",
-    )
-    db_session.add(user)
-    db_session.commit()
-    insert_statement = insert(PartnerMember).values(
-        partner_id=example_partner.id,
-        user_id=user.id,
-        role=MemberRole.ADMIN,
-        date_joined=datetime.now(),
-        is_active=True,
-    )
-    db_session.execute(insert_statement)
-    db_session.commit()
+    ).save()
+    add_test_property(contributor)
 
-    return user
+    source = Source(
+        name="Example Contributor",
+        url="www.example.com",
+        contact_email="example_test@example.ca"
+    ).save()
+    add_test_property(source)
+
+    # Create relationship
+    source.members.connect(
+        contributor,
+        {
+            'role': MemberRole.PUBLISHER.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
+    ).save()
+    add_test_property_to_rel(source, 'HAS_MEMBER', contributor)
+    return contributor
+
+
+@pytest.fixture  # type: ignore
+def example_complaints(
+    example_source: Source,
+    example_contributor: User,
+) :
+    complaints = []
+
+    yield complaints
+
+
+@pytest.fixture  # type: ignore
+def example_complaints_private_public(
+    example_source: Source
+):
+    complaints = [
+    ]
+
+    return complaints
 
 
 @pytest.fixture
-def partner_publisher(db_session: Any, example_partner: PartnerMember):
+def admin_user():
     user = User(
-        email=contributor_email,
-        password=user_manager.hash_password(example_password),
-        role=UserRole.CONTRIBUTOR,
+        email=admin_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.ADMIN.value,
+        first_name="admin",
+        last_name="last",
+    ).save()
+    add_test_property(user)
+    yield user
+
+
+@pytest.fixture
+def source_admin(example_source):
+    user = User(
+        email=s_admin_email,
+        password_hash=User.hash_password(example_password),
+        role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
         last_name="last",
-    )
-    db_session.add(user)
-    db_session.commit()
-    insert_statement = insert(PartnerMember).values(
-        partner_id=example_partner.id,
-        user_id=user.id,
-        role=MemberRole.PUBLISHER,
-        date_joined=datetime.now(),
-        is_active=True,
-    )
-    db_session.execute(insert_statement)
-    db_session.commit()
+        phone_number="(012) 345-6789",
+    ).save()
+    add_test_property(user)
 
-    return user
+    example_source.members.connect(
+        user,
+        {
+            'role': MemberRole.ADMIN.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
+    )
+    add_test_property_to_rel(example_source, 'HAS_MEMBER', user)
+    yield user
 
 
 @pytest.fixture
@@ -360,11 +284,11 @@ def access_token(client, example_user):
 
 
 @pytest.fixture
-def p_admin_access_token(client, partner_admin):
+def p_admin_access_token(client, source_admin):
     res = client.post(
         "api/v1/auth/login",
         json={
-            "email": p_admin_email,
+            "email": s_admin_email,
             "password": example_password,
         },
     )
@@ -373,7 +297,7 @@ def p_admin_access_token(client, partner_admin):
 
 
 @pytest.fixture
-def contributor_access_token(client, partner_publisher):
+def contributor_access_token(client, example_contributor):
     res = client.post(
         "api/v1/auth/login",
         json={
@@ -388,16 +312,3 @@ def contributor_access_token(client, partner_publisher):
 @pytest.fixture
 def cli_runner(app):
     return app.test_cli_runner()
-
-
-@pytest.fixture(scope="session")
-def _db(app):
-    """See this:
-
-    https://github.com/jeancochrane/pytest-flask-sqlalchemy
-
-    Basically, this '_db' fixture is required for the above extension to work.
-    We use this extension to allow for easy testing of the database.
-    """
-    db.create_all()
-    yield db
