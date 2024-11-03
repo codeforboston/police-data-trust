@@ -8,12 +8,12 @@ import os
 from typing import Optional
 
 import click
-import pandas as pd
 from flask import current_app
 from flask.cli import AppGroup, with_appcontext
 from werkzeug.utils import secure_filename
 from neomodel import install_all_labels
 from neo4j import Driver
+from typing import List, Dict, Any
 
 from ..utils import dev_only
 
@@ -23,10 +23,10 @@ QUERIES_DIR = os.path.abspath(
 )
 
 
-def execute_query(filename: str) -> Optional[pd.DataFrame]:
+def execute_query(filename: str) -> Optional[List[Dict[str, Any]]]:
     """Run a Cypher query from a file using the provided Neo4j connection.
 
-    It returns a Pandas DataFrame if the query yields results; otherwise,
+    It returns a list of dictionaries if the query yields results; otherwise,
     it returns None.
     """
     # Read the query from the file
@@ -45,9 +45,7 @@ def execute_query(filename: str) -> Optional[pd.DataFrame]:
         if records:
             # Convert Neo4j records to a list of dictionaries
             data = [record.data() for record in records]
-            # Create a DataFrame
-            df = pd.DataFrame(data)
-            return df
+            return data
         else:
             return None
 

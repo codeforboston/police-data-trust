@@ -1,6 +1,18 @@
 FROM python:3-slim-bookworm AS base
 
-RUN apt-get update && apt-get install curl -y && apt-get install g++ libpq-dev gcc python3-dev -y
+# Install dependencies
+RUN apt-get update -y && apt-get install -y \
+    curl \
+    g++ \
+    libpq-dev \
+    gcc \
+    python3-dev \
+    libffi-dev
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.12.1/wait /wait
 RUN chmod +x /wait
