@@ -1,22 +1,49 @@
-# docker build command:
-# docker build -t police-data-trust-backend-dev -f backend/Dockerfile.cloud .
-FROM python:3-slim-bookworm
+# Stage 1: Build Stage
+FROM python:3-slim-bookworm AS build
 
-# required for pandas
-RUN apt-get update -y && apt-get install gcc g++ python3-dev wget -y
+# Install required packages
+RUN apt-get update -y && apt-get install -y \
+    gcc \
+    g++ \
+    python3-dev \
+    wget \
+    curl \
+    libffi-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && . "$HOME/.cargo/env"
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /app/
+
+COPY requirements/prod.txt .
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN arch=$(arch) && \
+    file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
+    url="https://pypi.debian.net/pandas/${file}" && \
+    wget ${url} && \
+    sed -i "s/pandas==2.2.2/${file}/" prod.txt
+
+RUN pip install --no-cache-dir --user -r prod.txt
+
+COPY . .
+
+# Stage 2: Production Image
+FROM python:3-slim-bookworm
 
 WORKDIR /app/
 
 ARG NPDI_API_PORT=5000
 
-COPY requirements/prod.txt .
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN arch=$(arch) && \
-	file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
-	url="https://pypi.debian.net/pandas/${file}" && \
-	wget ${url} && \
-	sed -i "s/pandas==2.2.2/${file}/" prod.txt
-RUN pip install --no-cache-dir -r prod.txt
+# Copy installed packages from the build stage
+COPY --from=build /root/.local /root/.local
+
+# Update PATH to include pip-installed packages
+ENV PATH=/root/.local/bin:${PATH}
 
 COPY . .
 
@@ -24,5 +51,3 @@ EXPOSE $NPDI_API_PORT
 ENV NPDI_API_PORT=$NPDI_API_PORT
 
 ENTRYPOINT [ "./run_cloud.sh" ]
-# ENV FLASK_ENV=${FLASK_ENV:-development}
-# CMD flask run --host=0.0.0.0
