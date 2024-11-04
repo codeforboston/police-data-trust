@@ -5,9 +5,9 @@ celery
 flake8
 flask
 gunicorn
-pandas>=2.2.2
 pip-tools
 pydantic==2.9.2
+typing-extensions>=4.12.2 # Required for pydantic
 pytest
 pytest-env
 pytest-cov
@@ -32,6 +32,5 @@ jupyter
 mixpanel
 ua-parser
 ujson
-testcontainers
 neo4j
 neomodel==5.3.3
