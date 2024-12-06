@@ -1,0 +1,208 @@
+openapi: "3.0.3"
+info:
+  title: "Authentication"
+  description: "API for managing user authentication."
+  version: "0.1.0"
+servers:
+  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Authentication"
+    description: "API for managing user authentication."
+paths:
+  /register:
+    post:
+      summary: "Register User"
+      operationId: "register"
+      description: "Create a new NPDI User. This user account will be used to authenticate with the API."
+      tags: 
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/RegisterUser"
+      responses:
+        "201":
+          description: "Returns the registered user's access token."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccess"
+        "400":
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /login:
+    post:
+      summary: "Login"
+      operationId: "login"
+      description: "Log in to an existing NPDI User account."
+      tags:
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/LoginUser"
+      responses:
+        "200":
+          description: "Returns the loged in user's access token."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccess"
+        "400":
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /refresh:
+    post:
+      summary: "Refresh Token"
+      operationId: "refreshToken"
+      description: "Refreshes the currently-authenticated user's access token."
+      tags: 
+        -  Authentication
+      responses:
+        "200":
+          description: "Returns the created agency object."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccess"
+        "400":
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /logout:
+    post:
+      summary: "Logout"
+      operationId: "logout"
+      description: "Unsets the currently-authenticated user's access token."
+      tags: 
+        -  Authentication
+      responses:
+        "204":
+          description: "No Content."
+  /forgotPassword:
+    post:
+      summary: "Forgot Password"
+      operationId: "forgotPassword"
+      description: "Initiates the password reset process for a user by sending an email with a reset link."
+      tags: 
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/ForgotPassword"
+      responses:
+        "204":
+          description: "No Content."
+  /resetPassword:
+    post:
+      summary: "Reset Password"
+      operationId: "resetPassword"
+      description: "Resets the password for a user."
+      tags: 
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/ResetPassword"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PasswordResetSuccess"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterUser:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "The primary email address for the user account."
+        password:
+          type: "string"
+          description: "The password for the user."
+        firstname:
+          type: "string"
+          description: "The user's first name."
+        lastname:
+          type: "string"
+          description: "The user's last name."
+        phone_number:
+          type: "string"
+          description: "The phone number of the user."
+      required:
+        -  email
+        -  password
+        -  firstname
+        -  lastname
+    LoginUser:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "The primary email address for the user account."
+        password:
+          type: "string"
+          description: "The password for the user account."
+      required: 
+        -  email
+        -  password
+    ResetPassword:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "The primary email address for the user account."
+      required: 
+        -  email
+    ForgotPassword:
+      type: "object"
+      properties:
+        password:
+          type: "string"
+          description: "The password for the user account."
+      required: 
+        -  password
+    AuthSuccess:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          description: "Description of the authentication action."
+        access_token:
+          type: "string"
+          description: "The user's access token. This token should be included in the Authorization header of all furture requests."
+        expires_in:
+          type: "integer"
+          description: "The number of seconds until the access token expires."
+      required: 
+        -  message
+        -  access_token
+        -  expires_in
+    PasswordResetSuccess:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          description: "Description of the reset action."
+      required: 
+        -  message
