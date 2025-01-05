@@ -4,6 +4,7 @@ import click
 from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
+from argon2 import PasswordHasher
 from backend.config import get_config_from_env
 from backend.auth import jwt, refresh_token
 from backend.schemas import spec
@@ -46,7 +47,7 @@ def register_extensions(app: Flask):
     # Neo4j setup
     # Driver setup
     db_driver = GraphDatabase.driver(
-        f"bolt://{app.config["GRAPH_NM_URI"]}",
+        f'bolt://{app.config["GRAPH_NM_URI"]}',
         auth=(
             app.config["GRAPH_USER"],
             app.config["GRAPH_PASSWORD"]
@@ -70,10 +71,12 @@ def register_extensions(app: Flask):
     neo_config.DATABASE_URL = neo_url
 
     spec.register(app)
-    # login_manager.init_app(app)
-    # TODO: Add the correct route info
-    # login_manager.login_view = 'auth.login'
+
+    # Authentication
+    ph = PasswordHasher()
+    app.config['PASSWORD_HASHER'] = ph
     jwt.init_app(app)
+
     Mail(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 

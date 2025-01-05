@@ -1,6 +1,7 @@
 """Define the SQL classes for Users."""
 
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
+from argon2 import PasswordHasher, exceptions as argon2_exceptions
 from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     Relationship, StructuredNode,
@@ -68,6 +69,14 @@ class User(StructuredNode, JsonSerializable):
         'backend.database.models.source.StagedInvitation',
         "EXTENDED")
 
+    def _get_password_hasher(self):
+        """
+        Get the password hasher.
+        Returns:
+            PasswordHasher: The password hasher.
+        """
+        return current_app.config['PASSWORD_HASHER']
+
     def verify_password(self, pw: str) -> bool:
         """
         Verify the user's password using bcrypt.
@@ -77,8 +86,14 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             bool: True if the password is correct, False otherwise.
         """
-        # return bcrypt.checkpw(pw.encode("utf8"), self.password.encode("utf8"))
-        return check_password_hash(self.password_hash, pw)
+        try:
+            return self._get_password_hasher().verify(self.password_hash, pw)
+        except argon2_exceptions.VerifyMismatchError:
+            return False
+        except argon2_exceptions.VerificationError:
+            return False
+        except argon2_exceptions.InvalidHash:
+            return False
 
     def set_password(self, pw: str):
         """
@@ -86,7 +101,7 @@ class User(StructuredNode, JsonSerializable):
         Args:
             pw (str): The password to set.
         """
-        self.password_hash = User.hash_password(pw)
+        self.password_hash = self.hash_password(pw)
 
     def send_email_verification(self):
         """
@@ -119,7 +134,7 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             str: The hashed password.
         """
-        return generate_password_hash(pw)
+        return current_app.config['PASSWORD_HASHER'].hash(pw)
 
     @classmethod
     def get_by_email(cls, email: str) -> "User":
