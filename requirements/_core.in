@@ -29,7 +29,6 @@ openpyxl
 xlsxwriter
 numpy
 spectree
-jupyter
 mixpanel
 ua-parser
 ujson
