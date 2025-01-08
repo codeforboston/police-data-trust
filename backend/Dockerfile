@@ -29,7 +29,8 @@ RUN pip3 install -r requirements/dev_unix.txt
 
 COPY . .
 
-ENV NPDI_API_PORT=5000
+ARG NPDI_API_PORT=5001
+ENV NPDI_API_PORT=$NPDI_API_PORT
 EXPOSE $NPDI_API_PORT
 
 CMD /wait && ./run_dev.sh
