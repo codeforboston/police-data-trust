@@ -1,7 +1,7 @@
 """Define the SQL classes for Users."""
 
 from flask import current_app
-from argon2 import PasswordHasher, exceptions as argon2_exceptions
+from argon2 import exceptions as argon2_exceptions
 from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     Relationship, StructuredNode,
