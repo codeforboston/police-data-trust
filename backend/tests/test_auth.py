@@ -13,6 +13,7 @@ mock_user = {
     "role": UserRole.PUBLIC.value,
 }
 
+
 @pytest.fixture
 def existing_user():
     user = User(**mock_user)
@@ -22,8 +23,12 @@ def existing_user():
 
 @pytest.mark.parametrize(
     (
-        "email", "password", "firstname", "lastname",
-        "phone_number", "expected_status_code"
+        "email",
+        "password",
+        "firstname",
+        "lastname",
+        "phone_number",
+        "expected_status_code",
     ),
     [
         ("new_user@email.com", "my_password", "John", "Doe", "1234567890", 200),
@@ -33,9 +38,14 @@ def existing_user():
     ],
 )
 def test_register(
-    client, existing_user, email, password,
-    firstname, lastname, phone_number,
-    expected_status_code
+    client,
+    existing_user,
+    email,
+    password,
+    firstname,
+    lastname,
+    phone_number,
+    expected_status_code,
 ):
     res = client.post(
         "api/v1/auth/register",
@@ -45,7 +55,7 @@ def test_register(
             "firstname": firstname,
             "lastname": lastname,
             "phone_number": phone_number,
-        }
+        },
     )
 
     assert res.status_code == expected_status_code
@@ -70,8 +80,7 @@ def test_register(
     [("my_password", 200), ("bad_password", 401), (None, 422)],
 )
 def test_login(
-    db_session,
-    client, example_user, password, expected_status_code
+    db_session, client, example_user, password, expected_status_code
 ):
     res = client.post(
         "api/v1/auth/login",
