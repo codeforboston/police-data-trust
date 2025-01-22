@@ -34,8 +34,10 @@ celery==5.3.6
     # via -r /requirements/_core.in
 certifi==2024.2.2
     # via requests
-cffi==1.16.0
-    # via argon2-cffi-bindings
+cffi==1.17.1
+    # via
+    #   -r /requirements/_core.in
+    #   argon2-cffi-bindings
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
