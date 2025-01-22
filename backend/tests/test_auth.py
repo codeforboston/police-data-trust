@@ -1,15 +1,17 @@
 import pytest
 from backend.database.models.user import User, UserRole
+from argon2 import PasswordHasher
+
+ph = PasswordHasher()
 
 mock_user = {
     "email": "existing@email.com",
-    "password_hash": User.hash_password("my_password"),
+    "password_hash": ph.hash("my_password"),
     "first_name": "John",
     "last_name": "Doe",
     "phone_number": "1234567890",
     "role": UserRole.PUBLIC.value,
 }
-
 
 @pytest.fixture
 def existing_user():
