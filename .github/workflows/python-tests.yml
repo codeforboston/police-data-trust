@@ -24,7 +24,10 @@ jobs:
     - name: Python 3.13 Setup
       uses: actions/setup-python@v5
       with:
-        python-version: 3.13
+        python-version: '3.13'
+        cache: 'pip'
+        cache-dependency-path: |
+          **/requirements*.txt
     - name: Install dependencies
       run: |
         sudo apt-get update
