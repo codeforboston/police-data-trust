@@ -4,9 +4,9 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"
@@ -34,17 +34,17 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/PartnerList"
+                  $ref: "#/components/schemas/SourceList"
     post:
       tags:
         - "Sources"
       summary: "Create a new source"
-      operationId: "createPartner"
+      operationId: "createSource"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreatePartner"
+              $ref: "#/components/schemas/CreateSource"
       responses:
         '201':
           description: 'Successful operation'
@@ -66,7 +66,7 @@ paths:
       tags:
         - "Sources"
       summary: "Get Source"
-      operationId: "getPartnerById"
+      operationId: "getSourceById"
       description: >
         Returns a single source.
       responses:
@@ -82,12 +82,12 @@ paths:
       tags:
         - "Sources"
       summary: "Update an existing source"
-      operationId: "updatePartner"
+      operationId: "updateSource"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdatePartner"
+              $ref: "#/components/schemas/UpdateSource"
       responses:
         '200':
           description: 'Successful operation'
@@ -133,31 +133,60 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    BasePartner:
+    BaseSource:
       type: "object"
       properties:
         name:
           type: "string"
           description: "Name of the source organization."
-        url:
+        bio:
+          type: "string"
+          description: "Description of the source organization."
+        website_url:
           type: "string"
           description: "Website URL of the source."
         contact_email:
           type: "string"
           description: "Contact email for the source organization."
-    CreatePartner:
+        contact_phone:
+          type: "string"
+          description: "Contact phone number for the source organization."
+        social_media:
+          type: "object"
+          description: The user's social media profiles.
+          properties:
+            twitter_url:
+              type: "string"
+              description: The user's Twitter handle.
+            facebook_url:
+              type: "string"
+              description: The user's Facebook profile.
+            linkedin_url:
+              type: "string"
+              description: The user's LinkedIn profile.
+            instagram_url:
+              type: "string"
+              description: The user's Instagram profile.
+            youtube_url:
+              type: "string"
+              description: The user's YouTube channel.
+            tiktok_url:
+              type: "string"
+              description: The user's TikTok profile.
+        
+    CreateSource:
       allOf:
-        - $ref: "#/components/schemas/BasePartner"
+        - $ref: "#/components/schemas/BaseSource"
         - type: "object"
           required: 
             - name
             - contact_email
-    UpdatePartner:
+    UpdateSource:
       allOf: 
-        -  $ref: "#/components/schemas/BasePartner"
+        -  $ref: "#/components/schemas/BaseSource"
     Source:
       allOf:
-        - $ref: "#/components/schemas/BasePartner"
+        - $ref: "#/components/schemas/BaseSource"
         - type: "object"
           properties:
             uid:
@@ -169,7 +198,7 @@ components:
             reported_complaints:
               type: string
               description: "Url to get all complaints reported by the source."
-    PartnerList:
+    SourceList:
       allOf:
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
         - type: "object"

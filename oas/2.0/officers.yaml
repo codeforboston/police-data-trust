@@ -4,9 +4,9 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"
@@ -38,6 +38,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OfficerList"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     post:
       tags: 
         -  Officers
@@ -57,6 +59,28 @@ paths:
                 $ref: '#/components/schemas/Officer'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /officers/latest:
+    get:
+      tags:
+        - "Officers"
+      summary: "Latest Officer Updates"
+      description: >
+        Get the most recently updated or added officers.
+      operationId: "getLatestOfficers"
+      parameters: 
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfficerList"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /officers/{uid}:
     parameters: 
       - name: uid
@@ -79,6 +103,8 @@ paths:
                 $ref: "#/components/schemas/Officer"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     patch:
       tags:
         - "Officers"
@@ -100,6 +126,8 @@ paths:
                 $ref: "#/components/schemas/Officer"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     delete:
       tags:
         - "Officers"
@@ -119,6 +147,8 @@ paths:
           description: "No content"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /officers/{uid}/employment:
     parameters: 
       - name: uid
@@ -142,6 +172,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmploymentList'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     put:
       summary: "Update Employment History"
       operationId: "updateEmploymentHistory"
@@ -164,6 +196,8 @@ paths:
                 $ref: '#/components/schemas/EmploymentList'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   securitySchemes:
     bearerAuth:

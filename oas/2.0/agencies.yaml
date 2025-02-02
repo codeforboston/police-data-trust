@@ -4,9 +4,9 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"

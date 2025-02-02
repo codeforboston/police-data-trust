@@ -4,9 +4,9 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"
@@ -67,6 +67,8 @@ paths:
             application/json:
               schema: 
                 $ref: "#/components/schemas/LitigationList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     post:
       tags:
         - "Litigation"
@@ -90,6 +92,28 @@ paths:
                 $ref: '#/components/schemas/Litigation'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /litigation/latest:
+    get:
+      tags:
+        - "Litigation"
+      summary: "Latest Litigation Updates"
+      operationId: "getLatestLitigation"
+      description: >
+        Get a list of the most recently updated or added litigation cases.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/LitigationList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /litigation/{uid}:
     parameters:
       - name: uid
@@ -114,6 +138,8 @@ paths:
                 $ref: "#/components/schemas/Litigation"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     patch:
       tags:
         - "Litigation"
@@ -138,6 +164,8 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     delete:
       tags:
         - "Litigation"
@@ -152,6 +180,8 @@ paths:
           description: "No content"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /litigation/{uid}/documents:
     parameters:
       - name: "uid"
@@ -179,6 +209,8 @@ paths:
                 $ref: "#/components/schemas/DocumentList"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     post:
       tags:
         - "Documents"
@@ -209,6 +241,8 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /litigation/{uid}/documents/{document_uid}:
     parameters:
       - name: "uid"
@@ -239,6 +273,8 @@ paths:
                 $ref: '#/components/schemas/Document'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /litigation/{uid}/disposition:
     parameters: 
       - name: uid
@@ -260,16 +296,18 @@ paths:
             schema:
               $ref: "#/components/schemas/Disposition"
       responses:
-        200:
+        '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Litigation'
-        400:
+        '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-        404:
+        '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   securitySchemes:
     bearerAuth:

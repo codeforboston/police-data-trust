@@ -4,9 +4,9 @@ info:
   description: "API Description"
   version: "0.1.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"
@@ -43,6 +43,8 @@ paths:
                 $ref: "#/components/schemas/Complaint"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     patch: 
       tags: 
         - "Complaints"
@@ -70,6 +72,8 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
       
   /complaints:
     post:
@@ -96,6 +100,8 @@ paths:
                 $ref: "#/components/schemas/Complaint"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
     get:
       tags: 
         - "Complaints"
@@ -114,6 +120,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /complaints/latest:
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Latest Complaint Updates"
+      operationId: "getLatestComplaints"
+      description: >
+        Returns the most recently updated or added complaints.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        "200":
+          description: "A JSON array of complaint objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   securitySchemes:
     bearerAuth:
@@ -481,14 +509,14 @@ components:
           description: "A description of the attachment."
     SourceDetails:
       oneOf: 
-        - $ref: '#/components/schemas/LegalAction'
+        - $ref: '#/components/schemas/LegalCaseEvent'
         - $ref: '#/components/schemas/PersonalAccount'
         - $ref: '#/components/schemas/NewsReport'
         - $ref: '#/components/schemas/GovernmentRecord'
       discriminator: 
         propertyName: record_type
         mapping:
-          Legal Action: '#/components/schemas/LegalAction'
+          Legal Case Event: '#/components/schemas/LegalCaseEvent'
           Personal Account: '#/components/schemas/PersonalAccount'
           News Report: '#/components/schemas/NewsReport'
           Government Record: '#/components/schemas/GovernmentRecord'
@@ -502,14 +530,14 @@ components:
             - Personal Account
             - News Report
             - Government Record
-    LegalAction:
+    LegalCaseEvent:
       type: "object"
       properties:
         record_type:
           type: "string"
           description: "The type of record the complaint is associated with."
           enum:
-            - Legal Action
+            - Legal Case Event
         court:
           type: "string"
           description: "The court the legal action was filed in."
@@ -519,7 +547,10 @@ components:
         docket_number:
           type: "string"
           description: "The docket number of the case."
-        date_of_action:
+        event_summary:
+          type: "string"
+          description: "A summary of the event."
+        date_of_event:
           type: "string"
           format: "date-time"
           description: "The date the legal action was filed."
