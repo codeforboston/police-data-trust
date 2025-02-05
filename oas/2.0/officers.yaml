@@ -26,11 +26,106 @@ paths:
     get:
       tags:
         - "Officers"
-      summary: "Get all officers"
+      summary: "Get officers"
       operationId: "getOfficers"
+      description: >
+        Returns a list of officer. A number of simple filters can be applied to limit the results. If no filters
+        are applied, a random sample of officers will be returned.
       parameters: 
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - active_after:
+            name: active_after
+            in: query
+            description: >
+              Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
+            required: false
+            schema:
+              type: string
+              format: date
+        - active_before:
+            name: active_before
+            in: query
+            description: >
+              Filter officers who were active before this date. The date should be in the format YYYY-MM-DD.
+            required: false
+            schema:
+              type: string
+              format: date
+        - state_id_value:
+            name: state_id_value
+            in: query
+            description: >
+              Filter officers by their state ID value. This may be a tax number, officer training number, or
+              any other unique identifier used by a state. The state_id_state and state_id_name parameters
+              must also be provided.
+            required: false
+            schema:
+              type: string
+        - state_id_name:
+            name: state_id_name
+            in: query
+            description: >
+              Filter officers by the name of their state ID. For example, "Driver's License", "Tax ID", etc.
+            required: false
+            schema:
+              type: string
+        - state_id_state:
+            name: state_id_state
+            in: query
+            description: >
+              Filter officers by the state of their state ID. For example, "CA" for California.
+            required: false
+            schema:
+              type: string
+        - agency:
+            name: agency
+            in: query
+            description: >
+              Filter officers by the agency they are employed by. The value should be a comma-separated list of agency uids.
+            required: false
+            schema:
+              type: string
+        - rank:
+            name: rank
+            in: query
+            description: >
+              Filter officers by their rank. The value should be a comma-separated list of ranks.
+            required: false
+            schema:
+              type: string
+        - unit:
+            name: unit
+            in: query
+            description: >
+              Filter officers by their unit. The value should be a comma-separated list of unit uids.
+            required: false
+            schema:
+              type: string
+        - name:
+            name: name
+            in: query
+            description: >
+              Filter officers by their name. The value should be a string in the format "first middle last suffix".
+            required: false
+            schema:
+              type: string
+        - ethnicity:
+            name: ethnicity
+            in: query
+            description: >
+              Filter officers by their ethnicity. The value should be a comma-separated list of ethnicities.
+            required: false
+            schema:
+              type: string
+        - badge_number:
+            name: badge_number
+            in: query
+            description: >
+              Filter officers by their badge number. The value should be a comma-separated list of badge numbers.
+            required: false
+            schema:
+              type: string
       responses:
         "200":
           description: "Successful operation"
@@ -79,6 +174,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OfficerList"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /officers/filter:
+    post:
+      tags:
+        - "Officers"
+      summary: "Advanced Officer Filter"
+      operationId: "getOfficersByFilter"
+      description: >
+        Get officers by advanced filter. This endpoint allows for more complex queries
+        using a JSON body to specify the filters.
+      parameters: 
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      requestBody:
+        description: >
+          A JSON object containing the filters to apply to the search.
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfficerFilter"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfficerList"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /officers/{uid}:
@@ -205,6 +331,52 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    OfficerFilter:
+      type: object
+      description: >
+        An advanced filter that can be applied to an officer list request.
+      properties:
+        name:
+          type: string
+          description: >
+            Filter officers by their name. The value should be a string in the format "first middle last suffix".
+        location:
+          allOf: 
+            - $ref: "#/components/schemas/LocationFilter"
+            - type: object
+              description: >
+                Filter officers by locations in which they have worked. This is assesed based on the operating theatre of the units to which they've been assigned.
+        state_ids:
+          type: array
+          description: >
+            Filter officers by their state IDs. This can be used to filter by tax number, officer training number, or any other unique identifier used by a state.
+          items:
+            $ref: "#/components/schemas/StateIdFilter"
+        ranks:
+          type: array
+          description: >
+            Filter officers by their rank.
+          items:
+            type: string
+        ethnicity:
+          type: array
+          description: >
+            Filter officers by ethnicity.
+          items:
+            $ref: "#/components/schemas/EthnicityFilter"
+        commanders:
+          type: array
+          description: >
+            Return officers who have worked under the selected commanders.
+          items:
+            type: string
+            description: The UIDs of the commanders to filter by.
+        allegations:
+          allOf: 
+            - $ref: "#/components/schemas/AllegationFilter"
+            - type: object
+              description: >
+                Filter officers by allegations made against them.
     BaseEmployment:
       type: "object"
       properties:

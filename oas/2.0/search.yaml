@@ -24,8 +24,8 @@ paths:
     post: 
       tags: 
         - "Search"
-      summary: "Search"
-      operationId: "search"
+      summary: "Search All"
+      operationId: "searchAll"
       description: >
         Search the index for items that match the query. The search results can be filtered
         by content type, location, data source, and date range.
