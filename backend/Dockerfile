@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 python:3.11-slim-bookworm AS base
+FROM python:3-slim-bookworm AS base
 
 # Install dependencies
 RUN apt-get update -y && apt-get install -y \

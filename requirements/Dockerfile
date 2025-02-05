@@ -16,7 +16,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN curl https://pyenv.run | bash && \
     echo 'export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
 
-ENV PYTHON_VERSION=3.11
+ENV PYTHON_VERSION=3
 SHELL ["bash", "-lc"]
 
 # Install the specified Python version via pyenv
