@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM python:3-slim-bookworm
 
 # Install packages required to build Python and extensions
 RUN apt-get update && apt-get install -y \
@@ -11,16 +11,6 @@ RUN apt-get update && apt-get install -y \
 # Install Rust and Cargo for packages requiring Rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
-
-# Install pyenv
-RUN curl https://pyenv.run | bash && \
-    echo 'export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
-
-ENV PYTHON_VERSION=3
-SHELL ["bash", "-lc"]
-
-# Install the specified Python version via pyenv
-RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
 
 # Upgrade pip and install pip-tools
 RUN pip install --no-cache-dir -U pip pip-tools
