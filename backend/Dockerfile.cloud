@@ -28,7 +28,7 @@ RUN arch=$(arch) && \
     wget ${url} && \
     sed -i "s/pandas==2.2.2/${file}/" prod.txt
 
-RUN pip install --no-cache-dir --user -r prod.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip install --user -r prod.txt
 
 COPY . .
 
