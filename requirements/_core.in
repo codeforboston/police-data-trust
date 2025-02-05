@@ -34,3 +34,4 @@ ua-parser
 ujson
 neo4j
 neomodel==5.3.3
+pyzmq==26.2.1
