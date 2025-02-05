@@ -23,11 +23,11 @@ WORKDIR /app/
 
 ARG NPDI_API_PORT=5000
 
-RUN pip3 install --upgrade pip
+RUN --mount=type=cache,target=/root/.cache/pip,from=pip_cache pip3 install --upgrade pip
 
 COPY requirements/ requirements/
 
-RUN pip3 install -r requirements/dev_unix.txt
+RUN --mount=type=cache,target=/root/.cache/pip,from=pip_cache pip3 install -r requirements/dev_unix.txt
 COPY . .
 
 ENV PORT=$NPDI_API_PORT
