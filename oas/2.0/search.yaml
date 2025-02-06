@@ -50,8 +50,7 @@ paths:
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
-          $ref: '../common/error.yaml#/components/responses/notFoundError'
-      
+          $ref: '../common/error.yaml#/components/responses/notFoundError' 
   /search/auto:
     post:
       tags: 

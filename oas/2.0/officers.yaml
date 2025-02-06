@@ -34,98 +34,14 @@ paths:
       parameters: 
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
-        - active_after:
-            name: active_after
-            in: query
-            description: >
-              Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
-            required: false
-            schema:
-              type: string
-              format: date
-        - active_before:
-            name: active_before
-            in: query
-            description: >
-              Filter officers who were active before this date. The date should be in the format YYYY-MM-DD.
-            required: false
-            schema:
-              type: string
-              format: date
-        - state_id_value:
-            name: state_id_value
-            in: query
-            description: >
-              Filter officers by their state ID value. This may be a tax number, officer training number, or
-              any other unique identifier used by a state. The state_id_state and state_id_name parameters
-              must also be provided.
-            required: false
-            schema:
-              type: string
-        - state_id_name:
-            name: state_id_name
-            in: query
-            description: >
-              Filter officers by the name of their state ID. For example, "Driver's License", "Tax ID", etc.
-            required: false
-            schema:
-              type: string
-        - state_id_state:
-            name: state_id_state
-            in: query
-            description: >
-              Filter officers by the state of their state ID. For example, "CA" for California.
-            required: false
-            schema:
-              type: string
-        - agency:
-            name: agency
-            in: query
-            description: >
-              Filter officers by the agency they are employed by. The value should be a comma-separated list of agency uids.
-            required: false
-            schema:
-              type: string
-        - rank:
-            name: rank
-            in: query
-            description: >
-              Filter officers by their rank. The value should be a comma-separated list of ranks.
-            required: false
-            schema:
-              type: string
-        - unit:
-            name: unit
-            in: query
-            description: >
-              Filter officers by their unit. The value should be a comma-separated list of unit uids.
-            required: false
-            schema:
-              type: string
-        - name:
-            name: name
-            in: query
-            description: >
-              Filter officers by their name. The value should be a string in the format "first middle last suffix".
-            required: false
-            schema:
-              type: string
-        - ethnicity:
-            name: ethnicity
-            in: query
-            description: >
-              Filter officers by their ethnicity. The value should be a comma-separated list of ethnicities.
-            required: false
-            schema:
-              type: string
-        - badge_number:
-            name: badge_number
-            in: query
-            description: >
-              Filter officers by their badge number. The value should be a comma-separated list of badge numbers.
-            required: false
-            schema:
-              type: string
+        - $ref: '#/components/parameters/active_after'
+        - $ref: '#/components/parameters/active_before'
+        - $ref: '#components/parameters/agency'
+        - $ref: '#components/parameters/rank'
+        - $ref: '#components/parameters/unit'
+        - $ref: '#components/parameters/name'
+        - $ref: '#components/parameters/ethnicity'
+        - $ref: '#components/parameters/badge_number'
       responses:
         "200":
           description: "Successful operation"
@@ -188,6 +104,14 @@ paths:
       parameters: 
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/active_after'
+        - $ref: '#/components/parameters/active_before'
+        - $ref: '#components/parameters/agency'
+        - $ref: '#components/parameters/rank'
+        - $ref: '#components/parameters/unit'
+        - $ref: '#components/parameters/name'
+        - $ref: '#components/parameters/ethnicity'
+        - $ref: '#components/parameters/badge_number'
       requestBody:
         description: >
           A JSON object containing the filters to apply to the search.
@@ -325,45 +249,215 @@ paths:
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
+  parameters: 
+    - active_after:
+        name: active_after
+        in: query
+        description: >
+          Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
+        required: false
+        schema:
+          type: string
+          format: date
+    - active_before:
+        name: active_before
+        in: query
+        description: >
+          Filter officers who were active before this date. The date should be in the format YYYY-MM-DD.
+        required: false
+        schema:
+          type: string
+          format: date
+    - agency:
+        name: agency
+        in: query
+        description: >
+          Filter officers by the agency they are employed by. The value should be a comma-separated list of agency uids.
+        required: false
+        schema:
+          type: string
+    - rank:
+        name: rank
+        in: query
+        description: >
+          Filter officers by their rank. The value should be a comma-separated list of ranks.
+        required: false
+        schema:
+          type: string
+    - unit:
+        name: unit
+        in: query
+        description: >
+          Filter officers by their unit. The value should be a comma-separated list of unit uids.
+        required: false
+        schema:
+          type: string
+    - name:
+        name: name
+        in: query
+        description: >
+          Filter officers by their name. The value should be a string in the format "first middle last suffix".
+        required: false
+        schema:
+          type: string
+    - ethnicity:
+        name: ethnicity
+        in: query
+        description: >
+          Filter officers by their ethnicity. The value should be a comma-separated list of ethnicities.
+        required: false
+        schema:
+          type: string
+    - badge_number:
+        name: badge_number
+        in: query
+        description: >
+          Filter officers by their badge number. The value should be a comma-separated list of badge numbers.
+        required: false
+        schema:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    NameFilter:
+      type: object
+      description: >
+        An advanced filter that can be applied to a officer list request.
+      properties:
+        first:
+          type: string
+          description: >
+            Filter officers by their first name. The value should be a string.
+        middle:
+          type: string
+          description: >
+            Filter officers by their middle name. The value should be a string.
+        last:
+          type: string
+          description: >
+            Filter officers by their last name. The value should be a string.
+        suffix:
+          type: string
+          description: >
+            Filter officers by their suffix. The value should be a string.
+    LocationFilter:
+      type: object
+      description: >
+        An advanced filter that can be applied to a officer list request.
+      properties:
+        state:
+          type: string
+          description: >
+            Filter locations by state. The value should be a string.
+        county:
+          type: string
+          description: >
+            Filter locations by county. The value should be a string.
+        city:
+          type: string
+          description: >
+            Filter locations by city. The value should be a string.
+        zip:
+          type: string
+          description: >
+            Filter locations by zip code. The value should be a string.
+    AllegationFilter:
+      type: object
+      description: >
+        An advanced filter that can be applied to an officer list request.
+      properties:
+        uid:
+          type: array
+          description: >
+            Return officers who have any of the selected allegations.
+          items:
+            type: string
+        status:
+          type: array
+          description: >
+            Return officers who have allegations with the selected statuses.
+          items:
+            type: string
+        category:
+          type: array
+          description: >
+            Return officers who have allegations with the selected categories.
+          items:
+            type: string
+        subcategory:
+          type: array
+          description: >
+            Return officers who have allegations with the selected subcategory.
+          items:
+            type: string
+        sustained:
+          type: boolean
+          description: >
+            Return officers who have allegations that are either sustained not sustained. The value must be a boolean.
+    StateIdFilter:
+      type: object
+      description: >
+        An advanced filter that can be applied to a officer list request.
+      properties:
+        state:
+          type: string
+          description: >
+            Filter officers by their ID state. The value should be a string.
+        id_name:
+          type: string
+          description: >
+            Filter officers by their ID name. The value should be a string.
+        values:
+          type: string
+          description: >
+            Return officers with the selected ID values. Must be sent in tandem
+            with the `id_name` and `state` properties.
     OfficerFilter:
       type: object
       description: >
         An advanced filter that can be applied to an officer list request.
       properties:
-        name:
-          type: string
+        names:
+          type: array
           description: >
-            Filter officers by their name. The value should be a string in the format "first middle last suffix".
+            Return officers whose name matches any of these filters.
+          items:
+            $ref: "#/components/schemas/NameFilter"
         location:
           allOf: 
             - $ref: "#/components/schemas/LocationFilter"
             - type: object
               description: >
                 Filter officers by locations in which they have worked. This is assesed based on the operating theatre of the units to which they've been assigned.
-        state_ids:
+        state_ids_sets:
           type: array
           description: >
-            Filter officers by their state IDs. This can be used to filter by tax number, officer training number, or any other unique identifier used by a state.
+            Filter officers by their state IDs. This can be used to filter by tax number,
+            officer training number, or any other unique identifier used by a state.
           items:
             $ref: "#/components/schemas/StateIdFilter"
         ranks:
           type: array
           description: >
-            Filter officers by their rank.
+            Return officers who have obtained the selected ranks.
           items:
             type: string
-        ethnicity:
+        ethnicities:
           type: array
           description: >
-            Filter officers by ethnicity.
+            Return officers who have the selected ethnicities.
           items:
-            $ref: "#/components/schemas/EthnicityFilter"
+            type: string
+            enum:
+              - American Indian or Alaska Native
+              - Asian
+              - Black or African American
+              - Hispanic or Latino
+              - Native Hawaiian or Other Pacific Islander
+              - White
         commanders:
           type: array
           description: >

@@ -20,12 +20,12 @@ tags:
   - name: "Users"
     description: "Users API"
 paths:
-  /users:
+  /users/self:
     get:
       tags:
         - "Users"
-      summary: "Get all users"
-      operationId: "getUsers"
+      summary: "Get current user"
+      operationId: "getCurrentUser"
       responses:
         "200":
           description: "Successful operation"
@@ -34,7 +34,28 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/UserList"
+                  $ref: "#/components/schemas/User"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    patch:
+      tags:
+        - "Users"
+      summary: "Update the current user"
+      operationId: "updateCurrentUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUser"
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /users/{uid}:
@@ -63,30 +84,6 @@ paths:
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-    patch:
-      tags:
-        - "Users"
-      summary: "Update an existing user"
-      operationId: "updateUser"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateUser"
-      responses:
-        '200':
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '../common/error.yaml#/components/responses/validationError'
-        '401':
-          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
-        '404':
-          $ref: '../common/error.yaml#/components/responses/notFoundError'
-
 components:
   securitySchemes:
     bearerAuth:
