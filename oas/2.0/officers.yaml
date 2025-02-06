@@ -36,12 +36,12 @@ paths:
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
         - $ref: '#/components/parameters/active_after'
         - $ref: '#/components/parameters/active_before'
-        - $ref: '#components/parameters/agency'
-        - $ref: '#components/parameters/rank'
-        - $ref: '#components/parameters/unit'
-        - $ref: '#components/parameters/name'
-        - $ref: '#components/parameters/ethnicity'
-        - $ref: '#components/parameters/badge_number'
+        - $ref: '#/components/parameters/agency'
+        - $ref: '#/components/parameters/rank'
+        - $ref: '#/components/parameters/unit'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/ethnicity'
+        - $ref: '#/components/parameters/badge_number'
       responses:
         "200":
           description: "Successful operation"
@@ -106,12 +106,12 @@ paths:
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
         - $ref: '#/components/parameters/active_after'
         - $ref: '#/components/parameters/active_before'
-        - $ref: '#components/parameters/agency'
-        - $ref: '#components/parameters/rank'
-        - $ref: '#components/parameters/unit'
-        - $ref: '#components/parameters/name'
-        - $ref: '#components/parameters/ethnicity'
-        - $ref: '#components/parameters/badge_number'
+        - $ref: '#/components/parameters/agency'
+        - $ref: '#/components/parameters/rank'
+        - $ref: '#/components/parameters/unit'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/ethnicity'
+        - $ref: '#/components/parameters/badge_number'
       requestBody:
         description: >
           A JSON object containing the filters to apply to the search.
@@ -250,72 +250,72 @@ paths:
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   parameters: 
-    - active_after:
-        name: active_after
-        in: query
-        description: >
-          Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
-        required: false
-        schema:
-          type: string
-          format: date
-    - active_before:
-        name: active_before
-        in: query
-        description: >
-          Filter officers who were active before this date. The date should be in the format YYYY-MM-DD.
-        required: false
-        schema:
-          type: string
-          format: date
-    - agency:
-        name: agency
-        in: query
-        description: >
-          Filter officers by the agency they are employed by. The value should be a comma-separated list of agency uids.
-        required: false
-        schema:
-          type: string
-    - rank:
-        name: rank
-        in: query
-        description: >
-          Filter officers by their rank. The value should be a comma-separated list of ranks.
-        required: false
-        schema:
-          type: string
-    - unit:
-        name: unit
-        in: query
-        description: >
-          Filter officers by their unit. The value should be a comma-separated list of unit uids.
-        required: false
-        schema:
-          type: string
-    - name:
-        name: name
-        in: query
-        description: >
-          Filter officers by their name. The value should be a string in the format "first middle last suffix".
-        required: false
-        schema:
-          type: string
-    - ethnicity:
-        name: ethnicity
-        in: query
-        description: >
-          Filter officers by their ethnicity. The value should be a comma-separated list of ethnicities.
-        required: false
-        schema:
-          type: string
-    - badge_number:
-        name: badge_number
-        in: query
-        description: >
-          Filter officers by their badge number. The value should be a comma-separated list of badge numbers.
-        required: false
-        schema:
-          type: string
+    active_after:
+      name: active_after
+      in: query
+      description: >
+        Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
+      required: false
+      schema:
+        type: string
+        format: date
+    active_before:
+      name: active_before
+      in: query
+      description: >
+        Filter officers who were active before this date. The date should be in the format YYYY-MM-DD.
+      required: false
+      schema:
+        type: string
+        format: date
+    agency:
+      name: agency
+      in: query
+      description: >
+        Filter officers by the agency they are employed by. The value should be a comma-separated list of agency uids.
+      required: false
+      schema:
+        type: string
+    rank:
+      name: rank
+      in: query
+      description: >
+        Filter officers by their rank. The value should be a comma-separated list of ranks.
+      required: false
+      schema:
+        type: string
+    unit:
+      name: unit
+      in: query
+      description: >
+        Filter officers by their unit. The value should be a comma-separated list of unit uids.
+      required: false
+      schema:
+        type: string
+    name:
+      name: name
+      in: query
+      description: >
+        Filter officers by their name. The value should be a string in the format "first middle last suffix".
+      required: false
+      schema:
+        type: string
+    ethnicity:
+      name: ethnicity
+      in: query
+      description: >
+        Filter officers by their ethnicity. The value should be a comma-separated list of ethnicities.
+      required: false
+      schema:
+        type: string
+    badge_number:
+      name: badge_number
+      in: query
+      description: >
+        Filter officers by their badge number. The value should be a comma-separated list of badge numbers.
+      required: false
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

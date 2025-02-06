@@ -21,13 +21,13 @@ tags:
     description: "Complaints API"
 paths:
   /complaints/{complaint_uid}:
-    parameters:
-      - name: complaint_uid
-        in: path
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
       tags: 
         - "Complaints"
       summary: "Get Complaint"
@@ -45,7 +45,13 @@ paths:
           $ref: '../common/error.yaml#/components/responses/notFoundError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
-    patch: 
+    patch:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
       tags: 
         - "Complaints"
       summary: "Update Complaint"
@@ -73,8 +79,7 @@ paths:
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
         '401':
-          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
-      
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'  
   /complaints:
     post:
       tags: 
