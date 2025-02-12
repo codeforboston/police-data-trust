@@ -2,7 +2,7 @@
 # requirements, so this image starts with the same image as the database
 # containers and installs the same version of python as the api containers
 
-FROM rust:slim-bookworm as base
+FROM postgres:17 as base
 
 RUN apt-get update && apt-get install -y \
     make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
