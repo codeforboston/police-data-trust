@@ -397,6 +397,14 @@ components:
           type: boolean
           description: >
             Return officers who have allegations that are either sustained not sustained. The value must be a boolean.
+        count__gte:
+          type: integer
+          description: >
+            Return officers who have at least the selected number of allegations. The value must be an integer.
+        count__lte:
+          type: integer
+          description: >
+            Return officers who have at most the selected number of allegations. The value must be an integer.
     StateIdFilter:
       type: object
       description: >
