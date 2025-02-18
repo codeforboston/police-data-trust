@@ -1,7 +1,6 @@
 # Stage 1: Build Stage
 FROM python:3-slim-bookworm AS build
 
-# Install required packages
 RUN apt-get update -y && apt-get install -y \
     gcc \
     g++ \
@@ -13,21 +12,13 @@ RUN apt-get update -y && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
-    && . "$HOME/.cargo/env"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /app/
 
+# Instead of manually downloading a wheel, rely on pip:
 COPY requirements/prod.txt .
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN arch=$(arch) && \
-    file=pandas-2.2.2-cp312-cp312-manylinux_2_17_${arch}.manylinux2014_${arch}.whl && \
-    url="https://pypi.debian.net/pandas/${file}" && \
-    wget ${url} && \
-    sed -i "s/pandas==2.2.2/${file}/" prod.txt
-
 RUN pip install --no-cache-dir --user -r prod.txt
 
 COPY . .
@@ -42,7 +33,6 @@ ARG NPDI_API_PORT=5000
 # Copy installed packages from the build stage
 COPY --from=build /root/.local /root/.local
 
-# Update PATH to include pip-installed packages
 ENV PATH=/root/.local/bin:${PATH}
 
 COPY . .
@@ -50,4 +40,4 @@ COPY . .
 EXPOSE $NPDI_API_PORT
 ENV NPDI_API_PORT=$NPDI_API_PORT
 
-ENTRYPOINT [ "./run_cloud.sh" ]
+ENTRYPOINT ["./run_cloud.sh"]
