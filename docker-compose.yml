@@ -43,7 +43,7 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile
       args:
-        NPDI_API_PORT: ${NPDI_API_PORT:-5000}
+        NPDI_API_PORT: ${NPDI_API_PORT:-5001}
     volumes:
       - .:/app
     depends_on:
@@ -57,7 +57,7 @@ services:
       MIXPANEL_TOKEN: ${MIXPANEL_TOKEN:-notset}
       WAIT_HOSTS: db:7687
     ports:
-      - ${NPDI_API_PORT:-5000}:${NPDI_API_PORT:-5000}
+      - ${NPDI_API_PORT:-5001}:${NPDI_API_PORT:-5001}
 volumes:
   neo4j: {}
   neo4j_logs: {}

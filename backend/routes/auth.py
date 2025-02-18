@@ -69,6 +69,7 @@ def register():
     """
     logger = logging.getLogger("user_register")
     body: RegisterUserDTO = request.validated_body
+    logger.info(f"Registering user with email {body.email}.")
 
     # Check to see if user already exists
     user = User.nodes.first_or_none(email=body.email)

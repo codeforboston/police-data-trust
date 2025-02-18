@@ -1,24 +1,21 @@
-# psycopg requires postgres development files in order to compile the
-# requirements, so this image starts with the same image as the database
-# containers and installs the same version of python as the api containers
+FROM python:3-slim-bookworm
 
-FROM postgres:17 as base
-
+# Install packages required to build Python and extensions
 RUN apt-get update && apt-get install -y \
-    make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev \
-    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev git
+    curl wget git make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev \
+    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev ca-certificates \
+    libopenblas-dev gfortran \
+    && rm -rf /var/lib/apt/lists/*
 
-FROM base
+# Install Rust and Cargo for packages requiring Rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
-SHELL ["bash", "-lc"]
-RUN curl https://pyenv.run | bash && \
-    echo 'export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
+# Upgrade pip and install pip-tools
+RUN pip install --no-cache-dir -U pip pip-tools
 
-ENV PYTHON_VERSION=3.13.0
-RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
-RUN pip install -U pip-tools
-
+# Copy requirements directory and run the update script
 COPY . requirements/
 
 CMD python requirements/update.py
