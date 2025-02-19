@@ -21,3 +21,9 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+    unauthorizedError:
+      description: "Unauthorized"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

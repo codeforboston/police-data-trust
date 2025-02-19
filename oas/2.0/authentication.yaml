@@ -1,0 +1,194 @@
+openapi: "3.0.3"
+info:
+  title: "Authentication"
+  description: "API Description"
+  version: "0.7.0"
+servers:
+  - url: "http://dev.nationalpolicedata.org/api/v1"
+    description: "Development environment"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Authentication"
+    description: "API for authenticating and creating user accounts."
+paths:
+  /auth/register:
+    post:
+      summary: "register User Account"
+      operationId: "register"
+      description: "Create a new user account."
+      tags: 
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: "Logs in and returns the created user object."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+        "400":
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        "409":
+          $ref: '../common/error.yaml#/components/responses/conflictError'
+  /auth/login:
+    post:
+      summary: "Log in"
+      operationId: "login"
+      description: "Log in to an existing user account."
+      tags: 
+        -  Authentication
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        '200':
+          description: 'Returns JWT that may be used to authenticate future API requests.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /auth/refresh:
+    post: 
+      summary: "Refresh Access Token"
+      operationId: "refreshToken"
+      description: >
+        Refreshes the current access token to reset the expiration date.
+      tags: 
+        -  Authentication
+      responses: 
+        '200':
+          description: >
+            Returns the updated employment records. The response also includes
+            information about any records that could not be added.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /auth/logout:
+    post:
+      summary: "Log out"
+      operationId: "logout"
+      description: "Revokes the access token used to autheticate this request."
+      tags: 
+        -  Authentication
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /auth/whoami:
+    get:
+      summary: "Who Am I"
+      operationId: "whoami"
+      description: "Returns the user that matches the access token used to authenticate the request."
+      tags: 
+        -  Authentication
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "The user's email address."
+        password:
+          type: "string"
+          description: "The user's desired password."
+        first_name:
+          type: "string"
+          description: "The user's first name."
+        last_name:
+          type: "string"
+          description: "The user's last name."
+        phone_number:
+          type: "string"
+          description: "The user's phone number."
+      required: 
+        - email
+        - first_name
+        - last_name
+        - password
+        - phone_number
+    RegisterResponse:
+      type: "object"
+      properties:
+        msg:
+          type: string
+          description: information about the registration action.
+        access_token:
+          type: string
+          description: The JWT that can be used to authenticate API requests on behalf of the user.
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The user's email address.
+        password:
+          type: string
+          description: The user's password.
+      required: 
+        - email
+        - password
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: The JWT that can be used to authenticate API requests on behalf of the user.
+        message:
+          type: string
+          description: Additional detail aboout the login action.
+    CurrentUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: The user's first name.
+        last_name:
+          type: string
+          description: The user's last name.
+    LogoutResponse:
+      type: object
+      properties:
+        msg:
+          type: string
+          description: A report of the logout action.
+        
