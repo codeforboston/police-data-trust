@@ -1,4 +1,4 @@
-import {Inter, Roboto} from "next/font/google/inter";
+import {Inter, Roboto} from "next/font/google";
 
 export const inter = Inter({
     variable: "--font-inter",
