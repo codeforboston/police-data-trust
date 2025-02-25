@@ -9,11 +9,8 @@ RUN apt-get update -y && apt-get install -y \
     python3-dev \
     libffi-dev \
     build-essential \
+    rustc cargo \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Add docker-compose-wait (if still needed)
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.12.1/wait /wait
