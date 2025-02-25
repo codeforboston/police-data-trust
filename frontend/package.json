@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^5.1.1",
+    "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
     "@mui/styled-engine-sc": "^6.4.3",
     "next": "15.1.7",
