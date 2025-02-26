@@ -3,16 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg"
+import styles from "./nav.module.css";
 
 export default async function Nav() {
   return (
-    <nav>
+    <nav className= {styles.nav} >
+      <div className={styles.navHeader}>
+        <Link href="/feedback" className={styles.feedback}> Feedback</Link>      </div>
       <div>
-        <Image src={Logo} alt="Logo" width={70} height={70} />
-      <div>
-        <p>National Police Data</p>
-        <p>The national index of police incidents </p>
-      </div>
+        <div className={styles.logo}>
+          <Image src={Logo} alt="Logo" width={44} height={44} />
+          <div className={styles.logoTxt}>
+            <p className={styles.title} >National Police Data Coalition</p>
+            <p>The national index of police incidents </p>
+          </div>
+        </div>
       </div>
     </nav>
   );
