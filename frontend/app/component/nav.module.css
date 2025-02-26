@@ -1,0 +1,39 @@
+.nav {
+    font-family: var(--font-inter);
+}
+
+
+.navHeader {
+    padding: 8px 80px;
+    width: 100dvw;
+    background-color:#D9EDFF;
+    display: flex;
+    align-items: center;
+    justify-content:right;
+}
+
+.feedback {
+    font-size: medium;
+    text-decoration: underline;
+    color: #0645AD;
+    font-weight: 400;
+    padding-right: 3rem;
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.logoTxt {
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 1rem;
+}
+
+.title {
+    font-weight: bold;
+    font-size: large;
+    color: 303463;
+}
