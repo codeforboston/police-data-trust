@@ -11,7 +11,7 @@ export default async function Nav() {
       <div className={styles.navHeader}>
         <Link href="/feedback" className={styles.feedback}> Feedback</Link>      </div>
       <div>
-        <div className={styles.logo}>
+        <div className={styles.dashHeader}>
           <Image src={Logo} alt="Logo" width={44} height={44} />
           <div className={styles.logoTxt}>
             <p className={styles.title} >National Police Data Coalition</p>
