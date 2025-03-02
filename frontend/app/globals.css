@@ -21,10 +21,9 @@ a {
   text-decoration: none;
 }
 
-
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+main {
+  position: fixed;
+  width: 100%;
+  max-height: 100vh;
+  overflow-y: scroll;
 }
