@@ -1,7 +1,15 @@
 .nav {
     font-family: var(--font-inter);
+    ;
 }
 
+.navLower {
+    display: flex;
+    max-width: 100%;
+    align-items: center;
+    justify-content: space-between;
+
+}
 
 .navHeader {
     padding: 8px 80px;

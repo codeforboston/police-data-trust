@@ -1,0 +1,33 @@
+.links {
+    display: inline-flex;
+    align-items: center;
+    justify-items: center;
+    list-style: none;
+    padding: 5px;
+    font-size: 14px;
+    color: #303463;
+}
+
+.activeLink {
+    font-weight: 900;
+    opacity: 1;
+    scale: 1.1;
+    border-bottom: solid 1px #303463;
+}
+
+.inactiveLink {
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.activeLink, .inactiveLink {
+    padding: 5px 10px;
+    margin: 1px;
+    transition-duration: 250ms;
+    cursor: pointer;
+}
+
+ .inactiveLink:hover {
+    opacity: 1;
+    scale: 1.1;
+}
