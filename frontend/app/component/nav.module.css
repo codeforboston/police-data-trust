@@ -46,3 +46,9 @@
     font-size: 14.67px;
     color: #303463;
 }
+
+@media screen and (max-width: 925px) {
+    .logoTxt {
+        display: none;
+    }
+}
