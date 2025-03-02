@@ -21,7 +21,7 @@
 }
 
 .activeLink, .inactiveLink {
-    padding: 5px 10px;
+    padding: 2px 10px;
     margin: 1px;
     transition-duration: 250ms;
     cursor: pointer;
@@ -29,5 +29,5 @@
 
  .inactiveLink:hover {
     opacity: 1;
-    scale: 1.1;
+    scale: 1.05;
 }

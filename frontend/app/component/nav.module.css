@@ -1,6 +1,7 @@
 .nav {
     font-family: var(--font-inter);
-    ;
+    position: sticky;
+    top: 0;
 }
 
 .navLower {
@@ -45,5 +46,5 @@
 .title {
     font-weight: bold;
     font-size: 14.67px;
-    color: 303463;
+    color: #303463;
 }
