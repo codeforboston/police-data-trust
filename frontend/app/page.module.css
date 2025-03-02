@@ -1,5 +1,8 @@
 .page {
-  height: 3600px;
-  background-color: #f0f0f0;
-  padding: 5rem 5rem;
+  font-family: var(--font-inter);
+}
+
+.txt {
+  padding-top: 5rem;
+  font-size: 2.5rem;
 }
