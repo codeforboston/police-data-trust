@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <h1>This is the Home Page!</h1>
-      <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nobis, cumque iure corporis quae architecto dolorum? Eaque, necessitatibus. Mollitia, ullam. Unde maiores nesciunt tempore molestiae, cupiditate velit tenetur officiis accusantium!
+      <p className={styles.txt}> Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nobis, cumque iure corporis quae architecto dolorum? Eaque, necessitatibus. Mollitia, ullam. Unde maiores nesciunt tempore molestiae, cupiditate velit tenetur officiis accusantium!
       A repellendus dolore alias libero dolorum aspernatur sapiente officiis architecto animi laudantium voluptatum voluptas eligendi voluptatibus ad obcaecati, modi beatae! Saepe rerum quod aut autem eos dolorem itaque earum soluta.
       Accusamus cum dignissimos repellat ab corporis laboriosam temporibus architecto et, magni voluptas rem molestiae rerum, maiores quae. Vitae est magnam praesentium vero nam saepe, maxime consequatur alias eveniet blanditiis esse.
       Cumque illum, nobis a ipsum harum culpa? Ut perferendis officiis, atque temporibus, ipsam fugit ipsum officia, optio consectetur facere numquam ducimus est quod impedit eum eligendi libero? Distinctio, commodi quas.
