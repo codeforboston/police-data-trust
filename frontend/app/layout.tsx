@@ -16,7 +16,9 @@ export default function RootLayout({
     <html lang="en">
       <body className= {`${inter.variable} ${roboto}`}>
         <Nav />
-        {children}
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );
