@@ -5,3 +5,10 @@
 .iconLink, .createIcon {
     padding: 0px 1rem;
 }
+
+@media screen and (max-width: 700px) {
+    .createIcon {
+        display: none;
+    }
+    
+}
