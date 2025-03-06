@@ -27,6 +27,14 @@ paths:
       summary: "Get Agencies"
       operationId: "getAgencies"
       description: "Get a list of all agencies"
+      parameters: 
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/jurisdiction'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/zip_code'
+        - $ref: '#/components/parameters/city'
+        - $ref: '#/components/parameters/state'
       tags: 
         -  Agencies
       responses:
@@ -101,17 +109,29 @@ paths:
                 $ref: '#/components/schemas/Agency'
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
   /agencies/{agency_uid}/officers:
-    parameters:
-      - name: "agency_uid"
-        in: "path"
-        description: "The uid of the agency you want to retrieve."
-        required: true
-        schema:
-          type: "string"
     get:
       summary: "Get Officers"
       operationId: "getOfficers"
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve."
+          required: true
+          schema:
+            type: "string"
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: 'officers.yaml#/components/parameters/active_after'
+        - $ref: 'officers.yaml#/components/parameters/active_before'
+        - $ref: 'officers.yaml#/components/parameters/agency'
+        - $ref: 'officers.yaml#/components/parameters/rank'
+        - $ref: 'officers.yaml#/components/parameters/unit'
+        - $ref: 'officers.yaml#/components/parameters/name'
+        - $ref: 'officers.yaml#/components/parameters/ethnicity'
+        - $ref: 'officers.yaml#/components/parameters/badge_number'
       description: >
         Get a list of all of the officers who have been employed
         by a given agency.
@@ -124,6 +144,10 @@ paths:
             application/json:
               schema:
                 $ref: officers.yaml#/components/schemas/OfficerList
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
     put: 
       summary: "Add Employment Records"
       operationId: "addOfficers"
@@ -131,6 +155,13 @@ paths:
         Adds officer employment records to an agency. Can only
         add records for officers that already exist in the database.
         User must be a contributor.
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve."
+          required: true
+          schema:
+            type: "string"
       tags: 
         -  Units
       requestBody:
@@ -153,17 +184,23 @@ paths:
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
   /agencies/{agency_uid}/units:
-    parameters:
-      - name: "agency_uid"
-        in: "path"
-        description: "The uid of the agency you want to retrieve."
-        required: true
-        schema:
-          type: "string"
     get:
       summary: "Get Units"
       operationId: "getUnits"
       description: "Get a list of all units for a given agency."
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve units for."
+          required: true
+          schema:
+            type: "string"
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/zip_code'
+        - $ref: '#/components/parameters/city'
+        - $ref: '#/components/parameters/state'
       tags: 
         -  Units
       responses:
@@ -179,6 +216,13 @@ paths:
       summary: "Create Unit"
       operationId: "createUnit"
       description: "Adds a unit or command to an existing agency. User must be a contributor."
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve units for."
+          required: true
+          schema:
+            type: "string"
       tags: 
         -  Units
       requestBody:
@@ -197,20 +241,9 @@ paths:
                 $ref: "#/components/schemas/CreateUnit"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
   /agencies/{agency_uid}/units/{unit_uid}:
-    parameters:
-      - name: "agency_uid"
-        in: "path"
-        description: "The uid of the agency you want to retrieve."
-        required: true
-        schema:
-          type: "string"
-      - name: "unit_uid"
-        in: "path"
-        description: "The uid of the agency you want to retrieve."
-        required: true
-        schema:
-          type: "string"
     get:
       summary: "Get Unit"
       operationId: "getUnit"
@@ -225,6 +258,12 @@ paths:
           required: true
           schema:
             type: "string"
+        - name: "unit_uid"
+          in: "path"
+          description: "The uid of the unit you want to retrieve."
+          required: true
+          schema:
+            type: "string"
       responses:
         "200":
           description: "A JSON array of unit objects"
@@ -232,10 +271,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Unit"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
     patch:
       summary: "Update Unit"
       operationId: "updateUnit"
       description: "Update an existing unit. User must be a contributor."
+      parameters:
+        - name: "agency_uid"
+          in: "path"
+          description: "The uid of the agency you want to retrieve units for."
+          required: true
+          schema:
+            type: "string"
+        - name: "unit_uid"
+          in: "path"
+          description: "The uid of the unit you want to retrieve."
+          required: true
+          schema:
+            type: "string"
       tags: 
         -  Units
       requestBody:
@@ -254,12 +310,50 @@ paths:
                 $ref: "#/components/schemas/Unit"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    jurisdiction:
+      name: "jurisdiction"
+      in: "query"
+      description: "Filter agencies by jurisdiction"
+      required: false
+      schema:
+        type: "string"
+    zip_code:
+      name: "zip_code"
+      in: "query"
+      description: "Filter by zip code"
+      required: false
+      schema:
+        type: "string"
+    city:
+      name: "city"
+      in: "query"
+      description: "Filter by city"
+      required: false
+      schema:
+        type: "string"
+    state:
+      name: "state"
+      in: "query"
+      description: "Filter by state"
+      required: false
+      schema:
+        type: "string"
+    name:
+      name: "name"
+      in: "query"
+      description: "Filter by name"
+      required: false
+      schema:
+        type: "string"
   schemas:
     BaseAgency:
       type: "object"
