@@ -9,6 +9,12 @@ components:
       required:
         - message
   responses:
+    conflictError:
+      description: "Conflict"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
     validationError:
       description: "Validation error"
       content:
