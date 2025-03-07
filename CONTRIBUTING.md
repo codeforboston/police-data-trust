@@ -1,6 +1,6 @@
-# Contributing to Police Misconduct Data Collaborative
+# Contributing to the National Police Data Index
 
-- [Contributing to Police Misconduct Data Collaborative](#contributing-to-police-misconduct-data-collaborative)
+- [Contributing to the National Police Data Index](#contributing-to-the-national-police-data-index)
   - [Code of Conduct](#code-of-conduct)
   - [Issues and Feature Requests](#issues-and-feature-requests)
   - [If You're New to Open Source](#if-youre-new-to-open-source)
