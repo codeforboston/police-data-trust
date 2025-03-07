@@ -12,7 +12,7 @@
 
 ## [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 
-The Police Misconduct Data Collaborative project has a [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
+The National Police Data Index project has a [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 to which all contributors must adhere.
 
 ## [Issues and Feature Requests](https://github.com/codeforboston/police-data-trust/issues)
