@@ -1,6 +1,6 @@
-# Contributing to Police Misconduct Data Collaborative
+# Contributing to the National Police Data Index
 
-- [Contributing to Police Misconduct Data Collaborative](#contributing-to-police-misconduct-data-collaborative)
+- [Contributing to the National Police Data Index](#contributing-to-the-national-police-data-index)
   - [Code of Conduct](#code-of-conduct)
   - [Issues and Feature Requests](#issues-and-feature-requests)
   - [If You're New to Open Source](#if-youre-new-to-open-source)
@@ -12,7 +12,7 @@
 
 ## [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 
-The Police Misconduct Data Collaborative project has a [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
+The National Police Data Index project has a [Code of Conduct](https://github.com/codeforboston/codeforboston.org/blob/master/code-of-conduct.md)
 to which all contributors must adhere.
 
 ## [Issues and Feature Requests](https://github.com/codeforboston/police-data-trust/issues)
