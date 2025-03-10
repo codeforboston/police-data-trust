@@ -6,6 +6,9 @@ components:
         message:
           type: "string"
           description: "A message describing the error."
+        details:
+          type: "string"
+          description: "Details about the error."
       required:
         - message
   responses:
