@@ -14,15 +14,13 @@ x-readme:
   explorer-enabled: true
   proxy-enabled: true
   samples-enabled: true
-security:
-  - bearerAuth: []
 tags:
   - name: "Authentication"
     description: "API for authenticating and creating user accounts."
 paths:
   /auth/register:
     post:
-      summary: "register User Account"
+      summary: "Register New Account"
       operationId: "register"
       description: "Create a new user account."
       tags: 
@@ -45,7 +43,7 @@ paths:
           $ref: '../common/error.yaml#/components/responses/conflictError'
   /auth/login:
     post:
-      summary: "Log in"
+      summary: "Log In"
       operationId: "login"
       description: "Log in to an existing user account."
       tags: 
@@ -65,7 +63,9 @@ paths:
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
   /auth/refresh:
-    post: 
+    post:
+      security:
+        - bearerAuth: []
       summary: "Refresh Access Token"
       operationId: "refreshToken"
       description: >
@@ -85,7 +85,9 @@ paths:
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /auth/logout:
     post:
-      summary: "Log out"
+      security:
+        - bearerAuth: []
+      summary: "Log Out"
       operationId: "logout"
       description: "Revokes the access token used to autheticate this request."
       tags: 
@@ -101,7 +103,9 @@ paths:
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /auth/whoami:
     get:
-      summary: "Who Am I"
+      security:
+        - bearerAuth: []
+      summary: "Current User"
       operationId: "whoami"
       description: "Returns the user that matches the access token used to authenticate the request."
       tags: 
