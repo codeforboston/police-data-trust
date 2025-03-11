@@ -35,7 +35,7 @@ This method uses Docker to run the complete application stack.
 3. Build and run the project.
 
 ```
-docker-compose build && docker-compose up -d && docker-compose logs -f
+docker compose build && docker compose up -d && docker compose logs -f
 ```
 
 ## Installation (Frontend Only)
@@ -51,7 +51,7 @@ All code must pass the unit tests and style checks before it can be merged into 
 
 
 ```
-docker exec -it "police-data-trust-api-1" /bin/bash
+docker exec -it "police-data-trust_api_1" /bin/bash
 
 ```
 
