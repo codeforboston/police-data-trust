@@ -107,10 +107,12 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '409':
+          $ref: '../common/error.yaml#/components/responses/conflictError'
     get:
       tags: 
         - "Complaints"
-      summary: "Get all Complaints"
+      summary: "Get Complaints"
       operationId: "getComplaints"
       description: >
        Returns all complaints in the database. Filters can be applied
@@ -118,6 +120,14 @@ paths:
       parameters:
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/source_uid'
+        - $ref: '#/components/parameters/source_type'
+        - $ref: '#/components/parameters/officers_involved'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/reason_for_contact'
+        - $ref: '#/components/parameters/outcome_of_contact'
+        - $ref: '#/components/parameters/date_gte'
+        - $ref: '#/components/parameters/date_lte'
       responses:
         "200":
           description: "A JSON array of complaint objects"
@@ -127,6 +137,8 @@ paths:
                 $ref: "#/components/schemas/ComplaintList"
         "401":
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
   /complaints/latest:
     get:
       tags: 
@@ -153,6 +165,68 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    source_uid:
+      name: source
+      in: query
+      description: "Filter by the source of the complaint. This should be the UID of the source."
+      required: false
+      schema:
+        type: string
+    source_type:
+      name: source_type
+      in: query
+      description: >
+        Filter by the type of source. This should be a comma separated list of source types. The valid
+        source types are 'legal', 'personal', 'news', and 'government'.
+      required: false
+      schema:
+        type: string
+    officers_involved:
+      name: officers_involved
+      in: query
+      description: >
+        Filter by the officers involved in the complaint. This should be a comma separated list of officer UIDs.
+      required: false
+      schema:
+        type: string
+    category:
+      name: category
+      in: query
+      description: "Filter by the category of the complaint."
+      required: false
+      schema:
+        type: string
+    reason_for_contact:
+      name: reason_for_contact
+      in: query
+      description: "Filter by the reason for contact."
+      required: false
+      schema:
+        type: string
+    outcome_of_contact:
+      name: outcome_of_contact
+      in: query
+      description: "Filter by the outcome of contact."
+      required: false
+      schema:
+        type: string
+    date_gte:
+      name: date_gte
+      in: query
+      description: "Only return complaints that occurred or were recieved after the selected date. This should be a date in the format YYYY-MM-DD."
+      required: false
+      schema:
+        type: string
+        format: date
+    date_lte:
+      name: date_lte
+      in: query
+      description: "Only return complaints that occurred or were recieved before the selected date. This should be a date in the format YYYY-MM-DD."
+      required: false
+      schema:
+        type: string
+        format: date
   schemas:
     BaseComplaint:
       type: "object"
