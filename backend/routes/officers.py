@@ -171,7 +171,7 @@ def get_officer(officer_uid: int):
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_officers():
-    """Get all officers.
+    """Get officers.
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number

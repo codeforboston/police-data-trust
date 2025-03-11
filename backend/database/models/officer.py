@@ -16,6 +16,10 @@ class StateID(StructuredNode, JsonSerializable):
     law enforcement agencies. For example, in New York, this would be
     the Tax ID Number.
     """
+    __property_order__ = [
+        "uid", "state", "id_name", "value"
+    ]
+
     id_name = StringProperty()  # e.g. "Tax ID Number"
     state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
@@ -41,6 +45,7 @@ class Officer(StructuredNode, JsonSerializable):
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
     date_of_birth = DateProperty()
+    year_of_birth = StringProperty()
 
     # Relationships
     state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
@@ -54,6 +59,10 @@ class Officer(StructuredNode, JsonSerializable):
         'backend.database.models.complaint.Investigation', "LEAD_BY")
     commands = Relationship(
         'backend.database.models.agency.Unit', "COMMANDS")
+    articles = RelationshipTo(
+        'backend.database.models.attachment.Article', "MENTIONED_IN")
+    attachments = RelationshipTo(
+        'backend.database.models.attachment.Attachment', "REFERENCED_IN")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 

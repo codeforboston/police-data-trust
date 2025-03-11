@@ -30,6 +30,12 @@ class UnitMembership(StructuredRel, JsonSerializable):
 
 
 class Unit(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "name", "website_url", "phone",
+        "email", "description", "address",
+        "city", "state", "zip", "agency_url",
+        "officers_url", "date_etsablished"
+    ]
     __hidden_properties__ = ["citations"]
 
     uid = UniqueIdProperty()
@@ -62,6 +68,12 @@ class Unit(StructuredNode, JsonSerializable):
 
 
 class Agency(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "name", "website_url", "hq_address",
+        "hq_city", "hq_state", "hq_zip",
+        "phone", "email", "description",
+        "jurisdiction"
+    ]
     __hidden_properties__ = ["citations"]
 
     uid = UniqueIdProperty()

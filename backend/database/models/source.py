@@ -7,9 +7,9 @@ from neomodel import (
     RelationshipTo, RelationshipFrom,
     StringProperty, DateTimeProperty,
     UniqueIdProperty, BooleanProperty,
-    EmailProperty
+    EmailProperty, JSONProperty,
+    ZeroOrOne
 )
-from backend.database.models.complaint import BaseSourceRel
 
 
 class MemberRole(str, PropertyEnum):
@@ -106,10 +106,13 @@ class SourceMember(StructuredRel, JsonSerializable):
 
 
 class Citation(StructuredRel, JsonSerializable):
+    """
+    Created when a source creates or updates a record.
+    """
     uid = UniqueIdProperty()
     date = DateTimeProperty(default=datetime.now())
-    url = StringProperty()
-    diff = StringProperty()
+    url = StringProperty(required=True)
+    diff = JSONProperty()
 
     def __repr__(self):
         """Represent instance as a unique string."""
@@ -117,23 +120,30 @@ class Citation(StructuredRel, JsonSerializable):
 
 
 class Source(StructuredNode, JsonSerializable):
+    """
+    Represents a source organization that provides data to the platform.
+    """
     __property_order__ = [
-        "uid", "name", "url",
-        "contact_email"
+        "uid", "name", "description", "website_url",
+        "contact_email", "contact_phone"
     ]
+    __hidden_properties__ = ["invitations", "staged_invitations"]
+
     uid = UniqueIdProperty()
 
     name = StringProperty(unique_index=True)
-    url = StringProperty()
+    description = StringProperty()
+    website_url = StringProperty()
     contact_email = StringProperty(required=True)
+    contact_phone = StringProperty()
 
     # Relationships
+    social_media = RelationshipTo(
+        "backend.database.models.attachment.SocialMediaInfo",
+        "HAS", cardinality=ZeroOrOne)
     members = RelationshipFrom(
         "backend.database.models.user.User",
         "IS_MEMBER", model=SourceMember)
-    complaints = RelationshipTo(
-        "backend.database.models.complaint.Complaint",
-        "REPORTED", model=BaseSourceRel)
     invitations = RelationshipTo(
         "Invitation", "HAS_PENDING_INVITATION")
     staged_invitations = RelationshipTo(

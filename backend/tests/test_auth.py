@@ -5,7 +5,7 @@ from argon2 import PasswordHasher
 ph = PasswordHasher()
 
 mock_user = {
-    "email": "existing@email.com",
+    "primary_email": "existing@email.com",
     "password_hash": ph.hash("my_password"),
     "first_name": "John",
     "last_name": "Doe",
@@ -50,7 +50,7 @@ def test_register(
     res = client.post(
         "api/v1/auth/register",
         json={
-            "email": email,
+            "primary_email": email,
             "password": password,
             "firstname": firstname,
             "lastname": lastname,
