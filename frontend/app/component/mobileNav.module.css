@@ -1,5 +1,6 @@
 
 .mobileNav {
+    display: none;
     bottom: 0;
     z-index: 10;
     width: 100%;
@@ -56,4 +57,11 @@
     padding: 8px 24px;
     border-radius: 21px;
     
+}
+
+
+@media screen and (max-width: 700px) {
+    .mobileNav {
+        display: block;
+    }
 }
