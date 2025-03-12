@@ -6,7 +6,8 @@ from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
-    UniqueIdProperty, EmailProperty
+    UniqueIdProperty, EmailProperty, ArrayProperty,
+    ZeroOrOne
 )
 from backend.database.models.source import SourceMember
 
@@ -34,7 +35,10 @@ class User(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "last_name",
         "email", "email_confirmed_at",
-        "phone_number", "role", "active"
+        "phone_number", "role", "active",
+        "additional_emails", "website",
+        "city", "state", "employer",
+        "job_title", "bio"
     ]
 
     uid = UniqueIdProperty()
@@ -42,20 +46,32 @@ class User(StructuredNode, JsonSerializable):
 
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
-    email = EmailProperty(required=True, unique_index=True)
+    primary_email = EmailProperty(required=True, unique_index=True)
     email_confirmed_at = DateProperty()
     password_hash = StringProperty(required=True)
 
     # User information
     first_name = StringProperty(required=True)
     last_name = StringProperty(required=True)
+    phone_number = StringProperty()
+    additional_emails = ArrayProperty(StringProperty())
+    website = StringProperty()
+    city = StringProperty()
+    state = StringProperty()
+    employer = StringProperty()
+    job_title = StringProperty()
+    bio = StringProperty()
+
+    # Profile Image
+    img_ref = StringProperty()
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)
 
-    phone_number = StringProperty()
-
-    # Data Source Relationships
+    # Relationships
+    social_media = Relationship(
+        'backend.database.models.attachment.SocialMediaInfo',
+        "HAS", cardinality=ZeroOrOne)
     sources = Relationship(
         'backend.database.models.source.Source',
         "MEMBER_OF_SOURCE", model=SourceMember)
@@ -148,6 +164,6 @@ class User(StructuredNode, JsonSerializable):
             User: The User instance if found, otherwise None.
         """
         try:
-            return cls.nodes.get_or_none(email=email)
+            return cls.nodes.get_or_none(primary_email=email)
         except cls.DoesNotExist:
             return None
