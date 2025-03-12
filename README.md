@@ -27,10 +27,17 @@ This method uses Docker to run the complete application stack.
 
 1. Make sure that [Docker](https://www.docker.com) is installed on your machine.
 
-2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and add your preferred PostgreSQL username and password:
+2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and add your preferred PostgreSQL username and password.
 
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
+
+> **Note**
+> Windows users will need to run the following in PowerShell before proceeding:
+> ```
+> winget install dos2unix
+> dos2unix run_dev.sh
+> ```
 
 3. Build and run the project.
 
