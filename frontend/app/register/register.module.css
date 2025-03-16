@@ -1,3 +1,11 @@
-.main {
-    width: 100%;
+.form {
+    max-width: 500px;
+}
+
+.h1 {
+   padding: 1rem 0rem;
+}
+
+.p {
+    padding: 1rem 0;
 }
