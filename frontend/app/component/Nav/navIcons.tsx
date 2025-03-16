@@ -10,7 +10,7 @@ import styles from './navIcons.module.css';
 export default function NavIcons() {
     return (
         <div className= {styles.icons}>
-            <Link href="/create-form" className={styles.createIcon}>
+            <Link href="/register" className={styles.createIcon}>
                 <AddCircleOutlineIcon />
             </Link>
             <Link href="/chat" className={styles.iconLink}>
