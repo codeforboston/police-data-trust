@@ -25,10 +25,10 @@ export default function MobileNav() {
                     <TimelineOutlinedIcon className={styles.icon} />  
                     <Link href="/2">Data Explore</Link>
                 </li>
-                <li className={ pathname === "/3" ? `${styles.active}`: styles.li}>
+                <li className={ pathname === "/register" ? `${styles.active}`: styles.li}>
                     <div className= {styles.create}>
                         <ControlPointOutlinedIcon className={styles.icon} /> 
-                        <Link href="/3">Create</Link> 
+                        <Link href="/register">Create</Link> 
                     </div> 
                 </li>
                 <li className={ pathname === "/4" ? `${styles.active}`: styles.li}>
