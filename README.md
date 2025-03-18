@@ -27,7 +27,7 @@ This method uses Docker to run the complete application stack.
 
 1. Make sure that [Docker](https://www.docker.com) is installed on your machine.
 
-2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and add your preferred PostgreSQL username and password.
+2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and change GRAPH_PASSWORD to a unique value.
 
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
