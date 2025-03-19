@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useState } from "react";
 import styles from "./register.module.css";
 import Image from "next/image";
 import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
@@ -13,9 +14,54 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+
+
 
 export default function RegistrationForm() {
   const [showPassword, setShowPassword] = React.useState(false);
+
+type UserData = {
+  email: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  password2: string;
+}
+
+type FormErrorMessages = {
+  email: string;
+  name: string;
+  password:string;
+}
+
+const formErrorMessages: FormErrorMessages = {
+  email: "Invalid Email",
+  name: "Required",
+  password: "Invalid Password or Do Not Match",
+} 
+
+  
+  const [userData, setUserData] = useState<UserData>({
+  email: "",
+  firstname: "",
+  lastname: "",
+  password: "",
+  password2:"",
+  });
+
+  const [formError, setFormError] = useState(false)
+
+  const handleChange = (e) => {
+    setUserData({ ...userData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(formError)
+    console.log(userData)
+  };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -44,30 +90,42 @@ export default function RegistrationForm() {
       >
         <Image src={logo} alt="NPDC Logo" width={100} height={100} />
         <h1 className={styles.h1}>Create Account</h1>
-        <form className={styles.form} noValidate autoComplete="off">
+        <form className={styles.form} noValidate autoComplete="on" onSubmit={handleSubmit}>
           <TextField
             required
             id="email"
+            autoComplete="email"
+            value={userData.email}
             label="Email"
             variant="outlined"
             sx={{ width: "100%", py: "5px" }}
             margin="dense"
+            onChange={handleChange}
           />
           <TextField
             required
-            id="first-name"
+            id="firstname"
+            value={userData.firstname}
             label="First Name"
             variant="outlined"
             sx={{ width: "100%" }}
             margin="dense"
+            onChange={handleChange}
+            error={formError? true: false}
+            helperText={ formErrorMessages.name}
+            
           />
           <TextField
             required
-            id="last-name"
+            id="lastname"
+            value={userData.lastname}
             label="Last Name"
             variant="outlined"
-            sx={{ width: "100%" }}
+            sx={{ width: "100%"}}
             margin="dense"
+            onChange={handleChange}
+            error={formError? true: false}
+            helperText={ formErrorMessages.name}
           />
           <p className={styles.p}>
             {" "}
@@ -75,12 +133,15 @@ export default function RegistrationForm() {
             upper case letter, lower case letter, and symbol.
           </p>
           <FormControl sx={{ marginY: '5px', width: "100%" }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
+            <InputLabel htmlFor="password">
               Password
             </InputLabel>
             <OutlinedInput
               id="password"
+              autoComplete="new-password"
+              value={userData.password}
               type={showPassword ? "text" : "password"}
+              onChange={handleChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -93,22 +154,27 @@ export default function RegistrationForm() {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
+             
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
               label="Password"
+           
             />
           </FormControl>
           <FormControl
             varient="outlined"
-            sx={{ width: "100%", marginY: "5px" }}
+            sx={{ width: "100%", marginY: "5px"}}
           >
-            <InputLabel>Confirm Password</InputLabel>
+            <InputLabel htmlFor="password">Confirm Password</InputLabel>
             <OutlinedInput
-              id="password"
+              id="password2"
+              value={userData.password2}
+              autoComplete="new-password"
               type={showPassword ? "text" : "password"}
+              onChange={handleChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -121,6 +187,7 @@ export default function RegistrationForm() {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
+                    
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -129,6 +196,7 @@ export default function RegistrationForm() {
               label="Confirm Password"
             />
           </FormControl>
+          <Button variant="contained" type="submit" sx={{width: '100%', marginY: '20px', height: '50px'}}>Create Account</Button>
         </form>
       </Box>
     </div>
