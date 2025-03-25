@@ -56,8 +56,33 @@ const formErrorMessages: FormErrorMessages = {
     setUserData({ ...userData, [e.target.id]: e.target.value });
   };
 
+//Function for Client Vallidation 
+  const handleFormError = (data: UserData) => {
+    if(data.firstname == "" || data.lastname == "") {
+      setFormError(true);
+      return
+    } 
+
+    if(data.email == "" || !data.email.includes('@')){
+      setFormError(true)
+      return
+    }
+
+    if(data.password != data.password2) {
+      setFormError(true)
+      return
+    }
+    if(data.password === "" || data.password2 === ""){
+      setFormError(true)
+    } else {
+      setFormError(false)
+    }
+  }
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    handleFormError(userData)
 
     console.log(formError)
     console.log(userData)
@@ -101,6 +126,8 @@ const formErrorMessages: FormErrorMessages = {
             sx={{ width: "100%", py: "5px" }}
             margin="dense"
             onChange={handleChange}
+            error={formError? true: false}
+            helperText = {formErrorMessages.email}
           />
           <TextField
             required
@@ -142,6 +169,7 @@ const formErrorMessages: FormErrorMessages = {
               value={userData.password}
               type={showPassword ? "text" : "password"}
               onChange={handleChange}
+              error={formError? true: false}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -154,7 +182,6 @@ const formErrorMessages: FormErrorMessages = {
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
                     edge="end"
-             
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -175,6 +202,7 @@ const formErrorMessages: FormErrorMessages = {
               autoComplete="new-password"
               type={showPassword ? "text" : "password"}
               onChange={handleChange}
+              error={formError? true: false}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
