@@ -31,7 +31,7 @@ def login():
 
     # Verify user
     if body.password is not None and body.email is not None:
-        user = User.nodes.first_or_none(email=body.email)
+        user = User.get_by_email(email=body.email)
         if user is not None and user.verify_password(body.password):
             token = create_access_token(identity=user.uid)
             logger.info(f"User {user.uid} logged in successfully.")
@@ -72,7 +72,7 @@ def register():
     logger.info(f"Registering user with email {body.email}.")
 
     # Check to see if user already exists
-    user = User.nodes.first_or_none(email=body.email)
+    user = User.get_by_email(email=body.email)
     if user is not None:
         return {
             "status": "Conflict",
@@ -81,7 +81,7 @@ def register():
     # Verify all fields included and create user
     if body.password is not None and body.email is not None:
         user = User(
-            email=body.email,
+            primary_email=body.email,
             password_hash=User.hash_password(body.password),
             first_name=body.firstname,
             last_name=body.lastname,
@@ -94,7 +94,7 @@ def register():
         code to handle adding staged_invitations-->invitations for users
         who have just signed up for NPDC
         """
-        staged_invite = StagedInvitation.nodes.filter(email=user.email)
+        staged_invite = StagedInvitation.nodes.filter(email=user.primary_email)
         if staged_invite is not None and len(staged_invite) > 0:
             for instance in staged_invite:
                 new_invitation = Invitation(
