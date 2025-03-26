@@ -15,6 +15,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
+import createrUser from "@/lib/createUser";
+
 
 
 
@@ -25,6 +27,7 @@ type UserData = {
   email: string;
   firstname: string;
   lastname: string;
+  phone: string;
   password: string;
   password2: string;
 }
@@ -46,6 +49,7 @@ const formErrorMessages: FormErrorMessages = {
   email: "",
   firstname: "",
   lastname: "",
+  phone: "",
   password: "",
   password2:"",
   });
@@ -56,7 +60,6 @@ const formErrorMessages: FormErrorMessages = {
     setUserData({ ...userData, [e.target.id]: e.target.value });
   };
 
-//Function for Client Vallidation 
   const handleFormError = (data: UserData) => {
     if(data.firstname == "" || data.lastname == "") {
       setFormError(true);
@@ -72,10 +75,15 @@ const formErrorMessages: FormErrorMessages = {
       setFormError(true)
       return
     }
+    if(data.phone === "") {
+      setFormError(true) 
+      return
+    }
     if(data.password === "" || data.password2 === ""){
       setFormError(true)
     } else {
       setFormError(false)
+      console.log(createrUser(userData));
     }
   }
   
@@ -84,7 +92,6 @@ const formErrorMessages: FormErrorMessages = {
 
     handleFormError(userData)
 
-    console.log(formError)
     console.log(userData)
   };
 
@@ -147,6 +154,18 @@ const formErrorMessages: FormErrorMessages = {
             id="lastname"
             value={userData.lastname}
             label="Last Name"
+            variant="outlined"
+            sx={{ width: "100%"}}
+            margin="dense"
+            onChange={handleChange}
+            error={formError? true: false}
+            helperText={ formErrorMessages.name}
+          />
+          <TextField
+            required
+            id="phone"
+            value={userData.phone}
+            label="Phone Number"
             variant="outlined"
             sx={{ width: "100%"}}
             margin="dense"
