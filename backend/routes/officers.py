@@ -11,7 +11,7 @@ from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
-
+from neomodel import db
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
@@ -160,11 +160,15 @@ def create_officer():
 def get_officer(officer_uid: int):
     """Get an officer profile.
     """
-    o = Officer.nodes.get_or_none(uid=officer_uid)
+    o = Officer.nodes.get_or_none(element_id=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
     return o.to_json()
 
+@bp.route("/test", methods=["GET"])
+def test():
+    print("🚨 test() function triggered 🚨")
+    return {"message": "officers_bp is working"}, 200
 
 # Get all officers
 @bp.route("/", methods=["GET"])
@@ -175,14 +179,47 @@ def get_all_officers():
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
+    unit_name: filter by unit name
+    ethnicity: filter by officer ethnicity
     """
     args = request.args
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
+    unit_name = args.get("unit_name", None)
+    ethnicity = args.get("ethnicity", None)  # New parameter
+    # Base query
+    query = "MATCH (o:Officer)"
+    conditions = []
 
-    all_officers = Officer.nodes.all()
-    results = paginate_results(all_officers, q_page, q_per_page)
+    # Add unit filter if provided
+    if unit_name:
+        query += " MATCH (o)-[]-(u:Unit)"
+        conditions.append("u.name CONTAINS $unit_name")
 
+    # Add ethnicity filter if provided
+    if ethnicity:
+        conditions.append("o.ethnicity = $ethnicity")
+    # Combine conditions
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+    # Add pagination
+    query += " RETURN o SKIP $skip LIMIT $limit"
+    # Calculate pagination values
+    skip = (q_page - 1) * q_per_page
+    limit = q_per_page
+    # Execute query
+    all_officers, _ = db.cypher_query(
+        query,
+        {
+            "unit_name": unit_name,
+            "ethnicity": ethnicity,  # Include new param
+            "skip": skip,
+            "limit": limit
+        }
+    )
+    # Process results
+    officers = [Officer.inflate(record[0]) for record in all_officers]
+    results = paginate_results(officers, q_page, q_per_page)
     return ordered_jsonify(results), 200
 
 
