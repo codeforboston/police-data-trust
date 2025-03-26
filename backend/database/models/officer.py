@@ -58,4 +58,4 @@ class Officer(StructuredNode, JsonSerializable):
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
-        return f"<Officer {self.id}>"
+        return f"<Officer {self.element_id}>"

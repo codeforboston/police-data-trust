@@ -1,0 +1,1021 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 2E5A-45DC
+D:.
+¦   .dockerignore
+¦   .env
+¦   .env.template
+¦   .flaskenv
+¦   .gitignore
+¦   app.json
+¦   CONTRIBUTING.md
+¦   docker-compose.notebook.yml
+¦   docker-compose.yml
+¦   Dockerfile.api
+¦   Dockerfile.web
+¦   heroku.yml
+¦   install_dependencies.sh
+¦   LICENSE
+¦   package-lock.json
+¦   police-data-trust.code-workspace
+¦   Procfile
+¦   pyproject.toml
+¦   Python-Imports.md
+¦   README.md
+¦   runtime.txt
+¦   run_cloud.sh
+¦   run_dev copy.sh
+¦   run_dev.sh
+¦   run_docker_notebooks.sh
+¦   run_prod.sh
+¦   run_unix.sh
+¦   run_windows.bat
+¦   setup.cfg
+¦   structure.txt
+¦   yarn.lock
+¦   __init__.py
+¦   
++---.github
+¦   ¦   dependabot.yml
+¦   ¦   FUNDING.yml
+¦   ¦   
+¦   +---actions
+¦   ¦   +---setup-frontend
+¦   ¦           action.yml
+¦   ¦           
+¦   +---ISSUE_TEMPLATE
+¦   ¦       bug_report.md
+¦   ¦       feature_request.md
+¦   ¦       
+¦   +---workflows
+¦           aws-ecs-deploy-backend.yml
+¦           aws-ecs-deploy-frontend.yml
+¦           build-pull-request.yml
+¦           frontend-checks.yml
+¦           python-tests.yml
+¦           
++---backend
+¦   ¦   api.py
+¦   ¦   config.py
+¦   ¦   Dockerfile
+¦   ¦   Dockerfile.cloud
+¦   ¦   README.md
+¦   ¦   run_dev.sh
+¦   ¦   schemas.py
+¦   ¦   utils.py
+¦   ¦   wsgi.py
+¦   ¦   __init__.py
+¦   ¦   
+¦   +---auth
+¦   ¦   ¦   auth.py
+¦   ¦   ¦   jwt.py
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---__pycache__
+¦   ¦           auth.cpython-313.pyc
+¦   ¦           jwt.cpython-313.pyc
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---celery
+¦   ¦       tasks.py
+¦   ¦       worker.py
+¦   ¦       __init__.py
+¦   ¦       
+¦   +---database
+¦   ¦   ¦   core.py
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---models
+¦   ¦   ¦   ¦   agency.py
+¦   ¦   ¦   ¦   attachment.py
+¦   ¦   ¦   ¦   civilian.py
+¦   ¦   ¦   ¦   complaint.py
+¦   ¦   ¦   ¦   litigation.py
+¦   ¦   ¦   ¦   officer.py
+¦   ¦   ¦   ¦   source.py
+¦   ¦   ¦   ¦   user.py
+¦   ¦   ¦   ¦   __init__.py
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---types
+¦   ¦   ¦   ¦   ¦   enums.py
+¦   ¦   ¦   ¦   ¦   __init__.py
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---__pycache__
+¦   ¦   ¦   ¦           enums.cpython-313.pyc
+¦   ¦   ¦   ¦           __init__.cpython-313.pyc
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---__pycache__
+¦   ¦   ¦           agency.cpython-313.pyc
+¦   ¦   ¦           attachment.cpython-313.pyc
+¦   ¦   ¦           civilian.cpython-313.pyc
+¦   ¦   ¦           complaint.cpython-313.pyc
+¦   ¦   ¦           litigation.cpython-313.pyc
+¦   ¦   ¦           officer.cpython-313.pyc
+¦   ¦   ¦           source.cpython-313.pyc
+¦   ¦   ¦           user.cpython-313.pyc
+¦   ¦   ¦           __init__.cpython-313.pyc
+¦   ¦   ¦           
+¦   ¦   +---queries
+¦   ¦   ¦       .gitkeep
+¦   ¦   ¦       
+¦   ¦   +---__pycache__
+¦   ¦           core.cpython-313.pyc
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---dto
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---user
+¦   ¦   ¦   ¦   invite_user.py
+¦   ¦   ¦   ¦   login_user.py
+¦   ¦   ¦   ¦   register_user.py
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---__pycache__
+¦   ¦   ¦           invite_user.cpython-313.pyc
+¦   ¦   ¦           login_user.cpython-313.pyc
+¦   ¦   ¦           register_user.cpython-313.pyc
+¦   ¦   ¦           
+¦   ¦   +---__pycache__
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---importer
+¦   ¦   ¦   loop.py
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---loaders
+¦   ¦   ¦       __init__.py
+¦   ¦   ¦       
+¦   ¦   +---__pycache__
+¦   ¦           loop.cpython-313.pyc
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---mixpanel
+¦   ¦   ¦   mix.py
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---__pycache__
+¦   ¦           mix.cpython-313.pyc
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---routes
+¦   ¦   ¦   agencies.py
+¦   ¦   ¦   auth.py
+¦   ¦   ¦   healthcheck.py
+¦   ¦   ¦   incidents.py
+¦   ¦   ¦   officers.py
+¦   ¦   ¦   sources.py
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---tmp
+¦   ¦   ¦   +---pydantic
+¦   ¦   ¦       ¦   agencies.py
+¦   ¦   ¦       ¦   common.py
+¦   ¦   ¦       ¦   officers.py
+¦   ¦   ¦       ¦   partners.py
+¦   ¦   ¦       ¦   
+¦   ¦   ¦       +---__pycache__
+¦   ¦   ¦               agencies.cpython-313.pyc
+¦   ¦   ¦               common.cpython-313.pyc
+¦   ¦   ¦               officers.cpython-313.pyc
+¦   ¦   ¦               partners.cpython-313.pyc
+¦   ¦   ¦               
+¦   ¦   +---__pycache__
+¦   ¦           agencies.cpython-313.pyc
+¦   ¦           auth.cpython-313.pyc
+¦   ¦           healthcheck.cpython-313.pyc
+¦   ¦           officers.cpython-313.pyc
+¦   ¦           sources.cpython-313.pyc
+¦   ¦           __init__.cpython-313.pyc
+¦   ¦           
+¦   +---scraper
+¦   ¦   ¦   .gitignore
+¦   ¦   ¦   configs.yaml
+¦   ¦   ¦   varnames_crosswalk.csv
+¦   ¦   ¦   __init__.py
+¦   ¦   ¦   
+¦   ¦   +---data_scrapers
+¦   ¦   ¦   ¦   load_full_database.py
+¦   ¦   ¦   ¦   README.md
+¦   ¦   ¦   ¦   scrape_data_sources.py
+¦   ¦   ¦   ¦   __init__.py
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---counted
+¦   ¦   ¦   ¦   ¦   client.py
+¦   ¦   ¦   ¦   ¦   counted.py
+¦   ¦   ¦   ¦   ¦   main.py
+¦   ¦   ¦   ¦   ¦   __init__.py
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---scraper_data
+¦   ¦   ¦   ¦           README.txt
+¦   ¦   ¦   ¦           the-counted-2015.csv
+¦   ¦   ¦   ¦           the-counted-2016.csv
+¦   ¦   ¦   ¦           thecounted-data.zip
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---CPDP
+¦   ¦   ¦   ¦   ¦   client.py
+¦   ¦   ¦   ¦   ¦   CPDP.py
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---scraper_data
+¦   ¦   ¦   ¦           cpdp_geocoded_cr.csv.gz
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---fatal_force
+¦   ¦   ¦   ¦       client.py
+¦   ¦   ¦   ¦       fatal_force.py
+¦   ¦   ¦   ¦       main.py
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---mpv
+¦   ¦   ¦   ¦   ¦   client.py
+¦   ¦   ¦   ¦   ¦   mpv.py
+¦   ¦   ¦   ¦   ¦   __init__.py
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---scraper_data
+¦   ¦   ¦   ¦           mpv.csv
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---scraper_utils
+¦   ¦   ¦           utils.py
+¦   ¦   ¦           __init__.py
+¦   ¦   ¦           
+¦   ¦   +---notebooks
+¦   ¦           counted.ipynb
+¦   ¦           cpdp.ipynb
+¦   ¦           Fatal_Force.ipynb
+¦   ¦           measures_for_justice.ipynb
+¦   ¦           mpv.ipynb
+¦   ¦           
+¦   +---templates
+¦   ¦   +---flask_user
+¦   ¦       +---emails
+¦   ¦               base_message.html
+¦   ¦               base_message.txt
+¦   ¦               base_subject.txt
+¦   ¦               confirm_email_message.html
+¦   ¦               confirm_email_message.txt
+¦   ¦               confirm_email_subject.txt
+¦   ¦               forgot_password_message.html
+¦   ¦               forgot_password_message.txt
+¦   ¦               forgot_password_subject.txt
+¦   ¦               invite_message.html
+¦   ¦               invite_message.txt
+¦   ¦               invite_subject.txt
+¦   ¦               password_changed_message.html
+¦   ¦               password_changed_message.txt
+¦   ¦               password_changed_subject.txt
+¦   ¦               registered_message.html
+¦   ¦               registered_message.txt
+¦   ¦               registered_subject.txt
+¦   ¦               username_changed_message.html
+¦   ¦               username_changed_message.txt
+¦   ¦               username_changed_subject.txt
+¦   ¦               
+¦   +---tests
+¦   ¦       conftest.py
+¦   ¦       README.md
+¦   ¦       test_agencies.py
+¦   ¦       test_auth.py
+¦   ¦       test_employment.py
+¦   ¦       test_officers.py
+¦   ¦       test_routes.py
+¦   ¦       test_sources.py
+¦   ¦       __init__.py
+¦   ¦       
+¦   +---__pycache__
+¦           api.cpython-313.pyc
+¦           config.cpython-313.pyc
+¦           schemas.cpython-313.pyc
+¦           utils.cpython-313.pyc
+¦           __init__.cpython-313.pyc
+¦           
++---chicago-police-data
++---docs
+¦   ¦   mkdocs.yml
+¦   ¦   README.md
+¦   ¦   
+¦   +---src
+¦       ¦   about.md
+¦       ¦   index.md
+¦       ¦   setup.md
+¦       ¦   
+¦       +---img
+¦               setup-console.png
+¦               setup-forking.png
+¦               
++---frontend
+¦   ¦   .dockerignore
+¦   ¦   .env.development
+¦   ¦   .env.production
+¦   ¦   .env.staging
+¦   ¦   .env.ui
+¦   ¦   .eslintrc
+¦   ¦   .firebaserc
+¦   ¦   .gitignore
+¦   ¦   .lintstagedrc.json
+¦   ¦   .npmrc
+¦   ¦   .prettierignore
+¦   ¦   .prettierrc
+¦   ¦   babel.config.js
+¦   ¦   Dockerfile
+¦   ¦   Dockerfile.cloud
+¦   ¦   firebase.json
+¦   ¦   jest.config.js
+¦   ¦   jest.e2e.config.js
+¦   ¦   jest.setup.ts
+¦   ¦   next-env.d.ts
+¦   ¦   next.config.js
+¦   ¦   package-lock.json
+¦   ¦   package.json
+¦   ¦   README.md
+¦   ¦   tsconfig.json
+¦   ¦   yarn.lock
+¦   ¦   
+¦   +---.husky
+¦   ¦       .gitignore
+¦   ¦       pre-commit
+¦   ¦       
+¦   +---.next
+¦   ¦   ¦   build-manifest.json
+¦   ¦   ¦   react-loadable-manifest.json
+¦   ¦   ¦   
+¦   ¦   +---cache
+¦   ¦   ¦   ¦   config.json
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---webpack
+¦   ¦   ¦       +---client-development
+¦   ¦   ¦       ¦       0.pack
+¦   ¦   ¦       ¦       1.pack
+¦   ¦   ¦       ¦       10.pack
+¦   ¦   ¦       ¦       2.pack
+¦   ¦   ¦       ¦       3.pack
+¦   ¦   ¦       ¦       4.pack
+¦   ¦   ¦       ¦       5.pack
+¦   ¦   ¦       ¦       6.pack
+¦   ¦   ¦       ¦       7.pack
+¦   ¦   ¦       ¦       8.pack
+¦   ¦   ¦       ¦       9.pack
+¦   ¦   ¦       ¦       index.pack
+¦   ¦   ¦       ¦       index.pack.old
+¦   ¦   ¦       ¦       
+¦   ¦   ¦       +---server-development
+¦   ¦   ¦               0.pack
+¦   ¦   ¦               1.pack
+¦   ¦   ¦               2.pack
+¦   ¦   ¦               3.pack
+¦   ¦   ¦               4.pack
+¦   ¦   ¦               5.pack
+¦   ¦   ¦               6.pack
+¦   ¦   ¦               index.pack
+¦   ¦   ¦               index.pack.old
+¦   ¦   ¦               
+¦   ¦   +---server
+¦   ¦   ¦   ¦   compositions_visualizations_bubble-chart_BubbleChart_tsx.js
+¦   ¦   ¦   ¦   compositions_visualizations_map_Map_tsx.js
+¦   ¦   ¦   ¦   helpers_api_mocks_browser_ts.js
+¦   ¦   ¦   ¦   pages-manifest.json
+¦   ¦   ¦   ¦   webpack-runtime.js
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---pages
+¦   ¦   ¦           index.js
+¦   ¦   ¦           login.js
+¦   ¦   ¦           logout.js
+¦   ¦   ¦           profile.js
+¦   ¦   ¦           register.js
+¦   ¦   ¦           search.js
+¦   ¦   ¦           _app.js
+¦   ¦   ¦           _document.js
+¦   ¦   ¦           _error.js
+¦   ¦   ¦           
+¦   ¦   +---static
+¦   ¦       +---chunks
+¦   ¦       ¦   ¦   amp.js
+¦   ¦       ¦   ¦   compositions_visualizations_bubble-chart_BubbleChart_tsx.js
+¦   ¦       ¦   ¦   compositions_visualizations_map_Map_tsx.js
+¦   ¦       ¦   ¦   helpers_api_mocks_browser_ts.js
+¦   ¦       ¦   ¦   main.js
+¦   ¦       ¦   ¦   node_modules_next_dist_client_dev_noop_js.js
+¦   ¦       ¦   ¦   polyfills.js
+¦   ¦       ¦   ¦   react-refresh.js
+¦   ¦       ¦   ¦   webpack.js
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---pages
+¦   ¦       ¦           index.js
+¦   ¦       ¦           login.js
+¦   ¦       ¦           logout.js
+¦   ¦       ¦           profile.js
+¦   ¦       ¦           register.js
+¦   ¦       ¦           search.js
+¦   ¦       ¦           _app.js
+¦   ¦       ¦           _error.js
+¦   ¦       ¦           
+¦   ¦       +---development
+¦   ¦       ¦       _buildManifest.js
+¦   ¦       ¦       _ssgManifest.js
+¦   ¦       ¦       
+¦   ¦       +---webpack
+¦   ¦               11901804ec4fa5d307d1.webpack.hot-update.json
+¦   ¦               2739afa5b21e9abb8057.webpack.hot-update.json
+¦   ¦               39215156237813a89dd5.webpack.hot-update.json
+¦   ¦               4ce01ed91d73f8bff7d3.webpack.hot-update.json
+¦   ¦               55894d79ca611624578e.webpack.hot-update.json
+¦   ¦               6c955105aaa959687953.webpack.hot-update.json
+¦   ¦               7ef13fbc81d28087a6e7.webpack.hot-update.json
+¦   ¦               a232b8a7d4f0ee8fd58c.webpack.hot-update.json
+¦   ¦               webpack.11901804ec4fa5d307d1.hot-update.js
+¦   ¦               webpack.2739afa5b21e9abb8057.hot-update.js
+¦   ¦               webpack.39215156237813a89dd5.hot-update.js
+¦   ¦               webpack.4ce01ed91d73f8bff7d3.hot-update.js
+¦   ¦               webpack.55894d79ca611624578e.hot-update.js
+¦   ¦               webpack.6c955105aaa959687953.hot-update.js
+¦   ¦               webpack.7ef13fbc81d28087a6e7.hot-update.js
+¦   ¦               webpack.a232b8a7d4f0ee8fd58c.hot-update.js
+¦   ¦               
+¦   +---.storybook
+¦   ¦       main.js
+¦   ¦       preview.js
+¦   ¦       USAGE.md
+¦   ¦       
+¦   +---@types
+¦   ¦       index.d.ts
+¦   ¦       react-table-config.d.ts
+¦   ¦       
+¦   +---compositions
+¦   ¦   ¦   index.tsx
+¦   ¦   ¦   
+¦   ¦   +---dashboard-header
+¦   ¦   ¦       dashboard-header.module.css
+¦   ¦   ¦       dashboard-header.stories.tsx
+¦   ¦   ¦       dashboard-header.tsx
+¦   ¦   ¦       mobile-dropdown.module.css
+¦   ¦   ¦       mobile-dropdown.tsx
+¦   ¦   ¦       nav.module.css
+¦   ¦   ¦       nav.tsx
+¦   ¦   ¦       
+¦   ¦   +---enrollment-call-to-action
+¦   ¦   ¦       enrollment-call-to-action.module.css
+¦   ¦   ¦       enrollment-call-to-action.stories.tsx
+¦   ¦   ¦       enrollment-call-to-action.tsx
+¦   ¦   ¦       
+¦   ¦   +---enrollment-header
+¦   ¦   ¦       enrollment-header.module.css
+¦   ¦   ¦       enrollment-header.stories.tsx
+¦   ¦   ¦       enrollment-header.tsx
+¦   ¦   ¦       
+¦   ¦   +---enrollment-response
+¦   ¦   ¦       enrollment-response.module.css
+¦   ¦   ¦       enrollment-response.stories.tsx
+¦   ¦   ¦       enrollment-response.tsx
+¦   ¦   ¦       
+¦   ¦   +---incident-view
+¦   ¦   ¦   ¦   index.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---incident-view-body
+¦   ¦   ¦   ¦   ¦   incident-body.module.css
+¦   ¦   ¦   ¦   ¦   incident-body.stories.tsx
+¦   ¦   ¦   ¦   ¦   index.tsx
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---incident-data
+¦   ¦   ¦   ¦   ¦       incident-data.module.css
+¦   ¦   ¦   ¦   ¦       incident-data.stories.tsx
+¦   ¦   ¦   ¦   ¦       index.tsx
+¦   ¦   ¦   ¦   ¦       
+¦   ¦   ¦   ¦   +---incident-google-map
+¦   ¦   ¦   ¦           index.tsx
+¦   ¦   ¦   ¦           map.module.css
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---incident-view-header
+¦   ¦   ¦           incident-view-header.module.css
+¦   ¦   ¦           incident-view-header.stories.tsx
+¦   ¦   ¦           index.tsx
+¦   ¦   ¦           
+¦   ¦   +---landing-page
+¦   ¦   ¦       landing.module.css
+¦   ¦   ¦       landing.tsx
+¦   ¦   ¦       
+¦   ¦   +---map
+¦   ¦   ¦       Map.stories.tsx
+¦   ¦   ¦       
+¦   ¦   +---officer-view
+¦   ¦   ¦   ¦   index.tsx
+¦   ¦   ¦   ¦   officer-view.module.css
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---officer-affiliations
+¦   ¦   ¦   ¦       index.tsx
+¦   ¦   ¦   ¦       officer-affiliations.module.css
+¦   ¦   ¦   ¦       officer-affilitations.stories.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---officer-view-header
+¦   ¦   ¦   ¦       index.tsx
+¦   ¦   ¦   ¦       officer-view-header.module.css
+¦   ¦   ¦   ¦       offier-view-header.stories.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---officer-work-history
+¦   ¦   ¦   ¦   ¦   index.tsx
+¦   ¦   ¦   ¦   ¦   officer-work-history.module.css
+¦   ¦   ¦   ¦   ¦   officer-work-history.stories.tsx
+¦   ¦   ¦   ¦   ¦   
+¦   ¦   ¦   ¦   +---work-history-instance
+¦   ¦   ¦   ¦           index.tsx
+¦   ¦   ¦   ¦           work-history-instance.module.css
+¦   ¦   ¦   ¦           work-history-instance.stories.tsx
+¦   ¦   ¦   ¦           
+¦   ¦   ¦   +---optional-officer-info
+¦   ¦   ¦           index.tsx
+¦   ¦   ¦           optional-officer-info.module.css
+¦   ¦   ¦           optional-officer-info.stories.tsx
+¦   ¦   ¦           
+¦   ¦   +---password-aid
+¦   ¦   ¦       password-aid.module.css
+¦   ¦   ¦       password-aid.stories.tsx
+¦   ¦   ¦       password-aid.tsx
+¦   ¦   ¦       
+¦   ¦   +---profile-edit
+¦   ¦   ¦       edit-info.module.css
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       
+¦   ¦   +---profile-info
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       profile-info.stories.tsx
+¦   ¦   ¦       profile.module.css
+¦   ¦   ¦       view-info.module.css
+¦   ¦   ¦       
+¦   ¦   +---profile-nav
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       profile-nav.module.css
+¦   ¦   ¦       profile-nav.stories.tsx
+¦   ¦   ¦       
+¦   ¦   +---profile-notifications
+¦   ¦   ¦   ¦   profile-notifications.module.css
+¦   ¦   ¦   ¦   profile-notifications.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---sub-comps
+¦   ¦   ¦           confirm-org-dialog.module.css
+¦   ¦   ¦           confirm-org-dialog.tsx
+¦   ¦   ¦           
+¦   ¦   +---profile-organizations
+¦   ¦   ¦   ¦   profile-organizations.module.css
+¦   ¦   ¦   ¦   profile-organizations.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---no-organizations
+¦   ¦   ¦           no-organizations.module.css
+¦   ¦   ¦           no-organizations.tsx
+¦   ¦   ¦           
+¦   ¦   +---profile-orguser
+¦   ¦   ¦   ¦   profile-orguser.module.css
+¦   ¦   ¦   ¦   profile-orguser.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---invite-user
+¦   ¦   ¦           invite-user-btn.tsx
+¦   ¦   ¦           invite-user-button.module.css
+¦   ¦   ¦           invite-user-form.module.css
+¦   ¦   ¦           invite-user-form.tsx
+¦   ¦   ¦           
+¦   ¦   +---profile-saved-tables
+¦   ¦   ¦       saved-results.tsx
+¦   ¦   ¦       saved-searches.tsx
+¦   ¦   ¦       saved-table.tsx
+¦   ¦   ¦       
+¦   ¦   +---profile-type
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       profile-type.module.css
+¦   ¦   ¦       profile-type.stories.tsx
+¦   ¦   ¦       
+¦   ¦   +---search-page-components
+¦   ¦   ¦       search-form.module.css
+¦   ¦   ¦       search-form.tsx
+¦   ¦   ¦       search-results.module.css
+¦   ¦   ¦       search-results.tsx
+¦   ¦   ¦       
+¦   ¦   +---search-panel
+¦   ¦   ¦       search-panel.tsx
+¦   ¦   ¦       search.module.css
+¦   ¦   ¦       
+¦   ¦   +---search-results
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       search-results.module.css
+¦   ¦   ¦       search-results.tsx
+¦   ¦   ¦       
+¦   ¦   +---visualizations
+¦   ¦       ¦   index.tsx
+¦   ¦       ¦   
+¦   ¦       +---bubble-chart
+¦   ¦       ¦       bubble-chart.module.css
+¦   ¦       ¦       BubbleChart.stories.tsx
+¦   ¦       ¦       BubbleChart.tsx
+¦   ¦       ¦       index.tsx
+¦   ¦       ¦       
+¦   ¦       +---chart-key
+¦   ¦       ¦       chartKey.module.css
+¦   ¦       ¦       chartKey.tsx
+¦   ¦       ¦       index.tsx
+¦   ¦       ¦       
+¦   ¦       +---chartSymbols
+¦   ¦       ¦       circleSVGElement.tsx
+¦   ¦       ¦       circleSymbol.tsx
+¦   ¦       ¦       index.tsx
+¦   ¦       ¦       squareSymbol.tsx
+¦   ¦       ¦       
+¦   ¦       +---map
+¦   ¦       ¦   ¦   BaseMap.stories.tsx
+¦   ¦       ¦   ¦   BaseMap.tsx
+¦   ¦       ¦   ¦   index.tsx
+¦   ¦       ¦   ¦   map.module.css
+¦   ¦       ¦   ¦   Map.stories.tsx
+¦   ¦       ¦   ¦   Map.tsx
+¦   ¦       ¦   ¦   mapKey.tsx
+¦   ¦       ¦   ¦   marker-layer.stories.tsx
+¦   ¦       ¦   ¦   marker-layer.tsx
+¦   ¦       ¦   ¦   useBoundaryPaths.tsx
+¦   ¦       ¦   ¦   useMarkerLayerSearchData.tsx
+¦   ¦       ¦   ¦   useSearchData.tsx
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---__mocks__
+¦   ¦       ¦           index.tsx
+¦   ¦       ¦           
+¦   ¦       +---popUps
+¦   ¦       ¦       popUpComp.tsx
+¦   ¦       ¦       popUps.module.css
+¦   ¦       ¦       popUps.stories.tsx
+¦   ¦       ¦       popUps.tsx
+¦   ¦       ¦       
+¦   ¦       +---utilities
+¦   ¦               chartD3Functions.tsx
+¦   ¦               chartDataHandlers.tsx
+¦   ¦               chartScales.tsx
+¦   ¦               chartTypes.tsx
+¦   ¦               index.tsx
+¦   ¦               
+¦   +---helpers
+¦   ¦   ¦   auth.tsx
+¦   ¦   ¦   index.ts
+¦   ¦   ¦   mock-to-officer-type.ts
+¦   ¦   ¦   providers.tsx
+¦   ¦   ¦   search.tsx
+¦   ¦   ¦   storage.ts
+¦   ¦   ¦   syntax-helper.tsx
+¦   ¦   ¦   
+¦   ¦   +---api
+¦   ¦   ¦   ¦   api.ts
+¦   ¦   ¦   ¦   base.ts
+¦   ¦   ¦   ¦   config.ts
+¦   ¦   ¦   ¦   index.ts
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---auth
+¦   ¦   ¦   ¦       auth.ts
+¦   ¦   ¦   ¦       index.ts
+¦   ¦   ¦   ¦       types.ts
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---incidents
+¦   ¦   ¦   ¦       incidents.ts
+¦   ¦   ¦   ¦       index.ts
+¦   ¦   ¦   ¦       types.ts
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---mocks
+¦   ¦   ¦           browser.setup.ts
+¦   ¦   ¦           browser.ts
+¦   ¦   ¦           data.ts
+¦   ¦   ¦           fake-auth.ts
+¦   ¦   ¦           fake-search.ts
+¦   ¦   ¦           handlers.ts
+¦   ¦   ¦           server.setup.ts
+¦   ¦   ¦           server.ts
+¦   ¦   ¦           
+¦   ¦   +---hooks
+¦   ¦           useId.ts
+¦   ¦           
+¦   +---models
+¦   ¦   ¦   app-routes.tsx
+¦   ¦   ¦   enrollment-cta.tsx
+¦   ¦   ¦   incident.tsx
+¦   ¦   ¦   index.tsx
+¦   ¦   ¦   info-tooltip.tsx
+¦   ¦   ¦   logo-sizes.tsx
+¦   ¦   ¦   nav-dropdown.tsx
+¦   ¦   ¦   officer.tsx
+¦   ¦   ¦   organization-user.tsx
+¦   ¦   ¦   password-aid.tsx
+¦   ¦   ¦   perpetrator.ts
+¦   ¦   ¦   primary-input.tsx
+¦   ¦   ¦   profile.tsx
+¦   ¦   ¦   response.tsx
+¦   ¦   ¦   results-alert.ts
+¦   ¦   ¦   saved-table.ts
+¦   ¦   ¦   secondary-input.tsx
+¦   ¦   ¦   state-select.tsx
+¦   ¦   ¦   toggle-options.ts
+¦   ¦   ¦   visualizations.tsx
+¦   ¦   ¦   
+¦   ¦   +---mock-data
+¦   ¦           grammy.json
+¦   ¦           incidents.json
+¦   ¦           index.ts
+¦   ¦           mock-table-data.tsx
+¦   ¦           officer.json
+¦   ¦           orgusers.tsx
+¦   ¦           saved-results.json
+¦   ¦           saved-searches.json
+¦   ¦           users.json
+¦   ¦           
+¦   +---nginx
+¦   ¦       default.conf
+¦   ¦       
+¦   +---node_modules
+¦   +---pages
+¦   ¦   ¦   index.tsx
+¦   ¦   ¦   _app.tsx
+¦   ¦   ¦   
+¦   ¦   +---contributor
+¦   ¦   ¦       contributor.module.css
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       response.tsx
+¦   ¦   ¦       
+¦   ¦   +---forgot
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       
+¦   ¦   +---incident
+¦   ¦   ¦       [id].tsx
+¦   ¦   ¦       
+¦   ¦   +---login
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       
+¦   ¦   +---logout
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       
+¦   ¦   +---officer
+¦   ¦   ¦       officer-view.module.css
+¦   ¦   ¦       [id].tsx
+¦   ¦   ¦       
+¦   ¦   +---passport
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       passport.module.css
+¦   ¦   ¦       response.tsx
+¦   ¦   ¦       
+¦   ¦   +---profile
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       profile.module.css
+¦   ¦   ¦       
+¦   ¦   +---register
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       response.tsx
+¦   ¦   ¦       viewer-registration.module.css
+¦   ¦   ¦       
+¦   ¦   +---reset
+¦   ¦   ¦       index.tsx
+¦   ¦   ¦       reset.module.css
+¦   ¦   ¦       
+¦   ¦   +---search
+¦   ¦           index.tsx
+¦   ¦           search.module.css
+¦   ¦           
+¦   +---pageStories
+¦   ¦       incident-view.stories.tsx
+¦   ¦       login.stories.tsx
+¦   ¦       officer-view.stories.tsx
+¦   ¦       passport.stories.tsx
+¦   ¦       profile.stories.tsx
+¦   ¦       register.stories.tsx
+¦   ¦       search.stories.tsx
+¦   ¦       
+¦   +---public
+¦   ¦       Banner.svg
+¦   ¦       BannerMobile.svg
+¦   ¦       Boston_Police_patch.jpg
+¦   ¦       favicon.ico
+¦   ¦       incidents.json
+¦   ¦       mockServiceWorker.js
+¦   ¦       NPDCLogo.svg
+¦   ¦       San_Jose_Police_Patch.png
+¦   ¦       Vector.svg
+¦   ¦       vercel.svg
+¦   ¦       
+¦   +---shared-components
+¦   ¦   ¦   index.tsx
+¦   ¦   ¦   
+¦   ¦   +---create-organization-btn
+¦   ¦   ¦   ¦   create-organization-btn.module.css
+¦   ¦   ¦   ¦   create-organization-btn.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---sub-comps
+¦   ¦   ¦           create-organization-form.module.css
+¦   ¦   ¦           create-organization-form.tsx
+¦   ¦   ¦           select-org.tsx
+¦   ¦   ¦           yes-no-toggle.module.css
+¦   ¦   ¦           yes-no-toggle.tsx
+¦   ¦   ¦           
+¦   ¦   +---data-table
+¦   ¦   ¦       data-table-subcomps.tsx
+¦   ¦   ¦       data-table.module.css
+¦   ¦   ¦       data-table.stories.tsx
+¦   ¦   ¦       data-table.tsx
+¦   ¦   ¦       
+¦   ¦   +---dialog
+¦   ¦   ¦       dialog.module.css
+¦   ¦   ¦       dialog.tsx
+¦   ¦   ¦       
+¦   ¦   +---error-alert-dialog
+¦   ¦   ¦       error-alert-dialog.module.css
+¦   ¦   ¦       error-alert-dialog.tsx
+¦   ¦   ¦       
+¦   ¦   +---error-form-level
+¦   ¦   ¦       error-form-level.module.css
+¦   ¦   ¦       error-form-level.stories.tsx
+¦   ¦   ¦       error-form-level.tsx
+¦   ¦   ¦       
+¦   ¦   +---external-link
+¦   ¦   ¦       external-link.module.css
+¦   ¦   ¦       external-link.stories.tsx
+¦   ¦   ¦       external-link.tsx
+¦   ¦   ¦       
+¦   ¦   +---form
+¦   ¦   ¦       form.module.css
+¦   ¦   ¦       form.tsx
+¦   ¦   ¦       
+¦   ¦   +---icon-buttons
+¦   ¦   ¦       icon-buttons.module.css
+¦   ¦   ¦       icon-buttons.tsx
+¦   ¦   ¦       
+¦   ¦   +---info-tooltip
+¦   ¦   ¦       info-tooltip.module.css
+¦   ¦   ¦       info-tooltip.stories.tsx
+¦   ¦   ¦       info-tooltip.tsx
+¦   ¦   ¦       
+¦   ¦   +---input
+¦   ¦   ¦       input.module.css
+¦   ¦   ¦       input.tsx
+¦   ¦   ¦       
+¦   ¦   +---invite-user-btn
+¦   ¦   ¦   ¦   invite-user-btn.module.css
+¦   ¦   ¦   ¦   invite-user-btn.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---sub-comps
+¦   ¦   ¦           invite-user-form.module.css
+¦   ¦   ¦           invite-user-form.tsx
+¦   ¦   ¦           select-role.tsx
+¦   ¦   ¦           
+¦   ¦   +---label
+¦   ¦   ¦       label.module.css
+¦   ¦   ¦       label.tsx
+¦   ¦   ¦       
+¦   ¦   +---layout
+¦   ¦   ¦       layout.tsx
+¦   ¦   ¦       
+¦   ¦   +---link-button
+¦   ¦   ¦       link-button.module.css
+¦   ¦   ¦       link-button.stories.tsx
+¦   ¦   ¦       link-button.tsx
+¦   ¦   ¦       
+¦   ¦   +---logo
+¦   ¦   ¦       logo.module.css
+¦   ¦   ¦       logo.stories.tsx
+¦   ¦   ¦       logo.tsx
+¦   ¦   ¦       
+¦   ¦   +---officer-incident-data-table
+¦   ¦   ¦       officer-incident-data-table-subcomps.tsx
+¦   ¦   ¦       officer-incident-data-table.module.css
+¦   ¦   ¦       officer-incident-data-table.stories.tsx
+¦   ¦   ¦       officer-incident-data-table.tsx
+¦   ¦   ¦       
+¦   ¦   +---primary-button
+¦   ¦   ¦       primary-button.module.css
+¦   ¦   ¦       primary-button.module.scss
+¦   ¦   ¦       primary-button.stories.tsx
+¦   ¦   ¦       primary-button.tsx
+¦   ¦   ¦       
+¦   ¦   +---primary-input
+¦   ¦   ¦       primary-input.module.css
+¦   ¦   ¦       primary-input.stories.tsx
+¦   ¦   ¦       primary-input.tsx
+¦   ¦   ¦       
+¦   ¦   +---response-textarea
+¦   ¦   ¦       response-textarea.module.css
+¦   ¦   ¦       response-textarea.stories.tsx
+¦   ¦   ¦       response-textarea.tsx
+¦   ¦   ¦       
+¦   ¦   +---results-alert
+¦   ¦   ¦       results-alert.module.css
+¦   ¦   ¦       results-alert.stories.tsx
+¦   ¦   ¦       results-alert.tsx
+¦   ¦   ¦       
+¦   ¦   +---secondary-input
+¦   ¦   ¦       secondary-input.module.css
+¦   ¦   ¦       secondary-input.stories.tsx
+¦   ¦   ¦       secondary-input.tsx
+¦   ¦   ¦       
+¦   ¦   +---select
+¦   ¦   ¦       select.module.css
+¦   ¦   ¦       select.tsx
+¦   ¦   ¦       
+¦   ¦   +---state-input
+¦   ¦   ¦       state-input.module.css
+¦   ¦   ¦       state-input.stories.tsx
+¦   ¦   ¦       state-input.tsx
+¦   ¦   ¦       
+¦   ¦   +---success-message
+¦   ¦   ¦       success-message.module.css
+¦   ¦   ¦       success-message.stories.tsx
+¦   ¦   ¦       success-message.tsx
+¦   ¦   ¦       
+¦   ¦   +---toggle-box
+¦   ¦   ¦       toggle-box.module.css
+¦   ¦   ¦       toggle-box.stories.tsx
+¦   ¦   ¦       toggle-box.tsx
+¦   ¦   ¦       
+¦   ¦   +---toggle-dropdown
+¦   ¦           toggle-dropdown.module.css
+¦   ¦           toggle-dropdown.tsx
+¦   ¦           
+¦   +---styles
+¦   ¦       accessibility.css
+¦   ¦       custom.css
+¦   ¦       globals.css
+¦   ¦       shared.module.css
+¦   ¦       variables.css
+¦   ¦       
+¦   +---tests
+¦       ¦   test-utils.tsx
+¦       ¦   
+¦       +---helpers
+¦       ¦       api.e2e.test.ts
+¦       ¦       api.test.ts
+¦       ¦       auth.test.ts
+¦       ¦       helpers.test.ts
+¦       ¦       
+¦       +---snapshots
+¦           ¦   app.test.tsx
+¦           ¦   forgot.test.tsx
+¦           ¦   incident.test.tsx
+¦           ¦   landing.test.tsx
+¦           ¦   login.test.tsx
+¦           ¦   logo.test.tsx
+¦           ¦   officer.test.tsx
+¦           ¦   passport.test.tsx
+¦           ¦   profile.test.tsx
+¦           ¦   register.test.tsx
+¦           ¦   reset.test.tsx
+¦           ¦   response.test.tsx
+¦           ¦   results-alert.test.tsx
+¦           ¦   search.test.tsx
+¦           ¦   visualizations.test.tsx
+¦           ¦   
+¦           +---__snapshots__
+¦                   app.test.tsx.snap
+¦                   forgot.test.tsx.snap
+¦                   incident.test.tsx.snap
+¦                   landing.test.tsx.snap
+¦                   login.test.tsx.snap
+¦                   logo.test.tsx.snap
+¦                   officer.test.tsx.snap
+¦                   passport.test.tsx.snap
+¦                   profile.test.tsx.snap
+¦                   register.test.tsx.snap
+¦                   reset.test.tsx.snap
+¦                   response.test.tsx.snap
+¦                   results-alert.test.tsx.snap
+¦                   search.test.tsx.snap
+¦                   visualizations.test.tsx.snap
+¦                   
++---oas
+¦   ¦   gen_pydantic.sh
+¦   ¦   oas_to_pydantic.py
+¦   ¦   README.md
+¦   ¦   
+¦   +---2.0
+¦   ¦       agencies.yaml
+¦   ¦       authentication.yaml
+¦   ¦       complaints.yaml
+¦   ¦       litigation.yaml
+¦   ¦       officers.yaml
+¦   ¦       search.yaml
+¦   ¦       sources.yaml
+¦   ¦       users.yaml
+¦   ¦       
+¦   +---common
+¦   ¦       auth.yaml
+¦   ¦       error.yaml
+¦   ¦       pagination.yaml
+¦   ¦       
+¦   +---pydantic
+¦           agencies.py
+¦           complaints.py
+¦           litigation.py
+¦           officers.py
+¦           partners.py
+¦           sources.py
+¦           
++---requirements
+¦       dev_unix.in
+¦       dev_unix.txt
+¦       dev_windows.in
+¦       dev_windows.txt
+¦       docker-compose.yml
+¦       Dockerfile
+¦       docs.in
+¦       docs.txt
+¦       prod.in
+¦       prod.txt
+¦       README.md
+¦       update.py
+¦       _core.in
+¦       
++---testdb-init
+¦       init-test-database.cypher
+¦       
++---__pycache__
+        __init__.cpython-313.pyc
+        

@@ -171,7 +171,7 @@ def register_routes(app: Flask):
     # app.register_blueprint(incidents_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(healthcheck_bp)
-    app.register_blueprint(officers_bp)
+    app.register_blueprint(officers_bp, url_prefix="/api/v1/officers")
     app.register_blueprint(agencies_bp)
 
     @app.route("/")
