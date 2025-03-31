@@ -40,9 +40,6 @@ def test_relationships():
 
 def test_create_place_with_coordinates():
     coordinates = NeomodelPoint(latitude=41.8781, longitude=-87.6298, crs="wgs-84")
-    print('**********************************************************')
-    print(f"Coordinates: {coordinates}")
-    print('**********************************************************')
     place = Place(name="Chicago", coordinates=coordinates).save()
     assert place.name == "Chicago"
     assert place.coordinates.latitude == 41.8781 
