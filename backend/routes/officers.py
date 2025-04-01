@@ -165,11 +165,6 @@ def get_officer(officer_uid: int):
         abort(404, description="Officer not found")
     return o.to_json()
 
-@bp.route("/test", methods=["GET"])
-def test():
-    print("🚨 test() function triggered 🚨")
-    return {"message": "officers_bp is working"}, 200
-
 # Get all officers
 @bp.route("/", methods=["GET"])
 @jwt_required()
