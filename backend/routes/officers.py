@@ -29,8 +29,8 @@ class SearchOfficerSchema(BaseModel):
         json_schema_extra = {
             "example": {
                 "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
+                "location": "New York",
+                "badgeNumber": 1234,
                 "page": 1,
                 "perPage": 20,
             }
@@ -130,8 +130,7 @@ class AddEmploymentListSchema(BaseModel):
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateOfficer)
 def create_officer():
-    """Create an officer profile.
-    """
+    """Create an officer profile."""
     logger = logging.getLogger("create_officer")
     body: CreateOfficer = request.validated_body
     jwt_decoded = get_jwt()
@@ -146,9 +145,7 @@ def create_officer():
     track_to_mp(
         request,
         "create_officer",
-        {
-            "officer_id": officer.uid
-        },
+        {"officer_id": officer.uid},
     )
     return officer.to_json()
 
@@ -158,12 +155,12 @@ def create_officer():
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_officer(officer_uid: int):
-    """Get an officer profile.
-    """
+    """Get an officer profile."""
     o = Officer.nodes.get_or_none(element_id=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
     return o.to_json()
+
 
 # Get all officers
 @bp.route("/", methods=["GET"])
@@ -209,8 +206,8 @@ def get_all_officers():
             "unit_name": unit_name,
             "ethnicity": ethnicity,  # Include new param
             "skip": skip,
-            "limit": limit
-        }
+            "limit": limit,
+        },
     )
     # Process results
     officers = [Officer.inflate(record[0]) for record in all_officers]
@@ -224,8 +221,7 @@ def get_all_officers():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateOfficer)
 def update_officer(officer_uid: str):
-    """Update an officer profile.
-    """
+    """Update an officer profile."""
     body: UpdateOfficer = request.validated_body
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
@@ -240,9 +236,7 @@ def update_officer(officer_uid: str):
     track_to_mp(
         request,
         "update_officer",
-        {
-            "officer_id": o.uid
-        },
+        {"officer_id": o.uid},
     )
     return o.to_json()
 
@@ -264,9 +258,7 @@ def delete_officer(officer_uid: str):
         track_to_mp(
             request,
             "delete_officer",
-            {
-                "officer_id": uid
-            },
+            {"officer_id": uid},
         )
         return {"message": "Officer deleted successfully"}
     except Exception as e:
