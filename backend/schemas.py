@@ -13,9 +13,13 @@ from spectree import SecurityScheme, SpecTree
 from spectree.models import Server
 from neomodel import (
     RelationshipTo,
-    RelationshipFrom, Relationship,
-    RelationshipManager, RelationshipDefinition,
-    UniqueIdProperty, StructuredRel, StructuredNode
+    RelationshipFrom,
+    Relationship,
+    RelationshipManager,
+    RelationshipDefinition,
+    UniqueIdProperty,
+    StructuredRel,
+    StructuredNode,
 )
 from neomodel.exceptions import DoesNotExist
 
@@ -89,6 +93,7 @@ T = TypeVar("T", bound="JsonSerializable")
 
 class NodeConflictException(Exception):
     """Exception raised when a node already exists in the database."""
+
     pass
 
 
@@ -107,16 +112,17 @@ def ordered_jsonify(*args, **kwargs):
     """
     # Determine the indentation and separators based on the app configuration
     indent = None
-    separators = (',', ':')
-    if current_app.config.get('JSONIFY_PRETTYPRINT_REGULAR', False):
+    separators = (",", ":")
+    if current_app.config.get("JSONIFY_PRETTYPRINT_REGULAR", False):
         indent = 2
-        separators = (', ', ': ')
+        separators = (", ", ": ")
 
     # Handle the arguments similar to how Flask's jsonify does
     if args and kwargs:
         raise TypeError(
-            'ordered_jsonify() behavior undefined when' +
-            'passed both args and kwargs')
+            "ordered_jsonify() behavior undefined when"
+            + "passed both args and kwargs"
+        )
     elif len(args) == 1:
         data = args[0]
     else:
@@ -133,7 +139,7 @@ def ordered_jsonify(*args, **kwargs):
     # Create and return the response
     return current_app.response_class(
         json_str,
-        mimetype=current_app.config.get('JSONIFY_MIMETYPE', 'application/json')
+        mimetype=current_app.config.get("JSONIFY_MIMETYPE", "application/json"),
     )
 
 
@@ -148,27 +154,38 @@ def validate_request(model: BaseModel):
     Returns:
         function: A decorator function that validates the request body.
     """
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             try:
                 body = model(**request.json)
             except ValidationError as e:
-                return jsonify({
-                    "status": "Unprocessable Entity",
-                    "message": "Invalid request body",
-                    "errors": e.errors(),
-                }), 422
+                return (
+                    jsonify(
+                        {
+                            "status": "Unprocessable Entity",
+                            "message": "Invalid request body",
+                            "errors": e.errors(),
+                        }
+                    ),
+                    422,
+                )
 
             request.validated_body = body
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
 def paginate_results(
-        data: list[JsonSerializable],
-        page: int, per_page: int = 20, max_per_page: int = 100):
+    data: list[JsonSerializable],
+    page: int,
+    per_page: int = 20,
+    max_per_page: int = 100,
+):
     """
     Paginate a list of data and return a reponse dict. Items in the list must
     implement the JsonSerializable interface.
@@ -206,6 +223,7 @@ def paginate_results(
 # Update Enums to work well with NeoModel
 class PropertyEnum(Enum):
     """Use this Enum to convert the options to a dictionary."""
+
     @classmethod
     def choices(cls):
         return {item.value: item.name for item in cls}
@@ -214,11 +232,16 @@ class PropertyEnum(Enum):
 # Makes a StructuredNode convertible to and from JSON and Dicts
 class JsonSerializable:
     """Mix me into a database model to make it JSON serializable."""
+
     __hidden_properties__ = []
     __property_order__ = []
 
-    def to_dict(self, include_relationships=True,
-                relationship_limit: int = 20, exclude_fields=None):
+    def to_dict(
+        self,
+        include_relationships=True,
+        relationship_limit: int = 20,
+        exclude_fields=None,
+    ):
         """
         Convert the node instance into a dictionary, including
         its relationships.
@@ -232,11 +255,11 @@ class JsonSerializable:
             dict: A dictionary representation of the node.
         """
         exclude_fields = exclude_fields or []
-        field_order = getattr(self, '__property_order__', None)
+        field_order = getattr(self, "__property_order__", None)
 
-        all_excludes = set(
-            getattr(self, '__hidden_properties__', [])).union(
-                set(exclude_fields))
+        all_excludes = set(getattr(self, "__hidden_properties__", [])).union(
+            set(exclude_fields)
+        )
 
         all_props = self.defined_properties(aliases=False, rels=False)
         obj_props = OrderedDict()
@@ -257,7 +280,8 @@ class JsonSerializable:
         # Optionally add related nodes
         if include_relationships and isinstance(self, StructuredNode):
             relationships = {
-                key: value for key, value in self.__class__.__dict__.items()
+                key: value
+                for key, value in self.__class__.__dict__.items()
                 if isinstance(value, RelationshipDefinition)
             }
             for key, relationship_def in relationships.items():
@@ -268,16 +292,21 @@ class JsonSerializable:
                 if isinstance(rel_manager, RelationshipManager):
                     related_nodes = rel_manager.all()[0:relationship_limit]
                     # Limit the number of related nodes to serialize
-                    if relationship_def.definition.get('model', None):
+                    if relationship_def.definition.get("model", None):
                         # If there is a relationship model, serialize it as well
                         obj_props[key] = [
                             {
-                                'node': node.to_dict(
-                                    include_relationships=False),
-                                'relationship': rel_manager.relationship(
-                                    node).to_dict() if isinstance(
-                                        rel_manager.relationship(
-                                            node), StructuredRel) else {}
+                                "node": node.to_dict(
+                                    include_relationships=False
+                                ),
+                                "relationship": (
+                                    rel_manager.relationship(node).to_dict()
+                                    if isinstance(
+                                        rel_manager.relationship(node),
+                                        StructuredRel,
+                                    )
+                                    else {}
+                                ),
                             }
                             for node in related_nodes
                         ]
@@ -313,10 +342,10 @@ class JsonSerializable:
         else:
             # Handle unique properties to find existing instances
             unique_properties = {
-                name: prop for name, prop in all_props.items()
-                if getattr(
-                    prop, 'unique_index', False) or isinstance(
-                        prop, UniqueIdProperty)
+                name: prop
+                for name, prop in all_props.items()
+                if getattr(prop, "unique_index", False)
+                or isinstance(prop, UniqueIdProperty)
             }
             unique_props = {
                 prop_name: data.get(prop_name)
@@ -330,9 +359,10 @@ class JsonSerializable:
                     # If the instance exists, raise an error.
                     raise NodeConflictException(
                         "{} {} already exists".format(
-                            cls.__name__,
-                            instance.uid
-                        ) + " with matching unique properties.")
+                            cls.__name__, instance.uid
+                        )
+                        + " with matching unique properties."
+                    )
                 except DoesNotExist:
                     # No existing instance, create a new one
                     instance = cls(**unique_props)
@@ -355,17 +385,18 @@ class JsonSerializable:
                     rel_manager = getattr(instance, rel_name)
 
                     # Fetch the related node by its unique identifier
-                    related_node_class = rel_manager.definition['node_class']
+                    related_node_class = rel_manager.definition["node_class"]
                     try:
                         related_instance = related_node_class.nodes.get(
-                            uid=value)
+                            uid=value
+                        )
                         rel_manager.connect(related_instance)
                     except DoesNotExist:
                         raise ValueError(
                             "Related {} with UID {} not found.".format(
-                                related_node_class.__name__,
-                                value
-                            ))
+                                related_node_class.__name__, value
+                            )
+                        )
             # Handle relationship properties
             if key.endswith("_details"):
                 rel_name = key[:-8]
@@ -375,7 +406,8 @@ class JsonSerializable:
                     rel_manager = getattr(instance, rel_name)
                     if rel_manager.exists():
                         relationship = rel_manager.relationship(
-                            related_instance)
+                            related_instance
+                        )
                         setattr(relationship, key, value)
                         relationship.save()
         # Save the instance
@@ -385,8 +417,11 @@ class JsonSerializable:
     @classmethod
     def __all_properties_JS__(cls) -> List[str]:
         """Get a list of all properties defined in the class."""
-        return [prop_name for prop_name in cls.__dict__ if isinstance(
-            cls.__dict__[prop_name], property)]
+        return [
+            prop_name
+            for prop_name in cls.__dict__
+            if isinstance(cls.__dict__[prop_name], property)
+        ]
 
     @classmethod
     def __all_relationships_JS__(cls) -> dict:
@@ -395,8 +430,7 @@ class JsonSerializable:
             rel_name: rel_manager
             for rel_name, rel_manager in cls.__dict__.items()
             if isinstance(
-                rel_manager,
-                (RelationshipTo, RelationshipFrom, Relationship)
+                rel_manager, (RelationshipTo, RelationshipFrom, Relationship)
             )
         }
 

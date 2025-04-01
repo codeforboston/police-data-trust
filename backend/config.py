@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+
 if os.environ.get("FLASK_ENV") != "production":
     load_dotenv()
 
@@ -34,8 +35,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get(
         "MAIL_DEFAULT_SENDER",
-        "National Police Data Coalition <{email}>".format(
-              email=MAIL_USERNAME),
+        "National Police Data Coalition <{email}>".format(email=MAIL_USERNAME),
     )
 
     """
@@ -60,8 +60,7 @@ class Config(object):
 
     FRONTEND_PORT = os.environ.get("NPDI_WEB_PORT", "3000")
     FRONTEND_URL = os.environ.get(
-        "FRONTEND_URL",
-        "http://localhost:" + FRONTEND_PORT
+        "FRONTEND_URL", "http://localhost:" + FRONTEND_PORT
     )
 
     SCRAPER_SQS_QUEUE_NAME = os.environ.get("SCRAPER_SQS_QUEUE_NAME")
@@ -69,9 +68,7 @@ class Config(object):
     @property
     def NEO4J_BOLT_URI(self):
         return "bolt://{user}:{pw}@{uri}".format(
-            user=self.GRAPH_USER,
-            pw=self.GRAPH_PASSWORD,
-            uri=self.GRAPH_NM_URI
+            user=self.GRAPH_USER, pw=self.GRAPH_PASSWORD, uri=self.GRAPH_NM_URI
         )
 
     @property

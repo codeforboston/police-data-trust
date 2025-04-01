@@ -1,13 +1,18 @@
 from __future__ import annotations  # allows type hinting of class itself
+
 # from ..core import db, CrudMixin
 from backend.schemas import JsonSerializable, PropertyEnum
 from datetime import datetime
 from neomodel import (
-    StructuredNode, StructuredRel,
-    RelationshipTo, RelationshipFrom,
-    StringProperty, DateTimeProperty,
-    UniqueIdProperty, BooleanProperty,
-    EmailProperty
+    StructuredNode,
+    StructuredRel,
+    RelationshipTo,
+    RelationshipFrom,
+    StringProperty,
+    DateTimeProperty,
+    UniqueIdProperty,
+    BooleanProperty,
+    EmailProperty,
 )
 from backend.database.models.complaint import BaseSourceRel
 
@@ -38,18 +43,18 @@ class Invitation(StructuredNode):
     # default to not accepted invite
 
     source_org = RelationshipFrom("Source", "INVITED_TO")
-    user = RelationshipFrom(
-        "backend.database.models.user.User", "EXTENDED_TO")
+    user = RelationshipFrom("backend.database.models.user.User", "EXTENDED_TO")
     extender = RelationshipFrom(
-        "backend.database.models.user.User", "EXTENDED_BY")
+        "backend.database.models.user.User", "EXTENDED_BY"
+    )
 
     def serialize(self):
         return {
-            'id': self.id,
-            'source': self.source,
-            'user': self.user,
-            'role': self.role,
-            'is_accepted': self.is_accepted,
+            "id": self.id,
+            "source": self.source,
+            "user": self.user,
+            "role": self.role,
+            "is_accepted": self.is_accepted,
         }
 
 
@@ -60,14 +65,15 @@ class StagedInvitation(StructuredNode):
 
     source_org = RelationshipFrom("Source", "INVITATION_TO")
     extender = RelationshipFrom(
-        "backend.database.models.user.User", "EXTENDED_BY")
+        "backend.database.models.user.User", "EXTENDED_BY"
+    )
 
     def serialize(self):
         return {
-            'uid': self.uid,
-            'source_uid': self.source_org,
-            'email': self.email,
-            'role': self.role
+            "uid": self.uid,
+            "source_uid": self.source_org,
+            "email": self.email,
+            "role": self.role,
         }
 
 
@@ -117,10 +123,7 @@ class Citation(StructuredRel, JsonSerializable):
 
 
 class Source(StructuredNode, JsonSerializable):
-    __property_order__ = [
-        "uid", "name", "url",
-        "contact_email"
-    ]
+    __property_order__ = ["uid", "name", "url", "contact_email"]
     uid = UniqueIdProperty()
 
     name = StringProperty(unique_index=True)
@@ -129,15 +132,17 @@ class Source(StructuredNode, JsonSerializable):
 
     # Relationships
     members = RelationshipFrom(
-        "backend.database.models.user.User",
-        "IS_MEMBER", model=SourceMember)
+        "backend.database.models.user.User", "IS_MEMBER", model=SourceMember
+    )
     complaints = RelationshipTo(
         "backend.database.models.complaint.Complaint",
-        "REPORTED", model=BaseSourceRel)
-    invitations = RelationshipTo(
-        "Invitation", "HAS_PENDING_INVITATION")
+        "REPORTED",
+        model=BaseSourceRel,
+    )
+    invitations = RelationshipTo("Invitation", "HAS_PENDING_INVITATION")
     staged_invitations = RelationshipTo(
-        "StagedInvitation", "PENDING_STAGED_INVITATION")
+        "StagedInvitation", "PENDING_STAGED_INVITATION"
+    )
 
     def __repr__(self):
         """Represent instance as a unique string."""

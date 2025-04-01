@@ -9,6 +9,7 @@ from backend.config import get_config_from_env
 from backend.auth import jwt, refresh_token
 from backend.schemas import spec
 from backend.routes.sources import bp as sources_bp
+
 # from backend.routes.incidents import bp as incidents_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
@@ -48,15 +49,13 @@ def register_extensions(app: Flask):
     # Driver setup
     db_driver = GraphDatabase.driver(
         f'bolt://{app.config["GRAPH_NM_URI"]}',
-        auth=(
-            app.config["GRAPH_USER"],
-            app.config["GRAPH_PASSWORD"]
-        ))
+        auth=(app.config["GRAPH_USER"], app.config["GRAPH_PASSWORD"]),
+    )
 
     try:
         db_driver.verify_connectivity()
-        app.config['DB_DRIVER'] = db_driver
-        neo_config.DRIVER = app.config['DB_DRIVER']
+        app.config["DB_DRIVER"] = db_driver
+        neo_config.DRIVER = app.config["DB_DRIVER"]
         print("Connected to Neo4j")
     except Exception as e:
         print(f"Error connecting to Database: {e}")
@@ -66,7 +65,7 @@ def register_extensions(app: Flask):
     neo_url = "bolt://{user}:{pw}@{uri}".format(
         user=app.config["GRAPH_USER"],
         pw=app.config["GRAPH_PASSWORD"],
-        uri=app.config["GRAPH_NM_URI"]
+        uri=app.config["GRAPH_NM_URI"],
     )
     neo_config.DATABASE_URL = neo_url
 
@@ -74,7 +73,7 @@ def register_extensions(app: Flask):
 
     # Authentication
     ph = PasswordHasher()
-    app.config['PASSWORD_HASHER'] = ph
+    app.config["PASSWORD_HASHER"] = ph
     jwt.init_app(app)
 
     Mail(app)

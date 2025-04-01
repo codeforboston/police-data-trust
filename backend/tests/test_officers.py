@@ -10,20 +10,20 @@ mock_officers = {
         "first_name": "John",
         "last_name": "Doe",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
         "ethnicity": "White",
-        "gender": "Female"
+        "gender": "Female",
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
         "ethnicity": "Black/African American",
-        "gender": "Male"
-    }
+        "gender": "Male",
+    },
 }
 
 mock_agencies = {
@@ -33,7 +33,7 @@ mock_agencies = {
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL"
+        "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
@@ -41,8 +41,8 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL"
-    }
+        "jurisdiction": "MUNICIPAL",
+    },
 }
 
 mock_employment = {
@@ -50,25 +50,23 @@ mock_employment = {
         "agency": "Chicago Police Department",
         "earliest_employment": "2015-03-14 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "hazel": {
         "agency": "Chicago Police Department",
         "earliest_employment": "2018-08-12 00:00:00",
         "badge_number": "5678",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "frank": {
         "agency": "New York Police Department",
         "earliest_employment": "2019-05-03 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
-    }
+        "currently_employed": True,
+    },
 }
 
-mock_sources = {
-    "cpdp": {"name": "Citizens Police Data Project"}
-}
+mock_sources = {"cpdp": {"name": "Citizens Police Data Project"}}
 
 
 @pytest.fixture
@@ -82,17 +80,15 @@ def example_officers(db_session):
 
 
 def test_create_officer(
-        db_session,
-        client,
-        contributor_access_token,
-        example_agency):
+    db_session, client, contributor_access_token, example_agency
+):
 
     # Test that we can create an officer without an agency association
     request = {
         "first_name": "Max",
         "last_name": "Payne",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
     }
     res = client.post(
         "/api/v1/officers/",
@@ -104,9 +100,7 @@ def test_create_officer(
     assert res.status_code == 200
     response = res.json
 
-    officer_obj = (
-       Officer.nodes.get(uid=response["uid"])
-    )
+    officer_obj = Officer.nodes.get(uid=response["uid"])
     assert officer_obj.first_name == request["first_name"]
     assert officer_obj.last_name == request["last_name"]
     assert officer_obj.ethnicity == request["ethnicity"]
@@ -203,7 +197,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
     # Create Officers in the database
     officers = Officer.nodes.all()
     per_page = 1
-    expected_total_pages = math.ceil(len(officers)//per_page)
+    expected_total_pages = math.ceil(len(officers) // per_page)
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(

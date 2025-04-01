@@ -3,8 +3,11 @@ import logging
 from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
-    validate_request, paginate_results, ordered_jsonify,
-    NodeConflictException)
+    validate_request,
+    paginate_results,
+    ordered_jsonify,
+    NodeConflictException,
+)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
@@ -56,9 +59,7 @@ def create_agency():
     track_to_mp(
         request,
         "create_agency",
-        {
-            "name": agency.name
-        },
+        {"name": agency.name},
     )
     return agency.to_json()
 
@@ -68,8 +69,7 @@ def create_agency():
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_agency(agency_id: str):
-    """Get an agency profile.
-    """
+    """Get an agency profile."""
     # logger = logging.getLogger("get_agency")
     agency = Agency.nodes.get_or_none(uid=agency_id)
     if agency is None:
@@ -86,8 +86,7 @@ def get_agency(agency_id: str):
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateAgency)
 def update_agency(agency_uid: str):
-    """Update an agency profile.
-    """
+    """Update an agency profile."""
     # logger = logging.getLogger("update_agency")
     body: UpdateAgency = request.validated_body
     agency = Agency.nodes.get_or_none(uid=agency_uid)
@@ -97,13 +96,7 @@ def update_agency(agency_uid: str):
     try:
         agency = Agency.from_dict(body.dict(), agency_uid)
         agency.refresh()
-        track_to_mp(
-            request,
-            "update_agency",
-            {
-                "name": agency.name
-            }
-        )
+        track_to_mp(request, "update_agency", {"name": agency.name})
         return agency.to_json()
     except Exception as e:
         abort(400, description=str(e))
@@ -123,13 +116,7 @@ def delete_agency(agency_id: str):
     try:
         name = agency.name
         agency.delete()
-        track_to_mp(
-            request,
-            "delete_agency",
-            {
-                "name": name
-            }
-        )
+        track_to_mp(request, "delete_agency", {"name": name})
         return {"message": "Agency deleted successfully"}
     except Exception as e:
         abort(400, description=str(e))

@@ -24,10 +24,7 @@ def verify_contributor_has_source_or_abort():
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
-    if (
-        current_user is None
-        or not current_user.member_of
-    ):
+    if current_user is None or not current_user.member_of:
         abort(403)
         return False
     return True

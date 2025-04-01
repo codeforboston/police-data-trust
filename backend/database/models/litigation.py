@@ -5,7 +5,7 @@ from neomodel import (
     StringProperty,
     RelationshipTo,
     DateProperty,
-    UniqueIdProperty
+    UniqueIdProperty,
 )
 
 
@@ -35,7 +35,8 @@ class Litigation(StructuredNode, JsonSerializable):
     dispositions = RelationshipTo("Disposition", "YIELDED")
     defendants = RelationshipTo("Officer", "NAMED_IN")
     citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
+        "backend.database.models.source.Source", "UPDATED_BY", model=Citation
+    )
 
     def __repr__(self):
         return f"<Litigation {self.uid}:{self.case_title}>"

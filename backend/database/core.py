@@ -4,6 +4,7 @@ setting up and tearing down the database.
 Do not import anything directly from `backend.database._core`. Instead, import
 from `backend.database`.
 """
+
 import os
 from typing import Optional
 
@@ -31,11 +32,11 @@ def execute_query(filename: str) -> Optional[List[Dict[str, Any]]]:
     """
     # Read the query from the file
     query_path = os.path.join(QUERIES_DIR, secure_filename(filename))
-    with open(query_path, 'r') as f:
+    with open(query_path, "r") as f:
         query = f.read()
 
     # Get the Neo4j driver
-    neo4j_conn = current_app.config['DB_DRIVER']
+    neo4j_conn = current_app.config["DB_DRIVER"]
 
     # Execute the query using the existing connection
     with neo4j_conn.session() as session:
@@ -76,7 +77,7 @@ def create_database(overwrite: bool):
     """Initialize the Neo4j database by setting up constraints and indexes."""
     if overwrite:
         # Get the Neo4j driver
-        neo4j_conn = current_app.config['DB_DRIVER']
+        neo4j_conn = current_app.config["DB_DRIVER"]
 
         with neo4j_conn.session() as session:
             session.run("MATCH (n) DETACH DELETE n")
@@ -121,14 +122,14 @@ def delete_database(test_db: bool):
     """Delete all data from the Neo4j database."""
     if test_db:
         # If you have a separate test database, drop it
-        test_neo4j_conn = current_app.config['DB_DRIVER']
+        test_neo4j_conn = current_app.config["DB_DRIVER"]
         test_db_name = current_app.config.get("GRAPH_TEST_DB_NAME", "test")
         with test_neo4j_conn.session(database="system") as session:
             session.run(f"DROP DATABASE {test_db_name} IF EXISTS")
         click.echo(f"Test database {test_db_name!r} was deleted.")
     else:
         # Delete all data from the default database
-        neo4j_conn = current_app.config['DB_DRIVER']
+        neo4j_conn = current_app.config["DB_DRIVER"]
         with neo4j_conn.session() as session:
             session.run("MATCH (n) DETACH DELETE n")
         click.echo("Deleted all data from the Neo4j database.")

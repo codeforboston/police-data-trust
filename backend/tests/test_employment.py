@@ -1,27 +1,25 @@
-
-
 mock_officers = {
     "john": {
         "first_name": "John",
         "last_name": "Doe",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "M"
+        "gender": "M",
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
         "race": "White",
         "ethnicity": "Non-Hispanic",
-        "gender": "F"
+        "gender": "F",
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
         "race": "Black",
         "ethnicity": "African American",
-        "gender": "M"
-    }
+        "gender": "M",
+    },
 }
 mock_agencies = {
     "cpd": {
@@ -30,7 +28,7 @@ mock_agencies = {
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL"
+        "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
@@ -38,26 +36,26 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL"
-    }
+        "jurisdiction": "MUNICIPAL",
+    },
 }
 
 mock_add_officers = {
     "john": {
         "earliest_employment": "2015-03-14 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "hazel": {
         "earliest_employment": "2018-08-12 00:00:00",
         "badge_number": "5678",
-        "currently_employed": True
+        "currently_employed": True,
     },
     "frank": {
         "earliest_employment": "2019-05-03 00:00:00",
         "badge_number": "1234",
-        "currently_employed": True
-    }
+        "currently_employed": True,
+    },
 }
 
 mock_add_history = {
@@ -70,7 +68,7 @@ mock_add_history = {
         "earliest_employment": "2018-08-12 00:00:00",
         "latest_employment": "2019-05-03 00:00:00",
         "badge_number": "5678",
-    }
+    },
 }
 
 
