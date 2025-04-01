@@ -1,10 +1,9 @@
 """Define the Classes for Civilians."""
-
 from neomodel import (
     StructuredNode,
     StringProperty,
     IntegerProperty,
-    RelationshipTo,
+    RelationshipTo
 )
 
 
@@ -15,8 +14,6 @@ class Civilian(StructuredNode):
 
     # Relationships
     complaints = RelationshipTo(
-        "backend.database.models.complaint.Complaint", "COMPLAINED_OF"
-    )
+        "backend.database.models.complaint.Complaint", "COMPLAINED_OF")
     witnessed_complaints = RelationshipTo(
-        "backend.database.models.complaint.Complaint", "WITNESSED"
-    )
+        "backend.database.models.complaint.Complaint", "WITNESSED")

@@ -1,13 +1,11 @@
+
 import logging
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
 from ..schemas import (
-    validate_request,
-    paginate_results,
-    ordered_jsonify,
-    NodeConflictException,
-)
+    validate_request, paginate_results, ordered_jsonify,
+    NodeConflictException)
 from .tmp.pydantic.partners import CreatePartner, UpdatePartner
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
@@ -64,29 +62,33 @@ def create_source():
         except NodeConflictException:
             abort(409, description="Source already exists")
         except Exception as e:
-            abort(400, description=f"Failed to create source: {e}")
+            abort(
+                400,
+                description=f"Failed to create source: {e}")
         # Connects the current user to the new source as an admin
-        new_p.members.connect(current_user, {"role": MemberRole.ADMIN.value})
+        new_p.members.connect(
+            current_user,
+            {
+                "role": MemberRole.ADMIN.value
+            }
+        )
         # update to UserRole contributor status
-        if (
-            current_user.role_enum.get_value()
-            < UserRole.CONTRIBUTOR.get_value()
-        ):
+        if (current_user.role_enum.get_value()
+                < UserRole.CONTRIBUTOR.get_value()):
             current_user.role = UserRole.CONTRIBUTOR.value
             current_user.save()
         logger.info(f"User {current_user.uid} created source {new_p.name}")
 
-        track_to_mp(
-            request,
-            "create_source",
-            {"source_name": new_p.name, "source_contact": new_p.contact_email},
-        )
+        track_to_mp(request, "create_source", {
+            "source_name": new_p.name,
+            "source_contact": new_p.contact_email
+        })
         return new_p.to_json()
     else:
         return {
-            "status": "error",
-            "message": "Failed to create source. "
-            + "Please include all of the following",
+                "status": "error",
+                "message": "Failed to create source. " +
+                           "Please include all of the following"
         }, 400
 
 
@@ -186,50 +188,56 @@ def add_member_to_source():
     jwt_decoded = get_jwt()
 
     current_user = User.get(jwt_decoded["sub"])
-    membership = current_user.sources.search(uid=body.source_uid).first()
+    membership = current_user.sources.search(
+        uid=body.source_uid).first()
 
-    if membership is None or not membership.is_administrator():
+    if (
+        membership is None
+        or not membership.is_administrator()
+    ):
         abort(403)
-    mail = current_app.extensions.get("mail")
+    mail = current_app.extensions.get('mail')
     invited_user = User.get_by_email(email=body.email)
     source = Source.nodes.get_or_none(uid=body.source_uid)
     if source is None:
-        return {"status": "error", "message": "Source not found!"}, 404
+        return {
+            "status": "error",
+            "message": "Source not found!"
+        }, 404
     if invited_user is not None:
-        invitation_exists = source.invitations.is_connected(invited_user)
+        invitation_exists = source.invitations.is_connected(
+            invited_user)
         if invitation_exists:
             return {
                 "status": "error",
-                "message": "Invitation already sent to this user!",
+                "message": "Invitation already sent to this user!"
             }, 409
         else:
             try:
-                new_invitation = Invitation(role=body.role).save()
+                new_invitation = Invitation(
+                    role=body.role
+                ).save()
                 source.invitations.connect(new_invitation).save()
                 invited_user.received_invitations.connect(new_invitation).save()
                 current_user.extended_invitations.connect(new_invitation).save()
 
-                msg = Message(
-                    "Invitation to join an NPDC source organization!",
-                    sender=TestingConfig.MAIL_USERNAME,
-                    recipients=[body.email],
-                )
-                msg.body = (
-                    "You have been invited to a join a source"
-                    + " organization. Please log on to accept or decline"
-                    + " the invitation at https://dev.nationalpolicedata.org/."
-                )
+                msg = Message("Invitation to join an NPDC source organization!",
+                              sender=TestingConfig.MAIL_USERNAME,
+                              recipients=[body.email])
+                msg.body = "You have been invited to a join a source" + \
+                    " organization. Please log on to accept or decline" + \
+                    " the invitation at https://dev.nationalpolicedata.org/."
                 mail.send(msg)
                 return {
                     "status": "ok",
-                    "message": "User notified of their invitation!",
+                    "message": "User notified of their invitation!"
                 }, 200
 
             except Exception as e:
                 logger.exception(f"Failed to send invitation: {e}")
                 return {
                     "status": "error",
-                    "message": "Something went wrong! Please try again!",
+                    "message": "Something went wrong! Please try again!"
                 }, 500
     else:
         try:
@@ -239,42 +247,36 @@ def add_member_to_source():
             if existing_invitation is not None:
                 return {
                     "status": "error",
-                    "message": "Invitation already sent to this user!",
+                    "message": "Invitation already sent to this user!"
                 }, 409
             else:
                 new_staged_invite = StagedInvitation(
-                    email=body.email, role=body.role
-                ).save()
+                    email=body.email, role=body.role).save()
                 source.staged_invitations.connect(new_staged_invite).save()
                 current_user.extended_staged_invitations.connect(
-                    new_staged_invite
-                ).save()
+                    new_staged_invite).save()
 
                 msg = Message(
                     "Invitation to join NPDC index!",
                     sender=TestingConfig.MAIL_USERNAME,
-                    recipients=[body.email],
-                )
+                    recipients=[body.email])
                 msg.body = """You have been
                             invited to a source organization. Please register
                             with NPDC index at
                             https://dev.nationalpolicedata.org/."""
                 mail.send(msg)
 
-            return (
-                {
-                    "status": "ok",
-                    "message": """User is not registered with the NPDC index.
-                 Email sent to user notifying them to register.""",
-                },
-                200,
-            )
+            return {
+                "status": "ok",
+                "message": """User is not registered with the NPDC index.
+                 Email sent to user notifying them to register."""
+            }, 200
 
         except Exception as e:
             logger.exception(f"Failed to send invitation: {e}")
             return {
                 "status": "error",
-                "message": "Something went wrong! Please try again!",
+                "message": "Something went wrong! Please try again!"
             }, 500
 
 
@@ -290,7 +292,10 @@ def join_organization():
     current_user = User.get(jwt_decoded["sub"])
     source = Source.nodes.get_or_none(uid=body["source_uid"])
     if source is None:
-        return {"status": "error", "message": "Source not found!"}, 404
+        return {
+            "status": "error",
+            "message": "Source not found!"
+        }, 404
 
     # invitations = current_user.invitations.all()
     # TODO: Confirm that the user has a valid invitation to this organization.
@@ -299,24 +304,34 @@ def join_organization():
     # relationship would be more appropriate.
     try:
         body = request.get_json()
-        membership = current_user.sources.search(uid=body["source_uid"]).first()
+        membership = current_user.sources.search(
+            uid=body["source_uid"]
+        ).first()
         if membership is not None:
             return {
-                "status": "Conflict",
-                "message": "User already in the organization",
+                "status" : "Conflict",
+                "message": "User already in the organization"
             }, 409
         else:
-            current_user.sources.connect(source, {"role": body["role"]}).save()
+            current_user.sources.connect(
+                source,
+                {
+                    "role": body["role"]
+                }
+            ).save()
 
             # TODO: Remove the invitation from the user's list of invitations
             logger.info(f"User {current_user.uid} joined {source.name}")
             return {
                 "status": "ok",
-                "message": "Successfully joined source organization",
-            }, 200
+                "message": "Successfully joined source organization"
+            } , 200
     except Exception as e:
         logger.exception(f"Failed to join organization: {e}")
-        return {"status": "Error", "message": "Something went wrong!"}, 500
+        return {
+            "status": "Error",
+            "message": "Something went wrong!"
+        }, 500
 
 
 # user can leave org they already joined
@@ -332,28 +347,34 @@ def leave_organization():
         body = request.get_json()
         jwt_decoded = get_jwt()
         current_user = User.get(jwt_decoded["sub"])
-        source = current_user.sources.search(uid=body["source_uid"]).first()
+        source = current_user.sources.search(
+            uid=body["source_uid"]
+        ).first()
         if source is not None:
-            current_user.sources.disconnect(source).save()
+            current_user.sources.disconnect(
+                source
+            ).save()
             logger.info(f"User {current_user.uid} left {source.name}")
             return {
                 "status": "ok",
-                "message": "Succesfully left organization",
+                "message": "Succesfully left organization"
             }, 200
         else:
             return {
                 "status": "Error",
-                "message": "Not a member of this organization",
+                "message": "Not a member of this organization"
             }, 400
     except Exception as e:
         logger.exception(
-            f"User {current_user.uid} failed to leave organization: {e}"
-        )
-        return {"status": "Error", "message": "Something went wrong!"}
+            f"User {current_user.uid} failed to leave organization: {e}")
+        return {
+            "status": "Error",
+            "message": "Something went wrong!"
+        }
 
 
 # admin can remove any member from a source organization
-@bp.route("/remove_member", methods=["DELETE"])
+@bp.route("/remove_member", methods=['DELETE'])
 @jwt_required()
 @min_role_required(MemberRole.ADMIN)
 def remove_member():
@@ -363,35 +384,49 @@ def remove_member():
     current_user = User.get(get_jwt()["sub"])
     user_to_remove = User.get(body["user_id"])
     if source is None:
-        return {"status": "error", "message": "Source not found!"}, 404
+        return {
+            "status": "error",
+            "message": "Source not found!"
+        }, 404
     if user_to_remove is None:
-        return {"status": "error", "message": "User not found!"}, 404
-    c_user_membership = current_user.sources.relationship(source).first()
+        return {
+            "status": "error",
+            "message": "User not found!"
+        }, 404
+    c_user_membership = current_user.sources.relationship(
+        source
+    ).first()
     if c_user_membership is None or not c_user_membership.is_administrator():
         return {
             "status": "Unauthorized",
-            "message": "Not authorized to remove members!",
+            "message": "Not authorized to remove members!"
         }, 403
-    user_membership = user_to_remove.sources.relationship(source).first()
+    user_membership = user_to_remove.sources.relationship(
+        source
+    ).first()
     if user_membership is None:
         return {
             "status": "error",
-            "message": "User not a member of this organization!",
+            "message": "User not a member of this organization!"
         }, 404
     try:
         source.members.disconnect(user_to_remove).save()
         user_to_remove.sources.disconnect(source).save()
         return {
-            "status": "ok",
-            "message": "Member successfully deleted from Organization",
-        }, 200
+            "status" : "ok",
+            "message" : "Member successfully deleted from Organization"
+        } , 200
     except Exception as e:
         logger.exception(
             "Failed to remove user {} from {}: {}".format(
-                user_to_remove.uid, source.name, e
-            )
-        )
-        return {"status": "Error", "message": "Something went wrong!"}, 500
+                user_to_remove.uid,
+                source.name,
+                e
+            ))
+        return {
+            "status" : "Error",
+            "message" : "Something went wrong!"
+        }, 500
 
 
 # # admin can withdraw invitations that have been sent out

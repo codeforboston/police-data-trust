@@ -100,8 +100,7 @@ def register():
                 new_invitation = Invitation(
                     user_uid=user.uid,
                     role=instance.role,
-                    partner_uid=instance.partner_id,
-                )
+                    partner_uid=instance.partner_id)
                 new_invitation.save()
                 instance.delete()
 
@@ -115,14 +114,10 @@ def register():
         set_access_cookies(resp, token)
 
         logger.info(f"User {user.uid} registered successfully.")
-        track_to_mp(
-            request,
-            "register",
-            {
-                "user_id": user.uid,
-                "success": True,
-            },
-        )
+        track_to_mp(request, "register", {
+            'user_id': user.uid,
+            'success': True,
+        })
         return resp, 200
     # In case of missing fields, return error message indicating
     # required fields.

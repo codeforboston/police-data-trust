@@ -10,7 +10,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": [],
+        "known_employers": []
     },
     "light": {
         "first_name": "Decent",
@@ -18,7 +18,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": [],
+        "known_employers": []
     },
     "none": {
         "first_name": "Good",
@@ -26,7 +26,7 @@ mock_officers = {
         "race": "White",
         "ethnicity": "Non-Hispanic",
         "gender": "M",
-        "known_employers": [],
+        "known_employers": []
     },
 }
 
@@ -37,7 +37,7 @@ mock_agencies = {
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL",
+        "jurisdiction": "MUNICIPAL"
     },
     "nypd": {
         "name": "New York Police Department",
@@ -45,8 +45,8 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL",
-    },
+        "jurisdiction": "MUNICIPAL"
+    }
 }
 
 new_agency = {
@@ -55,7 +55,7 @@ new_agency = {
     "hq_address": "123 Main St",
     "hq_city": "New York",
     "hq_zip": "10001",
-    "jurisdiction": "MUNICIPAL",
+    "jurisdiction": "MUNICIPAL"
 }
 
 
@@ -75,9 +75,8 @@ def test_create_agency(db_session, client, contributor_access_token):
     res = client.post(
         "/api/v1/agencies/",
         json=test_agency,
-        headers={
-            "Authorization": "Bearer {0}".format(contributor_access_token)
-        },
+        headers={"Authorization": "Bearer {0}".format(
+            contributor_access_token)},
     )
     assert res.status_code == 200
 
@@ -97,8 +96,9 @@ def test_unauthorized_create_agency(client, access_token):
     res = client.post(
         "/api/v1/agencies/",
         json=test_agency,
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
+        headers={"Authorization": "Bearer {0}".format(
+            access_token)},
+     )
     assert res.status_code == 403
 
 
@@ -106,8 +106,7 @@ def test_get_agency(client, access_token, example_agency):
     # Test that we can get example_agency
     res = client.get(
         f"/api/v1/agencies/{example_agency.uid}",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
-    )
+        headers={"Authorization": "Bearer {0}".format(access_token)})
     assert res.status_code == 200
     assert res.json["name"] == example_agency.name
     assert res.json["website_url"] == example_agency.website_url
@@ -120,7 +119,7 @@ def test_get_all_agencies(client, access_token, example_agencies):
     # Test that we can get agencies
     res = client.get(
         "/api/v1/agencies/",
-        headers={"Authorization": "Bearer {0}".format(access_token)},
+        headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
     assert res.json["results"].__len__() == total_agencies
@@ -129,7 +128,7 @@ def test_get_all_agencies(client, access_token, example_agencies):
 def test_agency_pagination(client, example_agencies, access_token):
     per_page = 1
     total_agencies = Agency.nodes.all().__len__()
-    expected_total_pages = math.ceil(total_agencies // per_page)
+    expected_total_pages = math.ceil(total_agencies//per_page)
     for page in range(1, expected_total_pages + 1):
         res = client.get(
             f"/api/v1/agencies/?per_page={per_page}&page={page}",

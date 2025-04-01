@@ -25,8 +25,7 @@ class Importer(Thread):
         self.sqs_client = self.session.client("sqs")
         self.s3_client = self.session.client("s3")
         self.sqs_queue_url = self.sqs_client.get_queue_url(
-            QueueName=self.queue_name
-        )
+            QueueName=self.queue_name)
         self.logger = getLogger(self.__class__.__name__)
 
         self.loader_map: dict[str, Loader] = {}
@@ -58,8 +57,7 @@ class Importer(Thread):
                         key = record["s3"]["object"]["key"]
                         with BytesIO() as fileobj:
                             self.s3_client.download_fileobj(
-                                bucket_name, key, fileobj
-                            )
+                                bucket_name, key, fileobj)
                             fileobj.seek(0)
                             content = fileobj.read()
                             _ = content  # for linting.
@@ -73,8 +71,7 @@ class Importer(Thread):
                         self.logger.info(f"Imported s3://{bucket_name}/{key}")
             except Exception as e:
                 self.logger.error(
-                    f"Failed to process scraper events sqs queue: {e}"
-                )
+                    f"Failed to process scraper events sqs queue: {e}")
                 sleep(600)
                 pass
 

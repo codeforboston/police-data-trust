@@ -105,7 +105,8 @@ def drop_existing_records(dataset, source):
         existing_source_ids = list(
             s
             for (s,) in db.session.query(md.Incident.source_id).filter(
-                md.Incident.source == source, md.Incident.source_id is not None
+                md.Incident.source == source,
+                md.Incident.source_id is not None
             )
         )
     return dataset.drop(existing_source_ids)

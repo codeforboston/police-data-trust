@@ -38,33 +38,48 @@ mock_members = {
         "source_member": {
             "role": MemberRole.PUBLISHER.value,
             "is_active": True,
-        },
+        }
     },
     "inactive": {
         "user_email": inactive_email,
         "user_role": UserRole.PUBLIC.value,
-        "source_member": {"role": MemberRole.MEMBER.value, "is_active": False},
+        "source_member": {
+            "role": MemberRole.MEMBER.value,
+            "is_active": False
+        }
     },
     "admin": {
         "user_email": publisher_email,
         "user_role": UserRole.CONTRIBUTOR.value,
-        "source_member": {"role": MemberRole.ADMIN.value, "is_active": True},
+        "source_member": {
+            "role": MemberRole.ADMIN.value,
+            "is_active": True
+        }
     },
     "member": {
         "user_email": publisher_email,
         "user_role": UserRole.PUBLIC.value,
-        "source_member": {"role": MemberRole.MEMBER.value, "is_active": True},
+        "source_member": {
+            "role": MemberRole.MEMBER.value,
+            "is_active": True
+        }
     },
-    "admin2": {
+    "admin2" : {
         "user_email": admin_email,
         "user_role": UserRole.CONTRIBUTOR.value,
-        "source_member": {"role": MemberRole.ADMIN.value, "is_active": True},
+        "source_member": {
+            "role": MemberRole.ADMIN.value,
+            "is_active": True
+        }
     },
-    "member2": {
+    "member2" : {
         "user_email": member2_email,
         "user_role": UserRole.PUBLIC.value,
-        "source_member": {"role": MemberRole.MEMBER.value, "is_active": True},
-    },
+        "source_member": {
+            "role" : MemberRole.MEMBER.value,
+            "is_active" : True
+        }
+    }
 }
 
 
@@ -91,7 +106,8 @@ def example_members(example_source):
             last_name="user",
             phone_number="(278) 555-7890",
         ).save()
-        example_source.members.connect(u, mock["source_member"])
+        example_source.members.connect(
+            u, mock['source_member'])
         users[name] = u
     return users
 
@@ -100,18 +116,22 @@ def test_create_source(client, access_token):
     request = {
         "name": "New Source",
         "url": "newsource.com",
-        "contact_email": "admin@newsource.com",
+        "contact_email": "admin@newsource.com"
     }
 
     res = client.post(
         "/api/v1/sources/",
         json=request,
-        headers={"Authorization": f"Bearer {access_token}"},
+        headers={
+            "Authorization": f"Bearer {access_token}"
+        }
     )
     assert res.status_code == 200
     response = res.json
 
-    source_obj = Source.nodes.get(uid=response["uid"])
+    source_obj = (
+        Source.nodes.get(uid=response["uid"])
+    )
     assert source_obj.name == request["name"]
     assert source_obj.url == request["url"]
     assert source_obj.contact_email == request["contact_email"]
@@ -126,7 +146,7 @@ def test_create_source(client, access_token):
 def test_get_source(client, example_source, access_token):
     res = client.get(
         f"/api/v1/sources/{example_source.uid}",
-        headers={"Authorization": f"Bearer {access_token}"},
+        headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
     assert res.json["name"] == example_source.name
@@ -137,18 +157,19 @@ def test_get_source(client, example_source, access_token):
 def test_get_all_sources(client, example_sources, access_token):
     all_sources = Source.nodes.all()
     res = client.get(
-        "/api/v1/sources/", headers={"Authorization": f"Bearer {access_token}"}
+        "/api/v1/sources/",
+        headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
-    assert res.json["results"][0]["name"] is not None
-    assert res.json["results"][0]["contact_email"] is not None
+    assert res.json['results'][0]["name"] is not None
+    assert res.json['results'][0]["contact_email"] is not None
     assert res.json["results"].__len__() == all_sources.__len__()
 
 
 def test_source_pagination(client, example_sources, access_token):
     all_sources = Source.nodes.all()
     per_page = 1
-    expected_total_pages = math.ceil(len(all_sources) // per_page)
+    expected_total_pages = math.ceil(len(all_sources)//per_page)
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
@@ -173,7 +194,8 @@ def test_source_pagination(client, example_sources, access_token):
     )
     assert res.status_code == 404
 
-    # def test_add_member_to_source(db_session, example_members):
+
+# def test_add_member_to_source(db_session, example_members):
     # created = example_members["publisher"]
 
     # source_member_obj = (
@@ -192,8 +214,7 @@ def test_source_pagination(client, example_sources, access_token):
 
 
 def test_get_source_members(
-    client, example_source, example_members, access_token
-):
+        client, example_source, example_members, access_token):
     members = example_source.members.all()
     res = client.get(
         f"/api/v1/sources/{example_source.uid}/members/",

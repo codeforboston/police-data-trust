@@ -1,5 +1,9 @@
 from backend.schemas import JsonSerializable
-from neomodel import StringProperty, UniqueIdProperty, StructuredNode
+from neomodel import (
+    StringProperty,
+    UniqueIdProperty,
+    StructuredNode
+)
 
 
 class Attachment(JsonSerializable, StructuredNode):

@@ -28,8 +28,11 @@ def test_db_driver():
     uri = f"bolt://{cfg.GRAPH_NM_URI}"
     print(f"Driver URI: {uri}")
     test_driver = GraphDatabase.driver(
-        uri, auth=(cfg.GRAPH_USER, cfg.GRAPH_PASSWORD)
-    )
+        uri,
+        auth=(
+            cfg.GRAPH_USER,
+            cfg.GRAPH_PASSWORD
+        ))
     print(test_driver.get_server_info().address)
     test_driver.verify_connectivity()
     yield test_driver
@@ -62,7 +65,7 @@ def client(app):
 # This function should be called for every new test node created
 def add_test_property(node):
     query = "MATCH (n) WHERE elementId(n) = $node_id SET n.is_test_data = true"
-    params = {"node_id": node.element_id}
+    params = {'node_id': node.element_id}
     db.cypher_query(query, params)
 
 
@@ -73,7 +76,10 @@ def add_test_property_to_rel(start_node, rel_type, end_node):
     WHERE elementId(a) = $start_id AND elementId(b) = $end_id
     SET r.test_data = true
     """
-    params = {"start_id": start_node.element_id, "end_id": end_node.element_id}
+    params = {
+        'start_id': start_node.element_id,
+        'end_id': end_node.element_id
+    }
     db.cypher_query(query, params)
 
 
@@ -90,9 +96,8 @@ def cleanup_test_data():
     if is_test_database():
         # Delete all nodes except the TestMarker node
         db.cypher_query(
-            "MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r"
-        )
-        db.cypher_query("MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n")
+            'MATCH ()-[r]-() WHERE NOT EXISTS((:TestMarker)-[r]-()) DELETE r')
+        db.cypher_query('MATCH (n) WHERE NOT n:TestMarker DETACH DELETE n')
 
 
 @pytest.fixture
@@ -114,7 +119,7 @@ def example_source(scope="session"):
     source = Source(
         name="Example Source",
         url="www.example.com",
-        contact_email=contributor_email,
+        contact_email=contributor_email
     ).save()
     add_test_property(source)
     yield source
@@ -128,7 +133,7 @@ def example_agency():
         hq_city="New York",
         hq_address="123 Main St",
         hq_zip="10001",
-        jurisdiction=Jurisdiction.MUNICIPAL.value,
+        jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
     add_test_property(agency)
     yield agency
@@ -159,7 +164,7 @@ def example_source_member(example_source):
     source = Source(
         name="Example Source Member",
         url="www.example.com",
-        contact_email="example_test@example.ca",
+        contact_email="example_test@example.ca"
     ).save()
     add_test_property(source)
 
@@ -167,12 +172,12 @@ def example_source_member(example_source):
     source.members.conect(
         member,
         {
-            "role": MemberRole.MEMBER.value,
-            "date_joined": datetime.now(),
-            "is_active": True,
-        },
+            'role': MemberRole.MEMBER.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
     )
-    add_test_property_to_rel(source, "HAS_MEMBER", member)
+    add_test_property_to_rel(source, 'HAS_MEMBER', member)
     yield member
 
 
@@ -191,7 +196,7 @@ def example_contributor():
     source = Source(
         name="Example Contributor",
         url="www.example.com",
-        contact_email="example_test@example.ca",
+        contact_email="example_test@example.ca"
     ).save()
     add_test_property(source)
 
@@ -199,12 +204,12 @@ def example_contributor():
     source.members.connect(
         contributor,
         {
-            "role": MemberRole.PUBLISHER.value,
-            "date_joined": datetime.now(),
-            "is_active": True,
-        },
+            'role': MemberRole.PUBLISHER.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
     ).save()
-    add_test_property_to_rel(source, "HAS_MEMBER", contributor)
+    add_test_property_to_rel(source, 'HAS_MEMBER', contributor)
     return contributor
 
 
@@ -212,15 +217,18 @@ def example_contributor():
 def example_complaints(
     example_source: Source,
     example_contributor: User,
-):
+) :
     complaints = []
 
     yield complaints
 
 
 @pytest.fixture  # type: ignore
-def example_complaints_private_public(example_source: Source):
-    complaints = []
+def example_complaints_private_public(
+    example_source: Source
+):
+    complaints = [
+    ]
 
     return complaints
 
@@ -253,12 +261,12 @@ def source_admin(example_source):
     example_source.members.connect(
         user,
         {
-            "role": MemberRole.ADMIN.value,
-            "date_joined": datetime.now(),
-            "is_active": True,
-        },
+            'role': MemberRole.ADMIN.value,
+            'date_joined': datetime.now(),
+            'is_active': True
+        }
     )
-    add_test_property_to_rel(example_source, "HAS_MEMBER", user)
+    add_test_property_to_rel(example_source, 'HAS_MEMBER', user)
     yield user
 
 

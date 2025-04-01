@@ -9,7 +9,7 @@ from neomodel import (
     RelationshipTo,
     DateProperty,
     UniqueIdProperty,
-    One,
+    One
 )
 
 
@@ -50,17 +50,12 @@ class Unit(StructuredNode, JsonSerializable):
     agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
     commander = RelationshipTo(
         "backend.database.models.officer.Officer",
-        "COMMANDED_BY",
-        model=UnitMembership,
-    )
+        "COMMANDED_BY", model=UnitMembership)
     officers = RelationshipTo(
         "backend.database.models.officer.Officer",
-        "MEMBER_OF",
-        model=UnitMembership,
-    )
+        "MEMBER_OF", model=UnitMembership)
     citations = RelationshipTo(
-        "backend.database.models.source.Source", "UPDATED_BY", model=Citation
-    )
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Unit {self.name}>"
@@ -84,8 +79,7 @@ class Agency(StructuredNode, JsonSerializable):
     # Relationships
     units = RelationshipTo("Unit", "ESTABLISHED")
     citations = RelationshipTo(
-        "backend.database.models.source.Source", "UPDATED_BY", model=Citation
-    )
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Agency {self.name}>"

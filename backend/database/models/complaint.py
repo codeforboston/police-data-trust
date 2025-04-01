@@ -1,5 +1,4 @@
 """Define the Classes for Complaints."""
-
 from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
     StructuredNode,
@@ -8,7 +7,7 @@ from neomodel import (
     RelationshipTo,
     RelationshipFrom,
     DateProperty,
-    UniqueIdProperty,
+    UniqueIdProperty
 )
 
 
@@ -21,7 +20,10 @@ class RecordType(str, PropertyEnum):
 
 # Neo4j Models
 class BaseSourceRel(StructuredRel, JsonSerializable):
-    record_type = StringProperty(choices=RecordType.choices(), required=True)
+    record_type = StringProperty(
+        choices=RecordType.choices(),
+        required=True
+    )
 
 
 class LegalSourceRel(BaseSourceRel):

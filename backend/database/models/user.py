@@ -4,13 +4,9 @@ from flask import current_app
 from argon2 import exceptions as argon2_exceptions
 from backend.schemas import JsonSerializable, PropertyEnum
 from neomodel import (
-    Relationship,
-    StructuredNode,
-    StringProperty,
-    DateProperty,
-    BooleanProperty,
-    UniqueIdProperty,
-    EmailProperty,
+    Relationship, StructuredNode,
+    StringProperty, DateProperty, BooleanProperty,
+    UniqueIdProperty, EmailProperty
 )
 from backend.database.models.source import SourceMember
 
@@ -36,14 +32,9 @@ class UserRole(str, PropertyEnum):
 class User(StructuredNode, JsonSerializable):
     __hidden_properties__ = ["password_hash"]
     __property_order__ = [
-        "uid",
-        "first_name",
-        "last_name",
-        "email",
-        "email_confirmed_at",
-        "phone_number",
-        "role",
-        "active",
+        "uid", "first_name", "last_name",
+        "email", "email_confirmed_at",
+        "phone_number", "role", "active"
     ]
 
     uid = UniqueIdProperty()
@@ -60,26 +51,23 @@ class User(StructuredNode, JsonSerializable):
     last_name = StringProperty(required=True)
 
     role = StringProperty(
-        choices=UserRole.choices(), default=UserRole.PUBLIC.value
-    )
+        choices=UserRole.choices(), default=UserRole.PUBLIC.value)
 
     phone_number = StringProperty()
 
     # Data Source Relationships
     sources = Relationship(
-        "backend.database.models.source.Source",
-        "MEMBER_OF_SOURCE",
-        model=SourceMember,
-    )
+        'backend.database.models.source.Source',
+        "MEMBER_OF_SOURCE", model=SourceMember)
     received_invitations = Relationship(
-        "backend.database.models.source.Invitation", "RECIEVED"
-    )
+        'backend.database.models.source.Invitation',
+        "RECIEVED")
     extended_invitations = Relationship(
-        "backend.database.models.source.Invitation", "EXTENDED"
-    )
+        'backend.database.models.source.Invitation',
+        "EXTENDED")
     entended_staged_invitations = Relationship(
-        "backend.database.models.source.StagedInvitation", "EXTENDED"
-    )
+        'backend.database.models.source.StagedInvitation',
+        "EXTENDED")
 
     def _get_password_hasher(self):
         """
@@ -87,7 +75,7 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             PasswordHasher: The password hasher.
         """
-        return current_app.config["PASSWORD_HASHER"]
+        return current_app.config['PASSWORD_HASHER']
 
     def verify_password(self, pw: str) -> bool:
         """
@@ -146,7 +134,7 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             str: The hashed password.
         """
-        return current_app.config["PASSWORD_HASHER"].hash(pw)
+        return current_app.config['PASSWORD_HASHER'].hash(pw)
 
     @classmethod
     def get_by_email(cls, email: str) -> "User":
