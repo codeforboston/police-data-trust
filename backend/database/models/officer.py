@@ -72,4 +72,4 @@ class Officer(StructuredNode, JsonSerializable):
     )
 
     def __repr__(self):
-        return f"<Officer {self.uid}>"
+        return f"<Officer {self.id}>"
