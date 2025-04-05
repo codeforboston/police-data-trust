@@ -50,7 +50,7 @@ def test_register(
     res = client.post(
         "api/v1/auth/register",
         json={
-            "primary_email": email,
+            "email": email,
             "password": password,
             "firstname": firstname,
             "lastname": lastname,
@@ -85,7 +85,7 @@ def test_login(
     res = client.post(
         "api/v1/auth/login",
         json={
-            "email": example_user.email,
+            "email": example_user.primary_email,
             "password": password,
         },
     )
