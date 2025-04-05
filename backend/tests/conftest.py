@@ -103,7 +103,7 @@ def cleanup_test_data():
 @pytest.fixture
 def example_user():
     user = User(
-        email=example_email,
+        primary_email=example_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.PUBLIC.value,
         first_name="first",
@@ -152,7 +152,7 @@ def example_officer():
 @pytest.fixture  # type: ignore
 def example_source_member(example_source):
     member = User(
-        email=member_email,
+        primary_email=member_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.PUBLIC.value,
         first_name="member",
@@ -184,7 +184,7 @@ def example_source_member(example_source):
 @pytest.fixture  # type: ignore
 def example_contributor():
     contributor = User(
-        email=contributor_email,
+        primary_email=contributor_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
@@ -236,7 +236,7 @@ def example_complaints_private_public(
 @pytest.fixture
 def admin_user():
     user = User(
-        email=admin_email,
+        primary_email=admin_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.ADMIN.value,
         first_name="admin",
@@ -249,7 +249,7 @@ def admin_user():
 @pytest.fixture
 def source_admin(example_source):
     user = User(
-        email=s_admin_email,
+        primary_email=s_admin_email,
         password_hash=User.hash_password(example_password),
         role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",

@@ -5,7 +5,7 @@ from argon2 import PasswordHasher
 ph = PasswordHasher()
 
 mock_user = {
-    "email": "existing@email.com",
+    "primary_email": "existing@email.com",
     "password_hash": ph.hash("my_password"),
     "first_name": "John",
     "last_name": "Doe",
@@ -85,7 +85,7 @@ def test_login(
     res = client.post(
         "api/v1/auth/login",
         json={
-            "email": example_user.email,
+            "email": example_user.primary_email,
             "password": password,
         },
     )

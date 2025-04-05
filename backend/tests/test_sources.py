@@ -99,7 +99,7 @@ def example_members(example_source):
 
     for name, mock in mock_members.items():
         u = User(
-            email=mock["user_email"],
+            primary_email=mock["user_email"],
             password_hash=User.hash_password(example_password),
             role=mock["user_role"],
             first_name=name,
