@@ -138,7 +138,7 @@ def create_officer():
     current_user = User.get(jwt_decoded["sub"])
 
     # try:
-    officer = Officer.from_dict(body.dict())
+    officer = Officer.from_dict(body.model_dump())
     # except Exception as e:
     #     abort(400, description=str(e))
 
@@ -200,7 +200,7 @@ def update_officer(officer_uid: str):
         abort(404, description="Officer not found")
 
     try:
-        o = Officer.from_dict(body.dict(), officer_uid)
+        o = Officer.from_dict(body.model_dump(), officer_uid)
         o.refresh()
     except Exception as e:
         abort(400, description=str(e))

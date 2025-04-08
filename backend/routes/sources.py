@@ -58,7 +58,7 @@ def create_source():
 
         # Creates a new instance of the Source and saves it to the DB
         try:
-            new_p = Source.from_dict(body.dict())
+            new_p = Source.from_dict(body.model_dump())
         except NodeConflictException:
             abort(409, description="Source already exists")
         except Exception as e:
@@ -131,7 +131,7 @@ def update_source(source_uid: str):
         abort(403, description="Not authorized to update source")
 
     try:
-        p.from_dict(body.dict(), source_uid)
+        p.from_dict(body.model_dump(), source_uid)
         p.refresh()
         return p.to_json()
     except Exception as e:
