@@ -6,10 +6,10 @@ from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas import CreateOfficer, UpdateOfficer
 from pydantic import BaseModel
 
 

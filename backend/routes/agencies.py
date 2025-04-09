@@ -8,9 +8,9 @@ from backend.schemas import (
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
-from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas import CreateAgency, UpdateAgency
 from pydantic import BaseModel
 
 

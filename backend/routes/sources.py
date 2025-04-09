@@ -6,10 +6,10 @@ from backend.database.models.user import User, UserRole
 from ..schemas import (
     validate_request, paginate_results, ordered_jsonify,
     NodeConflictException)
-from .tmp.pydantic.partners import CreatePartner, UpdatePartner
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas import CreatePartner, UpdatePartner
 
 from ..database import (
     Source,
