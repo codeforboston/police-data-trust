@@ -8,9 +8,9 @@ from backend.schemas import (
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
-from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas.agencies import CreateAgency, UpdateAgency
 from pydantic import BaseModel
 
 
@@ -46,7 +46,7 @@ def create_agency():
     body: CreateAgency = request.validated_body
 
     try:
-        agency = Agency.from_dict(body.dict())
+        agency = Agency.from_dict(body.model_dump())
     except NodeConflictException:
         abort(409, description="Agency already exists")
     except Exception as e:
@@ -95,7 +95,7 @@ def update_agency(agency_uid: str):
         abort(404, description="Agency not found")
 
     try:
-        agency = Agency.from_dict(body.dict(), agency_uid)
+        agency = Agency.from_dict(body.model_dump(), agency_uid)
         agency.refresh()
         track_to_mp(
             request,

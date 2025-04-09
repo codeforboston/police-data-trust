@@ -6,10 +6,10 @@ from backend.database.models.user import User, UserRole
 from ..schemas import (
     validate_request, paginate_results, ordered_jsonify,
     NodeConflictException)
-from .tmp.pydantic.partners import CreatePartner, UpdatePartner
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas.sources import CreateSource, UpdateSource
 
 from ..database import (
     Source,
@@ -39,11 +39,11 @@ def get_sources(source_uid: str):
 @bp.route("/", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate_request(CreatePartner)
+@validate_request(CreateSource)
 def create_source():
     """Create a contributing source."""
     logger = logging.getLogger("create_source")
-    body: CreatePartner = request.validated_body
+    body: CreateSource = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
@@ -58,7 +58,7 @@ def create_source():
 
         # Creates a new instance of the Source and saves it to the DB
         try:
-            new_p = Source.from_dict(body.dict())
+            new_p = Source.from_dict(body.model_dump())
         except NodeConflictException:
             abort(409, description="Source already exists")
         except Exception as e:
@@ -114,10 +114,10 @@ def get_all_sources():
 @bp.route("/<source_uid>", methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate_request(UpdatePartner)
+@validate_request(UpdateSource)
 def update_source(source_uid: str):
     """Update a source's information."""
-    body: UpdatePartner = request.validated_body
+    body: UpdateSource = request.validated_body
     current_user = User.get(get_jwt()["sub"])
     p = Source.nodes.get_or_none(uid=source_uid)
     if p is None:
@@ -131,7 +131,7 @@ def update_source(source_uid: str):
         abort(403, description="Not authorized to update source")
 
     try:
-        p.from_dict(body.dict(), source_uid)
+        p.from_dict(body.model_dump(), source_uid)
         p.refresh()
         return p.to_json()
     except Exception as e:
@@ -284,10 +284,10 @@ def add_member_to_source():
 @bp.route("/join", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-@validate_request(CreatePartner)
+@validate_request(CreateSource)
 def join_organization():
     logger = logging.getLogger("join_organization")
-    body: CreatePartner = request.validated_body
+    body: CreateSource = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
     source = Source.nodes.get_or_none(uid=body["source_uid"])

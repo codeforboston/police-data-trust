@@ -138,7 +138,7 @@ def ordered_jsonify(*args, **kwargs):
 
 
 # A decorator to validate request bodies using Pydantic models
-def validate_request(model: BaseModel):
+def validate_request(model: type[BaseModel]):
     """
     Validate the request body using a Pydantic model.
 
@@ -170,7 +170,7 @@ def paginate_results(
         data: list[JsonSerializable],
         page: int, per_page: int = 20, max_per_page: int = 100):
     """
-    Paginate a list of data and return a reponse dict. Items in the list must
+    Paginate a list of data and return a response dict. Items in the list must
     implement the JsonSerializable interface.
 
     Args:

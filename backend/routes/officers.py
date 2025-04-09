@@ -6,10 +6,10 @@ from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
+from npdi_oas.officers import CreateOfficer, UpdateOfficer
 from pydantic import BaseModel
 
 
@@ -138,7 +138,7 @@ def create_officer():
     current_user = User.get(jwt_decoded["sub"])
 
     # try:
-    officer = Officer.from_dict(body.dict())
+    officer = Officer.from_dict(body.model_dump())
     # except Exception as e:
     #     abort(400, description=str(e))
 
@@ -200,7 +200,7 @@ def update_officer(officer_uid: str):
         abort(404, description="Officer not found")
 
     try:
-        o = Officer.from_dict(body.dict(), officer_uid)
+        o = Officer.from_dict(body.model_dump(), officer_uid)
         o.refresh()
     except Exception as e:
         abort(400, description=str(e))

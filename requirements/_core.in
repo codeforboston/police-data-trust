@@ -34,4 +34,5 @@ ua-parser
 ujson
 neo4j
 neomodel==5.3.3
+npdi-oas
 cffi==1.17.1

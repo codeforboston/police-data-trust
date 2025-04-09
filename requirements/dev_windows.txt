@@ -124,6 +124,8 @@ neo4j==5.19.0
     #   neomodel
 neomodel==5.3.3
     # via -r /requirements/_core.in
+npdi-oas==0.0.4
+    # via -r /requirements/_core.in
 numpy==1.26.4
     # via -r /requirements/_core.in
 openpyxl==3.0.9
@@ -153,6 +155,7 @@ pycparser==2.21
 pydantic==2.9.2
     # via
     #   -r /requirements/_core.in
+    #   npdi-oas
     #   spectree
 pydantic-core==2.23.4
     # via pydantic
