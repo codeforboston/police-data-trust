@@ -9,7 +9,7 @@ from backend.database.models.officer import Officer
 from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from npdi_oas import CreateOfficer, UpdateOfficer
+from npdi_oas.officers import CreateOfficer, UpdateOfficer
 from pydantic import BaseModel
 
 

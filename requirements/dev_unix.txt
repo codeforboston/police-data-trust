@@ -124,7 +124,7 @@ neo4j==5.19.0
     #   neomodel
 neomodel==5.3.3
     # via -r /requirements/_core.in
-npdi-oas==0.0.2
+npdi-oas==0.0.4
     # via -r /requirements/_core.in
 numpy==1.26.4
     # via -r /requirements/_core.in

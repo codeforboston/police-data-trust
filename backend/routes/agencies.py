@@ -10,7 +10,7 @@ from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
-from npdi_oas import CreateAgency, UpdateAgency
+from npdi_oas.agencies import CreateAgency, UpdateAgency
 from pydantic import BaseModel
 
 
