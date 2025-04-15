@@ -1,6 +1,7 @@
 import pytest
 from neomodel.contrib.spatial_properties import NeomodelPoint
-from backend.database.models.types.location import State, County, City, Place
+from backend.database.models.location import State, County, City, Place
+
 
 def test_create_state():
     # Create a State node
@@ -31,12 +32,12 @@ def test_relationships():
     # Create relationships
     state.counties.connect(county)
     county.cities.connect(city)
-    state.capital.connect(city)
+    state.cities.connect(city)
 
     # Verify relationships
     assert county in state.counties.all()
     assert city in county.cities.all()
-    assert city in state.capital.all()
+    assert city in state.cities.all()
 
 def test_create_place_with_coordinates():
     coordinates = NeomodelPoint(latitude=41.8781, longitude=-87.6298, crs="wgs-84")
@@ -61,12 +62,12 @@ def test_relationships_with_coordinates():
     # Create relationships
     state.counties.connect(county)
     county.cities.connect(city)
-    state.capital.connect(city)
+    state.cities.connect(city)
 
     # Verify relationships
     assert county in state.counties.all()
     assert city in county.cities.all()
-    assert city in state.capital.all()
+    assert city in state.cities.all()
 
     # Verify spatial data
     assert state.coordinates.latitude == 40.6331
