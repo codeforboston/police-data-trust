@@ -4,9 +4,11 @@ from backend.database.models.location import State, County, City, Place
 
 def test_create_state():
     # Create a State node
-    state = State(name="Illinois", abbreviation="IL").save()
+    state = State(name="Illinois", abbreviation="IL",
+                  capital="Springfield").save()
     assert state.name == "Illinois"
     assert state.abbreviation == "IL"
+    assert state.capital == "Springfield"
     assert repr(state) == "<State Illinois>"
 
 

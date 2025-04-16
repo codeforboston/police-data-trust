@@ -5,7 +5,7 @@ from neomodel import (
     UniqueIdProperty,
     RelationshipTo,
     RelationshipFrom,
-    # One,
+    One,
 )
 from neomodel.contrib.spatial_properties import PointProperty
 
@@ -27,6 +27,7 @@ class State(Place):
     abbreviation = StringProperty(required=True, unique_index=True)
 
     # Relationships
+    capital = RelationshipFrom("City", "IS_CAPITAL", cardinality=One)
     cities = RelationshipTo("City", "HAS_CITY")
     counties = RelationshipTo("County", "HAS_COUNTY")
 
@@ -55,16 +56,8 @@ class City(Place):
 
 
 class Precinct(Place):
-    """
-    Represents a precinct, which is a smaller administrative division
-    within a city or county.
-    """
-
     # Relationships
     city = RelationshipFrom("City", "HAS_PRECINCT")
-    county = RelationshipFrom("County", "HAS_PRECINCT")
-    agency = RelationshipTo("Agency", "SERVED_BY")
-    units = RelationshipTo("Unit", "PATROLLED_BY")
 
     def __repr__(self):
         return f"<Precinct {self.name}>"
