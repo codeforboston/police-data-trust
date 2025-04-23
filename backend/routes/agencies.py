@@ -7,7 +7,7 @@ from backend.schemas import (
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
-from backend.database.models.agency import Agency
+from backend.database.models.agency import Agency, State
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -145,27 +145,33 @@ def get_all_agencies():
     per_page: number of results per page
     page: page number
     name: filter on agency name
-    city: filter on agency city
-    state: filter on agency state
-    zipcode: filter on agency zipcode
+    hq_city: filter on agency city
+    hq_state: filter on agency state
+    hq_zip: filter on agency zipcode
     jurisdiction: filter on agency jurisdiction
     """
     args = request.args
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    params = ["name", "city", "state", "zipcode", "jurisdiction"]
-    internals = ["name", "hq_city", "hq_state", "hq_zip", "jurisdiction"]
-
+    params = ["name", "hq_city", "hq_state", "hq_zip", "jurisdiction"]
     params_used = set(params).intersection(args.keys())
+    params.extend(["page", "per_page"])
 
+    # includes unrecognized parameters
+    if bool(set(args).difference(params)):
+        abort(400)
+
+    # any valid filter parameters supplied
     if bool(params_used):
         filter_on = {}
 
-        for param, internal in zip(params, internals):
-            input_value = args.get(key=param, default=None, type=str)
-            if input_value:
-                filter_on[internal] = input_value
+        for p in params_used:
+            input_value = args.get(key=p, default=None, type=str)
+            if p == "hq_state":
+                if not input_value in State.choices():
+                    abort(400)
+            filter_on[p] = input_value
 
         agencies_filtered = Agency.nodes.filter(**filter_on)
         results = paginate_results(agencies_filtered, q_page, q_per_page)
