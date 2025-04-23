@@ -169,7 +169,7 @@ def get_all_agencies():
         for p in params_used:
             input_value = args.get(key=p, default=None, type=str)
             if p == "hq_state":
-                if not input_value in State.choices():
+                if input_value not in State.choices():
                     abort(400)
             filter_on[p] = input_value
 
