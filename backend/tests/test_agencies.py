@@ -201,6 +201,12 @@ def test_filter_agencies(client, access_token, example_agencies):
     assert res.status_code == 200
     assert res.json['results'].__len__() == expect_juri_ct
 
+    res = client.get(
+        "/api/v1/agencies/?jurisdiction=SPACESTATION",
+        headers={"Authorization": "Bearer {0}".format(access_token)}
+    )
+    assert res.status_code == 400
+
 
 def test_agency_pagination(client, example_agencies, access_token):
     per_page = 1
