@@ -7,7 +7,7 @@ from backend.schemas import (
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
-from backend.database.models.agency import Agency, State
+from backend.database.models.agency import Agency, State, Jurisdiction
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
@@ -170,6 +170,9 @@ def get_all_agencies():
             input_value = args.get(key=p, default=None, type=str)
             if p == "hq_state":
                 if input_value not in State.choices():
+                    abort(400)
+            if p == "jurisdiction":
+                if input_value not in Jurisdiction.choices():
                     abort(400)
             filter_on[p] = input_value
 
