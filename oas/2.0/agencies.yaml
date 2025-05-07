@@ -32,9 +32,9 @@ paths:
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
         - $ref: '#/components/parameters/jurisdiction'
         - $ref: '#/components/parameters/name'
-        - $ref: '#/components/parameters/zip_code'
-        - $ref: '#/components/parameters/city'
-        - $ref: '#/components/parameters/state'
+        - $ref: '#/components/parameters/hq_zip'
+        - $ref: '#/components/parameters/hq_city'
+        - $ref: '#/components/parameters/hq_state'
       tags: 
         -  Agencies
       responses:
@@ -327,23 +327,23 @@ components:
       schema:
         type: "string"
     zip_code:
-      name: "zip_code"
+      name: "hq_zip"
       in: "query"
       description: "Filter by zip code"
       required: false
       schema:
         type: "string"
     city:
-      name: "city"
+      name: "hq_city"
       in: "query"
       description: "Filter by city"
       required: false
       schema:
         type: "string"
     state:
-      name: "state"
+      name: "hq_state"
       in: "query"
-      description: "Filter by state"
+      description: "Filter by state (two-letter abbreviation)"
       required: false
       schema:
         type: "string"
