@@ -1,11 +1,12 @@
 from neomodel.contrib.spatial_properties import NeomodelPoint
-from backend.database.models.location import State, County, City, Place
+from backend.database.models.infra.locations import (
+    StateNode, CountyNode, CityNode, Place)
 
 
 def test_create_state():
     # Create a State node
-    state = State(name="Illinois", abbreviation="IL",
-                  capital="Springfield").save()
+    state = StateNode(
+        name="Illinois", abbreviation="IL", capital="Springfield").save()
     assert state.name == "Illinois"
     assert state.abbreviation == "IL"
     assert state.capital == "Springfield"
@@ -14,14 +15,14 @@ def test_create_state():
 
 def test_create_county():
     # Create a County node
-    county = County(name="Cook County").save()
+    county = CountyNode(name="Cook County", fips=17031).save()
     assert county.name == "Cook County"
     assert repr(county) == "<County Cook County>"
 
 
 def test_create_city():
     # Create a City node
-    city = City(name="Chicago", population="2.7M").save()
+    city = CityNode(name="Chicago", population="2.7M").save()
     assert city.name == "Chicago"
     assert city.population == "2.7M"
     assert repr(city) == "<City Chicago>"
@@ -29,19 +30,17 @@ def test_create_city():
 
 def test_relationships():
     # Create a State, County, and City and link them
-    state = State(name="Illinois", abbreviation="IL").save()
-    county = County(name="Cook County").save()
-    city = City(name="Chicago", population="2.7M").save()
+    state = StateNode(name="Illinois", abbreviation="IL").save()
+    county = CountyNode(name="Cook County", fips=17031).save()
+    city = CityNode(name="Chicago", population="2.7M").save()
 
     # Create relationships
     state.counties.connect(county)
     county.cities.connect(city)
-    state.cities.connect(city)
 
     # Verify relationships
     assert county in state.counties.all()
     assert city in county.cities.all()
-    assert city in state.cities.all()
 
 
 def test_create_place_with_coordinates():
@@ -64,21 +63,20 @@ def test_relationships_with_coordinates():
     city_coordinates = NeomodelPoint(
         latitude=41.8781, longitude=-87.6298, crs="wgs-84")
 
-    state = State(name="Illinois", abbreviation="IL",
-                  coordinates=state_coordinates).save()
-    county = County(name="Cook County", coordinates=county_coordinates).save()
-    city = City(name="Chicago", population="2.7M",
-                coordinates=city_coordinates).save()
+    state = StateNode(name="Illinois", abbreviation="IL",
+                      coordinates=state_coordinates).save()
+    county = CountyNode(name="Cook County", fips=17031,
+                        coordinates=county_coordinates).save()
+    city = CityNode(name="Chicago", population="2.7M",
+                    coordinates=city_coordinates).save()
 
     # Create relationships
     state.counties.connect(county)
     county.cities.connect(city)
-    state.cities.connect(city)
 
     # Verify relationships
     assert county in state.counties.all()
     assert city in county.cities.all()
-    assert city in state.cities.all()
 
     # Verify spatial data
     assert state.coordinates.latitude == 40.6331

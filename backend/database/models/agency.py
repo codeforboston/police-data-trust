@@ -62,7 +62,8 @@ class Unit(StructuredNode, JsonSerializable):
 
 
 class Agency(StructuredNode, JsonSerializable):
-    __hidden_properties__ = ["citations"]
+    __hidden_properties__ = ["citations", "state_node",
+                             "county_node", "city_node"]
 
     uid = UniqueIdProperty()
     name = StringProperty()
@@ -80,6 +81,12 @@ class Agency(StructuredNode, JsonSerializable):
     units = RelationshipTo("Unit", "ESTABLISHED")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
+    state_node = RelationshipTo(
+        "backend.database.models.infra.locations.StateNode", "WITHIN_STATE")
+    county_node = RelationshipTo(
+        "backend.database.models.infra.locations.CountyNode", "WITHIN_COUNTY")
+    city_node = RelationshipTo(
+        "backend.database.models.infra.locations.CityNode", "WITHIN_CITY")
 
     def __repr__(self):
         return f"<Agency {self.name}>"

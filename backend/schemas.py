@@ -2,6 +2,7 @@ from __future__ import annotations
 import math
 import json
 import datetime
+import logging
 import textwrap
 from functools import wraps
 from enum import Enum
@@ -15,9 +16,14 @@ from neomodel import (
     RelationshipTo,
     RelationshipFrom, Relationship,
     RelationshipManager, RelationshipDefinition,
-    UniqueIdProperty, StructuredRel, StructuredNode
+    UniqueIdProperty, StructuredRel, StructuredNode,
+    db
 )
 from neomodel.exceptions import DoesNotExist
+
+from backend.database.models.infra.locations import (
+    StateNode, CityNode
+)
 
 
 spec = SpecTree(
@@ -418,3 +424,40 @@ class JsonSerializable:
         if obj is None and abort_if_null:
             abort(404)
         return obj  # type: ignore
+
+    @classmethod
+    def link_location(cls: Type[T], item, state=None, city=None):
+        """
+        Link a node to the relevant location nodes.
+
+        :param item: The item to link
+        :param state: The state. Should be a two-letter State code or name.
+        :param county: The county. Should be a FIPS code or county name.
+        :param city: The city. Should be a SimpleMaps ID or city name.
+        """
+        if state is not None:
+            state_node = StateNode.nodes.get_or_none(
+                abbreviation=state)
+            if state_node:
+                item.state_node.connect(state_node)
+                logging.info(f"Linked {item.uid} to State {state_node.uid}")
+
+                # Add city if provided
+                if city is not None:
+                    query = """
+                    MATCH (c:CityNode
+                    {name: $city})-[]-()-[]-(s:StateNode {uid: $state})
+                    RETURN c LIMIT 25
+                    """
+                    results, meta = db.cypher_query(query, {
+                        "city": city,
+                        "state": state_node.uid
+                    })
+                    if results:
+                        city_node = CityNode.inflate(results[0][0])
+                        item.city_node.connect(city_node)
+                        logging.info(
+                            f"Linked {item.uid} to City {city_node.uid}")
+
+            else:
+                logging.error(f"State not found: {state}")
