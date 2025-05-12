@@ -1,6 +1,7 @@
 from neomodel import (
     StructuredNode,
     StringProperty,
+    IntegerProperty,
     UniqueIdProperty,
     RelationshipTo,
     RelationshipFrom,
@@ -105,7 +106,7 @@ class CountyNode(Place):
 
 
 class CityNode(Place):
-    population = StringProperty()
+    population = IntegerProperty()
     sm_id = StringProperty(unique_index=True)  # SimpleMaps ID
 
     # Relationships

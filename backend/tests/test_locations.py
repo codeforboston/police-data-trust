@@ -22,9 +22,9 @@ def test_create_county():
 
 def test_create_city():
     # Create a City node
-    city = CityNode(name="Chicago", population="2.7M").save()
+    city = CityNode(name="Chicago", population=2700000).save()
     assert city.name == "Chicago"
-    assert city.population == "2.7M"
+    assert city.population == 2700000
     assert repr(city) == "<City Chicago>"
 
 
@@ -32,7 +32,7 @@ def test_relationships():
     # Create a State, County, and City and link them
     state = StateNode(name="Illinois", abbreviation="IL").save()
     county = CountyNode(name="Cook County", fips=17031).save()
-    city = CityNode(name="Chicago", population="2.7M").save()
+    city = CityNode(name="Chicago", population=2700000).save()
 
     # Create relationships
     state.counties.connect(county)
@@ -67,7 +67,7 @@ def test_relationships_with_coordinates():
                       coordinates=state_coordinates).save()
     county = CountyNode(name="Cook County", fips=17031,
                         coordinates=county_coordinates).save()
-    city = CityNode(name="Chicago", population="2.7M",
+    city = CityNode(name="Chicago", population=2700000,
                     coordinates=city_coordinates).save()
 
     # Create relationships
