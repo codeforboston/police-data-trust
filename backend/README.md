@@ -2,6 +2,13 @@
 
 This is the backend for the National Police Data Index project. It is a Python Flask application that serves as the API for the front end.
 
+---
+**NOTE:**
+
+If you are having trouble running your backend tests for the first time, you might be interested in [this README.md](tests/README.md) rather than this one :-).
+
+---
+
 ## Database
 
 The backend uses a PostgreSQL database to store data. The database schema is defined in [database/models](https://github.com/codeforboston/police-data-trust/tree/a743c232b5737b193086264e1364b1475873a884/backend/database/models).

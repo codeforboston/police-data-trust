@@ -9,6 +9,12 @@ components:
       required:
         - message
   responses:
+    conflictError:
+      description: "Conflict"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
     validationError:
       description: "Validation error"
       content:
@@ -17,6 +23,12 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
     notFoundError:
       description: "Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    unauthorizedError:
+      description: "Unauthorized"
       content:
         application/json:
           schema:

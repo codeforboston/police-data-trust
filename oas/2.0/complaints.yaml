@@ -2,11 +2,11 @@ openapi: "3.0.3"
 info:
   title: "Complaints"
   description: "API Description"
-  version: "0.1.0"
+  version: "0.7.0"
 servers:
-  - url: "http://dev-api.nationalpolicedata.org/api/v1"
+  - url: "http://127.0.0.1:5001/api/v1"
     description: "Development environment"
-  - url: "https://stage-api.nationalpolicedata.org/api/v1"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
     description: "Staging environment"
   - url: "https://api.nationalpolicedata.org"
     description: "Production environment"
@@ -21,13 +21,13 @@ tags:
     description: "Complaints API"
 paths:
   /complaints/{complaint_uid}:
-    parameters:
-      - name: complaint_uid
-        in: path
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
       tags: 
         - "Complaints"
       summary: "Get Complaint"
@@ -43,7 +43,15 @@ paths:
                 $ref: "#/components/schemas/Complaint"
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-    patch: 
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    patch:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
       tags: 
         - "Complaints"
       summary: "Update Complaint"
@@ -70,7 +78,8 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
-      
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'  
   /complaints:
     post:
       tags: 
@@ -96,14 +105,48 @@ paths:
                 $ref: "#/components/schemas/Complaint"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '409':
+          $ref: '../common/error.yaml#/components/responses/conflictError'
     get:
       tags: 
         - "Complaints"
-      summary: "Get all Complaints"
+      summary: "Get Complaints"
       operationId: "getComplaints"
       description: >
        Returns all complaints in the database. Filters can be applied
        to narrow down the results.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/source_uid'
+        - $ref: '#/components/parameters/source_type'
+        - $ref: '#/components/parameters/officers_involved'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/reason_for_contact'
+        - $ref: '#/components/parameters/outcome_of_contact'
+        - $ref: '#/components/parameters/date_gte'
+        - $ref: '#/components/parameters/date_lte'
+      responses:
+        "200":
+          description: "A JSON array of complaint objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /complaints/latest:
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Latest Complaint Updates"
+      operationId: "getLatestComplaints"
+      description: >
+        Returns the most recently updated or added complaints.
       parameters:
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
@@ -114,12 +157,76 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    source_uid:
+      name: source
+      in: query
+      description: "Filter by the source of the complaint. This should be the UID of the source."
+      required: false
+      schema:
+        type: string
+    source_type:
+      name: source_type
+      in: query
+      description: >
+        Filter by the type of source. This should be a comma separated list of source types. The valid
+        source types are 'legal', 'personal', 'news', and 'government'.
+      required: false
+      schema:
+        type: string
+    officers_involved:
+      name: officers_involved
+      in: query
+      description: >
+        Filter by the officers involved in the complaint. This should be a comma separated list of officer UIDs.
+      required: false
+      schema:
+        type: string
+    category:
+      name: category
+      in: query
+      description: "Filter by the category of the complaint."
+      required: false
+      schema:
+        type: string
+    reason_for_contact:
+      name: reason_for_contact
+      in: query
+      description: "Filter by the reason for contact."
+      required: false
+      schema:
+        type: string
+    outcome_of_contact:
+      name: outcome_of_contact
+      in: query
+      description: "Filter by the outcome of contact."
+      required: false
+      schema:
+        type: string
+    date_gte:
+      name: date_gte
+      in: query
+      description: "Only return complaints that occurred or were recieved after the selected date. This should be a date in the format YYYY-MM-DD."
+      required: false
+      schema:
+        type: string
+        format: date
+    date_lte:
+      name: date_lte
+      in: query
+      description: "Only return complaints that occurred or were recieved before the selected date. This should be a date in the format YYYY-MM-DD."
+      required: false
+      schema:
+        type: string
+        format: date
   schemas:
     BaseComplaint:
       type: "object"
@@ -481,14 +588,14 @@ components:
           description: "A description of the attachment."
     SourceDetails:
       oneOf: 
-        - $ref: '#/components/schemas/LegalAction'
+        - $ref: '#/components/schemas/LegalCaseEvent'
         - $ref: '#/components/schemas/PersonalAccount'
         - $ref: '#/components/schemas/NewsReport'
         - $ref: '#/components/schemas/GovernmentRecord'
       discriminator: 
         propertyName: record_type
         mapping:
-          Legal Action: '#/components/schemas/LegalAction'
+          Legal Case Event: '#/components/schemas/LegalCaseEvent'
           Personal Account: '#/components/schemas/PersonalAccount'
           News Report: '#/components/schemas/NewsReport'
           Government Record: '#/components/schemas/GovernmentRecord'
@@ -502,14 +609,14 @@ components:
             - Personal Account
             - News Report
             - Government Record
-    LegalAction:
+    LegalCaseEvent:
       type: "object"
       properties:
         record_type:
           type: "string"
           description: "The type of record the complaint is associated with."
           enum:
-            - Legal Action
+            - Legal Case Event
         court:
           type: "string"
           description: "The court the legal action was filed in."
@@ -519,7 +626,10 @@ components:
         docket_number:
           type: "string"
           description: "The docket number of the case."
-        date_of_action:
+        event_summary:
+          type: "string"
+          description: "A summary of the event."
+        date_of_event:
           type: "string"
           format: "date-time"
           description: "The date the legal action was filed."

@@ -1,0 +1,189 @@
+openapi: "3.0.3"
+info:
+  title: "Users"
+  description: "User Management API"
+  version: "0.7.0"
+servers:
+  - url: "http://127.0.0.1:5001/api/v1"
+    description: "Development environment"
+  - url: "https://dev.nationalpolicedata.org/api/v1"
+    description: "Staging environment"
+  - url: "https://api.nationalpolicedata.org"
+    description: "Production environment"
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+security:
+  - bearerAuth: []
+tags:
+  - name: "Users"
+    description: "Users API"
+paths:
+  /users/self:
+    get:
+      tags:
+        - "Users"
+      summary: "Get current user"
+      operationId: "getCurrentUser"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    patch:
+      tags:
+        - "Users"
+      summary: "Update the current user"
+      operationId: "updateCurrentUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUser"
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /users/{uid}:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the user
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - "Users"
+      summary: "Get User"
+      operationId: "getUserById"
+      description: >
+        Returns a single user.
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BaseUser:
+      type: "object"
+      properties:
+        first_name:
+          type: "string"
+          description: The first name of the user.
+        last_name:
+          type: "string"
+          description: The last name of the user.
+        primary_email:
+          type: "string"
+          description: The primary email address of the user. This is the email address used for login.
+        contact_info:
+          type: "object"
+          description: Contact information for the user.
+          properties:
+            additional_emails:
+              type: "array"
+              items:
+                type: "string"
+              description: Additional email addresses for the user.
+            phone_numbers:
+              type: "array"
+              items:
+                type: "string"
+              description: Phone numbers for the user.        
+        website:
+          type: "string"
+          description: The user's website.
+        location:
+          type: "object"
+          properties:
+            city:
+              type: "string"
+              description: The city where the user is located.
+            state:
+              type: "string"
+              description: The state where the user is located. This should be the two-letter abbreviation.
+        employment:
+          type: "object"
+          description: Employment information for the user.
+          properties:
+            employer:
+              type: "string"
+              description: The user's employer.
+            title:
+              type: "string"
+              description: The user's job title.
+        bio:
+          type: "string"
+          description: A short biography of the user.
+        profile_image:
+          type: "string"
+          description: URL to the user's profile image.
+        social_media:
+          type: "object"
+          description: The user's social media profiles.
+          properties:
+            twitter_url:
+              type: "string"
+              description: The user's Twitter handle.
+            facebook_url:
+              type: "string"
+              description: The user's Facebook profile.
+            linkedin_url:
+              type: "string"
+              description: The user's LinkedIn profile.
+            instagram_url:
+              type: "string"
+              description: The user's Instagram profile.
+            youtube_url:
+              type: "string"
+              description: The user's YouTube channel.
+            tiktok_url:
+              type: "string"
+              description: The user's TikTok profile.     
+    UpdateUser:
+      allOf: 
+        -  $ref: "#/components/schemas/BaseUser"
+    User:
+      allOf:
+        - $ref: "#/components/schemas/BaseUser"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the user."
+    UserList:
+      allOf:
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/User"
