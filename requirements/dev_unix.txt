@@ -125,7 +125,9 @@ neo4j==5.19.0
 neomodel==5.3.3
     # via -r /requirements/_core.in
 numpy==1.26.4
-    # via -r /requirements/_core.in
+    # via
+    #   -r /requirements/_core.in
+    #   shapely
 openpyxl==3.0.9
     # via -r /requirements/_core.in
 packaging==24.0
@@ -192,6 +194,8 @@ requests==2.32.3
     #   mixpanel
 s3transfer==0.10.2
     # via boto3
+shapely==2.0.7
+    # via -r /requirements/_core.in
 six==1.16.0
     # via
     #   mixpanel
