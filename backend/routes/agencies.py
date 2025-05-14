@@ -53,6 +53,13 @@ def create_agency():
         logger.error(f"Error, Agency.from_dict: {e}")
         abort(400)
 
+    try:
+        Agency.link_location(agency, state=agency.hq_state, city=agency.hq_city)
+    except Exception as e:
+        logging.error(f"Error linking location {agency.name}: {e}")
+        print(f"Error linking location {agency.name}: {e}")
+        return
+
     track_to_mp(
         request,
         "create_agency",

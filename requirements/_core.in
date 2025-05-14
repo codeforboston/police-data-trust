@@ -35,3 +35,4 @@ ujson
 neo4j
 neomodel==5.3.3
 cffi==1.17.1
+shapely==2.0.7
