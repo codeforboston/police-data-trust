@@ -1,0 +1,8 @@
+.page {
+  font-family: var(--font-inter);
+}
+
+.txt {
+  padding-top: 5rem;
+  font-size: 1rem;
+}

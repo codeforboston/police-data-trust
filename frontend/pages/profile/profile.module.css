@@ -1,9 +1,0 @@
-.profileWrapper {
-  margin: 0 var(--size100);
-  margin-top: var(--size32);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--size12);
-  justify-content: center;
-  align-items: center;
-}
