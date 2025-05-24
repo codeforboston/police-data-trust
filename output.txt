@@ -1,0 +1,91 @@
+{
+    "results": [
+        {
+            "uid": "397797db17ee4f94a04d510caef16111",
+            "first_name": "Isaias",
+            "middle_name": null,
+            "last_name": "Martinez",
+            "suffix": null,
+            "ethnicity": "Hispanic/Latino",
+            "gender": "Male",
+            "date_of_birth": null,
+            "state_ids": [
+                {
+                    "id_name": "Tax ID",
+                    "state": "NY",
+                    "value": "927792"
+                }
+            ],
+            "units": [
+                {
+                    "uid": "592f2a6338224836a46c64572c1723a6",
+                    "name": "Criminal Intelligence Section",
+                    "website_url": null,
+                    "phone": null,
+                    "email": null,
+                    "description": null,
+                    "address": null,
+                    "city": null,
+                    "state": null,
+                    "zip": null,
+                    "agency_url": null,
+                    "officers_url": null,
+                    "date_etsablished": null
+                },
+                {
+                    "uid": "d8227d5a591640819df3165886deeac3",
+                    "name": "40th Precinct",
+                    "website_url": "https://www1.nyc.gov/site/nypd/bureaus/patrol/precincts/40th-precinct.page",
+                    "phone": "(718) 402-2270",
+                    "email": null,
+                    "description": "The 40th Precinct is the southernmost precinct in the borough of the Bronx. The precinct serves Port Morris, Mott Haven, and Melrose.",
+                    "address": "257 Alexander Ave",
+                    "city": "Bronx",
+                    "state": "NY",
+                    "zip": "10454",
+                    "agency_url": null,
+                    "officers_url": null,
+                    "date_etsablished": null
+                },
+                {
+                    "uid": "1198e894bbe94990a41fefd658eef472",
+                    "name": "25th Precinct Detective Squad",
+                    "website_url": "https://www1.nyc.gov/site/nypd/bureaus/patrol/precincts/25th-precinct.page",
+                    "phone": "(212) 860-6511",
+                    "email": null,
+                    "description": "The 25th Precinct encompasses the northern portion of East Harlem. The precinct is home to large residential community as well as Marcus Garvey Park, Harlem Art Park, and the 125th Street Metro-North Station.",
+                    "address": "120 E 119th St",
+                    "city": "New York",
+                    "state": "NY",
+                    "zip": "10035",
+                    "agency_url": null,
+                    "officers_url": null,
+                    "date_etsablished": null
+                },
+                {
+                    "uid": "015e85f9cc6e46f08de22aca83e4bd98",
+                    "name": "24th Precinct Detective Squad",
+                    "website_url": "https://www1.nyc.gov/site/nypd/bureaus/patrol/precincts/24th-precinct.page",
+                    "phone": "(212) 678-1811",
+                    "email": null,
+                    "description": "The 24th Precinct is located on the Upper West Side of Manhattan and encompasses Manhattan Valley and a portion of Riverside Park. It is a residential and commercial community of multiple dwelling homes and one major housing development.",
+                    "address": "151 W 100th St",
+                    "city": "New York",
+                    "state": "NY",
+                    "zip": "10025",
+                    "agency_url": null,
+                    "officers_url": null,
+                    "date_etsablished": null
+                }
+            ],
+            "litigation": [],
+            "allegations": [],
+            "investigations": [],
+            "commands": []
+        }
+    ],
+    "page": 1,
+    "per_page": 1,
+    "total": 1,
+    "pages": 1
+}
