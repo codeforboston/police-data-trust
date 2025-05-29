@@ -12,6 +12,7 @@ from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
+from neomodel import db
 
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
@@ -273,30 +274,28 @@ def get_all_agencies():
 
 
 # # Get agency officers
-# @bp.route("/<int:agency_id>/officers", methods=["GET"])
-# @jwt_required()
-# @min_role_required(UserRole.PUBLIC)
-# @validate()
-# def get_agency_officers(agency_id: int):
-#     """Get all officers for an agency.
-#     Pagination currently isn't enabled due to the use of an association proxy.
-#     """
-#     # args = request.args
-#     # q_page = args.get("page", 1, type=int)
-#     # q_per_page = args.get("per_page", 20, type=int)
-#     # TODO: Add pagination
+@bp.route("/<agency_id>/officers", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+#@validate()
+def get_agency_officers(agency_id):
+    """Get all officers for an agency.
+    """
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
 
-#     try:
-#         agency = Agency.nodes.get_or_none(uid=agency_id)
+    try:
+        query = f"""
+                MATCH (a:Agency)-[]-(u:Unit)-[]-(o:Officer)
+                WHERE a.uid='{agency_id}'
+                RETURN o
+                """
+        res, meta = db.cypher_query(query, resolve_objects=True)
+        officers = [record[0] for record in res]
 
-#         all_officers = agency.officers
+        result = paginate_results(officers, q_page, q_per_page)
+        return ordered_jsonify(result), 200
 
-#         return {
-#             "results": [
-#                 officer_orm_to_json(officer) for officer in all_officers],
-#             "page": 1,
-#             "totalPages": 1,
-#             "totalResults": len(all_officers),
-#         }
-#     except Exception as e:
-#         abort(400, description=str(e))
+    except Exception as e:
+        abort(400, description=str(e))
