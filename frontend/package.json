@@ -15,7 +15,6 @@
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
     "@mui/styled-engine-sc": "^6.4.3",
-    "@next/font": "^14.2.15",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "next": "15.1.7"
