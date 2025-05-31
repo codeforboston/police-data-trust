@@ -1,6 +1,7 @@
-# Files that shouldn't be copied into the web image
+Dockerfile
+.dockerignore
 node_modules
+npm-debug.log
+README.md
 .next
-Dockerfile*
-out
-storybook-static
+.git
