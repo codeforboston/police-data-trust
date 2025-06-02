@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
 import styles from "./register.module.css";
 import Image from "next/image";
 import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
@@ -15,95 +14,39 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
-// import createrUser from "@/lib/createUser";
+import Link from "@mui/material/Link";
+import useRegister from "./useRegister";
+import { isLoggedIn } from "@/app/utils/auth";
+import { redirect } from "next/navigation";
+
+
+type FormErrorMessages = {
+  email: string;
+  name: string;
+  password: string;
+};
+
+const formErrorMessages: FormErrorMessages = {
+  email: "Invalid Email",
+  name: "Required",
+  password: "Invalid Password or Do Not Match",
+};
 
 export default function RegistrationForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const {
+    handleSubmit,
+    handleChange,
+    userData,
+    formError,
+    showPassword,
+    handleClickShowPassword,
+    handleMouseDownPassword,
+    handleMouseUpPassword,
+  } = useRegister();
 
-  type UserData = {
-    email: string;
-    firstname: string;
-    lastname: string;
-    phone: string;
-    password: string;
-    password2: string;
-  };
-
-  type FormErrorMessages = {
-    email: string;
-    name: string;
-    password: string;
-  };
-
-  const formErrorMessages: FormErrorMessages = {
-    email: "Invalid Email",
-    name: "Required",
-    password: "Invalid Password or Do Not Match",
-  };
-
-  const [userData, setUserData] = useState<UserData>({
-    email: "",
-    firstname: "",
-    lastname: "",
-    phone: "",
-    password: "",
-    password2: "",
-  });
-
-  const [formError, setFormError] = useState(false);
-
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.id]: e.target.value });
-  };
-
-  const handleFormError = (data: UserData) => {
-    if (data.firstname == "" || data.lastname == "") {
-      setFormError(true);
-      return;
-    }
-
-    if (data.email == "" || !data.email.includes("@")) {
-      setFormError(true);
-      return;
-    }
-
-    if (data.password != data.password2) {
-      setFormError(true);
-      return;
-    }
-    if (data.phone === "") {
-      setFormError(true);
-      return;
-    }
-    if (data.password === "" || data.password2 === "") {
-      setFormError(true);
-    } else {
-      setFormError(false);
-      // console.log(createrUser(userData));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    handleFormError(userData);
-
-    console.log(userData);
-  };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
+  if (isLoggedIn) {
+    redirect("/");
+  }
 
   return (
     <div>
@@ -211,7 +154,7 @@ export default function RegistrationForm() {
             />
           </FormControl>
           <FormControl
-            varient="outlined"
+            variant="outlined"
             sx={{ width: "100%", marginY: "5px" }}
           >
             <InputLabel htmlFor="password">Confirm Password</InputLabel>
@@ -249,6 +192,14 @@ export default function RegistrationForm() {
           >
             Create Account
           </Button>
+          <p className={`${styles["p--bold"]} ${styles.p}`}>
+            Do you already have an account with us?{" "}
+          </p>
+          <Link 
+            className={styles.link} 
+            href="/login">
+              Login to your account
+            </Link>
         </form>
       </Box>
     </div>

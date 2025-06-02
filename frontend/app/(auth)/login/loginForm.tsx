@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
 import styles from "./login.module.css";
 import Image from "next/image";
 import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
@@ -15,119 +14,32 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import useLogin from "./useLogin";
+
+type FormErrorMessages = {
+  email: string;
+  name: string;
+  password: string;
+};
+
+const formErrorMessages: FormErrorMessages = {
+  email: "Invalid Email",
+  name: "Required",
+  password: "Invalid Password or Do Not Match",
+};
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  type UserData = {
-    email: string;
-    firstname: string;
-    lastname: string;
-    phone: string;
-    password: string;
-    password2: string;
-  };
-
-  type FormErrorMessages = {
-    email: string;
-    name: string;
-    password: string;
-  };
-
-  const formErrorMessages: FormErrorMessages = {
-    email: "Invalid Email",
-    name: "Required",
-    password: "Invalid Password or Do Not Match",
-  };
-
-  const [userData, setUserData] = useState<UserData>({
-    email: "",
-    firstname: "",
-    lastname: "",
-    phone: "",
-    password: "",
-    password2: "",
-  });
-
-  const [formError, setFormError] = useState(false);
-
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.id]: e.target.value });
-  };
-
-  const handleFormError = (data: UserData) => {
-    if (data.email == "" || !data.email.includes("@")) {
-      setFormError(true);
-      return;
-    }
-
-    if (data.password === "") {
-      setFormError(true);
-    } else {
-      setFormError(false);
-      // console.log(createrUser(userData));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", userData);
-    handleFormError(userData);
-
-    if (formError) {
-      console.error("Form validation failed.");
-      return;
-    }
-
-    const apiBaseUrl =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5001/api/v1";
-    const apiUrl = `${apiBaseUrl}/auth/login`;
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: userData.email,
-          password: userData.password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful:", data);
-
-        // Store the access token securely
-        localStorage.setItem("access_token", data.access_token);
-
-        // Redirect or update UI as needed
-        alert("Login successful!");
-      } else {
-        const errorData = await response.json();
-        console.error("Login failed:", errorData.message);
-        alert("Login failed: " + errorData.message);
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-      alert("An error occurred. Please try again.");
-    }
-  };
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-  };
+  const {
+    handleSubmit,
+    handleChange,
+    userData,
+    formError,
+    showPassword,
+    handleClickShowPassword,
+    handleMouseDownPassword,
+    handleMouseUpPassword,
+  } = useLogin();
 
   return (
     <div>
@@ -200,6 +112,20 @@ export default function LoginForm() {
           >
             Login
           </Button>
+          <Link
+            href="/forgot-password"
+          >
+            Forgot password?
+          </Link>
+          <p className={`${styles["p--bold"]} ${styles.p}`}>
+            New to the National Police Data Coalition?{" "}
+          </p>
+          <Link
+            className={styles.link}
+            href="/register"
+          >
+            Create an account
+          </Link>
         </form>
       </Box>
     </div>

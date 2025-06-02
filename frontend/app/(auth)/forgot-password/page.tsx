@@ -1,16 +1,10 @@
 import React from "react";
-import  RegistrationForm  from "./registrationForm";
-
-
+import ForgotPasswordForm  from "./forgotPasswordForm";
 
 export default async function Register() {
-
     return (
         <div>
-            <RegistrationForm />
+            <ForgotPasswordForm />
         </div>
     );
 }
-
-
-
