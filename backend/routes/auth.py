@@ -1,18 +1,21 @@
 import logging
+from datetime import timedelta
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from flask_jwt_extended import (
     create_access_token,
+    decode_token,
     get_jwt_identity,
     jwt_required,
     set_access_cookies,
     unset_access_cookies,
 )
+
 from ..auth import min_role_required
 from pydantic.main import BaseModel
 from ..mixpanel.mix import track_to_mp
 from ..database import User, UserRole, Invitation, StagedInvitation
-from ..dto import LoginUserDTO, RegisterUserDTO
+from ..dto import LoginUserDTO, RegisterUserDTO, ResetPasswordDTO
 from ..schemas import validate_request
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
@@ -179,8 +182,11 @@ def send_reset_email():
     logger = logging.getLogger("user_forgot_password")
     user = User.get_by_email(body.email)
     if user is not None:
-        print(user)
-        user.send_reset_password_email(body.email)
+        reset_token = create_access_token(
+            identity=body.email,
+            additional_claims={"pw_reset": True},
+            expires_delta=timedelta(minutes=20))
+        user.send_reset_password_email(body.email, reset_token)
         logger.info(f"User {user.uid} requested a password reset.")
     else:
         logger.info(f"Invalid email address {body.email}.")
@@ -204,3 +210,38 @@ def reset_password():
     user.set_password(body.password)
     logger.info(f"User {user.uid} reset their password.")
     return {"message": "Password successfully changed"}, 200
+
+
+@bp.route("/resetPassword", methods=["POST"])
+@validate_request(ResetPasswordDTO)  # includes token and new password
+def reset_password_from_token():
+    logger = logging.getLogger("user_reset_password")
+    body: ResetPasswordDTO = request.validated_body
+    try:
+        decoded_token = decode_token(body.token)
+        if not decoded_token.get("pw_reset"):
+            logger.info("Invalid token")
+            return {"message": "Invalid token"}, 400
+    except Exception:
+        return {"message": "Invalid or expired token"}, 400
+
+    user = User.get_by_email(decoded_token["sub"])
+    if not user:
+        return {"message": "User not found"}, 404
+
+    logger.info(f"Updating password for user {user.email}")
+    user.set_password(body.password)
+    user.save()
+
+    # log the user in after resetting the password
+    token = create_access_token(identity=user.uid)
+    resp = jsonify(
+        {
+            "message": "Password has been reset successfully.",
+            "access_token": token,
+        }
+    )
+    set_access_cookies(resp, token)
+    logger.info(f"User {user.uid} logged in after password reset.")
+
+    return resp, 200
