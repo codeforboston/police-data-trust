@@ -19,6 +19,8 @@ from backend.importer.loop import Importer
 from neo4j import GraphDatabase
 from neomodel import config as neo_config
 
+mail = Mail()
+
 
 def create_app(config: Optional[str] = None):
     """Create the API application."""
@@ -40,6 +42,7 @@ def create_app(config: Optional[str] = None):
         importer = Importer(queue_name=config_obj.SCRAPER_SQS_QUEUE_NAME)
         importer.start()
 
+    mail.init_app(app)
     return app
 
 

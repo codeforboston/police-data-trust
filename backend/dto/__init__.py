@@ -2,3 +2,4 @@
 from .user.register_user import RegisterUserDTO
 from .user.login_user import LoginUserDTO
 from .user.invite_user import InviteUserDTO
+from .user.reset_password import ResetPasswordDTO

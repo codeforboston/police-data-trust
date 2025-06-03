@@ -46,6 +46,8 @@ services:
         NPDI_API_PORT: ${NPDI_API_PORT:-5001}
     volumes:
       - .:/app
+    env_file:
+      - ".env"
     depends_on:
       - db
     environment:
