@@ -16,9 +16,8 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import useRegister from "./useRegister";
-import { isLoggedIn } from "@/app/utils/auth";
-import { redirect } from "next/navigation";
-
+import { isLoggedIn } from "@/utils/auth";
+import { redirect } from 'next/navigation'
 
 type FormErrorMessages = {
   email: string;
@@ -45,6 +44,7 @@ export default function RegistrationForm() {
   } = useRegister();
 
   if (isLoggedIn) {
+    console.info("Redirecting to home page because user is already logged in.");
     redirect("/");
   }
 

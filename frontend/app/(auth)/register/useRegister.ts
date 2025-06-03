@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { redirect } from "next/navigation";
-import { UserData } from "@/app/types/user";
-import { setAuthToken } from "@/app/utils/auth";
-import API_ROUTES, { apiBaseUrl } from "@/app/utils/apiRoutes"
+import { UserData } from "@/types/user";
+import { setAuthToken } from "@/utils/auth";
+import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
+import { useRouter } from "next/navigation";
 
 const useRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  
   const [userData, setUserData] = useState<UserData>({
     email: "",
     firstname: "",
@@ -15,8 +15,9 @@ const useRegister = () => {
     password: "",
     password2: "",
   });
-
+  
   const [formError, setFormError] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
@@ -73,16 +74,14 @@ const useRegister = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setAuthToken(data.token);
-        redirect("/register/success");
+        setAuthToken(data.access_token);
+        router.push("/register/success");
       } else {
-        const errorData = await response.json();
-        redirect("/register/error");
-        
+        router.push("/register/error");
       }
     } catch (error) {
+      router.push("/register/error");
       console.error("An error occurred:", error);
-      alert("An error occurred. Please try again.");
     }
   };
 

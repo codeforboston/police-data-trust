@@ -1,0 +1,7 @@
+.p {
+  max-width: 500px;
+}
+
+.h1, .p, .link {
+    padding: 1rem 0;
+}

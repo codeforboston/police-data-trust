@@ -1,7 +1,8 @@
+"use client";
 import React from "react";
-import  RegistrationForm  from "./registrationForm";
+import RegistrationForm  from "./registrationForm";
 
-export default async function Register() {
+export default function Register() {
     return (
         <div>
             <RegistrationForm />

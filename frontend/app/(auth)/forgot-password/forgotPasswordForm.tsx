@@ -19,7 +19,12 @@ const formErrorMessages: FormErrorMessages = {
 };
 
 const ForgotPasswordForm = () => {
-  const { handleSubmit, handleChange, formError, email } = useResetPassword();
+  const {
+    handleSubmit,
+    handleChange,
+    formError,
+    email
+  } = useResetPassword();
 
   return (
      <div>
@@ -65,7 +70,7 @@ const ForgotPasswordForm = () => {
             Send Password Reset
           </Button>
         </form>
-          <p className={styles["p--bold"]}>
+          <p className={`${styles["p--bold"]} ${styles.p}`}>
             Or do you remember your login credentials?
           </p>
           <Link href="/login" className={styles.link}>

@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 import Image from "next/image";
 import Link from "next/link";
@@ -7,8 +7,7 @@ import NavLinks from "./navLinks";
 import NavIcons from "./navIcons";
 import styles from "./nav.module.css";
 
-
-export default async function Nav() {
+export default function Nav() {
 
   const Links = [
     { text: "Home", href: "/" },

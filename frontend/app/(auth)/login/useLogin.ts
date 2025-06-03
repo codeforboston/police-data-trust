@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { redirect } from "next/navigation";
-import type { UserData } from "@/app/types/user";
-import { setAuthToken } from "@/app/utils/auth"
-import API_ROUTES, { apiBaseUrl } from "@/app/utils/apiRoutes";
+import { useRouter } from "next/navigation";
+import type { UserData } from "@/types/user";
+import { setAuthToken } from "@/utils/auth"
+import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes";
 
 const useLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +17,8 @@ const useLogin = () => {
   });
 
   const [formError, setFormError] = useState(false);
+
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setUserData({ ...userData, [e.target.id]: e.target.value });
@@ -37,7 +39,6 @@ const useLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", userData);
     handleFormError(userData);
 
     if (formError) {
@@ -61,14 +62,14 @@ const useLogin = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setAuthToken(data.token);
-        redirect("/");
+        setAuthToken(data.access_token);
+        router.push("/");
         
       } else {
-        const errorData = await response.json();
-        console.error("Login failed:", errorData.message);
+        setFormError(true);
       }
     } catch (error) {
+      setFormError(true);
       console.error("An error with login occurred:", error);
     }
   };

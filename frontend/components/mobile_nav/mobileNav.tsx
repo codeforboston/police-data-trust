@@ -9,7 +9,6 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import { usePathname } from "next/navigation";
 
-
 export default function MobileNav() {
 
     const pathname = usePathname();

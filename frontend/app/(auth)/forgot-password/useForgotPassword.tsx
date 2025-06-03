@@ -1,5 +1,5 @@
 import { useState } from "react";
-import API_ROUTES, { apiBaseUrl } from "@/app/utils/apiRoutes";
+import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes";
 import { redirect } from "next/navigation"
 
 const useResetPassword = () => {
@@ -35,13 +35,15 @@ const useResetPassword = () => {
       });
 
       if (response.ok) {
-        redirect("/auth/reset-password/success");
+        redirect("/reset-password/success");
       } else {
+        setFormError(true);
         const errorData = await response.json();
         console.error("Error sending password reset email:", errorData);
       }
     } catch (error) {
-      console.error("Network error:", error);
+      setFormError(true);
+      console.error("Error sending password reset email:", error);
     }
     setEmail(""); // Clear the email field after submission
     setFormError(false); // Reset form error state
