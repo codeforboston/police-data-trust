@@ -17,7 +17,7 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import useRegister from "./useRegister";
 import { isLoggedIn } from "@/utils/auth";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
 type FormErrorMessages = {
   email: string;
@@ -43,7 +43,7 @@ export default function RegistrationForm() {
     handleMouseUpPassword,
   } = useRegister();
 
-  if (isLoggedIn) {
+  if (isLoggedIn()) {
     console.info("Redirecting to home page because user is already logged in.");
     redirect("/");
   }
@@ -195,11 +195,9 @@ export default function RegistrationForm() {
           <p className={`${styles["p--bold"]} ${styles.p}`}>
             Do you already have an account with us?{" "}
           </p>
-          <Link 
-            className={styles.link} 
-            href="/login">
-              Login to your account
-            </Link>
+          <Link className={styles.link} href="/login">
+            Login to your account
+          </Link>
         </form>
       </Box>
     </div>
