@@ -1,10 +1,12 @@
+"use client";
 import { useState } from "react";
 import { UserData } from "@/types/user";
-import { setAuthToken } from "@/utils/auth";
+import { useAuth } from "@/context/AuthProvider";
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter } from "next/navigation";
 
 const useRegister = () => {
+  const { setAuthToken } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   
   const [userData, setUserData] = useState<UserData>({

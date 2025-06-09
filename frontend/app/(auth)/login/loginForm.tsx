@@ -15,6 +15,7 @@ import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
 import useLogin from "./useLogin";
 
 type FormErrorMessages = {
@@ -60,6 +61,15 @@ export default function LoginForm() {
           autoComplete="on"
           onSubmit={handleSubmit}
         >
+          {formError && (
+            <Alert
+              severity="error"
+              className="alert"
+              sx={{ maxWidth: "350px", margin: "0 auto 10px auto" }}
+            >
+              The email or password you entered doesn’t match our records. Please try again.
+            </Alert>
+          )}
           <TextField
             required
             id="email"

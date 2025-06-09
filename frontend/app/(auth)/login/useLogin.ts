@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { UserData } from "@/types/user";
-import { setAuthToken } from "@/utils/auth"
+import { useAuth } from "@/context/AuthProvider";
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes";
 
 const useLogin = () => {
+  const { setAuthToken } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const [userData, setUserData] = useState<UserData>({

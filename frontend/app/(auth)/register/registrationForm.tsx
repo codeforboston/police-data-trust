@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./register.module.css";
 import Image from "next/image";
 import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
@@ -16,8 +16,8 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import useRegister from "./useRegister";
-import { isLoggedIn } from "@/utils/auth";
-import { redirect } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 type FormErrorMessages = {
   email: string;
@@ -32,6 +32,8 @@ const formErrorMessages: FormErrorMessages = {
 };
 
 export default function RegistrationForm() {
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
   const {
     handleSubmit,
     handleChange,
@@ -43,10 +45,11 @@ export default function RegistrationForm() {
     handleMouseUpPassword,
   } = useRegister();
 
-  if (isLoggedIn()) {
-    console.info("Redirecting to home page because user is already logged in.");
-    redirect("/");
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("register/alreadyLoggedIn");
+    }
+  }, [isLoggedIn, router]);
 
   return (
     <div>
