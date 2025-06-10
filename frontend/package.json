@@ -21,17 +21,18 @@
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
     "@mui/styled-engine-sc": "^6.4.3",
+    "next": "15.3.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.3"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
-    "@eslint/eslintrc": "^3"
+    "prettier": "^3.5.3",
+    "typescript": "^5"
   }
 }
