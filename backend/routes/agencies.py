@@ -273,11 +273,10 @@ def get_all_agencies():
 #         abort(400, description=str(e))
 
 
-# # Get agency officers
+# Get agency officers
 @bp.route("/<agency_id>/officers", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-#@validate()
 def get_agency_officers(agency_id):
     """Get all officers for an agency.
     """

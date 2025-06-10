@@ -1,7 +1,7 @@
 import pytest
 import math
 from backend.database import Agency
-
+from neomodel import db
 
 mock_officers = {
     "severe": {
@@ -136,7 +136,7 @@ def test_get_all_agencies(client, access_token, example_agencies):
     assert res.json["results"].__len__() == total_agencies
 
 
-def test_filter_agencies(client, access_token, example_agencies):
+def test_filter_agencies(client, access_token):
     # Test filtering
     expect_name_ct = Agency.nodes.filter(
         name="New York Police Department"
@@ -206,6 +206,24 @@ def test_filter_agencies(client, access_token, example_agencies):
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 400
+
+
+def test_get_agency_officers(client,
+                             example_agency,
+                             example_unit,
+                             access_token):
+    query = f"""
+                    MATCH (a:Agency)-[]-(u:Unit)-[]-(o:Officer)
+                    WHERE a.uid='{example_agency.uid}'
+                    RETURN o
+                    """
+    cypherres, meta = db.cypher_query(query)
+    res = client.get(
+        f"/api/v1/agencies/{example_agency.uid}/officers",
+        headers={"Authorization": "Bearer {0}".format(access_token)}
+    )
+    assert res.status_code == 200
+    assert res.json['results'].__len__() == len(cypherres)
 
 
 def test_agency_pagination(client, example_agencies, access_token):

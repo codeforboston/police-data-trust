@@ -9,6 +9,7 @@ from backend.database import (
     MemberRole,
     Jurisdiction,
     Agency,
+    Unit,
     Officer,
 )
 from datetime import datetime
@@ -137,6 +138,30 @@ def example_agency():
     ).save()
     add_test_property(agency)
     yield agency
+
+
+@pytest.fixture
+def example_unit(example_agency, example_officer):
+    agency = example_agency
+    officer = example_officer
+
+    unit = Unit(
+        name="Precinct 1"
+    ).save()
+    add_test_property(unit)
+
+    # Create relationships
+    agency.units.connect(unit)
+    add_test_property_to_rel(agency, 'ESTABLISHED', unit)
+
+    unit.officers.connect(
+        officer,
+        {
+            'badge_number': '61025'
+        }
+    )
+    add_test_property_to_rel(unit, 'MEMBER_OF', officer)
+    yield unit
 
 
 @pytest.fixture
