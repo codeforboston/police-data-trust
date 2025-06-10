@@ -33,15 +33,15 @@ export function forgotPassowrd(data: ForgotPassword): Promise<void> {
   })
 }
 
-export function resetPassword(req: ResetPasswordRequest): Promise<AccessToken> {
+export function resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse> {
   const { accessToken } = req
 
   return request({
     url: `/auth/resetPassword`,
     method: "POST",
-    data: { password: req.password ,
-          token: accessToken},
-  }).then(({ access_token }) => access_token)
+    data: { password: req.password },
+    accessToken
+  })
 }
 
 export function whoami({ accessToken }: WhoamiRequest): Promise<User> {

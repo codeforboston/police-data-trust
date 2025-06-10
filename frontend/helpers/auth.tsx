@@ -94,22 +94,11 @@ function useAuthenticationHook(): AuthState {
   const logout = useCallback(async () => {
     clearToken()
     clearUser()
-  }, [clearToken, clearUser]
-  )
-
-  const resetPassword = useCallback(
-  async (data: api.ResetPasswordRequest) => {
-    const accessToken = await api.resetPassword(data)  // Sends token + new password
-    const user = await api.whoami({ accessToken })     // Fetch user
-    setToken(accessToken)                              // Save token to localStorage
-    setUser(user)                                      // Update React context
-  },
-  [setToken, setUser]
-  )
+  }, [clearToken, clearUser])
 
   return useMemo(
-    () => ({ accessToken, user, login, register, logout, resetPassword }),
-    [accessToken, login, logout, register, user, resetPassword]
+    () => ({ accessToken, user, login, register, logout }),
+    [accessToken, login, logout, register, user]
   )
 }
 

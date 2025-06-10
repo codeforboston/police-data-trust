@@ -3,7 +3,8 @@ import { EnrollmentHeader, PasswordAid } from "../../compositions"
 import { AppRoutes, PrimaryInputNames } from "../../models"
 import { Layout, PrimaryInput, PrimaryButton, FormLevelError } from "../../shared-components"
 import styles from "./reset.module.css"
-import { useAuth, useRedirectOnAuth } from "../../helpers"
+import { useRedirectOnAuth } from "../../helpers"
+import { resetPassword } from "../../helpers/api"
 import { FormProvider, useForm } from "react-hook-form"
 import { useRouter } from "next/router"
 
@@ -14,8 +15,7 @@ export default function ResetPassword() {
   const router = useRouter()
   const token = router.query.token instanceof Array ? router.query.token[0] : router.query.token
 
-  useRedirectOnAuth(AppRoutes.DASHBOARD)
-  const { resetPassword } = useAuth()
+  useRedirectOnAuth(AppRoutes.LOGIN)
 
   const form = useForm()
   const [loading, setLoading] = useState(false)
@@ -39,6 +39,7 @@ export default function ResetPassword() {
         password: formValues[CREATE_PASSWORD],
         accessToken: token
       })
+      router.push(AppRoutes.LOGIN)
     } catch (e) {
       console.warn("Unexpected password reset error", e.message)
       if (e.message.includes("401")) {
