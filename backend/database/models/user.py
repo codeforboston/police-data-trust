@@ -115,6 +115,33 @@ class User(StructuredNode, JsonSerializable):
         """
         pass
 
+    def send_reset_password_email(self, email: str, reset_token: str):
+        """
+        Send a password reset link to the user.
+        """
+        from flask_mail import Message
+        from backend.api import mail
+        from flask import current_app
+
+        domain = current_app.config["FRONT_END_URL"]
+        reset_url = f"{domain}reset?token={reset_token}"
+
+        msg = Message(
+            subject='NPDC Password Reset',
+            recipients=[email],
+            body=(
+                f"Hi {email},\n\n"
+                "We received a request to reset your password.  "
+                "Click the link below to reset it.\n\n"
+                "This link will expire in 20 mins.\n\n"
+                f"Reset your password: {reset_url}\n\n"
+                "If you didn’t request this,"
+                "you can safely ignore this email.\n\n"
+                "Thanks,\n"
+                "NPCD")
+                )
+        mail.send(msg)
+
     @property
     def role_enum(self) -> UserRole:
         """

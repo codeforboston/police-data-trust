@@ -28,8 +28,8 @@ class Config(object):
     """
     MAIL_SERVER = os.environ.get("MAIL_SERVER")
     MAIL_PORT = os.environ.get("MAIL_PORT")
-    MAIL_USE_SSL = bool(os.environ.get("MAIL_USE_SSL"))
-    MAIL_USE_TLS = bool(os.environ.get("MAIL_USER_TLS"))
+    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", "false").lower() == "true"
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "false").lower() == "true"
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get(
@@ -37,6 +37,7 @@ class Config(object):
         "National Police Data Coalition <{email}>".format(
               email=MAIL_USERNAME),
     )
+    FRONT_END_URL = os.environ.get("FRONT_END_URL")
 
     """
     Testing configurations with Mailtrap Email testing, all the configurations

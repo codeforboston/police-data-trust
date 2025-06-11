@@ -44,7 +44,7 @@ class Unit(StructuredNode, JsonSerializable):
     zip = StringProperty()
     agency_url = StringProperty()
     officers_url = StringProperty()
-    date_etsablished = DateProperty()
+    date_established = DateProperty()
 
     # Relationships
     agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
