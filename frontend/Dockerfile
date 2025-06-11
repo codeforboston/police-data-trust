@@ -7,7 +7,7 @@ USER root
 ARG NPDI_WEB_PORT=3000
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci --no-optional --quiet 1>/dev/null
 
 COPY . .
 
