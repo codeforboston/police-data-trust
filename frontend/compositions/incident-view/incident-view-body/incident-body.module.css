@@ -1,8 +1,0 @@
-.bodyWrapper {
-  display: flex;
-  margin: 1rem;
-}
-
-.bodyWrapper > * {
-  flex: 1;
-}

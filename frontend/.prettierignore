@@ -2,5 +2,4 @@ build
 node_modules    
 .next
 public
-storybook-static
 out
