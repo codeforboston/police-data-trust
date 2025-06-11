@@ -1,34 +1,34 @@
-"use client";
+"use client"
 
-import React from "react";
-import styles from "./login.module.css";
-import Image from "next/image";
-import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
-import Box from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import FormControl from "@mui/material/FormControl";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import InputLabel from "@mui/material/InputLabel";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
-import Alert from "@mui/material/Alert";
-import useLogin from "./useLogin";
+import React from "react"
+import styles from "./login.module.css"
+import Image from "next/image"
+import logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg"
+import Box from "@mui/material/Container"
+import TextField from "@mui/material/TextField"
+import InputAdornment from "@mui/material/InputAdornment"
+import OutlinedInput from "@mui/material/OutlinedInput"
+import FormControl from "@mui/material/FormControl"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import InputLabel from "@mui/material/InputLabel"
+import IconButton from "@mui/material/IconButton"
+import Button from "@mui/material/Button"
+import Link from "@mui/material/Link"
+import Alert from "@mui/material/Alert"
+import useLogin from "./useLogin"
 
 type FormErrorMessages = {
-  email: string;
-  name: string;
-  password: string;
-};
+  email: string
+  name: string
+  password: string
+}
 
 const formErrorMessages: FormErrorMessages = {
   email: "Invalid Email",
   name: "Required",
-  password: "Invalid Password or Do Not Match",
-};
+  password: "Invalid Password or Do Not Match"
+}
 
 export default function LoginForm() {
   const {
@@ -39,8 +39,8 @@ export default function LoginForm() {
     showPassword,
     handleClickShowPassword,
     handleMouseDownPassword,
-    handleMouseUpPassword,
-  } = useLogin();
+    handleMouseUpPassword
+  } = useLogin()
 
   return (
     <div>
@@ -50,17 +50,12 @@ export default function LoginForm() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "84vh",
-          flexDirection: "column",
+          flexDirection: "column"
         }}
       >
         <Image src={logo} alt="NPDC Logo" width={100} height={100} />
         <h1 className={styles.h1}>Login</h1>
-        <form
-          className={styles.form}
-          noValidate
-          autoComplete="on"
-          onSubmit={handleSubmit}
-        >
+        <form className={styles.form} noValidate autoComplete="on" onSubmit={handleSubmit}>
           {formError && (
             <Alert
               severity="error"
@@ -83,10 +78,7 @@ export default function LoginForm() {
             error={formError ? true : false}
             helperText={formErrorMessages.email}
           />
-          <FormControl
-            sx={{ marginY: "5px", width: "100%" }}
-            variant="outlined"
-          >
+          <FormControl sx={{ marginY: "5px", width: "100%" }} variant="outlined">
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
               id="password"
@@ -98,11 +90,7 @@ export default function LoginForm() {
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label={
-                      showPassword
-                        ? "hide the password"
-                        : "display the password"
-                    }
+                    aria-label={showPassword ? "hide the password" : "display the password"}
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                     onMouseUp={handleMouseUpPassword}
@@ -122,22 +110,15 @@ export default function LoginForm() {
           >
             Login
           </Button>
-          <Link
-            href="/forgot-password"
-          >
-            Forgot password?
-          </Link>
+          <Link href="/forgot-password">Forgot password?</Link>
           <p className={`${styles["p--bold"]} ${styles.p}`}>
             New to the National Police Data Coalition?{" "}
           </p>
-          <Link
-            className={styles.link}
-            href="/register"
-          >
+          <Link className={styles.link} href="/register">
             Create an account
           </Link>
         </form>
       </Box>
     </div>
-  );
+  )
 }

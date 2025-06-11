@@ -12,7 +12,9 @@
     "check-formatting": "prettier --check .",
     "check-types": "tsc --noEmit",
     "start": "next start -p ${NPDI_WEB_PORT:-3000}",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fix-lint": "next lint --fix",
+    "fix-formatting": "prettier --write ."
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

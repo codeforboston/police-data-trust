@@ -1,40 +1,40 @@
 .links {
-    display: inline-flex;
-    align-items: center;
-    justify-items: center;
-    list-style: none;
-    padding: 5px;
-    font-size: 14px;
-    color: #303463;
+  display: inline-flex;
+  align-items: center;
+  justify-items: center;
+  list-style: none;
+  padding: 5px;
+  font-size: 14px;
+  color: #303463;
 }
 
 .activeLink {
-    font-weight: 900;
-    opacity: 1;
-    scale: 1.1;
-    border-bottom: solid 1px #303463;
+  font-weight: 900;
+  opacity: 1;
+  scale: 1.1;
+  border-bottom: solid 1px #303463;
 }
 
 .inactiveLink {
-    font-weight: 600;
-    opacity: 0.9;
+  font-weight: 600;
+  opacity: 0.9;
 }
 
-.activeLink, .inactiveLink {
-    padding: 2px 10px;
-    margin: 1px;
-    transition-duration: 400ms;
-    cursor: pointer;
+.activeLink,
+.inactiveLink {
+  padding: 2px 10px;
+  margin: 1px;
+  transition-duration: 400ms;
+  cursor: pointer;
 }
 
- .inactiveLink:hover {
-    opacity: 1;
-    scale: 1.05;
+.inactiveLink:hover {
+  opacity: 1;
+  scale: 1.05;
 }
 
 @media screen and (max-width: 700px) {
-    .links {
-        display: none;
-    }
-    
+  .links {
+    display: none;
+  }
 }

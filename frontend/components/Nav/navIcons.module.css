@@ -1,14 +1,14 @@
 .icons {
-    padding: 0px .25rem;
+  padding: 0px 0.25rem;
 }
 
-.iconLink, .createIcon {
-    padding: 0px 1rem;
+.iconLink,
+.createIcon {
+  padding: 0px 1rem;
 }
 
 @media screen and (max-width: 700px) {
-    .createIcon {
-        display: none;
-    }
-    
+  .createIcon {
+    display: none;
+  }
 }

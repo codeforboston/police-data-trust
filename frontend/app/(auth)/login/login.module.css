@@ -2,10 +2,12 @@
   max-width: 500px;
 }
 
-.h1, .p, .link {
+.h1,
+.p,
+.link {
   padding: 1rem 0;
 }
 
 .p--bold {
-  font-weight: bold;   
+  font-weight: bold;
 }

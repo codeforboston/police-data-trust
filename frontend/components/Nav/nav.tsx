@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import Logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg";
-import NavLinks from "./navLinks";
-import NavIcons from "./navIcons";
-import styles from "./nav.module.css";
+import Image from "next/image"
+import Link from "next/link"
+import Logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg"
+import NavLinks from "./navLinks"
+import NavIcons from "./navIcons"
+import styles from "./nav.module.css"
 
 export default function Nav() {
   const Links = [
@@ -14,8 +14,8 @@ export default function Nav() {
     { text: "Community", href: "/community" },
     { text: "Collection", href: "/collection" },
     { text: "Login", href: "/login" },
-    { text: "Logout", href: "/logout" },
-  ];
+    { text: "Logout", href: "/logout" }
+  ]
   return (
     <nav className={styles.nav}>
       <div>
@@ -38,5 +38,5 @@ export default function Nav() {
         </div>
       </div>
     </nav>
-  );
+  )
 }
