@@ -17,63 +17,6 @@
   margin-block-end: 4.5rem;
 }
 
-.inputField {
-  border-radius: 8px;
-}
-
-.latestUpdatesWrapper {
-  margin-block-start: auto;
-  padding: 1rem;
-  max-width: 100%;
-}
-
-.latestUpdatesHeading {
-  margin-block-end: 1.25rem;
-  font-size: 0.875rem;
-}
-
-.cardSection {
-  overflow: auto;
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: auto;
-  font-size: 0.75rem;
-  gap: 1rem;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  margin-block-end: 2.25rem;
-}
-
-.card {
-  border-radius: 0.5rem;
-  padding: 1rem;
-  padding-inline-end: 3.25rem;
-  border: 1px solid var(--color-border, #DFE7EE);
-}
-
-.cardTitle {
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-block-end: 1rem;
-}
-
-.updateList {
-  list-style: none;
-    > li {
-    text-wrap: nowrap;
-  }
-}
-
-.cardItem:not(:last-child) {
-  margin-block-end: 0.5rem;
-}
-
-.input {
-  max-width: 546px;
-  width: 100%;
-}
-
 .txt {
   padding-top: 5rem;
   font-size: 1rem;
@@ -88,9 +31,9 @@
 }
 
 .upToDateIcon {
-  border-radius: 50%;
+  border-radius: 100%;
   background-color: #A9FFA2;
   border: 1px solid #7EA8B7;
   aspect-ratio: 1;
-  width: 0.75rem;
+  width: 8px;
 }

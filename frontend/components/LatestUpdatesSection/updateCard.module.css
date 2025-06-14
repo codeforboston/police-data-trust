@@ -1,0 +1,23 @@
+.card {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  padding-inline-end: 3.25rem;
+  border: 1px solid var(--color-border, #DFE7EE);
+}
+
+.cardTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-block-end: 1rem;
+}
+
+.updateList {
+  list-style: none;
+    > li {
+    text-wrap: nowrap;
+  }
+}
+
+.cardItem:not(:last-child) {
+  margin-block-end: 0.5rem;
+}

@@ -1,0 +1,23 @@
+.latestUpdatesWrapper {
+  margin-block-start: auto;
+  padding: 1rem;
+  max-width: 100%;
+}
+
+.latestUpdatesHeading {
+  margin-block-end: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.cardSection {
+  overflow: auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto;
+  font-size: 0.75rem;
+  gap: 1rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-block-end: 2.25rem;
+}
