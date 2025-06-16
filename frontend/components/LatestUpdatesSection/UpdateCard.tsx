@@ -1,3 +1,5 @@
+"use client"
+
 import styles from './updateCard.module.css';
 
 type UpdateCardProps = {

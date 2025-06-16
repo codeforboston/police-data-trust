@@ -1,4 +1,4 @@
-.upToDateNotification {
+.wrapper {
   display: flex;
   gap: 0.5rem;
   margin-block-end: 0.8rem;
@@ -12,4 +12,10 @@
   border: 1px solid #7EA8B7;
   aspect-ratio: 1;
   width: 8px;
+}
+
+@media screen and (max-width: 700px) {
+  .wrapper {
+    display: none;
+  }
 }

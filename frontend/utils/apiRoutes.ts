@@ -3,6 +3,9 @@ const API_ROUTES = {
     login: "/auth/login",
     register: "/auth/register",
     forgotPassword: "/auth/forgotPassword"
+  },
+  search: {
+    incidents: "/incidents/search",
   }
 }
 

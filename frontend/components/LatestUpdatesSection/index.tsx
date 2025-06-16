@@ -1,3 +1,5 @@
+"use client"
+
 import styles from './latestUpdateSection.module.css'
 import UpdateCard from './UpdateCard';
 

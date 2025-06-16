@@ -16,7 +16,7 @@ import IconButton from "@mui/material/IconButton"
 import Button from "@mui/material/Button"
 import Link from "@mui/material/Link"
 import useRegister from "./useRegister"
-import { useAuth } from "@/context/AuthProvider"
+import { useAuth } from "@/providers/AuthProvider"
 import { useRouter } from "next/navigation"
 
 type FormErrorMessages = {

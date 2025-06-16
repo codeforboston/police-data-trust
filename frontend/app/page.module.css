@@ -21,19 +21,3 @@
   padding-top: 5rem;
   font-size: 1rem;
 }
-
-.upToDateNotification {
-  display: flex;
-  gap: 0.5rem;
-  margin-block-end: 0.8rem;
-  font-size: 0.625rem;
-  align-items: center;
-}
-
-.upToDateIcon {
-  border-radius: 100%;
-  background-color: #A9FFA2;
-  border: 1px solid #7EA8B7;
-  aspect-ratio: 1;
-  width: 8px;
-}
