@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
 import { IncidentSearchRequest, IncidentSearchResponse } from "@/utils/api"
+import API_ROUTES from "@/utils/apiRoutes"
 
 interface SearchContext {
   searchIncidents: (query: Omit<IncidentSearchRequest, "access_token" | "accessToken">) => Promise<IncidentSearchResponse>
@@ -36,13 +37,13 @@ function useHook(): SearchContext {
       const formattedDateEnd = dateEnd ? new Date(dateEnd).toISOString().slice(0, -1) : undefined
 
       try {
-        const results = await fetch("/incidents/search", {
+        const results = await fetch(API_ROUTES.search.incidents, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`
           },
-          body: JSON.stringify({ ...rest })
+          body: JSON.stringify({ dateStart: formattedDateStart, dateEnd: formattedDateEnd, ...rest })
         })
 
         // TODO:
