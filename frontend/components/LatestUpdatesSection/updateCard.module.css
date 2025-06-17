@@ -2,7 +2,7 @@
   border-radius: 0.5rem;
   padding: 1rem;
   padding-inline-end: 3.25rem;
-  border: 1px solid var(--color-border, #DFE7EE);
+  border: 1px solid var(--color-border, #dfe7ee);
 }
 
 .cardTitle {
@@ -13,7 +13,7 @@
 
 .updateList {
   list-style: none;
-    > li {
+  > li {
     text-wrap: nowrap;
   }
 }

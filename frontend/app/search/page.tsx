@@ -5,7 +5,6 @@ import { Box, Typography } from "@mui/material"
 import { Suspense } from "react"
 
 export default function SearchPage() {
-
   return (
     <Box sx={{ padding: "20px" }}>
       <Suspense>
@@ -20,8 +19,8 @@ const QueryName = () => {
   const query = searchParams.get("query") || ""
   return (
     <Typography variant="h4" gutterBottom>
-        Search Results for {query} 
-        More to come!
+      Search Results for {query}
+      More to come!
     </Typography>
   )
 }

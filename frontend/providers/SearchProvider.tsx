@@ -5,7 +5,9 @@ import { IncidentSearchRequest, IncidentSearchResponse } from "@/utils/api"
 import API_ROUTES from "@/utils/apiRoutes"
 
 interface SearchContext {
-  searchIncidents: (query: Omit<IncidentSearchRequest, "access_token" | "accessToken">) => Promise<IncidentSearchResponse>
+  searchIncidents: (
+    query: Omit<IncidentSearchRequest, "access_token" | "accessToken">
+  ) => Promise<IncidentSearchResponse>
   incidentResults?: IncidentSearchResponse
 }
 
@@ -32,8 +34,10 @@ function useHook(): SearchContext {
     async (query: Omit<IncidentSearchRequest, "access_token" | "accessToken">) => {
       const { dateStart, dateEnd, ...rest } = query
       if (!accessToken) throw new Error("No access token")
-      
-      const formattedDateStart = dateStart ? new Date(dateStart).toISOString().slice(0, -1) : undefined
+
+      const formattedDateStart = dateStart
+        ? new Date(dateStart).toISOString().slice(0, -1)
+        : undefined
       const formattedDateEnd = dateEnd ? new Date(dateEnd).toISOString().slice(0, -1) : undefined
 
       try {
@@ -43,21 +47,25 @@ function useHook(): SearchContext {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`
           },
-          body: JSON.stringify({ dateStart: formattedDateStart, dateEnd: formattedDateEnd, ...rest })
+          body: JSON.stringify({
+            dateStart: formattedDateStart,
+            dateEnd: formattedDateEnd,
+            ...rest
+          })
         })
 
         // TODO:
         // status check for not found, unauthorized, etc.
-        if (!results.ok)  {
-          throw new Error("Failed to fetch incidents");
+        if (!results.ok) {
+          throw new Error("Failed to fetch incidents")
         }
 
-        const data: IncidentSearchResponse = await results.json();
-        setResults(data);
-        return data;
+        const data: IncidentSearchResponse = await results.json()
+        setResults(data)
+        return data
       } catch (error) {
-        console.error("Error fetching incidents:", error); 
-        throw error;
+        console.error("Error fetching incidents:", error)
+        throw error
       }
     },
     [accessToken]

@@ -5,7 +5,7 @@ const API_ROUTES = {
     forgotPassword: "/auth/forgotPassword"
   },
   search: {
-    incidents: "/incidents/search",
+    incidents: "/incidents/search"
   }
 }
 

@@ -2,7 +2,7 @@
 
 import { TextField, InputAdornment } from "@mui/material"
 import { Search } from "@mui/icons-material"
-import { useSearch }  from "@/providers/SearchProvider"
+import { useSearch } from "@/providers/SearchProvider"
 import { useRouter } from "next/navigation"
 
 export const SearchBar = () => {
@@ -25,32 +25,31 @@ export const SearchBar = () => {
 
   return (
     <TextField
-        label="Search"
-        variant="outlined"
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          if (e.key === "Enter") 
-            handleSearch((e.target as HTMLInputElement).value)
-        }}
-        sx={{
-          maxWidth: "546px",
-          width: "100%",
-          "& fieldset": { borderRadius: "20px" },
-          "& .MuiInputBase-input": {
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }
-        }}
-        placeholder="search incident, officer, id, department or try anything"
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
+      label="Search"
+      variant="outlined"
+      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") handleSearch((e.target as HTMLInputElement).value)
+      }}
+      sx={{
+        maxWidth: "546px",
+        width: "100%",
+        "& fieldset": { borderRadius: "20px" },
+        "& .MuiInputBase-input": {
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }
+      }}
+      placeholder="search incident, officer, id, department or try anything"
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          )
+        }
+      }}
+    />
   )
 }
 
