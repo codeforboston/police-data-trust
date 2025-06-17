@@ -10,7 +10,7 @@ export default function SearchPage() {
   return (
     <Box sx={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
-        Search Results for "{query}" 
+        Search Results for {query} 
         More to come!
       </Typography>
     </Box>
