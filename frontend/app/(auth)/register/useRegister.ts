@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { UserData } from "@/types/user"
-import { useAuth } from "@/context/AuthProvider"
+import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter } from "next/navigation"
 

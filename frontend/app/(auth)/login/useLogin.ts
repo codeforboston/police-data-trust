@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { UserData } from "@/types/user"
-import { useAuth } from "@/context/AuthProvider"
+import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 
 const useLogin = () => {

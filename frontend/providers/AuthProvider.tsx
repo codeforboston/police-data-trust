@@ -5,37 +5,37 @@ const TOKEN_NAME = "access_token"
 
 type AuthContextType = {
   isLoggedIn: boolean
-  token: string | null
-  setAuthToken: (token: string) => void
+  accessToken: string | null
+  setAuthToken: (accessToken: string) => void
   removeAuthToken: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
 
   useEffect(() => {
     const storedToken = window.localStorage.getItem(TOKEN_NAME)
     if (storedToken) {
-      setToken(storedToken)
+      setAccessToken(storedToken)
     }
   }, [])
 
   const setAuthToken = (newToken: string) => {
-    setToken(newToken)
+    setAccessToken(newToken)
     window.localStorage.setItem(TOKEN_NAME, newToken)
   }
 
   const removeAuthToken = () => {
-    setToken(null)
+    setAccessToken(null)
     window.localStorage.removeItem(TOKEN_NAME)
   }
 
-  const isLoggedIn = !!token
+  const isLoggedIn = !!accessToken
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, token, setAuthToken, removeAuthToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, accessToken, setAuthToken, removeAuthToken }}>
       {children}
     </AuthContext.Provider>
   )

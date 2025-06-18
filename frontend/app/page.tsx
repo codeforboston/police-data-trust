@@ -1,14 +1,16 @@
 "use client"
 import styles from "./page.module.css"
-import { useAuth } from "@/context/AuthProvider"
+import SearchBar from "@/components/SearchBar"
+import LatestUpdates from "@/components/LatestUpdatesSection"
+import UpToDateNotification from "@/components/UpToDateNotification"
 
 export default function Home() {
-  const { isLoggedIn } = useAuth()
   return (
     <div className={styles.page}>
-      <h1>This is the Home Page!</h1>
-      <p className={styles.txt}> More to come soon!</p>
-      <p className={styles.txt}>{isLoggedIn ? "You are logged in!" : "You are not logged in."}</p>
+      <h1 className={styles.heading}>How can we help you?</h1>
+      <SearchBar />
+      <LatestUpdates />
+      <UpToDateNotification />
     </div>
   )
 }
