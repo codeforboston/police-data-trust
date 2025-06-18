@@ -1,0 +1,61 @@
+# Playwright end-to-end tests
+# This workflow starts the web, api, and neo4j containers, then runs Playwright tests.
+
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      web:
+        image: node:20-bookworm-slim
+        env:
+          NPDI_WEB_PORT: 3000
+        ports:
+          - 3000:3000
+        options: >-
+          --health-cmd="curl -f http://localhost:3000 || exit 1" --health-interval=10s --health-timeout=5s --health-retries=10
+      api:
+        image: python:3-slim-bookworm
+        env:
+          NPDI_API_PORT: 8000
+        ports:
+          - 8000:8000
+        options: >-
+          --health-cmd="curl -f http://localhost:8000/health || exit 1" --health-interval=10s --health-timeout=5s --health-retries=10
+      neo4j:
+        image: neo4j:5
+        env:
+          NEO4J_AUTH: neo4j/test
+        ports:
+          - 7474:7474
+          - 7687:7687
+        options: >-
+          --health-cmd="cypher-shell -u neo4j -p test 'RETURN 1'" --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Install Playwright Browsers
+        run: |
+          cd frontend
+          npx playwright install --with-deps
+      - name: Wait for services
+        run: |
+          sleep 30
+      - name: Run Playwright tests
+        run: |
+          cd frontend
+          npx playwright test
