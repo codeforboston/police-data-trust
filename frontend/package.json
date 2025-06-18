@@ -14,7 +14,9 @@
     "start": "next start -p ${NPDI_WEB_PORT:-3000}",
     "lint": "next lint",
     "fix-lint": "next lint --fix",
-    "fix-formatting": "prettier --write ."
+    "fix-formatting": "prettier --write .",
+    "test:e2e": ". ../.env; echo $NPDI_WEB_PORT; playwright test",
+    "test:e2e:ui": ". ../.env; echo $NPDI_WEB_PORT; playwright test --ui"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -30,11 +32,13 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.53.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
+    "playwright": "^1.53.0",
     "prettier": "^3.5.3",
     "typescript": "^5"
   }
