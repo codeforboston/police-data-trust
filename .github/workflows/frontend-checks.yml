@@ -28,3 +28,7 @@ jobs:
       - name: Formatting
         if: always()
         run: npm run check-formatting
+
+      - name: Vitest
+        if: always()
+        run: npm run test:unit
