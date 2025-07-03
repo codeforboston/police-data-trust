@@ -16,8 +16,9 @@ from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
+from backend.database import MODEL_CLASSES
 from neo4j import GraphDatabase
-from neomodel import config as neo_config
+from neomodel import db, install_labels, config as neo_config
 
 mail = Mail()
 
@@ -168,6 +169,13 @@ def register_commands(app: Flask):
             ]
         )
 
+    @app.cli.command("neo4j-migrate")
+    def neo4j_migrate():
+        """Install Neomodel labels/indexes and run migrations."""
+        click.echo("Running Neo4j migrations...")
+        install_labels(MODEL_CLASSES)
+        index_db()
+
 
 def register_routes(app: Flask):
     app.register_blueprint(sources_bp)
@@ -185,6 +193,17 @@ def register_routes(app: Flask):
     def after_request(response):
         response = refresh_token(response)
         return response
+
+
+def index_db():
+    """Index the database."""
+    db.cypher_query("CREATE FULLTEXT INDEX officerNames IF NOT EXISTS FOR (n:Officer) ON EACH [n.first_name, n.last_name, n.middle_name, n.suffix]")
+    db.cypher_query("CREATE FULLTEXT INDEX allegationTypes IF NOT EXISTS FOR (a:Allegation) ON EACH [a.type]")
+    db.cypher_query("CREATE FULLTEXT INDEX complaintCategories IF NOT EXISTS FOR (c:Complaint) ON EACH [c.category]")
+    db.cypher_query("CREATE FULLTEXT INDEX officerRanks IF NOT EXISTS FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.highest_rank]")
+    db.cypher_query("CREATE FULLTEXT INDEX cityNames IF NOT EXISTS FOR (c:CityNode) ON EACH [c.name]")
+    db.cypher_query("CREATE FULLTEXT INDEX countyNames IF NOT EXISTS FOR (c:CountyNode) ON EACH [c.name]")
+
 
 
 if __name__ == "__main__":
