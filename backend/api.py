@@ -198,9 +198,21 @@ def register_routes(app: Flask):
 def index_db():
     """Index the database."""
     db.cypher_query(
+        "CREATE FULLTEXT INDEX agencyNames IF NOT EXISTS "
+        "FOR (n:Agency) ON EACH [n.name]")
+    db.cypher_query(
+        "CREATE FULLTEXT INDEX unitNames IF NOT EXISTS "
+        "FOR (n:Unit) ON EACH [n.name]")
+    db.cypher_query(
         "CREATE FULLTEXT INDEX officerNames IF NOT EXISTS "
         "FOR (n:Officer) ON EACH "
         "[n.first_name, n.last_name, n.middle_name, n.suffix]")
+    db.cypher_query(
+        "CREATE FULLTEXT INDEX officerRanks IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.highest_rank]")
+    db.cypher_query(
+        "CREATE FULLTEXT INDEX officerBadgeNumbers IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.badge_number]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX allegationTypes IF NOT EXISTS "
         "FOR (a:Allegation) ON EACH [a.type]")
@@ -208,14 +220,14 @@ def index_db():
         "CREATE FULLTEXT INDEX complaintCategories IF NOT EXISTS "
         "FOR (c:Complaint) ON EACH [c.category]")
     db.cypher_query(
-        "CREATE FULLTEXT INDEX officerRanks IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.highest_rank]")
-    db.cypher_query(
         "CREATE FULLTEXT INDEX cityNames IF NOT EXISTS "
         "FOR (c:CityNode) ON EACH [c.name]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX countyNames IF NOT EXISTS "
         "FOR (c:CountyNode) ON EACH [c.name]")
+    db.cypher_query(
+        "CREATE FULLTEXT INDEX sourceNames IF NOT EXISTS "
+        "FOR (s:Source) ON EACH [s.name]")
 
 
 if __name__ == "__main__":
