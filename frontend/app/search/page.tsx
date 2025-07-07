@@ -42,11 +42,7 @@ const PageResults = ({}) => {
         <div className={styles.searchResultsWrapper}>
           <SearchBar />
           <SearchResults results={RESULTS} />
-          <Pagintation
-            page={0}
-            count={7}
-            onChangeHandler={() => {}}
-          />
+          <Pagintation page={0} count={7} onChangeHandler={() => {}} />
         </div>
       </section>
     </div>

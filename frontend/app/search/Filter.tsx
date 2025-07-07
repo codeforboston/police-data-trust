@@ -1,10 +1,25 @@
 import TextField from "@mui/material/TextField/TextField"
 import styles from "./filter.module.css"
-import { Checkbox, InputAdornment, FormGroup, Box, FormControlLabel, Typography } from "@mui/material"
+import {
+  Checkbox,
+  InputAdornment,
+  FormGroup,
+  Box,
+  FormControlLabel,
+  Typography
+} from "@mui/material"
 import { Search } from "@mui/icons-material"
 
-const FILTER_GROUP_1 = [{ id: 1, title: "All the locations", count: 56 }, { id: 2, title: "New York City", count: 15 }, { id: 3, title: "Texas State", count: 2 }]
-const FILTER_GROUP_2 = [{ id: 1, title: "50.org", count: 10 }, { id: 2, title: "Accountable", count: 5 }, { id: 3, title: "CAPStat", count: 3 }]
+const FILTER_GROUP_1 = [
+  { id: 1, title: "All the locations", count: 56 },
+  { id: 2, title: "New York City", count: 15 },
+  { id: 3, title: "Texas State", count: 2 }
+]
+const FILTER_GROUP_2 = [
+  { id: 1, title: "50.org", count: 10 },
+  { id: 2, title: "Accountable", count: 5 },
+  { id: 3, title: "CAPStat", count: 3 }
+]
 
 const Filter = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } }
@@ -20,15 +35,15 @@ const Filter = () => {
 }
 
 type FilterGroupProps = {
-  withSearch?: boolean;
-  filters: FilterItem[];
-  title: string;
+  withSearch?: boolean
+  filters: FilterItem[]
+  title: string
 }
 
 type FilterItem = {
-  id: string | number;
-  title: string;
-  count: number;
+  id: string | number
+  title: string
+  count: number
 }
 
 const FilterGroup = ({ withSearch = false, filters = [], title }: FilterGroupProps) => {
@@ -61,7 +76,10 @@ const FilterGroup = ({ withSearch = false, filters = [], title }: FilterGroupPro
         />
       )}
       {filters.map((filter) => (
-        <Box key={filter.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box
+          key={filter.id}
+          sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        >
           <FormControlLabel control={<Checkbox />} label={filter.title} />
           <Typography variant="body2" color="text.secondary">
             {filter.count}
