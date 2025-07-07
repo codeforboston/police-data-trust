@@ -22,7 +22,6 @@ const FILTER_GROUP_2 = [
 ]
 
 const Filter = () => {
-  const label = { inputProps: { "aria-label": "Checkbox demo" } }
   return (
     <section className={styles.filterWrapper}>
       <h3 className={styles.filterTitleText}>Filters</h3>
