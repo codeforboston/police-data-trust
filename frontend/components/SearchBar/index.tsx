@@ -25,7 +25,6 @@ export const SearchBar = () => {
 
   return (
     <TextField
-      label="Search"
       variant="outlined"
       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") handleSearch((e.target as HTMLInputElement).value)
