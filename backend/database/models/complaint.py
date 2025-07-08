@@ -127,8 +127,12 @@ class Investigation(StructuredNode, JsonSerializable):
 
 class Penalty(StructuredNode, JsonSerializable):
     uid = UniqueIdProperty()
-    description = StringProperty()
+    penalty = StringProperty()
     date_assessed = DateProperty()
+    crb_plea = StringProperty()
+    crb_case_status = StringProperty()
+    crb_disposition = StringProperty()
+    agency_disposition = StringProperty()
 
     # Relationships
     officer = RelationshipFrom(

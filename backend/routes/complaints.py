@@ -6,7 +6,14 @@ from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
 from backend.database.models.complaint import Complaint
-from .tmp.pydantic.complaints import CreateComplaint, UpdateComplaint
+from backend.database.models.source import Source
+from backend.database.models.attachment import Attachment
+from backend.database.models.civilian import Civilian
+from backend.database.models.officer import Officer
+from .tmp.pydantic.complaints import (
+    CreateComplaint, UpdateComplaint, CreateComplaintSource, 
+    CreateAllegation, CreateInvestigation, CreatePenalty, 
+    CreateLocation, CreateCivilian)
 from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
@@ -15,6 +22,13 @@ from neomodel import db
 
 
 bp = Blueprint("complaint_routes", __name__, url_prefix="/api/v1/complaints")
+
+def create_allegation(complaint, allegation_data):
+    try:
+        allegation = CreateAllegation(**allegation_data)
+        complaint.allegations.connect(allegation.to_allegation())
+    except Exception as e:
+        abort(400, description=str(e))
 
 
 # Create a complaint
@@ -30,10 +44,109 @@ def create_complaint():
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
-    # try:
-    complaint = Complaint.from_dict(body.model_dump())
-    # except Exception as e:
-    #     abort(400, description=str(e))
+    complaint_data = body.model_dump(exclude_unset=True)
+
+    # Extract child objects from the body
+    source_details = complaint_data.pop("source_details", {})
+    location = complaint_data.pop("location", None)
+    attachments = complaint_data.pop("attachments", [])
+    allegations = complaint_data.pop("allegations", [])
+    investigations = complaint_data.pop("investigations", [])
+    penalties = complaint_data.pop("penalties", [])
+    civilian_witnesses = complaint_data.pop("civilian_witnesses", [])
+    police_witnesses = complaint_data.pop("police_witnesses", [])
+    source_uid = complaint_data.pop("source_uid", None)
+
+    source = Source.nodes.get_or_none(uid=source_uid)
+    if source is None:
+        abort(404, description="Invalid Complaint: Source not found")
+    # Verify that the user is a member of the source
+    # Need to also verify that the user is a Publisher or Higher
+    if not source.is_member(current_user):
+        abort(
+            403,
+            description="User does not have permission to "
+            "create a complaint for this source.")
+  
+    try:
+        complaint = Complaint.from_dict(complaint_data)
+        complaint.source_org.connect(source, source_details)
+    except Exception as e:
+        logger.error(f"Error creating complaint: {e}")
+        abort(400, description=str(e))
+
+    # Add locations
+    if location:
+        try:
+            loc = CreateLocation(**location)
+            complaint.location.connect(loc.to_location())
+        except Exception as e:
+            logger.error(f"Error linking location: {e}")
+            abort(400, description=str(e))
+    # Add attachments
+    if attachments:
+        for attachment in attachments:
+            try:
+                a = Attachment.from_dict(attachment.model_dump())
+                complaint.attachments.connect(attachment.to_attachment())
+            except Exception as e:
+                logger.error(f"Error linking attachment: {e}")
+                abort(400, description=str(e))
+
+    # Add allegations
+    if allegations:
+        for allegation in allegations:
+            try:
+                a = CreateAllegation(**allegation)
+                complaint.allegations.connect(a.to_allegation())
+            except Exception as e:
+                logger.error(f"Error linking allegation: {e}")
+                abort(400, description=str(e))
+
+    # Add investigations
+    if investigations:
+        for investigation in investigations:
+            try:
+                i = CreateInvestigation(**investigation)
+                complaint.investigations.connect(i.to_investigation())
+            except Exception as e:
+                logger.error(f"Error linking investigation: {e}")
+                abort(400, description=str(e))
+
+    # Add penalties
+    if penalties:
+        for penalty in penalties:
+            try:
+                p = CreatePenalty(**penalty)
+                complaint.penalties.connect(p.to_penalty())
+            except Exception as e:
+                logger.error(f"Error linking penalty: {e}")
+                abort(400, description=str(e))
+
+    # Add civilian witnesses
+    if civilian_witnesses:
+        for civilian in civilian_witnesses:
+            try:
+                c = CreateCivilian(**civilian)
+                civilian_instance = c.to_civilian()
+                complaint.civilian_witnesses.connect(civilian_instance)
+            except Exception as e:
+                logger.error(f"Error linking civilian witness: {e}")
+                abort(400, description=str(e))
+    
+    # Add police witnesses
+    if police_witnesses:
+        for officer in police_witnesses:
+            try:
+                o = Officer.nodes.get_or_none(uid=officer)
+                if o is None:
+                    abort(404, description=f"Officer {officer} not found")
+                complaint.police_witnesses.connect(o)
+            except Exception as e:
+                logger.error(f"Error linking police witness: {e}")
+                abort(400, description=str(e))
+
+
 
     logger.info(f"Complaint {complaint.uid} created by User {current_user.uid}")
     track_to_mp(
@@ -70,7 +183,7 @@ def get_all_complaints():
     per_page: number of results per page
     page: page number
     """
-    logger = logging.getLogger("get_all_complaints")
+    # logger = logging.getLogger("get_all_complaints")
     args = request.args
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
