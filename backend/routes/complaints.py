@@ -5,7 +5,7 @@ from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
-from backend.database.models.complaint import Complaint
+from backend.database.models.complaint import Complaint, Penalty
 from backend.database.models.source import Source
 from backend.database.models.attachment import Attachment
 from backend.database.models.civilian import Civilian
@@ -24,11 +24,90 @@ from neomodel import db
 bp = Blueprint("complaint_routes", __name__, url_prefix="/api/v1/complaints")
 
 def create_allegation(complaint, allegation_data):
+    officer_uid = allegation_data.pop("accused_uid", None)
+    complainant_data = allegation_data.pop("complainant", None)
+
+    # Create Officer for Allegation
+    if officer_uid:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            # Raise an error if the officer is not found
+            raise ValueError(f"Officer with UID {officer_uid} not found")
+    else:
+        # If no officer UID is provided, we assume the allegation is not linked to an officer
+        raise ValueError("Officer UID is required for the allegation") 
+
     try:
         allegation = CreateAllegation(**allegation_data)
-        complaint.allegations.connect(allegation.to_allegation())
+        allegation.accused.connect(officer)
+        allegation.complaint.connect(complaint)
+        complaint.allegations.connect(allegation)
+        allegation.save()
+        logging.info(f"Allegation {allegation.uid} created for Complaint {complaint.uid}")
     except Exception as e:
-        abort(400, description=str(e))
+        logging.error(f"Error creating allegation: {e}")
+        if allegation:
+            # If the allegation was created but failed to connect, delete it
+            logging.error(f"Deleting allegation {allegation.uid} due to error")
+            allegation.delete()
+
+    # Connect complainant to allegation
+    if complainant_data:
+        try:
+            complainant = CreateCivilian(**complainant_data)
+            allegation.complainant.connect(complainant)
+        except Exception as e:
+            logging.error(f"Error connecting complainant to allegation: {e}")
+            if complainant:
+                # If the complainant was created but failed to connect, delete it
+                logging.error(f"Deleting complainant {complainant.uid} due to error")
+                complainant.delete()
+
+
+def create_penalty(complaint, penalty_data):
+    officer_uid = penalty_data.pop("officer_uid", None)
+    if officer_uid:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            # Raise an error if the officer is not found
+            raise ValueError(f"Officer with UID {officer_uid} not found")
+    else:
+        # If no officer UID is provided, we assume the penalty is not linked to an officer
+        raise ValueError("Officer UID is required for the penalty")
+    try:
+        penalty = Penalty(**penalty_data)
+        complaint.penalties.connect(penalty)
+        penalty.officer.connect(officer)
+        penalty.complaint.connect(complaint)
+        penalty.save()
+        logging.info(f"Penalty {penalty.uid} created for Complaint {complaint.uid}")
+    except Exception as e:
+        logging.error(f"Error creating penalty: {e}")
+        if penalty:
+            # If the penalty was created but failed to connect, delete it
+            logging.error(f"Deleting penalty {penalty.uid} due to error")
+            penalty.delete()
+
+
+def create_investigation(complaint, investigation_data):
+    investigator_uid = investigation_data.pop("investigator_uid", None)
+    try:
+        investigation = CreateInvestigation(**investigation_data)
+        complaint.investigations.connect(investigation)
+        investigation.complaint.connect(complaint)
+        investigation.save()
+        logging.info(f"Investigation {investigation.uid} created for Complaint {complaint.uid}")
+    except Exception as e:
+        logging.error(f"Error creating investigation: {e}")
+        if investigation:
+            # If the investigation was created but failed to connect, delete it
+            logging.error(f"Deleting investigation {investigation.uid} due to error")
+            investigation.delete()
+        return
+    if investigator_uid:
+        investigator = Officer.nodes.get_or_none(uid=investigator_uid)
+        if investigator:
+            investigation.investigator.connect(investigator)
 
 
 # Create a complaint
@@ -97,31 +176,25 @@ def create_complaint():
     if allegations:
         for allegation in allegations:
             try:
-                a = CreateAllegation(**allegation)
-                complaint.allegations.connect(a.to_allegation())
-            except Exception as e:
-                logger.error(f"Error linking allegation: {e}")
-                abort(400, description=str(e))
+                create_allegation(complaint, allegation)
+            except ValueError as ve:
+                logger.error(f"Error creating allegation: {ve}")
 
-    # Add investigations
-    if investigations:
-        for investigation in investigations:
-            try:
-                i = CreateInvestigation(**investigation)
-                complaint.investigations.connect(i.to_investigation())
-            except Exception as e:
-                logger.error(f"Error linking investigation: {e}")
-                abort(400, description=str(e))
-
-    # Add penalties
+    # Add Penalties
     if penalties:
         for penalty in penalties:
             try:
-                p = CreatePenalty(**penalty)
-                complaint.penalties.connect(p.to_penalty())
-            except Exception as e:
-                logger.error(f"Error linking penalty: {e}")
-                abort(400, description=str(e))
+                create_penalty(complaint, penalty)
+            except ValueError as ve:
+                logger.error(f"Error creating penalty: {ve}")
+
+    # Add Investigations
+    if investigations:
+        for investigation in investigations:
+            try:
+                create_investigation(complaint, investigation)
+            except ValueError as ve:
+                logger.error(f"Error creating investigation: {ve}")
 
     # Add civilian witnesses
     if civilian_witnesses:
@@ -145,8 +218,6 @@ def create_complaint():
             except Exception as e:
                 logger.error(f"Error linking police witness: {e}")
                 abort(400, description=str(e))
-
-
 
     logger.info(f"Complaint {complaint.uid} created by User {current_user.uid}")
     track_to_mp(

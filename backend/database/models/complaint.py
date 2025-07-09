@@ -72,10 +72,10 @@ class Complaint(StructuredNode, JsonSerializable):
     source_org = RelationshipTo(
         "backend.database.models.source.Source", "HAS_SOURCE", model=ComplaintSourceRel)
     location = RelationshipTo("Location", "OCCURRED_AT")
-    civilian_witnesses = RelationshipFrom(
-        "backend.database.models.civilian.Civilian", "WITNESSED")
-    police_witnesses = RelationshipFrom(
-        "backend.database.models.officer.Officer", "WITNESSED")
+    civilian_witnesses = RelationshipTo(
+        "backend.database.models.civilian.Civilian", "WITNESSED_BY")
+    police_witnesses = RelationshipTo(
+        "backend.database.models.officer.Officer", "WITNESSED_BY")
     attachments = RelationshipTo(
         "backend.database.models.attachment.Attachment", "ATTACHED_TO")
     allegations = RelationshipTo("Allegation", "ALLEGED")
@@ -116,7 +116,7 @@ class Investigation(StructuredNode, JsonSerializable):
     end_date = DateProperty()
 
     # Relationships
-    investigator = RelationshipFrom(
+    investigator = RelationshipTo(
         "backend.database.models.officer.Officer", "LED_BY")
     complaint = RelationshipFrom("Complaint", "EXAMINED_BY")
 

@@ -44,6 +44,9 @@ class CreateCivilian(BaseModel):
 
 
 class CreateAllegation(BaseModel):
+    accused_uid: str = Field(
+        None, description="The UID of the officer the allegation is made against."
+    )
     record_id: Optional[str] = Field(
         None,
         description="The ID that was given to this allegation by the "
@@ -69,21 +72,19 @@ class CreateAllegation(BaseModel):
     outcome: Optional[str] = Field(
         None, description="The final outcome of the allegation."
     )
-    accused_uid: Optional[str] = Field(
-        None, description="The UID of the officer the allegation is " "made against."
-    )
+
 
 
 class CreatePenalty(BaseModel):
-    officer_uid: Optional[str] = Field(
-        None, description="The UID of the officer the penalty is " "associated with."
+    officer_uid: str = Field(
+        None, description="The UID of the officer the penalty is associated with."
     )
     crb_plea: Optional[str] = Field(
         None,
-        description="A plea deal agreed by the officer and " "civilian review board.",
+        description="A plea deal agreed by the officer and civilian review board.",
     )
     crb_case_status: Optional[str] = Field(
-        None, description="The status of the civilian review board's " "case."
+        None, description="The status of the civilian review board's case."
     )
     crb_disposition: Optional[str] = Field(
         None, description="The civilian review board's disposition."
@@ -105,7 +106,7 @@ class CreateInvestigation(BaseModel):
         None, description="The date the investigation ended."
     )
     investigator_uid: Optional[str] = Field(
-        None, description="The UID of the officer who performed the " "investigation."
+        None, description="The UID of the officer who performed the investigation."
     )
 
 
@@ -162,10 +163,10 @@ class CreateComplaintSource(BaseModel):
         None, description="The agency that reported the record."
     )
     reporting_agency_url: Optional[str] = Field(
-        None, description="The URL of the agency that reported the " "record."
+        None, description="The URL of the agency that reported the record."
     )
     reporting_agency_email: Optional[str] = Field(
-        None, description="The email of the agency that reported the " "record."
+        None, description="The email of the agency that reported the record."
     )
 
 
@@ -204,10 +205,10 @@ class CreateComplaint(BaseModel):
         None, description="The outcome of the contact."
     )
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
-        None, description="The civilian witnesses associated with the " "complaint."
+        None, description="The civilian witnesses associated with the complaint."
     )
     attachments: Optional[List[Attachemnt]] = Field(
-        None, description="Documents and multimedia associated with " "the complaint."
+        None, description="Documents and multimedia associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(
         None,
@@ -216,13 +217,13 @@ class CreateComplaint(BaseModel):
     )
     police_witnesses: Optional[List[str]] = Field(
         None,
-        description="The UID of any police witnesses associated with " "the complaint.",
+        description="The UID of any police witnesses associated with the complaint.",
     )
     allegations: Optional[List[CreateAllegation]] = Field(
         None, description="The allegations associated with the complaint."
     )
     investigations: Optional[List[CreateInvestigation]] = Field(
-        None, description="The investigations associated with the " "complaint."
+        None, description="The investigations associated with the complaint."
     )
     penalties: Optional[List[CreatePenalty]] = Field(
         None, description="The penalties associated with the complaint."
@@ -253,10 +254,10 @@ class UpdateComplaint(BaseModel):
         None, description="The outcome of the contact."
     )
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
-        None, description="The civilian witnesses associated with the " "complaint."
+        None, description="The civilian witnesses associated with the complaint."
     )
     attachments: Optional[List[Attachemnt]] = Field(
-        None, description="Documents and multimedia associated with " "the complaint."
+        None, description="Documents and multimedia associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(
         None,
@@ -265,13 +266,13 @@ class UpdateComplaint(BaseModel):
     )
     police_witnesses: Optional[List[str]] = Field(
         None,
-        description="The UID of any police witnesses associated with " "the complaint.",
+        description="The UID of any police witnesses associated with the complaint.",
     )
     allegations: Optional[List[CreateAllegation]] = Field(
         None, description="The allegations associated with the complaint."
     )
     investigations: Optional[List[CreateInvestigation]] = Field(
-        None, description="The investigations associated with the " "complaint."
+        None, description="The investigations associated with the complaint."
     )
     penalties: Optional[List[CreatePenalty]] = Field(
         None, description="The penalties associated with the complaint."
