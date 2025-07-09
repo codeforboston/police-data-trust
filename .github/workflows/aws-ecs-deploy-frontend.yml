@@ -20,7 +20,7 @@ env:
   AWS_REGION: us-east-1
   DOCKERFILE: ./frontend/Dockerfile.cloud
   DOCKER_PATH: ./frontend
-  PLATFORMS: linux/amd64,linux/arm64
+  PLATFORMS: linux/arm64
 jobs:
   setup_env:
     name: Set-up environment
