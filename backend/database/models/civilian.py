@@ -5,9 +5,10 @@ from neomodel import (
     IntegerProperty,
     RelationshipTo
 )
+from backend.schemas import JsonSerializable
 
 
-class Civilian(StructuredNode):
+class Civilian(StructuredNode, JsonSerializable):
     age = IntegerProperty()
     race = StringProperty()
     gender = StringProperty()
