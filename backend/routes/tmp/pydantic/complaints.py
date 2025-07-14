@@ -22,14 +22,14 @@ class CreateLocation(BaseModel):
     city: Optional[str] = Field(None, description="The city the location is in.")
     state: Optional[str] = Field(None, description="The state the location is in.")
     zip: Optional[str] = Field(None, description="The zip code of the location.")
-    responsibility: Optional[str] = Field(
+    administrative_area: Optional[str] = Field(
         None,
-        description="The responsibility area this location is assigned "
+        description="The administrative area this location is assigned "
         "by the local law enforcement agency.",
     )
-    responsibility_type: Optional[str] = Field(
+    administrative_area_type: Optional[str] = Field(
         None,
-        description="The type of responsibility area. For example: Beat, "
+        description="The type of administrative area. For example: Beat, "
         "Sector, Precinct, etc.",
     )
 

@@ -8,7 +8,8 @@ from neomodel import (
     RelationshipTo,
     RelationshipFrom,
     DateProperty,
-    UniqueIdProperty
+    UniqueIdProperty,
+    One
 )
 
 
@@ -54,8 +55,8 @@ class Location(StructuredNode, JsonSerializable):
     city = StringProperty()
     state = StringProperty()
     zip = StringProperty()
-    responsibility = StringProperty()
-    responsibility_type = StringProperty()
+    administrative_area = StringProperty()
+    administrative_area_type = StringProperty()
 
 
 class Complaint(StructuredNode, JsonSerializable):
@@ -71,7 +72,7 @@ class Complaint(StructuredNode, JsonSerializable):
     # Relationships
     source_org = RelationshipTo(
         "backend.database.models.source.Source", "HAS_SOURCE", model=ComplaintSourceRel)
-    location = RelationshipTo("Location", "OCCURRED_AT")
+    location = RelationshipTo("Location", "OCCURRED_AT", cardinality=One)
     civilian_witnesses = RelationshipTo(
         "backend.database.models.civilian.Civilian", "WITNESSED_BY")
     police_witnesses = RelationshipTo(

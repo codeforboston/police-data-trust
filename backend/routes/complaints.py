@@ -5,7 +5,7 @@ from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
-from backend.database.models.complaint import Complaint, Penalty
+from backend.database.models.complaint import Complaint, Penalty, Allegation, Investigation
 from backend.database.models.source import Source
 from backend.database.models.attachment import Attachment
 from backend.database.models.civilian import Civilian
@@ -317,5 +317,416 @@ def delete_complaint(complaint_uid: str):
             },
         )
         return {"message": "Complaint deleted successfully"}
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+######----         Complaint Allegations            ----######
+##############################################################
+# Get all allegations for a complaint
+@bp.route("/<complaint_uid>/allegations", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_allegations(complaint_uid: str):
+    """Get all allegations for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    allegations = c.allegations.all()
+    if not allegations:
+        abort(404, description="No allegations found for this complaint")
+    
+    return ordered_jsonify([allegation.to_json() for allegation in allegations]), 200
+
+
+# Create an allegation for a complaint
+@bp.route("/<complaint_uid>/allegations", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreateAllegation)
+def create_complaint_allegation(complaint_uid: str):
+    """Create an allegation for a complaint.
+    """
+    body: CreateAllegation = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    try:
+        allegation = CreateAllegation(**body.model_dump())
+        create_allegation(c, allegation)
+    except ValueError as ve:
+        abort(400, description=str(ve))
+    
+    track_to_mp(
+        request,
+        "create_complaint_allegation",
+        {
+            "complaint_uid": c.uid,
+            "allegation_uid": allegation.uid
+        },
+    )
+    return allegation.to_json(), 201
+
+
+# Get a specific allegation for a complaint
+@bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_allegation(complaint_uid: str, allegation_uid: str):
+    """Get a specific allegation for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
+    if allegation is None:
+        abort(404, description="Allegation not found")
+    
+    if allegation not in c.allegations:
+        abort(404, description="Allegation not found for this complaint")
+    
+    return allegation.to_json(), 200
+
+
+# Update an allegation for a complaint
+@bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["PUT"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreateAllegation)
+def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
+    """Update an allegation for a complaint.
+    """
+    body: CreateAllegation = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
+    if allegation is None:
+        abort(404, description="Allegation not found")
+    
+    try:
+        allegation = Allegation.from_dict(body.model_dump(), allegation_uid)
+        allegation.refresh()
+    except Exception as e:
+        abort(400, description=str(e))
+    
+    track_to_mp(
+        request,
+        "update_complaint_allegation",
+        {
+            "complaint_uid": c.uid,
+            "allegation_uid": allegation.uid
+        },
+    )
+    return allegation.to_json()
+
+
+# Delete an allegation for a complaint
+@bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["DELETE"])
+@jwt_required()
+@min_role_required(UserRole.ADMIN)
+def delete_complaint_allegation(complaint_uid: str, allegation_uid: str):
+    """Delete an allegation for a complaint.
+    Must be an admin to delete an allegation.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
+    if allegation is None:
+        abort(404, description="Allegation not found")
+    
+    try:
+        uid = allegation.uid
+        allegation.delete()
+        track_to_mp(
+            request,
+            "delete_complaint_allegation",
+            {
+                "complaint_uid": c.uid,
+                "allegation_uid": uid
+            },
+        )
+        return {"message": "Allegation deleted successfully"}
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+######----         Complaint Investigations         ----######
+##############################################################
+# Get all investigations for a complaint
+@bp.route("/<complaint_uid>/investigations", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_investigations(complaint_uid: str):
+    """Get all investigations for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    investigations = c.investigations.all()
+    if not investigations:
+        abort(404, description="No investigations found for this complaint")
+    
+    return ordered_jsonify([investigation.to_json() for investigation in investigations]), 200
+
+
+# Create an investigation for a complaint
+@bp.route("/<complaint_uid>/investigations", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreateInvestigation)
+def create_complaint_investigation(complaint_uid: str):
+    """Create an investigation for a complaint.
+    """
+    body: CreateInvestigation = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    try:
+        investigation = CreateInvestigation(**body.model_dump())
+        create_investigation(c, investigation)
+    except ValueError as ve:
+        abort(400, description=str(ve))
+    
+    track_to_mp(
+        request,
+        "create_complaint_investigation",
+        {
+            "complaint_uid": c.uid,
+            "investigation_uid": investigation.uid
+        },
+    )
+    return investigation.to_json(), 201
+
+
+# Get a specific investigation for a complaint
+@bp.route("/<complaint_uid>/investigations/<investigation_uid>", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_investigation(complaint_uid: str, investigation_uid: str):
+    """Get a specific investigation for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    investigation = Investigation.nodes.get_or_none(uid=investigation_uid)
+    if investigation is None:
+        abort(404, description="Investigation not found")
+    
+    if investigation not in c.investigations:
+        abort(404, description="Investigation not found for this complaint")
+    
+    return investigation.to_json(), 200
+
+
+# Update an investigation for a complaint
+@bp.route("/<complaint_uid>/investigations/<investigation_uid>", methods=["PUT"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreateInvestigation)
+def update_complaint_investigation(complaint_uid: str, investigation_uid: str):
+    """Update an investigation for a complaint.
+    """
+    body: CreateInvestigation = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    investigation = Investigation.nodes.get_or_none(uid=investigation_uid)
+    if investigation is None:
+        abort(404, description="Investigation not found")
+    
+    try:
+        investigation = Investigation.from_dict(body.model_dump(), investigation_uid)
+        investigation.refresh()
+    except Exception as e:
+        abort(400, description=str(e))
+    
+    track_to_mp(
+        request,
+        "update_complaint_investigation",
+        {
+            "complaint_uid": c.uid,
+            "investigation_uid": investigation.uid
+        },
+    )
+    return investigation.to_json()
+
+
+# Delete an investigation for a complaint
+@bp.route("/<complaint_uid>/investigations/<investigation_uid>", methods=["DELETE"])
+@jwt_required()
+@min_role_required(UserRole.ADMIN)
+def delete_complaint_investigation(complaint_uid: str, investigation_uid: str):
+    """Delete an investigation for a complaint.
+    Must be an admin to delete an investigation.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    investigation = Investigation.nodes.get_or_none(uid=investigation_uid)
+    if investigation is None:
+        abort(404, description="Investigation not found")
+    
+    try:
+        uid = investigation.uid
+        investigation.delete()
+        track_to_mp(
+            request,
+            "delete_complaint_investigation",
+            {
+                "complaint_uid": c.uid,
+                "investigation_uid": uid
+            },
+        )
+        return {"message": "Investigation deleted successfully"}
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+######----         Complaint Penalties              ----######
+##############################################################
+# Get all penalties for a complaint
+@bp.route("/<complaint_uid>/penalties", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_penalties(complaint_uid: str):
+    """Get all penalties for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    penalties = c.penalties.all()
+    if not penalties:
+        abort(404, description="No penalties found for this complaint")
+    
+    return ordered_jsonify([penalty.to_json() for penalty in penalties]), 200
+
+
+# Create a penalty for a complaint
+@bp.route("/<complaint_uid>/penalties", methods=["POST"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreatePenalty)
+def create_complaint_penalty(complaint_uid: str):
+    """Create a penalty for a complaint.
+    """
+    body: CreatePenalty = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    try:
+        penalty = CreatePenalty(**body.model_dump())
+        create_penalty(c, penalty)
+    except ValueError as ve:
+        abort(400, description=str(ve))
+    
+    track_to_mp(
+        request,
+        "create_complaint_penalty",
+        {
+            "complaint_uid": c.uid,
+            "penalty_uid": penalty.uid
+        },
+    )
+    return penalty.to_json(), 201
+
+
+# Get a specific penalty for a complaint
+@bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_complaint_penalty(complaint_uid: str, penalty_uid: str):
+    """Get a specific penalty for a complaint.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    penalty = Penalty.nodes.get_or_none(uid=penalty_uid)
+    if penalty is None:
+        abort(404, description="Penalty not found")
+    
+    if penalty not in c.penalties:
+        abort(404, description="Penalty not found for this complaint")
+    
+    return penalty.to_json(), 200
+
+
+# Update a penalty for a complaint
+@bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["PUT"])
+@jwt_required()
+@min_role_required(UserRole.CONTRIBUTOR)
+@validate_request(CreatePenalty)
+def update_complaint_penalty(complaint_uid: str, penalty_uid: str):
+    """Update a penalty for a complaint.
+    """
+    body: CreatePenalty = request.validated_body
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    penalty = Penalty.nodes.get_or_none(uid=penalty_uid)
+    if penalty is None:
+        abort(404, description="Penalty not found")
+    
+    try:
+        penalty = Penalty.from_dict(body.model_dump(), penalty_uid)
+        penalty.refresh()
+    except Exception as e:
+        abort(400, description=str(e))
+    
+    track_to_mp(
+        request,
+        "update_complaint_penalty",
+        {
+            "complaint_uid": c.uid,
+            "penalty_uid": penalty.uid
+        },
+    )
+    return penalty.to_json()
+
+
+# Delete a penalty for a complaint
+@bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["DELETE"])
+@jwt_required()
+@min_role_required(UserRole.ADMIN)
+def delete_complaint_penalty(complaint_uid: str, penalty_uid: str):
+    """Delete a penalty for a complaint.
+    Must be an admin to delete a penalty.
+    """
+    c = Complaint.nodes.get_or_none(uid=complaint_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    
+    penalty = Penalty.nodes.get_or_none(uid=penalty_uid)
+    if penalty is None:
+        abort(404, description="Penalty not found")
+    
+    try:
+        uid = penalty.uid
+        penalty.delete()
+        track_to_mp(
+            request,
+            "delete_complaint_penalty",
+            {
+                "complaint_uid": c.uid,
+                "penalty_uid": uid
+            },
+        )
+        return {"message": "Penalty deleted successfully"}
     except Exception as e:
         abort(400, description=str(e))

@@ -18,8 +18,93 @@ security:
   - bearerAuth: []
 tags:
   - name: "Complaints"
-    description: "Complaints API"
+    description: "Manage Complaints"
+  - name: "Allegations"
+    description: "Manage Allegations"
+  - name: "Investigations"
+    description: "Manage Investigations"
+  - name: "Penalties"
+    description: "Manage Penalties"
 paths:
+  /complaints:
+    post:
+      tags: 
+        - "Complaints"
+      summary: "Create Complaint"
+      operationId: "createComplaint"
+      description: >
+        Create a single complaint. User must be a
+        contributor to create an complaint.
+      requestBody:
+        description: "Complaint object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateComplaint"
+      responses:
+        '200':
+          description: "A JSON array of user names"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '409':
+          $ref: '../common/error.yaml#/components/responses/conflictError'
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Get Complaints"
+      operationId: "getComplaints"
+      description: >
+       Returns all complaints in the database. Filters can be applied
+       to narrow down the results.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/source_uid'
+        - $ref: '#/components/parameters/source_type'
+        - $ref: '#/components/parameters/officers_involved'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/reason_for_contact'
+        - $ref: '#/components/parameters/outcome_of_contact'
+        - $ref: '#/components/parameters/date_gte'
+        - $ref: '#/components/parameters/date_lte'
+      responses:
+        '200':
+          description: "A JSON array of complaint objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+  /complaints/latest:
+    get:
+      tags: 
+        - "Complaints"
+      summary: "Latest Complaint Updates"
+      operationId: "getLatestComplaints"
+      description: >
+        Returns the most recently updated or added complaints.
+      parameters:
+        - $ref: '../common/pagination.yaml#/components/parameters/page'
+        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+      responses:
+        '200':
+          description: "A JSON array of complaint objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplaintList"
+        "401":
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /complaints/{complaint_uid}:
     get:
       parameters:
@@ -35,7 +120,7 @@ paths:
       description: >
         Returns information about a single complaint.
       responses:
-        "200":
+        '200':
           description: "A complaint object"
           content:
             application/json:
@@ -68,7 +153,7 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateComplaint"
       responses:
-        "200":
+        '200':
           description: "A complaint object"
           content:
             application/json:
@@ -79,86 +164,498 @@ paths:
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError'
         '401':
-          $ref: '../common/error.yaml#/components/responses/unauthorizedError'  
-  /complaints:
-    post:
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError' 
+  /complaints/{complaint_uid}/allegations:
+    get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
       tags: 
-        - "Complaints"
-      summary: "Create Complaint"
-      operationId: "createComplaint"
+        - "Allegations"
+      summary: "Get Allegations for Complaint"
+      operationId: "getComplaintAllegations"
       description: >
-        Create a single complaint. User must be a
-        contributor to create an complaint.
+        Returns all allegations associated with a single complaint.
+      responses:
+        '200':
+          description: "A JSON array of allegation objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllegationList"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    post:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Allegations"
+      summary: "Create Allegation for Complaint"
+      operationId: "createComplaintAllegation"
+      description: >
+        Create a single allegation associated with a complaint. User must have
+        publisher permission in the organization that created the complaint in
+        order to add an allegation.
       requestBody:
-        description: "Complaint object that needs to be added to the database"
+        description: "Allegation object that needs to be added to the database"
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateComplaint"
+              $ref: "#/components/schemas/CreateAllegation"
       responses:
-        "200":
-          description: "A JSON array of user names"
+        '200':
+          description: "An allegation object"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Complaint"
+                $ref: "#/components/schemas/Allegation"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
-        '409':
-          $ref: '../common/error.yaml#/components/responses/conflictError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+  /complaints/{complaint_uid}/allegations/{allegation_uid}:
     get:
-      tags: 
-        - "Complaints"
-      summary: "Get Complaints"
-      operationId: "getComplaints"
-      description: >
-       Returns all complaints in the database. Filters can be applied
-       to narrow down the results.
       parameters:
-        - $ref: '../common/pagination.yaml#/components/parameters/page'
-        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
-        - $ref: '#/components/parameters/source_uid'
-        - $ref: '#/components/parameters/source_type'
-        - $ref: '#/components/parameters/officers_involved'
-        - $ref: '#/components/parameters/category'
-        - $ref: '#/components/parameters/reason_for_contact'
-        - $ref: '#/components/parameters/outcome_of_contact'
-        - $ref: '#/components/parameters/date_gte'
-        - $ref: '#/components/parameters/date_lte'
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: allegation_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Allegations"
+      summary: "Get Allegation for Complaint"
+      operationId: "getComplaintAllegation"
+      description: >
+        Returns information about a single allegation associated with a complaint.
       responses:
-        "200":
-          description: "A JSON array of complaint objects"
+        '200':
+          description: "An allegation object"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ComplaintList"
-        "401":
+                $ref: "#/components/schemas/Allegation"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    patch:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+          type: string
+        - name: allegation_uid
+          in: path
+          required: true
+          schema:
+          type: string
+      tags:
+        - "Allegations"
+      summary: "Update Allegation for Complaint"
+      operationId: "updateComplaintAllegation"
+      description: >
+        Update a single allegation associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to update the allegation.
+      requestBody:
+        description: "Allegation object that needs to be updated in the database"
+        required: true
+        content:
+          application/json:
+          schema:
+            $ref: "#/components/schemas/CreateAllegation"
+      responses:
+        '200':
+          description: "An allegation object"
+          content:
+          application/json:
+            schema:
+            $ref: "#/components/schemas/Allegation"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
-  /complaints/latest:
-    get:
-      tags: 
-        - "Complaints"
-      summary: "Latest Complaint Updates"
-      operationId: "getLatestComplaints"
-      description: >
-        Returns the most recently updated or added complaints.
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    delete:
       parameters:
-        - $ref: '../common/pagination.yaml#/components/parameters/page'
-        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: allegation_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Allegations"
+      summary: "Delete Allegation for Complaint"
+      operationId: "deleteComplaintAllegation"
+      description: >
+        Delete a single allegation associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to delete the allegation.
       responses:
-        "200":
-          description: "A JSON array of complaint objects"
+        '204':
+          description: "No Content"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+  /complaints/{complaint_uid}/investigations:
+    get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Investigations"
+      summary: "Get Investigations for Complaint"
+      operationId: "getComplaintInvestigations"
+      description: >
+        Returns all investigations associated with a single complaint.
+      responses:
+        '200':
+          description: "A JSON array of investigation objects"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ComplaintList"
-        "401":
+                $ref: "#/components/schemas/InvestigationList"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    post:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Investigations"
+      summary: "Get Investigations for Complaint"
+      operationId: "createComplaintInvestigation"
+      description: >
+        Creates a new investigation associated with a single complaint.
+      requestBody:
+        description: "Investigation object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvestigation"
+      responses:
+        '201':
+          description: "A JSON investigation objects"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Investigation"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+  /complaints/{complaint_uid}/investigations/{investigation_uid}:
+    get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: investigation_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Investigations"
+      summary: "Get Investigation for Complaint"
+      operationId: "getComplaintInvestigation"
+      description: >
+        Returns information about a single investigation associated with a complaint.
+      responses:
+        '200':
+          description: "An investigation object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Investigation"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    patch:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: investigation_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Investigations"
+      summary: "Update Investigation for Complaint"
+      operationId: "updateComplaintInvestigation"
+      description: >
+        Update a single investigation associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to update the investigation.
+      requestBody:
+        description: "Investigation object that needs to be updated in the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvestigation"
+      responses:
+        '200':
+          description: "An investigation object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Investigation"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    delete:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: investigation_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Investigations"
+      summary: "Delete Investigation for Complaint"
+      operationId: "deleteComplaintInvestigation"
+      description: >
+        Delete a single investigation associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to delete the investigation.
+      responses:
+        '204':
+          description: "No Content"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+  /complaints/{complaint_uid}/penalties:
+    get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Penalties"
+      summary: "Get Penalties for Complaint"
+      operationId: "getComplaintPenalties"
+      description: >
+        Returns all penalties associated with a single complaint.
+      responses:
+        '200':
+          description: "A JSON array of penalty objects"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PenaltyList"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+    post:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags: 
+        - "Penalties"
+      summary: "Create Penalty for Complaint"
+      operationId: "createComplaintPenalty"
+      description: >
+        Create a single penalty associated with a complaint. User must have
+        publisher permission in the organization that created the complaint in
+        order to add a penalty.
+      requestBody:
+        description: "Penalty object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePenalty"
+      responses:
+        '201':
+          description: "A JSON penalty object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Penalty"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+  /complaints/{complaint_uid}/penalties/{penalty_uid}:
+    get:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: penalty_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Penalties"
+      summary: "Get Penalty for Complaint"
+      operationId: "getComplaintPenalty"
+      description: >
+        Returns a single penalty associated with a complaint.
+      responses:
+        '200':
+          description: "A JSON penalty object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Penalty"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    patch:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: penalty_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Penalties"
+      summary: "Update Penalty for Complaint"
+      operationId: "updateComplaintPenalty"
+      description: >
+        Update a single penalty associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to update the penalty.
+      requestBody:
+        description: "Penalty object that needs to be updated in the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePenalty"
+      responses:
+        '200':
+          description: "A JSON penalty object"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Penalty"
+        '400':
+          $ref: '../common/error.yaml#/components/responses/validationError'
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
+    delete:
+      parameters:
+        - name: complaint_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: penalty_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Penalties"
+      summary: "Delete Penalty for Complaint"
+      operationId: "deleteComplaintPenalty"
+      description: >
+        Delete a single penalty associated with a complaint. The user must
+        have publishing permission in the organization that submitted the
+        complaint to delete the penalty.
+      responses:
+        '204':
+          description: "No Content"
+        '404':
+          $ref: '../common/error.yaml#/components/responses/notFoundError'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+        '403':
+          $ref: '../common/error.yaml#/components/responses/forbiddenError'
 components:
   securitySchemes:
     bearerAuth:
@@ -255,27 +752,36 @@ components:
         location:
           type: object
           properties:
-            address1:
+            location_type:
               type: "string"
-              description: "The address of the incident."
-            address2:
+              description: >
+                The type of location where the incident occurred. For example,
+                Bar, Residence, or Highway.
+            location_description:
               type: "string"
-              description: "The address of the incident."
+              description: "A description of the location where the incident occurred."
+            address:
+              type: "string"
+              description: "The street address where the incident occurred."
             city:
               type: "string"
-              description: "The city of the incident."
+              description: "The city where the incident occurred."
             state:
               type: "string"
-              description: "The state of the incident."
+              description: "The state where the incident occurred."
             zip:
               type: "string"
-              description: "The zip code of the incident."
-            latitude:
-              type: "number"
-              description: "The latitude of the incident."
-            longitude:
-              type: "number"
-              description: "The longitude of the incident."
+              description: "The zip code where the incident occurred."
+            administrative_area:
+              type: "string"
+              description: >
+                The name of the administrative area where the incident occurred.
+                For example, 23rd Precinct or Beat 12.
+            administrative_area_type:
+              type: "string"
+              description: >
+                The type of area designation for determining responsibility.
+                For example, Precinct or Beat.
         reason_for_contact:
           type: "string"
           description: "The reason for the contact."
@@ -439,7 +945,7 @@ components:
         type:
           type: string
           description: The type of allegation.
-        sub_type:
+        subtype:
           type: string
           description: The sub type of the allegation.
         recomended_finding:
@@ -470,37 +976,76 @@ components:
             uid:
               type: "string"
               description: "Unique identifier for the allegation."
-            perpetrator:
+            accused:
               allOf: 
                 - $ref: officers.yaml#/components/schemas/Officer
                 - type: "object"
                   description: The officer who the allegation is made against.
-    Penalty:
+    AllegationList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              description: "List of allegations."
+              items:
+                $ref: "#/components/schemas/Allegation"
+    BasePenalty:
       type: "object"
       properties:
-        uid:
+        penalty:
           type: string
-          description: UUID for the penalty.
-        officer:
-          allOf: 
-            - $ref: officers.yaml#/components/schemas/Officer
-            - type: "object"
-              description: "The officer who the penalty is associated with."
-        description:
-          type: "string"
-          description: "A description of the penalty."
-        date_assesed:
+          description: "The penalty imposed."
+        crb_plea:
+          type: string
+          description: "The plea entered by the officer in response to the penalty."
+        crb_case_status:
+          type: string
+          description: "The status of the civilian review board case related to the penalty."
+        crb_disposition:
+          type: string
+          description: "The disposition of the civilian review board case related to the penalty."
+        agency_disposition:
+          type: string
+          description: "The disposition of the agency related to the penalty."
+        date_assessed:
           type: string
           format: date
+    Penalty:
+      allOf: 
+        - $ref: "#/components/schemas/BasePenalty"
+        - type: "object"
+          properties:
+            uid:
+              type: "string"
+              description: "Unique identifier for the penalty."
+            officer:
+              allOf: 
+                - $ref: officers.yaml#/components/schemas/Officer
+                - type: "object"
+                  description: "The officer who suffered the penalty."
     CreatePenalty:
-      type: "object"
-      properties:
-        officer_uid:
-          type: "string"
-          description: "The UID of the officer the penalty is associated with."
-        description:
-          type: "string"
-          description: "A description of the penalty."
+      allOf: 
+        - $ref: "#/components/schemas/BasePenalty"
+        - type: "object"
+          properties:
+            officer_uid:
+              type: "string"
+              description: "The UID of the officer the penalty is associated with."
+            description:
+              type: "string"
+              description: "A description of the penalty."
+    PenaltyList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              description: "List of penalties."
+              items:
+                $ref: "#/components/schemas/Penalty"
     BaseInvestigation:
       type: object
       properties:
@@ -519,7 +1064,7 @@ components:
           properties:
             investigator_uid:
               type: "string"
-              description: "The UID of the officer who preformed the investigation."
+              description: "The UID of the officer who performed the investigation."
     Investigation:
       allOf: 
         - $ref: "#/components/schemas/BaseInvestigation"
@@ -532,13 +1077,26 @@ components:
               allOf: 
                 - $ref: officers.yaml#/components/schemas/Officer
                 - type: "object"
-                  description: "The officer who preformed the investigation."
+                  description: "The officer who performed the investigation."
+    InvestigationList:
+      allOf: 
+        - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
+        - type: "object"
+          properties:
+            results:
+              type: "array"
+              description: "List of investigations."
+              items:
+                $ref: "#/components/schemas/Investigation"
     Civilian:
       type: "object"
       properties:
         age:
           type: "string"
           description: "Age range of the individual."
+        age_range:
+          type: "string"
+          description: "The age range of the individual."
         ethnicity:
           type: "string"
           description: "The ethnicity of the individual."
