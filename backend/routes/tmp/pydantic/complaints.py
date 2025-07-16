@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from .common import Attachemnt
+from .common import Attachment
 from backend.database.models.types.enums import Ethnicity, Gender
 
 
@@ -93,7 +93,7 @@ class CreatePenalty(BaseModel):
         None, description="The agency's disposition."
     )
     penalty: Optional[str] = Field(None, description="A description of the penalty.")
-    date_assesed: Optional[date] = Field(
+    date_assessed: Optional[date] = Field(
         None, description="The date that the penalty was assessed."
     )
 
@@ -207,7 +207,7 @@ class CreateComplaint(BaseModel):
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
         None, description="The civilian witnesses associated with the complaint."
     )
-    attachments: Optional[List[Attachemnt]] = Field(
+    attachments: Optional[List[Attachment]] = Field(
         None, description="Documents and multimedia associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(
@@ -256,7 +256,7 @@ class UpdateComplaint(BaseModel):
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
         None, description="The civilian witnesses associated with the complaint."
     )
-    attachments: Optional[List[Attachemnt]] = Field(
+    attachments: Optional[List[Attachment]] = Field(
         None, description="Documents and multimedia associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(

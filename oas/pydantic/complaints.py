@@ -14,7 +14,7 @@ class BaseComplaint(BaseModel):
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
 
 
 class CreateComplaint(BaseComplaint, BaseModel):
@@ -28,7 +28,7 @@ class CreateComplaint(BaseComplaint, BaseModel):
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     source_uid: Optional[str] = Field(None, description="The UID of the source that reported the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The UID of any police witnesses associated with the complaint.")
@@ -48,7 +48,7 @@ class UpdateComplaint(BaseComplaint, BaseModel):
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The uid of any police witnesses associated with the complaint.")
     allegations: Optional[List[CreateAllegation]] = Field(None, description="The allegations associated with the complaint.")
@@ -67,7 +67,7 @@ class Complaint(BaseComplaint, BaseModel):
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: List[Civilian] = Field(..., description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     uid: str = Field(..., description="Unique identifier for the complaint.")
     created_at: str = Field(..., description="Date and time the complaint was created.")
     updated_at: str = Field(..., description="Date and time the complaint was last updated.")
@@ -126,7 +126,7 @@ class Penalty(BaseModel):
     uid: Optional[str] = Field(None, description="UUID for the penalty.")
     officer: Optional[Officer] = Field(None, description="The officer who the penalty is associated with.")
     description: Optional[str] = Field(None, description="A description of the penalty.")
-    date_assesed: Optional[str] = None
+    date_assessed: Optional[str] = None
 
 
 class CreatePenalty(BaseModel):
@@ -166,7 +166,7 @@ class ReviewBoard(BaseModel):
     url: Optional[str] = Field(None, description="The website URL for the review board.")
 
 
-class Attachemnts(BaseModel):
+class Attachments(BaseModel):
     type: Optional[str] = Field(None, description="The type of attachment.")
     url: Optional[str] = Field(None, description="The url of the attachment.")
     description: Optional[str] = Field(None, description="A description of the attachment.")

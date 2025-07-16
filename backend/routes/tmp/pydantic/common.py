@@ -9,7 +9,7 @@ class PaginatedResponse(BaseModel):
     total: Optional[int] = Field(None, description="The total number of items.")
 
 
-class Attachemnt(BaseModel):
+class Attachment(BaseModel):
     type: Optional[str] = Field(None, description="The filetype of attachment.")
     url: Optional[str] = Field(None, description="The URL of the attachment.")
     title: Optional[str] = Field(None, description="The title of the attachment.")

@@ -797,7 +797,7 @@ components:
           type: "array"
           description: "Documents and multimeida associated with the complaint."
           items:
-            $ref: "#/components/schemas/Attachemnts"
+            $ref: "#/components/schemas/Attachments"
     CreateComplaint:
       allOf: 
         - $ref: "#/components/schemas/BaseComplaint"
@@ -1132,7 +1132,7 @@ components:
         url:
           type: string
           description: The website URL for the review board.
-    Attachemnts:
+    Attachments:
       type: "object"
       properties:
         type:
