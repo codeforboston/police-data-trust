@@ -60,6 +60,15 @@ class Location(StructuredNode, JsonSerializable):
 
 
 class Complaint(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "record_id", "category",
+        "incident_date", "recieved_date",
+        "closed_date", "reason_for_contact",
+        "outcome_of_contact"
+    ]
+
+    __hidden_properties__ = ["citations"]
+
     uid = UniqueIdProperty()
     record_id = StringProperty()
     category = StringProperty()
