@@ -80,7 +80,8 @@ class Complaint(StructuredNode, JsonSerializable):
 
     # Relationships
     source_org = RelationshipTo(
-        "backend.database.models.source.Source", "HAS_SOURCE", model=ComplaintSourceRel)
+        "backend.database.models.source.Source",
+        "HAS_SOURCE", model=ComplaintSourceRel)
     location = RelationshipTo("Location", "OCCURRED_AT", cardinality=One)
     civilian_witnesses = RelationshipTo(
         "backend.database.models.civilian.Civilian", "WITNESSED_BY")
@@ -111,9 +112,12 @@ class Allegation(StructuredNode, JsonSerializable):
     outcome = StringProperty()
 
     # Relationships
-    complainant = RelationshipTo("backend.database.models.civilian.Civilian", "REPORTED_BY")
-    accused = RelationshipFrom("backend.database.models.officer.Officer", "ACCUSED_OF")
-    complaint = RelationshipFrom("backend.database.models.complaint.Complaint", "ALLEGED")
+    complainant = RelationshipTo(
+        "backend.database.models.civilian.Civilian", "REPORTED_BY")
+    accused = RelationshipFrom(
+        "backend.database.models.officer.Officer", "ACCUSED_OF")
+    complaint = RelationshipFrom(
+        "backend.database.models.complaint.Complaint", "ALLEGED")
 
     def __repr__(self):
         """Represent instance as a unique string."""
