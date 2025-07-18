@@ -22,9 +22,15 @@ from flask_jwt_extended.view_decorators import jwt_required
 bp = Blueprint("complaint_routes", __name__, url_prefix="/api/v1/complaints")
 
 
-def create_allegation(complaint, allegation_data):
-    officer_uid = allegation_data.pop("accused_uid", None)
-    complainant_data = allegation_data.pop("complainant", None)
+def create_allegation(
+        complaint: Complaint, allegation_input: CreateAllegation):
+    """
+    Create an allegation for a complaint and the required connections.
+    Returns the created Allegation instance or False if an error occurs.
+    """
+    a_data = allegation_input.model_dump(exclude_unset=True)
+    officer_uid = a_data.pop("accused_uid", None)
+    complainant_data = a_data.pop("complainant", None)
 
     # Create Officer for Allegation
     if officer_uid:
@@ -36,7 +42,7 @@ def create_allegation(complaint, allegation_data):
         raise ValueError("Officer UID is required for the allegation")
 
     try:
-        allegation = Allegation(**allegation_data)
+        allegation = Allegation(**a_data)
         allegation.accused.connect(officer)
         allegation.complaint.connect(complaint)
         complaint.allegations.connect(allegation)
@@ -50,6 +56,8 @@ def create_allegation(complaint, allegation_data):
             # If the allegation was created but failed to connect, delete it
             logging.error(f"Deleting allegation {allegation.uid} due to error")
             allegation.delete()
+        raise AttributeError(
+            f"Failed to create allegation: {e}")
 
     # Connect complainant to allegation
     if complainant_data:
@@ -62,10 +70,58 @@ def create_allegation(complaint, allegation_data):
                 logging.error(
                     f"Deleting complainant {complainant.uid} due to error")
                 complainant.delete()
+    return allegation
 
 
-def create_penalty(complaint, penalty_data):
-    officer_uid = penalty_data.pop("officer_uid", None)
+def update_allegation(
+        allegation: Allegation, allegation_input: CreateAllegation):
+    """
+    Update an existing allegation with new data.
+    """
+    a_data = allegation_input.model_dump(exclude_unset=True)
+    officer_uid = a_data.pop("accused_uid", None)
+    complainant_data = a_data.pop("complainant", None)
+
+    # Update Officer for Allegation
+    if officer_uid:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            # Raise an error if the officer is not found
+            raise ValueError(f"Officer with UID {officer_uid} not found")
+        else:
+            allegation.accused.replace(officer)
+
+    if complainant_data:
+        # See if there is a complainant already connected
+        complainant = allegation.complainant.single()
+        if complainant:
+            # If a complainant is already connected, update their information
+            for key, value in complainant_data.items():
+                setattr(complainant, key, value)
+            complainant.save()
+        else:
+            # If no complainant is connected, create a new one
+            complainant = Civilian(**complainant_data)
+            allegation.complainant.connect(complainant)
+
+    try:
+        Allegation.from_dict(a_data, allegation.uid)
+        logging.info(f"Allegation {allegation.uid} updated")
+    except Exception as e:
+        logging.error(f"Error updating allegation: {e}")
+        raise AttributeError(
+            f"Failed to update allegation: {e}")
+    return allegation
+
+
+def create_penalty(
+        complaint: Complaint, penalty_input: CreatePenalty):
+    """
+    Create a penalty for a complaint and the required connections.
+    Returns the created Penalty instance or False if an error occurs.
+    """
+    p_data = penalty_input.model_dump(exclude_unset=True)
+    officer_uid = p_data.pop("officer_uid", None)
     if officer_uid:
         officer = Officer.nodes.get_or_none(uid=officer_uid)
         if officer is None:
@@ -74,7 +130,7 @@ def create_penalty(complaint, penalty_data):
     else:
         raise ValueError("Officer UID is required for the penalty")
     try:
-        penalty = Penalty(**penalty_data)
+        penalty = Penalty(**p_data)
         complaint.penalties.connect(penalty)
         penalty.officer.connect(officer)
         penalty.complaint.connect(complaint)
@@ -87,12 +143,48 @@ def create_penalty(complaint, penalty_data):
             # If the penalty was created but failed to connect, delete it
             logging.error(f"Deleting penalty {penalty.uid} due to error")
             penalty.delete()
+        return AttributeError(
+            f"Failed to create penalty: {e}")
+    return penalty
 
 
-def create_investigation(complaint, investigation_data):
-    investigator_uid = investigation_data.pop("investigator_uid", None)
+def update_penalty(
+        penalty: Penalty, penalty_input: CreatePenalty):
+    """
+    Update an existing penalty with new data.
+    """
+    p_data = penalty_input.model_dump(exclude_unset=True)
+    officer_uid = p_data.pop("officer_uid", None)
+    if officer_uid:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            # Raise an error if the officer is not found
+            raise ValueError(f"Officer with UID {officer_uid} not found")
+        else:
+            penalty.officer.reconnect(
+                penalty.officer.single(),
+                officer)
     try:
-        investigation = Investigation(**investigation_data)
+        Penalty.from_dict(p_data, penalty.uid)
+        logging.info(
+            f"Penalty {penalty.uid} updated")
+    except Exception as e:
+        logging.error(f"Error updating penalty: {e}")
+        raise AttributeError(
+            f"Failed to update penalty: {e}")
+    return penalty
+
+
+def create_investigation(
+        complaint: Complaint, investigation_input: CreateInvestigation):
+    """
+    Create an investigation for a complaint and the required connections.
+    Returns the created Investigation instance or False if an error occurs.
+    """
+    i_data = investigation_input.model_dump(exclude_unset=True)
+    investigator_uid = i_data.pop("investigator_uid", None)
+    try:
+        investigation = Investigation(**i_data)
         complaint.investigations.connect(investigation)
         investigation.complaint.connect(complaint)
         investigation.save()
@@ -106,11 +198,39 @@ def create_investigation(complaint, investigation_data):
             logging.error(
                 f"Deleting investigation {investigation.uid} due to error")
             investigation.delete()
-        return
+        return AttributeError(
+            f"Failed to create investigation: {e}")
     if investigator_uid:
         investigator = Officer.nodes.get_or_none(uid=investigator_uid)
         if investigator:
             investigation.investigator.connect(investigator)
+    return investigation
+
+
+def update_investigation(
+        investigation: Investigation, investigation_input: CreateInvestigation):
+    """
+    Update an existing investigation with new data.
+    """
+    i_data = investigation_input.model_dump(exclude_unset=True)
+    investigator_uid = i_data.pop("investigator_uid", None)
+
+    if investigator_uid:
+        investigator = Officer.nodes.get_or_none(uid=investigator_uid)
+        if investigator:
+            investigation.investigator.replace(investigator)
+        else:
+            raise ValueError(
+                f"Officer with UID {investigator_uid} not found")
+    try:
+        Investigation.from_dict(i_data, investigation.uid)
+        logging.info(
+            f"Investigation {investigation.uid} updated")
+    except Exception as e:
+        logging.error(f"Error updating investigation: {e}")
+        raise AttributeError(
+            f"Failed to update investigation: {e}")
+    return investigation
 
 
 # Create a complaint
@@ -179,25 +299,34 @@ def create_complaint():
     if allegations:
         for allegation in allegations:
             try:
-                create_allegation(complaint, allegation)
+                a_model = CreateAllegation(**allegation)
+                create_allegation(complaint, a_model)
             except ValueError as ve:
                 logger.error(f"Error creating allegation: {ve}")
+            except AttributeError as ae:
+                logger.error(f"Error creating allegation: {ae}")
 
     # Add Penalties
     if penalties:
         for penalty in penalties:
             try:
-                create_penalty(complaint, penalty)
+                p_model = CreatePenalty(**penalty)
+                create_penalty(complaint, p_model)
             except ValueError as ve:
                 logger.error(f"Error creating penalty: {ve}")
+            except AttributeError as ae:
+                logger.error(f"Error creating penalty: {ae}")
 
     # Add Investigations
     if investigations:
         for investigation in investigations:
             try:
-                create_investigation(complaint, investigation)
+                i_model = CreateInvestigation(**investigation)
+                create_investigation(complaint, i_model)
             except ValueError as ve:
                 logger.error(f"Error creating investigation: {ve}")
+            except AttributeError as ae:
+                logger.error(f"Error creating investigation: {ae}")
 
     # Add civilian witnesses
     if civilian_witnesses:
@@ -363,10 +492,13 @@ def create_complaint_allegation(complaint_uid: str):
         abort(404, description="Complaint not found")
 
     try:
-        allegation = CreateAllegation(**body.model_dump())
-        create_allegation(c, allegation)
+        allegation = create_allegation(c, body)
     except ValueError as ve:
         abort(400, description=str(ve))
+    except AttributeError as ae:
+        abort(400, description=str(ae))
+    if allegation is False:
+        abort(400, description="Failed to create allegation.")
 
     track_to_mp(
         request,
@@ -418,7 +550,8 @@ def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
         abort(404, description="Allegation not found")
 
     try:
-        allegation = Allegation.from_dict(body.model_dump(), allegation_uid)
+        allegation = update_allegation(
+            allegation, body)
         allegation.refresh()
     except Exception as e:
         abort(400, description=str(e))
@@ -506,10 +639,11 @@ def create_complaint_investigation(complaint_uid: str):
         abort(404, description="Complaint not found")
 
     try:
-        investigation = CreateInvestigation(**body.model_dump())
-        create_investigation(c, investigation)
+        investigation = create_investigation(c, body)
     except ValueError as ve:
         abort(400, description=str(ve))
+    except AttributeError as ae:
+        abort(400, description=str(ae))
 
     track_to_mp(
         request,
@@ -652,10 +786,11 @@ def create_complaint_penalty(complaint_uid: str):
         abort(404, description="Complaint not found")
 
     try:
-        penalty = CreatePenalty(**body.model_dump())
-        create_penalty(c, penalty)
+        penalty = create_penalty(c, body)
     except ValueError as ve:
         abort(400, description=str(ve))
+    except AttributeError as ae:
+        abort(400, description=str(ae))
 
     track_to_mp(
         request,

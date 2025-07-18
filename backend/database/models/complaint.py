@@ -9,7 +9,8 @@ from neomodel import (
     RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
-    One
+    One,
+    ZeroOrOne
 )
 
 
@@ -113,11 +114,14 @@ class Allegation(StructuredNode, JsonSerializable):
 
     # Relationships
     complainant = RelationshipTo(
-        "backend.database.models.civilian.Civilian", "REPORTED_BY")
+        "backend.database.models.civilian.Civilian",
+        "REPORTED_BY", cardinality=ZeroOrOne)
     accused = RelationshipFrom(
-        "backend.database.models.officer.Officer", "ACCUSED_OF")
+        "backend.database.models.officer.Officer",
+        "ACCUSED_OF", cardinality=ZeroOrOne)
     complaint = RelationshipFrom(
-        "backend.database.models.complaint.Complaint", "ALLEGED")
+        "backend.database.models.complaint.Complaint",
+        "ALLEGED", cardinality=One)
 
     def __repr__(self):
         """Represent instance as a unique string."""
@@ -131,7 +135,8 @@ class Investigation(StructuredNode, JsonSerializable):
 
     # Relationships
     investigator = RelationshipTo(
-        "backend.database.models.officer.Officer", "LED_BY")
+        "backend.database.models.officer.Officer",
+        "LED_BY", cardinality=ZeroOrOne)
     complaint = RelationshipFrom("Complaint", "EXAMINED_BY")
 
     def __repr__(self):
@@ -150,8 +155,9 @@ class Penalty(StructuredNode, JsonSerializable):
 
     # Relationships
     officer = RelationshipFrom(
-        "backend.database.models.officer.Officer", "RECEIVED")
-    complaint = RelationshipFrom("Complaint", "RESULTS_IN")
+        "backend.database.models.officer.Officer",
+        "RECEIVED", cardinality=One)
+    complaint = RelationshipFrom("Complaint", "RESULTS_IN", cardinality=One)
 
     def __repr__(self):
         """Represent instance as a unique string."""
