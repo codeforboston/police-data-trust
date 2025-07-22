@@ -115,6 +115,14 @@ def update_agency(agency_uid: str):
         return agency.to_json()
     except Exception as e:
         abort(400, description=str(e))
+    
+    try:
+        Agency.link_location(
+            agency, state=agency.hq_state, city=agency.hq_city)
+    except Exception as e:
+        logging.error(f"Error linking location {agency.name}: {e}")
+        print(f"Error linking location {agency.name}: {e}")
+        return
 
 
 # Delete agency profile

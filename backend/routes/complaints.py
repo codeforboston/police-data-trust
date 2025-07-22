@@ -1,11 +1,12 @@
 import logging
+import json
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
 from backend.database.models.complaint import (
-    Complaint, Penalty, Allegation, Investigation)
+    Complaint, Penalty, Allegation, Investigation, Location)
 from backend.database.models.source import Source
 from backend.database.models.attachment import Attachment
 from backend.database.models.civilian import Civilian
@@ -42,11 +43,10 @@ def create_allegation(
         raise ValueError("Officer UID is required for the allegation")
 
     try:
-        allegation = Allegation(**a_data)
+        allegation = Allegation(**a_data).save()
         allegation.accused.connect(officer)
         allegation.complaint.connect(complaint)
         complaint.allegations.connect(allegation)
-        allegation.save()
         logging.info(
             f"Allegation {allegation.uid} created "
             f"for Complaint {complaint.uid}")
@@ -62,7 +62,7 @@ def create_allegation(
     # Connect complainant to allegation
     if complainant_data:
         try:
-            complainant = Civilian(**complainant_data)
+            complainant = Civilian(**complainant_data).save()
             allegation.complainant.connect(complainant)
         except Exception as e:
             logging.error(f"Error connecting complainant to allegation: {e}")
@@ -130,11 +130,9 @@ def create_penalty(
     else:
         raise ValueError("Officer UID is required for the penalty")
     try:
-        penalty = Penalty(**p_data)
+        penalty = Penalty(**p_data).save()
         complaint.penalties.connect(penalty)
         penalty.officer.connect(officer)
-        penalty.complaint.connect(complaint)
-        penalty.save()
         logging.info(
             f"Penalty {penalty.uid} created for Complaint {complaint.uid}")
     except Exception as e:
@@ -184,10 +182,8 @@ def create_investigation(
     i_data = investigation_input.model_dump(exclude_unset=True)
     investigator_uid = i_data.pop("investigator_uid", None)
     try:
-        investigation = Investigation(**i_data)
+        investigation = Investigation(**i_data).save()
         complaint.investigations.connect(investigation)
-        investigation.complaint.connect(complaint)
-        investigation.save()
         logging.info(
             f"Investigation {investigation.uid} created "
             f"for Complaint {complaint.uid}")
@@ -249,8 +245,8 @@ def create_complaint():
     complaint_data = body.model_dump(exclude_unset=True)
 
     # Extract child objects from the body
-    source_details = complaint_data.pop("source_details", {})
-    location = complaint_data.pop("location", None)
+    source_details = complaint_data.pop("source_details", None)
+    location_data = complaint_data.pop("location", None)
     attachments = complaint_data.pop("attachments", [])
     allegations = complaint_data.pop("allegations", [])
     investigations = complaint_data.pop("investigations", [])
@@ -261,35 +257,34 @@ def create_complaint():
 
     source = Source.nodes.get_or_none(uid=source_uid)
     if source is None:
-        abort(404, description="Invalid Complaint: Source not found")
+        abort(400, description="Invalid Complaint: Source not found")
+    if source_details is None:
+        abort(400, description="Invalid Complaint: Source details are required")
     # Verify that the user is a member of the source
     # Need to also verify that the user is a Publisher or Higher
-    if not source.is_member(current_user):
+    if not source.members.is_connected(current_user):
         abort(
             403,
             description="User does not have permission to "
             "create a complaint for this source.")
+    if not location_data:
+        abort(400, description="Invalid Complaint: Location is required")
+    else:
+        loc = Location.from_dict(location_data)
 
     try:
         complaint = Complaint.from_dict(complaint_data)
+        complaint.location.connect(loc)
         complaint.source_org.connect(source, source_details)
     except Exception as e:
         logger.error(f"Error creating complaint: {e}")
         abort(400, description=str(e))
 
-    # Add locations
-    if location:
-        try:
-            loc = CreateLocation(**location)
-            complaint.location.connect(loc.to_location())
-        except Exception as e:
-            logger.error(f"Error linking location: {e}")
-            abort(400, description=str(e))
     # Add attachments
     if attachments:
         for attachment in attachments:
             try:
-                a = Attachment.from_dict(attachment.model_dump())
+                a = Attachment.from_dict(attachment)
                 complaint.attachments.connect(a)
             except Exception as e:
                 logger.error(f"Error linking attachment: {e}")

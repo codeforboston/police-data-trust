@@ -10,12 +10,9 @@ class PaginatedResponse(BaseModel):
 
 
 class Attachment(BaseModel):
-    type: Optional[str] = Field(None, description="The filetype of attachment.")
+    filetype: Optional[str] = Field(None, description="The filetype of attachment.")
     url: Optional[str] = Field(None, description="The URL of the attachment.")
     title: Optional[str] = Field(None, description="The title of the attachment.")
-    description: Optional[str] = Field(
-        None, description="A description of the attachment."
-    )
 
 
 class Article(BaseModel):

@@ -42,6 +42,9 @@ class CreateCivilian(BaseModel):
     )
     gender: Optional[Gender] = Field(None, description="The gender of the individual.")
 
+    class Config:
+        use_enum_values = True
+
 
 class CreateAllegation(BaseModel):
     accused_uid: str = Field(
@@ -62,10 +65,10 @@ class CreateAllegation(BaseModel):
     )
     type: Optional[str] = Field(None, description="The type of allegation.")
     subtype: Optional[str] = Field(None, description="The sub type of the allegation.")
-    recomended_finding: Optional[str] = Field(
+    recommended_finding: Optional[str] = Field(
         None, description="The finding recommended by the review board."
     )
-    recomended_outcome: Optional[str] = Field(
+    recommended_outcome: Optional[str] = Field(
         None, description="The outcome recommended by the review board."
     )
     finding: Optional[str] = Field(None, description="The legal finding.")

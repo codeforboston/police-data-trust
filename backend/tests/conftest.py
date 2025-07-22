@@ -11,8 +11,14 @@ from backend.database import (
     Agency,
     Unit,
     Officer,
+    Complaint,
+    RecordType,
+    Investigation,
+    Allegation,
+    Penalty,
+    Location
 )
-from datetime import datetime
+from datetime import datetime, date
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
@@ -207,7 +213,7 @@ def example_source_member(example_source):
 
 
 @pytest.fixture  # type: ignore
-def example_contributor():
+def example_contributor(example_source):
     contributor = User(
         email=contributor_email,
         password_hash=User.hash_password(example_password),
@@ -218,15 +224,8 @@ def example_contributor():
     ).save()
     add_test_property(contributor)
 
-    source = Source(
-        name="Example Contributor",
-        url="www.example.com",
-        contact_email="example_test@example.ca"
-    ).save()
-    add_test_property(source)
-
     # Create relationship
-    source.members.connect(
+    example_source.members.connect(
         contributor,
         {
             'role': MemberRole.PUBLISHER.value,
@@ -234,18 +233,78 @@ def example_contributor():
             'is_active': True
         }
     ).save()
-    add_test_property_to_rel(source, 'HAS_MEMBER', contributor)
+    add_test_property_to_rel(example_source, 'HAS_MEMBER', contributor)
     return contributor
 
 
 @pytest.fixture  # type: ignore
-def example_complaints(
+def example_complaint(
     example_source: Source,
     example_contributor: User,
+    example_officer: Officer,
 ) :
-    complaints = []
+    source_rel = {
+        "record_type": RecordType.government.value,
+        "reporting_agency": "New York City Civilian Review Board",
+        "reporting_agency_url": "https://www.nyc.gov/site/crb/index.page",
+        "reporting_agency_email": "example@example.com",
+        "date_published": datetime.now()
+    }
+    complaint = Complaint(
+        record_id="C123456",
+        category="Excessive Force",
+        incident_date=date.today(),
+        received_date=date.today(),
+        closed_date=date.today(),
+        reason_for_contact="Complaint about officer conduct",
+        outcome_of_contact="Resolved",
+    ).save()
+    location = Location(
+        location_type="Incident Location",
+        location_description="Main Street",
+        address="123 Main St",
+        city="New York",
+        state="NY",
+        zip="10001",
+        administrative_area="1st Precinct",
+        administrative_area_type="Precinct"
+    ).save()
+    allegation = Allegation(
+        allegation = "Officer used unnecessary force during arrest",
+        type = "Excessive Force",
+        subtype = "Physical Force",
+        recommended_finding="Sustained",
+        finding="Sustained",
+        recommended_outcome="Disciplinary Action",
+        outcome="Disciplinary Action",
+    ).save()
+    penalty = Penalty(
+        penalty="Suspension",
+        date_assessed=date.today(),
+        crb_plea="No contest",
+        crb_disposition="Sustained",
+        crb_case_status="Closed",
+        agency_disposition="Sustained"
+    ).save()
+    investigation = Investigation(
+        start_date=date.today(),
+        end_date=date.today(),
+    ).save()
 
-    yield complaints
+    allegation.accused.connect(example_officer)
+    penalty.officer.connect(example_officer)
+    complaint.allegations.connect(allegation)
+    complaint.investigations.connect(investigation)
+    complaint.penalties.connect(penalty)
+    complaint.location.connect(location)
+    complaint.source_org.connect(example_source,source_rel)
+    add_test_property(location)
+    add_test_property(complaint)
+    add_test_property(allegation)
+    add_test_property(penalty)
+    add_test_property(investigation)
+
+    yield complaint
 
 
 @pytest.fixture  # type: ignore

@@ -51,7 +51,7 @@ class ComplaintSourceRel(StructuredRel, JsonSerializable):
 
 class Location(StructuredNode, JsonSerializable):
     location_type = StringProperty()
-    loocation_description = StringProperty()
+    location_description = StringProperty()
     address = StringProperty()
     city = StringProperty()
     state = StringProperty()
@@ -63,7 +63,7 @@ class Location(StructuredNode, JsonSerializable):
 class Complaint(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "record_id", "category",
-        "incident_date", "recieved_date",
+        "incident_date", "received_date",
         "closed_date", "reason_for_contact",
         "outcome_of_contact"
     ]
@@ -74,7 +74,7 @@ class Complaint(StructuredNode, JsonSerializable):
     record_id = StringProperty()
     category = StringProperty()
     incident_date = DateProperty()
-    recieved_date = DateProperty()
+    received_date = DateProperty()
     closed_date = DateProperty()
     reason_for_contact = StringProperty()
     outcome_of_contact = StringProperty()
