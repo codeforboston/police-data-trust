@@ -3,7 +3,7 @@ import pytest
 import math
 from datetime import date
 from backend.database import (
-    Complaint, Source, RecordType, Officer
+    Complaint, Source, Officer
 )
 
 mock_complaint = {
@@ -28,13 +28,15 @@ mock_complaint = {
         "administrative_area": "Midtown North Precinct",
         "administrative_area_type": "precinct"
     },
-    "reason_for_contact": "C/V intervened on behalf of/observed encounter w/3rd party",
+    "reason_for_contact": "C/V intervened on behalf"
+    " of/observed encounter w/3rd party",
     "outcome_of_contact": "Arrest - disorderly conduct",
     "civilian_witnesses": None,
     "attachments": [
         {
             "filetype": "application/pdf",
-            "url": "https://www.documentcloud.org/documents/25189362-202202712_redactedclosingreportpdf",
+            "url": "https://www.documentcloud.org/documents/"
+            "25189362-202202712_redactedclosingreportpdf",
             "title": "Complaint Closing Report"
         }
     ],
@@ -78,7 +80,7 @@ def test_create_complaint(
         contributor_access_token,
         example_source: Source,
         example_officer: Officer,
-    ):
+):
     """
     Test that we can create a complaint.
     """
@@ -106,27 +108,27 @@ def test_create_complaint(
             "Authorization": "Bearer {0}".format(contributor_access_token)
         },
     )
-    assert res.status_code == 200
+    assert res.status_code == 201
     response = res.json
 
-    complaint_obj = (
+    c = (
        Complaint.nodes.get(uid=response["uid"])
     )
-    assert complaint_obj.record_id == request["record_id"]
-    assert complaint_obj.category == request["category"]
-    assert complaint_obj.reason_for_contact == request["reason_for_contact"]
-    assert complaint_obj.outcome_of_contact == request["outcome_of_contact"]
-    assert complaint_obj.incident_date == date.fromisoformat(request["incident_date"])
-    assert complaint_obj.received_date == date.fromisoformat(request["received_date"])
-    assert complaint_obj.closed_date == date.fromisoformat(request["closed_date"])
+    assert c.record_id == request["record_id"]
+    assert c.category == request["category"]
+    assert c.reason_for_contact == request["reason_for_contact"]
+    assert c.outcome_of_contact == request["outcome_of_contact"]
+    assert c.incident_date == date.fromisoformat(request["incident_date"])
+    assert c.received_date == date.fromisoformat(request["received_date"])
+    assert c.closed_date == date.fromisoformat(request["closed_date"])
 
-    location = complaint_obj.location.single()
-    source_obj = complaint_obj.source_org.single()
-    source_rel = complaint_obj.source_org.relationship(source_obj)
-    attachment_obj = complaint_obj.attachments.single()
-    allegation_obj = complaint_obj.allegations.single()
+    location = c.location.single()
+    source_obj = c.source_org.single()
+    source_rel = c.source_org.relationship(source_obj)
+    attachment_obj = c.attachments.single()
+    allegation_obj = c.allegations.single()
     complainant_obj = allegation_obj.complainant.single()
-    penalty_obj = complaint_obj.penalties.single()
+    penalty_obj = c.penalties.single()
 
     for prop, value in request["location"].items():
         assert getattr(location, prop) == value
@@ -151,6 +153,32 @@ def test_create_complaint(
             assert getattr(penalty_obj, prop) == value
 
 
+def test_create_complaint_no_permission(
+        client, access_token, example_complaint, example_source):
+
+    request = {
+        "record_id": mock_complaint["record_id"],
+        "source_details": mock_complaint["source_details"],
+        "category": mock_complaint["category"],
+        "incident_date": mock_complaint["incident_date"],
+        "received_date": mock_complaint["received_date"],
+        "closed_date": mock_complaint["closed_date"],
+        "location": mock_complaint["location"],
+        "reason_for_contact": mock_complaint["reason_for_contact"],
+        "outcome_of_contact": mock_complaint["outcome_of_contact"],
+        "source_uid": example_source.uid,
+        "attachments": mock_complaint["attachments"],
+        "allegations": mock_complaint["allegations"],
+        "penalties": mock_complaint["penalties"],
+    }
+
+    res = client.post(
+        "/api/v1/complaints/",
+        json=request,
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 403
+
 
 def test_get_complaint(client, db_session, example_complaint, access_token):
     """Test that we can retrieve a complaint by its UID.
@@ -160,11 +188,16 @@ def test_get_complaint(client, db_session, example_complaint, access_token):
     assert res.status_code == 200
     assert res.json["record_id"] == example_complaint.record_id
     assert res.json["category"] == example_complaint.category
-    assert res.json["reason_for_contact"] == example_complaint.reason_for_contact
-    assert res.json["outcome_of_contact"] == example_complaint.outcome_of_contact
-    assert res.json["incident_date"] == example_complaint.incident_date.isoformat()
-    assert res.json["received_date"] == example_complaint.received_date.isoformat()
-    assert res.json["closed_date"] == example_complaint.closed_date.isoformat()
+    assert res.json[
+        "reason_for_contact"] == example_complaint.reason_for_contact
+    assert res.json[
+        "outcome_of_contact"] == example_complaint.outcome_of_contact
+    assert res.json[
+        "incident_date"] == example_complaint.incident_date.isoformat()
+    assert res.json[
+        "received_date"] == example_complaint.received_date.isoformat()
+    assert res.json[
+        "closed_date"] == example_complaint.closed_date.isoformat()
 
     for prop, value in res.json['location'][0].items():
         assert getattr(example_complaint.location.single(), prop) == value
@@ -191,9 +224,13 @@ def test_get_complaints(client, db_session, access_token, example_complaint):
     )
 
     assert res.status_code == 200
+    assert res.json["total"] == len(all_complaints)
+    assert res.json["page"] == 1
+    assert len(res.json["results"]) == len(all_complaints)
 
 
-def test_complaint_pagination(client, db_session, access_token, example_complaint):
+def test_complaint_pagination(
+        client, db_session, access_token, example_complaint):
     # Create Complaints in the database
     complaints = Complaint.nodes.all()
     per_page = 1
@@ -219,88 +256,117 @@ def test_complaint_pagination(client, db_session, access_token, example_complain
     assert res.status_code == 404
 
 
-# def test_update_complaint(client, db_session, contributor_access_token, example_complaint):
-#     """Test that we can update an existing complaint."""
-#     updated_data = {
-#         "record_id": "202202713",
-#         "reason_for_contact": "Updated reason for contact",
-#         "outcome_of_contact": "Updated outcome of contact",
-#     }
+def test_update_complaint(
+        client, db_session, example_source, example_contributor,
+        contributor_access_token, example_complaint):
+    """Test that we can update an existing complaint."""
+    update = {
+        "reason_for_contact": "Updated reason for contact",
+        "outcome_of_contact": "Updated outcome of contact",
+    }
 
-#     res = client.put(
-#         f"/api/v1/complaints/{example_complaint.uid}",
-#         json=updated_data,
-#         headers={"Authorization": f"Bearer {contributor_access_token}"},
-#     )
+    res = client.patch(
+        f"/api/v1/complaints/{example_complaint.uid}",
+        json=update,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
 
-#     assert res.status_code == 200
-#     response = res.json
+    assert res.status_code == 200
+    response = res.json
 
-#     assert response["record_id"] == updated_data["record_id"]
-#     assert response["reason_for_contact"] == updated_data["reason_for_contact"]
-#     assert response["outcome_of_contact"] == updated_data["outcome_of_contact"]
+    assert response["uid"] == example_complaint.uid
+    assert response["reason_for_contact"] == update["reason_for_contact"]
+    assert response["outcome_of_contact"] == update["outcome_of_contact"]
 
-#     # Verify the database is updated
-#     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
-#     assert complaint_obj.record_id == updated_data["record_id"]
-#     assert complaint_obj.reason_for_contact == updated_data["reason_for_contact"]
-#     assert complaint_obj.outcome_of_contact == updated_data["outcome_of_contact"]
+    # Verify the database is updated
+    c = Complaint.nodes.get(uid=example_complaint.uid)
+    assert c.reason_for_contact == update["reason_for_contact"]
+    assert c.outcome_of_contact == update["outcome_of_contact"]
 
 
-# def test_delete_complaint(client, db_session, contributor_access_token, example_complaint):
-#     """Test that we can delete an existing complaint."""
-#     res = client.delete(
-#         f"/api/v1/complaints/{example_complaint.uid}",
-#         headers={"Authorization": f"Bearer {contributor_access_token}"},
-#     )
+def test_update_complaint_no_edit_permission(
+        client, access_token, example_complaint):
+    # Verify that a user without edit permissions cannot update
+    res = client.patch(
+        f"/api/v1/complaints/{example_complaint.uid}",
+        json={"incident_date": "2023-01-01"},
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert res.status_code == 403
 
-#     assert res.status_code == 204
 
-#     # Verify the complaint is deleted
-#     with pytest.raises(Complaint.DoesNotExist):
-#         Complaint.nodes.get(uid=example_complaint.uid)
+def test_delete_complaint(
+        client, db_session, access_token,
+        p_admin_access_token, example_complaint):
+    """Test that we can delete an existing complaint."""
+    res = client.delete(
+        f"/api/v1/complaints/{example_complaint.uid}",
+        headers={"Authorization": f"Bearer {p_admin_access_token}"},
+    )
 
-# def test_get_allegations(client, db_session, example_complaint, access_token):
-#     """Test that we can retrieve allegations associated with a complaint."""
-#     res = client.get(
-#         f"/api/v1/complaints/{example_complaint.uid}/allegations",
-#         headers={"Authorization": f"Bearer {access_token}"},
-#     )
+    assert res.status_code == 204
 
-#     assert res.status_code == 200
-#     allegations = res.json["results"]
-#     assert len(allegations) > 0
-#     assert allegations[0]["allegation"] == example_complaint.allegations[0]["allegation"]
-#     assert allegations[0]["type"] == example_complaint.allegations[0]["type"]
+    # Verify the complaint is deleted
+    with pytest.raises(Complaint.DoesNotExist):
+        Complaint.nodes.get(uid=example_complaint.uid)
 
-# def test_get_penalties(client, db_session, example_complaint, access_token):
-#     """Test that we can retrieve penalties associated with a complaint."""
-#     res = client.get(
-#         f"/api/v1/complaints/{example_complaint.uid}/penalties",
-#         headers={"Authorization": f"Bearer {access_token}"},
-#     )
 
-#     assert res.status_code == 200
-#     penalties = res.json["results"]
-#     assert len(penalties) > 0
-#     assert penalties[0]["penalty"] == example_complaint.penalties[0]["penalty"]
-#     assert penalties[0]["date_assessed"] == example_complaint.penalties[0]["date_assessed"]
+def test_get_allegations(client, db_session, example_complaint, access_token):
+    """Test that we can retrieve allegations associated with a complaint."""
+    res = client.get(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
 
-# def test_get_investigations(client, db_session, example_complaint, access_token):
-#     """Test that we can retrieve investigations associated with a complaint."""
-#     res = client.get(
-#         f"/api/v1/complaints/{example_complaint.uid}/investigations",
-#         headers={"Authorization": f"Bearer {access_token}"},
-#     )
+    allegation_objs = example_complaint.allegations.all()
+    allegations = res.json["results"]
 
-#     assert res.status_code == 200
-#     investigations = res.json["results"]
-#     assert len(investigations) > 0
-#     # Assuming the first investigation matches the example complaint's investigation
-#     assert investigations[0]["start_date"] == example_complaint.investigations[0]["start_date"]
-#     assert investigations[0]["end_date"] == example_complaint.investigations[0]["end_date"]
+    assert res.status_code == 200
+    assert res.json["total"] == len(allegation_objs)
+    assert res.json["page"] == 1
+    assert allegations[0]["allegation"] == allegation_objs[0].allegation
+    assert allegations[0]["type"] == allegation_objs[0].type
 
-# def test_update_complaint_children(client, db_session, contributor_access_token, example_complaint):
+
+def test_get_penalties(client, db_session, example_complaint, access_token):
+    """Test that we can retrieve penalties associated with a complaint."""
+    res = client.get(
+        f"/api/v1/complaints/{example_complaint.uid}/penalties",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    penalty_objs = example_complaint.penalties.all()
+    penalties = res.json["results"]
+
+    assert res.status_code == 200
+    assert res.json["total"] == len(penalty_objs)
+    assert res.json["page"] == 1
+    p = example_complaint.penalties.single()
+    assert penalties[0]["penalty"] == p.penalty
+    assert penalties[0]["date_assessed"] == p.date_assessed.isoformat()
+
+
+def test_get_investigations(
+        client, db_session, example_complaint, access_token):
+    """Test that we can retrieve investigations
+    associated with a complaint."""
+    res = client.get(
+        f"/api/v1/complaints/{example_complaint.uid}/investigations",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    investigation_objs = example_complaint.investigations.all()
+    investigations = res.json["results"]
+
+    assert res.status_code == 200
+    assert res.json["total"] == len(investigation_objs)
+    assert res.json["page"] == 1
+    i = example_complaint.investigations.single()
+    assert investigations[0]["start_date"] == i.start_date.isoformat()
+    assert investigations[0]["end_date"] == i.end_date.isoformat()
+
+# def test_update_complaint_children(
+# client, db_session, contributor_access_token, example_complaint):
     # """Test that we can update the children of an existing complaint."""
     # updated_data = {
     #     "allegations": [

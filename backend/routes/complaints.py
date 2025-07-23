@@ -1,5 +1,5 @@
 import logging
-import json
+from functools import wraps
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -14,9 +14,9 @@ from backend.database.models.officer import Officer
 from .tmp.pydantic.complaints import (
     CreateComplaint, UpdateComplaint,
     CreateAllegation, CreateInvestigation, CreatePenalty,
-    CreateLocation, CreateCivilian)
-from flask import Blueprint, abort, request
-from flask_jwt_extended import get_jwt
+    CreateCivilian)
+from flask import Blueprint, abort, request, jsonify
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from flask_jwt_extended.view_decorators import jwt_required
 
 
@@ -229,6 +229,39 @@ def update_investigation(
     return investigation
 
 
+def verify_edit_allowed_or_abort(c_uid: str):
+    """
+    Check if the current user is allowed to edit the complaint.
+    Returns True if allowed, False otherwise.
+    """
+    verify_jwt_in_request()
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    c = Complaint.nodes.get_or_none(uid=c_uid)
+    if c is None:
+        abort(404, description="Complaint not found")
+    source = c.source_org.single()
+    if (
+        not source
+        or not source.members.is_connected(current_user)
+        or not source.members.relationship(current_user).may_publish()
+    ):
+        abort(403, description="User does not have permission"
+              " to edit this complaint.")
+        return False
+    return True
+
+
+def edit_permission_required():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(complaint_uid: str, *args, **kwargs):
+            if verify_edit_allowed_or_abort(complaint_uid):
+                return fn(complaint_uid, *args, **kwargs)
+        return decorator
+    return wrapper
+
+
 # Create a complaint
 @bp.route("/", methods=["POST"])
 @jwt_required()
@@ -267,6 +300,9 @@ def create_complaint():
             403,
             description="User does not have permission to "
             "create a complaint for this source.")
+    if not source.members.relationship(current_user).may_publish():
+        abort(403, description="User does not have permission to "
+              "create a complaint for this source.")
     if not location_data:
         abort(400, description="Invalid Complaint: Location is required")
     else:
@@ -354,7 +390,7 @@ def create_complaint():
             "complaint_uid": complaint.uid
         },
     )
-    return complaint.to_json()
+    return complaint.to_json(), 201
 
 
 # Get a complaint record
@@ -393,7 +429,7 @@ def get_all_complaints():
 
 
 # Update a complaint record
-@bp.route("/<complaint_uid>", methods=["PUT"])
+@bp.route("/<complaint_uid>", methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateComplaint)
@@ -404,7 +440,6 @@ def update_complaint(complaint_uid: str):
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
-
     try:
         c = Complaint.from_dict(body.model_dump(), complaint_uid)
         c.refresh()
@@ -424,7 +459,7 @@ def update_complaint(complaint_uid: str):
 # Delete a complaint record
 @bp.route("/<complaint_uid>", methods=["DELETE"])
 @jwt_required()
-@min_role_required(UserRole.ADMIN)
+@min_role_required(UserRole.CONTRIBUTOR)
 def delete_complaint(complaint_uid: str):
     """Delete a complaint record.
     Must be an admin to delete a complaint.
@@ -432,6 +467,18 @@ def delete_complaint(complaint_uid: str):
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    source = c.source_org.single()
+    if not source.members.is_connected(current_user):
+        abort(403, description="User does not have permission"
+              " to delete this complaint.")
+    if not source.members.relationship(current_user).is_administrator():
+        abort(
+            403,
+            description="User does not have permission"
+            " to delete this complaint.")
+
     try:
         uid = c.uid
         c.delete()
@@ -442,7 +489,7 @@ def delete_complaint(complaint_uid: str):
                 "complaint_uid": uid
             },
         )
-        return {"message": "Complaint deleted successfully"}
+        return jsonify({"message": "Complaint deleted successfully"}), 204
     except Exception as e:
         abort(400, description=str(e))
 
@@ -461,16 +508,19 @@ def delete_complaint(complaint_uid: str):
 def get_complaint_allegations(complaint_uid: str):
     """Get all allegations for a complaint.
     """
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
 
     allegations = c.allegations.all()
-    if not allegations:
-        abort(404, description="No allegations found for this complaint")
+    results = paginate_results(allegations, q_page, q_per_page)
+    if not results:
+        abort(404, description="No allegations found for this complaint.")
 
-    return ordered_jsonify(
-        [allegation.to_json() for allegation in allegations]), 200
+    return ordered_jsonify(results), 200
 
 
 # Create an allegation for a complaint
@@ -478,6 +528,7 @@ def get_complaint_allegations(complaint_uid: str):
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateAllegation)
+@edit_permission_required()
 def create_complaint_allegation(complaint_uid: str):
     """Create an allegation for a complaint.
     """
@@ -528,10 +579,11 @@ def get_complaint_allegation(complaint_uid: str, allegation_uid: str):
 
 
 # Update an allegation for a complaint
-@bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["PUT"])
+@bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateAllegation)
+@edit_permission_required()
 def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
     """Update an allegation for a complaint.
     """
@@ -565,7 +617,8 @@ def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
 # Delete an allegation for a complaint
 @bp.route("/<complaint_uid>/allegations/<allegation_uid>", methods=["DELETE"])
 @jwt_required()
-@min_role_required(UserRole.ADMIN)
+@min_role_required(UserRole.CONTRIBUTOR)
+@edit_permission_required()
 def delete_complaint_allegation(complaint_uid: str, allegation_uid: str):
     """Delete an allegation for a complaint.
     Must be an admin to delete an allegation.
@@ -573,7 +626,6 @@ def delete_complaint_allegation(complaint_uid: str, allegation_uid: str):
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
-
     allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
     if allegation is None:
         abort(404, description="Allegation not found")
@@ -608,16 +660,19 @@ def delete_complaint_allegation(complaint_uid: str, allegation_uid: str):
 def get_complaint_investigations(complaint_uid: str):
     """Get all investigations for a complaint.
     """
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
 
     investigations = c.investigations.all()
-    if not investigations:
-        abort(404, description="No investigations found for this complaint")
+    results = paginate_results(investigations, q_page, q_per_page)
+    if not results:
+        abort(404, description="No investigations found for this complaint.")
 
-    return ordered_jsonify(
-        [investigation.to_json() for investigation in investigations]), 200
+    return ordered_jsonify(results), 200
 
 
 # Create an investigation for a complaint
@@ -625,6 +680,7 @@ def get_complaint_investigations(complaint_uid: str):
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateInvestigation)
+@edit_permission_required()
 def create_complaint_investigation(complaint_uid: str):
     """Create an investigation for a complaint.
     """
@@ -675,10 +731,11 @@ def get_complaint_investigation(complaint_uid: str, investigation_uid: str):
 
 # Update an investigation for a complaint
 @bp.route("/<complaint_uid>/investigations/<investigation_uid>",
-          methods=["PUT"])
+          methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateInvestigation)
+@edit_permission_required()
 def update_complaint_investigation(complaint_uid: str, investigation_uid: str):
     """Update an investigation for a complaint.
     """
@@ -713,7 +770,8 @@ def update_complaint_investigation(complaint_uid: str, investigation_uid: str):
 @bp.route("/<complaint_uid>/investigations/<investigation_uid>",
           methods=["DELETE"])
 @jwt_required()
-@min_role_required(UserRole.ADMIN)
+@min_role_required(UserRole.CONTRIBUTOR)
+@edit_permission_required()
 def delete_complaint_investigation(complaint_uid: str, investigation_uid: str):
     """Delete an investigation for a complaint.
     Must be an admin to delete an investigation.
@@ -756,15 +814,19 @@ def delete_complaint_investigation(complaint_uid: str, investigation_uid: str):
 def get_complaint_penalties(complaint_uid: str):
     """Get all penalties for a complaint.
     """
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
     if c is None:
         abort(404, description="Complaint not found")
 
     penalties = c.penalties.all()
-    if not penalties:
-        abort(404, description="No penalties found for this complaint")
+    results = paginate_results(penalties, q_page, q_per_page)
+    if not results:
+        abort(404, description="No penalties found for this complaint.")
 
-    return ordered_jsonify([penalty.to_json() for penalty in penalties]), 200
+    return ordered_jsonify(results), 200
 
 
 # Create a penalty for a complaint
@@ -772,6 +834,7 @@ def get_complaint_penalties(complaint_uid: str):
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreatePenalty)
+@edit_permission_required()
 def create_complaint_penalty(complaint_uid: str):
     """Create a penalty for a complaint.
     """
@@ -820,10 +883,11 @@ def get_complaint_penalty(complaint_uid: str, penalty_uid: str):
 
 
 # Update a penalty for a complaint
-@bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["PUT"])
+@bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["PATCH"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreatePenalty)
+@edit_permission_required()
 def update_complaint_penalty(complaint_uid: str, penalty_uid: str):
     """Update a penalty for a complaint.
     """
@@ -856,7 +920,8 @@ def update_complaint_penalty(complaint_uid: str, penalty_uid: str):
 # Delete a penalty for a complaint
 @bp.route("/<complaint_uid>/penalties/<penalty_uid>", methods=["DELETE"])
 @jwt_required()
-@min_role_required(UserRole.ADMIN)
+@min_role_required(UserRole.CONTRIBUTOR)
+@edit_permission_required()
 def delete_complaint_penalty(complaint_uid: str, penalty_uid: str):
     """Delete a penalty for a complaint.
     Must be an admin to delete a penalty.

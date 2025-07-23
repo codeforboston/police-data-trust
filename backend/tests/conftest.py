@@ -239,6 +239,7 @@ def example_contributor(example_source):
 
 @pytest.fixture  # type: ignore
 def example_complaint(
+    db_session,
     example_source: Source,
     example_contributor: User,
     example_officer: Officer,
@@ -270,9 +271,9 @@ def example_complaint(
         administrative_area_type="Precinct"
     ).save()
     allegation = Allegation(
-        allegation = "Officer used unnecessary force during arrest",
-        type = "Excessive Force",
-        subtype = "Physical Force",
+        allegation="Officer used unnecessary force during arrest",
+        type="Excessive Force",
+        subtype="Physical Force",
         recommended_finding="Sustained",
         finding="Sustained",
         recommended_outcome="Disciplinary Action",
@@ -297,12 +298,13 @@ def example_complaint(
     complaint.investigations.connect(investigation)
     complaint.penalties.connect(penalty)
     complaint.location.connect(location)
-    complaint.source_org.connect(example_source,source_rel)
+    complaint.source_org.connect(example_source, source_rel)
     add_test_property(location)
     add_test_property(complaint)
     add_test_property(allegation)
     add_test_property(penalty)
     add_test_property(investigation)
+    add_test_property_to_rel(complaint, 'HAS_SOURCE', example_source)
 
     yield complaint
 
