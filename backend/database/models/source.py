@@ -90,7 +90,7 @@ class SourceMember(StructuredRel, JsonSerializable):
 
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
-    
+
     def may_publish(self):
         return self.role_enum.get_value() <= MemberRole.PUBLISHER.get_value()
 
