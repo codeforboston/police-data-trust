@@ -96,7 +96,7 @@ def is_test_database():
     return bool(results)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def cleanup_test_data():
     yield
     # Check if this is the test database before performing any deletion
