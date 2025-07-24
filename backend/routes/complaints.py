@@ -189,11 +189,6 @@ def create_investigation(
             f"for Complaint {complaint.uid}")
     except Exception as e:
         logging.error(f"Error creating investigation: {e}")
-        if investigation:
-            # If the investigation was created but failed to connect, delete it
-            logging.error(
-                f"Deleting investigation {investigation.uid} due to error")
-            investigation.delete()
         return AttributeError(
             f"Failed to create investigation: {e}")
     if investigator_uid:
@@ -433,6 +428,7 @@ def get_all_complaints():
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateComplaint)
+@edit_permission_required()
 def update_complaint(complaint_uid: str):
     """Update a complaint record.
     """
@@ -641,7 +637,7 @@ def delete_complaint_allegation(complaint_uid: str, allegation_uid: str):
                 "allegation_uid": uid
             },
         )
-        return {"message": "Allegation deleted successfully"}
+        return {"message": "Allegation deleted successfully"}, 204
     except Exception as e:
         abort(400, description=str(e))
 
@@ -795,7 +791,7 @@ def delete_complaint_investigation(complaint_uid: str, investigation_uid: str):
                 "investigation_uid": uid
             },
         )
-        return {"message": "Investigation deleted successfully"}
+        return {"message": "Investigation deleted successfully"}, 204
     except Exception as e:
         abort(400, description=str(e))
 
@@ -945,6 +941,6 @@ def delete_complaint_penalty(complaint_uid: str, penalty_uid: str):
                 "penalty_uid": uid
             },
         )
-        return {"message": "Penalty deleted successfully"}
+        return {"message": "Penalty deleted successfully"}, 204
     except Exception as e:
         abort(400, description=str(e))

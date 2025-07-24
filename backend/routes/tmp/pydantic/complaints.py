@@ -102,10 +102,10 @@ class CreatePenalty(BaseModel):
 
 
 class CreateInvestigation(BaseModel):
-    start_date: Optional[str] = Field(
+    start_date: Optional[date] = Field(
         None, description="The date the investigation started."
     )
-    end_date: Optional[str] = Field(
+    end_date: Optional[date] = Field(
         None, description="The date the investigation ended."
     )
     investigator_uid: Optional[str] = Field(
