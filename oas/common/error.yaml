@@ -33,3 +33,9 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+    forbiddenError:
+      description: "Forbidden"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

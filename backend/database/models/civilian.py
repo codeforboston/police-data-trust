@@ -5,12 +5,15 @@ from neomodel import (
     IntegerProperty,
     RelationshipTo
 )
+from backend.schemas import JsonSerializable
+from backend.database.models.types.enums import Ethnicity, Gender
 
 
-class Civilian(StructuredNode):
+class Civilian(StructuredNode, JsonSerializable):
     age = IntegerProperty()
-    race = StringProperty()
-    gender = StringProperty()
+    age_range = StringProperty()
+    ethnicity = StringProperty(choices=Ethnicity.choices())
+    gender = StringProperty(choices=Gender.choices())
 
     # Relationships
     complaints = RelationshipTo(

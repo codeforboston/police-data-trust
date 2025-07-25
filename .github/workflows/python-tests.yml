@@ -31,6 +31,20 @@ jobs:
         sudo apt-get install python3-dev libpq-dev
         python -m pip install --upgrade pip
         python -m pip install -r requirements/dev_unix.txt
+    - name: Seed Neo4j Test DB
+      shell: bash
+      run: |
+        CONTAINER_ID=$(docker ps \
+          --filter ancestor=neo4j:5.23-community \
+          --format "{{.ID}}")
+        until docker exec $CONTAINER_ID \
+          bin/cypher-shell -u neo4j -p test_pwd "RETURN 1"; do
+          echo "Waiting for Neo4j to wake up…"
+          sleep 1
+        done
+        docker exec $CONTAINER_ID \
+          bin/cypher-shell -u neo4j -p test_pwd \
+          "MERGE (n:TestMarker {name:'TEST_DATABASE'});"        
     - name: Check style
       run: flake8 backend/
     - name: Run tests

@@ -61,7 +61,7 @@ class User(StructuredNode, JsonSerializable):
         "MEMBER_OF_SOURCE", model=SourceMember)
     received_invitations = Relationship(
         'backend.database.models.source.Invitation',
-        "RECIEVED")
+        "RECEIVED")
     extended_invitations = Relationship(
         'backend.database.models.source.Invitation',
         "EXTENDED")

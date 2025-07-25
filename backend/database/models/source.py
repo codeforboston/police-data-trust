@@ -9,7 +9,6 @@ from neomodel import (
     UniqueIdProperty, BooleanProperty,
     EmailProperty
 )
-from backend.database.models.complaint import BaseSourceRel
 
 
 class MemberRole(str, PropertyEnum):
@@ -92,6 +91,9 @@ class SourceMember(StructuredRel, JsonSerializable):
     def is_administrator(self):
         return self.role == MemberRole.ADMIN
 
+    def may_publish(self):
+        return self.role_enum.get_value() <= MemberRole.PUBLISHER.get_value()
+
     def get_default_role():
         return MemberRole.SUBSCRIBER
 
@@ -102,7 +104,7 @@ class SourceMember(StructuredRel, JsonSerializable):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<SourceMember( \
-        id={self.uid}>"
+        uid={self.uid}>"
 
 
 class Citation(StructuredRel, JsonSerializable):
@@ -133,7 +135,7 @@ class Source(StructuredNode, JsonSerializable):
         "IS_MEMBER", model=SourceMember)
     complaints = RelationshipTo(
         "backend.database.models.complaint.Complaint",
-        "REPORTED", model=BaseSourceRel)
+        "REPORTED")
     invitations = RelationshipTo(
         "Invitation", "HAS_PENDING_INVITATION")
     staged_invitations = RelationshipTo(

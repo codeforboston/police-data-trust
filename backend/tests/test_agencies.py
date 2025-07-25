@@ -136,7 +136,7 @@ def test_get_all_agencies(client, access_token, example_agencies):
     assert res.json["results"].__len__() == total_agencies
 
 
-def test_filter_agencies(client, access_token):
+def test_filter_agencies(client, access_token, example_agencies):
     # Test filtering
     expect_name_ct = Agency.nodes.filter(
         name="New York Police Department"

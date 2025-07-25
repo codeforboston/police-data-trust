@@ -8,13 +8,13 @@ class BaseComplaint(BaseModel):
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
+    received_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
 
 
 class CreateComplaint(BaseComplaint, BaseModel):
@@ -22,13 +22,13 @@ class CreateComplaint(BaseComplaint, BaseModel):
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
+    received_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     source_uid: Optional[str] = Field(None, description="The UID of the source that reported the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The UID of any police witnesses associated with the complaint.")
@@ -42,13 +42,13 @@ class UpdateComplaint(BaseComplaint, BaseModel):
     source_details: Optional[SourceDetails] = None
     category: Optional[str] = Field(None, description="The category of the complaint.")
     incident_date: Optional[str] = Field(None, description="The date and time the incident occurred.")
-    recieved_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
+    received_date: Optional[str] = Field(None, description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Optional[Dict[str, Any]] = None
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: Optional[List[Civilian]] = Field(None, description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     civilian_review_board_uid: Optional[str] = Field(None, description="The UID of the civilian review board that reviewed the complaint.")
     police_witnesses: Optional[List[str]] = Field(None, description="The uid of any police witnesses associated with the complaint.")
     allegations: Optional[List[CreateAllegation]] = Field(None, description="The allegations associated with the complaint.")
@@ -61,13 +61,13 @@ class Complaint(BaseComplaint, BaseModel):
     source_details: Optional[SourceDetails] = None
     category: str = Field(..., description="The category of the complaint.")
     incident_date: str = Field(..., description="The date and time the incident occurred.")
-    recieved_date: str = Field(..., description="The date and time the complaint was received by the reporting source.")
+    received_date: str = Field(..., description="The date and time the complaint was received by the reporting source.")
     closed_date: Optional[str] = Field(None, description="The date and time the complaint was closed.")
     location: Dict[str, Any] = ...
     reason_for_contact: Optional[str] = Field(None, description="The reason for the contact.")
     outcome_of_contact: Optional[str] = Field(None, description="The outcome of the contact.")
     civilian_witnesses: List[Civilian] = Field(..., description="The civilian witnesses associated with the complaint.")
-    attachements: Optional[List[Attachemnts]] = Field(None, description="Documents and multimeida associated with the complaint.")
+    attachements: Optional[List[Attachments]] = Field(None, description="Documents and multimeida associated with the complaint.")
     uid: str = Field(..., description="Unique identifier for the complaint.")
     created_at: str = Field(..., description="Date and time the complaint was created.")
     updated_at: str = Field(..., description="Date and time the complaint was last updated.")
@@ -89,8 +89,8 @@ class BaseAllegation(BaseModel):
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
     type: Optional[str] = Field(None, description="The type of allegation.")
     sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
-    recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
-    recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
+    recommended_finding: Optional[str] = Field(None, description="The finding recommended by the review board.")
+    recommended_outcome: Optional[str] = Field(None, description="The outcome recommended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")
     outcome: Optional[str] = Field(None, description="The final outcome of the allegation.")
 
@@ -101,8 +101,8 @@ class CreateAllegation(BaseAllegation, BaseModel):
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
     type: Optional[str] = Field(None, description="The type of allegation.")
     sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
-    recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
-    recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
+    recommended_finding: Optional[str] = Field(None, description="The finding recommended by the review board.")
+    recommended_outcome: Optional[str] = Field(None, description="The outcome recommended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")
     outcome: Optional[str] = Field(None, description="The final outcome of the allegation.")
     perpetrator_uid: Optional[str] = Field(None, description="The UID of the officer the allegation is made against.")
@@ -114,8 +114,8 @@ class Allegation(BaseAllegation, BaseModel):
     allegation: Optional[str] = Field(None, description="The allegation made by the complaintant.")
     type: Optional[str] = Field(None, description="The type of allegation.")
     sub_type: Optional[str] = Field(None, description="The sub type of the allegation.")
-    recomended_finding: Optional[str] = Field(None, description="The finding recomended by the review board.")
-    recomended_outcome: Optional[str] = Field(None, description="The outcome recomended by the review board.")
+    recommended_finding: Optional[str] = Field(None, description="The finding recommended by the review board.")
+    recommended_outcome: Optional[str] = Field(None, description="The outcome recommended by the review board.")
     finding: Optional[str] = Field(None, description="The legal finding.")
     outcome: Optional[str] = Field(None, description="The final outcome of the allegation.")
     uid: Optional[str] = Field(None, description="Unique identifier for the allegation.")
@@ -126,7 +126,7 @@ class Penalty(BaseModel):
     uid: Optional[str] = Field(None, description="UUID for the penalty.")
     officer: Optional[Officer] = Field(None, description="The officer who the penalty is associated with.")
     description: Optional[str] = Field(None, description="A description of the penalty.")
-    date_assesed: Optional[str] = None
+    date_assessed: Optional[str] = None
 
 
 class CreatePenalty(BaseModel):
@@ -166,7 +166,7 @@ class ReviewBoard(BaseModel):
     url: Optional[str] = Field(None, description="The website URL for the review board.")
 
 
-class Attachemnts(BaseModel):
+class Attachments(BaseModel):
     type: Optional[str] = Field(None, description="The type of attachment.")
     url: Optional[str] = Field(None, description="The url of the attachment.")
     description: Optional[str] = Field(None, description="A description of the attachment.")
