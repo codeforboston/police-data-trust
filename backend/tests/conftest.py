@@ -122,7 +122,7 @@ def example_user():
 
 
 @pytest.fixture
-def example_source(scope="session"):
+def example_source():
     source = Source(
         name="Example Source",
         url="www.example.com",
