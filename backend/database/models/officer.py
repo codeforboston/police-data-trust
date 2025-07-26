@@ -1,6 +1,7 @@
 from backend.schemas import JsonSerializable
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import Citation
+from backend.database.models.agency import UnitMembership
 
 from neomodel import (
     StructuredNode,
@@ -44,8 +45,8 @@ class Officer(StructuredNode, JsonSerializable):
 
     # Relationships
     state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = Relationship(
-        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
+    units = RelationshipTo(
+        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT", model=UnitMembership)
     litigation = Relationship(
         'backend.database.models.litigation.Litigation', "NAMED_IN")
     allegations = Relationship(

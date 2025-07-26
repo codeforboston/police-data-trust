@@ -1,9 +1,12 @@
 from __future__ import annotations
 import pytest
 import math
+from datetime import date, datetime
 from backend.database import (
-    Officer,
+    Officer, Unit, Agency, UnitMembership
 )
+from neomodel import db
+
 
 mock_officers = {
     "john": {
@@ -45,24 +48,73 @@ mock_agencies = {
     }
 }
 
-mock_employment = {
+
+mock_units = {
+    "unit_alpha": {
+        "name": "Unit Alpha",
+        "website_url": "https://agency.gov/unit-alpha",
+        "phone": "(555) 123-4567",
+        "email": "alpha@agency.gov",
+        "description": "Responsible for general investigations and field operations.",
+        "address": "100 Alpha Ave",
+        "city": "Chicago",
+        "state": "MI",
+        "zip": "60001",
+        "agency_url": "https://agency.gov",
+        "officers_url": "https://agency.gov/unit-alpha/officers",
+        "date_established": date(2001, 5, 14)
+    },
+    "unit_bravo": {
+        "name": "Unit Bravo",
+        "website_url": "https://agency.gov/unit-bravo",
+        "phone": "(555) 234-5678",
+        "email": "bravo@agency.gov",
+        "description": "Handles specialized enforcement and tactical operations.",
+        "address": "200 Bravo Blvd",
+        "city": "NYC",
+        "state": "NY",
+        "zip": "75001",
+        "agency_url": "https://agency.gov",
+        "officers_url": "https://agency.gov/unit-bravo/officers",
+        "date_established": date(1998, 9, 3)
+    },
+    "unit_charlie": {
+        "name": "Unit Charlie",
+        "website_url": "https://agency.gov/unit-charlie",
+        "phone": "(555) 345-6789",
+        "email": "charlie@agency.gov",
+        "description": "Focuses on community outreach and civilian safety programs.",
+        "address": "300 Charlie Rd",
+        "city": "Oakridge",
+        "state": "OH",
+        "zip": "43001",
+        "agency_url": "https://agency.gov",
+        "officers_url": "https://agency.gov/unit-charlie/officers",
+        "date_established": date(2010, 2, 28)
+    }
+}
+
+mock_unit_memberships = {
     "john": {
-        "agency": "Chicago Police Department",
-        "earliest_employment": "2015-03-14 00:00:00",
+        # "agency": "Chicago Police Department",
+        "earliest_date": datetime.strptime("2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime("2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
-        "currently_employed": True
+        "highest_rank": 'Officer'
     },
     "hazel": {
-        "agency": "Chicago Police Department",
-        "earliest_employment": "2018-08-12 00:00:00",
+        # "agency": "Chicago Police Department",
+        "earliest_date": datetime.strptime("2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime("2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "5678",
-        "currently_employed": True
+        "highest_rank": 'Sergeant',
     },
     "frank": {
-        "agency": "New York Police Department",
-        "earliest_employment": "2019-05-03 00:00:00",
+        # "agency": "New York Police Department",
+        "earliest_date": datetime.strptime("2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime("2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
-        "currently_employed": True
+        "highest_rank": 'Lieutenant'
     }
 }
 
@@ -72,7 +124,7 @@ mock_sources = {
 
 
 @pytest.fixture
-def example_officers(db_session):
+def example_officers():
     # Create Officers in the database
     officers = {}
     for name, mock in mock_officers.items():
@@ -82,10 +134,10 @@ def example_officers(db_session):
 
 
 def test_create_officer(
-        db_session,
         client,
         contributor_access_token,
-        example_agency):
+        # example_agency
+        ):
 
     # Test that we can create an officer without an agency association
     request = {
@@ -113,7 +165,7 @@ def test_create_officer(
     assert officer_obj.gender == request["gender"]
 
 
-def test_get_officer(client, db_session, example_officer, access_token):
+def test_get_officer(client, example_officer, access_token):
     # Test that we can get it
     res = client.get(f"/api/v1/officers/{example_officer.uid}")
 
@@ -393,3 +445,176 @@ def test_delete_officer_no_user_role(
     )
     assert res.status_code == 403
 """
+
+@pytest.fixture
+def create_officers_units_agencies():
+    # db.cypher_query("""MATCH (n) WHERE NOT n:TestMarker
+    #                 DETACH DELETE n""")
+    
+    # Create Officers in the database
+    officers = {}
+    for name, mock in mock_officers.items():
+        officers[name] = Officer(**mock).save()
+
+    # Create Units in the database
+    units = {}
+    for key, mock in mock_units.items():
+        units[key] = Unit(**mock).save()
+
+    # Create Agencies in the database
+    agencies = {}
+    for key, mock in mock_agencies.items():
+        agencies[key] = Agency(**mock).save()
+
+    # Link officers to existing unit objects
+    officers["john"].units.connect(units["unit_alpha"], mock_unit_memberships["john"])
+    officers["hazel"].units.connect(units["unit_bravo"], mock_unit_memberships["hazel"])
+    officers["frank"].units.connect(units["unit_charlie"], mock_unit_memberships["frank"])
+
+    # # Link units to agencies (one direction is enough)
+    units["unit_alpha"].agency.connect(agencies["cpd"])
+    units["unit_bravo"].agency.connect(agencies["nypd"])
+
+    return officers
+
+
+
+def test_get_officers_with_unit(client, db_session, access_token, create_officers_units_agencies):  
+
+    results, meta = db.cypher_query("""
+        MATCH (o:Officer)
+        MATCH (o)-[:MEMBER_OF_UNIT]->(u:Unit)
+        where u.name = "Unit Alpha"
+        RETURN o
+    """)
+    officers_with_unit = [Officer.inflate(row[0]) for row in results]
+
+    res = client.get(
+        "/api/v1/officers/?unit=Unit Alpha",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    print(officers_with_unit[0])
+    print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officers_with_unit)
+    # import time
+    # time.sleep(10000)
+    # assert False
+
+
+
+def test_get_officers_with_unit_and_agency(client, 
+            db_session, access_token, create_officers_units_agencies):  
+
+    results, meta = db.cypher_query("""
+        MATCH (o:Officer)
+        MATCH (o)-[:MEMBER_OF_UNIT]->(u:Unit)
+        MATCH (u)-[:ESTABLISHED_BY]-(a:Agency)
+        where a.name = "Chicago Police Department"
+        RETURN o
+    """)
+    officers_with_unit = [Officer.inflate(row[0]) for row in results]
+
+    res = client.get(
+        "/api/v1/officers/?agency=Chicago Police Department",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    # print(officers_with_unit[0])
+    assert officers_with_unit is not None
+    assert res.json is not None
+    print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officers_with_unit)
+
+
+def test_get_officers_with_date(client, db_session, access_token, create_officers_units_agencies):
+    res = client.get(
+        "/api/v1/officers/?active_after=2018-01-01",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    # import time
+    # time.sleep(10000)
+    assert res.json != []
+    print(res.json)
+    print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    # assert False
+
+
+    res = client.get(
+        "/api/v1/officers/?active_before=2022-01-01",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    assert res.json != []
+    print(res.json)
+    print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+
+
+    res = client.get(
+        "/api/v1/officers/?active_before=2010-01-01",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    assert res.json == []
+
+
+    res = client.get(
+        "/api/v1/officers/?active_after=2035-01-01",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    print('-------------------------------------------------------')
+    assert res.json == []
+
+
+def test_get_officers_with_rank(client, db_session, access_token, create_officers_units_agencies):
+    res = client.get(
+        "/api/v1/officers/?rank=Officer",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert res.json != []
+    # print(res.json)
+    # print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+
+
+    res = client.get(
+        "/api/v1/officers/?rank=Officer&agency=Chicago Police Department",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert res.json != []
+    # print(res.json)
+    # print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+
+
+    res = client.get(
+        "/api/v1/officers/?rank=Lieutenant",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+    assert res.json != []
+    # print(res.json)
+    # print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
