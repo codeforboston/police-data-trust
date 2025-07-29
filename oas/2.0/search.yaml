@@ -21,7 +21,7 @@ tags:
     description: "Search API"
 paths:
   /search:
-    post: 
+    get: 
       tags: 
         - "Search"
       summary: "Search All"
@@ -30,16 +30,11 @@ paths:
         Search the index for items that match the query. The search results can be filtered
         by content type, location, data source, and date range.
       parameters: 
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/location'
+        - $ref: '#/components/parameters/source'
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
-      requestBody:
-        description: >
-          The search terms and the filters that should be applied to the search.
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SearchRequest"
       responses:
         "200":
           description: "Search results."
@@ -52,7 +47,7 @@ paths:
         '404':
           $ref: '../common/error.yaml#/components/responses/notFoundError' 
   /search/auto:
-    post:
+    get:
       tags: 
         - "Search"
       summary: "Autocomplete Search Term"
@@ -85,36 +80,29 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    query:
+      name: "query"
+      in: "query"
+      description: "The search terms."
+      required: true
+      schema:
+        type: "string"
+    location:
+      name: "location"
+      in: "query"
+      description: "Limits search results to a specific location."
+      required: false
+      schema:
+        type: "string"
+    source:
+      name: "source"
+      in: "query"
+      description: "The data source to search."
+      required: false
+      schema:
+        type: "string"
   schemas:
-    SearchRequest:
-      type: "object"
-      properties:
-        query:
-          type: "string"
-          description: "The search terms."
-        filters:
-          type: "object"
-          properties:
-            content_type:
-              type: "string"
-              description: "The type of content to search."
-              enum:
-                - "complaint"
-                - "officer"
-                - "agency"
-                - "unit"
-                - "litigation"
-            location:
-              $ref: "#/components/schemas/Location"
-            data_source:
-              type: "string"
-              description: "The data source to search."
-            date_earliest:
-              type: "string"
-              description: "Lower bound of the date range."
-            date_latest:
-              type: "string"
-              description: "Upper bound of the date range."
     SearchResultList:
       allOf: 
         - $ref: '../common/pagination.yaml#/components/schemas/PaginatedResponse'
