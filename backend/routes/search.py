@@ -1,5 +1,6 @@
 import logging
 from typing import Optional, List
+from datetime import date
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -17,6 +18,54 @@ from neomodel import db
 
 
 bp = Blueprint("search_routes", __name__, url_prefix="/api/v1/search")
+
+class Searchresult(BaseModel):
+    uid: str
+    title: str
+    subtitle: Optional[str] = None
+    details: Optional[List[str]] = None
+    content_type: str
+    source: str
+    last_updated: date
+    href: str
+
+
+def create_officer_result(node) -> Searchresult:
+    o = Officer.inflate(node)
+
+    uid = o.uid
+
+    # Subtitle Example: "Asian Man, Sergeant at Agency X"
+    u = o.current_unit
+    a = u.agency.single() if u else None
+    s = o.primary_source()
+    rel = u.officers.relationship(o) if u else None
+
+    sub_title = "{ethnicity} {gender}, {rank} at {unit}, {agency}".format(
+        ethnicity=o.ethnicity_enum.describe() if o.ethnicity_enum else "Unknown Ethnicity",
+        gender=o.gender_enum.describe() if o.gender_enum else "Unknown Gender",
+        rank=rel.highest_rank if rel else "Officer",
+        unit=u.name if u else "Unknown Unit",
+        agency=a.name if a else "Unknown Agency"
+    )
+
+    return Searchresult(
+        uid=uid,
+        title=o.full_name,
+        subtitle=sub_title,
+        content_type="Officer",
+        source=s.name if s else "Unknown Source",
+        last_updated=date.today(),
+        href=f"/api/v1/officers/{uid}"
+    )
+
+
+def create_search_result(node) -> Searchresult:
+    if "Officer" in node.labels:
+        return create_officer_result(node)
+    else:
+        return None
+
 
 
 # Get all officers
@@ -59,19 +108,9 @@ def text_search():
     results, meta = db.cypher_query(cypher, params)
     if not results:
         return jsonify({"message": "No results found matching the query"}), 204
-    nodes = []
-    for node, score in results:
-        if "Officer" in node.labels:
-            officer = Officer.inflate(node)
-            nodes.append(officer)
-        elif "Agency" in node.labels:
-            agency = Agency.inflate(node)
-            nodes.append(agency)
-        elif "Unit" in node.labels:
-            unit = Unit.inflate(node)
-            nodes.append(unit)
 
-    # Paginate results
-    paginated_results = paginate_results(nodes, q_page, q_per_page)
-
-    return ordered_jsonify(paginated_results), 200
+    res = []
+    for result in results[:10]:
+        item = create_search_result(result[0])
+        res.append(item.model_dump()) if item else None
+    return jsonify(res), 200
