@@ -3,31 +3,30 @@
 import { TextField, InputAdornment } from "@mui/material"
 import { Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import React from "react"
 
 export const SearchBar = () => {
-  const { searchIncidents } = useSearch()
-
+  const { searchAll } = useSearch()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [localInput, setLocalInput] = React.useState(searchParams.get("query") || "")
 
   const handleSearch = async (query: string) => {
-    try {
-      const results = await searchIncidents({ description: query })
-      console.log("Search results:", results)
-      // Navigate to the search results page with query parameters
-      router.push(`/search?query=${encodeURIComponent(query)}`)
-    } catch (error) {
-      console.error("Search error:", error)
-      // Handle error (e.g., show a notification)
-      router.push(`/search?query=${encodeURIComponent(query)}`)
-    }
+    console.log("Handling search for query:", query)
+    const results = await searchAll({ query })
   }
 
   return (
     <TextField
       variant="outlined"
+      value={localInput}
+      onChange={(e) => setLocalInput(e.target.value)}
       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") handleSearch((e.target as HTMLInputElement).value)
+        if (e.key === "Enter") {
+          handleSearch(localInput)
+        }
       }}
       sx={{
         maxWidth: "546px",
@@ -38,7 +37,7 @@ export const SearchBar = () => {
           textOverflow: "ellipsis"
         }
       }}
-      placeholder="search incident, officer, id, department or try anything"
+      placeholder="Search officer, unit, or agency"
       slotProps={{
         input: {
           startAdornment: (
