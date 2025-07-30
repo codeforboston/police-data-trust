@@ -1,6 +1,6 @@
 import logging
 from typing import Optional, List
-from datetime import date
+from datetime import datetime
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
@@ -26,7 +26,7 @@ class Searchresult(BaseModel):
     details: Optional[List[str]] = None
     content_type: str
     source: str
-    last_updated: date
+    last_updated: datetime
     href: str
 
 
@@ -38,13 +38,17 @@ def create_officer_result(node) -> Searchresult:
     # Subtitle Example: "Asian Man, Sergeant at Agency X"
     u = o.current_unit
     a = u.agency.single() if u else None
+    u_rel = u.officers.relationship(o) if u else None
+
     s = o.primary_source()
-    rel = u.officers.relationship(o) if u else None
+    s_rel = o.citations.relationship(s)
+
+
 
     sub_title = "{ethnicity} {gender}, {rank} at {unit}, {agency}".format(
         ethnicity=o.ethnicity_enum.describe() if o.ethnicity_enum else "Unknown Ethnicity",
         gender=o.gender_enum.describe() if o.gender_enum else "Unknown Gender",
-        rank=rel.highest_rank if rel else "Officer",
+        rank=u_rel.highest_rank if u_rel else "Officer",
         unit=u.name if u else "Unknown Unit",
         agency=a.name if a else "Unknown Agency"
     )
@@ -55,7 +59,7 @@ def create_officer_result(node) -> Searchresult:
         subtitle=sub_title,
         content_type="Officer",
         source=s.name if s else "Unknown Source",
-        last_updated=date.today(),
+        last_updated=s_rel.date,
         href=f"/api/v1/officers/{uid}"
     )
 
