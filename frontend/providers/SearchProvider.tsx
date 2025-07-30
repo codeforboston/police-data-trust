@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 interface SearchContext {
   searchAll: (query: Omit<SearchRequest, "access_token" | "accessToken">) => Promise<SearchResponse>
   searchResults?: SearchResponse
+  loading: boolean
 }
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
@@ -28,6 +29,7 @@ export const useSearch = () => {
 function useHook(): SearchContext {
   const { accessToken } = useAuth()
   const [searchResults, setResults] = useState<SearchResponse | undefined>(undefined)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -47,6 +49,7 @@ function useHook(): SearchContext {
 
   const searchAll = useCallback(
     async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+      setLoading(true)
       const params = updateQueryParams(query)
       if (!accessToken) throw new Error("No access token")
 
@@ -79,10 +82,12 @@ function useHook(): SearchContext {
         }
         console.error("Error searching all:", errorResponse)
         return errorResponse
+      } finally {
+        setLoading(false)
       }
     },
     [accessToken, router]
   )
 
-  return useMemo(() => ({ searchAll, searchResults }), [searchResults, searchAll])
+  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, loading])
 }
