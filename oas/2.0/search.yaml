@@ -55,6 +55,7 @@ paths:
       description: >
         Returns a list of suggestions based on the search term.
       parameters: 
+        - $ref: '#/components/parameters/query'
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
       requestBody:
@@ -64,7 +65,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SearchRequest"
+              $ref: "#/components/schemas/SearchTerms"
       responses:
         "200":
           description: "A list of suggested search terms."
@@ -125,8 +126,10 @@ components:
           type: "string"
           description: The subtitle of the search result.
         details:
-          type: "string"
           description: The details of the search result.
+          type: array
+          items:
+            type: "string"
         content_type:
           type: "string"
           description: The type of content.

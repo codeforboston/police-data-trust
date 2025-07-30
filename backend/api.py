@@ -230,6 +230,18 @@ def index_db():
     db.cypher_query(
         "CREATE FULLTEXT INDEX sourceNames IF NOT EXISTS "
         "FOR (s:Source) ON EACH [s.name]")
+    db.cypher_query(
+        "CREATE INDEX officer_unit_earliest_date IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.earliest_date)"
+    )
+    db.cypher_query(
+        "CREATE INDEX officer_unit_latest_date IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.latest_date)"
+    )
+    db.cypher_query(
+        "CREATE INDEX citation_date IF NOT EXISTS "
+        "FOR ()-[r:UPDATED_BY]-() ON (r.date)"
+    )
 
 
 if __name__ == "__main__":
