@@ -7,6 +7,7 @@ from neomodel import (
     StructuredRel,
     StringProperty,
     RelationshipTo,
+    RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
     One
@@ -51,9 +52,9 @@ class Unit(StructuredNode, JsonSerializable):
     commander = RelationshipTo(
         "backend.database.models.officer.Officer",
         "COMMANDED_BY", model=UnitMembership)
-    officers = RelationshipTo(
+    officers = RelationshipFrom(
         "backend.database.models.officer.Officer",
-        "MEMBER_OF", model=UnitMembership)
+        "MEMBER_OF_UNIT", model=UnitMembership)
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
