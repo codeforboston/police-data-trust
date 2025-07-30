@@ -24,8 +24,7 @@ const SearchResults = ({ results }: SearchResultsProps) => {
           slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
           sx={{
             "& .MuiTab-root": { color: "black" }
-          }}
-        >
+          }}>
           <Tab label="All" />
           <Tab label="Officer" />
           <Tab label="Complaint" />
@@ -41,17 +40,15 @@ const SearchResults = ({ results }: SearchResultsProps) => {
         <CustomTabPanel value={tab} index={0}>
           {results.map((result) => (
             <CardHeader
-              key={result.id}
+              key={result.uid}
               title={result.title}
               subheader={result.subtitle}
               slotProps={{ subheader: { fontWeight: "bold", color: "#000" } }}
               action={
                 <Box sx={{ display: "flex", gap: "1rem" }}>
-                  {result.tags.map((tag, index) => (
-                    <span key={index} style={{ fontSize: "12px", color: "#666" }}>
-                      {tag}
-                    </span>
-                  ))}
+                  <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
+                  <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
+                  <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
                 </Box>
               }
               sx={{
@@ -96,8 +93,7 @@ const CustomTabPanel = ({ children, value, index, ...other }: TabPanelProps) => 
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+      {...other}>
       {value === index && <Box>{children}</Box>}
     </div>
   )

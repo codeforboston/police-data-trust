@@ -4,6 +4,7 @@ import styles from "./page.module.css"
 import SearchResults from "./SearchResults"
 import Pagintation from "./Pagination"
 import Filter from "./Filter"
+import { useSearch } from "@/providers/SearchProvider"
 
 export type SearchResult = {
   id: string | number
@@ -35,13 +36,14 @@ const RESULTS: SearchResult[] = [
 ]
 
 const PageResults = ({}) => {
+  const { searchResults } = useSearch()
   return (
     <div className={styles.wrapper}>
       <section className={styles.searchWrapper}>
         <Filter />
         <div className={styles.searchResultsWrapper}>
           <SearchBar />
-          <SearchResults results={RESULTS} />
+          <SearchResults results={Array.isArray(searchResults) ? searchResults : []} />
           <Pagintation page={0} count={7} onChangeHandler={() => {}} />
         </div>
       </section>
