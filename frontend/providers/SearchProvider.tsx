@@ -42,7 +42,7 @@ function useHook(): SearchContext {
     })
     const destination = params.toString()
     router.push(`/search?${destination}`)
-    return { ...params }
+    return params
   }
 
   const searchAll = useCallback(
@@ -52,15 +52,12 @@ function useHook(): SearchContext {
 
       try {
         const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}`
-        const results = await fetch(apiUrl, {
-          method: "POST",
+        const results = await fetch(`${apiUrl}?${params.toString()}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            ...params
-          })
+          }
         })
 
         // TODO:
