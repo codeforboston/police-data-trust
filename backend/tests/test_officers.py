@@ -3,7 +3,7 @@ import pytest
 import math
 from datetime import date, datetime
 from backend.database import (
-    Officer, Unit, Agency, UnitMembership
+    Officer, Unit, Agency
 )
 from neomodel import db
 
@@ -47,7 +47,6 @@ mock_agencies = {
         "jurisdiction": "MUNICIPAL"
     }
 }
-
 
 mock_units = {
     "unit_alpha": {
@@ -96,21 +95,18 @@ mock_units = {
 
 mock_unit_memberships = {
     "john": {
-        # "agency": "Chicago Police Department",
         "earliest_date": datetime.strptime("2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "latest_date": datetime.strptime("2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
         "highest_rank": 'Officer'
     },
     "hazel": {
-        # "agency": "Chicago Police Department",
         "earliest_date": datetime.strptime("2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "latest_date": datetime.strptime("2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "5678",
         "highest_rank": 'Sergeant',
     },
     "frank": {
-        # "agency": "New York Police Department",
         "earliest_date": datetime.strptime("2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "latest_date": datetime.strptime("2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
@@ -136,7 +132,7 @@ def example_officers():
 def test_create_officer(
         client,
         contributor_access_token,
-        # example_agency
+        example_agency
         ):
 
     # Test that we can create an officer without an agency association
@@ -448,9 +444,6 @@ def test_delete_officer_no_user_role(
 
 @pytest.fixture
 def create_officers_units_agencies():
-    # db.cypher_query("""MATCH (n) WHERE NOT n:TestMarker
-    #                 DETACH DELETE n""")
-    
     # Create Officers in the database
     officers = {}
     for name, mock in mock_officers.items():
@@ -493,7 +486,6 @@ def test_get_officers_with_unit(client, db_session, access_token, create_officer
         "/api/v1/officers/?unit=Unit Alpha",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
     print(officers_with_unit[0])
     print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
@@ -501,14 +493,10 @@ def test_get_officers_with_unit(client, db_session, access_token, create_officer
     assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
     assert res.json["total"] == len(officers_with_unit)
-    # import time
-    # time.sleep(10000)
-    # assert False
-
 
 
 def test_get_officers_with_unit_and_agency(client, 
-            db_session, access_token, create_officers_units_agencies):  
+            db_session, access_token, create_officers_units_agencies):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
@@ -523,8 +511,6 @@ def test_get_officers_with_unit_and_agency(client,
         "/api/v1/officers/?agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
-    # print(officers_with_unit[0])
     assert officers_with_unit is not None
     assert res.json is not None
     print(f"len results is {len(res.json['results'])}")
@@ -540,9 +526,6 @@ def test_get_officers_with_date(client, db_session, access_token, create_officer
         "/api/v1/officers/?active_after=2018-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
-    # import time
-    # time.sleep(10000)
     assert res.json != []
     print(res.json)
     print(f"len results is {len(res.json['results'])}")
@@ -550,14 +533,11 @@ def test_get_officers_with_date(client, db_session, access_token, create_officer
     assert res.json["results"][0]["first_name"] is not None
     assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
-    # assert False
-
 
     res = client.get(
         "/api/v1/officers/?active_before=2022-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
     assert res.json != []
     print(res.json)
     print(f"len results is {len(res.json['results'])}")
@@ -566,20 +546,16 @@ def test_get_officers_with_date(client, db_session, access_token, create_officer
     assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
 
-
     res = client.get(
         "/api/v1/officers/?active_before=2010-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
     assert res.json == []
-
 
     res = client.get(
         "/api/v1/officers/?active_after=2035-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print('-------------------------------------------------------')
     assert res.json == []
 
 
@@ -589,32 +565,36 @@ def test_get_officers_with_rank(client, db_session, access_token, create_officer
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
-    # print(res.json)
-    # print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
     assert res.json["results"][0]["first_name"] is not None
     assert res.json["results"][0]["last_name"] is not None
-
 
     res = client.get(
         "/api/v1/officers/?rank=Officer&agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
-    # print(res.json)
-    # print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
     assert res.json["results"][0]["first_name"] is not None
     assert res.json["results"][0]["last_name"] is not None
-
 
     res = client.get(
         "/api/v1/officers/?rank=Lieutenant",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
-    # print(res.json)
-    # print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
     assert res.json["results"][0]["first_name"] is not None
     assert res.json["results"][0]["last_name"] is not None
+
+
+def test_filter_by_ethnicity(client, db_session, access_token, create_officers_units_agencies):
+    res = client.get(
+        "/api/v1/officers/?ethnicity=White",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    assert res.status_code == 200
+    assert res.json != []
+    for officer in res.json["results"]:
+        assert officer["ethnicity"] == "White"

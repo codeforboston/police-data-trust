@@ -166,7 +166,6 @@ def get_officer(officer_uid: int):
         abort(404, description="Officer not found")
     return o.to_json()
 
-############################################################
 # Get all officers
 @bp.route("/", methods=["GET"])
 @jwt_required()
@@ -181,26 +180,6 @@ def get_all_officers():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    # filters = {
-    #     # 'gender': args.get("gender", None, type=str),
-    #     'rank': args.get("rank", None, type=str),
-    #     'ethnicity': args.get("ethnicity", None, type=str),
-    #     'name': args.get("name", None, type=str),
-    #     'badge_number': args.get("badge_number", None, type=str),
-    #     'unit': args.get("unit", None, type=str),
-    #     'agency': args.get("agency", None, type=str),
-    #     'active_before': args.get("active_before", None, type=str),
-    #     'active_after': args.get("active_after", None, type=str),
-    # }
-
-    # filters = {k: v for k, v in filters.items() if v is not None}
-    # logging.warning(f'filters are {filters}')
-
-    # all_officers = Officer.nodes.all()
-    # results = Officer.nodes.filter(**filters)
-
-    # all_officers = list(results)
-
     officer_name = args.get("name")
     officer_rank = args.get("rank")
     unit = args.get("unit")
@@ -209,9 +188,6 @@ def get_all_officers():
     active_before = args.get("active_before")
     badge_number = args.get("badge_number")
     ethnicity = args.get("ethnicity")
-    # if ethnicity:
-    #     ethnicities = [e.strip() for e in ethnicity_param.split(",") if e.strip()]
-
 
     cypher_query = ""
     if officer_name:
@@ -247,8 +223,6 @@ def get_all_officers():
         "agency":         "AND a.name = $agency",
         "badge_number":   "AND m.badge_number = $badge_number",
         "ethnicity":      "AND o.ethnicity = $ethnicity",
-    #    "name":           "AND toLower(o.first_name) = toLower($name)",
-    #    "rank":           "AND m.highest_rank = $rank",
         "unit":           "AND u.name = $unit",
     }
 
@@ -257,8 +231,6 @@ def get_all_officers():
             cypher_query += "\n" + and_clauses[key]
 
     cypher_query += "\nRETURN o"
-    # cypher_query="""MATCH (o:Officer)
-    #                 RETURN o"""
     logging.warning(f'cypher query is {cypher_query}')
 
     results, meta = db.cypher_query(cypher_query, args)
