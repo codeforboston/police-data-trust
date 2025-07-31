@@ -119,9 +119,9 @@ class Officer(StructuredNode, JsonSerializable):
             Source: The primary source of the officer.
         """
         cy = """
-        MATCH (o:Officer {uid: $uid})-[:UPDATED_BY]->(s:Source)
+        MATCH (o:Officer {uid: $uid})-[r:UPDATED_BY]->(s:Source)
         RETURN s
-        ORDER BY s.created_at DESC
+        ORDER BY r.date DESC
         LIMIT 1;
         """
         
