@@ -3,19 +3,18 @@
 import { TextField, InputAdornment } from "@mui/material"
 import { Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import React from "react"
 
 export const SearchBar = () => {
   const { searchAll } = useSearch()
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const [localInput, setLocalInput] = React.useState(searchParams.get("query") || "")
 
   const handleSearch = async (query: string) => {
     console.log("Handling search for query:", query)
-    const results = await searchAll({ query })
+    await searchAll({ query })
   }
 
   return (
