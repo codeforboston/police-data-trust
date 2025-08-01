@@ -7,11 +7,14 @@ import Filter from "./Filter"
 import { useSearch } from "@/providers/SearchProvider"
 
 export type SearchResult = {
-  id: string | number
+  uid: string | number
   title: string
   subtitle: string
+  content_type: string
+  source: string
+  last_updated: string
   description?: string
-  tags: string[]
+  tags?: string[]
 }
 
 const PageResults = ({}) => {
