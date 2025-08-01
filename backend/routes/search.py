@@ -1,16 +1,11 @@
-import logging
 from typing import Optional, List
 from datetime import datetime
 
 from backend.auth.jwt import min_role_required
-from backend.mixpanel.mix import track_to_mp
-from backend.schemas import validate_request, ordered_jsonify, paginate_results
-from backend.database.models.user import UserRole, User
+from backend.database.models.user import UserRole
 from backend.database.models.officer import Officer
 from backend.database.models.agency import Agency, Unit
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request
-from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from flask import jsonify
 from pydantic import BaseModel
@@ -18,6 +13,7 @@ from neomodel import db
 
 
 bp = Blueprint("search_routes", __name__, url_prefix="/api/v1/search")
+
 
 class Searchresult(BaseModel):
     uid: str
@@ -44,10 +40,22 @@ def create_officer_result(node) -> Searchresult:
     s_rel = o.citations.relationship(s) if s else None
 
     sub_title = "{ethnicity} {gender}, {rank} at the {agency}".format(
-        ethnicity=o.ethnicity_enum.describe() if o.ethnicity_enum else "Unknown Ethnicity",
-        gender=o.gender_enum.describe() if o.gender_enum else "Unknown Gender",
-        rank=u_rel.highest_rank if u_rel else "Officer",
-        agency=a.name if a else "Unknown Agency"
+        ethnicity=(
+            o.ethnicity_enum.describe()
+            if o.ethnicity_enum else "Unknown Ethnicity"
+        ),
+        gender=(
+            o.gender_enum.describe()
+            if o.gender_enum else "Unknown Gender"
+        ),
+        rank=(
+            u_rel.highest_rank
+            if u_rel else "Officer"
+        ),
+        agency=(
+            a.name
+            if a else "Unknown Agency"
+        )
     )
 
     return Searchresult(
@@ -109,7 +117,8 @@ def create_unit_result(node) -> Searchresult:
                 len(u.officers) if u.officers else 0
             ),
             "Commander: {}".format(
-                u.current_commander.full_name if u.current_commander else "Unknown"
+                u.current_commander.full_name
+                if u.current_commander else "Unknown"
             )
         ],
         content_type="Unit",
@@ -117,6 +126,7 @@ def create_unit_result(node) -> Searchresult:
         last_updated=s_rel.date if s_rel else datetime.now(),
         href=f"/api/v1/units/{uid}"
     )
+
 
 def create_search_result(node) -> Searchresult:
     if "Officer" in node.labels:
@@ -128,22 +138,17 @@ def create_search_result(node) -> Searchresult:
     return None
 
 
-
-# Get all officers
+# Text Search Endpoint
 @bp.route("/", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def text_search():
-    """Text Search 
+    """Text Search
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
     """
     args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
-    location = args.get("location", None, type=str)
-    source = args.get("source", None, type=str)
     query = args.get("query", None, type=str)
     params = {"query": query}
 
@@ -153,13 +158,16 @@ def text_search():
     # Query Everything
     cypher = """
     CALL {
-        CALL db.index.fulltext.queryNodes('officerNames', $query) YIELD node, score
+        CALL db.index.fulltext.queryNodes('officerNames', $query)
+            YIELD node, score
             RETURN node, score
         UNION ALL
-        CALL db.index.fulltext.queryNodes('agencyNames', $query) YIELD node, score
+        CALL db.index.fulltext.queryNodes('agencyNames', $query)
+            YIELD node, score
             RETURN node, score
         UNION ALL
-        CALL db.index.fulltext.queryNodes('unitNames', $query) YIELD node, score
+        CALL db.index.fulltext.queryNodes('unitNames', $query)
+            YIELD node, score
             RETURN node, score
     }
     RETURN node, score

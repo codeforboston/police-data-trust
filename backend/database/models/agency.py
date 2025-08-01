@@ -75,7 +75,7 @@ class Unit(StructuredNode, JsonSerializable):
 
     def __repr__(self):
         return f"<Unit {self.name}>"
-    
+
     @property
     def primary_source(self):
         """
@@ -95,7 +95,7 @@ class Unit(StructuredNode, JsonSerializable):
             source_node = result[0][0]
             return Source.inflate(source_node)
         return None
-    
+
     @property
     def current_commander(self):
         """
@@ -111,7 +111,8 @@ class Unit(StructuredNode, JsonSerializable):
         RETURN o AS officer
         LIMIT 1;
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        result, meta = db.cypher_query(
+            cy, {'uid': self.uid}, resolve_objects=True)
         if result:
             officer_node = result[0][0]
             return officer_node
@@ -144,7 +145,7 @@ class Agency(StructuredNode, JsonSerializable):
         "backend.database.models.infra.locations.CountyNode", "WITHIN_COUNTY")
     city_node = RelationshipTo(
         "backend.database.models.infra.locations.CityNode", "WITHIN_CITY")
-    
+
     @property
     def jurisdiction_enum(self) -> Jurisdiction:
         """
@@ -175,7 +176,7 @@ class Agency(StructuredNode, JsonSerializable):
             source_node = result[0][0]
             return Source.inflate(source_node)
         return None
-    
+
     def total_officers(self):
         """
         Get the total number of officers in this agency.
@@ -183,11 +184,11 @@ class Agency(StructuredNode, JsonSerializable):
             int: The total number of officers.
         """
         cy = """
-        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED]->(u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
+        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED]->
+        (u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
         RETURN COUNT(o) AS total_officers
         """
         result, meta = db.cypher_query(cy, {'uid': self.uid})
         if result:
             return result[0][0]
         return 0
-    

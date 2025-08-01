@@ -13,6 +13,7 @@ from neomodel import (
 # TODO: Add an inheritable class for data nodes that provides common properties
 # like: last_updated, primary_source, etc.
 
+
 class MemberRole(str, PropertyEnum):
     ADMIN = "Administrator"
     PUBLISHER = "Publisher"

@@ -11,6 +11,7 @@ from backend.database import (
     Agency,
     Unit,
     Officer,
+    StateID,
     Complaint,
     RecordType,
     Investigation,
@@ -26,6 +27,21 @@ member_email = "member@email.com"
 contributor_email = "contributor@email.com"
 s_admin_email = "admin@source.com"
 example_password = "my_password"
+
+
+@pytest.fixture(scope="session")
+def cli_runner(app):
+    return app.test_cli_runner()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def migrate_neo4j_schema(app, cli_runner):
+    """
+    Run our 'neo4j-migrate' CLI once at the start of the test session
+    so that all indexes & constraints exist in the test database.
+    """
+    result = cli_runner.invoke(args=["neo4j-migrate"])
+    assert result.exit_code == 0, f"Migration failed:\n{result.output}"
 
 
 @pytest.fixture(scope="session")
@@ -133,7 +149,7 @@ def example_source():
 
 
 @pytest.fixture
-def example_agency():
+def example_agency(example_source):
     agency = Agency(
         name="Example Agency",
         website_url="www.example.com",
@@ -142,41 +158,56 @@ def example_agency():
         hq_zip="10001",
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
-    add_test_property(agency)
+    agency.citations.connect(example_source, {
+        'date': datetime.now(),
+    })
     yield agency
 
 
 @pytest.fixture
-def example_unit(example_agency, example_officer):
+def example_unit(example_agency, example_officer, example_source):
     agency = example_agency
     officer = example_officer
+    source = example_source
 
     unit = Unit(
         name="Precinct 1"
     ).save()
-    add_test_property(unit)
 
     # Create relationships
     agency.units.connect(unit)
-    add_test_property_to_rel(agency, 'ESTABLISHED', unit)
-
+    unit.agency.connect(agency)
+    unit.citations.connect(source, {
+        'date': datetime.now(),
+    })
     unit.officers.connect(
         officer,
         {
             'badge_number': '61025'
         }
     )
-    add_test_property_to_rel(unit, 'MEMBER_OF', officer)
     yield unit
 
 
 @pytest.fixture
-def example_officer():
+def example_officer(example_source):
     officer = Officer(
         first_name="John",
         last_name="Doe",
     ).save()
-    add_test_property(officer)
+    officer.state_ids.connect(
+        StateID(
+            id_name="Tax ID Number",
+            state="NY",
+            value="958938"
+        )
+    )
+    officer.citations.connect(
+        example_source,
+        {
+            'date': datetime.now(),
+        }
+    )
     yield officer
 
 
@@ -393,8 +424,3 @@ def contributor_access_token(client, example_contributor):
     )
     assert res.status_code == 200
     return res.json["access_token"]
-
-
-@pytest.fixture
-def cli_runner(app):
-    return app.test_cli_runner()
