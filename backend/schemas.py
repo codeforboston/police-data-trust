@@ -209,6 +209,33 @@ def paginate_results(
     }
 
 
+def add_pagination_wrapper(
+        list_data: list, total: int,
+        page: int = 1, per_page: int = 20):
+    """
+    Add pagination to a list of data and return a response dict.
+
+    Args:
+        list_data (list): The list of data to paginate.
+        page (int): The page number to return.
+        per_page (int): The number of items per page.
+        max_per_page (int): The maximum number of items per page.
+
+    Returns:
+        dict: The paginated data.
+    """
+    expected_total_pages = math.ceil(total / per_page)
+    if not page <= expected_total_pages:
+        abort(404)
+    return {
+        "results": list_data,
+        "page": page,
+        "per_page": per_page,
+        "total": total,
+        "pages": expected_total_pages
+    }
+
+
 # Update Enums to work well with NeoModel
 class PropertyEnum(Enum):
     """Use this Enum to convert the options to a dictionary."""
