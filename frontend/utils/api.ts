@@ -34,17 +34,14 @@ interface AuthenticatedRequest {
   accessToken: AccessToken
 }
 
-export interface IncidentSearchRequest extends AuthenticatedRequest {
-  description?: string
-  dateStart?: string
-  dateEnd?: string
+export interface SearchRequest extends AuthenticatedRequest {
+  query: string
   location?: string
   source?: string
-  page?: number
-  perPage?: number
 }
 
-export type IncidentSearchResponse = {
+export type SearchResponse = {
+  error?: string | null
   results: Incident[]
   page: number
   totalPages: number

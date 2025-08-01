@@ -1,14 +1,14 @@
 "use client"
 import { createContext, useCallback, useContext, useMemo, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
-import { IncidentSearchRequest, IncidentSearchResponse } from "@/utils/api"
-import API_ROUTES from "@/utils/apiRoutes"
+import { SearchRequest, SearchResponse } from "@/utils/api"
+import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface SearchContext {
-  searchIncidents: (
-    query: Omit<IncidentSearchRequest, "access_token" | "accessToken">
-  ) => Promise<IncidentSearchResponse>
-  incidentResults?: IncidentSearchResponse
+  searchAll: (query: Omit<SearchRequest, "access_token" | "accessToken">) => Promise<SearchResponse>
+  searchResults?: SearchResponse
+  loading: boolean
 }
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
@@ -28,48 +28,66 @@ export const useSearch = () => {
 
 function useHook(): SearchContext {
   const { accessToken } = useAuth()
-  const [incidentResults, setResults] = useState<IncidentSearchResponse | undefined>(undefined)
+  const [searchResults, setResults] = useState<SearchResponse | undefined>(undefined)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const searchIncidents = useCallback(
-    async (query: Omit<IncidentSearchRequest, "access_token" | "accessToken">) => {
-      const { dateStart, dateEnd, ...rest } = query
+  const updateQueryParams = (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+    console.log("Updating query params with:", query)
+    const params = new URLSearchParams(searchParams.toString())
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined) {
+        console.log({ [key]: value })
+        params.set(key, String(value))
+      }
+    })
+    const destination = params.toString()
+    router.push(`/search?${destination}`)
+    return params
+  }
+
+  const searchAll = useCallback(
+    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+      setLoading(true)
+      const params = updateQueryParams(query)
       if (!accessToken) throw new Error("No access token")
 
-      const formattedDateStart = dateStart
-        ? new Date(dateStart).toISOString().slice(0, -1)
-        : undefined
-      const formattedDateEnd = dateEnd ? new Date(dateEnd).toISOString().slice(0, -1) : undefined
-
       try {
-        const results = await fetch(API_ROUTES.search.incidents, {
-          method: "POST",
+        const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}`
+        const results = await fetch(`${apiUrl}?${params.toString()}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            dateStart: formattedDateStart,
-            dateEnd: formattedDateEnd,
-            ...rest
-          })
+          }
         })
 
         // TODO:
         // status check for not found, unauthorized, etc.
         if (!results.ok) {
-          throw new Error("Failed to fetch incidents")
+          throw new Error("Failed to search content")
         }
 
-        const data: IncidentSearchResponse = await results.json()
+        const data: SearchResponse = await results.json()
         setResults(data)
         return data
       } catch (error) {
-        console.error("Error fetching incidents:", error)
-        throw error
+        const errorResponse: SearchResponse = {
+          error: typeof error === "string" || error === null ? error : String(error),
+          results: [],
+          page: 0,
+          totalPages: 0,
+          totalResults: 0
+        }
+        console.error("Error searching all:", errorResponse)
+        return errorResponse
+      } finally {
+        setLoading(false)
       }
     },
-    [accessToken]
+    [accessToken, router]
   )
 
-  return useMemo(() => ({ searchIncidents, incidentResults }), [incidentResults, searchIncidents])
+  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, loading])
 }

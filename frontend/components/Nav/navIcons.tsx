@@ -6,17 +6,21 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"
 import Link from "next/link"
 import styles from "./navIcons.module.css"
+import { useAuth } from "@/providers/AuthProvider"
 
 export default function NavIcons() {
+  const { isLoggedIn } = useAuth()
   return (
     <div className={styles.icons}>
-      <Link href="/register" className={styles.createIcon}>
-        <AddCircleOutlineIcon />
-      </Link>
+      {!isLoggedIn && (
+        <Link href="/register" className={styles.createIcon}>
+          <AddCircleOutlineIcon />
+        </Link>
+      )}
       <Link href="/chat" className={styles.iconLink}>
         <ChatBubbleOutlineOutlinedIcon />
       </Link>
-      <Link href="/nofity" className={styles.iconLink}>
+      <Link href="/notify" className={styles.iconLink}>
         <NotificationsOutlinedIcon />
       </Link>
       <Link href="/profile" className={styles.iconLink}>
