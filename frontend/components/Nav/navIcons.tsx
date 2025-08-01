@@ -20,7 +20,7 @@ export default function NavIcons() {
       <Link href="/chat" className={styles.iconLink}>
         <ChatBubbleOutlineOutlinedIcon />
       </Link>
-      <Link href="/nofity" className={styles.iconLink}>
+      <Link href="/notify" className={styles.iconLink}>
         <NotificationsOutlinedIcon />
       </Link>
       <Link href="/profile" className={styles.iconLink}>
