@@ -60,7 +60,7 @@ class Officer(StructuredNode, JsonSerializable):
 
     def __repr__(self):
         return f"<Officer {self.uid}>"
-    
+
     @property
     def full_name(self):
         """Returns the full name of the officer."""
@@ -71,7 +71,7 @@ class Officer(StructuredNode, JsonSerializable):
         if self.suffix:
             parts.append(self.suffix)
         return " ".join(parts).strip()
-    
+
     @property
     def ethnicity_enum(self) -> Ethnicity:
         """
@@ -89,7 +89,7 @@ class Officer(StructuredNode, JsonSerializable):
             Gender: The user's gender as an enum.
         """
         return Gender(self.gender) if self.gender else None
-    
+
     @property
     def current_unit(self):
         """
@@ -111,7 +111,7 @@ class Officer(StructuredNode, JsonSerializable):
             unit_node = result[0][0]
             return Unit.inflate(unit_node)
         return None
-    
+
     def primary_source(self):
         """
         Get the primary source of the officer.
@@ -119,12 +119,12 @@ class Officer(StructuredNode, JsonSerializable):
             Source: The primary source of the officer.
         """
         cy = """
-        MATCH (o:Officer {uid: $uid})-[:UPDATED_BY]->(s:Source)
+        MATCH (o:Officer {uid: $uid})-[r:UPDATED_BY]->(s:Source)
         RETURN s
-        ORDER BY s.created_at DESC
+        ORDER BY r.date DESC
         LIMIT 1;
         """
-        
+
         result, meta = db.cypher_query(cy, {'uid': self.uid})
         if result:
             source_node = result[0][0]
