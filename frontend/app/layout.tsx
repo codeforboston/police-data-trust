@@ -19,7 +19,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Suspense fallback="Loading...">
+      <Suspense
+        fallback={
+          <body>
+            <div>Loading...</div>
+          </body>
+        }
+      >
         <AuthProvider>
           <SearchProvider>
             <body className={`${inter.variable} ${roboto}`}>
