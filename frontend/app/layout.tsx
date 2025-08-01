@@ -5,6 +5,7 @@ import { inter, roboto } from "@/app/font"
 import MobileNav from "../components/mobile_nav/mobileNav"
 import { AuthProvider } from "@/providers/AuthProvider"
 import { SearchProvider } from "@/providers/SearchProvider"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "NPDC (National Police Data Coalition)",
@@ -18,15 +19,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <SearchProvider>
-          <body className={`${inter.variable} ${roboto}`}>
-            <Nav />
-            <main>{children}</main>
-            <MobileNav />
-          </body>
-        </SearchProvider>
-      </AuthProvider>
+      <Suspense fallback="Loading...">
+        <AuthProvider>
+          <SearchProvider>
+            <body className={`${inter.variable} ${roboto}`}>
+              <Nav />
+              <main>{children}</main>
+              <MobileNav />
+            </body>
+          </SearchProvider>
+        </AuthProvider>
+      </Suspense>
     </html>
   )
 }
