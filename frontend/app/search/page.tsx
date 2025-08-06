@@ -17,6 +17,14 @@ export type SearchResult = {
   tags?: string[]
 }
 
+export type PaginatedSearchResults = {
+  page: number
+  pages: number
+  per_page: number
+  total: number
+  results: SearchResult[]
+}
+
 const PageResults = ({}) => {
   const { searchResults } = useSearch()
   return (
@@ -25,8 +33,15 @@ const PageResults = ({}) => {
         <Filter />
         <div className={styles.searchResultsWrapper}>
           <SearchBar />
-          <SearchResults results={Array.isArray(searchResults) ? searchResults : []} />
-          <Pagintation page={0} count={7} onChangeHandler={() => {}} />
+          <SearchResults
+            total={searchResults.total}
+            results={Array.isArray(searchResults?.results) ? searchResults.results : []}
+          />
+          <Pagintation
+            page={searchResults.page}
+            count={searchResults.pages}
+            onChangeHandler={() => {}}
+          />
         </div>
       </section>
     </div>
