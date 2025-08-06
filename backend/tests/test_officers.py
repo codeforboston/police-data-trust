@@ -460,9 +460,10 @@ def create_officers_units_agencies():
         agencies[key] = Agency(**mock).save()
 
     # Link officers to existing unit objects
-    officers["john"].units.connect(units["unit_alpha"], mock_unit_memberships["john"])
-    officers["hazel"].units.connect(units["unit_bravo"], mock_unit_memberships["hazel"])
-    officers["frank"].units.connect(units["unit_charlie"], mock_unit_memberships["frank"])
+    units["unit_alpha"].officers.connect(officers["john"], mock_unit_memberships["john"])
+    units["unit_bravo"].officers.connect(officers["hazel"], mock_unit_memberships["hazel"])
+    units["unit_charlie"].officers.connect(officers["frank"], mock_unit_memberships["frank"])
+
 
     # # Link units to agencies (one direction is enough)
     units["unit_alpha"].agency.connect(agencies["cpd"])
