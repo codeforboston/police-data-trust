@@ -5,6 +5,7 @@ from backend.auth.jwt import min_role_required
 from backend.database.models.user import UserRole
 from backend.database.models.officer import Officer
 from backend.database.models.agency import Agency, Unit
+from backend.schemas import add_pagination_wrapper
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from flask import jsonify
@@ -149,15 +150,44 @@ def text_search():
     page: page number
     """
     args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
     query = args.get("query", None, type=str)
-    params = {"query": query}
+    params = {
+        "query": query,
+        "page": q_page,
+        "per_page": q_per_page
+    }
 
     if not query:
         abort(400, description="Query parameter is required")
 
+    # Count Matches
+    cypher_count = """
+    CALL () {
+        CALL db.index.fulltext.queryNodes('officerNames',$query)  YIELD node
+        RETURN count(*) AS cnt
+        UNION ALL
+        CALL db.index.fulltext.queryNodes('agencyNames',$query)   YIELD node
+        RETURN count(*) AS cnt
+        UNION ALL
+        CALL db.index.fulltext.queryNodes('unitNames',$query)     YIELD node
+        RETURN count(*) AS cnt
+    }
+    RETURN sum(cnt) AS totalMatches
+    """
+    count_results, _ = db.cypher_query(cypher_count, params)
+    total_results = count_results[0][0] if count_results else 0
+
+    if total_results == 0:
+        return jsonify({"message": "No results found matching the query"}), 200
+
+    if total_results < (q_page - 1) * q_per_page:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+
     # Query Everything
     cypher = """
-    CALL {
+    CALL () {
         CALL db.index.fulltext.queryNodes('officerNames', $query)
             YIELD node, score
             RETURN node, score
@@ -172,14 +202,21 @@ def text_search():
     }
     RETURN node, score
     ORDER BY score DESC
+    SKIP $per_page * ($page - 1)
+    LIMIT $per_page
     """
 
     results, meta = db.cypher_query(cypher, params)
     if not results:
-        return jsonify({"message": "No results found matching the query"}), 204
+        return jsonify({"message": "No results found matching the query"}), 200
 
-    res = []
-    for result in results[:10]:
+    page = []
+    for result in results:
         item = create_search_result(result[0])
-        res.append(item.model_dump()) if item else None
-    return jsonify(res), 200
+        page.append(item.model_dump()) if item else None
+
+    response = add_pagination_wrapper(
+        page_data=page, total=total_results,
+        page_number=q_page, per_page=q_per_page)
+
+    return jsonify(response), 200

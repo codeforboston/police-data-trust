@@ -5,10 +5,11 @@ import { SearchResult } from "./page"
 import { useSearch } from "@/providers/SearchProvider"
 
 type SearchResultsProps = {
+  total: number
   results: SearchResult[]
 }
 
-const SearchResults = ({ results }: SearchResultsProps) => {
+const SearchResults = ({ total, results }: SearchResultsProps) => {
   const [tab, setTab] = useState(0)
   const { loading } = useSearch()
 
@@ -42,9 +43,7 @@ const SearchResults = ({ results }: SearchResultsProps) => {
         </Box>
       ) : (
         <Box sx={{ p: 3 }}>
-          <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>
-            {results.length} results
-          </Typography>
+          <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>{total} results</Typography>
           <CustomTabPanel value={tab} index={0}>
             {results.map((result) => (
               <CardHeader
