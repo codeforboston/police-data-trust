@@ -45,7 +45,7 @@ class Officer(StructuredNode, JsonSerializable):
 
     # Relationships
     state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = Relationship(
+    units = RelationshipTo(
         'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
     litigation = Relationship(
         'backend.database.models.litigation.Litigation', "NAMED_IN")
