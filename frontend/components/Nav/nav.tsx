@@ -6,15 +6,18 @@ import Logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg"
 import NavLinks from "./navLinks"
 import NavIcons from "./navIcons"
 import styles from "./nav.module.css"
+import { useAuth } from "@/providers/AuthProvider"
 
 export default function Nav() {
+  const { isLoggedIn } = useAuth()
+
   const Links = [
     { text: "Home", href: "/" },
     { text: "Data Explorer", href: "/data-explorer" },
     { text: "Community", href: "/community" },
     { text: "Collection", href: "/collection" },
-    { text: "Login", href: "/login" },
-    { text: "Logout", href: "/logout" }
+    ...(!isLoggedIn ? [{ text: "Login", href: "/login" }] : []),
+    ...(isLoggedIn ? [{ text: "Logout", href: "/logout" }] : [])
   ]
   return (
     <nav className={styles.nav}>

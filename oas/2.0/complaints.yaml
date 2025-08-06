@@ -265,12 +265,12 @@ paths:
           in: path
           required: true
           schema:
-          type: string
+            type: string
         - name: allegation_uid
           in: path
           required: true
           schema:
-          type: string
+            type: string
       tags:
         - "Allegations"
       summary: "Update Allegation for Complaint"
@@ -284,15 +284,15 @@ paths:
         required: true
         content:
           application/json:
-          schema:
-            $ref: "#/components/schemas/CreateAllegation"
+            schema:
+              $ref: "#/components/schemas/CreateAllegation"
       responses:
         '200':
           description: "An allegation object"
           content:
-          application/json:
-            schema:
-            $ref: "#/components/schemas/Allegation"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Allegation"
         '400':
           $ref: '../common/error.yaml#/components/responses/validationError'
         '404':
@@ -934,14 +934,14 @@ components:
         record_id:
           type: string
           description: The ID that was given to this allegation by the orginal source of the data.
-        complaintant:
+        complainant:
           allOf: 
             -  $ref: "#/components/schemas/Civilian"
             - type: "object"
               description: "Demographic information of the individual who filed the complaint."
         allegation:
           type: "string"
-          description: "The allegation made by the complaintant."
+          description: "The allegation made by the complainant."
         type:
           type: string
           description: The type of allegation.

@@ -7,6 +7,14 @@ class Gender(str, PropertyEnum):
     MALE = 'Male'
     FEMALE = 'Female'
 
+    def describe(self):
+        if self == self.OTHER:
+            return "Other"
+        elif self == self.MALE:
+            return "Man"
+        elif self == self.FEMALE:
+            return "Woman"
+
 
 class Ethnicity(str, PropertyEnum):
     UNKNOWN = 'Unknown'
@@ -16,6 +24,22 @@ class Ethnicity(str, PropertyEnum):
     ASIAN = 'Asian'
     NATIVE_HAWAIIAN_PACIFIC_ISLANDER = 'Native Hawaiian/Pacific Islander'
     HISPANIC_LATINO = 'Hispanic/Latino'
+
+    def describe(self):
+        if self == self.UNKNOWN:
+            return ""
+        elif self == self.WHITE:
+            return "White"
+        elif self == self.BLACK_AFRICAN_AMERICAN:
+            return "Black"
+        elif self == self.AMERICAN_INDIAN_ALASKA_NATIVE:
+            return "Native American"
+        elif self == self.ASIAN:
+            return "Asian"
+        elif self == self.NATIVE_HAWAIIAN_PACIFIC_ISLANDER:
+            return "NHPI"
+        elif self == self.HISPANIC_LATINO:
+            return "Hispanic"
 
 
 class State(str, PropertyEnum):

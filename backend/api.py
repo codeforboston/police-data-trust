@@ -12,6 +12,7 @@ from backend.routes.sources import bp as sources_bp
 from backend.routes.complaints import bp as complaints_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
+from backend.routes.search import bp as search_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.utils import dev_only
@@ -184,6 +185,7 @@ def register_routes(app: Flask):
     app.register_blueprint(healthcheck_bp)
     app.register_blueprint(officers_bp)
     app.register_blueprint(agencies_bp)
+    app.register_blueprint(search_bp)
 
     @app.route("/")
     def hello_world():
@@ -228,6 +230,18 @@ def index_db():
     db.cypher_query(
         "CREATE FULLTEXT INDEX sourceNames IF NOT EXISTS "
         "FOR (s:Source) ON EACH [s.name]")
+    db.cypher_query(
+        "CREATE INDEX officer_unit_earliest_date IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.earliest_date)"
+    )
+    db.cypher_query(
+        "CREATE INDEX officer_unit_latest_date IF NOT EXISTS "
+        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.latest_date)"
+    )
+    db.cypher_query(
+        "CREATE INDEX citation_date IF NOT EXISTS "
+        "FOR ()-[r:UPDATED_BY]-() ON (r.date)"
+    )
 
 
 if __name__ == "__main__":
