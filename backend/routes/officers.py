@@ -11,6 +11,7 @@ from flask import Blueprint, abort, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
+from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
@@ -180,9 +181,72 @@ def get_all_officers():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
 
-    all_officers = Officer.nodes.all()
-    results = paginate_results(all_officers, q_page, q_per_page)
+    officer_name = args.get("name")
+    officer_rank = args.get("rank")
+    unit = args.get("unit")
+    agency = args.get("agency")
+    active_after = args.get("active_after")
+    active_before = args.get("active_before")
+    badge_number = args.get("badge_number")
+    # ethnicity = args.get("ethnicity")
 
+    cypher_query = ""
+    if officer_name:
+        cypher_query += f"""
+            CALL db.index.fulltext.queryNodes('officerNames',
+            '{officer_name}') YIELD node AS o
+        """
+    elif officer_rank:
+        cypher_query += f"""
+            CALL db.index.fulltext.queryRelationships('officerRanks',
+            '{officer_rank}') YIELD relationship AS m
+        """
+
+    cypher_query += """
+        MATCH (o:Officer)"""
+
+    if unit or active_after or active_before or badge_number or agency:
+        cypher_query += """
+            MATCH (o)-[m:MEMBER_OF_UNIT]->(u:Unit)
+        """
+
+    if agency:
+        cypher_query += """
+        MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)
+        """
+
+    cypher_query += """
+        WHERE TRUE
+    """
+
+    # Add filters dynamically
+    and_clauses = {
+        "active_after":   "AND m.latest_date > $active_after",
+        "active_before":  "AND m.earliest_date < $active_before",
+        "agency":         "AND a.name = $agency",
+        "badge_number":   "AND m.badge_number = $badge_number",
+        "ethnicity":      "AND o.ethnicity = $ethnicity",
+        "unit":           "AND u.name = $unit",
+    }
+
+    for key in args:
+        if key in and_clauses and args[key]:
+            cypher_query += "\n" + and_clauses[key]
+
+    cypher_query += "\nRETURN o"
+    logging.warning(f'cypher query is {cypher_query}')
+
+    results, meta = db.cypher_query(cypher_query, args)
+    logging.warning(f'cypher results are {results}')
+    logging.warning(f'number of results is {len(results)}')
+    all_officers = [Officer.inflate(row[0]) for row in results]
+
+    logging.warning(f'API: number of officers is {len(all_officers)}')
+    if not all_officers:
+        logging.warning("No officers found with the given filters")
+        return ordered_jsonify([]), 200
+
+    results = paginate_results(list(all_officers), q_page, q_per_page)
     return ordered_jsonify(results), 200
 
 
