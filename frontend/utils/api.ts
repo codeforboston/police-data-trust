@@ -41,9 +41,21 @@ export interface SearchRequest extends AuthenticatedRequest {
 }
 
 export type SearchResponse = {
+  uid: string | number
+  title: string
+  subtitle: string
+  content_type: string
+  source: string
+  last_updated: string
+  description?: string
+  tags?: string[]
+}
+
+export type PaginatedSearchResponses = {
   error?: string | null
-  results: Incident[]
   page: number
-  totalPages: number
-  totalResults: number
+  pages: number
+  per_page: number
+  total: number
+  results: SearchResponse[]
 }

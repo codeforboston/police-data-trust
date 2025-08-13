@@ -172,12 +172,16 @@ def validate_request(model: BaseModel):
     return decorator
 
 
+# Returns a single page from a set of data
+# Deprecated: Use `add_pagination_wrapper` instead
 def paginate_results(
         data: list[JsonSerializable],
         page: int, per_page: int = 20, max_per_page: int = 100):
     """
-    Paginate a list of data and return a reponse dict. Items in the list must
-    implement the JsonSerializable interface.
+    Deprecated: Use `add_pagination_wrapper` instead.
+    Paginate a list of data and return a reponse dict that includes a single
+    page of results. Items in the list must implement the JsonSerializable
+    interface.
 
     Args:
         data (list): The list of data to paginate.
@@ -206,6 +210,32 @@ def paginate_results(
         "per_page": per_page,
         "total": len(data),
         "pages": expected_total_pages,
+    }
+
+
+# Add pagination to a list of data and return a response dict.
+def add_pagination_wrapper(
+        page_data: list, total: int,
+        page_number: int = 1, per_page: int = 20):
+    """
+    Add the paginated response properties to a preselected page of results.
+    Args:
+        page_data (list): The list of data to paginate.
+        page_number (int): The page number to return.
+        per_page (int): The number of items per page.
+        max_per_page (int): The maximum number of items per page.
+    Returns:
+        dict: The paginated data.
+    """
+    expected_total_pages = math.ceil(total / per_page)
+    if not page_number <= expected_total_pages:
+        abort(404)
+    return {
+        "results": page_data,
+        "page": page_number,
+        "per_page": per_page,
+        "total": total,
+        "pages": expected_total_pages
     }
 
 

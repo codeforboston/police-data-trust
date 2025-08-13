@@ -2,20 +2,9 @@
 import SearchBar from "@/components/SearchBar"
 import styles from "./page.module.css"
 import SearchResults from "./SearchResults"
-import Pagintation from "./Pagination"
+import Pagination from "./Pagination"
 import Filter from "./Filter"
 import { useSearch } from "@/providers/SearchProvider"
-
-export type SearchResult = {
-  uid: string | number
-  title: string
-  subtitle: string
-  content_type: string
-  source: string
-  last_updated: string
-  description?: string
-  tags?: string[]
-}
 
 const PageResults = ({}) => {
   const { searchResults } = useSearch()
@@ -25,8 +14,15 @@ const PageResults = ({}) => {
         <Filter />
         <div className={styles.searchResultsWrapper}>
           <SearchBar />
-          <SearchResults results={Array.isArray(searchResults) ? searchResults : []} />
-          <Pagintation page={0} count={7} onChangeHandler={() => {}} />
+          <SearchResults
+            total={searchResults?.total ?? 0}
+            results={Array.isArray(searchResults?.results) ? searchResults.results : []}
+          />
+          <Pagination
+            page={searchResults?.page}
+            count={searchResults?.pages}
+            onChangeHandler={() => {}}
+          />
         </div>
       </section>
     </div>
