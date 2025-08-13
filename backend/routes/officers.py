@@ -166,6 +166,7 @@ def get_officer(officer_uid: int):
         abort(404, description="Officer not found")
     return o.to_json()
 
+
 # Get all officers
 @bp.route("/", methods=["GET"])
 @jwt_required()
@@ -187,16 +188,18 @@ def get_all_officers():
     active_after = args.get("active_after")
     active_before = args.get("active_before")
     badge_number = args.get("badge_number")
-    ethnicity = args.get("ethnicity")
+    # ethnicity = args.get("ethnicity")
 
     cypher_query = ""
     if officer_name:
         cypher_query += f"""
-            CALL db.index.fulltext.queryNodes('officerNames', '{officer_name}') YIELD node AS o
+            CALL db.index.fulltext.queryNodes('officerNames',
+            '{officer_name}') YIELD node AS o
         """
     elif officer_rank:
         cypher_query += f"""
-            CALL db.index.fulltext.queryRelationships('officerRanks', '{officer_rank}') YIELD relationship AS m
+            CALL db.index.fulltext.queryRelationships('officerRanks',
+            '{officer_rank}') YIELD relationship AS m
         """
 
     cypher_query += """
@@ -242,7 +245,7 @@ def get_all_officers():
     if not all_officers:
         logging.warning("No officers found with the given filters")
         return ordered_jsonify([]), 200
-    
+
     results = paginate_results(list(all_officers), q_page, q_per_page)
     return ordered_jsonify(results), 200
 

@@ -54,7 +54,8 @@ mock_units = {
         "website_url": "https://agency.gov/unit-alpha",
         "phone": "(555) 123-4567",
         "email": "alpha@agency.gov",
-        "description": "Responsible for general investigations and field operations.",
+        "description": "Responsible for general investigations \
+            and field operations.",
         "address": "100 Alpha Ave",
         "city": "Chicago",
         "state": "MI",
@@ -68,7 +69,8 @@ mock_units = {
         "website_url": "https://agency.gov/unit-bravo",
         "phone": "(555) 234-5678",
         "email": "bravo@agency.gov",
-        "description": "Handles specialized enforcement and tactical operations.",
+        "description": "Handles specialized enforcement and \
+            tactical operations.",
         "address": "200 Bravo Blvd",
         "city": "NYC",
         "state": "NY",
@@ -82,7 +84,8 @@ mock_units = {
         "website_url": "https://agency.gov/unit-charlie",
         "phone": "(555) 345-6789",
         "email": "charlie@agency.gov",
-        "description": "Focuses on community outreach and civilian safety programs.",
+        "description": "Focuses on community outreach and \
+            civilian safety programs.",
         "address": "300 Charlie Rd",
         "city": "Oakridge",
         "state": "OH",
@@ -95,20 +98,26 @@ mock_units = {
 
 mock_unit_memberships = {
     "john": {
-        "earliest_date": datetime.strptime("2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime("2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": datetime.strptime(
+            "2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime(
+            "2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
         "highest_rank": 'Officer'
     },
     "hazel": {
-        "earliest_date": datetime.strptime("2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime("2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": datetime.strptime(
+            "2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime(
+            "2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "5678",
         "highest_rank": 'Sergeant',
     },
     "frank": {
-        "earliest_date": datetime.strptime("2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime("2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": datetime.strptime(
+            "2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "latest_date": datetime.strptime(
+            "2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
         "badge_number": "1234",
         "highest_rank": 'Lieutenant'
     }
@@ -442,6 +451,7 @@ def test_delete_officer_no_user_role(
     assert res.status_code == 403
 """
 
+
 @pytest.fixture
 def create_officers_units_agencies():
     # Create Officers in the database
@@ -460,20 +470,22 @@ def create_officers_units_agencies():
         agencies[key] = Agency(**mock).save()
 
     # Link officers to existing unit objects
-    units["unit_alpha"].officers.connect(officers["john"], mock_unit_memberships["john"])
-    units["unit_bravo"].officers.connect(officers["hazel"], mock_unit_memberships["hazel"])
-    units["unit_charlie"].officers.connect(officers["frank"], mock_unit_memberships["frank"])
+    units["unit_alpha"].officers.connect(officers["john"],
+                                         mock_unit_memberships["john"])
+    units["unit_bravo"].officers.connect(officers["hazel"],
+                                         mock_unit_memberships["hazel"])
+    units["unit_charlie"].officers.connect(officers["frank"],
+                                           mock_unit_memberships["frank"])
 
-
-    # # Link units to agencies (one direction is enough)
+    # Link units to agencies (one direction is enough)
     units["unit_alpha"].agency.connect(agencies["cpd"])
     units["unit_bravo"].agency.connect(agencies["nypd"])
 
     return officers
 
 
-
-def test_get_officers_with_unit(client, db_session, access_token, create_officers_units_agencies):  
+def test_get_officers_with_unit(client, db_session, access_token,
+                                create_officers_units_agencies):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
@@ -496,8 +508,8 @@ def test_get_officers_with_unit(client, db_session, access_token, create_officer
     assert res.json["total"] == len(officers_with_unit)
 
 
-def test_get_officers_with_unit_and_agency(client, 
-            db_session, access_token, create_officers_units_agencies):
+def test_get_officers_with_unit_and_agency(client, db_session, access_token,
+                                           create_officers_units_agencies):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
@@ -522,7 +534,8 @@ def test_get_officers_with_unit_and_agency(client,
     assert res.json["total"] == len(officers_with_unit)
 
 
-def test_get_officers_with_date(client, db_session, access_token, create_officers_units_agencies):
+def test_get_officers_with_date(client, db_session, access_token,
+                                create_officers_units_agencies):
     res = client.get(
         "/api/v1/officers/?active_after=2018-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
@@ -560,7 +573,8 @@ def test_get_officers_with_date(client, db_session, access_token, create_officer
     assert res.json == []
 
 
-def test_get_officers_with_rank(client, db_session, access_token, create_officers_units_agencies):
+def test_get_officers_with_rank(client, db_session, access_token,
+                                create_officers_units_agencies):
     res = client.get(
         "/api/v1/officers/?rank=Officer",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
@@ -589,7 +603,8 @@ def test_get_officers_with_rank(client, db_session, access_token, create_officer
     assert res.json["results"][0]["last_name"] is not None
 
 
-def test_filter_by_ethnicity(client, db_session, access_token, create_officers_units_agencies):
+def test_filter_by_ethnicity(client, db_session, access_token,
+                             create_officers_units_agencies):
     res = client.get(
         "/api/v1/officers/?ethnicity=White",
         headers={"Authorization": f"Bearer {access_token}"}
