@@ -1,13 +1,15 @@
 "use client"
 import { createContext, useCallback, useContext, useMemo, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
-import { SearchRequest, SearchResponse } from "@/utils/api"
+import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter, useSearchParams } from "next/navigation"
 
 interface SearchContext {
-  searchAll: (query: Omit<SearchRequest, "access_token" | "accessToken">) => Promise<SearchResponse>
-  searchResults?: SearchResponse
+  searchAll: (
+    query: Omit<SearchRequest, "access_token" | "accessToken">
+  ) => Promise<PaginatedSearchResponses>
+  searchResults?: PaginatedSearchResponses
   loading: boolean
 }
 
@@ -28,7 +30,7 @@ export const useSearch = () => {
 
 function useHook(): SearchContext {
   const { accessToken } = useAuth()
-  const [searchResults, setResults] = useState<SearchResponse | undefined>(undefined)
+  const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -69,16 +71,17 @@ function useHook(): SearchContext {
           throw new Error("Failed to search content")
         }
 
-        const data: SearchResponse = await results.json()
+        const data: PaginatedSearchResponses = await results.json()
         setResults(data)
         return data
       } catch (error) {
-        const errorResponse: SearchResponse = {
+        const errorResponse: PaginatedSearchResponses = {
           error: typeof error === "string" || error === null ? error : String(error),
           results: [],
           page: 0,
-          totalPages: 0,
-          totalResults: 0
+          per_page: 0,
+          pages: 0,
+          total: 0
         }
         console.error("Error searching all:", errorResponse)
         return errorResponse

@@ -1,12 +1,12 @@
 "use client"
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
 import React, { useState } from "react"
-import { SearchResult } from "./page"
+import { SearchResponse } from "@/utils/api"
 import { useSearch } from "@/providers/SearchProvider"
 
 type SearchResultsProps = {
   total: number
-  results: SearchResult[]
+  results: SearchResponse[]
 }
 
 const SearchResults = ({ total, results }: SearchResultsProps) => {
