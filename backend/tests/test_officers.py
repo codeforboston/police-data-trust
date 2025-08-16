@@ -537,7 +537,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]->(u:Unit)
+        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
         where u.name = "Unit Alpha"
         RETURN o
     """)
@@ -561,7 +561,7 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]->(u:Unit)
+        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
         MATCH (u)-[:ESTABLISHED_BY]-(a:Agency)
         where a.name = "Chicago Police Department"
         RETURN o

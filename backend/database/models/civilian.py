@@ -2,8 +2,7 @@
 from neomodel import (
     StructuredNode,
     StringProperty,
-    IntegerProperty,
-    RelationshipTo
+    IntegerProperty
 )
 from backend.schemas import JsonSerializable
 from backend.database.models.types.enums import Ethnicity, Gender

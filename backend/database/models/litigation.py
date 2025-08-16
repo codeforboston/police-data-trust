@@ -1,4 +1,4 @@
-from backend.schemas import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.source import Citation
 from neomodel import (
     StructuredNode,
@@ -44,7 +44,7 @@ class Litigation(StructuredNode, JsonSerializable):
     defendants = Relationship("Officer", "NAMED_IN")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
-    
+
     @property
     def documents(self):
         """
@@ -54,20 +54,19 @@ class Litigation(StructuredNode, JsonSerializable):
         MATCH (l:Litigation {uid: $uid})-[:HAS_DOCUMENT]->(d:Document)
         RETURN d
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        result, meta = db.cypher_query(
+            cy, {'uid': self.uid}, resolve_objects=True)
         return result
-    
+
     @property
-    def dispositions(self):
+    def dispositions(self) -> RelQuery:
         """
-        Returns a list of Disposition nodes associated with this litigation.
+        Query the Disposition nodes associated with this litigation.
         """
-        cy = """
+        base = """
         MATCH (l:Litigation {uid: $uid})-[:DISPOSED_IN]->(d:Disposition)
-        RETURN d
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
+        return RelQuery(self, base, return_alias="d", inflate_cls=Disposition)
 
     @property
     def case_type_enum(self) -> LegalCaseType:

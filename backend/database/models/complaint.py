@@ -1,5 +1,5 @@
 """Define the Classes for Complaints."""
-from backend.schemas import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.source import Citation
 from neomodel import (
     StructuredNode,
@@ -7,12 +7,10 @@ from neomodel import (
     StringProperty,
     Relationship,
     RelationshipTo,
-    RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
     One,
-    ZeroOrOne,
-    db
+    ZeroOrOne
 )
 
 
@@ -96,31 +94,29 @@ class Complaint(StructuredNode, JsonSerializable):
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     @property
-    def allegations(self):
+    def allegations(self) -> RelQuery:
         """Get the allegations related to this complaint."""
-        cy = """
-        MATCH (c:Complaint)-[:ALLEGED]->(a:Allegation)
-        WHERE c.uid = $uid
-        RETURN a"""
-        return db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-    
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:ALLEGED]-(a:Allegation)
+        """
+        return RelQuery(self, base, return_alias="a", inflate_cls=Allegation)
+
     @property
-    def investigations(self):
+    def investigations(self) -> RelQuery:
         """Get the investigations related to this complaint."""
-        cy = """
-        MATCH (c:Complaint)-[:EXAMINED_BY]->(i:Investigation)
-        WHERE c.uid = $uid
-        RETURN i"""
-        return db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-    
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:EXAMINED_BY]-(i:Investigation)
+        """
+        return RelQuery(
+            self, base, return_alias="i", inflate_cls=Investigation)
+
     @property
-    def penalties(self):
+    def penalties(self) -> RelQuery:
         """Get the penalties related to this complaint."""
-        cy = """
-        MATCH (c:Complaint)-[:RESULTS_IN]->(p:Penalty)
-        WHERE c.uid = $uid
-        RETURN p"""
-        return db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:RESULTS_IN]-(p:Penalty)
+        """
+        return RelQuery(self, base, return_alias="p", inflate_cls=Penalty)
 
     def __repr__(self):
         """Represent instance as a unique string."""

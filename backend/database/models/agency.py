@@ -1,4 +1,4 @@
-from backend.schemas import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.types.enums import State
 from backend.database.models.source import Citation, Source
 
@@ -151,25 +151,42 @@ class Agency(StructuredNode, JsonSerializable):
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
     state_node = RelationshipFrom(
-        "backend.database.models.infra.locations.StateNode", "WITHIN_STATE", cardinality=One)
+        "backend.database.models.infra.locations.StateNode",
+        "WITHIN_STATE", cardinality=One)
     county_node = RelationshipFrom(
-        "backend.database.models.infra.locations.CountyNode", "WITHIN_COUNTY", cardinality=One)
+        "backend.database.models.infra.locations.CountyNode",
+        "WITHIN_COUNTY", cardinality=One)
     city_node = RelationshipFrom(
-        "backend.database.models.infra.locations.CityNode", "WITHIN_CITY", cardinality=One)
+        "backend.database.models.infra.locations.CityNode",
+        "WITHIN_CITY", cardinality=One)
 
     @property
-    def units(self):
+    def units(self) -> RelQuery:
         """
-        Get all units associated with this agency.
+        Query the units related to this agency.
         Returns:
-            list: List of Unit nodes associated with this agency.
+            RelQuery: A query object for the Unit nodes associated
+            with this agency.
         """
-        cy = """
+        base = """
         MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]-(u:Unit)
-        RETURN u
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
+        return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
+
+    @property
+    def officers(self) -> RelQuery:
+        """
+        Query the officers related to this agency.
+        Returns:
+            RelQuery: A query object for the Officer nodes associated
+            with this agency.
+        """
+        base = """
+        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]
+        -(u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
+        """
+        from backend.database.models.officer import Officer
+        return RelQuery(self, base, return_alias="o", inflate_cls=Officer)
 
     @property
     def jurisdiction_enum(self) -> Jurisdiction:

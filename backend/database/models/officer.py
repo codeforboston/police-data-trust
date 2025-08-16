@@ -1,11 +1,11 @@
-from backend.schemas import JsonSerializable
+from backend.schemas import JsonSerializable, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import Source, Citation
 from backend.database.models.agency import Unit
 
 from neomodel import (
     db, StructuredNode,
-    RelationshipTo, RelationshipFrom, Relationship,
+    RelationshipTo, Relationship,
     StringProperty, DateProperty,
     UniqueIdProperty, One
 )
@@ -102,74 +102,67 @@ class Officer(StructuredNode, JsonSerializable):
         return None
 
     @property
-    def state_ids(self):
+    def state_ids(self) -> RelQuery:
         """
-        Get the state IDs associated with the officer.
+        Query the state IDs associated with the officer.
         Returns:
-            list: A list of StateID nodes associated with the officer.
+            RelQuery: A query object for the state IDs
+            associated with the officer.
         """
         cy = """
-        MATCH (o:Officer {uid: $uid})-[r:HAS_STATE_ID]->(s:StateID)
-        RETURN s
+        MATCH (o:Officer {uid: $uid})-[r:HAS_STATE_ID]-(s:StateID)
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
-    
+        return RelQuery(self, cy, return_alias="s", inflate_cls=StateID)
+
     @property
-    def units(self):
+    def units(self) -> RelQuery:
         """
-        Get the units associated with the officer.
+        Query the units associated with the officer.
         Returns:
-            list: A list of Unit nodes associated with the officer.
+            RelQuery: A query object for the units associated with the officer.
         """
-        cy = """
+        base = """
         MATCH (o:Officer {uid: $uid})-[r:MEMBER_OF_UNIT]->(u:Unit)
-        RETURN u
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
-    
+        return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
+
     @property
-    def commands(self):
+    def commands(self) -> RelQuery:
         """
-        Get the units commanded by the officer.
+        Query the units commanded by the officer.
         Returns:
-            list: A list of Unit nodes commanded by the officer.
+            RelQuery: A query object for the units commanded by the officer.
         """
-        cy = """
+        base = """
         MATCH (o:Officer {uid: $uid})-[r:COMMANDED_BY]-(u:Unit)
-        RETURN u
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
-    
+        return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
+
     @property
-    def allegations(self):
+    def allegations(self) -> RelQuery:
         """
-        Get the allegations associated with the officer.
+        Query the allegations associated with the officer.
         Returns:
-            list: A list of Allegation nodes associated with the officer.
+            RelQuery: A query object for the allegations.
         """
-        cy = """
+        base = """
         MATCH (o:Officer {uid: $uid})-[r:ACCUSED_OF]->(a:Allegation)
-        RETURN a
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
-    
+        from backend.database.models.complaint import Allegation
+        return RelQuery(self, base, return_alias="a", inflate_cls=Allegation)
+
     @property
-    def investigations(self):
+    def investigations(self) -> RelQuery:
         """
-        Get the investigations led by the officer.
+        Query the investigations led by the officer.
         Returns:
-            list: A list of Investigation nodes associated led by the officer.
+            RelQuery: A query object for the investigations.
         """
-        cy = """
+        base = """
         MATCH (o:Officer {uid: $uid})-[r:LEAD_BY]->(i:Investigation)
-        RETURN i
         """
-        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
-        return result
+        from backend.database.models.complaint import Investigation
+        return RelQuery(self, base, return_alias="i", inflate_cls=Investigation)
 
     def primary_source(self):
         """
