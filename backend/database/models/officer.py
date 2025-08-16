@@ -20,7 +20,7 @@ class StateID(StructuredNode, JsonSerializable):
     id_name = StringProperty()  # e.g. "Tax ID Number"
     state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
-    officer = RelationshipFrom('Officer', "HAS_STATE_ID", cardinality=One)
+    officer = Relationship('Officer', "HAS_STATE_ID", cardinality=One)
 
     def __repr__(self):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
@@ -44,17 +44,6 @@ class Officer(StructuredNode, JsonSerializable):
     date_of_birth = DateProperty()
 
     # Relationships
-    state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = RelationshipTo(
-        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
-    litigation = Relationship(
-        'backend.database.models.litigation.Litigation', "NAMED_IN")
-    allegations = Relationship(
-        'backend.database.models.complaint.Allegation', "ACCUSED_OF")
-    investigations = Relationship(
-        'backend.database.models.complaint.Investigation', "LEAD_BY")
-    commands = Relationship(
-        'backend.database.models.agency.Unit', "COMMANDS")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
@@ -111,6 +100,76 @@ class Officer(StructuredNode, JsonSerializable):
             unit_node = result[0][0]
             return Unit.inflate(unit_node)
         return None
+
+    @property
+    def state_ids(self):
+        """
+        Get the state IDs associated with the officer.
+        Returns:
+            list: A list of StateID nodes associated with the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:HAS_STATE_ID]->(s:StateID)
+        RETURN s
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
+    
+    @property
+    def units(self):
+        """
+        Get the units associated with the officer.
+        Returns:
+            list: A list of Unit nodes associated with the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:MEMBER_OF_UNIT]->(u:Unit)
+        RETURN u
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
+    
+    @property
+    def commands(self):
+        """
+        Get the units commanded by the officer.
+        Returns:
+            list: A list of Unit nodes commanded by the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:COMMANDED_BY]-(u:Unit)
+        RETURN u
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
+    
+    @property
+    def allegations(self):
+        """
+        Get the allegations associated with the officer.
+        Returns:
+            list: A list of Allegation nodes associated with the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:ACCUSED_OF]->(a:Allegation)
+        RETURN a
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
+    
+    @property
+    def investigations(self):
+        """
+        Get the investigations led by the officer.
+        Returns:
+            list: A list of Investigation nodes associated led by the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:LEAD_BY]->(i:Investigation)
+        RETURN i
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
 
     def primary_source(self):
         """
