@@ -7,6 +7,7 @@ from neomodel import (
     StructuredNode,
     StructuredRel,
     StringProperty,
+    Relationship,
     RelationshipTo,
     RelationshipFrom,
     DateProperty,
@@ -46,6 +47,12 @@ class UnitMembership(StructuredRel, JsonSerializable):
 
 
 class Unit(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "name", "website_url", "phone",
+        "email", "description", "address",
+        "city", "state", "zip", "agency_url",
+        "officers_url", "date_established"
+    ]
     __hidden_properties__ = ["citations"]
 
     uid = UniqueIdProperty()
@@ -63,11 +70,11 @@ class Unit(StructuredNode, JsonSerializable):
     date_established = DateProperty()
 
     # Relationships
-    agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
-    commander = RelationshipTo(
+    agency = Relationship("Agency", "ESTABLISHED_BY", cardinality=One)
+    commander = Relationship(
         "backend.database.models.officer.Officer",
         "COMMANDED_BY", model=UnitMembership)
-    officers = RelationshipFrom(
+    officers = Relationship(
         "backend.database.models.officer.Officer",
         "MEMBER_OF_UNIT", model=UnitMembership)
     citations = RelationshipTo(
@@ -120,6 +127,11 @@ class Unit(StructuredNode, JsonSerializable):
 
 
 class Agency(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "name", "website_url", "hq_address",
+        "hq_city", "hq_state", "hq_zip", "phone",
+        "email", "description", "jurisdiction"
+    ]
     __hidden_properties__ = ["citations", "state_node",
                              "county_node", "city_node"]
 
@@ -136,15 +148,28 @@ class Agency(StructuredNode, JsonSerializable):
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
 
     # Relationships
-    units = RelationshipTo("Unit", "ESTABLISHED")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
-    state_node = RelationshipTo(
-        "backend.database.models.infra.locations.StateNode", "WITHIN_STATE")
-    county_node = RelationshipTo(
-        "backend.database.models.infra.locations.CountyNode", "WITHIN_COUNTY")
-    city_node = RelationshipTo(
-        "backend.database.models.infra.locations.CityNode", "WITHIN_CITY")
+    state_node = RelationshipFrom(
+        "backend.database.models.infra.locations.StateNode", "WITHIN_STATE", cardinality=One)
+    county_node = RelationshipFrom(
+        "backend.database.models.infra.locations.CountyNode", "WITHIN_COUNTY", cardinality=One)
+    city_node = RelationshipFrom(
+        "backend.database.models.infra.locations.CityNode", "WITHIN_CITY", cardinality=One)
+
+    @property
+    def units(self):
+        """
+        Get all units associated with this agency.
+        Returns:
+            list: List of Unit nodes associated with this agency.
+        """
+        cy = """
+        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]-(u:Unit)
+        RETURN u
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid}, resolve_objects=True)
+        return result
 
     @property
     def jurisdiction_enum(self) -> Jurisdiction:
@@ -184,7 +209,7 @@ class Agency(StructuredNode, JsonSerializable):
             int: The total number of officers.
         """
         cy = """
-        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED]->
+        MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]-
         (u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
         RETURN COUNT(o) AS total_officers
         """

@@ -14,9 +14,3 @@ class Civilian(StructuredNode, JsonSerializable):
     age_range = StringProperty()
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
-
-    # Relationships
-    complaints = RelationshipTo(
-        "backend.database.models.complaint.Complaint", "COMPLAINED_OF")
-    witnessed_complaints = RelationshipTo(
-        "backend.database.models.complaint.Complaint", "WITNESSED")
