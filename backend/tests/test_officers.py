@@ -279,7 +279,55 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
         query_string={"perPage": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
-    assert res.status_code == 404
+    assert res.status_code == 400
+    assert res.json == {"message": "Page number exceeds total results"}
+
+
+def test_officer_pagination2(client, db_session, access_token):
+    # Create Officers in the database
+    for i in range(1, 36):
+        mock_officer = {
+                "first_name": f"John{i}",
+                # "last_name": "Doe"
+            }
+        Officer(**mock_officer).save()
+
+    officers = Officer.nodes.all()
+    assert len(officers) == 35
+
+    # page 1
+    res = client.get(
+        "/api/v1/officers/",
+        query_string={"per_page": 20, "page": 1},
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officers)
+    assert len(res.json["results"]) == 20
+
+    # page 2
+    res = client.get(
+        "/api/v1/officers/",
+        query_string={"per_page": 20, "page": 2},
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert res.json["page"] == 2
+    assert res.json["total"] == len(officers)
+    assert len(res.json["results"]) == 15
+
+    # page 3 (should return empty)
+    res = client.get(
+        "/api/v1/officers/",
+        query_string={"perPage": 20, "page": 3},
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    print(f"res is {res.json}")
+    assert res.status_code == 400
+    assert res.json == {"message": "Page number exceeds total results"}
 
 
 """
@@ -564,13 +612,13 @@ def test_get_officers_with_date(client, db_session, access_token,
         "/api/v1/officers/?active_before=2010-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    assert res.json == []
+    assert res.json == {"message": "No results found matching the query"}
 
     res = client.get(
         "/api/v1/officers/?active_after=2035-01-01",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    assert res.json == []
+    assert res.json == {"message": "No results found matching the query"}
 
 
 def test_get_officers_with_rank(client, db_session, access_token,

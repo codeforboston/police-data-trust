@@ -3,11 +3,12 @@ from typing import Optional, List
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
-from backend.schemas import validate_request, ordered_jsonify, paginate_results
+from backend.schemas import (validate_request, ordered_jsonify,
+                             add_pagination_wrapper)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
 from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
-from flask import Blueprint, abort, request
+from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from pydantic import BaseModel
@@ -233,21 +234,46 @@ def get_all_officers():
         if key in and_clauses and args[key]:
             cypher_query += "\n" + and_clauses[key]
 
-    cypher_query += "\nRETURN o"
+    count_results, _ = db.cypher_query(
+        cypher_query + "\nReturn count(*) as c", args)
+
+    row_count = count_results[0][0] if count_results else 0
+    logging.warning(f'Total results found: {row_count}')
+
+    if row_count == 0:
+        return jsonify({"message": "No results found matching the query"}), 200
+
+    if row_count < (q_page - 1) * q_per_page:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+
+    skip = (q_page - 1) * q_per_page
+    limit = q_per_page
+
+    # cypher_query += "\nRETURN o"
+    cypher_query += f"\nRETURN o skip {skip} limit {limit}"
     logging.warning(f'cypher query is {cypher_query}')
 
+    # run the full query
     results, meta = db.cypher_query(cypher_query, args)
     logging.warning(f'cypher results are {results}')
     logging.warning(f'number of results is {len(results)}')
-    all_officers = [Officer.inflate(row[0]) for row in results]
 
+    all_officers = [Officer.inflate(row[0]) for row in results]
     logging.warning(f'API: number of officers is {len(all_officers)}')
+
     if not all_officers:
         logging.warning("No officers found with the given filters")
         return ordered_jsonify([]), 200
 
-    results = paginate_results(list(all_officers), q_page, q_per_page)
-    return ordered_jsonify(results), 200
+    page = [item.to_dict() for item in all_officers]
+
+    # results = paginate_results(list(all_officers), q_page, q_per_page)
+    response = add_pagination_wrapper(
+        page_data=page, total=row_count,
+        page_number=q_page, per_page=q_per_page)
+
+    logging.warning(f'API: response is {response}')
+    return ordered_jsonify(response), 200
 
 
 # Update an officer profile
