@@ -273,7 +273,7 @@ def get_all_officers():
         page_number=q_page, per_page=q_per_page)
 
     logging.warning(f'API: response is {response}')
-    return jsonify(response), 200
+    return ordered_jsonify(response), 200
 
 
 # Update an officer profile
