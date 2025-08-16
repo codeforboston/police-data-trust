@@ -69,6 +69,7 @@ class Complaint(StructuredNode, JsonSerializable):
     ]
 
     __hidden_properties__ = ["citations"]
+    __virtual_relationships__ = ["allegations", "investigations", "penalties"]
 
     uid = UniqueIdProperty()
     record_id = StringProperty()
@@ -124,6 +125,13 @@ class Complaint(StructuredNode, JsonSerializable):
 
 
 class Allegation(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "record_id", "allegation",
+        "type", "subtype", "recommended_finding",
+        "recommended_outcome", "finding", "outcome"
+    ]
+    __hidden_properties__ = ["complaint"]
+
     uid = UniqueIdProperty()
     record_id = StringProperty()
     allegation = StringProperty()
@@ -151,6 +159,9 @@ class Allegation(StructuredNode, JsonSerializable):
 
 
 class Investigation(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["complaint"]
+    __property_order__ = ["uid", "start_date", "end_date"]
+
     uid = UniqueIdProperty()
     start_date = DateProperty()
     end_date = DateProperty()
@@ -167,6 +178,13 @@ class Investigation(StructuredNode, JsonSerializable):
 
 
 class Penalty(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "penalty", "date_assessed",
+        "crb_plea", "crb_case_status",
+        "crb_disposition", "agency_disposition"
+    ]
+    __hidden_properties__ = ["complaint"]
+
     uid = UniqueIdProperty()
     penalty = StringProperty()
     date_assessed = DateProperty()

@@ -26,6 +26,7 @@ class Litigation(StructuredNode, JsonSerializable):
         "settlement_amount", "url", "case_type"
     ]
     __hidden_properties__ = ["citations"]
+    __virtual_relationships__ = ["documents", "dispositions"]
 
     uid = UniqueIdProperty()
     case_title = StringProperty()

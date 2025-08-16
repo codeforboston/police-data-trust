@@ -33,6 +33,7 @@ class Officer(StructuredNode, JsonSerializable):
         "gender", "date_of_birth"
     ]
     __hidden_properties__ = ["citations"]
+    __virtual_relationships__ = ["state_ids"]
 
     uid = UniqueIdProperty()
     first_name = StringProperty()

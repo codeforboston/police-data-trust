@@ -338,6 +338,7 @@ class JsonSerializable:
     """Mix me into a database model to make it JSON serializable."""
     __hidden_properties__ = []
     __property_order__ = []
+    __virtual_relationships__ = []
 
     def to_dict(self, include_relationships=True,
                 relationship_limit: int = 20, exclude_fields=None):
@@ -409,6 +410,17 @@ class JsonSerializable:
                             node.to_dict(include_relationships=False)
                             for node in related_nodes
                         ]
+        # Add virtual relationships
+        for rel_name in self.__virtual_relationships__:
+            if rel_name in all_excludes:
+                continue
+            rel_query = getattr(self, rel_name, None)
+            if isinstance(rel_query, RelQuery):
+                related_nodes = rel_query.limit(relationship_limit).all()
+                obj_props[rel_name] = [
+                    node.to_dict(include_relationships=False)
+                    for node in related_nodes
+                ]
 
         return obj_props
 

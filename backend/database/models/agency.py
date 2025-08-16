@@ -134,6 +134,7 @@ class Agency(StructuredNode, JsonSerializable):
     ]
     __hidden_properties__ = ["citations", "state_node",
                              "county_node", "city_node"]
+    __virtual_relationships__ = ["units"]
 
     uid = UniqueIdProperty()
     name = StringProperty()

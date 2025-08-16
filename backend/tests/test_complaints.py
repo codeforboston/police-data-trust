@@ -245,17 +245,17 @@ def test_get_complaint(client, db_session, example_complaint, access_token):
         assert getattr(example_complaint.location.single(), prop) == value
 
     for prop, value in res.json['allegations'][0].items():
-        assert getattr(example_complaint.allegations.single(), prop) == value
+        assert getattr(example_complaint.allegations.first(), prop) == value
 
     for prop, value in res.json['penalties'][0].items():
         if prop == "date_assessed":
             assert getattr(
-                example_complaint.penalties.single(),
+                example_complaint.penalties.first(),
                 prop
             ).isoformat() == value
         else:
             assert getattr(
-                example_complaint.penalties.single(), prop) == value
+                example_complaint.penalties.first(), prop) == value
 
 
 def test_get_complaints(client, db_session, access_token, example_complaints):
