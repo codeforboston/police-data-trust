@@ -1,12 +1,12 @@
 """Define the Classes for Complaints."""
-from backend.schemas import JsonSerializable, PropertyEnum
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.source import Citation
 from neomodel import (
     StructuredNode,
     StructuredRel,
     StringProperty,
+    Relationship,
     RelationshipTo,
-    RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
     One,
@@ -69,6 +69,7 @@ class Complaint(StructuredNode, JsonSerializable):
     ]
 
     __hidden_properties__ = ["citations"]
+    __virtual_relationships__ = ["allegations", "investigations", "penalties"]
 
     uid = UniqueIdProperty()
     record_id = StringProperty()
@@ -90,11 +91,33 @@ class Complaint(StructuredNode, JsonSerializable):
         "backend.database.models.officer.Officer", "WITNESSED_BY")
     attachments = RelationshipTo(
         "backend.database.models.attachment.Attachment", "ATTACHED_TO")
-    allegations = RelationshipTo("Allegation", "ALLEGED")
-    investigations = RelationshipTo("Investigation", "EXAMINED_BY")
-    penalties = RelationshipTo("Penalty", "RESULTS_IN")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
+
+    @property
+    def allegations(self) -> RelQuery:
+        """Get the allegations related to this complaint."""
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:ALLEGED]-(a:Allegation)
+        """
+        return RelQuery(self, base, return_alias="a", inflate_cls=Allegation)
+
+    @property
+    def investigations(self) -> RelQuery:
+        """Get the investigations related to this complaint."""
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:EXAMINED_BY]-(i:Investigation)
+        """
+        return RelQuery(
+            self, base, return_alias="i", inflate_cls=Investigation)
+
+    @property
+    def penalties(self) -> RelQuery:
+        """Get the penalties related to this complaint."""
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:RESULTS_IN]-(p:Penalty)
+        """
+        return RelQuery(self, base, return_alias="p", inflate_cls=Penalty)
 
     def __repr__(self):
         """Represent instance as a unique string."""
@@ -102,6 +125,13 @@ class Complaint(StructuredNode, JsonSerializable):
 
 
 class Allegation(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "record_id", "allegation",
+        "type", "subtype", "recommended_finding",
+        "recommended_outcome", "finding", "outcome"
+    ]
+    __hidden_properties__ = ["complaint"]
+
     uid = UniqueIdProperty()
     record_id = StringProperty()
     allegation = StringProperty()
@@ -116,10 +146,10 @@ class Allegation(StructuredNode, JsonSerializable):
     complainant = RelationshipTo(
         "backend.database.models.civilian.Civilian",
         "REPORTED_BY", cardinality=ZeroOrOne)
-    accused = RelationshipFrom(
+    accused = Relationship(
         "backend.database.models.officer.Officer",
         "ACCUSED_OF", cardinality=ZeroOrOne)
-    complaint = RelationshipFrom(
+    complaint = Relationship(
         "backend.database.models.complaint.Complaint",
         "ALLEGED", cardinality=One)
 
@@ -129,6 +159,9 @@ class Allegation(StructuredNode, JsonSerializable):
 
 
 class Investigation(StructuredNode, JsonSerializable):
+    __hidden_properties__ = ["complaint"]
+    __property_order__ = ["uid", "start_date", "end_date"]
+
     uid = UniqueIdProperty()
     start_date = DateProperty()
     end_date = DateProperty()
@@ -137,7 +170,7 @@ class Investigation(StructuredNode, JsonSerializable):
     investigator = RelationshipTo(
         "backend.database.models.officer.Officer",
         "LED_BY", cardinality=ZeroOrOne)
-    complaint = RelationshipFrom("Complaint", "EXAMINED_BY")
+    complaint = Relationship("Complaint", "EXAMINED_BY", cardinality=One)
 
     def __repr__(self):
         """Represent instance as a unique string."""
@@ -145,6 +178,13 @@ class Investigation(StructuredNode, JsonSerializable):
 
 
 class Penalty(StructuredNode, JsonSerializable):
+    __property_order__ = [
+        "uid", "penalty", "date_assessed",
+        "crb_plea", "crb_case_status",
+        "crb_disposition", "agency_disposition"
+    ]
+    __hidden_properties__ = ["complaint"]
+
     uid = UniqueIdProperty()
     penalty = StringProperty()
     date_assessed = DateProperty()
@@ -154,10 +194,10 @@ class Penalty(StructuredNode, JsonSerializable):
     agency_disposition = StringProperty()
 
     # Relationships
-    officer = RelationshipFrom(
+    officer = Relationship(
         "backend.database.models.officer.Officer",
         "RECEIVED", cardinality=One)
-    complaint = RelationshipFrom("Complaint", "RESULTS_IN", cardinality=One)
+    complaint = Relationship("Complaint", "RESULTS_IN", cardinality=One)
 
     def __repr__(self):
         """Represent instance as a unique string."""

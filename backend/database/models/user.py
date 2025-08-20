@@ -8,7 +8,6 @@ from neomodel import (
     StringProperty, DateProperty, BooleanProperty,
     UniqueIdProperty, EmailProperty
 )
-from backend.database.models.source import SourceMember
 
 
 class UserRole(str, PropertyEnum):
@@ -30,7 +29,10 @@ class UserRole(str, PropertyEnum):
 
 # Define the User data-model.
 class User(StructuredNode, JsonSerializable):
-    __hidden_properties__ = ["password_hash"]
+    __hidden_properties__ = [
+        "password_hash", "received_invitations",
+        "extended_invitations", "entended_staged_invitations"
+    ]
     __property_order__ = [
         "uid", "first_name", "last_name",
         "email", "email_confirmed_at",
@@ -56,9 +58,6 @@ class User(StructuredNode, JsonSerializable):
     phone_number = StringProperty()
 
     # Data Source Relationships
-    sources = Relationship(
-        'backend.database.models.source.Source',
-        "MEMBER_OF_SOURCE", model=SourceMember)
     received_invitations = Relationship(
         'backend.database.models.source.Invitation',
         "RECEIVED")

@@ -46,7 +46,6 @@ def create_allegation(
         allegation = Allegation(**a_data).save()
         allegation.accused.connect(officer)
         allegation.complaint.connect(complaint)
-        complaint.allegations.connect(allegation)
         logging.info(
             f"Allegation {allegation.uid} created "
             f"for Complaint {complaint.uid}")
@@ -131,7 +130,7 @@ def create_penalty(
         raise ValueError("Officer UID is required for the penalty")
     try:
         penalty = Penalty(**p_data).save()
-        complaint.penalties.connect(penalty)
+        penalty.complaint.connect(complaint)
         penalty.officer.connect(officer)
         logging.info(
             f"Penalty {penalty.uid} created for Complaint {complaint.uid}")
@@ -183,7 +182,7 @@ def create_investigation(
     investigator_uid = i_data.pop("investigator_uid", None)
     try:
         investigation = Investigation(**i_data).save()
-        complaint.investigations.connect(investigation)
+        investigation.complaint.connect(complaint)
         logging.info(
             f"Investigation {investigation.uid} created "
             f"for Complaint {complaint.uid}")

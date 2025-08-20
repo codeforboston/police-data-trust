@@ -110,7 +110,7 @@ def example_complaints(db_session, example_source, example_officer):
         civ = Civilian(**mock_complaint["allegations"][0]["complainant"]).save()
         allege.complainant.connect(civ)
         allege.accused.connect(example_officer)
-        c.allegations.connect(allege)
+        allege.complaint.connect(c)
         c.location.connect(loc)
         complaints.append(c)
     return complaints
@@ -168,9 +168,9 @@ def test_create_complaint(
     source_obj = c.source_org.single()
     source_rel = c.source_org.relationship(source_obj)
     attachment_obj = c.attachments.single()
-    allegation_obj = c.allegations.single()
+    allegation_obj = c.allegations.first()
     complainant_obj = allegation_obj.complainant.single()
-    penalty_obj = c.penalties.single()
+    penalty_obj = c.penalties.first()
 
     for prop, value in request["location"].items():
         assert getattr(location, prop) == value
@@ -245,17 +245,17 @@ def test_get_complaint(client, db_session, example_complaint, access_token):
         assert getattr(example_complaint.location.single(), prop) == value
 
     for prop, value in res.json['allegations'][0].items():
-        assert getattr(example_complaint.allegations.single(), prop) == value
+        assert getattr(example_complaint.allegations.first(), prop) == value
 
     for prop, value in res.json['penalties'][0].items():
         if prop == "date_assessed":
             assert getattr(
-                example_complaint.penalties.single(),
+                example_complaint.penalties.first(),
                 prop
             ).isoformat() == value
         else:
             assert getattr(
-                example_complaint.penalties.single(), prop) == value
+                example_complaint.penalties.first(), prop) == value
 
 
 def test_get_complaints(client, db_session, access_token, example_complaints):
@@ -413,7 +413,7 @@ def test_create_allegation(
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
     a_obj = Allegation.nodes.get(uid=response["uid"])
-    assert complaint_obj.allegations.is_connected(a_obj)
+    assert a_obj.complaint.is_connected(complaint_obj)
     assert a_obj.allegation == new_allegation["allegation"]
     assert a_obj.type == new_allegation["type"]
     assert a_obj.accused.single().uid == new_allegation["accused_uid"]
@@ -428,7 +428,7 @@ def test_update_allegation(
         "type": "Updated type"
     }
 
-    a = example_complaint.allegations.single()
+    a = example_complaint.allegations.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
@@ -444,7 +444,7 @@ def test_update_allegation(
 
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
-    a_obj = complaint_obj.allegations.single()
+    a_obj = complaint_obj.allegations.first()
     assert a_obj.allegation == updated_data["allegation"]
     assert a_obj.type == updated_data["type"]
 
@@ -453,14 +453,14 @@ def test_update_allegation(
         headers={"Authorization": f"Bearer {contributor_access_token}"},
     )
     assert res.status_code == 204
-    assert not complaint_obj.allegations.is_connected(a_obj)
+    assert not a_obj.complaint.is_connected(complaint_obj)
 
 
 def test_update_allegation_no_permission(
     client, access_token, example_complaint
 ):
     """Test that a user without edit permissions cannot update an allegation."""
-    a = example_complaint.allegations.single()
+    a = example_complaint.allegations.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
@@ -489,7 +489,7 @@ def test_get_penalties(client, db_session, example_complaint, access_token):
     assert res.status_code == 200
     assert res.json["total"] == len(penalty_objs)
     assert res.json["page"] == 1
-    p = example_complaint.penalties.single()
+    p = example_complaint.penalties.first()
     assert penalties[0]["penalty"] == p.penalty
     assert penalties[0]["date_assessed"] == p.date_assessed.isoformat()
 
@@ -520,7 +520,7 @@ def test_create_penalty(
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
     p_obj = Penalty.nodes.get(uid=response["uid"])
-    assert complaint_obj.penalties.is_connected(p_obj)
+    assert p_obj.complaint.is_connected(complaint_obj)
     assert p_obj.penalty == new_penalty["penalty"]
     assert p_obj.date_assessed == date.fromisoformat(
         new_penalty["date_assessed"])
@@ -535,7 +535,7 @@ def test_update_penalty(
         "date_assessed": "2023-01-02"
     }
 
-    p = example_complaint.penalties.single()
+    p = example_complaint.penalties.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/penalties/{p.uid}",
@@ -551,7 +551,7 @@ def test_update_penalty(
 
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
-    p_obj = complaint_obj.penalties.single()
+    p_obj = complaint_obj.penalties.first()
     assert p_obj.penalty == updated_data["penalty"]
     assert p_obj.date_assessed == date.fromisoformat(
         updated_data["date_assessed"])
@@ -561,14 +561,14 @@ def test_update_penalty(
         headers={"Authorization": f"Bearer {contributor_access_token}"},
     )
     assert res.status_code == 204
-    assert not complaint_obj.penalties.is_connected(p_obj)
+    assert not p_obj.complaint.is_connected(complaint_obj)
 
 
 def test_update_penalty_no_permission(
     client, access_token, example_complaint
 ):
     """Test that a user without edit permissions cannot update a penalty."""
-    p = example_complaint.penalties.single()
+    p = example_complaint.penalties.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/penalties/{p.uid}",
@@ -600,7 +600,7 @@ def test_get_investigations(
     assert res.status_code == 200
     assert res.json["total"] == len(investigation_objs)
     assert res.json["page"] == 1
-    i = example_complaint.investigations.single()
+    i = example_complaint.investigations.first()
     assert investigations[0]["start_date"] == i.start_date.isoformat()
     assert investigations[0]["end_date"] == i.end_date.isoformat()
 
@@ -631,7 +631,7 @@ def test_create_investigation(
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
     i_obj = Investigation.nodes.get(uid=response["uid"])
-    assert complaint_obj.investigations.is_connected(i_obj)
+    assert i_obj.complaint.is_connected(complaint_obj)
     assert i_obj.start_date == date.fromisoformat(
         new_investigation["start_date"])
     assert i_obj.end_date == date.fromisoformat(
@@ -647,7 +647,7 @@ def test_update_investigation(
         "end_date": "2024-12-31"
     }
 
-    i = example_complaint.investigations.single()
+    i = example_complaint.investigations.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/investigations/{i.uid}",
@@ -663,7 +663,7 @@ def test_update_investigation(
 
     # Verify the database is updated
     complaint_obj = Complaint.nodes.get(uid=example_complaint.uid)
-    i_obj = complaint_obj.investigations.single()
+    i_obj = complaint_obj.investigations.first()
     assert i_obj.start_date == date.fromisoformat(updated_data["start_date"])
     assert i_obj.end_date == date.fromisoformat(updated_data["end_date"])
 
@@ -672,7 +672,7 @@ def test_update_investigation(
         headers={"Authorization": f"Bearer {contributor_access_token}"},
     )
     assert res.status_code == 204
-    assert not complaint_obj.investigations.is_connected(i_obj)
+    assert not i_obj.complaint.is_connected(complaint_obj)
 
 
 def test_update_investigation_no_permission(
@@ -680,7 +680,7 @@ def test_update_investigation_no_permission(
 ):
     """Test that a user without edit permissions
     cannot update an investigation."""
-    i = example_complaint.investigations.single()
+    i = example_complaint.investigations.first()
 
     res = client.patch(
         f"/api/v1/complaints/{example_complaint.uid}/investigations/{i.uid}",

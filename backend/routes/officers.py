@@ -208,7 +208,7 @@ def get_all_officers():
 
     if unit or active_after or active_before or badge_number or agency:
         cypher_query += """
-            MATCH (o)-[m:MEMBER_OF_UNIT]->(u:Unit)
+            MATCH (o)-[m:MEMBER_OF_UNIT]-(u:Unit)
         """
 
     if agency:
