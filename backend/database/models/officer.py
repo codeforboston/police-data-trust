@@ -1,11 +1,11 @@
-from backend.schemas import JsonSerializable
+from backend.schemas import JsonSerializable, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import Source, Citation
 from backend.database.models.agency import Unit
 
 from neomodel import (
     db, StructuredNode,
-    RelationshipTo, RelationshipFrom, Relationship,
+    RelationshipTo, Relationship,
     StringProperty, DateProperty,
     UniqueIdProperty, One
 )
@@ -20,7 +20,7 @@ class StateID(StructuredNode, JsonSerializable):
     id_name = StringProperty()  # e.g. "Tax ID Number"
     state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
-    officer = RelationshipFrom('Officer', "HAS_STATE_ID", cardinality=One)
+    officer = Relationship('Officer', "HAS_STATE_ID", cardinality=One)
 
     def __repr__(self):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
@@ -33,6 +33,7 @@ class Officer(StructuredNode, JsonSerializable):
         "gender", "date_of_birth"
     ]
     __hidden_properties__ = ["citations"]
+    __virtual_relationships__ = ["state_ids"]
 
     uid = UniqueIdProperty()
     first_name = StringProperty()
@@ -44,17 +45,6 @@ class Officer(StructuredNode, JsonSerializable):
     date_of_birth = DateProperty()
 
     # Relationships
-    state_ids = RelationshipTo('StateID', "HAS_STATE_ID")
-    units = RelationshipTo(
-        'backend.database.models.agency.Unit', "MEMBER_OF_UNIT")
-    litigation = Relationship(
-        'backend.database.models.litigation.Litigation', "NAMED_IN")
-    allegations = Relationship(
-        'backend.database.models.complaint.Allegation', "ACCUSED_OF")
-    investigations = Relationship(
-        'backend.database.models.complaint.Investigation', "LEAD_BY")
-    commands = Relationship(
-        'backend.database.models.agency.Unit', "COMMANDS")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
@@ -111,6 +101,69 @@ class Officer(StructuredNode, JsonSerializable):
             unit_node = result[0][0]
             return Unit.inflate(unit_node)
         return None
+
+    @property
+    def state_ids(self) -> RelQuery:
+        """
+        Query the state IDs associated with the officer.
+        Returns:
+            RelQuery: A query object for the state IDs
+            associated with the officer.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $uid})-[r:HAS_STATE_ID]-(s:StateID)
+        """
+        return RelQuery(self, cy, return_alias="s", inflate_cls=StateID)
+
+    @property
+    def units(self) -> RelQuery:
+        """
+        Query the units associated with the officer.
+        Returns:
+            RelQuery: A query object for the units associated with the officer.
+        """
+        base = """
+        MATCH (o:Officer {uid: $uid})-[r:MEMBER_OF_UNIT]->(u:Unit)
+        """
+        return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
+
+    @property
+    def commands(self) -> RelQuery:
+        """
+        Query the units commanded by the officer.
+        Returns:
+            RelQuery: A query object for the units commanded by the officer.
+        """
+        base = """
+        MATCH (o:Officer {uid: $uid})-[r:COMMANDED_BY]-(u:Unit)
+        """
+        return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
+
+    @property
+    def allegations(self) -> RelQuery:
+        """
+        Query the allegations associated with the officer.
+        Returns:
+            RelQuery: A query object for the allegations.
+        """
+        base = """
+        MATCH (o:Officer {uid: $uid})-[r:ACCUSED_OF]->(a:Allegation)
+        """
+        from backend.database.models.complaint import Allegation
+        return RelQuery(self, base, return_alias="a", inflate_cls=Allegation)
+
+    @property
+    def investigations(self) -> RelQuery:
+        """
+        Query the investigations led by the officer.
+        Returns:
+            RelQuery: A query object for the investigations.
+        """
+        base = """
+        MATCH (o:Officer {uid: $uid})-[r:LEAD_BY]->(i:Investigation)
+        """
+        from backend.database.models.complaint import Investigation
+        return RelQuery(self, base, return_alias="i", inflate_cls=Investigation)
 
     def primary_source(self):
         """

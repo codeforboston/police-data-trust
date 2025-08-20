@@ -126,6 +126,7 @@ class Source(StructuredNode, JsonSerializable):
         "uid", "name", "url",
         "contact_email"
     ]
+    __hidden_properties__ = ["invitations", "staged_invitations"]
     uid = UniqueIdProperty()
 
     name = StringProperty(unique_index=True)

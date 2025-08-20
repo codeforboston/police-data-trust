@@ -175,7 +175,6 @@ def example_unit(example_agency, example_officer, example_source):
     ).save()
 
     # Create relationships
-    agency.units.connect(unit)
     unit.agency.connect(agency)
     unit.citations.connect(source, {
         'date': datetime.now(),
@@ -195,13 +194,11 @@ def example_officer(example_source):
         first_name="John",
         last_name="Doe",
     ).save()
-    officer.state_ids.connect(
-        StateID(
-            id_name="Tax ID Number",
-            state="NY",
-            value="958938"
-        )
-    )
+    StateID(
+        id_name="Tax ID Number",
+        state="NY",
+        value="958938"
+    ).save().officer.connect(officer)
     officer.citations.connect(
         example_source,
         {
@@ -324,18 +321,12 @@ def example_complaint(
     ).save()
 
     allegation.accused.connect(example_officer)
+    allegation.complaint.connect(complaint)
     penalty.officer.connect(example_officer)
-    complaint.allegations.connect(allegation)
-    complaint.investigations.connect(investigation)
-    complaint.penalties.connect(penalty)
+    penalty.complaint.connect(complaint)
+    investigation.complaint.connect(complaint)
     complaint.location.connect(location)
     complaint.source_org.connect(example_source, source_rel)
-    add_test_property(location)
-    add_test_property(complaint)
-    add_test_property(allegation)
-    add_test_property(penalty)
-    add_test_property(investigation)
-    add_test_property_to_rel(complaint, 'HAS_SOURCE', example_source)
 
     yield complaint
 
