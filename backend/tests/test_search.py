@@ -1,6 +1,7 @@
 import urllib.parse
 import pytest
 
+
 @pytest.mark.parametrize(
     ("query", "expected_content"),
     [

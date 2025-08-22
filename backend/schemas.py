@@ -323,7 +323,7 @@ class RelQuery:
         cy, params = self._compose(count_only=True)
         rows, _ = db.cypher_query(cy, params)
         return bool(rows and rows[0][0] > 0)
-    
+
     def count(self) -> int:
         """
         Count the number of nodes matching the query.
