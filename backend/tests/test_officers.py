@@ -555,6 +555,27 @@ def test_get_officers_with_unit(client, db_session, access_token,
     assert res.json["page"] == 1
     assert res.json["total"] == len(officers_with_unit)
 
+    # Officers in Unit Alpha or Unit Bravo (from DB)
+    results, meta = db.cypher_query("""
+        MATCH (o:Officer)
+        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
+        WHERE u.name IN ["Unit Alpha", "Unit Bravo"]
+        RETURN o
+    """)
+    officers_with_units = [Officer.inflate(row[0]) for row in results]
+
+    # API request with multiple units
+    res = client.get(
+        "/api/v1/officers/?unit=Unit Alpha&unit=Unit Bravo",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    print(f"len results is {len(res.json['results'])}")
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officers_with_units)
+
 
 def test_get_officers_with_unit_and_agency(client, db_session, access_token,
                                            create_officers_units_agencies):
@@ -582,43 +603,28 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
     assert res.json["total"] == len(officers_with_unit)
 
 
-def test_get_officers_with_date(client, db_session, access_token,
-                                create_officers_units_agencies):
-    res = client.get(
-        "/api/v1/officers/?active_after=2018-01-01",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert res.json != []
-    print(res.json)
-    print(f"len results is {len(res.json['results'])}")
+@pytest.mark.parametrize("query,expect_results", [
+    ("active_after=2018-01-01", True),
+    ("active_before=2022-01-01", True),
+    ("active_before=2010-01-01", False),
+    ("active_after=2035-01-01", False),
+])
+def test_get_officers_dates(client, access_token, query, expect_results,
+                            create_officers_units_agencies):
+    res = client.get(f"/api/v1/officers/?{query}",
+                     headers={"Authorization": f"Bearer {access_token}"})
     assert res.status_code == 200
-    assert res.json["results"][0]["first_name"] is not None
-    assert res.json["results"][0]["last_name"] is not None
-    assert res.json["page"] == 1
 
-    res = client.get(
-        "/api/v1/officers/?active_before=2022-01-01",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert res.json != []
-    print(res.json)
-    print(f"len results is {len(res.json['results'])}")
-    assert res.status_code == 200
-    assert res.json["results"][0]["first_name"] is not None
-    assert res.json["results"][0]["last_name"] is not None
-    assert res.json["page"] == 1
-
-    res = client.get(
-        "/api/v1/officers/?active_before=2010-01-01",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert res.json == {"message": "No results found matching the query"}
-
-    res = client.get(
-        "/api/v1/officers/?active_after=2035-01-01",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
-    )
-    assert res.json == {"message": "No results found matching the query"}
+    if expect_results:
+        # response should have results list
+        assert "results" in res.json
+        assert res.json["results"] != []
+        for officer in res.json["results"]:
+            assert officer["first_name"] is not None
+            assert officer["last_name"] is not None
+    else:
+        # response should be the no-results message
+        assert res.json == {"message": "No results found matching the query"}
 
 
 def test_get_officers_with_rank(client, db_session, access_token,
@@ -662,3 +668,38 @@ def test_filter_by_ethnicity(client, db_session, access_token,
     assert res.json != []
     for officer in res.json["results"]:
         assert officer["ethnicity"] == "White"
+
+    # Multiple ethnicities
+    res = client.get(
+        "/api/v1/officers/?ethnicity=White&ethnicity=Hispanic",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert res.status_code == 200
+    assert res.json != []
+    for officer in res.json["results"]:
+        # officer ethnicity should be one of the requested
+        assert officer["ethnicity"] in ["White", "Hispanic"]
+
+
+@pytest.mark.parametrize(
+    "first_name,last_name,expect_results",
+    [
+        ("John", "Doe", True),
+        ("Hazel", "Nutt", True),
+        ("Alice", "Johnson", False),
+    ]
+)
+def test_filter_by_officer_name(client, db_session, access_token,
+                                create_officers_units_agencies,
+                                first_name, last_name, expect_results):
+    res = client.get(
+        f"/api/v1/officers/?firstName={first_name}&lastName={last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    assert res.status_code == 200
+
+    if expect_results:
+        assert res.json["results"] != []
+    else:
+        assert res.json == {"message": "No results found matching the query"}
