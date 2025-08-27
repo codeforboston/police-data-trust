@@ -9,6 +9,7 @@ from flask_jwt_extended import (
     jwt_required,
     set_access_cookies,
     unset_access_cookies,
+    create_refresh_token
 )
 
 from ..auth import min_role_required
@@ -37,11 +38,13 @@ def login():
         user = User.nodes.first_or_none(email=body.email)
         if user is not None and user.verify_password(body.password):
             token = create_access_token(identity=user.uid)
+            refresh_token = create_refresh_token(identity=user.uid)
             logger.info(f"User {user.uid} logged in successfully.")
             resp = jsonify(
                 {
-                    "message": "Successfully logged in.",
                     "access_token": token,
+                    "refresh_token": refresh_token,
+                    "expires_in": timedelta(hours=24).total_seconds()
                 }
             )
             set_access_cookies(resp, token)
@@ -92,6 +95,7 @@ def register():
         )
         user.save()
         token = create_access_token(identity=user.uid)
+        refresh_token = create_refresh_token(identity=user.uid)
 
         """
         code to handle adding staged_invitations-->invitations for users
@@ -109,9 +113,9 @@ def register():
 
         resp = jsonify(
             {
-                "status": "OK",
-                "message": "Successfully registered.",
                 "access_token": token,
+                "refresh_token": refresh_token,
+                "expires_in": timedelta(hours=24).total_seconds()
             }
         )
         set_access_cookies(resp, token)
@@ -137,15 +141,17 @@ def register():
 
 
 @bp.route("/refresh", methods=["POST"])
-@jwt_required()
-def refresh_token():
+@jwt_required(refresh=True)
+def refresh():
     """Refreshes the currently-authenticated user's access token."""
+    logger = logging.getLogger("user_refresh_token")
 
-    access_token = create_access_token(identity=get_jwt_identity())
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
     resp = jsonify(
         {
-            "message": "token refreshed successfully",
             "access_token": access_token,
+            "expires_in": timedelta(hours=24).total_seconds()
         }
     )
     set_access_cookies(resp, access_token)
