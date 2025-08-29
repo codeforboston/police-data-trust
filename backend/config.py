@@ -12,6 +12,7 @@ class Config(object):
         "JWT_TOKEN_LOCATION", ["headers", "cookies"]
     )
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=14)
     TOKEN_EXPIRATION = timedelta(
         hours=os.environ.get("TOKEN_EXPIRATION_HOURS", 12)
     )
