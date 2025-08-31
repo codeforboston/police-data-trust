@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  ReactNode
-} from "react"
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react"
 import { setAuthRefresh } from "@/utils/authState"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 

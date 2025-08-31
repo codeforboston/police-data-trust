@@ -4,6 +4,13 @@ import type { UserData } from "@/types/user"
 import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 
+interface LoginResponse {
+  access_token: string
+  refresh_token: string
+  expires_in: number
+  [key: string]: unknown
+}
+
 const useLogin = () => {
   const { setAccessToken, setRefreshToken } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
@@ -29,11 +36,9 @@ const useLogin = () => {
     return true
   }
 
-  const coerceTokens = (payload: any) => {
-    const accessToken =
-      payload?.accessToken ?? payload?.access_token ?? null
-    const refreshToken =
-      payload?.refreshToken ?? payload?.refresh_token ?? null
+  const coerceTokens = (payload: LoginResponse) => {
+    const accessToken = payload?.access_token ?? null
+    const refreshToken = payload?.refresh_token ?? null
     return { accessToken, refreshToken }
   }
 
@@ -61,7 +66,7 @@ const useLogin = () => {
         return
       }
 
-      const json = await response.json()
+      const json: LoginResponse = await response.json()
       const { accessToken, refreshToken } = coerceTokens(json)
 
       if (!accessToken || !refreshToken) {
@@ -82,8 +87,10 @@ const useLogin = () => {
   }
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault()
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault()
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) =>
+    event.preventDefault()
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) =>
+    event.preventDefault()
 
   return {
     userData,

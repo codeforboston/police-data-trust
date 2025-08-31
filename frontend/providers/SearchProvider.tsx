@@ -60,15 +60,12 @@ function useHook(): SearchContext {
         const params = updateQueryParams(query)
         const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}?${params.toString()}`
 
-        const response = await apiFetch(
-          apiUrl,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json"
-            }
+        const response = await apiFetch(apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
           }
-        )
+        })
 
         // TODO:
         // status check for not found, unauthorized, etc.

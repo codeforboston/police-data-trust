@@ -21,11 +21,10 @@ type ErrorCode =
 const ERROR_CATALOG: Record<
   ErrorCode,
   { title: string; message: string; primaryCta?: { label: string; href: string } }
-  > = {
-    EMAIL_TAKEN: {
+> = {
+  EMAIL_TAKEN: {
     title: "This email is already registered",
-    message:
-      "Try signing in instead. If you don’t remember your password, you can reset it.",
+    message: "Try signing in instead. If you don’t remember your password, you can reset it.",
     primaryCta: { label: "Go to Sign In", href: "/login" }
   },
   TOKEN_INVALID: {
@@ -42,8 +41,7 @@ const ERROR_CATALOG: Record<
   },
   RATE_LIMIT: {
     title: "Too many attempts",
-    message:
-      "You’ve made too many requests in a short time. Please wait a bit and try again.",
+    message: "You’ve made too many requests in a short time. Please wait a bit and try again.",
     primaryCta: { label: "Return Home", href: "/" }
   },
   NETWORK: {
@@ -53,8 +51,7 @@ const ERROR_CATALOG: Record<
   },
   SERVER: {
     title: "We had a problem on our side",
-    message:
-      "Our servers hit a snag while processing your request. Please try again in a moment.",
+    message: "Our servers hit a snag while processing your request. Please try again in a moment.",
     primaryCta: { label: "Try again", href: "/register" }
   },
   UNKNOWN: {
@@ -158,7 +155,7 @@ export default function RegistrationError() {
                 opacity: 0.9
               }}
             >
-{`path: /register/error
+              {`path: /register/error
 code: ${code}
 rid: ${rid ?? "(none)"} 
 ts: ${new Date().toISOString()}`}

@@ -6,7 +6,7 @@ export type AuthSnapshot = {
 
 let snapshot: AuthSnapshot = {
   accessToken: null,
-  refreshAccessToken: async () => null,
+  refreshAccessToken: async () => null
 }
 
 export function setAuthRefresh(next: AuthSnapshot) {

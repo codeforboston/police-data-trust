@@ -37,6 +37,7 @@ export async function apiFetch(url: string, init: RequestInit = {}): Promise<Res
 function withAuth(init: RequestInit, token: string): RequestInit {
   const headers = new Headers(init.headers)
   if (!headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`)
-  if (typeof FormData !== "undefined" && init.body instanceof FormData) headers.delete("Content-Type")
+  if (typeof FormData !== "undefined" && init.body instanceof FormData)
+    headers.delete("Content-Type")
   return { ...init, headers }
 }
