@@ -4,12 +4,11 @@ import { cleanup, render, screen } from "@testing-library/react"
 import { AuthContext } from "../../providers/AuthProvider" // Adjust the import path if needed
 
 const accessToken = null
-const setAuthToken = vi.fn()
-const removeAuthToken = vi.fn()
+const setAccessToken = vi.fn()
 
 const customRender = (isLoggedIn = false) => {
   return render(
-    <AuthContext.Provider value={{ isLoggedIn, accessToken, setAuthToken, removeAuthToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, accessToken, setAccessToken }}>
       <Nav />
     </AuthContext.Provider>
   )

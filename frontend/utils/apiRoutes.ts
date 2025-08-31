@@ -2,6 +2,7 @@ const API_ROUTES = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
+    refresh: "/auth/refresh",
     forgotPassword: "/auth/forgotPassword"
   },
   search: {
