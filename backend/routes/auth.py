@@ -44,7 +44,7 @@ def login():
                 {
                     "access_token": token,
                     "refresh_token": refresh_token,
-                    "expires_in": timedelta(hours=24).total_seconds()
+                    "expires_in": int(timedelta(hours=24).total_seconds())
                 }
             )
             set_access_cookies(resp, token)
@@ -115,7 +115,7 @@ def register():
             {
                 "access_token": token,
                 "refresh_token": refresh_token,
-                "expires_in": timedelta(hours=24).total_seconds()
+                "expires_in": int(timedelta(hours=24).total_seconds())
             }
         )
         set_access_cookies(resp, token)
@@ -152,7 +152,7 @@ def refresh():
     resp = jsonify(
         {
             "access_token": access_token,
-            "expires_in": timedelta(hours=24).total_seconds()
+            "expires_in": int(timedelta(hours=24).total_seconds())
         }
     )
     set_access_cookies(resp, access_token)
