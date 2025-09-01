@@ -75,40 +75,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const data = await response.json()
-    if (!data?.accessToken) {
-      console.error("Refresh response missing accessToken")
+    if (!data?.access_token) {
+      console.error("Refresh response missing access_token")
       setAccessToken(null)
       setRefreshToken(null)
       return null
     }
 
-    setAccessToken(data.accessToken)
-
-    return data.accessToken as string
+    setAccessToken(data.access_token)
+    return data.access_token as string
   }, [refreshToken, setAccessToken, setRefreshToken])
 
   // --- publish current token + refresher to global apiFetch bridge ---
   useEffect(() => {
     setAuthRefresh({ accessToken, refreshAccessToken })
-  }, [accessToken, refreshAccessToken])
-
-  // --- preemptive refresh a bit before JWT expiry ---
-  useEffect(() => {
-    if (!accessToken) return
-    const exp = getJwtExp(accessToken)
-    if (!exp) return
-
-    const nowMs = Date.now()
-    const expMs = exp * 1000
-    // refresh 30s before expiry (clamp to minimum of 0)
-    const delay = Math.max(expMs - nowMs - 30_000, 0)
-
-    const id = window.setTimeout(() => {
-      // fire and forget; apiFetch will still handle 401s just in case
-      refreshAccessToken().catch(() => {})
-    }, delay)
-
-    return () => window.clearTimeout(id)
   }, [accessToken, refreshAccessToken])
 
   const logout = useCallback(() => {

@@ -17,6 +17,7 @@ export async function apiFetch(url: string, init: RequestInit = {}): Promise<Res
   let res = await fetch(new Request(url, withAuth(init, accessToken)))
 
   if (res.status === 401) {
+    console.log("Access token expired, refreshing...")
     if (!refreshPromise) {
       refreshPromise = refreshAccessToken().finally(() => {
         refreshPromise = null
