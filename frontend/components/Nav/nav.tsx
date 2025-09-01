@@ -6,10 +6,10 @@ import Logo from "@/public/images/NPDC_Logo_FINAL blue2 1.svg"
 import NavLinks from "./navLinks"
 import NavIcons from "./navIcons"
 import styles from "./nav.module.css"
-import { useAuth } from "@/providers/AuthProvider"
+import { useAuthState } from "@/utils/useAuthState"
 
 export default function Nav() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuthState()
 
   const Links = [
     { text: "Home", href: "/" },

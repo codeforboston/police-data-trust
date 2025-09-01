@@ -6,10 +6,10 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"
 import Link from "next/link"
 import styles from "./navIcons.module.css"
-import { useAuth } from "@/providers/AuthProvider"
+import { useAuthState } from "@/utils/useAuthState"
 
 export default function NavIcons() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuthState()
   return (
     <div className={styles.icons}>
       {!isLoggedIn && (
