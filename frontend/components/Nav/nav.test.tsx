@@ -1,6 +1,5 @@
 import Nav from "./nav"
 import { resetAuth, setAuthRefresh } from "@/utils/authState"
-import { AuthProvider } from "@/providers/AuthProvider"
 import { vi, expect, test, afterEach } from "vitest"
 import { cleanup, render, screen } from "@testing-library/react"
 
