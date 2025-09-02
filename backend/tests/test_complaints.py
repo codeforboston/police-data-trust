@@ -697,3 +697,98 @@ def test_update_investigation_no_permission(
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 403
+
+
+def test_create_allegation_with_civilian(
+    client, db_session, contributor_access_token,
+    example_complaint, example_officer
+):
+    """Test create an allegation with civilian info"""
+    new_allegation = {
+        "accused_uid": example_officer.uid,
+        "complainant": {
+            "age": 37,
+            "age_range": "35-39",
+            "ethnicity": None,
+            "gender": "Male"
+        },
+        "allegation": "Refusal to process civilian complaint",
+        "type": "Abuse of Authority"
+        }
+
+    complaint = Complaint.nodes.get(uid=example_complaint.uid)
+    civ_count_before = len(complaint.complainants.all())
+    assert civ_count_before == 0
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=new_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    assert response["allegation"] == new_allegation["allegation"]
+    assert response["type"] == new_allegation["type"]
+
+    # Verify the database is updated
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    assert a_obj.complaint.is_connected(complaint)
+    assert a_obj.allegation == new_allegation["allegation"]
+    assert a_obj.type == new_allegation["type"]
+    assert a_obj.accused.single().uid == new_allegation["accused_uid"]
+    civ = a_obj.complainant.single()
+    assert civ.civ_id is not None
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == civ_count_before + 1
+
+
+def test_create_allegations_with_same_civilian(
+    client, db_session, contributor_access_token,
+    example_complaint, example_officer
+):
+    """Test create multiple allegations using same civilian"""
+    first_allegation = mock_complaint["allegations"][0].copy()
+    first_allegation["accused_uid"] = example_officer.uid
+
+    complaint = Complaint.nodes.get(uid=example_complaint.uid)
+    civ_count_before = len(complaint.complainants.all())
+    assert civ_count_before == 0
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=first_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    # check new civilian was created
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == 1
+    civ = a_obj.complainant.single()
+    assert civ.civ_id == f"{complaint.uid}-{civ_count_after}"
+    print("pytest CIV ID:", civ.civ_id)
+
+    second_allegation = first_allegation.copy()
+    # use existing civilian
+    second_allegation["complainant"]["complainant_id"] = civ.civ_id
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=second_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    # check new civilian was NOT created
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == 1
+    civ = a_obj.complainant.single()
+    assert civ.civ_id == f"{complaint.uid}-{civ_count_after}"

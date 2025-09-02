@@ -252,13 +252,14 @@ class RelQuery:
     """
     def __init__(
             self, owner: StructuredNode, base_cypher: str,
-            return_alias: str, inflate_cls):
+            return_alias: str, inflate_cls, distinct: bool = False):
         self._owner = owner
         self._base = base_cypher.strip().rstrip(";")
         self._ret = return_alias
         self._inflate = inflate_cls
         self._where: List[str] = []
         self._params: Dict[str, Any] = {"uid": owner.uid}
+        self._distinct = distinct
         self._order: Optional[str] = None
         self._limit: Optional[int] = None
 
@@ -290,7 +291,10 @@ class RelQuery:
         if count_only:
             parts.append(f"RETURN count({self._ret}) AS c")
         else:
-            parts.append(f"RETURN {self._ret} AS node")
+            if self._distinct:
+                parts.append(f"RETURN DISTINCT {self._ret} AS node")
+            else:
+                parts.append(f"RETURN {self._ret} AS node")
             if self._order:
                 parts.append(f"ORDER BY {self._order}")
             if self._limit is not None:

@@ -35,6 +35,7 @@ class CreateLocation(BaseModel):
 
 
 class CreateCivilian(BaseModel):
+    complainant_id: Optional[str] = None  
     age: Optional[int] = Field(None, description="Estimated age of the individual.")
     age_range: Optional[str] = Field(None, description="Age range of the individual.")
     ethnicity: Optional[Ethnicity] = Field(

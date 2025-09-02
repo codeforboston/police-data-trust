@@ -60,15 +60,34 @@ def create_allegation(
 
     # Connect complainant to allegation
     if complainant_data:
+        complainant = None
         try:
-            complainant = Civilian(**complainant_data).save()
+            civ_id = complainant_data.get("complainant_id", None)
+            print(f"civ_id: {civ_id}")
+
+            # Lookup existing civilians for this complaint
+            civ_count = len(complaint.complainants.all())
+            print(f"existing civ count: {civ_count}")
+
+            if civ_id:
+                # Use existing civilian
+                complainant = Civilian.nodes.get_or_none(civ_id=civ_id)
+                if not complainant:
+                    raise ValueError(f"Civilian with ID {civ_id} not found")
+            else:
+                # Create new civilian
+                complainant_data['civ_id'] = f"{complaint.uid}-{civ_count + 1}"
+                print(f"new civ_id: {complainant_data['civ_id']}")
+                complainant = Civilian(**complainant_data).save()
+
             allegation.complainant.connect(complainant)
+
         except Exception as e:
             logging.error(f"Error connecting complainant to allegation: {e}")
-            if complainant:
-                logging.error(
-                    f"Deleting complainant {complainant.uid} due to error")
+            if complainant and not civ_id:
+                # Only delete if we created this civilian here
                 complainant.delete()
+
     return allegation
 
 
