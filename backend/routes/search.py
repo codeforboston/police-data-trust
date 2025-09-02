@@ -88,7 +88,7 @@ def create_agency_result(node) -> Searchresult:
         ),
         details=[
             "{} Unit(s) and {} Officers".format(
-                len(a.units) if a.units else 0,
+                a.units.count(),
                 a.total_officers()
             )
         ],

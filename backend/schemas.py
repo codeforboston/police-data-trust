@@ -328,6 +328,16 @@ class RelQuery:
         rows, _ = db.cypher_query(cy, params)
         return bool(rows and rows[0][0] > 0)
 
+    def count(self) -> int:
+        """
+        Count the number of nodes matching the query.
+        Returns:
+            int: The count of nodes.
+        """
+        cy, params = self._compose(count_only=True)
+        rows, _ = db.cypher_query(cy, params)
+        return rows[0][0] if rows else 0
+
 
 # Update Enums to work well with NeoModel
 class PropertyEnum(Enum):

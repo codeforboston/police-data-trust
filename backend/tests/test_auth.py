@@ -61,8 +61,9 @@ def test_register(
     assert res.status_code == expected_status_code
 
     if expected_status_code == 200:
-        assert res.json["status"] == "OK"
-        assert res.json["message"] == "Successfully registered."
+        assert res.json["access_token"] is not None
+        assert res.json["refresh_token"] is not None
+        assert res.json["expires_in"] == 86400
         assert "Set-Cookie" in res.headers
     elif expected_status_code == 409 and email == "existing@email.com":
         assert res.json["status"] == "Conflict"
@@ -90,8 +91,32 @@ def test_login(
         },
     )
 
-    assert ("Set-Cookie" in res.headers) == (expected_status_code == 200)
+    if expected_status_code == 200:
+        assert res.json["access_token"] is not None
+        assert res.json["refresh_token"] is not None
+        assert res.json["expires_in"] == 86400
+        assert "Set-Cookie" in res.headers
+    elif expected_status_code == 401:
+        assert res.json["message"] == "Error. Email or Password invalid."
+    elif expected_status_code == 422:
+        assert "Invalid request body" in res.json["message"]
     assert res.status_code == expected_status_code
+
+
+def test_refresh_token(client, example_user):
+    login_res = client.post(
+        "api/v1/auth/login",
+        json={"email": example_user.email, "password": "my_password"},
+    )
+    refresh_token = login_res.json["refresh_token"]
+
+    res = client.post(
+        "api/v1/auth/refresh",
+        headers={"Authorization": f"Bearer {refresh_token}"},
+    )
+
+    assert res.status_code == 200
+    assert "access_token" in res.json
 
 
 # @pytest.mark.parametrize(("use_correct_email"), [(True), (False)])
