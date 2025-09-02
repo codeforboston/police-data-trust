@@ -69,7 +69,9 @@ paths:
       summary: "Refresh Access Token"
       operationId: "refreshToken"
       description: >
-        Refreshes the current access token to reset the expiration date.
+        Refreshes the current access token to reset the expiration date. This
+        endpoint requires a valid refresh token to be used as the bearer token
+        to authenticate the request.
       tags: 
         -  Authentication
       responses: 
@@ -80,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: '#/components/schemas/RefreshResponse'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /auth/logout:
@@ -159,6 +161,12 @@ components:
         access_token:
           type: string
           description: The JWT that can be used to authenticate API requests on behalf of the user.
+        refresh_token:
+          type: string
+          description: The JWT that can be used to obtain a new access token.
+        expires_in:
+          type: integer
+          description: The number of seconds until the refresh token expires.
     LoginRequest:
       type: object
       properties:
@@ -177,9 +185,21 @@ components:
         access_token:
           type: string
           description: The JWT that can be used to authenticate API requests on behalf of the user.
-        message:
+        refresh_token:
           type: string
-          description: Additional detail aboout the login action.
+          description: The JWT that can be used to obtain a new access token.
+        expires_in:
+          type: integer
+          description: The number of seconds until the refresh token expires.
+    RefreshResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: The JWT that can be used to authenticate API requests on behalf of the user.
+        expires_in:
+          type: integer
+          description: The number of seconds until the access token expires.
     CurrentUser:
       type: object
       properties:
