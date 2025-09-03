@@ -6,7 +6,7 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter } from "next/navigation"
 
 const useRegister = () => {
-  const { setAuthToken } = useAuth()
+  const { setAccessToken, setRefreshToken } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
 
   const [userData, setUserData] = useState<UserData>({
@@ -76,10 +76,15 @@ const useRegister = () => {
 
       if (response.ok) {
         const data = await response.json()
-        setAuthToken(data.access_token)
+        setAccessToken(data.access_token)
+        setRefreshToken(data.refresh_token)
         router.push("/register/success")
       } else {
-        router.push("/register/error")
+        if (response.status === 409) {
+          router.push("/register/error?code=EMAIL_TAKEN")
+        } else {
+          router.push("/register/error")
+        }
       }
     } catch (error) {
       router.push("/register/error")

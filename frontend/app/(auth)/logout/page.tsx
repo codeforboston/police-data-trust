@@ -9,10 +9,10 @@ import { useAuth } from "@/providers/AuthProvider"
 import { useEffect } from "react"
 
 const Logout = () => {
-  const { removeAuthToken } = useAuth()
+  const { logout } = useAuth()
   useEffect(() => {
-    removeAuthToken()
-  }, [removeAuthToken])
+    logout()
+  }, [logout])
 
   return (
     <div>

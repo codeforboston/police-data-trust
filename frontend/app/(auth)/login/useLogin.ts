@@ -4,10 +4,16 @@ import type { UserData } from "@/types/user"
 import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 
-const useLogin = () => {
-  const { setAuthToken } = useAuth()
-  const [showPassword, setShowPassword] = useState(false)
+interface LoginResponse {
+  access_token: string
+  refresh_token: string
+  expires_in: number
+  [key: string]: unknown
+}
 
+const useLogin = () => {
+  const { setAccessToken, setRefreshToken } = useAuth()
+  const [showPassword, setShowPassword] = useState(false)
   const [userData, setUserData] = useState<UserData>({
     email: "",
     firstname: "",
@@ -16,33 +22,32 @@ const useLogin = () => {
     password: "",
     password2: ""
   })
-
   const [formError, setFormError] = useState(false)
-
   const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setUserData({ ...userData, [e.target.id]: e.target.value })
   }
 
-  const handleFormError = (data: UserData) => {
-    if (data.email == "" || !data.email.includes("@")) {
-      setFormError(true)
-      return
-    }
+  // return a boolean instead of setting state synchronously (avoids stale state)
+  const isValid = (data: UserData) => {
+    if (!data.email || !data.email.includes("@")) return false
+    if (!data.password) return false
+    return true
+  }
 
-    if (data.password === "") {
-      setFormError(true)
-    } else {
-      setFormError(false)
-    }
+  const coerceTokens = (payload: LoginResponse) => {
+    const accessToken = payload?.access_token ?? null
+    const refreshToken = payload?.refresh_token ?? null
+    return { accessToken, refreshToken }
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    handleFormError(userData)
 
-    if (formError) {
+    const ok = isValid(userData)
+    setFormError(!ok)
+    if (!ok) {
       console.error("Form validation failed.")
       return
     }
@@ -52,37 +57,40 @@ const useLogin = () => {
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: userData.email,
-          password: userData.password
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userData.email, password: userData.password })
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        setAuthToken(data.access_token)
-        router.push("/")
-      } else {
+      if (!response.ok) {
         setFormError(true)
+        return
       }
+
+      const json: LoginResponse = await response.json()
+      const { accessToken, refreshToken } = coerceTokens(json)
+
+      if (!accessToken || !refreshToken) {
+        console.warn("Login succeeded but tokens missing from response:", json)
+        setFormError(true)
+        return
+      }
+
+      // Persist via AuthProvider (also writes to localStorage per your provider)
+      setAccessToken(accessToken)
+      setRefreshToken(refreshToken)
+
+      router.push("/")
     } catch (error) {
-      setFormError(true)
       console.error("An error with login occurred:", error)
+      setFormError(true)
     }
   }
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) =>
     event.preventDefault()
-  }
-
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) =>
     event.preventDefault()
-  }
 
   return {
     userData,

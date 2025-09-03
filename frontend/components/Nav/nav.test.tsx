@@ -1,22 +1,20 @@
 import Nav from "./nav"
+import { resetAuth, setAuthRefresh } from "@/utils/authState"
 import { vi, expect, test, afterEach } from "vitest"
 import { cleanup, render, screen } from "@testing-library/react"
-import { AuthContext } from "../../providers/AuthProvider" // Adjust the import path if needed
-
-const accessToken = null
-const setAuthToken = vi.fn()
-const removeAuthToken = vi.fn()
 
 const customRender = (isLoggedIn = false) => {
-  return render(
-    <AuthContext.Provider value={{ isLoggedIn, accessToken, setAuthToken, removeAuthToken }}>
-      <Nav />
-    </AuthContext.Provider>
-  )
+  setAuthRefresh({
+    accessToken: isLoggedIn ? "fake-token" : null,
+    refreshAccessToken: vi.fn(),
+    logout: vi.fn()
+  })
+  return render(<Nav />)
 }
 
 afterEach(() => {
   cleanup()
+  resetAuth()
 })
 
 test("Nav renders the logo and title", () => {
@@ -46,6 +44,7 @@ test("Nav renders navigation links", () => {
 
 test("Nav renders the Logout link", () => {
   const { unmount } = customRender(true)
+  screen.debug()
   expect(screen.getByText("Logout"))
   unmount()
 })
