@@ -697,3 +697,235 @@ def test_update_investigation_no_permission(
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 403
+
+
+def test_create_allegation_with_civilian(
+    client, db_session, contributor_access_token,
+    example_complaint, example_officer
+):
+    """Test create an allegation with civilian info"""
+    new_allegation = {
+        "accused_uid": example_officer.uid,
+        "complainant": {
+            "age": 37,
+            "age_range": "35-39",
+            "ethnicity": None,
+            "gender": "Male"
+        },
+        "allegation": "Refusal to process civilian complaint",
+        "type": "Abuse of Authority"
+        }
+
+    complaint = Complaint.nodes.get(uid=example_complaint.uid)
+    civ_count_before = len(complaint.complainants.all())
+    assert civ_count_before == 0
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=new_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    assert response["allegation"] == new_allegation["allegation"]
+    assert response["type"] == new_allegation["type"]
+
+    # Verify the database is updated
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    assert a_obj.complaint.is_connected(complaint)
+    assert a_obj.allegation == new_allegation["allegation"]
+    assert a_obj.type == new_allegation["type"]
+    assert a_obj.accused.single().uid == new_allegation["accused_uid"]
+    civ = a_obj.complainant.single()
+    assert civ.civ_id is not None
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == civ_count_before + 1
+
+
+def test_create_allegations_with_same_civilian(
+    client, db_session, contributor_access_token,
+    example_complaint, example_officer
+):
+    """Test create multiple allegations using same civilian"""
+    first_allegation = mock_complaint["allegations"][0].copy()
+    first_allegation["accused_uid"] = example_officer.uid
+
+    complaint = Complaint.nodes.get(uid=example_complaint.uid)
+    civ_count_before = len(complaint.complainants.all())
+    assert civ_count_before == 0
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=first_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    # check new civilian was created
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == 1
+    civ = a_obj.complainant.single()
+    assert civ.civ_id == f"{complaint.uid}-{civ_count_after}"
+    print("pytest CIV ID:", civ.civ_id)
+
+    second_allegation = first_allegation.copy()
+    # use existing civilian
+    second_allegation["complainant"]["civ_id"] = civ.civ_id
+
+    res = client.post(
+        f"/api/v1/complaints/{example_complaint.uid}/allegations",
+        json=second_allegation,
+        headers={"Authorization": f"Bearer {contributor_access_token}"},
+    )
+
+    assert res.status_code == 201
+    response = res.json
+
+    # check new civilian was NOT created
+    a_obj = Allegation.nodes.get(uid=response["uid"])
+    civ_count_after = len(complaint.complainants.all())
+    assert civ_count_after == 1
+    civ = a_obj.complainant.single()
+    assert civ.civ_id == f"{complaint.uid}-{civ_count_after}"
+
+
+@pytest.fixture
+def sample_complaint_json():
+    return {
+        "source_uid": "some-source-uid",
+        "source_details": {"details": "Test source"},
+        "location": {"address": "123 Main St", "city": "Boston"},
+        "allegations": [
+            {
+                "record_id": None,
+                "complainant": {
+                    "civ_id": "blackman-2",
+                    "age": 32,
+                    "age_range": "30-34",
+                    "ethnicity": "Black/African American",
+                    "gender": "Male"
+                },
+                "allegation": "Word",
+                "type": "Discourtesy",
+                "sub_type": None,
+                "recomended_finding": None,
+                "recomended_outcome": None,
+                "finding": "Substantiated",
+                "outcome": "Command Discipline A",
+            },
+            {
+                "record_id": None,
+                "complainant": {
+                    "civ_id": "blackman-1",
+                    "age": 27,
+                    "age_range": "25-29",
+                    "ethnicity": "Black/African American",
+                    "gender": "Male"
+                },
+                "allegation": "Nightstick as club (incl asp & baton)",
+                "type": "Force",
+                "sub_type": None,
+                "recomended_finding": None,
+                "recomended_outcome": None,
+                "finding": "Unsubstantiated",
+                "outcome": None,
+            },
+            {
+                "record_id": None,
+                "complainant": {
+                    "civ_id": "blackman-2",
+                    "age": 32,
+                    "age_range": "30-34",
+                    "ethnicity": "Black/African American",
+                    "gender": "Male"
+                },
+                "allegation": "Threat of force (verbal or physical)",
+                "type": "Abuse of Authority",
+                "sub_type": None,
+                "recomended_finding": None,
+                "recomended_outcome": None,
+                "finding": "Substantiated",
+                "outcome": "Command Discipline B",
+            },
+            {
+                "record_id": None,
+                "complainant": {
+                    "civ_id": "blackwoman-1",
+                    "age": 27,
+                    "age_range": "25-29",
+                    "ethnicity": "Black/African American",
+                    "gender": "Female"
+                },
+                "allegation": "Physical force",
+                "type": "Force",
+                "sub_type": None,
+                "recomended_finding": None,
+                "recomended_outcome": None,
+                "finding": "Exonerated",
+                "outcome": None,
+            }
+        ]
+    }
+
+
+def test_create_complaint_with_multiple_allegations(
+        client, db_session, example_source, example_officer,
+        contributor_access_token, sample_complaint_json):
+
+    request = {
+            "record_id": mock_complaint["record_id"],
+            "source_details": mock_complaint["source_details"],
+            "category": mock_complaint["category"],
+            "incident_date": mock_complaint["incident_date"],
+            "received_date": mock_complaint["received_date"],
+            "closed_date": mock_complaint["closed_date"],
+            "location": mock_complaint["location"],
+            "reason_for_contact": mock_complaint["reason_for_contact"],
+            "outcome_of_contact": mock_complaint["outcome_of_contact"],
+            "source_uid": example_source.uid,
+            "attachments": mock_complaint["attachments"],
+            # "penalties": mock_complaint["penalties"],
+        }
+
+    request["allegations"] = sample_complaint_json["allegations"]
+    for a in request["allegations"]:
+        a["accused_uid"] = example_officer.uid
+
+    # request['penalties'][0]['officer_uid'] = example_officer.uid
+
+    res = client.post(
+        "/api/v1/complaints/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 201
+    response = res.json
+
+    complaint = (
+       Complaint.nodes.get(uid=response["uid"])
+    )
+
+    print("Created complaint UID:", complaint.uid)
+
+    for a in sample_complaint_json["allegations"]:
+        officer = Officer.nodes.get_or_none(uid=a["accused_uid"])
+        print(a["accused_uid"], "found" if officer else "not found")
+
+    # Check total number of allegations
+    allegations = complaint.allegations.all()
+    assert len(allegations) == len(sample_complaint_json["allegations"])
+
+    # Check that civilian nodes are created correctly without duplicates
+    civilians = complaint.complainants.all()
+    civ_ids_seen = {c.civ_id for c in civilians}
+    # Should be one civilian per unique external civ_id
+    expected_civ_ids = {f"{complaint.uid}-1", f"{complaint.uid}-2",
+                        f"{complaint.uid}-3"}
+    assert civ_ids_seen == expected_civ_ids

@@ -24,51 +24,61 @@ bp = Blueprint("complaint_routes", __name__, url_prefix="/api/v1/complaints")
 
 
 def create_allegation(
-        complaint: Complaint, allegation_input: CreateAllegation):
+        complaint: Complaint,
+        allegation_input: CreateAllegation,
+        civilian: Civilian = None):
     """
     Create an allegation for a complaint and the required connections.
-    Returns the created Allegation instance or False if an error occurs.
+    Returns the created Allegation instance.
     """
     a_data = allegation_input.model_dump(exclude_unset=True)
     officer_uid = a_data.pop("accused_uid", None)
     complainant_data = a_data.pop("complainant", None)
 
-    # Create Officer for Allegation
-    if officer_uid:
-        officer = Officer.nodes.get_or_none(uid=officer_uid)
-        if officer is None:
-            # Raise an error if the officer is not found
-            raise ValueError(f"Officer with UID {officer_uid} not found")
-    else:
+    # Officer is required
+    if not officer_uid:
         raise ValueError("Officer UID is required for the allegation")
 
+    officer = Officer.nodes.get_or_none(uid=officer_uid)
+    if officer is None:
+        raise ValueError(f"Officer with UID {officer_uid} not found")
+
+    allegation = None
     try:
         allegation = Allegation(**a_data).save()
         allegation.accused.connect(officer)
         allegation.complaint.connect(complaint)
         logging.info(
-            f"Allegation {allegation.uid} created "
-            f"for Complaint {complaint.uid}")
+            f"Allegation {allegation.uid} created for Complaint {complaint.uid}"
+        )
     except Exception as e:
         logging.error(f"Error creating allegation: {e}")
         if allegation:
-            # If the allegation was created but failed to connect, delete it
-            logging.error(f"Deleting allegation {allegation.uid} due to error")
             allegation.delete()
-        raise AttributeError(
-            f"Failed to create allegation: {e}")
+        raise AttributeError(f"Failed to create allegation: {e}")
 
-    # Connect complainant to allegation
-    if complainant_data:
-        try:
-            complainant = Civilian(**complainant_data).save()
-            allegation.complainant.connect(complainant)
-        except Exception as e:
-            logging.error(f"Error connecting complainant to allegation: {e}")
-            if complainant:
-                logging.error(
-                    f"Deleting complainant {complainant.uid} due to error")
-                complainant.delete()
+    # Handle complainant
+    try:
+        if civilian:
+            # Civilian already looked up
+            allegation.complainant.connect(civilian)
+
+        elif complainant_data:
+            civ_id = complainant_data.get("civ_id")
+            if not civ_id:
+                raise ValueError(
+                    "civ_id must be provided in complainant_data"
+                )
+
+            new_civilian = Civilian(**complainant_data).save()
+            allegation.complainant.connect(new_civilian)
+
+    except Exception as e:
+        logging.error(f"Error connecting complainant to allegation: {e}")
+        if not civilian and "new_civilian" in locals():
+            new_civilian.delete()
+        raise
+
     return allegation
 
 
@@ -322,10 +332,28 @@ def create_complaint():
 
     # Add allegations
     if allegations:
+        civ_map = {}  # external civ_id -> Civilian node
         for allegation in allegations:
+            complainant_data = allegation.get("complainant")
+            civilian_node = None
+
+            if complainant_data:
+                ext_civ_id = complainant_data.get("civ_id")
+                if ext_civ_id in civ_map:
+                    # Reuse existing Civilian
+                    civilian_node = civ_map[ext_civ_id]
+                else:
+                    # Create a new Civilian node and track it
+                    civ_count = len(civ_map) + 1
+                    internal_civ_id = f"{complaint.uid}-{civ_count}"
+                    complainant_data["civ_id"] = internal_civ_id
+                    civilian_node = Civilian(**complainant_data).save()
+                    if ext_civ_id:
+                        civ_map[ext_civ_id] = civilian_node
+
             try:
                 a_model = CreateAllegation(**allegation)
-                create_allegation(complaint, a_model)
+                create_allegation(complaint, a_model, civilian_node)
             except ValueError as ve:
                 logger.error(f"Error creating allegation: {ve}")
             except AttributeError as ae:
@@ -532,8 +560,28 @@ def create_complaint_allegation(complaint_uid: str):
     if c is None:
         abort(404, description="Complaint not found")
 
+    civilian = None
+    complainant_data: CreateCivilian = body.complainant
+
+    if complainant_data:
+        civ_id = complainant_data.civ_id  # use attribute access
+        if civ_id:
+            # Lookup existing civilian
+            civilian = Civilian.nodes.get_or_none(civ_id=civ_id)
+            if civilian is None:
+                abort(404,
+                      description=f"Civilian with civ_id {civ_id} not found")
+        else:
+            # Manufacture a new civ_id using complaint uid + complainant count
+            civ_count = len(c.complainants.all())
+            # Use Pydantic copy/update instead of item assignment
+            complainant_data = complainant_data.model_copy(update={
+                "civ_id": f"{c.uid}-{civ_count + 1}"
+            })
+            body.complainant = complainant_data
+
     try:
-        allegation = create_allegation(c, body)
+        allegation = create_allegation(c, body, civilian)
     except ValueError as ve:
         abort(400, description=str(ve))
     except AttributeError as ae:

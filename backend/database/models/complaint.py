@@ -119,6 +119,17 @@ class Complaint(StructuredNode, JsonSerializable):
         """
         return RelQuery(self, base, return_alias="p", inflate_cls=Penalty)
 
+    @property
+    def complainants(self) -> RelQuery:
+        """Get the complainants related to this complaint."""
+        from backend.database.models.civilian import Civilian
+        base = f"""
+        MATCH (c:Complaint {{uid: '{self.uid}'}})-[:ALLEGED]-(:Allegation)-[
+        REPORTED_BY]-(civilian:Civilian)
+    """
+        return RelQuery(self, base, return_alias="civilian",
+                        inflate_cls=Civilian, distinct=True)
+
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Complaint {self.uid}>"
