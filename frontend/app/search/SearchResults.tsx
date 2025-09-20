@@ -85,6 +85,12 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
           <CustomTabPanel value={tab} index={3}>
             {console.log("All results:", results)}
             {console.log("Sample results:", results, results[0])}
+            {console.log("Sample result structure:", results[0])}
+            {console.log("All content types:", results.map(r => r.content_type))}
+            {console.log("Results containing 'agency':", results.filter(r => 
+              JSON.stringify(r).toLowerCase().includes('agency')
+            ))}
+
             <p>Agency tab - {results.length} total results</p>
           </CustomTabPanel>
         </Box>
