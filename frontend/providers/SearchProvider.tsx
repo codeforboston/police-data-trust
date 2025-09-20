@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import { useAuth } from "@/providers/AuthProvider"
-import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
+import { SearchRequest, SearchResponse, PaginatedSearchResponses, AgenciesRequest, AgenciesApiResponse } from "@/utils/api"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { ApiError } from "@/utils/apiError"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -11,6 +11,9 @@ interface SearchContext {
   searchAll: (
     query: Omit<SearchRequest, "access_token" | "accessToken">
   ) => Promise<PaginatedSearchResponses>
+  searchAgencies: (
+    params: Omit<AgenciesRequest, "access_token" | "accessToken">
+  ) => Promise<AgenciesApiResponse>
   searchResults?: PaginatedSearchResponses
   loading: boolean
   error: string | null
@@ -213,8 +216,54 @@ function useHook(): SearchContext {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
-  return useMemo(
-    () => ({ searchAll, searchResults, loading, error, setPage }),
-    [searchResults, searchAll, loading, error, setPage]
+  const searchAgencies = useCallback(
+    async (params: Omit<AgenciesRequest, "access_token" | "accessToken">) => {
+      if (!accessToken) throw new ApiError("No access token", "NO_ACCESS_TOKEN", 401)
+        setLoading(true)
+
+        try {
+          const queryParams = new URLSearchParams()
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) {
+              queryParams.set(key, String(value))
+            }
+          })
+
+          const apiUrl = `${apiBaseUrl}${API_ROUTES.agencies}?${queryParams.toString()}`
+
+          const response = await apiFetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json"
+            }
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to search agencies")
+          }
+
+          const data: AgenciesApiResponse = await response.json()
+          return data
+        } catch (error) {
+          console.error("Error searching agencies:", error)
+          return {
+            error: String(error),
+            results: [],
+            page: 0,
+            per_page: 0,
+            pages: 0,
+            total: 0
+          }
+        } finally {
+          setLoading(false)
+        }
+    },
+    [accessToken]
   )
+
+  return useMemo(
+    () => ({ searchAll, searchResults, loading, error, setPage, searchAgencies }),
+    [searchResults, searchAll, loading, error, setPage, searchAgencies]
+  )
+  
 }

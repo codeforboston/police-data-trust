@@ -126,3 +126,50 @@ export type UpdateUserProfilePayload = {
   }
   primary_email?: string
 }
+export interface AgenciesRequest extends AuthenticatedRequest {
+  name?: string
+  city?: string
+  state?: string
+  zip_code?: string
+  jurisdiction?: string
+  page?: number
+  per_page?: number  
+}
+
+export interface AgencyResponse {
+  uid: string
+  name: string
+  website_url?: string | null
+  hq_address?: string | null
+  hq_city?: string | null
+  hq_state?: string | null
+  hq_zip?: string | null
+  phone?: string | null
+  email?: string | null
+  description?: string | null
+  jurisdiction?: string | null
+  units?: Array<{
+    uid: string
+    name: string
+    website_url?: string | null
+    phone?: string | null
+    email?: string | null
+    description?: string | null
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zip?: string | null
+    agency_url?: string | null
+    officers_url?: string | null
+    date_established?: string | null
+  }>
+}
+
+export type AgenciesApiResponse = {
+  results: AgencyResponse[]
+  page: number
+  per_page: number
+  pages: number
+  total: number
+  error?: string
+}
