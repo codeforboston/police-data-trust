@@ -82,6 +82,11 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
               />
             ))}
           </CustomTabPanel>
+          <CustomTabPanel value={tab} index={3}>
+            {console.log("All results:", results)}
+            {console.log("Sample results:", results, results[0])}
+            <p>Agency tab - {results.length} total results</p>
+          </CustomTabPanel>
         </Box>
       )}
     </>
