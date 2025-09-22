@@ -13,6 +13,7 @@ const API_ROUTES = {
   users: {
     self: "/users/self"
   }
+  agencies: "/api/v1/agencies"
 }
 
 export const apiBaseUrl: string =
