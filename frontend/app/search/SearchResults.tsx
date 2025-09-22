@@ -83,13 +83,44 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
             ))}
           </CustomTabPanel>
           <CustomTabPanel value={tab} index={3}>
-            {console.log("All results:", results)}
-            {console.log("Sample results:", results, results[0])}
-            {console.log("Sample result structure:", results[0])}
-            {console.log("All content types:", results.map(r => r.content_type))}
-            {console.log("Results containing 'agency':", results.filter(r => 
-              JSON.stringify(r).toLowerCase().includes('agency')
-            ))}
+            {results
+              .filter((result) => result.content_type === "Agency")
+              .map((result) => (
+                <CardHeader
+                key={result.uid}
+                title={result.title}
+                subheader={result.subtitle}
+                slotProps={{ subheader: { fontWeight: "bold", color: "#000" } }}
+                action={
+                  <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
+                  </Box>
+                }
+                sx={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: "0.5rem",
+                  border: "1px solid #ddd",
+                  borderBottom: "none",
+                  ":first-of-type": {
+                    borderTopLeftRadius: "4px",
+                    borderTopRightRadius: "4px"
+                  },
+                  ":last-of-type": {
+                    borderBottomLeftRadius: "4px",
+                    borderBottomRightRadius: "4px",
+                    borderBottom: "1px solid #ddd"
+                  },
+                  "& .MuiCardHeader-content": {
+                    overflow: "hidden"
+                  },
+                  paddingInline: "4.5rem",
+                  paddingBlock: "2rem"
+                }}
+                />
+              ))}
 
             <p>Agency tab - {results.length} total results</p>
           </CustomTabPanel>
