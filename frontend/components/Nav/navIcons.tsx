@@ -80,7 +80,8 @@ export default function NavIcons() {
             color: "#303463",
             borderColor: "#303463",
             ":hover": { backgroundColor: "#ECEEF8" }
-          }}>
+          }}
+        >
           Sign In
         </Button>
       ) : (
@@ -98,10 +99,12 @@ export default function NavIcons() {
               paddingBlock: "8px"
             }}
             id="profile-button"
+            data-testid="profile-button"
             aria-controls={open ? "profile-menu" : undefined}
             aria-expanded={open ? "true" : undefined}
             aria-haspopup="true"
-            onClick={handleToggle}>
+            onClick={handleToggle}
+          >
             <PersonOutlineOutlinedIcon />
           </Button>
           <Popper
@@ -110,28 +113,33 @@ export default function NavIcons() {
             role={undefined}
             placement="bottom-start"
             transition
-            disablePortal>
+            disablePortal
+          >
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
                 style={{
                   transformOrigin: placement === "bottom-start" ? "left top" : "left bottom"
-                }}>
+                }}
+              >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList
                       autoFocusItem={open}
                       id="profile-menu"
                       aria-labelledby="profile-button"
-                      onKeyDown={handleListKeyDown}>
+                      onKeyDown={handleListKeyDown}
+                    >
                       <MenuItem
                         onClick={handleProfile}
-                        sx={{ "&:hover": { backgroundColor: "#ECEEF8" } }}>
+                        sx={{ "&:hover": { backgroundColor: "#ECEEF8" } }}
+                      >
                         Profile
                       </MenuItem>
                       <MenuItem
                         onClick={handleLogout}
-                        sx={{ "&:hover": { backgroundColor: "#ECEEF8" } }}>
+                        sx={{ "&:hover": { backgroundColor: "#ECEEF8" } }}
+                      >
                         Logout
                       </MenuItem>
                     </MenuList>
