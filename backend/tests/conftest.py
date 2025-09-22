@@ -3,7 +3,7 @@ from neo4j import GraphDatabase
 from neomodel import db
 from backend.api import create_app
 from backend.config import TestingConfig
-from backend.database import User, UserRole, EmailContact, PhoneContact
+from backend.database import User, UserRole
 from backend.database import (
     Source,
     MemberRole,

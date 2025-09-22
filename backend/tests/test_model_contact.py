@@ -1,5 +1,5 @@
-import pytest
 from backend.database.models.contact import EmailContact, PhoneContact
+
 
 def test_get_or_create_email():
     email_address = "test@example.com"

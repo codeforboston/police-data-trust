@@ -8,7 +8,7 @@ from backend.database.models.contact import (
 from neomodel import (
     Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
-    UniqueIdProperty, EmailProperty, One, db
+    UniqueIdProperty, One, db
 )
 
 
@@ -157,7 +157,7 @@ class User(StructuredNode, JsonSerializable):
         """
         primary_email = self.primary_email.single()
         return primary_email.email if primary_email else None
-    
+
     @property
     def phone_numbers(self) -> list:
         """
@@ -175,7 +175,7 @@ class User(StructuredNode, JsonSerializable):
             UserRole: The user's role as an enum.
         """
         return UserRole(self.role)
-    
+
     @classmethod
     def create_user(
         cls,

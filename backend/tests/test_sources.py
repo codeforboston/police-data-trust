@@ -3,7 +3,6 @@ import math
 from flask_jwt_extended import decode_token
 from backend.database import Source, MemberRole
 from backend.database.models.user import User, UserRole
-from backend.database.models.contact import EmailContact, PhoneContact
 
 
 publisher_email = "pub@source.com"

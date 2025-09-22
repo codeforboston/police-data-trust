@@ -15,7 +15,7 @@ from flask_jwt_extended import (
 from ..auth import min_role_required
 from pydantic.main import BaseModel
 from ..mixpanel.mix import track_to_mp
-from ..database import User, UserRole, Invitation, StagedInvitation, EmailContact, PhoneContact
+from ..database import User, UserRole, Invitation, StagedInvitation
 from ..dto import LoginUserDTO, RegisterUserDTO, ResetPasswordDTO
 from ..schemas import validate_request
 

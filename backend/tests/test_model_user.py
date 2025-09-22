@@ -1,11 +1,12 @@
-import pytest
 from backend.database.models.user import User, UserRole
+
 
 def test_get_by_email(example_user):
     user = example_user
     fetched_user = user.get_by_email(user.email)
     assert fetched_user is not None
     assert fetched_user.email == user.email
+
 
 def test_create_user():
     email = "test@example.com"

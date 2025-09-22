@@ -1,7 +1,8 @@
 from backend.schemas import JsonSerializable
 
 from neomodel import (
-    StructuredNode, StringProperty, EmailProperty, DateTimeProperty, BooleanProperty, db
+    StructuredNode, StringProperty, EmailProperty,
+    DateTimeProperty, BooleanProperty, db
 )
 
 
