@@ -3,7 +3,7 @@ from neo4j import GraphDatabase
 from neomodel import db
 from backend.api import create_app
 from backend.config import TestingConfig
-from backend.database import User, UserRole
+from backend.database import User, UserRole, EmailContact, PhoneContact
 from backend.database import (
     Source,
     MemberRole,
@@ -125,15 +125,14 @@ def cleanup_test_data():
 
 @pytest.fixture
 def example_user():
-    user = User(
+    user = User.create_user(
         email=example_email,
-        password_hash=User.hash_password(example_password),
+        password=example_password,
         role=UserRole.PUBLIC.value,
         first_name="first",
         last_name="last",
         phone_number="(012) 345-6789",
-    ).save()
-    add_test_property(user)
+    )
     yield user
 
 
@@ -210,25 +209,23 @@ def example_officer(example_source):
 
 @pytest.fixture  # type: ignore
 def example_source_member(example_source):
-    member = User(
+    member = User.create_user(
         email=member_email,
-        password_hash=User.hash_password(example_password),
+        password=example_password,
         role=UserRole.PUBLIC.value,
         first_name="member",
         last_name="last",
         phone_number="(012) 345-6789",
-    ).save()
-    add_test_property(member)
+    )
     # Create source
     source = Source(
         name="Example Source Member",
         url="www.example.com",
         contact_email="example_test@example.ca"
     ).save()
-    add_test_property(source)
 
     # Create relationship
-    source.members.conect(
+    source.members.connect(
         member,
         {
             'role': MemberRole.MEMBER.value,
@@ -242,16 +239,14 @@ def example_source_member(example_source):
 
 @pytest.fixture  # type: ignore
 def example_contributor(example_source):
-    contributor = User(
+    contributor = User.create_user(
         email=contributor_email,
-        password_hash=User.hash_password(example_password),
+        password=example_password,
         role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
         last_name="last",
         phone_number="(012) 345-6789",
-    ).save()
-    add_test_property(contributor)
-
+    )
     # Create relationship
     example_source.members.connect(
         contributor,
@@ -261,7 +256,6 @@ def example_contributor(example_source):
             'is_active': True
         }
     ).save()
-    add_test_property_to_rel(example_source, 'HAS_MEMBER', contributor)
     return contributor
 
 
@@ -343,29 +337,27 @@ def example_complaints_private_public(
 
 @pytest.fixture
 def admin_user():
-    user = User(
+    user = User.create_user(
         email=admin_email,
-        password_hash=User.hash_password(example_password),
+        password=example_password,
         role=UserRole.ADMIN.value,
         first_name="admin",
         last_name="last",
-    ).save()
-    add_test_property(user)
+        phone_number="(012) 345-6789",
+    )
     yield user
 
 
 @pytest.fixture
 def source_admin(example_source):
-    user = User(
+    user = User.create_user(
         email=s_admin_email,
-        password_hash=User.hash_password(example_password),
+        password=example_password,
         role=UserRole.CONTRIBUTOR.value,
         first_name="contributor",
         last_name="last",
         phone_number="(012) 345-6789",
-    ).save()
-    add_test_property(user)
-
+    )
     example_source.members.connect(
         user,
         {

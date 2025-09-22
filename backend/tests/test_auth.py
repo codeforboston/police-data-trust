@@ -1,5 +1,6 @@
 import pytest
 from backend.database.models.user import User, UserRole
+from backend.database.models.contact import EmailContact, PhoneContact
 from argon2 import PasswordHasher
 
 ph = PasswordHasher()
@@ -16,9 +17,17 @@ mock_user = {
 
 @pytest.fixture
 def existing_user():
-    user = User(**mock_user)
-    user.save()
-    return user
+    user = User(
+        role=mock_user["role"],
+        first_name=mock_user["first_name"],
+        last_name=mock_user["last_name"],
+        password_hash=mock_user["password_hash"]
+    ).save()
+    email = EmailContact.get_or_create(mock_user["email"])
+    phone = PhoneContact.get_or_create(mock_user["phone_number"])
+    user.primary_email.connect(email)
+    user.phone_contacts.connect(phone)
+    yield user
 
 
 @pytest.mark.parametrize(
