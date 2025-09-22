@@ -59,3 +59,32 @@ export type PaginatedSearchResponses = {
   total: number
   results: SearchResponse[]
 }
+
+export interface AgenciesRequest extends AuthenticatedRequest {
+  name?: string
+  city?: string
+  state?: string
+  zip_code?: string
+  jurisdiction?: string
+  page?: number
+  per_page?: number  
+}
+
+export interface AgencyResponse {
+  uid: string
+  title: string
+  subtitle: string
+  content_type: string
+  source: string
+  last_updated: string
+  // Could add other agency-specific fields here, as needed
+}
+
+export type AgenciesApiResponse = {
+  results: AgencyResponse[]
+  page: number
+  per_page: number
+  pages: number
+  total: number
+  error?: string
+}
