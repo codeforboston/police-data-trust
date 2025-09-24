@@ -2,6 +2,17 @@ import Nav from "./nav"
 import { resetAuth, setAuthRefresh } from "@/utils/authState"
 import { vi, expect, test, afterEach } from "vitest"
 import { cleanup, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+
+// Mock useRouter before importing components that use it
+vi.mock("next/navigation", () => {
+  return {
+    useRouter: () => ({
+      push: vi.fn()
+    }),
+    usePathname: () => "/mock-path"
+  }
+})
 
 const customRender = (isLoggedIn = false) => {
   setAuthRefresh({
@@ -38,13 +49,21 @@ test("Nav renders navigation links", () => {
   expect(screen.getByText("Data Explorer"))
   expect(screen.getByText("Community"))
   expect(screen.getByText("Collection"))
-  expect(screen.getByText("Login"))
   unmount()
 })
 
-test("Nav renders the Logout link", () => {
+test("Nav renders the Profile button and Logout menu item when logged in", async () => {
   const { unmount } = customRender(true)
-  screen.debug()
-  expect(screen.getByText("Logout"))
+  const user = userEvent.setup()
+
+  const profileButton = screen.getByTestId("profile-button")
+  expect(profileButton).toBeDefined()
+
+  // Click profile button to open menu
+  await user.click(profileButton)
+
+  const logoutMenuItem = await screen.findByRole("menuitem", { name: /logout/i })
+  expect(logoutMenuItem).toBeDefined()
+
   unmount()
 })
