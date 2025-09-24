@@ -32,3 +32,4 @@ from .models.attachment import *
 from .models.civilian import *
 from .models.user import *
 from .models.source import *
+from .models.contact import *

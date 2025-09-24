@@ -96,16 +96,15 @@ def example_sources():
 @pytest.fixture
 def example_members(example_source):
     users = {}
-
     for name, mock in mock_members.items():
-        u = User(
+        u = User.create_user(
             email=mock["user_email"],
-            password_hash=User.hash_password(example_password),
+            password=example_password,
             role=mock["user_role"],
             first_name=name,
             last_name="user",
             phone_number="(278) 555-7890",
-        ).save()
+        )
         example_source.members.connect(
             u, mock['source_member'])
         users[name] = u
