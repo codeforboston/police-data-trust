@@ -3,6 +3,7 @@
 from flask import current_app
 from argon2 import exceptions as argon2_exceptions
 from backend.schemas import JsonSerializable, PropertyEnum
+from backend.database.models.types.enums import State
 from backend.database.models.contact import (
     EmailContact, PhoneContact, SocialMediaContact)
 from neomodel import (
@@ -50,8 +51,13 @@ class User(StructuredNode, JsonSerializable):
     password_hash = StringProperty(required=True)
 
     # User information
-    first_name = StringProperty(required=True)
-    last_name = StringProperty(required=True)
+    first_name = StringProperty(required=True, max_length=25)
+    last_name = StringProperty(required=True, max_length=25)
+    biography = StringProperty(max_length=500)
+    title = StringProperty(max_length=100)
+    organization = StringProperty(max_length=100)
+    city = StringProperty(max_length=50)
+    state = StringProperty(choices=State.choices())
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)

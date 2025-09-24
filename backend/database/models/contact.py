@@ -7,7 +7,7 @@ from neomodel import (
 
 
 class EmailContact(StructuredNode, JsonSerializable):
-    email = EmailProperty(required=True, unique_index=True)
+    email = EmailProperty(required=True, unique_index=True, max_length=255)
     confirmed = BooleanProperty(default=False)
     email_confirmed_at = DateTimeProperty()
 
@@ -23,7 +23,8 @@ class EmailContact(StructuredNode, JsonSerializable):
 
 
 class PhoneContact(StructuredNode, JsonSerializable):
-    phone_number = StringProperty(required=True, unique_index=True)
+    phone_number = StringProperty(
+        required=True, unique_index=True, max_length=20)
 
     @classmethod
     def get_or_create(cls, phone_number: str) -> "PhoneContact":
@@ -36,9 +37,9 @@ class PhoneContact(StructuredNode, JsonSerializable):
 
 
 class SocialMediaContact(StructuredNode, JsonSerializable):
-    twitter_url = StringProperty()
-    linkedin_url = StringProperty()
-    facebook_url = StringProperty()
-    instagram_url = StringProperty()
-    youtube_url = StringProperty()
-    tiktok_url = StringProperty()
+    twitter_url = StringProperty(max_length=255)
+    linkedin_url = StringProperty(max_length=255)
+    facebook_url = StringProperty(max_length=255)
+    instagram_url = StringProperty(max_length=255)
+    youtube_url = StringProperty(max_length=255)
+    tiktok_url = StringProperty(max_length=255)
