@@ -13,9 +13,18 @@ interface SearchContext {
   ) => Promise<PaginatedSearchResponses>
   searchResults?: PaginatedSearchResponses
   loading: boolean
+  updateView: (val: string) => void
+  view: string
 }
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
+
+const getViewParams = (view: string, query: string) => {
+  switch (view) {
+    case "officers":
+      return `name=${query}&agency=${query}`
+  }
+}
 
 export function SearchProvider({ children }: { children: React.ReactNode }) {
   const search = useHook()
@@ -34,11 +43,19 @@ function useHook(): SearchContext {
   const { accessToken, refreshAccessToken } = useAuth()
   const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
   const [loading, setLoading] = useState(false)
+  const [view, setView] = useState("all")
+  const [queryValue, setQueryValue] = useState("")
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const updateView = (val: string) => {
+    setView(val)
+    searchAll({ query: queryValue }, val)
+  }
+
   const updateQueryParams = (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
     console.log("Updating query params with:", query)
+    setQueryValue(query.query)
     const params = new URLSearchParams(searchParams.toString())
     Object.entries(query).forEach(([key, value]) => {
       if (value !== undefined) {
@@ -52,14 +69,22 @@ function useHook(): SearchContext {
   }
 
   const searchAll = useCallback(
-    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+    async (
+      query: Omit<SearchRequest, "access_token" | "accessToken">,
+      viewUpdate?: string
+    ) => {
       if (!accessToken) throw new ApiError("No access token", "NO_ACCESS_TOKEN", 401)
       setLoading(true)
 
       try {
         const params = updateQueryParams(query)
-        const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}?${params.toString()}`
-
+        let apiUrl = ""
+        if (viewUpdate && viewUpdate !== 'all') {
+          apiUrl = `${apiBaseUrl}/${viewUpdate}?${getViewParams(viewUpdate, query.query)}`
+        } else {
+          apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}?${params?.toString()}`
+        }
+        
         const response = await apiFetch(apiUrl, {
           method: "GET",
           headers: {
@@ -94,5 +119,8 @@ function useHook(): SearchContext {
     [accessToken, refreshAccessToken, router]
   )
 
-  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, loading])
+  return useMemo(
+    () => ({ searchAll, searchResults, loading, updateView, view }),
+    [searchResults, searchAll, loading, updateView, view]
+  )
 }

@@ -10,18 +10,17 @@ type SearchResultsProps = {
 }
 
 const SearchResults = ({ total, results }: SearchResultsProps) => {
-  const [tab, setTab] = useState(0)
-  const { loading } = useSearch()
+  const { loading, view, updateView } = useSearch()
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue)
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    updateView(newValue)
   }
 
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={tab}
+          value={view}
           onChange={handleChange}
           textColor="inherit"
           slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
@@ -29,12 +28,12 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
             "& .MuiTab-root": { color: "black" }
           }}
         >
-          <Tab label="All" />
-          <Tab label="Officer" />
-          <Tab label="Complaint" />
-          <Tab label="Agency" />
-          <Tab label="Unit" />
-          <Tab label="Litigation" />
+          <Tab label="All" value={'all'} />
+          <Tab label="Officer" value={'officers'} />
+          <Tab label="Complaint" value={'complaints'}/>
+          <Tab label="Agency" value={'agencies'}/>
+          <Tab label="Unit" value={'units'} />
+          <Tab label="Litigation" value={'litigations'} />
         </Tabs>
       </Box>
       {loading ? (
@@ -44,7 +43,7 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
       ) : (
         <Box sx={{ p: 3 }}>
           <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>{total} results</Typography>
-          <CustomTabPanel value={tab} index={0}>
+          <CustomTabPanel value={view} index={'all'}>
             {results.map((result) => (
               <CardHeader
                 key={result.uid}
@@ -90,8 +89,8 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
 
 interface TabPanelProps {
   children?: React.ReactNode
-  index: number
-  value: number
+  index: string
+  value: string
 }
 
 const CustomTabPanel = ({ children, value, index, ...other }: TabPanelProps) => {

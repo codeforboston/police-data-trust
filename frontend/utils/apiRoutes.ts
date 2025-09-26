@@ -7,7 +7,8 @@ const API_ROUTES = {
   },
   search: {
     all: "/search/",
-    incidents: "/incidents/search"
+    incidents: "/incidents/search",
+    officers: "/officers/search"
   }
 }
 
