@@ -3,10 +3,13 @@
 from flask import current_app
 from argon2 import exceptions as argon2_exceptions
 from backend.schemas import JsonSerializable, PropertyEnum
+from backend.database.models.types.enums import State
+from backend.database.models.contact import (
+    EmailContact, PhoneContact, SocialMediaContact)
 from neomodel import (
     Relationship, StructuredNode,
     StringProperty, DateProperty, BooleanProperty,
-    UniqueIdProperty, EmailProperty
+    UniqueIdProperty, One, db
 )
 
 
@@ -41,21 +44,31 @@ class User(StructuredNode, JsonSerializable):
 
     uid = UniqueIdProperty()
     active = BooleanProperty(default=True)
+    created_at = DateProperty()
 
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
-    email = EmailProperty(required=True, unique_index=True)
-    email_confirmed_at = DateProperty()
     password_hash = StringProperty(required=True)
 
     # User information
-    first_name = StringProperty(required=True)
-    last_name = StringProperty(required=True)
+    first_name = StringProperty(required=True, max_length=25)
+    last_name = StringProperty(required=True, max_length=25)
+    biography = StringProperty(max_length=500)
+    title = StringProperty(max_length=100)
+    organization = StringProperty(max_length=100)
+    city = StringProperty(max_length=50)
+    state = StringProperty(choices=State.choices())
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)
 
-    phone_number = StringProperty()
+    # Relationships to contact methods
+    primary_email = Relationship(
+        EmailContact, "HAS_PRIMARY_EMAIL", cardinality=One)
+    secondary_emails = Relationship(EmailContact, "HAS_SECONDARY_EMAIL")
+    phone_contacts = Relationship(PhoneContact, "HAS_PHONE_CONTACT")
+    social_media_contacts = Relationship(
+        SocialMediaContact, "HAS_SOCIAL_MEDIA_CONTACT", cardinality=One)
 
     # Data Source Relationships
     received_invitations = Relationship(
@@ -142,6 +155,25 @@ class User(StructuredNode, JsonSerializable):
         mail.send(msg)
 
     @property
+    def email(self) -> str:
+        """
+        Get the user's primary email address.
+        Returns:
+            str: The user's primary email address.
+        """
+        primary_email = self.primary_email.single()
+        return primary_email.email if primary_email else None
+
+    @property
+    def phone_numbers(self) -> list:
+        """
+        Get the user's phone numbers.
+        Returns:
+            list: A list of the user's phone numbers.
+        """
+        return [phone.phone_number for phone in self.phone_contacts.all()]
+
+    @property
     def role_enum(self) -> UserRole:
         """
         Get the user's role as an enum.
@@ -149,6 +181,45 @@ class User(StructuredNode, JsonSerializable):
             UserRole: The user's role as an enum.
         """
         return UserRole(self.role)
+
+    @classmethod
+    def create_user(
+        cls,
+        *,
+        password: str,
+        role: str,
+        first_name: str,
+        last_name: str,
+        email: str,
+        phone_number: str | None = None,
+    ) -> "User":
+        """
+        Create a new user. Wires up the relationships to contact methods.
+        Args:
+            password (str): The user's password.
+            role (str): The user's role.
+            first_name (str): The user's first name.
+            last_name (str): The user's last name.
+            email (str): The user's email address.
+            phone_number (str | None): The user's phone number.
+
+        Returns:
+            User: The created user.
+        """
+        user = cls(
+            password_hash=cls.hash_password(password),
+            role=role,
+            first_name=first_name,
+            last_name=last_name,
+        ).save()
+        email_contact = EmailContact.get_or_create(email)
+        user.primary_email.connect(email_contact)
+        if phone_number:
+            phone_contact = PhoneContact.get_or_create(phone_number)
+            user.phone_contacts.connect(phone_contact)
+        social = SocialMediaContact().save()
+        user.social_media_contacts.connect(social)
+        return user
 
     @classmethod
     def hash_password(cls, pw: str) -> str:
@@ -173,7 +244,13 @@ class User(StructuredNode, JsonSerializable):
         Returns:
             User: The User instance if found, otherwise None.
         """
-        try:
-            return cls.nodes.get_or_none(email=email)
-        except cls.DoesNotExist:
-            return None
+        cy = """
+        MATCH (u:User)-[r:HAS_PRIMARY_EMAIL]-(e:EmailContact {email: $email})
+        RETURN u
+        LIMIT 1;
+        """
+        result, _ = db.cypher_query(cy, {'email': email})
+        if result:
+            user_node = result[0][0]
+            return cls.inflate(user_node)
+        return None

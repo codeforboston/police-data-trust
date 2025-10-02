@@ -4,6 +4,7 @@ import { TextField, InputAdornment } from "@mui/material"
 import { Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
 import { useSearchParams } from "next/navigation"
+import { ApiError } from "@/utils/apiError"
 import React from "react"
 
 export const SearchBar = () => {
@@ -14,7 +15,14 @@ export const SearchBar = () => {
 
   const handleSearch = async (query: string) => {
     console.log("Handling search for query:", query)
-    await searchAll({ query })
+    try {
+      await searchAll({ query })
+    } catch (error) {
+      // If it's an authentication error, redirect to login
+      if (error instanceof ApiError && error.code === "NO_ACCESS_TOKEN") {
+        window.location.href = "/login"
+      }
+    }
   }
 
   return (

@@ -35,7 +35,7 @@ def login():
 
     # Verify user
     if body.password is not None and body.email is not None:
-        user = User.nodes.first_or_none(email=body.email)
+        user = User.get_by_email(body.email)
         if user is not None and user.verify_password(body.password):
             token = create_access_token(identity=user.uid)
             refresh_token = create_refresh_token(identity=user.uid)
@@ -44,7 +44,7 @@ def login():
                 {
                     "access_token": token,
                     "refresh_token": refresh_token,
-                    "expires_in": timedelta(hours=24).total_seconds()
+                    "expires_in": int(timedelta(hours=24).total_seconds())
                 }
             )
             set_access_cookies(resp, token)
@@ -78,22 +78,24 @@ def register():
     logger.info(f"Registering user with email {body.email}.")
 
     # Check to see if user already exists
-    user = User.nodes.first_or_none(email=body.email)
+    user = User.get_by_email(body.email)
     if user is not None:
+        print(f"User with email {body.email} already exists.")
+        print(f"User details: {user}")
         return {
             "status": "Conflict",
             "message": "Error. Email matches existing account.",
         }, 409
     # Verify all fields included and create user
     if body.password is not None and body.email is not None:
-        user = User(
+        user = User.create_user(
             email=body.email,
-            password_hash=User.hash_password(body.password),
+            password=body.password,
             first_name=body.firstname,
             last_name=body.lastname,
             phone_number=body.phone_number,
+            role=UserRole.PUBLIC.value,
         )
-        user.save()
         token = create_access_token(identity=user.uid)
         refresh_token = create_refresh_token(identity=user.uid)
 
@@ -115,7 +117,7 @@ def register():
             {
                 "access_token": token,
                 "refresh_token": refresh_token,
-                "expires_in": timedelta(hours=24).total_seconds()
+                "expires_in": int(timedelta(hours=24).total_seconds())
             }
         )
         set_access_cookies(resp, token)
@@ -152,7 +154,7 @@ def refresh():
     resp = jsonify(
         {
             "access_token": access_token,
-            "expires_in": timedelta(hours=24).total_seconds()
+            "expires_in": int(timedelta(hours=24).total_seconds())
         }
     )
     set_access_cookies(resp, access_token)
