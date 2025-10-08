@@ -2,7 +2,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import { useAuth } from "@/providers/AuthProvider"
-import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
+import { SearchRequest, PaginatedSearchResponses } from "@/utils/api"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { ApiError } from "@/utils/apiError"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -69,22 +69,19 @@ function useHook(): SearchContext {
   }
 
   const searchAll = useCallback(
-    async (
-      query: Omit<SearchRequest, "access_token" | "accessToken">,
-      viewUpdate?: string
-    ) => {
+    async (query: Omit<SearchRequest, "access_token" | "accessToken">, viewUpdate?: string) => {
       if (!accessToken) throw new ApiError("No access token", "NO_ACCESS_TOKEN", 401)
       setLoading(true)
 
       try {
         const params = updateQueryParams(query)
         let apiUrl = ""
-        if (viewUpdate && viewUpdate !== 'all') {
+        if (viewUpdate && viewUpdate !== "all") {
           apiUrl = `${apiBaseUrl}/${viewUpdate}?${getViewParams(viewUpdate, query.query)}`
         } else {
           apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}?${params?.toString()}`
         }
-        
+
         const response = await apiFetch(apiUrl, {
           method: "GET",
           headers: {

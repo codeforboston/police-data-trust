@@ -1,6 +1,6 @@
 "use client"
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import { SearchResponse } from "@/utils/api"
 import { useSearch } from "@/providers/SearchProvider"
 
@@ -28,12 +28,12 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
             "& .MuiTab-root": { color: "black" }
           }}
         >
-          <Tab label="All" value={'all'} />
-          <Tab label="Officer" value={'officers'} />
-          <Tab label="Complaint" value={'complaints'}/>
-          <Tab label="Agency" value={'agencies'}/>
-          <Tab label="Unit" value={'units'} />
-          <Tab label="Litigation" value={'litigations'} />
+          <Tab label="All" value={"all"} />
+          <Tab label="Officer" value={"officers"} />
+          <Tab label="Complaint" value={"complaints"} />
+          <Tab label="Agency" value={"agencies"} />
+          <Tab label="Unit" value={"units"} />
+          <Tab label="Litigation" value={"litigations"} />
         </Tabs>
       </Box>
       {loading ? (
@@ -43,7 +43,7 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
       ) : (
         <Box sx={{ p: 3 }}>
           <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>{total} results</Typography>
-          <CustomTabPanel value={view} index={'all'}>
+          <CustomTabPanel value={view} index={"all"}>
             {results.map((result) => (
               <CardHeader
                 key={result.uid}
