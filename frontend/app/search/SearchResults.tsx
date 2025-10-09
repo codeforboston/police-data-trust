@@ -1,7 +1,8 @@
 "use client"
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
 import React, { useState } from "react"
-import { SearchResponse } from "@/utils/api"
+import { useSearchParams } from "next/navigation"
+import { SearchResponse, AgencyResponse } from "@/utils/api"
 import { useSearch } from "@/providers/SearchProvider"
 
 type SearchResultsProps = {
@@ -11,10 +12,40 @@ type SearchResultsProps = {
 
 const SearchResults = ({ total, results }: SearchResultsProps) => {
   const [tab, setTab] = useState(0)
-  const { loading } = useSearch()
+  const { loading, searchAgencies } = useSearch()
+
+  const searchParams = useSearchParams()
+  const currentQuery = searchParams.get('query') || ''
+
+  const [agencyResults, setAgencyResults] = useState<AgencyResponse[]>([])
+  const [agencyLoading, setAgencyLoading] = useState(false)
+  const [agencyTotal, setAgencyTotal] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue)
+
+     // When Agency tab is clicked
+    if (newValue === 3) {
+      handleAgencySearch()
+    }
+  }
+
+  const handleAgencySearch = async () => {
+    if (!currentQuery) return
+
+    setAgencyLoading(true)
+    try {
+      // search by name for now
+      const reponse = await searchAgencies({ name: currentQuery })
+      setAgencyResults(Response.results || [])
+      setAgencyTotal(Response.total || 0)
+    } catch (error) {
+      console.error('Agency search failed:', error)
+      setAgencyResults([])
+      setAgencyTotal(0)
+    } finally {
+      setAgencyLoading(false)
+    }
   }
 
   return (
@@ -83,9 +114,15 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
             ))}
           </CustomTabPanel>
           <CustomTabPanel value={tab} index={3}>
-            {results
-              .filter((result) => result.content_type === "Agency")
-              .map((result) => (
+            {agencyLoading ? (
+              <Typography>Searching agencies...</Typography>
+            ) : (
+              <>
+                <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>
+                  {agencyTotal} agency results
+                </Typography>
+                {agencyResults.map((result) => (
+            
                 <CardHeader
                 key={result.uid}
                 title={result.title}
@@ -121,7 +158,8 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
                 }}
                 />
               ))}
-
+            </>
+            )}
             <p>Agency tab - {results.length} total results</p>
           </CustomTabPanel>
         </Box>

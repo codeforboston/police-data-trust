@@ -112,7 +112,15 @@ function useHook(): SearchContext {
 
           const apiUrl = `${apiBaseUrl}${API_ROUTES.agencies}?${queryParams.toString()}`
 
-          const response = await apiFetch(apiBaseUrl, {
+        console.log('====== AGENCY SEARCH DEBUG ======')
+        console.log('apiBaseUrl:', apiBaseUrl)
+        console.log('API_ROUTES.agencies:', API_ROUTES.agencies)
+        console.log('queryParams:', queryParams.toString())
+        console.log('Full apiUrl:', apiUrl)
+        console.log('Has accessToken:', !!accessToken)
+        console.log('================================')
+
+          const response = await apiFetch(apiUrl, {
             method: "GET",
             headers: {
               "Content-Type": "application/json"
@@ -142,5 +150,5 @@ function useHook(): SearchContext {
     [accessToken]
   )
 
-  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, searchResults, loading])
+  return useMemo(() => ({ searchAll, searchAgencies, searchResults, loading }), [searchResults, searchAll, searchAgencies, searchResults, loading])
 }
