@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, List
 from datetime import datetime
 
@@ -210,6 +211,81 @@ def text_search():
     if not results:
         return jsonify({"message": "No results found matching the query"}), 200
 
+    page = []
+    for result in results:
+        item = create_search_result(result[0])
+        page.append(item.model_dump()) if item else None
+
+    response = add_pagination_wrapper(
+        page_data=page, total=total_results,
+        page_number=q_page, per_page=q_per_page)
+
+    return jsonify(response), 200
+
+
+# Agency Search Endpoint
+@bp.route("/agencies", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def search_agencies():
+    """Search Agencies
+    Accepts Query Parameters for pagination:
+    per_page: number of results per page
+    page: page number
+    query: agency name (partial match)
+    hq_city: headquarters city (partial match)
+    hq_state: headquarters state (exact match, 2-letter abbreviation)
+    hq_zip: headquarters zip code (exact match, 5-digit)
+    jurisdiction: jurisdiction type (exact match, one of "Federal", "State",
+                  "Local", "Tribal", "Other")
+    """
+    logger = logging.getLogger("search_agencies")
+
+    args = request.args
+    q_page = args.get("page", 1, type=int)
+    q_per_page = args.get("per_page", 20, type=int)
+    query = args.get("query", None, type=str)
+    hq_city = args.get("hq_city", None, type=str)
+    hq_state = args.get("hq_state", None, type=str)
+    hq_zip = args.get("hq_zip", None, type=str)
+    jurisdiction = args.get("jurisdiction", None, type=str)
+
+    params = {
+        "page": q_page,
+        "per_page": q_per_page,
+        "query": query,
+        "hq_city": hq_city,
+        "hq_state": hq_state,
+        "hq_zip": hq_zip,
+        "jurisdiction": jurisdiction
+    }
+
+    # Count Matches
+    cypher_count = """
+    CALL db.index.fulltext.queryNodes('agencyNames',$query)  YIELD node
+    RETURN count(*) AS totalMatches
+    """
+    count_results, _ = db.cypher_query(cypher_count, params)
+    total_results = count_results[0][0] if count_results else 0
+
+    if total_results == 0:
+        return jsonify({"message": "No results found matching the query"}), 200
+
+    if total_results < (q_page - 1) * q_per_page:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+
+    # Query Agencies
+    cypher = """
+    CALL db.index.fulltext.queryNodes('agencyNames', $query)
+        YIELD node, score
+        RETURN node
+        SKIP $per_page * ($page - 1)
+        LIMIT $per_page
+    """
+    results, meta = db.cypher_query(cypher, params)
+    if not results:
+        return jsonify({"message": "No results found matching the query"}), 200
+    
     page = []
     for result in results:
         item = create_search_result(result[0])
