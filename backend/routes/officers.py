@@ -7,6 +7,7 @@ from backend.schemas import (validate_request, ordered_jsonify,
                              add_pagination_wrapper)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
+from backend.routes.search import create_officer_result
 from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
@@ -274,16 +275,26 @@ def get_all_officers():
 
     # Run query
     results, _ = db.cypher_query(cypher_query, params)
-    all_officers = [Officer.inflate(row[0]) for row in results]
-    page = [item.to_dict() for item in all_officers]
+
+    # Check mode — full node or SearchResult
+    if args.get("searchResult", "").lower() == 'true':  # default is full node
+        all_officers = [create_officer_result(o[0]) for o in results]
+        page = [item.model_dump() for item in all_officers if item]
+        return_func = jsonify
+    else:
+        all_officers = [Officer.inflate(row[0]) for row in results]
+        page = [item.to_dict() for item in all_officers]
+        return_func = ordered_jsonify
 
     # Add pagination wrapper
     response = add_pagination_wrapper(
-        page_data=page, total=row_count, page_number=q_page, per_page=q_per_page
+        page_data=page, total=row_count,
+        page_number=q_page, per_page=q_per_page
     )
 
     logging.warning("API response: %s", response)
-    return ordered_jsonify(response), 200
+    # return ordered_jsonify(response), 200
+    return return_func(response), 200
 
 
 # Update an officer profile
