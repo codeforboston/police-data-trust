@@ -1,4 +1,4 @@
-FROM python:3-slim-bookworm AS base
+FROM python:3.12-slim-bookworm AS base
 
 # Install dependencies
 RUN apt-get update -y && apt-get install -y \
