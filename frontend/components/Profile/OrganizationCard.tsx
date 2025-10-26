@@ -17,7 +17,8 @@ export default function OrganizationCard() {
               pb: "24px"
             }
           }
-        }}>
+        }}
+      >
         <Typography variant="h5" fontWeight={600}>
           Organization Affiliation
         </Typography>

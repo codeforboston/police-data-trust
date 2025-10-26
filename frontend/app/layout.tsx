@@ -27,7 +27,8 @@ export default function RootLayout({
             <body>
               <div>Loading...</div>
             </body>
-          }>
+          }
+        >
           <AuthProvider>
             <SearchProvider>
               <body className={`${inter.variable} ${roboto}`}>

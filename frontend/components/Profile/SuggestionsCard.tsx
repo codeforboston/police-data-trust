@@ -50,7 +50,8 @@ export default function SuggestionsCard({
           padding: "24px",
           gap: "24px",
           width: "266px"
-        }}>
+        }}
+      >
         <Typography variant="h6" component="p" fontWeight={600} fontStyle={"semi-bold"}>
           {title}
         </Typography>
@@ -67,7 +68,8 @@ export default function SuggestionsCard({
                   size="small"
                   variant={isFollowing ? "text" : "outlined"}
                   onClick={() => toggleFollow(item.name)}
-                  sx={{ width: "fit-content", marginTop: "8px" }}>
+                  sx={{ width: "fit-content", marginTop: "8px" }}
+                >
                   {isFollowing ? "Following" : "Follow"}
                 </Button>
               </div>

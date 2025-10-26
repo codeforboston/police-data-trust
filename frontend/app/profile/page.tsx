@@ -38,7 +38,8 @@ export default function ProfilePage() {
           <SuggestionsCard title="People you may know" items={peopleSuggestions} />
           <SuggestionsCard title="Organizations you may know" items={orgSuggestions} />
         </>
-      }>
+      }
+    >
       <ProfileHeaderCard
         firstName={profile.first_name}
         lastName={profile.last_name}

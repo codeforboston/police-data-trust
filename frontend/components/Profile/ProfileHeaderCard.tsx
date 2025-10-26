@@ -42,7 +42,8 @@ export default function ProfileHeaderCard({
               pb: "24px"
             }
           }
-        }}>
+        }}
+      >
         <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
           <ModeEditOutlinedIcon onClick={() => router.push("/profile/edit")} />
         </IconButton>

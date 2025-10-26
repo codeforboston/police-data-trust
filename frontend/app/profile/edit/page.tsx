@@ -178,7 +178,8 @@ export default function EditProfilePage() {
               labelId="select-state"
               label="State"
               value={state}
-              onChange={(e) => setState(e.target.value)}>
+              onChange={(e) => setState(e.target.value)}
+            >
               <MenuItem value="" disabled>
                 Select state
               </MenuItem>
@@ -210,7 +211,8 @@ export default function EditProfilePage() {
             <p
               className={
                 biography.length > 1000 ? styles.biographyCountError : styles.biographyCount
-              }>
+              }
+            >
               {biography.length}/1000
             </p>
           </div>

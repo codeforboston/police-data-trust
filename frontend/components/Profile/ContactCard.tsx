@@ -47,7 +47,8 @@ export default function ContactCard({ primaryEmail, secondaryEmail, website, soc
             p: "24px",
             "&:last-child": { pb: "24px" }
           }
-        }}>
+        }}
+      >
         <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
           <ModeEditOutlinedIcon onClick={() => router.push("/profile/contact/edit")} />
         </IconButton>
@@ -88,7 +89,8 @@ export default function ContactCard({ primaryEmail, secondaryEmail, website, soc
                   href={getSafeUrl(website)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.websiteLink}>
+                  className={styles.websiteLink}
+                >
                   {website}
                 </a>
               </div>

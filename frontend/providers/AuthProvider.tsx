@@ -134,7 +134,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setRefreshToken,
         refreshAccessToken,
         logout
-      }}>
+      }}
+    >
       {children}
     </Ctx.Provider>
   )
