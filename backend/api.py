@@ -15,6 +15,7 @@ from backend.routes.agencies import bp as agencies_bp
 from backend.routes.search import bp as search_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
+from backend.routes.users import bp as users_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
 from backend.database import MODEL_CLASSES
@@ -186,6 +187,7 @@ def register_routes(app: Flask):
     app.register_blueprint(officers_bp)
     app.register_blueprint(agencies_bp)
     app.register_blueprint(search_bp)
+    app.register_blueprint(users_bp)
 
     @app.route("/")
     def hello_world():
