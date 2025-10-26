@@ -4,12 +4,23 @@ import { ApiError } from "./apiError"
 let refreshPromise: Promise<string | null> | null = null
 
 export async function apiFetch(url: string, init: RequestInit = {}): Promise<Response> {
-  const { accessToken, refreshAccessToken, logout } = getAuth()
+  // Try getting auth state multiple times with delay
+  let retries = 3
+  let auth = getAuth()
+
+  while (!auth.accessToken && retries > 0) {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    auth = getAuth()
+    retries--
+  }
+
+  const { accessToken, refreshAccessToken, logout } = auth
+
   if (!accessToken) {
     const newTok = await refreshAccessToken()
     if (!newTok) {
       logout?.()
-      throw new ApiError("No access token", "NO_ACCESS_TOKEN", 401)
+      throw new ApiError("No access token available", "NO_ACCESS_TOKEN", 401)
     }
     return fetch(new Request(url, withAuth(init, newTok)))
   }
