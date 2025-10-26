@@ -1,13 +1,11 @@
 from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from pydantic import BaseModel, HttpUrl
-from typing import List, Optional
 
-from ..database import User, EmailContact, SocialMediaContact
-from ..schemas import validate_request
+from ..database import User, EmailContact, SocialMediaContact, PhoneContact
 
 bp = Blueprint("users", __name__, url_prefix="/api/v1/users")
+
 
 @bp.route("/self", methods=["GET"])
 @cross_origin()
@@ -22,9 +20,7 @@ def get_current_user():
         return jsonify({"message": "User not found"}), 404
 
     primary_email = user.email
-
     additional_emails = [e.email for e in user.secondary_emails.all()]
-
     phone_numbers = [p.phone_number for p in user.phone_contacts.all()]
 
     sm = user.social_media_contacts.single()
@@ -58,7 +54,7 @@ def get_current_user():
             "title": user.title,
         },
         "bio": user.biography,
-        "profile_image": None, #placeholder image for now
+        "profile_image": None,  # placeholder image for now
         "social_media": social_media,
     }
 
