@@ -55,7 +55,8 @@ export const useUserProfile = () => {
         phone_numbers: phone_contacts?.map((p) => p.phone_number) || []
       },
       website,
-      social_media: social_media_contacts
+      social_media: social_media_contacts,
+      location: updates.location
     }
 
     const res = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {

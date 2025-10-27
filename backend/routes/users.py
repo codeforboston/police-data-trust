@@ -105,7 +105,7 @@ def update_current_user():
     if "website" in data:
         user.website = data["website"]
 
-    location = contact_info.get("location", {})
+    location = data.get("location", {})
     if location.get("city"):
         user.city = location["city"]
     if location.get("state"):
