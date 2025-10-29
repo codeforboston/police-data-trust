@@ -12,6 +12,7 @@ from backend.routes.sources import bp as sources_bp
 from backend.routes.complaints import bp as complaints_bp
 from backend.routes.officers import bp as officers_bp
 from backend.routes.agencies import bp as agencies_bp
+from backend.routes.units import bp as units_bp
 from backend.routes.search import bp as search_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
@@ -185,6 +186,7 @@ def register_routes(app: Flask):
     app.register_blueprint(healthcheck_bp)
     app.register_blueprint(officers_bp)
     app.register_blueprint(agencies_bp)
+    app.register_blueprint(units_bp)
     app.register_blueprint(search_bp)
 
     @app.route("/")
