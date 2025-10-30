@@ -1,16 +1,17 @@
 "use client"
-import { createContext, useCallback, useContext, useMemo, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { useAuth } from "@/providers/AuthProvider"
-import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
+import { SearchRequest, SearchResponse, PaginatedSearchResponses, SearchParams } from "@/utils/api"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter, useSearchParams } from "next/navigation"
 
 interface SearchContext {
   searchAll: (
-    query: Omit<SearchRequest, "access_token" | "accessToken">
+    request: SearchParams
   ) => Promise<PaginatedSearchResponses>
   searchResults?: PaginatedSearchResponses
-  loading: boolean
+  loading: boolean,
+  searchState: SearchParams | undefined
 }
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
@@ -31,29 +32,64 @@ export const useSearch = () => {
 function useHook(): SearchContext {
   const { accessToken } = useAuth()
   const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
+  const [searchState, setSearchState] = useState<SearchParams | undefined>()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const updateQueryParams = (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
-    console.log("Updating query params with:", query)
-    const params = new URLSearchParams(searchParams.toString())
-    Object.entries(query).forEach(([key, value]) => {
+  // Get parameters from url and sync searchState from it - sync it on mount and in-between back/forth navigation
+  useEffect(() => {
+    // handle array params like ?location=NYC&location=Texas
+    const params: Record<string, any> = {}
+    searchParams.entries().forEach(([key, value]) => {
+      if (params[key]) {
+        // Add to array or create it as needed
+        if (Array.isArray(params[key])) {
+          params[key].push(value)
+        } else {
+          params[key] = [params[key], value]
+        }
+      } else {
+        params[key] = value
+      }
+    })
+    
+    setSearchState(params as SearchParams)
+  }, [searchParams])
+
+  // Auto-fetch whenever there's a manual URL change
+  useEffect(() => {
+    if (searchState && Object.keys(searchState).length) {
+      searchAll(searchState)
+    }
+  }, [searchState])
+
+  // Update both search state and URL upon call in search function
+  const updateQueryParams = (request: SearchParams) => { // TODO: where's the "access_token" one coming from?
+    console.log("Updating query params with:", request)
+    const params = new URLSearchParams()
+    Object.entries(request).forEach(([key, value]) => {
       if (value !== undefined) {
-        console.log({ [key]: value })
-        params.set(key, String(value))
+        if (Array.isArray(value)) {
+          value.forEach((v) => params.append(key, v)) // Convert list into url params like ?location=NYC&location=Texas
+        } else {
+          params.set(key, String(value))
+        }
       }
     })
     const destination = params.toString()
     router.push(`/search?${destination}`)
+    setSearchState(request) // Update state along the URL
     return params
   }
 
+  // TODO: Don't allow multiple tries until previous load finishes
+  // Main search function  
   const searchAll = useCallback(
-    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+    async (request: SearchParams) => {
+
       setLoading(true)
-      const params = updateQueryParams(query)
-      if (!accessToken) throw new Error("No access token")
+      const params = updateQueryParams(request) // Update url AND search state upon new search
 
       try {
         const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}`
@@ -65,12 +101,9 @@ function useHook(): SearchContext {
           }
         })
 
-        // TODO:
-        // status check for not found, unauthorized, etc.
-        if (!results.ok) {
-          throw new Error("Failed to search content")
-        }
-
+        // TODO: status check for not found, unauthorized, etc.
+        if (!results.ok) throw new Error("Failed to search content")
+        
         const data: PaginatedSearchResponses = await results.json()
         setResults(data)
         return data
@@ -92,5 +125,5 @@ function useHook(): SearchContext {
     [accessToken, router]
   )
 
-  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, loading])
+  return useMemo(() => ({ searchAll, searchResults, loading, searchState }), [searchResults, searchAll, loading, searchState])
 }
