@@ -1,0 +1,31 @@
+.profileBackground {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-inline: 24px;
+}
+
+.profileContainer {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+  margin-bottom: 40px;
+}
+
+@media screen and (max-width: 745px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .profileBackground {
+    padding-inline: 0px;
+  }
+}
