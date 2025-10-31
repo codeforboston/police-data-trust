@@ -1,0 +1,26 @@
+.filterWrapper {
+  height: 100%;
+  margin-block-start: 9.5rem;
+}
+
+.filterContentsWrapper {
+  width: 300px;
+  height: 100%;
+  outline: 1px solid #bed0dd;
+  border-radius: 3px;
+
+  padding: 1rem;
+}
+
+.filterTitleText {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.searchText {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}

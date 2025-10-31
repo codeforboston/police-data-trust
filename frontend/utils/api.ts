@@ -34,10 +34,18 @@ interface AuthenticatedRequest {
   accessToken: AccessToken
 }
 
+// TODO: need to extend AuthenticatedRequest?
 export interface SearchRequest extends AuthenticatedRequest {
   query: string
   location?: string
   source?: string
+  
+}
+
+// TODO: Correct proper syntax
+export interface SearchParams {
+  query: string
+  [filter: string]: string | string[]
 }
 
 export type SearchResponse = {
