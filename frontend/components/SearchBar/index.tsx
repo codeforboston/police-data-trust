@@ -3,18 +3,21 @@
 import { TextField, InputAdornment } from "@mui/material"
 import { Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
-import { useSearchParams } from "next/navigation"
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 export const SearchBar = () => {
-  const { searchAll } = useSearch()
-  const searchParams = useSearchParams()
+  const { searchAll, searchState } = useSearch()
+  const [localInput, setLocalInput] = useState(searchState?.query || "")
 
-  const [localInput, setLocalInput] = React.useState(searchParams.get("query") || "")
+  // Sync local input if user navigates or filters change
+  useEffect(() => {
+    setLocalInput(searchState?.query || "")
+  }, [searchState])
 
   const handleSearch = async (query: string) => {
+    if (!localInput.trim()) return
     console.log("Handling search for query:", query)
-    await searchAll({ query })
+    await searchAll({ ...searchState, query })
   }
 
   return (
