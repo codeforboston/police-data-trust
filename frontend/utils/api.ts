@@ -39,7 +39,6 @@ export interface SearchRequest extends AuthenticatedRequest {
   query: string
   location?: string
   source?: string
-  
 }
 
 // TODO: Correct proper syntax

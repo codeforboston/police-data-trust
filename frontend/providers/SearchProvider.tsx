@@ -6,11 +6,9 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useRouter, useSearchParams } from "next/navigation"
 
 interface SearchContext {
-  searchAll: (
-    request: SearchParams
-  ) => Promise<PaginatedSearchResponses>
+  searchAll: (request: SearchParams) => Promise<PaginatedSearchResponses>
   searchResults?: PaginatedSearchResponses
-  loading: boolean,
+  loading: boolean
   searchState: SearchParams | undefined
 }
 
@@ -53,7 +51,7 @@ function useHook(): SearchContext {
         params[key] = value
       }
     })
-    
+
     setSearchState(params as SearchParams)
   }, [searchParams])
 
@@ -65,7 +63,8 @@ function useHook(): SearchContext {
   }, [searchState])
 
   // Update both search state and URL upon call in search function
-  const updateQueryParams = (request: SearchParams) => { // TODO: where's the "access_token" one coming from?
+  const updateQueryParams = (request: SearchParams) => {
+    // TODO: where's the "access_token" one coming from?
     console.log("Updating query params with:", request)
     const params = new URLSearchParams()
     Object.entries(request).forEach(([key, value]) => {
@@ -84,10 +83,9 @@ function useHook(): SearchContext {
   }
 
   // TODO: Don't allow multiple tries until previous load finishes
-  // Main search function  
+  // Main search function
   const searchAll = useCallback(
     async (request: SearchParams) => {
-
       setLoading(true)
       const params = updateQueryParams(request) // Update url AND search state upon new search
 
@@ -103,7 +101,7 @@ function useHook(): SearchContext {
 
         // TODO: status check for not found, unauthorized, etc.
         if (!results.ok) throw new Error("Failed to search content")
-        
+
         const data: PaginatedSearchResponses = await results.json()
         setResults(data)
         return data
@@ -125,5 +123,8 @@ function useHook(): SearchContext {
     [accessToken, router]
   )
 
-  return useMemo(() => ({ searchAll, searchResults, loading, searchState }), [searchResults, searchAll, loading, searchState])
+  return useMemo(
+    () => ({ searchAll, searchResults, loading, searchState }),
+    [searchResults, searchAll, loading, searchState]
+  )
 }

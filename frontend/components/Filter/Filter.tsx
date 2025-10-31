@@ -7,7 +7,6 @@ import {
   Box,
   FormControlLabel,
   Typography,
-  Button,
   Stack,
   Chip
 } from "@mui/material"
@@ -16,7 +15,6 @@ import { useSearch } from "@/providers/SearchProvider"
 import { useEffect, useState } from "react"
 import { SearchParams } from "@/utils/api"
 
-
 // TODO: Where should apply button go?
 // TODO: Make show more do something
 // TODO: Update to new design
@@ -24,7 +22,7 @@ import { SearchParams } from "@/utils/api"
 
 interface FilterData {
   title: string
-  filter: string    // key to use in API request
+  filter: string // key to use in API request
   options: Option[] // list of filtering options.
   withSearch?: boolean
 }
@@ -49,19 +47,18 @@ const Filter = ({ filters }: FilterProps) => {
 
   // Initialize set of filters for every group
   const [activeFilters, setActiveFilters] = useState<Record<string, Set<string>>>(() => {
-      const init: Record<string, Set<string>> = {}
-      filters.forEach((f) => {
-        init[f.filter] = new Set()
-      })
-      return init
-    }
-  )
+    const init: Record<string, Set<string>> = {}
+    filters.forEach((f) => {
+      init[f.filter] = new Set()
+    })
+    return init
+  })
 
   // Sync filters with searchState when it changes (or on first mount)
   useEffect(() => {
     if (!searchState) return
 
-    setActiveFilters((prev) => {
+    setActiveFilters(() => {
       const updated: Record<string, Set<string>> = {}
 
       filters.forEach((f) => {
@@ -87,7 +84,11 @@ const Filter = ({ filters }: FilterProps) => {
       const newOptions = { ...prev }
       // Add or remove the option
       const toggled = new Set(prev[filter])
-      toggled.has(value) ? toggled.delete(value) : toggled.add(value)
+      if (toggled.has(value)) {
+        toggled.delete(value)
+      } else {
+        toggled.add(value)
+      }
       newOptions[filter] = toggled
 
       return newOptions
@@ -101,7 +102,7 @@ const Filter = ({ filters }: FilterProps) => {
       apiFilters[key] = [...set] // convert set to array
     })
     if (searchState) {
-      const request: SearchParams = {...searchState, ...apiFilters} // add filters to search state
+      const request: SearchParams = { ...searchState, ...apiFilters } // add filters to search state
       await searchAll(request)
     }
   }
@@ -125,13 +126,13 @@ const Filter = ({ filters }: FilterProps) => {
   }
   return (
     <section className={styles.filterWrapper}>
-      <Stack 
-        direction="row" 
+      <Stack
+        direction="row"
         alignItems="center"
         justifyContent="space-between"
-        spacing={1.5} 
+        spacing={1.5}
         sx={{ marginTop: "1rem", marginBottom: "1rem" }}
-        >
+      >
         <h3 className={styles.filterTitleText}>Filters</h3>
         <Box sx={{ display: "flex", gap: 1 }}>
           <Chip
@@ -145,8 +146,8 @@ const Filter = ({ filters }: FilterProps) => {
               backgroundColor: "#00000014",
               fontWeight: 500,
               "&:hover": {
-                backgroundColor: "#00000025",
-              },
+                backgroundColor: "#00000025"
+              }
             }}
           />
           <Chip
@@ -160,10 +161,10 @@ const Filter = ({ filters }: FilterProps) => {
               backgroundColor: "#00000014",
               fontWeight: 500,
               "&:hover": {
-                backgroundColor: "#00000025",
-              },
+                backgroundColor: "#00000025"
+              }
             }}
-            />
+          />
         </Box>
       </Stack>
       <div className={styles.filterContentsWrapper}>
@@ -176,38 +177,44 @@ const Filter = ({ filters }: FilterProps) => {
           />
         ))}
       </div>
-
-      <button onClick={applyFilters}>Apply Filters</button>
     </section>
   )
 }
 
-const FilterSection = ({ title, filter, options, activeFilters, onToggle, withSearch = false }: FilterSectionProps) => {
+const FilterSection = ({
+  title,
+  filter,
+  options,
+  activeFilters,
+  onToggle,
+  withSearch = false
+}: FilterSectionProps) => {
   return (
     <FormGroup sx={{ marginBottom: "1.5rem" }}>
-      <Typography 
-          variant="subtitle1" 
-          sx={{ marginBlockEnd: "0.5rem", fontWeight: "600" }}>
-       {title}
+      <Typography variant="subtitle1" sx={{ marginBlockEnd: "0.5rem", fontWeight: "600" }}>
+        {title}
       </Typography>
-            {withSearch && (
-              <TextField 
-                id={`${filter}-search`} 
-                variant="outlined" 
-                fullWidth
-                placeholder="search city, state..."
-                sx={{ 
-                  marginBottom: "1rem", 
-                  "& .MuiInputBase-root": { height: "40px"}
-                }}
-                slotProps={{ input: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search fontSize="small" />
-                          </InputAdornment>
-                        )}
-                      }}
-                />)}
+      {withSearch && (
+        <TextField
+          id={`${filter}-search`}
+          variant="outlined"
+          fullWidth
+          placeholder="search city, state..."
+          sx={{
+            marginBottom: "1rem",
+            "& .MuiInputBase-root": { height: "40px" }
+          }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search fontSize="small" />
+                </InputAdornment>
+              )
+            }
+          }}
+        />
+      )}
       {options.map((option) => (
         <Box
           key={option.id}
@@ -215,22 +222,22 @@ const FilterSection = ({ title, filter, options, activeFilters, onToggle, withSe
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "0.25rem",
+            marginBottom: "0.25rem"
           }}
         >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={activeFilters.has(option.title)}
-                  onChange={() => onToggle(option.title)}
-                  size="small"
-                />
-              }
-              label={option.title}
-            />
-            <Typography variant="body2" color="text.secondary">
-              {option.count}
-            </Typography>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={activeFilters.has(option.title)}
+                onChange={() => onToggle(option.title)}
+                size="small"
+              />
+            }
+            label={option.title}
+          />
+          <Typography variant="body2" color="text.secondary">
+            {option.count}
+          </Typography>
         </Box>
       ))}
       <Typography
@@ -239,10 +246,9 @@ const FilterSection = ({ title, filter, options, activeFilters, onToggle, withSe
         sx={{ cursor: "pointer", marginTop: "0.5rem" }}
       >
         Show more...
-    </Typography>
+      </Typography>
     </FormGroup>
   )
-
 }
 
 export default Filter
