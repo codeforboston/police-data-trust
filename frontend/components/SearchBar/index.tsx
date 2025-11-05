@@ -32,7 +32,8 @@ export const SearchBar = () => {
         justifyContent: "center",
         gap: 2,
         width: "100%"
-      }}>
+      }}
+    >
       <TextField
         variant="outlined"
         value={localInput}
