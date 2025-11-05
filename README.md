@@ -27,7 +27,7 @@ This method uses Docker to run the complete application stack.
 
 1. Make sure that [Docker](https://www.docker.com) is installed on your machine.
 
-2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and change GRAPH_PASSWORD to a unique value.
+2. Create a `.env` file by running `cp .env.template .env` in the root of your local project folder, and change GRAPH_PASSWORD to a unique value. For windows users, you may need to use `Copy-Item` instead of `cp`. The full statement will be `Copy-Item -Path ".env.template" -Destination ".env"`
 
 > **Note**
 > When running locally, you may need to update one of the ports in the `.env` file if it conflicts with another application on your machine.
@@ -58,7 +58,7 @@ All code must pass the unit tests and style checks before it can be merged into 
 
 
 ```
-docker exec -it "police-data-trust_api_1" /bin/bash
+docker exec -it "police-data-trust-api-1" /bin/bash
 
 ```
 

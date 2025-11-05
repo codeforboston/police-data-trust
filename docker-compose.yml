@@ -1,3 +1,8 @@
+networks:
+  stack:
+    name: police-data-trust-net
+    driver: bridge
+
 services:
   db:
     image: neo4j:5.23-community
@@ -13,6 +18,13 @@ services:
       - "7687:7687"   # Bolt port for database access
     environment:
       - NEO4J_AUTH=neo4j/${GRAPH_PASSWORD:-password}
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u ${GRAPH_USER:-neo4j} -p ${GRAPH_PASSWORD:-password} 'RETURN 1' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - stack
   test-neo4j:
     image: neo4j:5.23-community
     profiles:
@@ -24,6 +36,8 @@ services:
     ports:
       - "7475:7474"
       - "7688:7687"
+    networks:
+      - stack
   web:
     build:
       context: ./frontend
@@ -38,6 +52,8 @@ services:
       NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5000}/api/v1
     ports:
       - ${NPDI_WEB_PORT:-3000}:${NPDI_WEB_PORT:-3000}
+    networks:
+      - stack
   api:
     build:
       context: .
@@ -49,7 +65,8 @@ services:
     env_file:
       - ".env"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       PYTHONPATH: app/
       FLASK_ENV: ${FLASK_ENV:-development}
@@ -60,6 +77,8 @@ services:
       WAIT_HOSTS: db:7687
     ports:
       - ${NPDI_API_PORT:-5001}:${NPDI_API_PORT:-5001}
+    networks:
+      - stack
 volumes:
   neo4j: {}
   neo4j_logs: {}
