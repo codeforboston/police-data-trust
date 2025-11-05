@@ -5,10 +5,18 @@ const baseURL = `http://localhost:${port}`
 
 export default defineConfig({
   use: {
-    baseURL
+    baseURL,
+    // Capture screenshots on failure
+    screenshot: "only-on-failure",
+    // Capture video on failure
+    video: "retain-on-failure"
   },
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
+  // Configure output directories
+  outputDir: "test-results",
+  // Configure reporters
+  reporter: [["html", { outputFolder: "playwright-report", open: "never" }], ["list"]],
   // In CI, docker compose runs the server, so we don't need Playwright to start one
   // In local development, Playwright will start the dev server
   ...(process.env.CI
