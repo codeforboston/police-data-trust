@@ -11,6 +11,7 @@ interface AuthContext {
   accessToken: string | null
   refreshToken: string | null
   isLoggedIn: boolean
+  hasHydrated?: boolean
   setAccessToken: (token: string | null) => void
   setRefreshToken: (token: string | null) => void
   refreshAccessToken: () => Promise<string | null>
@@ -22,6 +23,7 @@ const Ctx = createContext<AuthContext | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, _setAccessToken] = useState<string | null>(null)
   const [refreshToken, _setRefreshToken] = useState<string | null>(null)
+  const [hasHydrated, setHasHydrated] = useState(false)
 
   // --- persistence helpers ---
   const setAccessToken = useCallback((token: string | null) => {
@@ -49,8 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const storedRefresh = localStorage.getItem(REFRESH_TOKEN_KEY)
       if (storedAccess) _setAccessToken(storedAccess)
       if (storedRefresh) _setRefreshToken(storedRefresh)
-    } catch {
-      // ignore storage errors (e.g., private mode)
+    } catch (e) {
+      console.error("Error during auth hydration", e)
+    } finally {
+      setHasHydrated(true)
     }
   }, [])
 
@@ -88,8 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // --- publish current token + refresher to global apiFetch bridge ---
   useEffect(() => {
+    if (!hasHydrated) return
     setAuthRefresh({ accessToken, refreshAccessToken })
-  }, [accessToken, refreshAccessToken])
+  }, [accessToken, refreshAccessToken, hasHydrated])
 
   // --- preemptive refresh a bit before JWT expiry ---
   useEffect(() => {
@@ -124,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         accessToken,
         refreshToken,
         isLoggedIn,
+        hasHydrated,
         setAccessToken,
         setRefreshToken,
         refreshAccessToken,

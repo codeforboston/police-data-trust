@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bio {
+  margin-top: 24px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.followerStats {
+  margin-top: 16px;
+}
+
+.editIcon {
+  float: right;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+@media screen and (max-width: 430px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .info {
+    align-items: center;
+  }
+
+  .meta {
+    align-items: center;
+  }
+}

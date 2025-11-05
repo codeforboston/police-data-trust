@@ -1,0 +1,43 @@
+.editIcon {
+  float: right;
+  cursor: pointer;
+}
+
+.contactWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.contactRow {
+  display: flex;
+  gap: 12px;
+}
+
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.contactLabel {
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.emailLink,
+.websiteLink {
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.emailLink:hover,
+.websiteLink:hover {
+  text-decoration: underline;
+}
