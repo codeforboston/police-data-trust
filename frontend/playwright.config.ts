@@ -9,13 +9,19 @@ export default defineConfig({
   },
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
-  webServer: {
-    command: `npm run dev`,
-    port: Number(port),
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-    env: {
-      NPDI_WEB_PORT: String(port)
-    }
-  }
+  // In CI, docker compose runs the server, so we don't need Playwright to start one
+  // In local development, Playwright will start the dev server
+  ...(process.env.CI
+    ? {}
+    : {
+        webServer: {
+          command: `npm run dev`,
+          port: Number(port),
+          reuseExistingServer: true,
+          timeout: 120 * 1000,
+          env: {
+            NPDI_WEB_PORT: String(port)
+          }
+        }
+      })
 })
