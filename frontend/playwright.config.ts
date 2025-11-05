@@ -7,5 +7,15 @@ export default defineConfig({
   use: {
     baseURL
   },
-  testDir: "./tests"
+  testDir: "./tests",
+  testMatch: "**/*.spec.ts",
+  webServer: {
+    command: `npm run dev`,
+    port: Number(port),
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+    env: {
+      NPDI_WEB_PORT: String(port)
+    }
+  }
 })

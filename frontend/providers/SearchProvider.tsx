@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useCallback, useContext, useMemo, useState } from "react"
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import { useAuth } from "@/providers/AuthProvider"
 import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
@@ -13,6 +13,8 @@ interface SearchContext {
   ) => Promise<PaginatedSearchResponses>
   searchResults?: PaginatedSearchResponses
   loading: boolean
+  error: string | null
+  setPage: (page: number) => void
 }
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
@@ -34,65 +36,184 @@ function useHook(): SearchContext {
   const { accessToken, refreshAccessToken } = useAuth()
   const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
+  
+  // AbortController ref to cancel in-flight requests
+  const abortControllerRef = useRef<AbortController | null>(null)
+  
+  // Track if we should skip the effect (when searchAll handles the fetch)
+  const skipEffectRef = useRef(false)
 
-  const updateQueryParams = (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
-    console.log("Updating query params with:", query)
-    const params = new URLSearchParams(searchParams.toString())
-    Object.entries(query).forEach(([key, value]) => {
-      if (value !== undefined) {
-        console.log({ [key]: value })
-        params.set(key, String(value))
+  // Helper to update URL search params. Returns the new URLSearchParams object.
+  const updateQueryParams = useCallback(
+    (updates: Record<string, any>) => {
+      const params = new URLSearchParams(searchParams.toString())
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === null) {
+          params.delete(key)
+        } else {
+          params.set(key, String(value))
+        }
+      })
+      const destination = params.toString()
+      router.push(`/search?${destination}`)
+      return params
+    },
+    [searchParams, router]
+  )
+
+  // Build a SearchRequest-like payload from URLSearchParams
+  const buildRequestFromParams = useCallback((params: URLSearchParams) => {
+    const q = params.get("query") || ""
+    const location = params.get("location") || undefined
+    const source = params.get("source") || undefined
+    const pageStr = params.get("page")
+    const page = pageStr ? Number(pageStr) : undefined
+    const payload: Omit<SearchRequest, "access_token" | "accessToken"> = { query: q }
+    if (location) payload.location = location
+    if (source) payload.source = source
+    if (page !== undefined) payload.page = page
+    return payload
+  }, [])
+
+  // Fetch based on provided URLSearchParams (or current searchParams if omitted)
+  const fetchFromParams = useCallback(
+    async (params: URLSearchParams, signal?: AbortSignal) => {
+      if (!accessToken) {
+        const errorResponse: PaginatedSearchResponses = {
+          error: "No access token available",
+          results: []
+        }
+        setError("No access token available")
+        setResults(errorResponse)
+        return errorResponse
       }
-    })
-    const destination = params.toString()
-    router.push(`/search?${destination}`)
-    return params
-  }
 
-  const searchAll = useCallback(
-    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
-      if (!accessToken) throw new ApiError("No access token", "NO_ACCESS_TOKEN", 401)
       setLoading(true)
+      setError(null)
 
       try {
-        const params = updateQueryParams(query)
         const apiUrl = `${apiBaseUrl}${API_ROUTES.search.all}?${params.toString()}`
-
         const response = await apiFetch(apiUrl, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-          }
+          headers: { "Content-Type": "application/json" },
+          signal
         })
 
-        // TODO:
-        // status check for not found, unauthorized, etc.
         if (!response.ok) {
-          throw new Error("Failed to search content")
+          throw new Error(`Failed to search content: ${response.statusText}`)
         }
 
         const data: PaginatedSearchResponses = await response.json()
         setResults(data)
+        setError(null)
         return data
-      } catch (error) {
-        const errorResponse: PaginatedSearchResponses = {
-          error: typeof error === "string" || error === null ? error : String(error),
-          results: [],
-          page: 0,
-          per_page: 0,
-          pages: 0,
-          total: 0
+      } catch (err) {
+        // Don't set error if request was aborted
+        if (err instanceof Error && err.name === "AbortError") {
+          return { results: [] }
         }
-        console.error("Error searching all:", errorResponse)
+
+        const errorMessage = err instanceof Error ? err.message : String(err)
+        const errorResponse: PaginatedSearchResponses = {
+          error: errorMessage,
+          results: []
+        }
+        setError(errorMessage)
+        setResults(errorResponse)
         return errorResponse
       } finally {
         setLoading(false)
       }
     },
-    [accessToken, refreshAccessToken, router]
+    [accessToken]
   )
 
-  return useMemo(() => ({ searchAll, searchResults, loading }), [searchResults, searchAll, loading])
+  const searchAll = useCallback(
+    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
+      // Cancel any in-flight request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      
+      // Create new AbortController for this request
+      const abortController = new AbortController()
+      abortControllerRef.current = abortController
+      
+      // Set flag to skip the effect's fetch (we're handling it here)
+      skipEffectRef.current = true
+      
+      // Update URL params
+      const params = updateQueryParams(query as Record<string, any>)
+      
+      // Fetch directly
+      const data = await fetchFromParams(params, abortController.signal)
+      return data
+    },
+    [updateQueryParams, fetchFromParams]
+  )
+
+  const setPage = useCallback(
+    (page: number) => {
+      // Validate page number
+      if (page < 1) {
+        setError("Page number must be at least 1")
+        return
+      }
+
+      if (searchResults?.pages && page > searchResults.pages) {
+        setError(`Page ${page} exceeds maximum pages (${searchResults.pages})`)
+        return
+      }
+
+      // Update the page param in the URL. The effect watching params will trigger a fetch.
+      updateQueryParams({ page })
+    },
+    [updateQueryParams, searchResults?.pages]
+  )
+
+  // Effect: when searchParams change, fetch results
+  useEffect(() => {
+    // Check if we should skip (searchAll already handled the fetch)
+    if (skipEffectRef.current) {
+      skipEffectRef.current = false
+      return
+    }
+    
+    const paramsString = searchParams.toString()
+    
+    // Don't fetch if there are no search params
+    if (!paramsString) {
+      return
+    }
+    
+    // Cancel any in-flight request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    
+    // Create new AbortController for this request
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+    
+    const params = new URLSearchParams(paramsString)
+    fetchFromParams(params, abortController.signal).catch((err) => {
+      // Only log non-abort errors
+      if (!(err instanceof Error && err.name === "AbortError")) {
+        console.error("fetchFromParams effect error", err)
+      }
+    })
+    
+    // Cleanup: abort on unmount or param change
+    return () => {
+      abortController.abort()
+    }
+  }, [searchParams.toString(), fetchFromParams])
+
+  return useMemo(
+    () => ({ searchAll, searchResults, loading, error, setPage }),
+    [searchResults, searchAll, loading, error, setPage]
+  )
 }

@@ -38,6 +38,7 @@ export interface SearchRequest extends AuthenticatedRequest {
   query: string
   location?: string
   source?: string
+  page?: number
 }
 
 export type SearchResponse = {
@@ -53,9 +54,9 @@ export type SearchResponse = {
 
 export type PaginatedSearchResponses = {
   error?: string | null
-  page: number
-  pages: number
-  per_page: number
-  total: number
+  page?: number
+  pages?: number
+  per_page?: number
+  total?: number
   results: SearchResponse[]
 }
