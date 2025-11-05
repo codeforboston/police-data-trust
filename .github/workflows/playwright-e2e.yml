@@ -80,6 +80,12 @@ jobs:
         run: |
           docker compose logs
 
+      - name: Fix permissions for frontend directory
+        run: |
+          # Docker volumes may have created files with container user permissions
+          # Fix ownership so the runner can install npm dependencies
+          sudo chown -R $USER:$USER frontend/
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
