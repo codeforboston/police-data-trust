@@ -39,10 +39,10 @@ function useHook(): SearchContext {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   // AbortController ref to cancel in-flight requests
   const abortControllerRef = useRef<AbortController | null>(null)
-  
+
   // Track if we should skip the effect (when searchAll handles the fetch)
   const skipEffectRef = useRef(false)
 
@@ -137,17 +137,17 @@ function useHook(): SearchContext {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
       }
-      
+
       // Create new AbortController for this request
       const abortController = new AbortController()
       abortControllerRef.current = abortController
-      
+
       // Set flag to skip the effect's fetch (we're handling it here)
       skipEffectRef.current = true
-      
+
       // Update URL params
       const params = updateQueryParams(query as Record<string, any>)
-      
+
       // Fetch directly
       const data = await fetchFromParams(params, abortController.signal)
       return data
@@ -181,23 +181,23 @@ function useHook(): SearchContext {
       skipEffectRef.current = false
       return
     }
-    
+
     const paramsString = searchParams.toString()
-    
+
     // Don't fetch if there are no search params
     if (!paramsString) {
       return
     }
-    
+
     // Cancel any in-flight request
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
-    
+
     // Create new AbortController for this request
     const abortController = new AbortController()
     abortControllerRef.current = abortController
-    
+
     const params = new URLSearchParams(paramsString)
     fetchFromParams(params, abortController.signal).catch((err) => {
       // Only log non-abort errors
@@ -205,12 +205,13 @@ function useHook(): SearchContext {
         console.error("fetchFromParams effect error", err)
       }
     })
-    
+
     // Cleanup: abort on unmount or param change
     return () => {
       abortController.abort()
     }
-  }, [searchParams.toString(), fetchFromParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   return useMemo(
     () => ({ searchAll, searchResults, loading, error, setPage }),
