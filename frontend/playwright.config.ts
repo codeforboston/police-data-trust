@@ -16,7 +16,7 @@ export default defineConfig({
   // Configure output directories
   outputDir: "test-results",
   // Configure reporters
-  reporter: [["html", { outputFolder: "playwright-report", open: "never" }], ["list"]],
+  reporter: [["html", { outputFolder: "test-results", open: "never" }], ["list"]],
   // In CI, docker compose runs the server, so we don't need Playwright to start one
   // In local development, Playwright will start the dev server
   ...(process.env.CI
