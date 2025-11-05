@@ -27,12 +27,12 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
             "& .MuiTab-root": { color: "black" }
           }}
         >
-          <Tab label="All" />
-          <Tab label="Officer" />
-          <Tab label="Complaint" />
-          <Tab label="Agency" />
-          <Tab label="Unit" />
-          <Tab label="Litigation" />
+          <Tab key="all" label="All" />
+          <Tab key="officer" label="Officer" />
+          <Tab key="complaint" label="Complaint" />
+          <Tab key="agency" label="Agency" />
+          <Tab key="unit" label="Unit" />
+          <Tab key="litigation" label="Litigation" />
         </Tabs>
       </Box>
       <Box sx={{ p: 3 }}>

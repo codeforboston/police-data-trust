@@ -152,21 +152,18 @@ test.describe("Search Pagination", () => {
   })
 
   test("setPage updates URL and triggers API request", async ({ page }) => {
-    const apiRequests: string[] = []
-
     // Navigate to search page with initial query first
     await page.goto("/search?query=test&page=1")
     await page.waitForLoadState("networkidle")
 
-    // Track API requests after initial load
-    page.on("request", (request) => {
-      if (request.url().includes("/api/v1/search/")) {
-        apiRequests.push(request.url())
-      }
-    })
-
-    // Clear any requests from initial load
-    apiRequests.length = 0
+    // Set up promise to wait for API response with page=2 BEFORE clicking
+    const responsePromise = page.waitForResponse(
+      (response) => {
+        const url = response.url()
+        return url.includes("/api/v1/search/") && url.includes("page=2")
+      },
+      { timeout: 10000 }
+    )
 
     // Click on page 2 in pagination
     const pagination = page.locator('[aria-label="pagination navigation"]')
@@ -179,12 +176,12 @@ test.describe("Search Pagination", () => {
     await expect(page).toHaveURL(/.*page=2.*/, { timeout: 10000 })
 
     // Wait for API request to be made
-    await page.waitForLoadState("networkidle")
+    const response = await responsePromise
 
     // Verify API request was made with page=2
-    expect(apiRequests.length).toBeGreaterThan(0)
-    const lastRequest = apiRequests[apiRequests.length - 1]
-    const urlObj = new URL(lastRequest)
+    expect(response.ok()).toBe(true)
+    const url = response.url()
+    const urlObj = new URL(url)
     expect(urlObj.searchParams.get("page")).toBe("2")
   })
 })
