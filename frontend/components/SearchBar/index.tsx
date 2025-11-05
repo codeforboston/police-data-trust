@@ -25,7 +25,14 @@ export const SearchBar = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 2,
+        width: "100%"
+      }}>
       <TextField
         variant="outlined"
         value={localInput}
