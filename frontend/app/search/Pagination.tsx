@@ -14,6 +14,7 @@ const PaginationComponent = ({ count = 10, page = 1, onChangeHandler }: Paginati
       onChange={onChangeHandler}
       color="primary"
       shape="rounded"
+      aria-label="pagination navigation"
       sx={{
         display: "flex",
         justifyContent: "center",

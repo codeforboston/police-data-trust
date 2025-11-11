@@ -1,0 +1,120 @@
+# Playwright end-to-end tests
+# This workflow uses docker compose to start the development environment,
+# then runs Playwright tests against it.
+
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          NPDI_WEB_PORT=3000
+          NPDI_API_PORT=5001
+          GRAPH_PASSWORD=test_password
+          GRAPH_USER=neo4j
+          FLASK_ENV=development
+          MIXPANEL_TOKEN=notset
+          EOF
+
+      - name: Start services with docker compose
+        uses: hoverkraft-tech/compose-action@v2.0.2
+        with:
+          compose-file: docker-compose.yml
+          up-flags: --build --detach
+
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to be ready..."
+
+          # Wait for Neo4j
+          echo "Waiting for Neo4j..."
+          for i in {1..30}; do
+            if curl -f http://localhost:7474 > /dev/null 2>&1; then
+              echo "Neo4j is ready!"
+              break
+            fi
+            echo "Attempt $i: Neo4j not ready yet..."
+            sleep 2
+          done
+
+          # Wait for API
+          echo "Waiting for API..."
+          for i in {1..30}; do
+            if curl -f http://localhost:5001/api/v1/healthcheck > /dev/null 2>&1; then
+              echo "API is ready!"
+              break
+            fi
+            echo "Attempt $i: API not ready yet..."
+            sleep 2
+          done
+
+          # Wait for Frontend
+          echo "Waiting for Frontend..."
+          for i in {1..30}; do
+            if curl -f http://localhost:3000 > /dev/null 2>&1; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Attempt $i: Frontend not ready yet..."
+            sleep 2
+          done
+
+          echo "All services are ready!"
+
+      - name: Check service logs
+        if: failure()
+        run: |
+          docker compose logs
+
+      - name: Fix permissions for frontend directory
+        run: |
+          # Docker volumes may have created files with container user permissions
+          # Fix ownership so the runner can install npm dependencies
+          sudo chown -R $USER:$USER frontend/
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: frontend
+        env:
+          NPDI_WEB_PORT: 3000
+        run: npm run test:e2e
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-results
+          path: frontend/test-results/
+          retention-days: 30
+
+      - name: Stop services
+        if: always()
+        run: docker compose down -v
