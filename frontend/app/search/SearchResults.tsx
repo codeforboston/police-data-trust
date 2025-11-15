@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { SearchResponse, AgencyResponse } from "@/utils/api"
 import { useSearch } from "@/providers/SearchProvider"
+import { useEffect } from "react"
 
 type SearchResultsProps = {
   total: number
@@ -21,31 +22,28 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
   const [agencyLoading, setAgencyLoading] = useState(false)
   const [agencyTotal, setAgencyTotal] = useState(0)
 
+  useEffect(() => {
+    const performAgencySearch = async () => {
+      if (tab !== 3 || !currentQuery) return
+
+      setAgencyLoading(true)
+      try {
+        const response = await searchAgencies({ name: currentQuery })
+        setAgencyResults(response.results || [])
+        setAgencyTotal(response.total || 0)
+      } catch (error) {
+        console.error('Agency search failed:', error)
+        setAgencyResults([])
+        setAgencyTotal(0)
+      } finally {
+        setAgencyLoading(false)
+      }
+    }
+    performAgencySearch()
+  }, [currentQuery, tab, searchAgencies])
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue)
-
-     // When Agency tab is clicked
-    if (newValue === 3) {
-      handleAgencySearch()
-    }
-  }
-
-  const handleAgencySearch = async () => {
-    if (!currentQuery) return
-
-    setAgencyLoading(true)
-    try {
-      // search by name for now
-      const response = await searchAgencies({ name: currentQuery })
-      setAgencyResults(response.results || [])
-      setAgencyTotal(response.total || 0)
-    } catch (error) {
-      console.error('Agency search failed:', error)
-      setAgencyResults([])
-      setAgencyTotal(0)
-    } finally {
-      setAgencyLoading(false)
-    }
   }
 
   return (
@@ -160,7 +158,6 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
               ))}
             </>
             )}
-            <p>Agency tab - {results.length} total results</p>
           </CustomTabPanel>
         </Box>
       )}

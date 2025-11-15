@@ -112,14 +112,6 @@ function useHook(): SearchContext {
 
           const apiUrl = `${apiBaseUrl}${API_ROUTES.agencies}?${queryParams.toString()}`
 
-        console.log('====== AGENCY SEARCH DEBUG ======')
-        console.log('apiBaseUrl:', apiBaseUrl)
-        console.log('API_ROUTES.agencies:', API_ROUTES.agencies)
-        console.log('queryParams:', queryParams.toString())
-        console.log('Full apiUrl:', apiUrl)
-        console.log('Has accessToken:', !!accessToken)
-        console.log('================================')
-
           const response = await apiFetch(apiUrl, {
             method: "GET",
             headers: {
