@@ -10,9 +10,13 @@ const API_ROUTES = {
     all: "/search/",
     incidents: "/incidents/search"
   },
+
   users: {
     self: "/users/self"
-  }
+  },
+
+  agencies: "/agencies/"
+
 }
 
 export const apiBaseUrl: string =
