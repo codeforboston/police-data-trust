@@ -36,9 +36,9 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
     setAgencyLoading(true)
     try {
       // search by name for now
-      const reponse = await searchAgencies({ name: currentQuery })
-      setAgencyResults(Response.results || [])
-      setAgencyTotal(Response.total || 0)
+      const response = await searchAgencies({ name: currentQuery })
+      setAgencyResults(response.results || [])
+      setAgencyTotal(response.total || 0)
     } catch (error) {
       console.error('Agency search failed:', error)
       setAgencyResults([])
@@ -113,6 +113,7 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
               />
             ))}
           </CustomTabPanel>
+
           <CustomTabPanel value={tab} index={3}>
             {agencyLoading ? (
               <Typography>Searching agencies...</Typography>
@@ -122,17 +123,16 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
                   {agencyTotal} agency results
                 </Typography>
                 {agencyResults.map((result) => (
-            
                 <CardHeader
                 key={result.uid}
-                title={result.title}
-                subheader={result.subtitle}
+                title={result.name}
+                subheader={`${result.hq_city || 'Unknown City'}, ${result.hq_state || 'Unknown State'}`}
                 slotProps={{ subheader: { fontWeight: "bold", color: "#000" } }}
                 action={
                   <Box sx={{ display: "flex", gap: "1rem" }}>
-                    <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
-                    <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
-                    <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
+                    <span style={{ fontSize: "12px", color: "#666" }}>Agency</span>
+                    {result.jurisdiction && <span style={{ fontSize: "12px", color: "#666" }}>{result.jurisdiction}</span>}
+                    {result.website_url && <span style={{ fontSize: "12px", color: "#666" }}>{result.website_url}</span>}
                   </Box>
                 }
                 sx={{

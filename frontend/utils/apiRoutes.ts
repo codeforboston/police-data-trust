@@ -15,7 +15,7 @@ const API_ROUTES = {
     self: "/users/self"
   },
 
-  agencies: "/agencies"
+  agencies: "/agencies/"
 
 }
 

@@ -137,12 +137,31 @@ export interface AgenciesRequest extends AuthenticatedRequest {
 
 export interface AgencyResponse {
   uid: string
-  title: string
-  subtitle: string
-  content_type: string
-  source: string
-  last_updated: string
-  // Could add other agency-specific fields here as needed
+  name: string
+  website_url?: string | null
+  hq_address?: string | null
+  hq_city?: string | null
+  hq_state?: string | null
+  hq_zip?: string | null
+  phone?: string | null
+  email?: string | null
+  description?: string | null
+  jurisdiction?: string | null
+  units?: Array<{
+    uid: string
+    name: string
+    website_url?: string | null
+    phone?: string | null
+    email?: string | null
+    description?: string | null
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zip?: string | null
+    agency_url?: string | null
+    officers_url?: string | null
+    date_established?: string | null
+  }>
 }
 
 export type AgenciesApiResponse = {
