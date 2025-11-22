@@ -603,3 +603,93 @@ class JsonSerializable:
 
             else:
                 logging.error(f"State not found: {state}")
+
+
+class SearchableMixin:
+    """
+    Base mixin for any model that wants a searchable interface.
+    """
+
+    @classmethod
+    def _preprocess_query(cls, query: str, watchlist) -> str:
+        """
+        Preprocess the search query before using it in fulltext search.
+        Args:
+            query (str): The original search query.
+        Returns:
+            str: The preprocessed search query.
+        """
+        query_terms = query.split()
+        processed_terms = []
+        for term in query_terms:
+            if term.lower() in watchlist:
+                continue  # skip common terms
+            processed_terms.append(term)
+        query = " ".join(processed_terms)
+        return query
+
+    @classmethod
+    def _search(
+        cls,
+        label: str,
+        index: str | None = None,
+        filters: dict | None = None,
+        query: str | None = None,
+        count: bool = False,
+        skip: int = 0,
+        limit: int = 25,
+        extra_params: dict | None = None,
+    ):
+        """
+        Generic search executor for any node label.
+
+        Args:
+            label: Neo4j node label
+            index: Optional fulltext index Cypher snippet (from search)
+            filters: Dict of field->value for exact matches
+            query: Optional fulltext search term
+            count: Return count instead of nodes
+            skip: Pagination offset
+            limit: Pagination limit
+            extra_params: Additional parameters to pass to the Cypher query
+
+        Returns:
+            int if count=True, else list of nodes
+        """
+        filters = filters or {}
+        params = filters.copy()
+        if extra_params:
+            params.update(extra_params)
+
+        cypher_parts = []
+
+        # Use fulltext index if provided
+        if index:
+            cypher_parts.append(index)  # already includes 'CALL ... YIELD node AS n'
+        # else:
+        cypher_parts.append(f"MATCH (n:{label})")
+
+        # Property filters
+        if filters:
+            where_clause = " AND ".join(f"n.{k} = ${k}" for k in filters)
+            if any("WHERE" in part for part in cypher_parts):
+                # Append to existing WHERE from fulltext
+                cypher_parts.append("AND " + where_clause)
+            else:
+                cypher_parts.append("WHERE " + where_clause)
+
+        # Return count or nodes
+        if count:
+            cypher_parts.append("RETURN count(n) AS count")
+        else:
+            cypher_parts.append("RETURN n SKIP $skip LIMIT $limit")
+            params.update({"skip": skip, "limit": limit})
+
+        cypher = "\n".join(cypher_parts)
+
+        logging.warning(f"Search Cypher:\n{cypher}\nWith params: {params}")
+        rows, _ = db.cypher_query(cypher, params, resolve_objects=True)
+
+        if count:
+            return rows[0][0] if rows else 0
+        return [row[0] for row in rows]

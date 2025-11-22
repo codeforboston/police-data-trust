@@ -1,5 +1,4 @@
 import logging
-
 from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
@@ -12,7 +11,7 @@ from backend.routes.search import create_agency_result
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field, validator
 from neomodel import db
 
 
@@ -32,6 +31,32 @@ class AddOfficerSchema(BaseModel):
 
 class AddOfficerListSchema(BaseModel):
     officers: List[AddOfficerSchema]
+
+
+class AgencyQueryParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = None
+    hq_city: str | None = None
+    hq_state: str | None = None
+    hq_zip: str | None = None
+    jurisdiction: str | None = None
+
+    page: int = Field(default=1, ge=1)
+    per_page: int = Field(default=20, ge=1)
+    searchResult: bool = Field(default=False)
+
+    @validator("hq_state")
+    def validate_state(cls, v):
+        if v and v not in State.choices():
+            raise ValueError(f"Invalid state: {v}")
+        return v
+
+    @validator("jurisdiction")
+    def validate_jurisdiction(cls, v):
+        if v and v not in Jurisdiction.choices():
+            raise ValueError(f"Invalid jurisdiction: {v}")
+        return v
 
 
 # Create agency profile
@@ -159,83 +184,68 @@ def get_all_agencies():
     hq_zip: filter on agency zipcode
     jurisdiction: filter on agency jurisdiction
     """
-    args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+    logging.warning(request.args)
+    # --- Validate query parameters ---
+    try:
+        params = AgencyQueryParams(**request.args)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
 
-    params = ["name", "hq_city", "hq_state", "hq_zip", "jurisdiction"]
-    params_used = set(params).intersection(args.keys())
-    params.extend(["page", "per_page", "searchResult"])
+    # preprocess query
+    if params.name:
+        search_term = Agency.preprocess_query(params.name)
+    else:
+        search_term = None
 
-    # includes unrecognized parameters
-    if bool(set(args).difference(params)):
-        logging.warning(set(args).difference(params))
-        abort(400)
+    # --- Pagination ---
+    skip = (params.page - 1) * params.per_page
 
-    cypher_match = "MATCH (a:Agency)"
-    cypher_where_clauses = []
-    cypher_params = {}
+    # --- Extract filters ---
+    filters = {
+        k: v for k, v in {
+            "hq_city": params.hq_city,
+            "hq_state": params.hq_state,
+            "hq_zip": params.hq_zip,
+            "jurisdiction": params.jurisdiction,
+        }.items() if v
+    }
 
-    # Build WHERE conditions dynamically
-    if bool(params_used):
-        for p in params_used:
-            input_value = args.get(p, None, type=str)
-            if p == "hq_state" and input_value not in State.choices():
-                abort(400)
-            if (p == "jurisdiction" and
-                    input_value not in Jurisdiction.choices()):
-                abort(400)
-            cypher_where_clauses.append(f"a.{p} = ${p}")
-            cypher_params[p] = input_value
-
-    cypher_where = ""
-    if cypher_where_clauses:
-        cypher_where = " WHERE " + " AND ".join(cypher_where_clauses)
-
-    # ----------- Get total count -----------
-    cypher_count = f"""
-        {cypher_match}
-        {cypher_where}
-        RETURN count(a) AS total
-    """
-    count_result, _ = db.cypher_query(cypher_count, cypher_params)
-    row_count = count_result[0][0] if count_result else 0
-
-    skip = (q_page - 1) * q_per_page
+    # --- Count total matches ---
+    row_count = Agency.search(
+        query=search_term,
+        filters=filters,
+        count=True
+    )
 
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
     if row_count < skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
-    # ----------- Get paginated results -----------
-    cypher_data = f"""
-        {cypher_match}
-        {cypher_where}
-        RETURN a
-        ORDER BY a.name
-        SKIP $skip
-        LIMIT $limit
-    """
-    cypher_params.update({"skip": skip, "limit": q_per_page})
-    results, _ = db.cypher_query(cypher_data, cypher_params)
+    # --- Fetch paginated results ---
+    results = Agency.search(
+        query=search_term,
+        filters=filters,
+        skip=skip,
+        limit=params.per_page
+    )
 
-    # Optional: convert to SearchResult format
-    if args.get("searchResult", "").lower() == 'true':  # default is full node
+    # --- Optional searchResult output ---
+    if params.searchResult:
         agencies = [create_agency_result(row[0]) for row in results]
         page = [item.model_dump() for item in agencies if item]
         return_func = jsonify
     else:
-        agencies = [Agency.inflate(row[0]) for row in results]
-        page = [item.to_dict() for item in agencies]
+        page = [row.to_dict() for row in results]
         return_func = ordered_jsonify
 
     # Add pagination wrapper
     response = add_pagination_wrapper(
         page_data=page,
         total=row_count,
-        page_number=q_page,
-        per_page=q_per_page
+        page_number=params.page,
+        per_page=params.per_page
     )
 
     return return_func(response), 200
