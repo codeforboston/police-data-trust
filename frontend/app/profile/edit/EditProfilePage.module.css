@@ -1,0 +1,40 @@
+.container {
+  max-width: 552px;
+  margin: auto;
+  margin-top: 1rem;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-inline: 24px;
+}
+
+.avatarRow {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bioWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bioCount {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.bioCountError {
+  font-size: 0.875rem;
+  color: #d32f2f;
+  margin: 0;
+}
