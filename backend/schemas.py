@@ -665,8 +665,8 @@ class SearchableMixin:
 
         # Use fulltext index if provided
         if index:
-            cypher_parts.append(index)  # already includes 'CALL ... YIELD node AS n'
-        # else:
+            cypher_parts.append(index)
+
         cypher_parts.append(f"MATCH (n:{label})")
 
         # Property filters
