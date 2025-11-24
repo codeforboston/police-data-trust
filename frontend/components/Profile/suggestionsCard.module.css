@@ -1,0 +1,15 @@
+.suggestionItem {
+  display: flex;
+  gap: 12px;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 16px;
+}

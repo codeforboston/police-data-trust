@@ -39,7 +39,9 @@ class User(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "last_name",
         "email", "email_confirmed_at",
-        "phone_number", "role", "active"
+        "phone_number", "biography", "title",
+        "organization", "city", "state", "website",
+        "social_media_contacts", "role", "active"
     ]
 
     uid = UniqueIdProperty()
@@ -58,6 +60,7 @@ class User(StructuredNode, JsonSerializable):
     organization = StringProperty(max_length=100)
     city = StringProperty(max_length=50)
     state = StringProperty(choices=State.choices())
+    website = StringProperty()
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)
