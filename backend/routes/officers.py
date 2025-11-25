@@ -12,8 +12,8 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from pydantic import BaseModel
-from neomodel import db
+from pydantic import BaseModel, Field, field_validator
+# from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
@@ -54,6 +54,65 @@ class AddEmploymentSchema(BaseModel):
 class AddEmploymentListSchema(BaseModel):
     agencies: List[AddEmploymentSchema]
 
+
+class OfficerSearchParams(BaseModel):
+    # Pagination
+    page: int = 1
+    per_page: int = Field(20, alias="per_page")
+    searchResult: bool = Field(default=False)
+
+    # Name components
+    first_name: Optional[str] = Field(None, alias="firstName")
+    middle_name: Optional[str] = Field(None, alias="middleName")
+    last_name: Optional[str] = Field(None, alias="lastName")
+    suffix: Optional[str] = Field(None, alias="suffix")
+
+    # Other filters
+    rank: List[str] = []
+    unit: List[str] = []
+    agency: List[str] = []
+    active_after: Optional[str] = None
+    active_before: Optional[str] = None
+    badge_number: List[str] = Field([], alias="badge_number")
+    ethnicity: List[str] = []
+
+    # Derived fields (computed below)
+    @field_validator("unit", mode="before")
+    def ensure_list(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, str):
+            return [v]         # convert single string → list
+        return v
+
+    @property
+    def name_parts(self):
+        return [
+            p.strip()
+            for p in [
+                self.first_name,
+                self.middle_name,
+                self.last_name,
+                self.suffix,
+            ]
+            if p and p.strip()
+        ]
+
+    @property
+    def officer_name(self):
+        return " AND ".join(self.name_parts) or None
+
+    @property
+    def officer_rank(self):
+        return " ".join(self.rank) if self.rank else None
+
+    @property
+    def skip(self):
+        return (self.page - 1) * self.per_page
+
+    @property
+    def limit(self):
+        return self.per_page
 
 # # Search for an officer or group of officers
 # @bp.route("/search", methods=["POST"])
@@ -179,121 +238,69 @@ def get_all_officers():
     per_page: number of results per page
     page: page number
     """
+    raw = {
+        **request.args,  # copies simple values
+        "unit": request.args.getlist("unit"),
+        "agency": request.args.getlist("agency"),
+        "rank": request.args.getlist("rank"),
+        "badge_number": request.args.getlist("badge_number"),
+        "ethnicity": request.args.getlist("ethnicity"),
+    }
+    try:
+        params = OfficerSearchParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
 
-    args = request.args
-
-    # Pagination
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
-    skip = (q_page - 1) * q_per_page
-    limit = q_per_page
-
-    # Build full name
-    officer_name_parts = [args.get(k, "").strip() for k in
-                          ["firstName", "middleName", "lastName", "suffix"]]
-    officer_name = " AND ".join([p for p in officer_name_parts if p]) or None
-
-    officer_rank = " ".join(args.getlist("rank"))
-    unit = args.getlist("unit")
-    agency = args.getlist("agency")
-    active_after = args.get("active_after")
-    active_before = args.get("active_before")
-    badge_number = args.getlist("badge_number")
-    ethnicity = args.getlist("ethnicity")
-
-    # Build MATCH clauses
-    match_clauses = []
-    if officer_name:
-        match_clauses.append(f"""
-            CALL db.index.fulltext.queryNodes('officerNames',
-                             '{officer_name}') YIELD node AS o
-        """)
-    elif officer_rank:
-        match_clauses.append(f"""
-            CALL db.index.fulltext.queryRelationships('officerRanks',
-                             '{officer_rank}') YIELD relationship AS m
-        """)
-
-    match_clauses.append("MATCH (o:Officer)")
-
-    if unit or active_after or active_before or badge_number or agency:
-        match_clauses.append("MATCH (o)-[m:MEMBER_OF_UNIT]-(u:Unit)")
-
-    if agency:
-        match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
-
-    # Build WHERE clauses and params
-    where_clauses = ["TRUE"]
-    params = {}
-
-    if active_after:
-        where_clauses.append("m.latest_date > $active_after")
-        params["active_after"] = active_after
-
-    if active_before:
-        where_clauses.append("m.earliest_date < $active_before")
-        params["active_before"] = active_before
-
-    if agency:
-        where_clauses.append("a.name IN $agency")
-        params["agency"] = agency
-
-    if badge_number:
-        where_clauses.append("m.badge_number IN $badge_number")
-        params["badge_number"] = badge_number
-
-    if ethnicity:
-        where_clauses.append("o.ethnicity IN $ethnicity")
-        params["ethnicity"] = ethnicity
-
-    if unit:
-        where_clauses.append("u.name IN $unit")
-        params["unit"] = unit
-
-    # Combine query
-    match_str = "\n".join(match_clauses)
-    where_str = "\nAND ".join(where_clauses)
-    cypher_query = f"""
-    {match_str}
-    WHERE {where_str}
-    RETURN o SKIP {skip} LIMIT {limit}
-    """
-
-    logging.warning("Cypher query:\n%s", cypher_query)
-    logging.warning("Params: %s", params)
-
-    # Count total results
-    count_query = f"{match_str}\nWHERE {where_str}\nRETURN count(*) as c"
-    count_results, _ = db.cypher_query(count_query, params)
-    row_count = count_results[0][0] if count_results else 0
+    row_count = Officer.search(
+        name=params.officer_name,
+        rank=params.officer_rank,
+        unit=params.unit,
+        agency=params.agency,
+        badge_number=params.badge_number,
+        ethnicity=params.ethnicity,
+        active_after=params.active_after,
+        active_before=params.active_before,
+        count=True,
+    )
     logging.warning("Total results found: %s", row_count)
 
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
-    if row_count < skip:
+    if row_count < params.skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     # Run query
-    results, _ = db.cypher_query(cypher_query, params)
+    results = Officer.search(
+        name=params.officer_name,
+        rank=params.officer_rank,
+        unit=params.unit,
+        agency=params.agency,
+        badge_number=params.badge_number,
+        ethnicity=params.ethnicity,
+        active_after=params.active_after,
+        active_before=params.active_before,
+        skip=params.skip,
+        limit=params.limit,
+    )
 
     # Check mode — full node or SearchResult
-    if args.get("searchResult", "").lower() == 'true':  # default is full node
+    if params.searchResult:  # default is full node
         all_officers = [create_officer_result(o[0]) for o in results]
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
     else:
-        all_officers = [Officer.inflate(row[0]) for row in results]
-        page = [item.to_dict() for item in all_officers]
+        page = [row.to_dict() for row in results]
         return_func = ordered_jsonify
 
     # Add pagination wrapper
     response = add_pagination_wrapper(
-        page_data=page, total=row_count,
-        page_number=q_page, per_page=q_per_page
+        page_data=page,
+        total=row_count,
+        page_number=params.page,
+        per_page=params.per_page
     )
 
-    logging.warning("API response: %s", response)
-    # return ordered_jsonify(response), 200
     return return_func(response), 200
 
 
