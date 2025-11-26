@@ -99,14 +99,14 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: frontend
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
         working-directory: frontend
         env:
           NPDI_WEB_PORT: 3000
           NPDI_API_PORT: 5001
-        run: docker compose ps && npm run test:e2e
+        run: docker compose ps && docker compose logs api && echo "" && npm run test:e2e
 
       - name: Upload test results
         uses: actions/upload-artifact@v5
