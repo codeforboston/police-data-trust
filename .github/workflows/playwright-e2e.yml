@@ -26,6 +26,7 @@ jobs:
           NPDI_API_PORT=5001
           GRAPH_PASSWORD=test_password
           GRAPH_USER=neo4j
+          GRAPH_NM_URI=bolt://db:7687
           FLASK_ENV=development
           MIXPANEL_TOKEN=notset
           EOF
