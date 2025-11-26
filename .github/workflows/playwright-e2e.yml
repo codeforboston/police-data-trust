@@ -78,6 +78,10 @@ jobs:
 
           echo "All services are ready!"
 
+      - name: Wait for services to be healthy
+        run: |
+          docker compose exec api cat /etc/hosts
+
       - name: Check service logs
         if: failure()
         run: |
