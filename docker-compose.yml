@@ -35,7 +35,7 @@ services:
       - /app/node_modules
     environment:
       NEXT_PUBLIC_API_MODE: real
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5000}/api/v1
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5001}/api/v1
     ports:
       - ${NPDI_WEB_PORT:-3000}:${NPDI_WEB_PORT:-3000}
   api:

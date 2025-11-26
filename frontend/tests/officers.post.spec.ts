@@ -46,7 +46,9 @@ test.describe("Officers API", () => {
     // to CONTRIBUTOR (the backend requires that role to create officers).
     const testEmail = `pw-${Date.now()}@example.com`
     const testPassword = "TestPass123!"
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v1"
+    const apiBase =
+      process.env.NEXT_PUBLIC_API_BASE_URL ??
+      `http://localhost:${process.env.NPDI_API_PORT ?? "5001"}/api/v1`
 
     const regRes = await request.post(`${apiBase}/auth/register`, {
       data: {
