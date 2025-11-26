@@ -105,7 +105,8 @@ jobs:
         working-directory: frontend
         env:
           NPDI_WEB_PORT: 3000
-        run: npm run test:e2e
+          NPDI_API_PORT: 5001
+        run: docker compose ps && npm run test:e2e
 
       - name: Upload test results
         uses: actions/upload-artifact@v5
