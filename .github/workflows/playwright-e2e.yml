@@ -106,6 +106,7 @@ jobs:
         env:
           NPDI_WEB_PORT: 3000
           NPDI_API_PORT: 5001
+          NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:5001/api/v1
         run: docker compose ps && docker compose logs api && echo "" && npm run test:e2e
 
       - name: Upload test results
