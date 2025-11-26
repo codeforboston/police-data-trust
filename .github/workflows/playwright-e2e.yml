@@ -39,8 +39,6 @@ jobs:
 
       - name: Wait for services to be healthy
         run: |
-          docker compose ps
-          cat /etc/hosts
           echo "Waiting for services to be ready..."
 
           # Wait for Neo4j
@@ -78,10 +76,6 @@ jobs:
 
           echo "All services are ready!"
 
-      - name: Wait for services to be healthy
-        run: |
-          docker compose exec api cat /etc/hosts
-
       - name: Check service logs
         if: failure()
         run: |
@@ -114,7 +108,7 @@ jobs:
           NPDI_WEB_PORT: 3000
           NPDI_API_PORT: 5001
           NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:5001/api/v1
-        run: docker compose ps && docker compose logs api && echo "" && npm run test:e2e
+        run: npm run test:e2e
 
       - name: Upload test results
         uses: actions/upload-artifact@v5
