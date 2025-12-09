@@ -26,6 +26,7 @@ jobs:
           NPDI_API_PORT=5001
           GRAPH_PASSWORD=test_password
           GRAPH_USER=neo4j
+          GRAPH_NM_URI="db:7687"
           FLASK_ENV=development
           MIXPANEL_TOKEN=notset
           EOF
@@ -99,12 +100,14 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: frontend
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
         working-directory: frontend
         env:
           NPDI_WEB_PORT: 3000
+          NPDI_API_PORT: 5001
+          NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:5001/api/v1
         run: npm run test:e2e
 
       - name: Upload test results
