@@ -1,5 +1,5 @@
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
-from backend.database.models.source import Citation
+from backend.database.models.source import HasCitations
 from neomodel import (
     StructuredNode,
     StringProperty,
@@ -18,7 +18,7 @@ class LegalCaseType(str, PropertyEnum):
     CRIMINAL = "CRIMINAL"
 
 
-class Litigation(StructuredNode, JsonSerializable):
+class Litigation(HasCitations, JsonSerializable, StructuredNode):
     __property_order__ = [
         "uid", "case_title", "docket_number",
         "court_level", "jurisdiction", "state",

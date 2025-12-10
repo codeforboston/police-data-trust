@@ -1,6 +1,6 @@
 from backend.schemas import JsonSerializable, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
-from backend.database.models.source import Source, Citation
+from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
 
 from neomodel import (
@@ -26,7 +26,7 @@ class StateID(StructuredNode, JsonSerializable):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(StructuredNode, JsonSerializable):
+class Officer(HasCitations, JsonSerializable, StructuredNode):
     __property_order__ = [
         "uid", "first_name", "middle_name",
         "last_name", "suffix", "ethnicity",
@@ -43,10 +43,6 @@ class Officer(StructuredNode, JsonSerializable):
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
     date_of_birth = DateProperty()
-
-    # Relationships
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Officer {self.uid}>"
@@ -164,22 +160,3 @@ class Officer(StructuredNode, JsonSerializable):
         """
         from backend.database.models.complaint import Investigation
         return RelQuery(self, base, return_alias="i", inflate_cls=Investigation)
-
-    def primary_source(self):
-        """
-        Get the primary source of the officer.
-        Returns:
-            Source: The primary source of the officer.
-        """
-        cy = """
-        MATCH (o:Officer {uid: $uid})-[r:UPDATED_BY]->(s:Source)
-        RETURN s
-        ORDER BY r.date DESC
-        LIMIT 1;
-        """
-
-        result, meta = db.cypher_query(cy, {'uid': self.uid})
-        if result:
-            source_node = result[0][0]
-            return Source.inflate(source_node)
-        return None

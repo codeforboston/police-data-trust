@@ -1,5 +1,8 @@
 from __future__ import annotations  # allows type hinting of class itself
-# from ..core import db, CrudMixin
+
+from abc import ABC
+from typing import TYPE_CHECKING
+import logging
 from backend.schemas import JsonSerializable, PropertyEnum
 from datetime import datetime
 from neomodel import (
@@ -7,11 +10,10 @@ from neomodel import (
     RelationshipTo, RelationshipFrom,
     StringProperty, DateTimeProperty,
     UniqueIdProperty, BooleanProperty,
-    EmailProperty
+    EmailProperty, db
 )
-
-# TODO: Add an inheritable class for data nodes that provides common properties
-# like: last_updated, primary_source, etc.
+if TYPE_CHECKING:
+    from backend.database.models.user import User
 
 
 class MemberRole(str, PropertyEnum):
@@ -114,11 +116,70 @@ class Citation(StructuredRel, JsonSerializable):
     uid = UniqueIdProperty()
     date = DateTimeProperty(default=datetime.now())
     url = StringProperty()
+    user_uid = StringProperty()
     diff = StringProperty()
 
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Citation {self.uid}>"
+
+
+class HasCitations(ABC):
+    """Mix me into a database model to give it citation capabilities."""
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if not issubclass(cls, StructuredNode):
+            raise TypeError(
+                f"{cls.__name__} mixes in HasCitations but does not inherit StructuredNode"
+            )
+
+    # Relationships
+    citations = RelationshipTo(
+        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
+
+    def add_citation(self, source, user: "User", diff: dict = None):
+        """
+        Add a citation to an item from a source.
+
+        :param item: The item to add the citation to
+        :param source: The source of the citation
+        :param data: The citation data
+        """
+        context = {k: v for k, v in {
+            "date": datetime.now(),
+            "user_uid": user.uid,
+            "diff": diff
+        }.items() if v is not None}
+        try:
+            self.citations.connect(source, context)
+        except Exception as e:
+            logging.error(f"Error adding citation: {e} to {self.uid}")
+            raise e
+        
+    def _source_where_clause(self) -> str:
+        return ""  # subclasses can add e.g. "WHERE s.is_active = true"
+        
+    def _source_score_expr(self) -> str:
+        # default: newest wins
+        return "coalesce(r.date, datetime({epochMillis: 0})).epochMillis"
+
+    @property
+    def primary_source(self) -> Source | None:
+        """Get the primary source for this item based on citation scores."""
+        label = getattr(self.__class__, "__label__", self.__class__.__name__)
+        where = self._source_where_clause().strip()
+        score = self._source_score_expr().strip()
+
+        cy = f"""
+        MATCH (n:{label} {{uid: $uid}})-[r:UPDATED_BY]->(s:Source)
+        {where}
+        WITH s, r, ({score}) AS score
+        ORDER BY score DESC
+        LIMIT 1
+        RETURN s
+        """
+        rows, _ = db.cypher_query(cy, {"uid": self.uid})
+        return Source.inflate(rows[0][0]) if rows else None
 
 
 class Source(StructuredNode, JsonSerializable):
