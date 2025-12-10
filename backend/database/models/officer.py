@@ -4,8 +4,7 @@ from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
 
 from neomodel import (
-    db, StructuredNode,
-    RelationshipTo, Relationship,
+    db, StructuredNode, Relationship,
     StringProperty, DateProperty,
     UniqueIdProperty, One
 )
@@ -26,7 +25,7 @@ class StateID(StructuredNode, JsonSerializable):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(HasCitations, JsonSerializable, StructuredNode):
+class Officer(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "middle_name",
         "last_name", "suffix", "ethnicity",

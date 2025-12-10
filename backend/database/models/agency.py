@@ -8,7 +8,6 @@ from neomodel import (
     StructuredRel,
     StringProperty,
     Relationship,
-    RelationshipTo,
     RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
@@ -46,7 +45,7 @@ class UnitMembership(StructuredRel, JsonSerializable):
     highest_rank = StringProperty()
 
 
-class Unit(HasCitations, JsonSerializable, StructuredNode):
+class Unit(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "name", "website_url", "phone",
         "email", "description", "address",
@@ -104,7 +103,7 @@ class Unit(HasCitations, JsonSerializable, StructuredNode):
         return None
 
 
-class Agency(HasCitations, JsonSerializable, StructuredNode):
+class Agency(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "name", "website_url", "hq_address",
         "hq_city", "hq_state", "hq_zip", "phone",

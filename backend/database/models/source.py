@@ -1,6 +1,5 @@
 from __future__ import annotations  # allows type hinting of class itself
 
-from abc import ABC
 from typing import TYPE_CHECKING
 import logging
 from backend.schemas import JsonSerializable, PropertyEnum
@@ -124,13 +123,14 @@ class Citation(StructuredRel, JsonSerializable):
         return f"<Citation {self.uid}>"
 
 
-class HasCitations(ABC):
+class HasCitations:
     """Mix me into a database model to give it citation capabilities."""
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         if not issubclass(cls, StructuredNode):
             raise TypeError(
-                f"{cls.__name__} mixes in HasCitations but does not inherit StructuredNode"
+                f"{cls.__name__} mixes in HasCitations " +
+                "but does not inherit StructuredNode"
             )
 
     # Relationships
@@ -155,10 +155,10 @@ class HasCitations(ABC):
         except Exception as e:
             logging.error(f"Error adding citation: {e} to {self.uid}")
             raise e
-        
+
     def _source_where_clause(self) -> str:
         return ""  # subclasses can add e.g. "WHERE s.is_active = true"
-        
+
     def _source_score_expr(self) -> str:
         # default: newest wins
         return "coalesce(r.date, datetime({epochMillis: 0})).epochMillis"
@@ -166,20 +166,18 @@ class HasCitations(ABC):
     @property
     def primary_source(self) -> Source | None:
         """Get the primary source for this item based on citation scores."""
-        label = getattr(self.__class__, "__label__", self.__class__.__name__)
         where = self._source_where_clause().strip()
         score = self._source_score_expr().strip()
 
-        cy = f"""
-        MATCH (n:{label} {{uid: $uid}})-[r:UPDATED_BY]->(s:Source)
-        {where}
-        WITH s, r, ({score}) AS score
-        ORDER BY score DESC
-        LIMIT 1
+        cy = """
+        MATCH (n)-[r:UPDATED_BY]->(s:Source)
+        WHERE elementId(n) = $eid
         RETURN s
+        ORDER BY r.date DESC
+        LIMIT 1
         """
-        rows, _ = db.cypher_query(cy, {"uid": self.uid})
-        return Source.inflate(rows[0][0]) if rows else None
+        result, _ = db.cypher_query(cy, {"eid": self.element_id})
+        return Source.inflate(result[0][0]) if result else None
 
 
 class Source(StructuredNode, JsonSerializable):

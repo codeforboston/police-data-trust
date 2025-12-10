@@ -60,7 +60,7 @@ class Location(StructuredNode, JsonSerializable):
     administrative_area_type = StringProperty()
 
 
-class Complaint(HasCitations, JsonSerializable, StructuredNode):
+class Complaint(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "record_id", "category",
         "incident_date", "received_date",

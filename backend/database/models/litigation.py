@@ -3,7 +3,6 @@ from backend.database.models.source import HasCitations
 from neomodel import (
     StructuredNode,
     StringProperty,
-    RelationshipTo,
     RelationshipFrom,
     Relationship,
     DateProperty,
@@ -18,7 +17,7 @@ class LegalCaseType(str, PropertyEnum):
     CRIMINAL = "CRIMINAL"
 
 
-class Litigation(HasCitations, JsonSerializable, StructuredNode):
+class Litigation(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "case_title", "docket_number",
         "court_level", "jurisdiction", "state",
@@ -43,8 +42,6 @@ class Litigation(HasCitations, JsonSerializable, StructuredNode):
 
     # Relationships
     defendants = Relationship("Officer", "NAMED_IN")
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     @property
     def documents(self):
