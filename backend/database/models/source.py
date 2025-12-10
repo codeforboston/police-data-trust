@@ -156,18 +156,9 @@ class HasCitations:
             logging.error(f"Error adding citation: {e} to {self.uid}")
             raise e
 
-    def _source_where_clause(self) -> str:
-        return ""  # subclasses can add e.g. "WHERE s.is_active = true"
-
-    def _source_score_expr(self) -> str:
-        # default: newest wins
-        return "coalesce(r.date, datetime({epochMillis: 0})).epochMillis"
-
     @property
     def primary_source(self) -> Source | None:
         """Get the primary source for this item based on citation scores."""
-        where = self._source_where_clause().strip()
-        score = self._source_score_expr().strip()
 
         cy = """
         MATCH (n)-[r:UPDATED_BY]->(s:Source)
