@@ -1,6 +1,6 @@
 """Define the Classes for Complaints."""
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
-from backend.database.models.source import Citation
+from backend.database.models.source import HasCitations
 from neomodel import (
     StructuredNode,
     StructuredRel,
@@ -60,7 +60,7 @@ class Location(StructuredNode, JsonSerializable):
     administrative_area_type = StringProperty()
 
 
-class Complaint(StructuredNode, JsonSerializable):
+class Complaint(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "record_id", "category",
         "incident_date", "received_date",
@@ -91,8 +91,6 @@ class Complaint(StructuredNode, JsonSerializable):
         "backend.database.models.officer.Officer", "WITNESSED_BY")
     attachments = RelationshipTo(
         "backend.database.models.attachment.Attachment", "ATTACHED_TO")
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     @property
     def allegations(self) -> RelQuery:
