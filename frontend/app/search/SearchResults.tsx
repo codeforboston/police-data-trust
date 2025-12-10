@@ -1,32 +1,28 @@
 "use client"
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import { SearchResponse } from "@/utils/api"
 
 type SearchResultsProps = {
   total: number
   results: SearchResponse[]
+  tab: number,
+  updateTab: (val: number) => void
 }
 
-const SearchResults = ({ total, results }: SearchResultsProps) => {
-  const [tab, setTab] = useState(0)
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue)
-  }
+const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) => {
 
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={tab}
-          onChange={handleChange}
+          onChange={(e: React.SyntheticEvent, newValue: number) => updateTab(newValue)}
           textColor="inherit"
           slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
           sx={{
             "& .MuiTab-root": { color: "black" }
-          }}
-        >
+          }}>
           <Tab key="all" label="All" />
           <Tab key="officer" label="Officer" />
           <Tab key="complaint" label="Complaint" />
@@ -93,8 +89,7 @@ const CustomTabPanel = ({ children, value, index, ...other }: TabPanelProps) => 
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+      {...other}>
       {value === index && <Box>{children}</Box>}
     </div>
   )
