@@ -2,12 +2,23 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any, Union
 from .common import PaginatedResponse
 
+from backend.database.models.types.enums import State, StateIdName, Gender, Ethnicity
+
 
 class StateId(BaseModel):
-    uid: Optional[str] = Field(None, description="The UUID of this state id")
-    state: Optional[str] = Field(None, description="The state of the state id")
-    id_name: Optional[str] = Field(None, description="The name of the id. For example, Tax ID, Driver's License, etc.")
-    value: Optional[str] = Field(None, description="The value of the id.")
+    state: State = Field(None, description="The state of the state id")
+    id_name: StateIdName = Field(None, description="The name of the id. For example, Tax ID, Driver's License, etc.")
+    value: str = Field(None, description="The value of the id.")
+    uid: str = Field(None, description="The uid of the state id")
+
+
+class CreateStateId(BaseModel):
+    state: State = Field(None, description="The state of the state id")
+    id_name: StateIdName = Field(None, description="The name of the id. For example, Tax ID, Driver's License, etc.")
+    value: str = Field(None, description="The value of the id.")
+
+    class Config:
+        use_enum_values = True
 
 
 class BaseEmployment(BaseModel):
@@ -68,43 +79,51 @@ class BaseOfficer(BaseModel):
     middle_name: Optional[str] = Field(None, description="Middle name of the officer")
     last_name: Optional[str] = Field(None, description="Last name of the officer")
     suffix: Optional[str] = Field(None, description="Suffix of the officer's name")
-    ethnicity: Optional[str] = Field(None, description="The ethnicity of the officer")
-    gender: Optional[str] = Field(None, description="The gender of the officer")
+    ethnicity: Optional[Ethnicity] = Field(None, description="The ethnicity of the officer")
+    gender: Optional[Gender] = Field(None, description="The gender of the officer")
     date_of_birth: Optional[str] = Field(None, description="The date of birth of the officer")
     state_ids: Optional[List[StateId]] = Field(None, description="The state ids of the officer")
 
 
 class CreateOfficer(BaseOfficer, BaseModel):
-    first_name: Optional[str] = Field(None, description="First name of the officer")
+    state_ids: List[CreateStateId] = Field(None, description="The state ids of the officer")
+    source_uid: str = Field(None, description="The uid of the source creating this officer")
+    first_name: str = Field(None, description="First name of the officer")
+    last_name: str = Field(None, description="Last name of the officer")
     middle_name: Optional[str] = Field(None, description="Middle name of the officer")
-    last_name: Optional[str] = Field(None, description="Last name of the officer")
     suffix: Optional[str] = Field(None, description="Suffix of the officer's name")
-    ethnicity: Optional[str] = Field(None, description="The ethnicity of the officer")
-    gender: Optional[str] = Field(None, description="The gender of the officer")
+    ethnicity: Optional[Ethnicity] = Field(None, description="The ethnicity of the officer")
+    gender: Optional[Gender] = Field(None, description="The gender of the officer")
     date_of_birth: Optional[str] = Field(None, description="The date of birth of the officer")
-    state_ids: Optional[List[StateId]] = Field(None, description="The state ids of the officer")
+
+    class Config:
+        use_enum_values = True
 
 
 class UpdateOfficer(BaseOfficer, BaseModel):
+    source_uid: str = Field(None, description="The uid of the source updating this officer")
     first_name: Optional[str] = Field(None, description="First name of the officer")
     middle_name: Optional[str] = Field(None, description="Middle name of the officer")
     last_name: Optional[str] = Field(None, description="Last name of the officer")
     suffix: Optional[str] = Field(None, description="Suffix of the officer's name")
-    ethnicity: Optional[str] = Field(None, description="The ethnicity of the officer")
-    gender: Optional[str] = Field(None, description="The gender of the officer")
+    ethnicity: Optional[Ethnicity] = Field(None, description="The ethnicity of the officer")
+    gender: Optional[Gender] = Field(None, description="The gender of the officer")
     date_of_birth: Optional[str] = Field(None, description="The date of birth of the officer")
     state_ids: Optional[List[StateId]] = Field(None, description="The state ids of the officer")
+
+    class Config:
+        use_enum_values = True
 
 
 class Officer(BaseOfficer, BaseModel):
+    state_ids: List[StateId] = Field(None, description="The state ids of the officer")
     first_name: Optional[str] = Field(None, description="First name of the officer")
     middle_name: Optional[str] = Field(None, description="Middle name of the officer")
     last_name: Optional[str] = Field(None, description="Last name of the officer")
     suffix: Optional[str] = Field(None, description="Suffix of the officer's name")
-    ethnicity: Optional[str] = Field(None, description="The ethnicity of the officer")
-    gender: Optional[str] = Field(None, description="The gender of the officer")
+    ethnicity: Optional[Ethnicity] = Field(None, description="The ethnicity of the officer")
+    gender: Optional[Gender] = Field(None, description="The gender of the officer")
     date_of_birth: Optional[str] = Field(None, description="The date of birth of the officer")
-    state_ids: Optional[List[StateId]] = Field(None, description="The state ids of the officer")
     uid: Optional[str] = Field(None, description="The uid of the officer")
     employment_history: Optional[str] = Field(None, description="A link to retrieve the employment history of the officer")
     allegations: Optional[str] = Field(None, description="A link to retrieve the allegations against the officer")
@@ -112,4 +131,4 @@ class Officer(BaseOfficer, BaseModel):
 
 
 class OfficerList(PaginatedResponse, BaseModel):
-    results: Optional[List[Officer]] = None
+    results: List[Officer] = None

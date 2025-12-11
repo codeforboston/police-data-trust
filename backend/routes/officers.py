@@ -6,9 +6,10 @@ from backend.mixpanel.mix import track_to_mp
 from backend.schemas import (validate_request, ordered_jsonify,
                              add_pagination_wrapper)
 from backend.database.models.user import UserRole, User
-from backend.database.models.officer import Officer
+from backend.database.models.officer import Officer, StateID
+from backend.database.models.source import Source
 from backend.routes.search import create_officer_result
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
+from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer, CreateStateId
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
@@ -55,77 +56,16 @@ class AddEmploymentListSchema(BaseModel):
     agencies: List[AddEmploymentSchema]
 
 
-# # Search for an officer or group of officers
-# @bp.route("/search", methods=["POST"])
-# @jwt_required()
-# @min_role_required(UserRole.PUBLIC)
-# @validate(json=SearchOfficerSchema)
-# def search_officer():
-#     """Search Officers"""
-#     body: SearchOfficerSchema = request.context.json
-#     query = db.session.query('Officer')
-#     logger = logging.getLogger("officers")
-
-#     try:
-#         if body.name:
-#             names = body.officerName.split()
-#             if len(names) == 1:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{body.officerName}%"),
-#                         Officer.last_name.ilike(f"%{body.officerName}%")
-#                     )
-#                 )
-#             elif len(names) == 2:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.last_name.ilike(f"%{names[1]}%")
-#                     )
-#                 )
-#             else:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.middle_name.ilike(f"%{names[1]}%"),
-#                         Officer.last_name.ilike(f"%{names[2]}%")
-#                     )
-#                 )
-
-#         if body.badgeNumber:
-#             officer_ids = [
-#                 result.officer_id for result in db.session.query(
-#                     Employment
-#                     ).filter_by(badge_number=body.badgeNumber).all()
-#             ]
-#             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-
-#     except Exception as e:
-#         abort(422, description=str(e))
-
-#     results = query.paginate(
-#         page=body.page, per_page=body.perPage, max_per_page=100
-#     )
-
-#     try:
-#         track_to_mp(request, "search_officer", {
-#             "officername": body.officerName,
-#             "badgeNumber": body.badgeNumber
-#         })
-#     except MixpanelException as e:
-#         logger.error(e)
-#     try:
-#         return {
-#             "results": [
-#                 officer_orm_to_json(result) for result in results.items
-#             ],
-#             "page": results.page,
-#             "totalPages": results.pages,
-#             "totalResults": results.total,
-#         }
-#     except Exception as e:
-#         abort(500, description=str(e))
-
+def cleanup_officer_create(new_sids: List[StateID]):
+    """Cleans up newly created StateIDs if officer creation fails.
+    """
+    for sid in new_sids:
+        try:
+            sid.delete()
+        except Exception as e:
+            logging.error(
+                f"Failed to delete StateID {sid.uid} during cleanup: {str(e)}"
+            )
 
 # Create an officer profile
 @bp.route("/", methods=["POST"])
@@ -140,10 +80,101 @@ def create_officer():
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
-    # try:
-    officer = Officer.from_dict(body.dict())
-    # except Exception as e:
-    #     abort(400, description=str(e))
+    # Ensure user is connected to the source
+    source = Source.nodes.get_or_none(uid=body.source_uid)
+    if source is None:
+        abort(400, description="Source not found")
+    if source.members.is_connected(current_user):
+        rel = source.members.relationship(current_user)
+        if not rel.is_active and rel.may_publish():
+            abort(403, description="User is not permitted to publish for this source.")
+    else:
+        abort(403, description="User is not permitted to publish for this source.")
+    
+    # Ensure that there's at least 1 valid StateId
+    existing_sids = []
+    new_sids = []
+    created_sids = []
+    if not body.state_ids or len(body.state_ids) == 0:
+        abort(400, description="At least one StateId is required to create an officer.")
+    else:
+        for state_id in body.state_ids:
+            sid = StateID.nodes.get_or_none(
+                state=state_id.state,
+                id_name=state_id.id_name,
+                value=state_id.value
+            )
+            if sid:
+                existing_sids.append(sid)
+            else:
+                # Create new StateID
+                try:
+                    sid = StateID.from_dict(state_id.model_dump())
+                except Exception:
+                    cleanup_officer_create(new_sids)
+                    abort(422, description="Failed to create StateID")
+                new_sids.append(sid)
+    
+    # Identify officer by StateIds
+    found_officers = []
+    for sid in existing_sids:
+        o = sid.officer.single()
+        found_officers.append(o)
+
+    if len(found_officers) > 1:
+        cleanup_officer_create(new_sids)
+        abort(400, description="Multiple officers found with the provided StateIds. Unable to merge.")
+    if len(found_officers) == 1:
+        officer = found_officers[0]
+        for sid in new_sids:
+            sid.officer.connect(officer)
+        logger.info(f"Officer {officer.uid} updated with new StateIds by User {current_user.uid}")
+        diff = dict()
+        officer.add_citation(source, current_user)
+        track_to_mp(
+            request,
+            "update_officer_stateids",
+            {
+                "officer_id": officer.uid,
+                "new_stateids": [sid.uid for sid in new_sids]
+            },
+        )
+        # TODO: Add message about using PATCH endpoint to update other info
+        return officer.to_json()
+
+    # Create a new officer profile
+    o_data = {k: v for k, v in {
+        "first_name": body.first_name,
+        "middle_name": body.middle_name,
+        "last_name": body.last_name,
+        "suffix": body.suffix,
+        "ethnicity": body.ethnicity,
+        "gender": body.gender,
+        "date_of_birth": body.date_of_birth
+    }.items() if v is not None}
+    try:
+        officer = Officer.from_dict(o_data)
+    except Exception as e:
+        cleanup_officer_create(new_sids)
+        abort(400, description=str(e))
+
+    # Link StateIds to the officer
+    for sid in new_sids:
+        # See if this officer is already linked to a StateID with the same State and ID Name
+        dupe = officer.lookup_state_id(sid.state, sid.id_name)
+        if dupe:
+            cleanup_officer_create(new_sids)
+            officer.delete()
+            abort(400, description=f"Officer already has a StateID for {sid.state} - {sid.id_name}")
+
+        try:
+            sid.officer.connect(officer)
+        except Exception as e:
+            cleanup_officer_create(new_sids)
+            officer.delete()
+            abort(400, description=str(e))
+    # TODO: Add diff info
+    officer.add_citation(source, current_user)
 
     logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
     track_to_mp(

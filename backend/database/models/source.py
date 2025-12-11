@@ -9,7 +9,8 @@ from neomodel import (
     RelationshipTo, RelationshipFrom,
     StringProperty, DateTimeProperty,
     UniqueIdProperty, BooleanProperty,
-    EmailProperty, db
+    EmailProperty, JSONProperty,
+    db
 )
 if TYPE_CHECKING:
     from backend.database.models.user import User
@@ -116,7 +117,7 @@ class Citation(StructuredRel, JsonSerializable):
     date = DateTimeProperty(default=datetime.now())
     url = StringProperty()
     user_uid = StringProperty()
-    diff = StringProperty()
+    diff = JSONProperty()
 
     def __repr__(self):
         """Represent instance as a unique string."""

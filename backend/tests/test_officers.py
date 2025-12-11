@@ -140,16 +140,25 @@ def example_officers():
 
 def test_create_officer(
         client,
-        contributor_access_token,
-        example_agency
+        example_source,
+        contributor_access_token
         ):
 
     # Test that we can create an officer without an agency association
     request = {
+        "source_uid": example_source.uid,
         "first_name": "Max",
         "last_name": "Payne",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
+        "state_ids": [
+            {
+                "state": "NY",
+                "id_name": "Tax ID",
+                "value": "NY123456"
+            }
+        ]
+
     }
     res = client.post(
         "/api/v1/officers/",

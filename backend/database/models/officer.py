@@ -1,5 +1,5 @@
 from backend.schemas import JsonSerializable, RelQuery
-from backend.database.models.types.enums import State, Ethnicity, Gender
+from backend.database.models.types.enums import State, Ethnicity, Gender, StateIdName
 from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
 
@@ -16,7 +16,7 @@ class StateID(StructuredNode, JsonSerializable):
     law enforcement agencies. For example, in New York, this would be
     the Tax ID Number.
     """
-    id_name = StringProperty()  # e.g. "Tax ID Number"
+    id_name = StringProperty(choices=StateIdName.choices())  # e.g. "Tax ID Number"
     state = StringProperty(choices=State.choices())  # e.g. "NY"
     value = StringProperty()  # e.g. "958938"
     officer = Relationship('Officer', "HAS_STATE_ID", cardinality=One)
@@ -45,6 +45,37 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
     def __repr__(self):
         return f"<Officer {self.uid}>"
+    
+    def lookup_state_id(self, state: State, id_name: StateIdName) -> StateID:
+        """
+        Lookup a StateID for this officer by state and id_name.
+        Args:
+            state (State): The state of the StateID.
+            id_name (StateIdName): The name of the StateID.
+        Returns:
+            StateID: The matching StateID, or None if not found.
+        """
+        cy = """
+        MATCH (o:Officer {uid: $officer_uid})-[:HAS_STATE_ID]->(s:StateID {
+            state: $state,
+            id_name: $id_name
+        })
+        RETURN s
+        LIMIT 1
+        """
+        result, meta = db.cypher_query(
+            cy,
+            {
+                'officer_uid': self.uid,
+                'state': state,
+                'id_name': id_name
+            },
+            resolve_objects=True
+        )
+        if result:
+            state_id_node = result[0][0]
+            return StateID.inflate(state_id_node)
+        return None
 
     @property
     def full_name(self):

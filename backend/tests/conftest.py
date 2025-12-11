@@ -194,7 +194,7 @@ def example_officer(example_source):
         last_name="Doe",
     ).save()
     StateID(
-        id_name="Tax ID Number",
+        id_name="Tax ID",
         state="NY",
         value="958938"
     ).save().officer.connect(officer)

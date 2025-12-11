@@ -97,3 +97,9 @@ class State(str, PropertyEnum):
     PR = "PR"
     VI = "VI"
     GU = "GU"
+
+
+class StateIdName(str, PropertyEnum):
+    TAX_ID = "Tax ID"
+    NPI_ID = "NPI ID"
+    DRIVER_LICENSE = "Driver License"
