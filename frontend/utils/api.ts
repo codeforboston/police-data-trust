@@ -125,3 +125,17 @@ export type UpdateUserProfilePayload = {
   }
   primary_email?: string
 }
+
+export type Organization = {
+  uid?: string
+  name: string
+  description: string
+  logo: string
+  website: string
+  email: string
+  location?: {
+    city?: string
+    state?: string
+  }
+  type_of_service: string
+}

@@ -23,9 +23,16 @@ interface Props {
     twitter?: string
     youtube?: string
   }
+  isOwnProfile?: boolean
 }
 
-export default function ContactCard({ primaryEmail, secondaryEmail, website, socials }: Props) {
+export default function ContactCard({
+  primaryEmail,
+  secondaryEmail,
+  website,
+  socials,
+  isOwnProfile
+}: Props) {
   const router = useRouter()
   const hasSocials = Object.values(socials).some((val) => !!val)
 
@@ -38,7 +45,7 @@ export default function ContactCard({ primaryEmail, secondaryEmail, website, soc
   }
 
   return (
-    <Card variant="outlined" sx={{ marginTop: "20px", marginBottom: "40px" }}>
+    <Card variant="outlined" sx={{ marginTop: "24px", marginBottom: "24px" }}>
       <CardContent
         sx={{
           p: "40px",
@@ -49,9 +56,11 @@ export default function ContactCard({ primaryEmail, secondaryEmail, website, soc
           }
         }}
       >
-        <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
-          <ModeEditOutlinedIcon onClick={() => router.push("/profile/contact/edit")} />
-        </IconButton>
+        {isOwnProfile && (
+          <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
+            <ModeEditOutlinedIcon onClick={() => router.push("/profile/contact/edit")} />
+          </IconButton>
+        )}
 
         <Typography variant="h5" fontWeight={600}>
           Contact
