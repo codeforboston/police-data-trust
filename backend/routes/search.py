@@ -37,7 +37,7 @@ def create_officer_result(node) -> Searchresult:
     a = u.agency.single() if u else None
     u_rel = u.officers.relationship(o) if u else None
 
-    s = o.primary_source()
+    s = o.primary_source
     s_rel = o.citations.relationship(s) if s else None
 
     sub_title = "{ethnicity} {gender}, {rank} at the {agency}".format(
