@@ -251,3 +251,17 @@ def test_agency_pagination(client, example_agencies, access_token):
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 404
+
+
+def test_agency_search_result(client, example_agencies, access_token):
+    search_term = "New York"
+    expected_ct = Agency.nodes.filter(
+        name__icontains=search_term
+    ).__len__()
+
+    res = client.get(
+        f"/api/v1/agencies/?name={search_term}&searchResult=true",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 200
+    assert res.json["results"].__len__() == expected_ct

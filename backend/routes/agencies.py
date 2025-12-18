@@ -233,11 +233,11 @@ def get_all_agencies():
 
     # --- Optional searchResult output ---
     if params.searchResult:
-        agencies = [create_agency_result(row[0]) for row in results]
+        agencies = [create_agency_result(row) for row in results]
         page = [item.model_dump() for item in agencies if item]
         return_func = jsonify
     else:
-        page = [row.to_dict() for row in results]
+        page = [row._properties for row in results]
         return_func = ordered_jsonify
 
     # Add pagination wrapper

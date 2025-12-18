@@ -2,6 +2,7 @@ from backend.schemas import (JsonSerializable, PropertyEnum, RelQuery,
                              SearchableMixin)
 from backend.database.models.types.enums import State
 from backend.database.models.source import Citation, Source
+# from backend.database import db
 
 from neomodel import (
     db,
@@ -97,7 +98,6 @@ class Unit(StructuredNode, JsonSerializable, SearchableMixin):
         ORDER BY r.date DESC
         LIMIT 1;
         """
-        from backend.database import db
         result, meta = db.cypher_query(cy, {'uid': self.uid})
         if result:
             source_node = result[0][0]
@@ -133,17 +133,26 @@ class Unit(StructuredNode, JsonSerializable, SearchableMixin):
         Model-specific search method.
         Decides which fulltext index to use and delegates to the mixin.
         """
-        fulltext = f"""CALL db.index.fulltext.queryNodes('unitNames', {query})
-            YIELD node""" if query else None
+        # --- Fulltext index parameterized safely ---
+        if query:
+            fulltext_index_cypher = (
+                """CALL db.index.fulltext.queryNodes('unitNames', $query)
+                YIELD node as n"""
+            )
+            params = {"query": query}
+        else:
+            fulltext_index_cypher = None
+            params = {}
 
         return cls._search(
             label="Unit",
-            index=fulltext,
+            index=fulltext_index_cypher,
             filters=filters,
             query=query,
             count=count,
             skip=skip,
             limit=limit,
+            extra_params=params,  # pass parameter dict to _search()
         )
 
 

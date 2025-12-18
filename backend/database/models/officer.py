@@ -280,5 +280,6 @@ class Officer(StructuredNode, JsonSerializable):
             logging.warning("Params: %s", params)
 
             rows, _ = db.cypher_query(cypher_query, params,
-                                      resolve_objects=True)
+                                    #   resolve_objects=True
+                                      )
             return [row[0] for row in rows]

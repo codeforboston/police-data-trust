@@ -688,7 +688,7 @@ class SearchableMixin:
         cypher = "\n".join(cypher_parts)
 
         logging.warning(f"Search Cypher:\n{cypher}\nWith params: {params}")
-        rows, _ = db.cypher_query(cypher, params, resolve_objects=True)
+        rows, _ = db.cypher_query(cypher, params)
 
         if count:
             return rows[0][0] if rows else 0

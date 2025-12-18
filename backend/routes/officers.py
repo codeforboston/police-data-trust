@@ -286,11 +286,11 @@ def get_all_officers():
 
     # Check mode — full node or SearchResult
     if params.searchResult:  # default is full node
-        all_officers = [create_officer_result(o[0]) for o in results]
+        all_officers = [create_officer_result(o) for o in results]
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
     else:
-        page = [row.to_dict() for row in results]
+        page = [row._properties for row in results]
         return_func = ordered_jsonify
 
     # Add pagination wrapper

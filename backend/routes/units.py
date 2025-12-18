@@ -4,7 +4,7 @@ from backend.schemas import (
     add_pagination_wrapper, ordered_jsonify)
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Unit, State
-from backend.routes.search import create_search_result
+from backend.routes.search import create_unit_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 # from neomodel import db
@@ -66,18 +66,21 @@ def get_all_units():
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     # --- Fetch paginated results ---
-    results = Unit.search(query=search_term, filters=filters,
-                          skip=skip, limit=params.per_page)
+    results = Unit.search(
+        query=search_term,
+        filters=filters,
+        skip=skip,
+        limit=params.per_page)
 
     # Optional searchResult format
     if params.searchResult:
-        units = [create_search_result(row[0]) for row in results]
+        units = [create_unit_result(row) for row in results]
         page = [item.model_dump() for item in units if item]
         return_func = jsonify
 
     else:
-        units = [Unit.inflate(row[0]) for row in results]
-        page = [item.to_dict() for item in units]
+        # units = [Unit.inflate(row[0]) for row in results]
+        page = [row._properties for row in results]
         return_func = ordered_jsonify
 
     response = add_pagination_wrapper(
