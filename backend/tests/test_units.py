@@ -80,12 +80,12 @@ def test_get_all_units(client, example_units, access_token):
     assert res.json["results"].__len__() == total_units
 
 
-def test_get_search_result(client, example_units, access_token):
+def test_get_search_result(client, example_unit, access_token):
     expected_ct = Unit.nodes.filter(
-        name__icontains='Charlie'
+        name__icontains='Precinct 1'
     ).__len__()
     res = client.get(
-        "/api/v1/units/?name=Charlie&searchResult=true",
+        "/api/v1/units/?name=Precinct 1&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200
