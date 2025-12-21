@@ -1,8 +1,7 @@
 from backend.schemas import (JsonSerializable, PropertyEnum, RelQuery,
                              SearchableMixin)
 from backend.database.models.types.enums import State
-from backend.database.models.source import Citation, Source
-# from backend.database import db
+from backend.database.models.source import HasCitations
 
 from neomodel import (
     db,
@@ -10,7 +9,6 @@ from neomodel import (
     StructuredRel,
     StringProperty,
     Relationship,
-    RelationshipTo,
     RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
@@ -48,7 +46,7 @@ class UnitMembership(StructuredRel, JsonSerializable):
     highest_rank = StringProperty()
 
 
-class Unit(StructuredNode, JsonSerializable, SearchableMixin):
+class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "phone",
         "email", "description", "address",
@@ -79,30 +77,9 @@ class Unit(StructuredNode, JsonSerializable, SearchableMixin):
     officers = Relationship(
         "backend.database.models.officer.Officer",
         "MEMBER_OF_UNIT", model=UnitMembership)
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     def __repr__(self):
         return f"<Unit {self.name}>"
-
-    @property
-    def primary_source(self):
-        """
-        Get the primary source for this unit.
-        Returns:
-            Source: The primary source node for this unit.
-        """
-        cy = """
-        MATCH (o:Unit {uid: $uid})-[r:UPDATED_BY]->(s:Source)
-        RETURN s
-        ORDER BY r.date DESC
-        LIMIT 1;
-        """
-        result, meta = db.cypher_query(cy, {'uid': self.uid})
-        if result:
-            source_node = result[0][0]
-            return Source.inflate(source_node)
-        return None
 
     @property
     def current_commander(self):
@@ -156,7 +133,7 @@ class Unit(StructuredNode, JsonSerializable, SearchableMixin):
         )
 
 
-class Agency(StructuredNode, JsonSerializable, SearchableMixin):
+class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "hq_address",
         "hq_city", "hq_state", "hq_zip", "phone",
@@ -179,8 +156,6 @@ class Agency(StructuredNode, JsonSerializable, SearchableMixin):
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
 
     # Relationships
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
     state_node = RelationshipFrom(
         "backend.database.models.infra.locations.StateNode",
         "WITHIN_STATE", cardinality=One)
@@ -230,25 +205,6 @@ class Agency(StructuredNode, JsonSerializable, SearchableMixin):
 
     def __repr__(self):
         return f"<Agency {self.name}>"
-
-    @property
-    def primary_source(self):
-        """
-        Get the primary source for this agency.
-        Returns:
-            Source: The primary source node for this agency.
-        """
-        cy = """
-        MATCH (o:Agency {uid: $uid})-[r:UPDATED_BY]->(s:Source)
-        RETURN s
-        ORDER BY r.date DESC
-        LIMIT 1;
-        """
-        result, meta = db.cypher_query(cy, {'uid': self.uid})
-        if result:
-            source_node = result[0][0]
-            return Source.inflate(source_node)
-        return None
 
     def total_officers(self):
         """
