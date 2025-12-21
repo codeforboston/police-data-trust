@@ -705,7 +705,6 @@ def test_filter_by_officer_name(client, db_session, access_token,
         assert res.json == {"message": "No results found matching the query"}
 
 
-
 def test_get_search_result(client, db_session, access_token, example_officer,
                            example_unit):
     officer = Officer.nodes.filter(

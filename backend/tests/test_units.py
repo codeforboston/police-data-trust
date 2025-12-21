@@ -1,12 +1,9 @@
 from __future__ import annotations
 import pytest
-import math
-from datetime import date, datetime
+from datetime import date
 from backend.database import (
     Unit
 )
-from neomodel import db
-
 
 
 mock_units = {
@@ -58,7 +55,6 @@ mock_units = {
 }
 
 
-
 @pytest.fixture
 def example_units():
     # Create Units in the database
@@ -66,6 +62,8 @@ def example_units():
     for name, mock in mock_units.items():
         u = Unit(**mock).save()
         units[name] = u
+
+    # create citation and source
     return units
 
 
@@ -87,8 +85,8 @@ def test_get_search_result(client, example_units, access_token):
         name__icontains='Charlie'
     ).__len__()
     res = client.get(
-        f"/api/v1/units/?name=Charlie&searchResult=true",
+        "/api/v1/units/?name=Charlie&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
-    )    
+    )
     assert res.status_code == 200
     assert res.json["results"].__len__() == expected_ct

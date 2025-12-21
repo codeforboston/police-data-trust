@@ -79,7 +79,6 @@ def get_all_units():
         return_func = jsonify
 
     else:
-        # units = [Unit.inflate(row[0]) for row in results]
         page = [row._properties for row in results]
         return_func = ordered_jsonify
 

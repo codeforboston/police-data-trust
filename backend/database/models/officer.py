@@ -255,7 +255,5 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             logging.warning("Cypher query:\n%s", cypher_query)
             logging.warning("Params: %s", params)
 
-            rows, _ = db.cypher_query(cypher_query, params,
-                                    #   resolve_objects=True
-                                      )
+            rows, _ = db.cypher_query(cypher_query, params)
             return [row[0] for row in rows]
