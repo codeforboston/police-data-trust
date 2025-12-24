@@ -7,10 +7,28 @@ from backend.database.models.agency import Unit, State
 from backend.routes.search import create_unit_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-from neomodel import db
+# from neomodel import db
+# from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, Field, validator
 
 
 bp = Blueprint("unit_routes", __name__, url_prefix="/api/v1/units")
+
+
+class UnitQueryParams(BaseModel):
+    name: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    page: int = Field(default=1, ge=1)
+    per_page: int = Field(default=20, ge=1)
+    searchResult: bool = Field(default=False)
+
+    @validator("state")
+    def validate_state(cls, v):
+        if v and v not in State.choices():
+            raise ValueError(f"Invalid state: {v}")
+        return v
 
 
 @bp.route("/", methods=["GET"])
@@ -25,66 +43,50 @@ def get_all_units():
     city: filter on unit city
     state: filter on unit state
     """
-    args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+    try:
+        params = UnitQueryParams(**request.args)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
 
-    params = ["name", "city", "state"]
-    params_used = set(params).intersection(args.keys())
-    params.extend(["page", "per_page", "searchResult"])
+    # Pagination
+    skip = (params.page - 1) * params.per_page
 
-    # includes unrecognized parameters
-    if bool(set(args).difference(params)):
-        logging.warning(set(args).difference(params))
-        abort(400)
+    # Extract filters
+    search_term = params.name
+    filters = {k: v for k, v in {"city": params.city,
+                                 "state": params.state}.items() if v}
 
-    skip = (q_page - 1) * q_per_page
-
-    # base query
-    cypher = "MATCH (u:Unit) "
-    filters = []
-    cypher_params = {}
-
-    # filtering
-    for p in params_used:
-        input_value = args.get(p, type=str)
-        if p == "state" and input_value not in State.choices():
-            abort(400)
-        filters.append(f"toLower(u.{p}) CONTAINS toLower(${p})")
-        cypher_params[p] = input_value
-
-    if filters:
-        cypher += "WHERE " + " AND ".join(filters) + " "
-
-    # count total matches
-    count_query = cypher + "RETURN count(u) AS total"
-    row_count = db.cypher_query(count_query, cypher_params)[0][0][0]
+    # --- Count total matches ---
+    row_count = Unit.search(query=search_term, filters=filters, count=True)
 
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
     if row_count < skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
-    # get paginated results
-    cypher += "RETURN u SKIP $skip LIMIT $limit"
-    cypher_params.update({"skip": skip, "limit": q_per_page})
-    results, _ = db.cypher_query(cypher, cypher_params)
+    # --- Fetch paginated results ---
+    results = Unit.search(
+        query=search_term,
+        filters=filters,
+        skip=skip,
+        limit=params.per_page)
 
-    # optional searchResult format
-    if args.get("searchResult", "").lower() == "true":
-        units = [create_unit_result(row[0]) for row in results]
+    # Optional searchResult format
+    if params.searchResult:
+        units = [create_unit_result(row) for row in results]
         page = [item.model_dump() for item in units if item]
         return_func = jsonify
+
     else:
-        units = [Unit.inflate(row[0]) for row in results]
-        page = [item.to_dict() for item in units]
+        page = [row._properties for row in results]
         return_func = ordered_jsonify
 
     response = add_pagination_wrapper(
         page_data=page,
         total=row_count,
-        page_number=q_page,
-        per_page=q_per_page
+        page_number=params.page,
+        per_page=params.per_page
     )
-
+    # logging.warning(response)
     return return_func(response), 200

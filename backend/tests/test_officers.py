@@ -703,3 +703,22 @@ def test_filter_by_officer_name(client, db_session, access_token,
         assert res.json["results"] != []
     else:
         assert res.json == {"message": "No results found matching the query"}
+
+
+def test_get_search_result(client, db_session, access_token, example_officer,
+                           example_unit):
+    officer = Officer.nodes.filter(
+        first_name__icontains='John'
+    )
+
+    res = client.get(
+        "/api/v1/officers/?firstName=John&searchResult=true",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    print(res.json["results"][0])
+    assert res.json["results"][0]["title"] is not None
+    # assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officer)

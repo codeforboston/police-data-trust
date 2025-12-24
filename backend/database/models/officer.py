@@ -2,6 +2,7 @@ from backend.schemas import JsonSerializable, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
+import logging
 
 from neomodel import (
     db, StructuredNode, Relationship,
@@ -159,3 +160,100 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         """
         from backend.database.models.complaint import Investigation
         return RelQuery(self, base, return_alias="i", inflate_cls=Investigation)
+
+    @classmethod
+    def search(
+        cls,
+        *,
+        name: str | None = None,
+        rank: str | None = None,
+        unit: list[str] | None = None,
+        agency: list[str] | None = None,
+        badge_number: list[str] | None = None,
+        ethnicity: list[str] | None = None,
+        active_after: str | None = None,
+        active_before: str | None = None,
+        skip: int = 0,
+        limit: int = 25,
+        count: bool = False,
+    ):
+        """
+        Search for officers based on filters.
+        Args:
+            filters (dict): A dictionary of filters to apply.
+            skip (int): Number of records to skip for pagination.
+            limit (int): Number of records to return.
+            """
+
+        # Build MATCH clauses
+        match_clauses = []
+        if name:
+            match_clauses.append(f"""
+                CALL db.index.fulltext.queryNodes('officerNames',
+                                '{name}') YIELD node AS o
+            """)
+        elif rank:
+            match_clauses.append(f"""
+                CALL db.index.fulltext.queryRelationships('officerRanks',
+                                '{rank}') YIELD relationship AS m
+            """)
+
+        match_clauses.append("MATCH (o:Officer)")
+
+        if unit or active_after or active_before or badge_number or agency:
+            match_clauses.append("MATCH (o)-[m:MEMBER_OF_UNIT]-(u:Unit)")
+
+        if agency:
+            match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
+
+        # Build WHERE clauses and params
+        where_clauses = ["TRUE"]
+        params = {}
+
+        if active_after:
+            where_clauses.append("m.latest_date > $active_after")
+            params["active_after"] = active_after
+
+        if active_before:
+            where_clauses.append("m.earliest_date < $active_before")
+            params["active_before"] = active_before
+
+        if agency:
+            where_clauses.append("a.name IN $agency")
+            params["agency"] = agency
+
+        if badge_number:
+            where_clauses.append("m.badge_number IN $badge_number")
+            params["badge_number"] = badge_number
+
+        if ethnicity:
+            where_clauses.append("o.ethnicity IN $ethnicity")
+            params["ethnicity"] = ethnicity
+
+        if unit:
+            where_clauses.append("u.name IN $unit")
+            params["unit"] = unit
+
+        # Combine query
+        match_str = "\n".join(match_clauses)
+        where_str = "\nAND ".join(where_clauses)
+        cypher_query = f"""
+        {match_str}
+        WHERE {where_str}"""
+
+        if count:
+            cypher_query += "\nRETURN count(*) as c"
+            logging.warning("Cypher count query:\n%s", cypher_query)
+            logging.warning("Params: %s", params)
+            count_results, _ = db.cypher_query(cypher_query, params)
+            return count_results[0][0] if count_results else 0
+        else:
+            cypher_query += f"""
+                RETURN o SKIP {skip} LIMIT {limit}
+            """
+
+            logging.warning("Cypher query:\n%s", cypher_query)
+            logging.warning("Params: %s", params)
+
+            rows, _ = db.cypher_query(cypher_query, params)
+            return [row[0] for row in rows]

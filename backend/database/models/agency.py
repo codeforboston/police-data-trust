@@ -1,4 +1,5 @@
-from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
+from backend.schemas import (JsonSerializable, PropertyEnum, RelQuery,
+                             SearchableMixin)
 from backend.database.models.types.enums import State
 from backend.database.models.source import HasCitations
 
@@ -45,7 +46,7 @@ class UnitMembership(StructuredRel, JsonSerializable):
     highest_rank = StringProperty()
 
 
-class Unit(StructuredNode, HasCitations, JsonSerializable):
+class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "phone",
         "email", "description", "address",
@@ -102,8 +103,37 @@ class Unit(StructuredNode, HasCitations, JsonSerializable):
             return officer_node
         return None
 
+    @classmethod
+    def search(cls, query: str = None, filters: dict = None,
+               count: bool = False, skip: int = 0, limit: int = 25):
+        """
+        Model-specific search method.
+        Decides which fulltext index to use and delegates to the mixin.
+        """
+        # --- Fulltext index parameterized safely ---
+        if query:
+            fulltext_index_cypher = (
+                """CALL db.index.fulltext.queryNodes('unitNames', $query)
+                YIELD node as n"""
+            )
+            params = {"query": query}
+        else:
+            fulltext_index_cypher = None
+            params = {}
 
-class Agency(StructuredNode, HasCitations, JsonSerializable):
+        return cls._search(
+            label="Unit",
+            index=fulltext_index_cypher,
+            filters=filters,
+            query=query,
+            count=count,
+            skip=skip,
+            limit=limit,
+            extra_params=params,  # pass parameter dict to _search()
+        )
+
+
+class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "hq_address",
         "hq_city", "hq_state", "hq_zip", "phone",
@@ -191,3 +221,55 @@ class Agency(StructuredNode, HasCitations, JsonSerializable):
         if result:
             return result[0][0]
         return 0
+
+    @classmethod
+    def search(
+        cls,
+        query: str | None = None,
+        filters: dict | None = None,
+        count: bool = False,
+        skip: int = 0,
+        limit: int = 25
+    ):
+        """
+        Model-specific search for Agency.
+        Decides which fulltext index to use and delegates to the
+        shared _search() in the mixin.
+        """
+
+        # --- Fulltext index parameterized safely ---
+        if query:
+            fulltext_index_cypher = (
+                """CALL db.index.fulltext.queryNodes('agencyNames', $query)
+                YIELD node as n"""
+            )
+            params = {"query": query}
+        else:
+            fulltext_index_cypher = None
+            params = {}
+
+        # Delegate to the shared _search() from the mixin
+        return cls._search(
+            label="Agency",
+            index=fulltext_index_cypher,
+            filters=filters or {},
+            query=query,
+            count=count,
+            skip=skip,
+            limit=limit,
+            extra_params=params,  # pass parameter dict to _search()
+        )
+
+    @classmethod
+    def preprocess_query(cls, query: str) -> str:
+        """
+        Preprocess the search query for Agency.
+        Currently a placeholder for future preprocessing logic.
+        Args:
+            query (str): The original search query.
+        Returns:
+            str: The preprocessed search query.
+        """
+        watchlist = ["police", "department", "sheriff", "office", "of", "the"]
+
+        return cls._preprocess_query(query, watchlist)
