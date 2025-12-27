@@ -62,10 +62,11 @@ class OfficerSearchParams(BaseModel):
     searchResult: bool = Field(default=False)
 
     # Name components
-    first_name: Optional[str] = Field(None, alias="firstName")
-    middle_name: Optional[str] = Field(None, alias="middleName")
-    last_name: Optional[str] = Field(None, alias="lastName")
-    suffix: Optional[str] = Field(None, alias="suffix")
+    query: Optional[str] = None
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    last_name: Optional[str] = None
+    suffix: Optional[str] = None
 
     # Other filters
     rank: List[str] = []
@@ -100,7 +101,10 @@ class OfficerSearchParams(BaseModel):
 
     @property
     def officer_name(self):
-        return " AND ".join(self.name_parts) or None
+        if self.query and self.query.strip():
+            return self.query.strip()
+        else:
+            return " AND ".join(self.name_parts) or None
 
     @property
     def officer_rank(self):
