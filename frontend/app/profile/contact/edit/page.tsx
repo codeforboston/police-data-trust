@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import styles from "../../edit/EditProfilePage.module.css"
-import { useUserProfile } from "@/utils/useUserProfile"
+import { useUserProfile } from "@/utils/useProfile"
 import { TextField, Button, Box, IconButton, Typography } from "@mui/material"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import { useRouter } from "next/navigation"

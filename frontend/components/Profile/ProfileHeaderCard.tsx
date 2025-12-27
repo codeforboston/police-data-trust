@@ -1,7 +1,10 @@
+"use client"
+
 import styles from "./profileHeaderCard.module.css"
 import { Avatar, Button, Card, CardContent, Typography, IconButton } from "@mui/material"
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 interface Props {
   firstName: string
@@ -28,6 +31,8 @@ export default function ProfileHeaderCard({
 }: Props) {
   const router = useRouter()
 
+  const [isFollowing, setIsFollowing] = useState(false)
+
   return (
     <Card variant="outlined" sx={{ marginTop: "24px" }}>
       <CardContent
@@ -44,9 +49,11 @@ export default function ProfileHeaderCard({
           }
         }}
       >
-        <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
-          <ModeEditOutlinedIcon onClick={() => router.push("/profile/edit")} />
-        </IconButton>
+        {isOwnProfile && (
+          <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
+            <ModeEditOutlinedIcon onClick={() => router.push("/profile/edit")} />
+          </IconButton>
+        )}
         <div className={styles.container}>
           <Avatar sx={{ width: 160, height: 160 }} src={avatarUrl || "/broken-image.jpg"} />
           <div className={styles.info}>
@@ -67,9 +74,14 @@ export default function ProfileHeaderCard({
           <p>{biography}</p>
           {!isOwnProfile && (
             <div className={styles.actions}>
-              <Button color="primary" variant="contained">
-                Follow
+              <Button
+                color="primary"
+                variant={isFollowing ? "text" : "contained"}
+                onClick={() => setIsFollowing(!isFollowing)}
+              >
+                {isFollowing ? "Following" : "Follow"}
               </Button>
+
               <Button color="primary" variant="outlined">
                 Message
               </Button>
