@@ -286,6 +286,7 @@ def get_all_officers():
         active_before=params.active_before,
         skip=params.skip,
         limit=params.limit,
+        inflate=not params.searchResult
     )
 
     # Check mode — full node or SearchResult
@@ -294,8 +295,9 @@ def get_all_officers():
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
     else:
-        page = [row._properties for row in results]
+        page = [row.to_dict() for row in results]
         return_func = ordered_jsonify
+    # logging.warning('response is --------------------------------\n%s', page)
 
     # Add pagination wrapper
     response = add_pagination_wrapper(
