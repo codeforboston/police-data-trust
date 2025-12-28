@@ -176,6 +176,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         skip: int = 0,
         limit: int = 25,
         count: bool = False,
+        inflate: bool = True
     ):
         """
         Search for officers based on filters.
@@ -255,5 +256,6 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             logging.warning("Cypher query:\n%s", cypher_query)
             logging.warning("Params: %s", params)
 
-            rows, _ = db.cypher_query(cypher_query, params)
+            rows, _ = db.cypher_query(cypher_query, params,
+                                      resolve_objects=inflate)
             return [row[0] for row in rows]

@@ -692,13 +692,35 @@ def test_filter_by_ethnicity(client, db_session, access_token,
 def test_filter_by_officer_name(client, db_session, access_token,
                                 create_officers_units_agencies,
                                 first_name, last_name, expect_results):
+    # Test first_name and last_name params
     res = client.get(
-        f"/api/v1/officers/?firstName={first_name}&lastName={last_name}",
+        f"/api/v1/officers/?first_name={first_name}&last_name={last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
     assert res.status_code == 200
 
+    if expect_results:
+        assert res.json["results"] != []
+    else:
+        assert res.json == {"message": "No results found matching the query"}
+
+    # Test flexible full name param
+    res = client.get(
+        f"/api/v1/officers/?query={first_name} {last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert res.status_code == 200
+    if expect_results:
+        assert res.json["results"] != []
+    else:
+        assert res.json == {"message": "No results found matching the query"}
+
+    res = client.get(
+        f"/api/v1/officers/?query={last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert res.status_code == 200
     if expect_results:
         assert res.json["results"] != []
     else:
@@ -712,7 +734,7 @@ def test_get_search_result(client, db_session, access_token, example_officer,
     )
 
     res = client.get(
-        "/api/v1/officers/?firstName=John&searchResult=true",
+        "/api/v1/officers/?first_name=John&searchResult=true",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
 
