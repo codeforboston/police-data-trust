@@ -12,6 +12,9 @@ const API_ROUTES = {
   },
   users: {
     self: "/users/self"
+  },
+  sources: {
+    all: "/sources/"
   }
 }
 

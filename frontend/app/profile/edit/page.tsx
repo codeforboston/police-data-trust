@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import styles from "./EditProfilePage.module.css"
-import { useUserProfile } from "@/utils/useUserProfile"
+import { useUserProfile } from "@/utils/useProfile"
 import { useRouter } from "next/navigation"
 import { US_STATES } from "@/utils/constants"
 import {
