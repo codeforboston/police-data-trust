@@ -56,6 +56,15 @@ def source_query_builder(params: SourceFilters):
     return query
 
 
+@bp.route("/slug/<source_slug>", methods=["GET"])
+def get_source_by_slug(source_slug: str):
+    """Get a single source by slug."""
+    p = Source.nodes.get_or_none(slug=source_slug)
+    if p is None:
+        abort(404, description="Source not found")
+    return p.to_json()
+
+
 @bp.route("/<source_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
@@ -64,7 +73,7 @@ def get_source(source_uid: str):
     p = Source.nodes.get_or_none(uid=source_uid)
     if p is None:
         abort(404, description="Source not found")
-    return p.full_json()
+    return p.to_json()
 
 
 @bp.route("/", methods=["POST"])
@@ -116,7 +125,7 @@ def create_source():
             "source_name": new_p.name,
             "source_contact": new_p.primary_email.single().email
         })
-        return new_p.full_json()
+        return new_p.to_json()
     else:
         return {
                 "status": "error",
@@ -183,7 +192,7 @@ def update_source(source_uid: str):
         )
     except Exception as e:
         abort(400, description=str(e))
-    return p.full_json()
+    return p.to_json()
 
 
 @bp.route("/<source_uid>/members/", methods=["GET"])

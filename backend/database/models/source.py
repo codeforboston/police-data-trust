@@ -181,7 +181,7 @@ class Source(StructuredNode, JsonSerializable):
     organizations, government agencies, non-profits, or private firms.
     """
     __property_order__ = [
-        "uid", "name", "url"
+        "uid", "name", "url", "slug"
     ]
     __hidden_properties__ = [
         "invitations", "staged_invitations",
@@ -193,7 +193,7 @@ class Source(StructuredNode, JsonSerializable):
     url = StringProperty()
 
     # Slug property for easy URL access
-    slug_value = StringProperty(db_property="slug", unique_index=True)
+    slug = StringProperty(unique_index=True)
     slug_generated = BooleanProperty(default=True)
     slug_generated_from = StringProperty()
 
@@ -215,12 +215,15 @@ class Source(StructuredNode, JsonSerializable):
 
     def _auto_generate_slug(self) -> None:
         """Auto-generate the slug for the source."""
-        self.slug_value = slugify(self.name)
+        self.slug = slugify(self.name)
         self.slug_generated_from = self.name
     
     def set_slug(self, new_slug: str) -> None:
-        """Set the slug for the source."""
-        self.slug_value = slugify(new_slug)
+        """
+        Set the slug for the source. Use this function to ensure that the slug
+        is marked as set by a source admin.
+        """
+        self.slug = slugify(new_slug)
         self.slug_generated = False
         self.slug_generated_from = None
         self.save()
@@ -232,7 +235,7 @@ class Source(StructuredNode, JsonSerializable):
             return
         
         should_autogen = (
-            not self.slug_value or 
+            not self.slug or 
             (self.slug_generated and self.slug_generated_from != self.name)
         )
         if should_autogen:
@@ -241,15 +244,6 @@ class Source(StructuredNode, JsonSerializable):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Source {self.uid}>"
-    
-    def full_json(self) -> dict:
-        """
-        Serialize the Source to a JSON-compatible dictionary,
-        including the slug.
-        """
-        res = self.to_dict()
-        res['slug'] = self.slug
-        return ordered_jsonify(res)
     
     def update_source(
         self,
@@ -277,11 +271,6 @@ class Source(StructuredNode, JsonSerializable):
         if slug is not None:
             self.set_slug(slug)
         self.save()
-
-    @property
-    def slug(self) -> str:
-        """Get the slug for the source."""
-        return self.slug_value or slugify(self.name or "")
     
     @classmethod
     def create_source(
