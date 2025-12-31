@@ -227,9 +227,17 @@ def add_pagination_wrapper(
     Returns:
         dict: The paginated data.
     """
+    if len(page_data) == 0 and total == 0:
+        return {
+            "results": [],
+            "page": 1,
+            "per_page": per_page,
+            "total": 0,
+            "pages": 0
+        }
     expected_total_pages = math.ceil(total / per_page)
     if not page_number <= expected_total_pages:
-        abort(404)
+        abort(400, description="Page number exceeds total results")
     return {
         "results": page_data,
         "page": page_number,
@@ -237,6 +245,24 @@ def add_pagination_wrapper(
         "total": total,
         "pages": expected_total_pages
     }
+
+
+def args_to_dict(args, always_list=frozenset()) -> dict:
+    """
+    Convert a Flask request.args MultiDict to a regular dictionary.
+    Args:
+        args (MultiDict): The Flask request.args MultiDict.
+    Returns:
+        dict: A regular dictionary with the same keys and values.
+    """
+    raw = args.to_dict(flat=False)
+    data = {}
+    for k, v in raw.items():
+        if k in always_list:
+            data[k] = v
+        else:
+            data[k] = v[0] if len(v) == 1 else v
+    return data
 
 
 # A tiny, read-only, chainable relation view.

@@ -17,7 +17,9 @@ from backend.database import (
     Investigation,
     Allegation,
     Penalty,
-    Location
+    Location,
+    EmailContact,
+    SocialMediaContact
 )
 from datetime import datetime, date
 
@@ -141,9 +143,11 @@ def example_source():
     source = Source(
         name="Example Source",
         url="www.example.com",
-        contact_email=contributor_email
     ).save()
-    add_test_property(source)
+    email_contact = EmailContact.get_or_create(contributor_email)
+    source.primary_email.connect(email_contact)
+    social_contact = SocialMediaContact().save()
+    source.social_media.connect(social_contact)
     yield source
 
 

@@ -5,12 +5,12 @@ from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import User, UserRole
 from ..schemas import (
     validate_request, paginate_results, ordered_jsonify,
+    args_to_dict, add_pagination_wrapper,
     NodeConflictException)
 from flask import Blueprint, abort, current_app, request
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional
+from pydantic import ValidationError
 
 from ..database import (
     Source,
@@ -19,27 +19,9 @@ from ..database import (
     StagedInvitation,
 )
 from ..dto import InviteUserDTO
+from ..dto.source import SourceFilters, CreatePartner, UpdatePartner
 from flask_mail import Message
 from ..config import TestingConfig
-
-
-class CreatePartner(BaseModel):
-    name:str = Field(None, description="Name of the partner organization.")
-    contact_email: str = Field(None, description="Contact email for the partner organization.")
-    url: Optional[str] = Field(None, description="Website URL of the partner.")
-    slug: Optional[str] = Field(None, description="Slug for the partner organization.")
-
-class UpdatePartner(BaseModel):
-    name:Optional[str] = Field(None, description="Name of the partner organization.")
-    contact_email: Optional[str] = Field(None, description="Contact email for the partner organization.")
-    url: Optional[str] = Field(None, description="Website URL of the partner.")
-    slug: Optional[str] = Field(None, description="Slug for the partner organization.")
-
-
-class SourceFilters(BaseModel):
-    name: str | None = None
-    slug: str | None = None
-    name__in: list[str] | None = None
 
 
 bp = Blueprint("source_routes", __name__, url_prefix="/api/v1/sources")
@@ -49,8 +31,6 @@ def source_query_builder(params: SourceFilters):
     query = Source.nodes
     if params.name is not None:
         query = query.filter(name__icontains=params.name)
-    if params.slug is not None:
-        query = query.filter(slug__icontains=params.slug)
     if params.name__in is not None:
         query = query.filter(name__in=params.name__in)
     return query
@@ -143,24 +123,26 @@ def get_all_sources():
     per_page: number of results per page
     page: page number
     """
-    args = request.args
-
-    raw = {
-        **request.args,  # copies simple values
-        "name__in": request.args.getlist("name__in"),
-    }
+    q_params = args_to_dict(
+        request.args, always_list={"name__in"})
     try:
-        params = SourceFilters(**raw)
+        params = SourceFilters.model_validate(q_params)
     except ValidationError as e:
         logging.warning(f"Invalid query parameters: {e}")
         abort(400, description=f"Invalid query parameters: {e}")
 
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+    q_page = params.page
+    q_per_page = params.per_page
 
-    all_sources = Source.nodes.all()
-    results = paginate_results(all_sources, q_page, q_per_page)
-
+    page, count = Source.filter_sources(
+        name=params.name,
+        name__in=params.name__in,
+        page=q_page,
+        per_page=q_per_page
+    )
+    results = add_pagination_wrapper(
+        page_data=[page.to_dict() for page in page], total=count,
+        page_number=q_page, per_page=q_per_page)
     return ordered_jsonify(results), 200
 
 
@@ -192,6 +174,14 @@ def update_source(source_uid: str):
         )
     except Exception as e:
         abort(400, description=str(e))
+
+    if body.social_media is not None:
+        social = p.social_media.single()
+        updates = body.social_media.model_dump(exclude_unset=True)
+        for key, value in updates.items():
+            setattr(social, key, value)
+        social.save()
+
     return p.to_json()
 
 

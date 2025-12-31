@@ -2,7 +2,8 @@ from __future__ import annotations  # allows type hinting of class itself
 
 from typing import TYPE_CHECKING
 import logging
-from backend.schemas import JsonSerializable, PropertyEnum, NodeConflictException, ordered_jsonify
+from backend.schemas import (
+    JsonSerializable, PropertyEnum, NodeConflictException)
 from backend.database.models.contact import SocialMediaContact, EmailContact
 from datetime import datetime
 from slugify import slugify
@@ -185,7 +186,7 @@ class Source(StructuredNode, JsonSerializable):
     ]
     __hidden_properties__ = [
         "invitations", "staged_invitations",
-        "slug_value","slug_generated_from", "slug_generated",
+        "slug_value", "slug_generated_from", "slug_generated",
         "complaints"]
     uid = UniqueIdProperty()
 
@@ -217,7 +218,7 @@ class Source(StructuredNode, JsonSerializable):
         """Auto-generate the slug for the source."""
         self.slug = slugify(self.name)
         self.slug_generated_from = self.name
-    
+
     def set_slug(self, new_slug: str) -> None:
         """
         Set the slug for the source. Use this function to ensure that the slug
@@ -233,9 +234,9 @@ class Source(StructuredNode, JsonSerializable):
         if not self.name:
             # Let neomodel validation handle this
             return
-        
+
         should_autogen = (
-            not self.slug or 
+            not self.slug or
             (self.slug_generated and self.slug_generated_from != self.name)
         )
         if should_autogen:
@@ -244,7 +245,7 @@ class Source(StructuredNode, JsonSerializable):
     def __repr__(self):
         """Represent instance as a unique string."""
         return f"<Source {self.uid}>"
-    
+
     def update_source(
         self,
         *,
@@ -254,7 +255,7 @@ class Source(StructuredNode, JsonSerializable):
         slug: str | None = None
     ) -> None:
         """Update the source details.
-        
+
         Args:
             name (str | None): The name of the source.
             contact_email (str | None): The contact email for the source.
@@ -267,11 +268,11 @@ class Source(StructuredNode, JsonSerializable):
         if contact_email is not None:
             email_node = EmailContact.get_or_create(contact_email)
             current_email = self.primary_email.single()
-            self.primary_email.reconnect(current_email,email_node)
+            self.primary_email.reconnect(current_email, email_node)
         if slug is not None:
             self.set_slug(slug)
         self.save()
-    
+
     @classmethod
     def create_source(
         cls,
@@ -281,9 +282,9 @@ class Source(StructuredNode, JsonSerializable):
         url: str | None = None,
         slug: str | None = None
     ) -> "Source":
-        """Create a new data source. 
+        """Create a new data source.
         Wires up the relationships to contact methods.
-        
+
         Args:
             name (str): The name of the source.
             contact_email (str): The contact email for the source.
@@ -298,7 +299,8 @@ class Source(StructuredNode, JsonSerializable):
             existing = cls.nodes.get(name=name)
             if existing:
                 raise NodeConflictException(
-                    f"Source with name {name} already exists with uid {existing.uid}")
+                    f"Source with name {name} "
+                    "already exists with uid {existing.uid}")
         except DoesNotExist:
             source = cls(
                 name=name,
@@ -314,3 +316,67 @@ class Source(StructuredNode, JsonSerializable):
         source.primary_email.connect(email)
         source.social_media.connect(social)
         return source
+
+    @classmethod
+    def filter_sources(
+        cls,
+        *,
+        name: str | None = None,
+        name__in: list[str] | None = None,
+        page: int = 1,
+        per_page: int = 20
+    ):
+        """
+        Filter sources based on provided criteria.
+        As these are not data nodes, we do not implement the full search
+        functionality here. It's possible to search for a name or a list
+        of names.
+
+        If a single name is provided, the list of names is ignored.
+
+        Args:
+            name (str | None): Filter by name
+                (case-insensitive, partial match).
+            name__in (list[str] | None): Filter by a list of names
+                (exact match).
+            page (int): Page number for pagination.
+            per_page (int): Number of items per page.
+
+        Returns:
+            Sources: A list of matching Source nodes.
+            Count: Total count of matching nodes.
+        """
+        match_statements = ["MATCH (s:Source)\n"]
+        where_clauses = []
+        if name is not None:
+            where_clauses.append("""
+            WHERE toLower(s.name) CONTAINS toLower($name)
+            """)
+        elif name__in is not None:
+            where_clauses.append("""
+            WHERE s.name IN $name__in
+            """)
+        count_query = f"""
+        {' '.join(match_statements)}
+        {' AND '.join(where_clauses) if where_clauses else ''}
+        RETURN count(s)
+        """
+        response_query = f"""
+        {' '.join(match_statements)}
+        {' AND '.join(where_clauses) if where_clauses else ''}
+        RETURN s
+        SKIP $skip
+        LIMIT $limit
+        """
+
+        params = {
+            "name": name,
+            "name__in": name__in,
+            "skip": (page - 1) * per_page,
+            "limit": per_page
+        }
+        count_results, _ = db.cypher_query(count_query, params)
+        rows, _ = db.cypher_query(response_query, params, resolve_objects=True)
+        return [
+            row[0] for row in rows
+            ], count_results[0][0] if count_results else 0
