@@ -250,7 +250,7 @@ def test_agency_pagination(client, example_agencies, access_token):
         ),
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
-    assert res.status_code == 404
+    assert res.status_code == 400
 
 
 def test_agency_search_result(client, example_agencies, access_token):
