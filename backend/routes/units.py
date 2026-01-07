@@ -3,32 +3,13 @@ from backend.auth.jwt import min_role_required
 from backend.schemas import (
     add_pagination_wrapper, ordered_jsonify)
 from backend.database.models.user import UserRole
-from backend.database.models.agency import Unit, State
+from backend.database.models.agency import Unit
 from backend.routes.search import create_unit_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-# from neomodel import db
-# from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field, validator
-
+from backend.dto.unit import UnitQueryParams
 
 bp = Blueprint("unit_routes", __name__, url_prefix="/api/v1/units")
-
-
-class UnitQueryParams(BaseModel):
-    name: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    page: int = Field(default=1, ge=1)
-    per_page: int = Field(default=20, ge=1)
-    searchResult: bool = Field(default=False)
-
-    @validator("state")
-    def validate_state(cls, v):
-        if v and v not in State.choices():
-            raise ValueError(f"Invalid state: {v}")
-        return v
 
 
 @bp.route("/", methods=["GET"])
@@ -49,9 +30,6 @@ def get_all_units():
         logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
-    # Pagination
-    skip = (params.page - 1) * params.per_page
-
     # Extract filters
     search_term = params.name
     filters = {k: v for k, v in {"city": params.city,
@@ -62,14 +40,14 @@ def get_all_units():
 
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
-    if row_count < skip:
+    if row_count <= params.skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     # --- Fetch paginated results ---
     results = Unit.search(
         query=search_term,
         filters=filters,
-        skip=skip,
+        skip=params.skip,
         limit=params.per_page)
 
     # Optional searchResult format

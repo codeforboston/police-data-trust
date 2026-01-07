@@ -1,4 +1,5 @@
 from __future__ import annotations
+import math
 import pytest
 from datetime import date
 from backend.database import (
@@ -90,3 +91,41 @@ def test_get_search_result(client, example_unit, access_token):
     )
     assert res.status_code == 200
     assert res.json["results"].__len__() == expected_ct
+
+
+def test_bad_query_param(client, access_token):
+    res = client.get(
+        "/api/v1/units/?abc=123",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert "Extra inputs are not permitted" in res.get_data(as_text=True)
+    assert res.status_code == 400
+
+
+def test_unit_pagination(client, example_units, access_token):
+    per_page = 1
+    total_units = Unit.nodes.all().__len__()
+    expected_total_pages = math.ceil(total_units//per_page)
+    for page in range(1, expected_total_pages + 1):
+        res = client.get(
+            f"/api/v1/units/?per_page={per_page}&page={page}",
+            headers={"Authorization": "Bearer {0}".format(access_token)},
+        )
+
+        assert res.status_code == 200
+        assert res.json["page"] == page
+        assert res.json["total"] == expected_total_pages
+
+        incidents = res.json["results"]
+        assert len(incidents) == per_page
+
+    res = client.get(
+        (
+            f"/api/v1/units/?per_page={per_page}"
+            f"&page={expected_total_pages + 1}"
+        ),
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 400
+    assert res.json == {"message": "Page number exceeds total results"}

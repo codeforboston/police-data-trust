@@ -1,62 +1,20 @@
 import logging
-from typing import Optional, List
+# from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
     validate_request, add_pagination_wrapper, ordered_jsonify, paginate_results,
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
-from backend.database.models.agency import Agency, State, Jurisdiction
+from backend.database.models.agency import Agency
 from backend.routes.search import create_agency_result
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-from pydantic import BaseModel, ConfigDict, Field, validator
 from neomodel import db
-
+from backend.dto.agency import AgencyQueryParams
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
-
-
-class AddOfficerSchema(BaseModel):
-    officer_id: int
-    badge_number: str
-    agency_id: Optional[int]
-    highest_rank: Optional[str]
-    earliest_employment: Optional[str]
-    latest_employment: Optional[str]
-    unit: Optional[str]
-    currently_employed: bool = True
-
-
-class AddOfficerListSchema(BaseModel):
-    officers: List[AddOfficerSchema]
-
-
-class AgencyQueryParams(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    name: str | None = None
-    hq_city: str | None = None
-    hq_state: str | None = None
-    hq_zip: str | None = None
-    jurisdiction: str | None = None
-
-    page: int = Field(default=1, ge=1)
-    per_page: int = Field(default=20, ge=1)
-    searchResult: bool = Field(default=False)
-
-    @validator("hq_state")
-    def validate_state(cls, v):
-        if v and v not in State.choices():
-            raise ValueError(f"Invalid state: {v}")
-        return v
-
-    @validator("jurisdiction")
-    def validate_jurisdiction(cls, v):
-        if v and v not in Jurisdiction.choices():
-            raise ValueError(f"Invalid jurisdiction: {v}")
-        return v
 
 
 # Create agency profile
@@ -198,8 +156,8 @@ def get_all_agencies():
     else:
         search_term = None
 
-    # --- Pagination ---
-    skip = (params.page - 1) * params.per_page
+    # # --- Pagination ---
+    # skip = (params.page - 1) * params.per_page
 
     # --- Extract filters ---
     filters = {
@@ -217,18 +175,19 @@ def get_all_agencies():
         filters=filters,
         count=True
     )
-
+    logging.warning(f"requested page: {params.page}")
+    logging.warning(f"Agency search found {row_count} results")
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
-    if row_count < skip:
+    if row_count <= params.skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     # --- Fetch paginated results ---
     results = Agency.search(
         query=search_term,
         filters=filters,
-        skip=skip,
-        limit=params.per_page
+        skip=params.skip,
+        limit=params.limit,
     )
 
     # --- Optional searchResult output ---

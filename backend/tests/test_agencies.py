@@ -251,6 +251,7 @@ def test_agency_pagination(client, example_agencies, access_token):
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 400
+    assert res.json == {"message": "Page number exceeds total results"}
 
 
 def test_agency_search_result(client, example_agencies, access_token):
@@ -265,3 +266,13 @@ def test_agency_search_result(client, example_agencies, access_token):
     )
     assert res.status_code == 200
     assert res.json["results"].__len__() == expected_ct
+
+
+def test_bad_query_param(client, access_token):
+    res = client.get(
+        "/api/v1/agencies/?unknown_param=value",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert "Extra inputs are not permitted" in res.get_data(as_text=True)
+    assert res.status_code == 400
