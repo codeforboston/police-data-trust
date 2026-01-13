@@ -59,6 +59,11 @@ class Location(StructuredNode, JsonSerializable):
     administrative_area = StringProperty()
     administrative_area_type = StringProperty()
 
+    # Relationships
+    city_node = RelationshipTo(
+        "backend.database.models.infra.locations.CityNode",
+        "LOCATED_IN", cardinality=One)
+
 
 class Complaint(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [

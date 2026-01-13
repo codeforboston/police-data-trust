@@ -122,3 +122,5 @@ dmypy.json
 /backend/scraper/data_scrapers/notebooks/chicago-police-data
 /backend/scraper/data_scrapers/counted/scraper_data
 /backend/scraper/data_scrapers/fatal_force/temp.csv
+
+backups/

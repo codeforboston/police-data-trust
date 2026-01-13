@@ -11,81 +11,10 @@ from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.officer import OfficerSearchParams
+from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
-
-
-# # Search for an officer or group of officers
-# @bp.route("/search", methods=["POST"])
-# @jwt_required()
-# @min_role_required(UserRole.PUBLIC)
-# @validate(json=SearchOfficerSchema)
-# def search_officer():
-#     """Search Officers"""
-#     body: SearchOfficerSchema = request.context.json
-#     query = db.session.query('Officer')
-#     logger = logging.getLogger("officers")
-
-#     try:
-#         if body.name:
-#             names = body.officerName.split()
-#             if len(names) == 1:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{body.officerName}%"),
-#                         Officer.last_name.ilike(f"%{body.officerName}%")
-#                     )
-#                 )
-#             elif len(names) == 2:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.last_name.ilike(f"%{names[1]}%")
-#                     )
-#                 )
-#             else:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.middle_name.ilike(f"%{names[1]}%"),
-#                         Officer.last_name.ilike(f"%{names[2]}%")
-#                     )
-#                 )
-
-#         if body.badgeNumber:
-#             officer_ids = [
-#                 result.officer_id for result in db.session.query(
-#                     Employment
-#                     ).filter_by(badge_number=body.badgeNumber).all()
-#             ]
-#             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-
-#     except Exception as e:
-#         abort(422, description=str(e))
-
-#     results = query.paginate(
-#         page=body.page, per_page=body.perPage, max_per_page=100
-#     )
-
-#     try:
-#         track_to_mp(request, "search_officer", {
-#             "officername": body.officerName,
-#             "badgeNumber": body.badgeNumber
-#         })
-#     except MixpanelException as e:
-#         logger.error(e)
-#     try:
-#         return {
-#             "results": [
-#                 officer_orm_to_json(result) for result in results.items
-#             ],
-#             "page": results.page,
-#             "totalPages": results.pages,
-#             "totalResults": results.total,
-#         }
-#     except Exception as e:
-#         abort(500, description=str(e))
 
 
 # Create an officer profile
@@ -261,6 +190,56 @@ def delete_officer(officer_uid: str):
         return {"message": "Officer deleted successfully"}
     except Exception as e:
         abort(400, description=str(e))
+
+
+# Retrieve an officer's employment history
+@bp.route("/<officer_uid>/employment", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_employment(officer_uid: str):
+    """Retrieve an officer's employment history.
+    """
+
+    o = Officer.nodes.get_or_none(uid=officer_uid)
+    if o is None:
+        abort(404, description="Officer not found")
+
+    # Get employment history
+    # Coalesce employment stints per agency + unit
+    cy = """
+    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]-(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
+    WITH a, u, e
+    ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
+    WITH
+      a,
+      u,
+      head(collect(e)) AS rep,          // “representative” stint (most recent by our ORDER BY)
+      min(e.earliest_date) AS earliest_date,
+      max(e.latest_date)   AS latest_date
+    RETURN {
+      agency_uid:   a.uid,
+      agency_name:  a.name,
+      unit_uid:     u.uid,
+      unit_name:    u.name,
+      badge_number: rep.badge_number,
+      highest_rank: rep.highest_rank,
+      salary:       rep.salary,
+      earliest_date: earliest_date,
+      latest_date:   latest_date
+    } AS item
+    LIMIT 20;
+    """
+
+    try:
+        results, _meta = db.cypher_query(cy, {'uid': officer_uid})
+    except Exception as e:
+        abort(400, description=str(e))
+    employment_history = [row[0] for row in results]
+    return jsonify({
+        "officer_uid": officer_uid,
+        "employment_history": employment_history,
+        "total_records": len(employment_history)
+    })
 
 
 # # Update an officer's employment history

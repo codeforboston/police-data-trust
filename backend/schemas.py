@@ -607,14 +607,11 @@ class JsonSerializable:
             state_node = StateNode.nodes.get_or_none(
                 abbreviation=state)
             if state_node:
-                item.state_node.connect(state_node)
-                logging.info(f"Linked {item.uid} to State {state_node.uid}")
-
                 # Add city if provided
                 if city is not None:
                     query = """
                     MATCH (c:CityNode
-                    {name: $city})-[]-()-[]-(s:StateNode {uid: $state})
+                    {name: $city})-[]-(:CountyNode)-[]-(s:StateNode {uid: $state})
                     RETURN c LIMIT 25
                     """
                     results, meta = db.cypher_query(query, {

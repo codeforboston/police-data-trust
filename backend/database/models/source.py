@@ -117,15 +117,17 @@ class SourceMember(StructuredRel, JsonSerializable):
 
 
 class Citation(StructuredRel, JsonSerializable):
-    uid = UniqueIdProperty()
-    date = DateTimeProperty(default=datetime.now())
+    timestamp = DateTimeProperty(
+        default=datetime.now(),
+        index=True
+    )
     url = StringProperty()
     user_uid = StringProperty()
     diff = StringProperty()
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<Citation {self.uid}>"
+        return f"<Citation {self.timestamp}>"
 
 
 class HasCitations:
@@ -151,7 +153,7 @@ class HasCitations:
         :param data: The citation data
         """
         context = {k: v for k, v in {
-            "date": datetime.now(),
+            "timestamp": datetime.now(),
             "user_uid": user.uid,
             "diff": diff
         }.items() if v is not None}

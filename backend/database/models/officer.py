@@ -1,4 +1,4 @@
-from backend.schemas import JsonSerializable, RelQuery
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
@@ -9,6 +9,11 @@ from neomodel import (
     StringProperty, DateProperty,
     UniqueIdProperty, One
 )
+
+# Enums - Not yet used for validation, but could be in the future
+class StateIDType(PropertyEnum):
+    TAX_ID_NUMBER = "TAX_ID_NUMBER"
+    NPI_ID = "NPI_ID"
 
 
 class StateID(StructuredNode, JsonSerializable):
