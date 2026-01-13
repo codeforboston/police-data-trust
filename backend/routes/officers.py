@@ -1,6 +1,4 @@
 import logging
-from typing import Optional, List
-
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import (validate_request, ordered_jsonify,
@@ -12,111 +10,11 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from pydantic import BaseModel, Field, field_validator
-# from neomodel import db
+from backend.dto.officer import OfficerSearchParams
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
-
-class SearchOfficerSchema(BaseModel):
-    name: Optional[str] = None
-    agency: Optional[str] = None
-    badgeNumber: Optional[str] = None
-    location: Optional[str] = None
-    page: Optional[int] = 1
-    perPage: Optional[int] = 20
-
-    class Config:
-        extra = "forbid"
-        json_schema_extra = {
-            "example": {
-                "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
-                "page": 1,
-                "perPage": 20,
-            }
-        }
-
-
-class AddEmploymentSchema(BaseModel):
-    agency_id: int
-    badge_number: str
-    officer_id: Optional[int]
-    highest_rank: Optional[str]
-    earliest_employment: Optional[str]
-    latest_employment: Optional[str]
-    unit: Optional[str]
-    currently_employed: bool = True
-
-
-class AddEmploymentListSchema(BaseModel):
-    agencies: List[AddEmploymentSchema]
-
-
-class OfficerSearchParams(BaseModel):
-    # Pagination
-    page: int = 1
-    per_page: int = Field(20, alias="per_page")
-    searchResult: bool = Field(default=False)
-
-    # Name components
-    query: Optional[str] = None
-    first_name: Optional[str] = None
-    middle_name: Optional[str] = None
-    last_name: Optional[str] = None
-    suffix: Optional[str] = None
-
-    # Other filters
-    rank: List[str] = []
-    unit: List[str] = []
-    agency: List[str] = []
-    active_after: Optional[str] = None
-    active_before: Optional[str] = None
-    badge_number: List[str] = Field([], alias="badge_number")
-    ethnicity: List[str] = []
-
-    # Derived fields (computed below)
-    @field_validator("unit", mode="before")
-    def ensure_list(cls, v):
-        if v is None:
-            return None
-        if isinstance(v, str):
-            return [v]         # convert single string → list
-        return v
-
-    @property
-    def name_parts(self):
-        return [
-            p.strip()
-            for p in [
-                self.first_name,
-                self.middle_name,
-                self.last_name,
-                self.suffix,
-            ]
-            if p and p.strip()
-        ]
-
-    @property
-    def officer_name(self):
-        if self.query and self.query.strip():
-            return self.query.strip()
-        else:
-            return " AND ".join(self.name_parts) or None
-
-    @property
-    def officer_rank(self):
-        return " ".join(self.rank) if self.rank else None
-
-    @property
-    def skip(self):
-        return (self.page - 1) * self.per_page
-
-    @property
-    def limit(self):
-        return self.per_page
 
 # # Search for an officer or group of officers
 # @bp.route("/search", methods=["POST"])
@@ -271,7 +169,7 @@ def get_all_officers():
 
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
-    if row_count < params.skip:
+    if row_count <= params.skip:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     # Run query

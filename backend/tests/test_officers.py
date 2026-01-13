@@ -276,7 +276,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
 
     res = client.get(
         "/api/v1/officers/",
-        query_string={"perPage": per_page, "page": expected_total_pages + 1},
+        query_string={"per_page": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 400
@@ -322,7 +322,7 @@ def test_officer_pagination2(client, db_session, access_token):
     # page 3 (should return empty)
     res = client.get(
         "/api/v1/officers/",
-        query_string={"perPage": 20, "page": 3},
+        query_string={"per_page": 20, "page": 3},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     print(f"res is {res.json}")
@@ -744,3 +744,36 @@ def test_get_search_result(client, db_session, access_token, example_officer,
     # assert res.json["results"][0]["last_name"] is not None
     assert res.json["page"] == 1
     assert res.json["total"] == len(officer)
+
+
+def test_get_search_result_no_results(
+    client,
+    db_session,
+    access_token,
+    example_officer,
+    example_unit
+):
+    res = client.get(
+        "/api/v1/officers/?first_name=Nonexistent&searchResult=true",
+        headers={"Authorization ": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
+
+
+def test_invalid_query_params(
+    client,
+    db_session,
+    access_token,
+    example_officer,
+    example_unit
+):
+    res = client.get(
+        "/api/v1/officers/?abc=123",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    body = res.get_data(as_text=True)
+    # print(f"body is {body}")
+    assert "Extra inputs are not permitted" in body
+    assert res.status_code == 400

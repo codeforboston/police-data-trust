@@ -8,9 +8,18 @@ class RequestDTO(BaseModel):
 
 
 class PaginatedRequest(RequestDTO):
-    page: Optional[int] = Field(1, description="The requested page number.")
+    page: Optional[int] = Field(
+        1, ge=1, description="The requested page number.")
     per_page: Optional[int] = Field(
-        20, description="The requested number of items per page.")
+        20, ge=1, description="The requested number of items per page.")
+
+    @property
+    def skip(self):
+        return (self.page - 1) * self.per_page
+
+    @property
+    def limit(self):
+        return self.per_page
 
 
 class PaginatedResponse(BaseModel):
