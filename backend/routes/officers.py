@@ -10,11 +10,35 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams
+from backend.dto.officer import OfficerSearchParams, GetOfficerParams
 from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
+
+EMPLOYMENT_CYPHER = """
+    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]-(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
+    WITH a, u, e
+    ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
+    WITH
+      a,
+      u,
+      head(collect(e)) AS rep,          // “representative” stint (most recent by our ORDER BY)
+      min(e.earliest_date) AS earliest_date,
+      max(e.latest_date)   AS latest_date
+    RETURN {
+      agency_uid:   a.uid,
+      agency_name:  a.name,
+      unit_uid:     u.uid,
+      unit_name:    u.name,
+      badge_number: rep.badge_number,
+      highest_rank: rep.highest_rank,
+      salary:       rep.salary,
+      earliest_date: earliest_date,
+      latest_date:   latest_date
+    } AS item
+    LIMIT 20;
+    """
 
 
 # Create an officer profile
@@ -56,7 +80,31 @@ def get_officer(officer_uid: int):
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
-    return o.to_json()
+    raw = {
+        **request.args,  # copies simple values
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetOfficerParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+    
+    response = o.to_dict()
+
+    employment_history = None
+
+    if params.include:
+        if "employment" in params.include:
+            # Load employment history
+            try:
+                results, _meta = db.cypher_query(EMPLOYMENT_CYPHER, {'uid': officer_uid})
+            except Exception as e:
+                abort(400, description=str(e))
+            employment_history = [row[0] for row in results]
+            response.update({"employment_history": employment_history})
+            
+    return ordered_jsonify(response)
 
 
 # Get all officers
@@ -205,33 +253,8 @@ def get_employment(officer_uid: str):
         abort(404, description="Officer not found")
 
     # Get employment history
-    # Coalesce employment stints per agency + unit
-    cy = """
-    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]-(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
-    WITH a, u, e
-    ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
-    WITH
-      a,
-      u,
-      head(collect(e)) AS rep,          // “representative” stint (most recent by our ORDER BY)
-      min(e.earliest_date) AS earliest_date,
-      max(e.latest_date)   AS latest_date
-    RETURN {
-      agency_uid:   a.uid,
-      agency_name:  a.name,
-      unit_uid:     u.uid,
-      unit_name:    u.name,
-      badge_number: rep.badge_number,
-      highest_rank: rep.highest_rank,
-      salary:       rep.salary,
-      earliest_date: earliest_date,
-      latest_date:   latest_date
-    } AS item
-    LIMIT 20;
-    """
-
     try:
-        results, _meta = db.cypher_query(cy, {'uid': officer_uid})
+        results, _meta = db.cypher_query(EMPLOYMENT_CYPHER, {'uid': officer_uid})
     except Exception as e:
         abort(400, description=str(e))
     employment_history = [row[0] for row in results]
