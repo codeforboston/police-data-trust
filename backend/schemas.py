@@ -610,8 +610,8 @@ class JsonSerializable:
                 # Add city if provided
                 if city is not None:
                     query = """
-                    MATCH (c:CityNode
-                    {name: $city})-[]-(:CountyNode)-[]-(s:StateNode {uid: $state})
+                    MATCH (c:CityNode {name: $city})-
+                    []-(:CountyNode)-[]-(s:StateNode {uid: $state})
                     RETURN c LIMIT 25
                     """
                     results, meta = db.cypher_query(query, {

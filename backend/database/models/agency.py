@@ -6,9 +6,7 @@ from backend.database.models.source import HasCitations
 from neomodel import (
     db,
     StructuredNode,
-    StructuredRel,
     StringProperty,
-    Relationship,
     RelationshipTo,
     DateProperty,
     UniqueIdProperty,
@@ -68,6 +66,34 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
 
     def __repr__(self):
         return f"<Unit {self.name}>"
+
+    def officers(self) -> RelQuery:
+        """
+        Query the officers related to this agency.
+        Returns:
+            RelQuery: A query object for the Officer nodes associated
+            with this agency.
+        """
+        base = """
+        MATCH (u:Unit {uid: $uid})-[]-(:Employment)-[]-(o:Officer)
+        """
+        from backend.database.models.officer import Officer
+        return RelQuery(self, base, return_alias="o", inflate_cls=Officer)
+
+    def total_officers(self):
+        """
+        Get the total number of officers in this agency.
+        Returns:
+            int: The total number of officers.
+        """
+        cy = """
+        MATCH (u:Unit {uid: $uid})-[]-(:Employment)-[]-(o:Officer)
+        RETURN COUNT(o) AS total_officers
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid})
+        if result:
+            return result[0][0]
+        return 0
 
     @property
     def current_commander(self):
@@ -172,7 +198,7 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         """
         base = """
         MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]
-        -(u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
+        -(u:Unit)-[]-(:Employment)-[]-(o:Officer)
         """
         from backend.database.models.officer import Officer
         return RelQuery(self, base, return_alias="o", inflate_cls=Officer)

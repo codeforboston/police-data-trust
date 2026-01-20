@@ -15,10 +15,10 @@ mock_units = {
         "email": "alpha@agency.gov",
         "description": "Responsible for general investigations \
             and field operations.",
-        "address": "100 Alpha Ave",
-        "city": "Chicago",
-        "state": "MI",
-        "zip": "60001",
+        "hq_address": "100 Alpha Ave",
+        "hq_city": "Chicago",
+        "hq_state": "MI",
+        "hq_zip": "60001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-alpha/officers",
         "date_established": date(2001, 5, 14)
@@ -30,10 +30,10 @@ mock_units = {
         "email": "bravo@agency.gov",
         "description": "Handles specialized enforcement and \
             tactical operations.",
-        "address": "200 Bravo Blvd",
-        "city": "NYC",
-        "state": "NY",
-        "zip": "75001",
+        "hq_address": "200 Bravo Blvd",
+        "hq_city": "NYC",
+        "hq_state": "NY",
+        "hq_zip": "75001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-bravo/officers",
         "date_established": date(1998, 9, 3)
@@ -45,10 +45,10 @@ mock_units = {
         "email": "charlie@agency.gov",
         "description": "Focuses on community outreach and \
             civilian safety programs.",
-        "address": "300 Charlie Rd",
-        "city": "Oakridge",
-        "state": "OH",
-        "zip": "43001",
+        "hq_address": "300 Charlie Rd",
+        "hq_city": "Oakridge",
+        "hq_state": "OH",
+        "hq_zip": "43001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-charlie/officers",
         "date_established": date(2010, 2, 28)

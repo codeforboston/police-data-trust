@@ -3,7 +3,7 @@ import pytest
 import math
 from datetime import date, datetime
 from backend.database import (
-    Officer, Unit, Agency
+    Officer, Unit, Agency, Employment
 )
 from neomodel import db
 
@@ -35,12 +35,14 @@ mock_agencies = {
         "website_url": "https://www.chicagopolice.org/",
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
+        "hq_state": "IL",
         "hq_zip": "60653",
         "jurisdiction": "MUNICIPAL"
     },
     "nypd": {
         "name": "New York Police Department",
         "website_url": "https://www1.nyc.gov/site/nypd/index.page",
+        "hq_state": "NY",
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
@@ -56,10 +58,10 @@ mock_units = {
         "email": "alpha@agency.gov",
         "description": "Responsible for general investigations \
             and field operations.",
-        "address": "100 Alpha Ave",
-        "city": "Chicago",
-        "state": "MI",
-        "zip": "60001",
+        "hq_address": "100 Alpha Ave",
+        "hq_city": "Chicago",
+        "hq_state": "MI",
+        "hq_zip": "60001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-alpha/officers",
         "date_established": date(2001, 5, 14)
@@ -71,10 +73,10 @@ mock_units = {
         "email": "bravo@agency.gov",
         "description": "Handles specialized enforcement and \
             tactical operations.",
-        "address": "200 Bravo Blvd",
-        "city": "NYC",
-        "state": "NY",
-        "zip": "75001",
+        "hq_address": "200 Bravo Blvd",
+        "hq_city": "NYC",
+        "hq_state": "NY",
+        "hq_zip": "75001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-bravo/officers",
         "date_established": date(1998, 9, 3)
@@ -86,10 +88,10 @@ mock_units = {
         "email": "charlie@agency.gov",
         "description": "Focuses on community outreach and \
             civilian safety programs.",
-        "address": "300 Charlie Rd",
-        "city": "Oakridge",
-        "state": "OH",
-        "zip": "43001",
+        "hq_address": "300 Charlie Rd",
+        "hq_city": "Oakridge",
+        "hq_state": "OH",
+        "hq_zip": "43001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-charlie/officers",
         "date_established": date(2010, 2, 28)
@@ -518,12 +520,23 @@ def create_officers_units_agencies():
         agencies[key] = Agency(**mock).save()
 
     # Link officers to existing unit objects
-    units["unit_alpha"].officers.connect(officers["john"],
-                                         mock_unit_memberships["john"])
-    units["unit_bravo"].officers.connect(officers["hazel"],
-                                         mock_unit_memberships["hazel"])
-    units["unit_charlie"].officers.connect(officers["frank"],
-                                           mock_unit_memberships["frank"])
+    john_emp = Employment(
+        **mock_unit_memberships["john"]
+    ).save()
+    john_emp.unit.connect(units["unit_alpha"])
+    john_emp.officer.connect(officers["john"])
+
+    hazel_emp = Employment(
+        **mock_unit_memberships["hazel"]
+    ).save()
+    hazel_emp.unit.connect(units["unit_bravo"])
+    hazel_emp.officer.connect(officers["hazel"])
+
+    frank_emp = Employment(
+        **mock_unit_memberships["frank"]
+    ).save()
+    frank_emp.unit.connect(units["unit_charlie"])
+    frank_emp.officer.connect(officers["frank"])
 
     # Link units to agencies (one direction is enough)
     units["unit_alpha"].agency.connect(agencies["cpd"])
@@ -536,8 +549,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
                                 create_officers_units_agencies):
 
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
         where u.name = "Unit Alpha"
         RETURN o
     """)
@@ -547,7 +559,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
         "/api/v1/officers/?unit=Unit Alpha",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print(officers_with_unit[0])
+    print(officers_with_unit)
     print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
     assert res.json["results"][0]["first_name"] is not None
@@ -557,8 +569,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
 
     # Officers in Unit Alpha or Unit Bravo (from DB)
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
         WHERE u.name IN ["Unit Alpha", "Unit Bravo"]
         RETURN o
     """)
@@ -581,9 +592,8 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
                                            create_officers_units_agencies):
 
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
-        MATCH (u)-[:ESTABLISHED_BY]-(a:Agency)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
+        -[:ESTABLISHED_BY]->(a:Agency)
         where a.name = "Chicago Police Department"
         RETURN o
     """)

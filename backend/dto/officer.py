@@ -110,5 +110,6 @@ class GetOfficerParams(RequestDTO):
         if v:
             invalid = set(v) - allowed_includes
             if invalid:
-                raise ValueError(f"Invalid include parameters: {', '.join(invalid)}")
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
         return v

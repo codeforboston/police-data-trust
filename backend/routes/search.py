@@ -33,9 +33,9 @@ def create_officer_result(node) -> Searchresult:
     uid = o.uid
 
     # Subtitle Example: "Asian Man, Sergeant at Agency X"
-    u = o.current_unit
+    emp = o.current_employment
+    u = emp.unit.single() if emp else None
     a = u.agency.single() if u else None
-    u_rel = u.officers.relationship(o) if u else None
 
     s = o.primary_source
     s_rel = o.citations.relationship(s) if s else None
@@ -50,8 +50,8 @@ def create_officer_result(node) -> Searchresult:
             if o.gender_enum else "Unknown Gender"
         ),
         rank=(
-            u_rel.highest_rank
-            if u_rel else "Officer"
+            emp.highest_rank
+            if emp else "Officer"
         ),
         agency=(
             a.name
@@ -65,7 +65,7 @@ def create_officer_result(node) -> Searchresult:
         subtitle=sub_title,
         content_type="Officer",
         source=s.name if s else "Unknown Source",
-        last_updated=s_rel.date if s_rel else None,
+        last_updated=s_rel.timestamp if s_rel else None,
         href=f"/api/v1/officers/{uid}"
     )
 
@@ -94,7 +94,7 @@ def create_agency_result(node) -> Searchresult:
         ],
         content_type="Agency",
         source=s.name if s else "Unknown Source",
-        last_updated=s_rel.date if s_rel else datetime.now(),
+        last_updated=s_rel.timestamp if s_rel else datetime.now(),
         href=f"/api/v1/agencies/{uid}"
     )
 
@@ -115,7 +115,7 @@ def create_unit_result(node) -> Searchresult:
         ),
         details=[
             "{} Officer(s)".format(
-                len(u.officers) if u.officers else 0
+                u.total_officers()
             ),
             "Commander: {}".format(
                 u.current_commander.full_name
@@ -124,7 +124,7 @@ def create_unit_result(node) -> Searchresult:
         ],
         content_type="Unit",
         source=s.name if s else "Unknown Source",
-        last_updated=s_rel.date if s_rel else datetime.now(),
+        last_updated=s_rel.timestamp if s_rel else datetime.now(),
         href=f"/api/v1/units/{uid}"
     )
 

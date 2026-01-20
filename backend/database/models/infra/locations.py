@@ -5,7 +5,6 @@ from neomodel import (
     UniqueIdProperty,
     Relationship,
     RelationshipTo,
-    RelationshipFrom,
     ZeroOrOne,
     One
 )

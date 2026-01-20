@@ -17,13 +17,14 @@ from neomodel import db
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
 EMPLOYMENT_CYPHER = """
-    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]-(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
+    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]
+    -(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
     WITH a, u, e
     ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
     WITH
       a,
       u,
-      head(collect(e)) AS rep,          // “representative” stint (most recent by our ORDER BY)
+      head(collect(e)) AS rep,
       min(e.earliest_date) AS earliest_date,
       max(e.latest_date)   AS latest_date
     RETURN {
@@ -49,7 +50,8 @@ WITH
     ELSE a.type
   END AS type,
   count(*) AS occurrences,
-  sum(CASE WHEN toLower(trim(coalesce(a.finding,""))) = "substantiated" THEN 1 ELSE 0 END)
+  sum(CASE WHEN toLower(
+    trim(coalesce(a.finding,""))) = "substantiated" THEN 1 ELSE 0 END)
     AS substantiated_count,
   min(c.incident_date) AS earliest_incident_date,
   max(c.incident_date) AS latest_incident_date
@@ -78,7 +80,7 @@ def create_officer():
     current_user = User.get(jwt_decoded["sub"])
 
     # try:
-    officer = Officer.from_dict(body.dict())
+    officer = Officer.from_dict(body.model_dump())
     # except Exception as e:
     #     abort(400, description=str(e))
 
@@ -112,7 +114,7 @@ def get_officer(officer_uid: int):
     except Exception as e:
         logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
-    
+
     response = o.to_dict()
 
     employment_history = None
@@ -121,7 +123,8 @@ def get_officer(officer_uid: int):
         if "employment" in params.include:
             # Load employment history
             try:
-                results, _meta = db.cypher_query(EMPLOYMENT_CYPHER, {'uid': officer_uid})
+                results, _meta = db.cypher_query(
+                    EMPLOYMENT_CYPHER, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
             employment_history = [row[0] for row in results]
@@ -129,7 +132,8 @@ def get_officer(officer_uid: int):
         if "allegations" in params.include:
             # Load allegation summary
             try:
-                results, _meta = db.cypher_query(ALLEGATION_CYPHER, {'uid': officer_uid})
+                results, _meta = db.cypher_query(
+                    ALLEGATION_CYPHER, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
             allegation_summary = []
@@ -142,7 +146,7 @@ def get_officer(officer_uid: int):
                     "latest_incident_date": row[4],
                 })
             response.update({"allegation_summary": allegation_summary})
-            
+
     return ordered_jsonify(response)
 
 
@@ -238,7 +242,7 @@ def update_officer(officer_uid: str):
         abort(404, description="Officer not found")
 
     try:
-        o = Officer.from_dict(body.dict(), officer_uid)
+        o = Officer.from_dict(body.model_dump(), officer_uid)
         o.refresh()
     except Exception as e:
         abort(400, description=str(e))
@@ -293,7 +297,8 @@ def get_employment(officer_uid: str):
 
     # Get employment history
     try:
-        results, _meta = db.cypher_query(EMPLOYMENT_CYPHER, {'uid': officer_uid})
+        results, _meta = db.cypher_query(
+            EMPLOYMENT_CYPHER, {'uid': officer_uid})
     except Exception as e:
         abort(400, description=str(e))
     employment_history = [row[0] for row in results]
