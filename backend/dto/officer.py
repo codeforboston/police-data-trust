@@ -104,7 +104,8 @@ class GetOfficerParams(RequestDTO):
     @field_validator("include")
     def validate_include(cls, v):
         allowed_includes = {
-            "employment"
+            "employment",
+            "allegations"
         }
         if v:
             invalid = set(v) - allowed_includes
