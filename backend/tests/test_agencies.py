@@ -66,6 +66,7 @@ new_agency = {
     "hq_address": "123 Main St",
     "hq_city": "New York",
     "hq_zip": "10001",
+    "hq_state": "NY",
     "jurisdiction": "MUNICIPAL"
 }
 
@@ -213,7 +214,7 @@ def test_get_agency_officers(client,
                              example_unit,
                              access_token):
     query = f"""
-                    MATCH (a:Agency)-[]-(u:Unit)-[]-(o:Officer)
+                    MATCH (a:Agency)-[]-(u:Unit)-[]-(:Employment)-[]-(o:Officer)
                     WHERE a.uid='{example_agency.uid}'
                     RETURN o
                     """

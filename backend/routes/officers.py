@@ -10,82 +10,60 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams
+from backend.dto.officer import OfficerSearchParams, GetOfficerParams
+from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
 
+EMPLOYMENT_CYPHER = """
+    MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]
+    -(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
+    WITH a, u, e
+    ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
+    WITH
+      a,
+      u,
+      head(collect(e)) AS rep,
+      min(e.earliest_date) AS earliest_date,
+      max(e.latest_date)   AS latest_date
+    RETURN {
+      agency_uid:   a.uid,
+      agency_name:  a.name,
+      unit_uid:     u.uid,
+      unit_name:    u.name,
+      badge_number: rep.badge_number,
+      highest_rank: rep.highest_rank,
+      salary:       rep.salary,
+      earliest_date: earliest_date,
+      latest_date:   latest_date
+    } AS item
+    LIMIT 20;
+    """
 
-# # Search for an officer or group of officers
-# @bp.route("/search", methods=["POST"])
-# @jwt_required()
-# @min_role_required(UserRole.PUBLIC)
-# @validate(json=SearchOfficerSchema)
-# def search_officer():
-#     """Search Officers"""
-#     body: SearchOfficerSchema = request.context.json
-#     query = db.session.query('Officer')
-#     logger = logging.getLogger("officers")
-
-#     try:
-#         if body.name:
-#             names = body.officerName.split()
-#             if len(names) == 1:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{body.officerName}%"),
-#                         Officer.last_name.ilike(f"%{body.officerName}%")
-#                     )
-#                 )
-#             elif len(names) == 2:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.last_name.ilike(f"%{names[1]}%")
-#                     )
-#                 )
-#             else:
-#                 query = Officer.query.filter(
-#                     or_(
-#                         Officer.first_name.ilike(f"%{names[0]}%"),
-#                         Officer.middle_name.ilike(f"%{names[1]}%"),
-#                         Officer.last_name.ilike(f"%{names[2]}%")
-#                     )
-#                 )
-
-#         if body.badgeNumber:
-#             officer_ids = [
-#                 result.officer_id for result in db.session.query(
-#                     Employment
-#                     ).filter_by(badge_number=body.badgeNumber).all()
-#             ]
-#             query = Officer.query.filter(Officer.id.in_(officer_ids)).all()
-
-#     except Exception as e:
-#         abort(422, description=str(e))
-
-#     results = query.paginate(
-#         page=body.page, per_page=body.perPage, max_per_page=100
-#     )
-
-#     try:
-#         track_to_mp(request, "search_officer", {
-#             "officername": body.officerName,
-#             "badgeNumber": body.badgeNumber
-#         })
-#     except MixpanelException as e:
-#         logger.error(e)
-#     try:
-#         return {
-#             "results": [
-#                 officer_orm_to_json(result) for result in results.items
-#             ],
-#             "page": results.page,
-#             "totalPages": results.pages,
-#             "totalResults": results.total,
-#         }
-#     except Exception as e:
-#         abort(500, description=str(e))
+ALLEGATION_CYPHER = """
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(a:Allegation)
+MATCH (a)-[:ALLEGED]->(c:Complaint)
+WITH
+  CASE
+    WHEN a.type IS NULL OR trim(a.type) = "" THEN "Unknown"
+    ELSE a.type
+  END AS type,
+  count(*) AS occurrences,
+  sum(CASE WHEN toLower(
+    trim(coalesce(a.finding,""))) = "substantiated" THEN 1 ELSE 0 END)
+    AS substantiated_count,
+  min(c.incident_date) AS earliest_incident_date,
+  max(c.incident_date) AS latest_incident_date
+ORDER BY occurrences DESC, type ASC
+RETURN
+  type,
+  occurrences,
+  substantiated_count,
+  earliest_incident_date,
+  latest_incident_date
+LIMIT 10;
+"""
 
 
 # Create an officer profile
@@ -102,7 +80,7 @@ def create_officer():
     current_user = User.get(jwt_decoded["sub"])
 
     # try:
-    officer = Officer.from_dict(body.dict())
+    officer = Officer.from_dict(body.model_dump())
     # except Exception as e:
     #     abort(400, description=str(e))
 
@@ -127,7 +105,49 @@ def get_officer(officer_uid: int):
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
-    return o.to_json()
+    raw = {
+        **request.args,  # copies simple values
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetOfficerParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    response = o.to_dict()
+
+    employment_history = None
+
+    if params.include:
+        if "employment" in params.include:
+            # Load employment history
+            try:
+                results, _meta = db.cypher_query(
+                    EMPLOYMENT_CYPHER, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            employment_history = [row[0] for row in results]
+            response.update({"employment_history": employment_history})
+        if "allegations" in params.include:
+            # Load allegation summary
+            try:
+                results, _meta = db.cypher_query(
+                    ALLEGATION_CYPHER, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            allegation_summary = []
+            for row in results:
+                allegation_summary.append({
+                    "type": row[0],
+                    "count": row[1],
+                    "substantiated_count": row[2],
+                    "earliest_incident_date": row[3],
+                    "latest_incident_date": row[4],
+                })
+            response.update({"allegation_summary": allegation_summary})
+
+    return ordered_jsonify(response)
 
 
 # Get all officers
@@ -222,7 +242,7 @@ def update_officer(officer_uid: str):
         abort(404, description="Officer not found")
 
     try:
-        o = Officer.from_dict(body.dict(), officer_uid)
+        o = Officer.from_dict(body.model_dump(), officer_uid)
         o.refresh()
     except Exception as e:
         abort(400, description=str(e))
@@ -263,120 +283,27 @@ def delete_officer(officer_uid: str):
         abort(400, description=str(e))
 
 
-# # Update an officer's employment history
-# @bp.route("/<int:officer_id>/employment", methods=["PUT"])
-# @jwt_required()
-# @min_role_required(UserRole.CONTRIBUTOR)
-# @validate(json=AddEmploymentListSchema)
-# def update_employment(officer_id: int):
-#     """Update an officer's employment history.
-#     Must be a contributor to update an officer's employment history.
-#     May include multiple records in the request body.
-#     """
-#     o = Officer.nodes.get_or_none(uid=officer_id)
-#     if o is None:
-#         abort(404, description="Officer not found")
+# Retrieve an officer's employment history
+@bp.route("/<officer_uid>/employment", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_employment(officer_uid: str):
+    """Retrieve an officer's employment history.
+    """
 
-#     records = request.context.json.agencies
+    o = Officer.nodes.get_or_none(uid=officer_uid)
+    if o is None:
+        abort(404, description="Officer not found")
 
-#     created = []
-#     failed = []
-#     for record in records:
-#         try:
-#             agency = Agency.nodes.get_or_none(uid=record.agency_id)
-#             if agency is None:
-#                 failed.append({
-#                     "agency_id": record.agency_id,
-#                     "reason": "Agency not found"
-#                 })
-#             else:
-#                 employments = db.session.query(Employment).filter(
-#                     and_(
-#                         and_(
-#                             Employment.officer_id == officer_id,
-#                             Employment.agency_id == record.agency_id
-#                         ),
-#                         Employment.badge_number == record.badge_number
-#                     )
-#                 )
-#                 if employments is not None:
-#                     # If the officer already has a records for this agency,
-#                     # we need to update the earliest and
-#                     # latest employment dates
-#                     employment = employment_to_orm(record)
-#                     employment.officer_id = officer_id
-#                     employment = merge_employment_records(
-#                         employments.all() + [employment],
-#                         currently_employed=record.currently_employed
-#                     )
-
-#                     # Delete the old records and replace them with the new one
-#                     employments.delete()
-#                     created.append(employment.create())
-#                 else:
-#                     record.officer_id = officer_id
-#                     employment = employment_to_orm(record)
-#                     created.append(employment.create())
-#                 # Commit before iterating to the next record
-#                 db.session.commit()
-#         except Exception as e:
-#             failed.append({
-#                 "agency_id": record.agency_id,
-#                 "reason": str(e)
-#             })
-
-#     track_to_mp(
-#         request,
-#         "update_employment",
-#         {
-#             "officer_id": officer.id,
-#             "agencies_added": len(created),
-#             "agencies_failed": len(failed)
-#         },
-#     )
-#     try:
-#         return {
-#             "created": [
-#                 employment_orm_to_json(item) for item in created],
-#             "failed": failed,
-#             "totalCreated": len(created),
-#             "totalFailed": len(failed),
-#         }
-#     except Exception as e:
-#         abort(400, description=str(e))
-
-
-# # Retrieve an officer's employment history
-# @bp.route("/<int:officer_id>/employment", methods=["GET"])
-# @jwt_required()
-# @min_role_required(UserRole.PUBLIC)
-# @validate()
-# def get_employment(officer_id: int):
-#     """Retrieve an officer's employment history.
-#     """
-#     args = request.args
-#     q_page = args.get("page", 1, type=int)
-#     q_per_page = args.get("per_page", 20, type=int)
-
-#     officer = db.session.query(Officer).get(officer_id)
-#     if officer is None:
-#         abort(404, description="Officer not found")
-
-#     try:
-#         employments = db.session.query(Employment).filter(
-#             Employment.officer_id == officer_id)
-
-#         pagination = employments.paginate(
-#             page=q_page, per_page=q_per_page, max_per_page=100
-#         )
-
-#         return {
-#             "results": [
-#                 employment_orm_to_json(
-#                     employment) for employment in pagination.items],
-#             "page": pagination.page,
-#             "totalPages": pagination.pages,
-#             "totalResults": pagination.total,
-#         }
-#     except Exception as e:
-#         abort(400, description=str(e))
+    # Get employment history
+    try:
+        results, _meta = db.cypher_query(
+            EMPLOYMENT_CYPHER, {'uid': officer_uid})
+    except Exception as e:
+        abort(400, description=str(e))
+    employment_history = [row[0] for row in results]
+    return jsonify({
+        "officer_uid": officer_uid,
+        "employment_history": employment_history,
+        "total_records": len(employment_history)
+    })

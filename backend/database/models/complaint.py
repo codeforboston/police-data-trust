@@ -59,6 +59,11 @@ class Location(StructuredNode, JsonSerializable):
     administrative_area = StringProperty()
     administrative_area_type = StringProperty()
 
+    # Relationships
+    city_node = RelationshipTo(
+        "backend.database.models.infra.locations.CityNode",
+        "LOCATED_IN", cardinality=One)
+
 
 class Complaint(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
@@ -68,15 +73,16 @@ class Complaint(StructuredNode, HasCitations, JsonSerializable):
         "outcome_of_contact"
     ]
 
-    __hidden_properties__ = ["citations"]
+    __hidden_properties__ = ["citations", "complaint_key"]
     __virtual_relationships__ = ["allegations", "investigations", "penalties"]
 
     uid = UniqueIdProperty()
-    record_id = StringProperty()
+    record_id = StringProperty(index=True)
+    complaint_key = StringProperty(unique_index=True)
     category = StringProperty()
-    incident_date = DateProperty()
-    received_date = DateProperty()
-    closed_date = DateProperty()
+    incident_date = DateProperty(index=True)
+    received_date = DateProperty(index=True)
+    closed_date = DateProperty(index=True)
     reason_for_contact = StringProperty()
     outcome_of_contact = StringProperty()
 
@@ -139,10 +145,11 @@ class Allegation(StructuredNode, JsonSerializable):
         "type", "subtype", "recommended_finding",
         "recommended_outcome", "finding", "outcome"
     ]
-    __hidden_properties__ = ["complaint"]
+    __hidden_properties__ = ["complaint", "allegation_key"]
 
     uid = UniqueIdProperty()
-    record_id = StringProperty()
+    record_id = StringProperty(index=True)
+    allegation_key = StringProperty(unique_index=True)
     allegation = StringProperty()
     type = StringProperty()
     subtype = StringProperty()

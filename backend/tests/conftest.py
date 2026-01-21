@@ -11,6 +11,7 @@ from backend.database import (
     Agency,
     Unit,
     Officer,
+    Employment,
     StateID,
     Complaint,
     RecordType,
@@ -156,6 +157,7 @@ def example_agency(example_source):
     agency = Agency(
         name="Example Agency",
         website_url="www.example.com",
+        hq_state="NY",
         hq_city="New York",
         hq_address="123 Main St",
         hq_zip="10001",
@@ -174,7 +176,8 @@ def example_unit(example_agency, example_officer, example_source):
     source = example_source
 
     unit = Unit(
-        name="Precinct 1"
+        name="Precinct 1",
+        hq_state="NY"
     ).save()
 
     # Create relationships
@@ -182,12 +185,11 @@ def example_unit(example_agency, example_officer, example_source):
     unit.citations.connect(source, {
         'date': datetime.now(),
     })
-    unit.officers.connect(
-        officer,
-        {
-            'badge_number': '61025'
-        }
-    )
+    emp = Employment(
+        badge_number='61025'
+    ).save()
+    emp.unit.connect(unit)
+    emp.officer.connect(officer)
     yield unit
 
 

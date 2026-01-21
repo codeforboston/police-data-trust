@@ -1,6 +1,6 @@
 from pydantic import Field, BaseModel, field_validator
 from typing import Optional
-from backend.dto.common import PaginatedRequest
+from backend.dto.common import PaginatedRequest, RequestDTO
 from typing import List
 
 
@@ -94,3 +94,22 @@ class AddEmploymentSchema(BaseModel):
 
 class AddEmploymentListSchema(BaseModel):
     agencies: List[AddEmploymentSchema]
+
+
+class GetOfficerParams(RequestDTO):
+    include: Optional[List[str]] = Field(
+        None, description="Related entities to include in the response."
+    )
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "employment",
+            "allegations"
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
+        return v
