@@ -1,5 +1,6 @@
 import pytest
 import math
+from datetime import datetime
 from backend.database import Agency
 from neomodel import db
 
@@ -72,11 +73,14 @@ new_agency = {
 
 
 @pytest.fixture
-def example_agencies(db_session):
+def example_agencies(db_session, example_source):
     agencies = {}
 
     for name, mock in mock_agencies.items():
         a = Agency(**mock).save()
+        a.citations.connect(example_source, {
+            'timestamp': datetime.now(),
+        })
         agencies[name] = a
     return agencies
 

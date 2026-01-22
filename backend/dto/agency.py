@@ -42,7 +42,8 @@ class AgencyQueryParams(PaginatedRequest):
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
         return v
-    
+
+
 class GetAgencyParams(BaseModel):
     include: Optional[List[str]] = Field(
         None, description="Related data to include in the response."

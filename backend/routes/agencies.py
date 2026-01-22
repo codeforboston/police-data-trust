@@ -7,7 +7,7 @@ from backend.schemas import (
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
-from backend.routes.search import create_agency_result
+from backend.routes.search import fetch_details, build_agency_result
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
@@ -42,7 +42,8 @@ CALL (a) {
 
 ALLEGATION_CYPHER = """
 CALL (a) {
-  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)-[:ACCUSED_OF]->(allege:Allegation)
+  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)
+  -[]->(:Officer)-[:ACCUSED_OF]->(allege:Allegation)
   MATCH (allege)-[:ALLEGED]-(c:Complaint)
   WITH
   CASE
@@ -287,7 +288,10 @@ def get_all_agencies():
 
     # --- Optional searchResult output ---
     if params.searchResult:
-        agencies = [create_agency_result(row) for row in results]
+        details = fetch_details(
+            [row.get("uid") for row in results], "Agency")
+        agencies = [build_agency_result(
+            row, details.get(row.get("uid"), {})) for row in results]
         page = [item.model_dump() for item in agencies if item]
         return_func = jsonify
     else:
