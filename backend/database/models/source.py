@@ -171,7 +171,7 @@ class HasCitations:
         MATCH (n)-[r:UPDATED_BY]->(s:Source)
         WHERE elementId(n) = $eid
         RETURN s
-        ORDER BY r.date DESC
+        ORDER BY r.timestamp DESC
         LIMIT 1
         """
         result, _ = db.cypher_query(cy, {"eid": self.element_id})

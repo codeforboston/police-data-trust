@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, List
 from datetime import datetime
 
@@ -9,11 +10,112 @@ from backend.schemas import add_pagination_wrapper
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from flask import jsonify
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from neomodel import db
 
 
 bp = Blueprint("search_routes", __name__, url_prefix="/api/v1/search")
+
+OFFICER_RESULT_QUERY = """
+MATCH (o:Officer {uid: $uid})
+OPTIONAL MATCH (o)-[:ACCUSED_OF]->(al:Allegation)-[:ALLEGED]->(co:Complaint)
+WITH
+  o,
+  count(DISTINCT co) AS complaint_count,
+  count(DISTINCT al) AS allegation_count,
+  sum(
+    CASE
+      WHEN toLower(trim(coalesce(al.finding, ""))) = "substantiated"
+      THEN 1 ELSE 0
+    END
+  ) AS substantiated_count
+
+CALL (o) {
+  MATCH (o)<-[]-(e:Employment)-[]-(u:Unit)-[]-(ag:Agency)
+  WITH e, u, ag,
+       CASE WHEN e.latest_date IS NULL THEN 1 ELSE 0 END AS isCurrent
+  ORDER BY isCurrent DESC, e.earliest_date DESC
+  RETURN e, u, ag
+  LIMIT 1
+}
+
+CALL (o) {
+  OPTIONAL MATCH (o)-[r:UPDATED_BY]->(s:Source)
+  RETURN s, r
+  ORDER BY r.timestamp DESC
+  LIMIT 1
+}
+
+RETURN {
+  complaints: complaint_count,
+  allegations: allegation_count,
+  substantiated: substantiated_count,
+  rank: e.highest_rank,
+  unit_name: u.name,
+  agency_name: ag.name,
+  source: s.name,
+  last_updated: r.timestamp
+} AS result
+"""
+
+
+UNIT_RESULT_QUERY = """
+MATCH (u:Unit {uid: $uid})
+OPTIONAL MATCH (u)-[]-(a:Agency)
+OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
+OPTIONAL MATCH (o)-[]-(:Allegation)-[]-(c:Complaint)
+
+WITH
+  u,
+  a,
+  count(DISTINCT o) AS officers,
+  count(DISTINCT c) AS complaints
+
+CALL (u) {
+  OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
+          RETURN s, r
+          ORDER BY r.timestamp DESC
+          LIMIT 1
+}
+RETURN {
+  name: u.name,
+  agency_name: a.name,
+  officers: officers,
+  complaints: complaints,
+  source: s.name,
+  last_updated: r.timestamp
+} as result
+"""
+
+AGENCY_RESULT_QUERY = """
+MATCH (a:Agency {uid: $uid})
+OPTIONAL MATCH (a)-[]-(u:Unit)
+OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
+OPTIONAL MATCH (o)-[]-(:Allegation)-[]-(c:Complaint)
+
+WITH
+  a,
+  count(DISTINCT u) AS units,
+  count(DISTINCT o) AS officers,
+  count(DISTINCT c) AS complaints
+
+CALL (a) {
+  OPTIONAL MATCH (a)-[r:UPDATED_BY]->(s:Source)
+  RETURN s, r
+  ORDER BY r.timestamp DESC
+  LIMIT 1
+}
+
+WITH units, officers, complaints, s, r
+
+RETURN {
+  units: units,
+  officers: officers,
+  complaints: complaints,
+  source: s.name,
+  last_updated: r.timestamp
+} AS result
+"""
 
 
 class Searchresult(BaseModel):
@@ -26,21 +128,29 @@ class Searchresult(BaseModel):
     last_updated: datetime
     href: str
 
+    @field_validator("last_updated", mode="before")
+    @classmethod
+    def coerce_neo4j_datetime(cls, v):
+        if v is None:
+            return None
+        if hasattr(v, "to_native"):
+            return v.to_native()
+        return v
+
 
 def create_officer_result(node) -> Searchresult:
     o = Officer.inflate(node)
 
     uid = o.uid
+    details = []
 
-    # Subtitle Example: "Asian Man, Sergeant at Agency X"
-    emp = o.current_employment
-    u = emp.unit.single() if emp else None
-    a = u.agency.single() if u else None
+    result, _ = db.cypher_query(OFFICER_RESULT_QUERY, {'uid': uid})
+    row = result[0][0] if result else None
+    if not row:
+        logging.error("No result row for officer uid %s", uid)
+        abort(500, description="Error creating officer search result")
 
-    s = o.primary_source
-    s_rel = o.citations.relationship(s) if s else None
-
-    sub_title = "{ethnicity} {gender}, {rank} at the {agency}".format(
+    subtitle = "{ethnicity} {gender}, {rank} at the {agency}".format(
         ethnicity=(
             o.ethnicity_enum.describe()
             if o.ethnicity_enum else "Unknown Ethnicity"
@@ -50,51 +160,59 @@ def create_officer_result(node) -> Searchresult:
             if o.gender_enum else "Unknown Gender"
         ),
         rank=(
-            emp.highest_rank
-            if emp else "Officer"
+            row.get("rank", "Officer")
         ),
         agency=(
-            a.name
-            if a else "Unknown Agency"
+            row.get("agency_name", "Unknown Agency")
         )
     )
-
+    
+    details.append("{} Complaints, {} Allegations, {} Substantiated".format(
+        row.get("complaints", 0),
+        row.get("allegations", 0),
+        row.get("substantiated", 0)
+    ))
     return Searchresult(
         uid=uid,
         title=o.full_name,
-        subtitle=sub_title,
+        subtitle=subtitle,
+        details=details,
         content_type="Officer",
-        source=s.name if s else "Unknown Source",
-        last_updated=s_rel.timestamp if s_rel else None,
+        source=row.get("source", "Unknown Source"),
+        last_updated=row.get("last_updated", None),
         href=f"/api/v1/officers/{uid}"
     )
 
 
 def create_agency_result(node) -> Searchresult:
     a = Agency.inflate(node)
-
     uid = a.uid
+    details = []
 
-    s = a.primary_source
-    s_rel = a.citations.relationship(s) if s else None
+    result, _ = db.cypher_query(AGENCY_RESULT_QUERY, {'uid': uid})
+    row = result[0][0] if result else None
+    if not row:
+        logging.error("No result row for agency uid %s", uid)
+        abort(500, description="Error creating agency search result")
+    subtitle = "{} Agency in {}, {}".format(
+        a.jurisdiction_enum.describe() if a.jurisdiction_enum else "",
+        a.hq_city if a.hq_city else "Unknown City",
+        a.hq_state if a.hq_state else "Unknown State"
+    )
 
+    details.append("{} Unit(s), {} Officer(s), {} Complaint(s)".format(
+        row.get("units", 0),
+        row.get("officers", 0),
+        row.get("complaints", 0)
+    ))
     return Searchresult(
         uid=uid,
         title=a.name,
-        subtitle="{} Agency in {}, {}".format(
-            a.jurisdiction_enum.describe() if a.jurisdiction_enum else "",
-            a.hq_city if a.hq_city else "Unknown City",
-            a.hq_state if a.hq_state else "Unknown State"
-        ),
-        details=[
-            "{} Unit(s) and {} Officers".format(
-                a.units.count(),
-                a.total_officers()
-            )
-        ],
+        subtitle=subtitle,
+        details=details,
         content_type="Agency",
-        source=s.name if s else "Unknown Source",
-        last_updated=s_rel.timestamp if s_rel else datetime.now(),
+        source=row.get("source", "Unknown Source"),
+        last_updated=row.get("last_updated", None),
         href=f"/api/v1/agencies/{uid}"
     )
 
@@ -103,28 +221,29 @@ def create_unit_result(node) -> Searchresult:
     u = Unit.inflate(node)
 
     uid = u.uid
+    details = []
 
-    s = u.primary_source
-    s_rel = u.citations.relationship(s)
+    result, _ = db.cypher_query(UNIT_RESULT_QUERY, {'uid': uid})
+    row = result[0][0] if result else None
+    if not row:
+        logging.error("No result row for unit uid %s", uid)
+        abort(500, description="Error creating unit search result")
+    subtitle = "Established by {}".format(
+        row.get("agency_name", "Unknown Agency")
+    )
+    details.append("{} Officer(s), {} Complaint(s)".format(
+        row.get("officers", 0),
+        row.get("complaints", 0)
+    ))
 
     return Searchresult(
         uid=uid,
         title=u.name,
-        subtitle="Established by the {}".format(
-            u.agency.single().name if u.agency else "Unknown Agency"
-        ),
-        details=[
-            "{} Officer(s)".format(
-                u.total_officers()
-            ),
-            "Commander: {}".format(
-                u.current_commander.full_name
-                if u.current_commander else "Unknown"
-            )
-        ],
+        subtitle=subtitle,
+        details=details,
         content_type="Unit",
-        source=s.name if s else "Unknown Source",
-        last_updated=s_rel.timestamp if s_rel else datetime.now(),
+        source=row.get("source", "Unknown Source"),
+        last_updated=row.get("last_updated", None),
         href=f"/api/v1/units/{uid}"
     )
 
