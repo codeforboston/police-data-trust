@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, validator
+from pydantic import Field, BaseModel, validator, field_validator
 from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.dto.common import PaginatedRequest
@@ -41,4 +41,24 @@ class AgencyQueryParams(PaginatedRequest):
     def validate_jurisdiction(cls, v):
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
+        return v
+    
+class GetAgencyParams(BaseModel):
+    include: Optional[List[str]] = Field(
+        None, description="Related data to include in the response."
+    )
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "units",
+            "officers",
+            "complaints",
+            "allegations",
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
         return v

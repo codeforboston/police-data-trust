@@ -12,9 +12,59 @@ from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from neomodel import db
-from backend.dto.agency import AgencyQueryParams
+from backend.dto.agency import AgencyQueryParams, GetAgencyParams
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
+
+UNIT_CYPHER = """
+CALL (a) {
+  OPTIONAL MATCH (a:Agency)-[]-(u:Unit)
+  RETURN count(DISTINCT u) AS total_units
+}
+"""
+
+OFFICER_CYPHER = """
+CALL (a) {
+  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(o:Officer)
+  WITH count(DISTINCT o) AS total_officers
+  RETURN total_officers
+}
+"""
+
+COMPLAINT_CYPHER = """
+CALL (a) {
+  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)
+      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  WITH count(c) AS total_complaints
+  RETURN total_complaints
+}
+"""
+
+ALLEGATION_CYPHER = """
+CALL (a) {
+  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)-[:ACCUSED_OF]->(allege:Allegation)
+  MATCH (allege)-[:ALLEGED]-(c:Complaint)
+  WITH
+  CASE
+      WHEN allege.type IS NULL OR trim(allege.type) = "" THEN "Unknown"
+      ELSE allege.type
+  END AS type,
+  count(*) AS occurrences,
+  sum(CASE WHEN toLower(
+      trim(coalesce(allege.finding,""))) = "substantiated" THEN 1 ELSE 0 END)
+      AS substantiated_count,
+  min(c.incident_date) AS earliest_incident_date,
+  max(c.incident_date) AS latest_incident_date
+  ORDER BY occurrences DESC, type ASC
+  RETURN {
+      type: type,
+      occurrences: occurrences,
+      substantiated_count: substantiated_count,
+      earliest_incident_date: earliest_incident_date,
+      latest_incident_date: latest_incident_date
+  } AS type_summary
+}
+"""
 
 
 # Create agency profile
@@ -56,20 +106,65 @@ def create_agency():
 
 
 # Get agency profile
-@bp.route("/<agency_id>", methods=["GET"])
+@bp.route("/<agency_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_agency(agency_id: str):
+def get_agency(agency_uid: str):
     """Get an agency profile.
+    Adds optional related data based on 'include' query parameter.
+    Allowed include values:
+    - units
+    - officers
+    - complaints
+    - allegations
     """
-    # logger = logging.getLogger("get_agency")
-    agency = Agency.nodes.get_or_none(uid=agency_id)
-    if agency is None:
-        abort(404, description="Agency not found")
+    raw = {
+        **request.args,  # copies simple values
+        "include": request.args.getlist("include"),
+    }
     try:
-        return agency.to_json()
+        params = GetAgencyParams(**raw)
     except Exception as e:
-        abort(500, description=str(e))
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+    match_clause = "MATCH (a:Agency {uid: $agency_uid})"
+    return_clause = "RETURN a"
+    subqueries = ""
+    if params.include:
+        if "units" in params.include:
+            subqueries += UNIT_CYPHER
+            return_clause += ", total_units"
+        if "officers" in params.include:
+            subqueries += OFFICER_CYPHER
+            return_clause += ", total_officers"
+        if "complaints" in params.include:
+            subqueries += COMPLAINT_CYPHER
+            return_clause += ", total_complaints"
+        if "allegations" in params.include:
+            subqueries += ALLEGATION_CYPHER
+            return_clause += ", collect(type_summary) AS allegation_summary"
+    cy = match_clause + subqueries + return_clause
+
+    rows, _ = db.cypher_query(cy, {"agency_uid": agency_uid})
+    if not rows:
+        abort(404, description="Agency not found")
+    row = rows[0]
+    agency_data = row[0]._properties
+    if params.include:
+        idx = 1
+        if "units" in params.include:
+            agency_data["total_units"] = row[idx]
+            idx += 1
+        if "officers" in params.include:
+            agency_data["total_officers"] = row[idx]
+            idx += 1
+        if "complaints" in params.include:
+            agency_data["total_complaints"] = row[idx]
+            idx += 1
+        if "allegations" in params.include:
+            agency_data["allegation_summary"] = row[idx]
+            idx += 1
+    return ordered_jsonify(agency_data)
 
 
 # Update agency profile
