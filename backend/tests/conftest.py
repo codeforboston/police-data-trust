@@ -164,7 +164,7 @@ def example_agency(example_source):
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
     agency.citations.connect(example_source, {
-        'date': datetime.now(),
+        'timestamp': datetime.now(),
     })
     yield agency
 
@@ -183,7 +183,7 @@ def example_unit(example_agency, example_officer, example_source):
     # Create relationships
     unit.agency.connect(agency)
     unit.citations.connect(source, {
-        'date': datetime.now(),
+        'timestamp': datetime.now(),
     })
     emp = Employment(
         badge_number='61025'
@@ -207,7 +207,7 @@ def example_officer(example_source):
     officer.citations.connect(
         example_source,
         {
-            'date': datetime.now(),
+            'timestamp': datetime.now(),
         }
     )
     yield officer

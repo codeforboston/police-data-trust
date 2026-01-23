@@ -7,6 +7,7 @@ from neomodel import (
     StringProperty,
     Relationship,
     RelationshipTo,
+    RelationshipFrom,
     DateProperty,
     UniqueIdProperty,
     One,
@@ -162,7 +163,7 @@ class Allegation(StructuredNode, JsonSerializable):
     complainant = RelationshipTo(
         "backend.database.models.civilian.Civilian",
         "REPORTED_BY", cardinality=ZeroOrOne)
-    accused = Relationship(
+    accused = RelationshipFrom(
         "backend.database.models.officer.Officer",
         "ACCUSED_OF", cardinality=ZeroOrOne)
     complaint = Relationship(

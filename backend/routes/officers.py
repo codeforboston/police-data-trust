@@ -5,7 +5,7 @@ from backend.schemas import (validate_request, ordered_jsonify,
                              add_pagination_wrapper)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
-from backend.routes.search import create_officer_result
+from backend.routes.search import fetch_details, build_officer_result
 from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
@@ -209,7 +209,10 @@ def get_all_officers():
 
     # Check mode — full node or SearchResult
     if params.searchResult:  # default is full node
-        all_officers = [create_officer_result(o) for o in results]
+        details = fetch_details(
+            [row.get("uid") for row in results], "Officer")
+        all_officers = [build_officer_result(
+            o, details.get(o.get("uid"), {})) for o in results]
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
     else:

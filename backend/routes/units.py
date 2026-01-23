@@ -4,7 +4,7 @@ from backend.schemas import (
     add_pagination_wrapper, ordered_jsonify)
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Unit
-from backend.routes.search import create_unit_result
+from backend.routes.search import fetch_details, build_unit_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.unit import UnitQueryParams
@@ -52,7 +52,10 @@ def get_all_units():
 
     # Optional searchResult format
     if params.searchResult:
-        units = [create_unit_result(row) for row in results]
+        details = fetch_details(
+            [row.get("uid") for row in results], "Unit")
+        units = [build_unit_result(
+            row, details.get(row.get("uid"), {})) for row in results]
         page = [item.model_dump() for item in units if item]
         return_func = jsonify
 
