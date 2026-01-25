@@ -151,7 +151,12 @@ def test_create_officer(
         "first_name": "Max",
         "last_name": "Payne",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
+        "state_id": {
+            "state": "NY",
+            "id_name": "Tax ID",
+            "value": "123456789"
+        }
     }
     res = client.post(
         "/api/v1/officers/",

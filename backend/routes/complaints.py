@@ -11,7 +11,7 @@ from backend.database.models.source import Source
 from backend.database.models.attachment import Attachment
 from backend.database.models.civilian import Civilian
 from backend.database.models.officer import Officer
-from .tmp.pydantic.complaints import (
+from backend.dto.complaint import (
     CreateComplaint, UpdateComplaint,
     CreateAllegation, CreateInvestigation, CreatePenalty,
     CreateCivilian)

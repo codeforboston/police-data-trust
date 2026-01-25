@@ -1,4 +1,4 @@
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 from typing import Optional
 from backend.database.models.agency import State
 from backend.dto.common import PaginatedRequest
@@ -12,7 +12,7 @@ class UnitQueryParams(PaginatedRequest):
     # per_page: int = Field(default=20, ge=1)
     searchResult: bool = Field(default=False)
 
-    @validator("state")
+    @field_validator("state")
     def validate_state(cls, v):
         if v and v not in State.choices():
             raise ValueError(f"Invalid state: {v}")
