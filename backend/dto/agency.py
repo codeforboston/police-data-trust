@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, validator, field_validator
+from pydantic import Field, BaseModel, field_validator
 from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.dto.common import PaginatedRequest, RequestDTO
@@ -100,7 +100,6 @@ class CreateAgency(RequestDTO):
         return v
 
 
-
 class UpdateAgency(RequestDTO):
     name: Optional[str] = Field(None, description="The name of the agency.")
     hq_address: Optional[str] = Field(
@@ -136,4 +135,3 @@ class UpdateAgency(RequestDTO):
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
         return v
-

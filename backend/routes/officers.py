@@ -9,7 +9,8 @@ from backend.routes.search import fetch_details, build_officer_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams, GetOfficerParams, CreateOfficer, UpdateOfficer
+from backend.dto.officer import (
+    OfficerSearchParams, GetOfficerParams, CreateOfficer, UpdateOfficer)
 from neomodel import db
 
 

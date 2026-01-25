@@ -1,7 +1,7 @@
 from datetime import date
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from .common import Attachment, RequestDTO
 from backend.database.models.types.enums import Ethnicity, Gender
@@ -18,10 +18,14 @@ class CreateLocation(RequestDTO):
     location_description: Optional[str] = Field(
         None, description="A written description of the location."
     )
-    address: Optional[str] = Field(None, description="The address of the location.")
-    city: Optional[str] = Field(None, description="The city the location is in.")
-    state: Optional[str] = Field(None, description="The state the location is in.")
-    zip: Optional[str] = Field(None, description="The zip code of the location.")
+    address: Optional[str] = Field(
+        None, description="The address of the location.")
+    city: Optional[str] = Field(
+        None, description="The city the location is in.")
+    state: Optional[str] = Field(
+        None, description="The state the location is in.")
+    zip: Optional[str] = Field(
+        None, description="The zip code of the location.")
     administrative_area: Optional[str] = Field(
         None,
         description="The administrative area this location is assigned "
@@ -35,13 +39,16 @@ class CreateLocation(RequestDTO):
 
 
 class CreateCivilian(RequestDTO):
-    civ_id: Optional[str] = None  
-    age: Optional[int] = Field(None, description="Estimated age of the individual.")
-    age_range: Optional[str] = Field(None, description="Age range of the individual.")
+    civ_id: Optional[str] = None
+    age: Optional[int] = Field(
+        None, description="Estimated age of the individual.")
+    age_range: Optional[str] = Field(
+        None, description="Age range of the individual.")
     ethnicity: Optional[Ethnicity] = Field(
         None, description="The ethnicity of the individual."
     )
-    gender: Optional[Gender] = Field(None, description="The gender of the individual.")
+    gender: Optional[Gender] = Field(
+        None, description="The gender of the individual.")
 
     class Config:
         use_enum_values = True
@@ -49,7 +56,8 @@ class CreateCivilian(RequestDTO):
 
 class CreateAllegation(RequestDTO):
     accused_uid: str = Field(
-        None, description="The UID of the officer the allegation is made against."
+        None,
+        description="The UID of the officer the allegation is made against."
     )
     record_id: Optional[str] = Field(
         None,
@@ -65,7 +73,8 @@ class CreateAllegation(RequestDTO):
         None, description="The allegation made by the complainant."
     )
     type: Optional[str] = Field(None, description="The type of allegation.")
-    subtype: Optional[str] = Field(None, description="The sub type of the allegation.")
+    subtype: Optional[str] = Field(
+        None, description="The sub type of the allegation.")
     recommended_finding: Optional[str] = Field(
         None, description="The finding recommended by the review board."
     )
@@ -80,11 +89,13 @@ class CreateAllegation(RequestDTO):
 
 class CreatePenalty(RequestDTO):
     officer_uid: str = Field(
-        None, description="The UID of the officer the penalty is associated with."
+        None,
+        description="The UID of the officer the penalty is associated with."
     )
     crb_plea: Optional[str] = Field(
         None,
-        description="A plea deal agreed by the officer and civilian review board.",
+        description="A plea deal agreed by the "
+        "officer and civilian review board.",
     )
     crb_case_status: Optional[str] = Field(
         None, description="The status of the civilian review board's case."
@@ -95,7 +106,8 @@ class CreatePenalty(RequestDTO):
     agency_disposition: Optional[str] = Field(
         None, description="The agency's disposition."
     )
-    penalty: Optional[str] = Field(None, description="A description of the penalty.")
+    penalty: Optional[str] = Field(
+        None, description="A description of the penalty.")
     date_assessed: Optional[date] = Field(
         None, description="The date that the penalty was assessed."
     )
@@ -109,7 +121,8 @@ class CreateInvestigation(RequestDTO):
         None, description="The date the investigation ended."
     )
     investigator_uid: Optional[str] = Field(
-        None, description="The UID of the officer who performed the investigation."
+        None, description="The UID of the officer who "
+        "performed the investigation."
     )
 
 
@@ -117,7 +130,8 @@ class ReviewBoard(RequestDTO):
     uid: Optional[str] = Field(
         None, description="Unique identifier for the review board."
     )
-    name: Optional[str] = Field(None, description="The name of the review board.")
+    name: Optional[str] = Field(
+        None, description="The name of the review board.")
     city: Optional[str] = Field(
         None, description="The city the review board is located in."
     )
@@ -157,9 +171,12 @@ class CreateComplaintSource(RequestDTO):
     publication_url: Optional[str] = Field(
         None, description="The URL of the publication."
     )
-    author: Optional[str] = Field(None, description="The author of the publication.")
-    author_url: Optional[str] = Field(None, description="The URL of the author.")
-    author_email: Optional[str] = Field(None, description="The email of the author.")
+    author: Optional[str] = Field(
+        None, description="The author of the publication.")
+    author_url: Optional[str] = Field(
+        None, description="The URL of the author.")
+    author_email: Optional[str] = Field(
+        None, description="The email of the author.")
 
     # Government Record Properties
     reporting_agency: Optional[str] = Field(
@@ -186,7 +203,8 @@ class CreateComplaint(RequestDTO):
         description="The ID that was given to this complaint by the "
         "original source of the data.",
     )
-    category: Optional[str] = Field(None, description="The category of the complaint.")
+    category: Optional[str] = Field(
+        None, description="The category of the complaint.")
     incident_date: Optional[date] = Field(
         None, description="The date and time the incident occurred."
     )
@@ -208,10 +226,12 @@ class CreateComplaint(RequestDTO):
         None, description="The outcome of the contact."
     )
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
-        None, description="The civilian witnesses associated with the complaint."
+        None, description="The civilian witnesses "
+        "associated with the complaint."
     )
     attachments: Optional[List[Attachment]] = Field(
-        None, description="Documents and multimedia associated with the complaint."
+        None, description="Documents and multimedia "
+        "associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(
         None,
@@ -220,7 +240,8 @@ class CreateComplaint(RequestDTO):
     )
     police_witnesses: Optional[List[str]] = Field(
         None,
-        description="The UID of any police witnesses associated with the complaint.",
+        description="The UID of any police witnesses "
+        "associated with the complaint.",
     )
     allegations: Optional[List[CreateAllegation]] = Field(
         None, description="The allegations associated with the complaint."
@@ -234,7 +255,8 @@ class CreateComplaint(RequestDTO):
 
 
 class UpdateComplaint(RequestDTO):
-    category: Optional[str] = Field(None, description="The category of the complaint.")
+    category: Optional[str] = Field(
+        None, description="The category of the complaint.")
     incident_date: Optional[date] = Field(
         None, description="The date and time the incident occurred."
     )
@@ -257,10 +279,12 @@ class UpdateComplaint(RequestDTO):
         None, description="The outcome of the contact."
     )
     civilian_witnesses: Optional[List[CreateCivilian]] = Field(
-        None, description="The civilian witnesses associated with the complaint."
+        None, description="The civilian witnesses "
+        "associated with the complaint."
     )
     attachments: Optional[List[Attachment]] = Field(
-        None, description="Documents and multimedia associated with the complaint."
+        None, description="Documents and multimedia "
+        "associated with the complaint."
     )
     civilian_review_board_uid: Optional[str] = Field(
         None,
@@ -269,7 +293,8 @@ class UpdateComplaint(RequestDTO):
     )
     police_witnesses: Optional[List[str]] = Field(
         None,
-        description="The UID of any police witnesses associated with the complaint.",
+        description="The UID of any police witnesses "
+        "associated with the complaint.",
     )
     allegations: Optional[List[CreateAllegation]] = Field(
         None, description="The allegations associated with the complaint."
