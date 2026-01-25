@@ -8,11 +8,10 @@ from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
 from backend.routes.search import fetch_details, build_agency_result
-from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from neomodel import db
-from backend.dto.agency import AgencyQueryParams, GetAgencyParams
+from backend.dto.agency import AgencyQueryParams, GetAgencyParams, CreateAgency, UpdateAgency
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
 
