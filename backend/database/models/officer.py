@@ -231,7 +231,8 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             params["agency"] = agency
 
         if badge_number:
-            where_clauses.append("ANY(n IN $badge_number WHERE e.badge_number CONTAINS n)")
+            where_clauses.append(
+                "ANY(n IN $badge_number WHERE e.badge_number CONTAINS n)")
             params["badge_number"] = badge_number
 
         if ethnicity:
