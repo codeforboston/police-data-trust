@@ -227,11 +227,11 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             params["active_before"] = active_before
 
         if agency:
-            where_clauses.append("a.name IN $agency")
+            where_clauses.append("ANY(n IN $agency WHERE a.name CONTAINS n)")
             params["agency"] = agency
 
         if badge_number:
-            where_clauses.append("e.badge_number IN $badge_number")
+            where_clauses.append("ANY(n IN $badge_number WHERE e.badge_number CONTAINS n)")
             params["badge_number"] = badge_number
 
         if ethnicity:
@@ -239,7 +239,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             params["ethnicity"] = ethnicity
 
         if unit:
-            where_clauses.append("u.name IN $unit")
+            where_clauses.append("ANY(n IN $unit WHERE u.name CONTAINS n)")
             params["unit"] = unit
 
         # Combine query
@@ -253,6 +253,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             cypher_query += "\nRETURN count(*) as c"
             logging.warning("Cypher count query:\n%s", cypher_query)
             logging.warning("Params: %s", params)
+            logging.warning("Query: %s", cypher_query)
             count_results, _ = db.cypher_query(cypher_query, params)
             return count_results[0][0] if count_results else 0
         else:
