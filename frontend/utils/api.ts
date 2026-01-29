@@ -50,6 +50,13 @@ export type SearchResponse = {
   last_updated: string
   description?: string
   tags?: string[]
+  first_name?: string
+  middle_name?: string
+  last_name?: string
+  suffix?: string | null
+  ethnicity?: string
+  gender?: string;
+  state_ids?: any[] // TODO: create subtype
 }
 
 export type PaginatedSearchResponses = {

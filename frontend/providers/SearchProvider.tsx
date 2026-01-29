@@ -119,6 +119,10 @@ function useHook(): SearchContext {
           const paramKeys = getParamKeys(updatedTab);
           const newParams = new URLSearchParams();
           paramKeys.forEach((key: string) => newParams.set(key, oldParams));
+          if (updatedTab !== 0) {
+            // needed to get back search result type data from API
+            newParams.set('searchResult', 'true');
+          }
           apiUrl += `${getSearchType(updatedTab)}?${newParams.toString()}`
         } else {
           apiUrl += `${getSearchType(tab)}?${params.toString()}`

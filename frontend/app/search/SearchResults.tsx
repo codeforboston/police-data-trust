@@ -6,12 +6,12 @@ import { SearchResponse } from "@/utils/api"
 type SearchResultsProps = {
   total: number
   results: SearchResponse[]
-  tab: number,
+  tab: number
   updateTab: (val: number) => void
 }
 
 const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) => {
-
+  
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -33,7 +33,7 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
       </Box>
       <Box sx={{ p: 3 }}>
         <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>{total} results</Typography>
-        <CustomTabPanel value={tab} index={0}>
+        <CustomTabPanel value={tab} index={tab}>
           {results.map((result) => (
             <CardHeader
               key={result.uid}
