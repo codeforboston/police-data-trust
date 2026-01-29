@@ -112,16 +112,16 @@ function useHook(): SearchContext {
       setError(null)
 
       try {
-        let apiUrl = apiBaseUrl;
+        let apiUrl = apiBaseUrl
         // need to update params for api call if tab has changed
         if (updatedTab) {
-          const oldParams = params.toString().split('=')[1];
-          const paramKeys = getParamKeys(updatedTab);
-          const newParams = new URLSearchParams();
-          paramKeys.forEach((key: string) => newParams.set(key, oldParams));
+          const oldParams = params.toString().split("=")[1]
+          const paramKeys = getParamKeys(updatedTab)
+          const newParams = new URLSearchParams()
+          paramKeys.forEach((key: string) => newParams.set(key, oldParams))
           if (updatedTab !== 0) {
             // needed to get back search result type data from API
-            newParams.set('searchResult', 'true');
+            newParams.set("searchResult", "true")
           }
           apiUrl += `${getSearchType(updatedTab)}?${newParams.toString()}`
         } else {
@@ -209,8 +209,8 @@ function useHook(): SearchContext {
   useEffect(() => {
     // check if we should skip
     if (skipEffectRef.current) {
-      skipEffectRef.current = false;
-      return;
+      skipEffectRef.current = false
+      return
     }
 
     // cancel any in flight requests
@@ -218,12 +218,12 @@ function useHook(): SearchContext {
       abortControllerRef.current.abort()
     }
 
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
 
     fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
       // only log non abort errors
-      if (!(err instanceof Error && err.name === 'AbortError')) {
+      if (!(err instanceof Error && err.name === "AbortError")) {
         console.error("fetchFromParams on tab change effect error", err)
       }
     })

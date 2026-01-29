@@ -55,7 +55,7 @@ export type SearchResponse = {
   last_name?: string
   suffix?: string | null
   ethnicity?: string
-  gender?: string;
+  gender?: string
   state_ids?: any[] // TODO: create subtype
 }
 

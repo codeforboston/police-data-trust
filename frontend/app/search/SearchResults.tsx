@@ -11,7 +11,6 @@ type SearchResultsProps = {
 }
 
 const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) => {
-  
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -22,7 +21,8 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
           slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
           sx={{
             "& .MuiTab-root": { color: "black" }
-          }}>
+          }}
+        >
           <Tab key="all" label="All" />
           <Tab key="officer" label="Officer" />
           <Tab key="complaint" label="Complaint" />
@@ -89,7 +89,8 @@ const CustomTabPanel = ({ children, value, index, ...other }: TabPanelProps) => 
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}>
+      {...other}
+    >
       {value === index && <Box>{children}</Box>}
     </div>
   )
