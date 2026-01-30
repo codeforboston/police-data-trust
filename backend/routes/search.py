@@ -309,8 +309,9 @@ def text_search():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
     query = args.get("query", None, type=str)
+    updated_query_fuzzy = query + "*"
     params = {
-        "query": query,
+        "query": updated_query_fuzzy,
         "page": q_page,
         "per_page": q_per_page
     }
