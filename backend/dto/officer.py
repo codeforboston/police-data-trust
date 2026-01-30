@@ -92,3 +92,26 @@ class GetOfficerParams(RequestDTO):
                 raise ValueError(
                     f"Invalid include parameters: {', '.join(invalid)}")
         return v
+
+
+class GetOfficerMetricsParams(RequestDTO):
+    include: List[str]
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    include_source: Optional[List[str]] = None
+    exclude_source: Optional[List[str]] = None
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "allegation_types",
+            "allegation_outcomes",
+            "complaint_history",
+            "complainant_demographics"
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
+        return v

@@ -10,7 +10,7 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams, GetOfficerParams
+from backend.dto.officer import OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams
 from neomodel import db
 
 
@@ -104,24 +104,27 @@ RETURN collect({
 """
 
 METRICS_ALLEGATIONS_TYPES = """
-MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(al:Allegation)
-WITH count(al) AS total_allegations, al
+MATCH (o:Officer {uid: $uid})
+
+CALL (o) {
+  MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+  RETURN count(al) AS total_allegations
+}
+
+CALL (o) {
+  MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+  WITH
+    trim(coalesce(al.type, "")) AS type,
+    trim(coalesce(al.allegation, "")) AS subtype
+  WHERE type <> "" AND subtype <> ""
+  RETURN type, subtype, count(*) AS pair_count
+  ORDER BY pair_count DESC, type ASC, subtype ASC
+  LIMIT 6
+}
+
 WITH
   total_allegations,
-  trim(al.type)    AS type,
-  trim(al.allegation) AS subtype
-WHERE
-  type IS NOT NULL AND type <> "" AND
-  subtype IS NOT NULL AND subtype <> ""
-WITH
-  total_allegations,
-  type,
-  subtype,
-  count(*) AS pair_count
-ORDER BY pair_count DESC, type ASC, subtype ASC
-WITH
-  total_allegations,
-  collect({type: type, subtype: subtype, count: pair_count})[0..6] AS top_type_subtypes
+  collect({type: type, subtype: subtype, count: pair_count}) AS top_type_subtypes
 RETURN {
   total_allegations: total_allegations,
   top_type_subtypes: top_type_subtypes
@@ -273,7 +276,6 @@ CALL {
 }
 
 RETURN {
-  officer_uid: o.uid,
   civilian_count: size(civilians),
 
   ethnicity: { total: ethnicity_total, breakdown: ethnicity_breakdown },
@@ -316,7 +318,7 @@ def create_officer():
 @bp.route("/<officer_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_officer(officer_uid: int):
+def get_officer(officer_uid: str):
     """Get an officer profile.
     """
     o = Officer.nodes.get_or_none(uid=officer_uid)
@@ -528,6 +530,7 @@ def get_employment(officer_uid: str):
         "total_records": len(employment_history)
     })
 
+
 # Retrieve an officer's metrics summary
 @bp.route("/<officer_uid>/metrics", methods=["GET"])
 @jwt_required()
@@ -535,29 +538,60 @@ def get_employment(officer_uid: str):
 def get_officer_metrics(officer_uid: str):
     """Retrieve an officer's metrics summary.
     """
-
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
-
-    # Get allegation summary
+    raw = {
+        **request.args,  # copies simple values
+        "include": request.args.getlist("include"),
+    }
     try:
-        results, _meta = db.cypher_query(
-            ALLEGATION_CYPHER, {'uid': officer_uid})
+        params = GetOfficerMetricsParams(**raw)
     except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
-    allegation_summary = []
-    for row in results:
-        allegation_summary.append({
-            "type": row[0],
-            "count": row[1],
-            "substantiated_count": row[2],
-            "earliest_incident_date": row[3],
-            "latest_incident_date": row[4],
-        })
 
-    return jsonify({
+    response = {
         "officer_uid": officer_uid,
-        "allegation_summary": allegation_summary,
-        "total_allegation_types": len(allegation_summary)
-    })
+    }
+
+    # Load requested metrics
+    if params.include:
+        if "allegation_types" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_ALLEGATIONS_TYPES, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            allegation_types = results[0][0]
+            response.update({"allegation_types": allegation_types})
+        if "allegation_outcomes" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_ALLEGATIONS_OUTCOMES, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            allegation_outcomes = results[0][0]
+            response.update({"allegation_outcomes": allegation_outcomes})
+        if "complaint_history" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_COMPLAINTS_CYPHER_CALENDAR, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            complaint_history = [row[0] for row in results]
+            response.update({"complaint_history": complaint_history})
+        if "complainant_demographics" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_COMPLAINANT_DEMOGRAPHICS, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            complainant_demographics = results[0][0]
+            response.update(
+                {"complainant_demographics": complainant_demographics})
+    else:
+        logging.error("Request validation failed. Missing include parameter.")
+        abort(400, description="Include parameter is required.")
+
+    return ordered_jsonify(response)
