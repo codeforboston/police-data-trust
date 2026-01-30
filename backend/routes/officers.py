@@ -65,6 +65,223 @@ RETURN
 LIMIT 10;
 """
 
+METRICS_COMPLAINTS_CYPHER = """
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
+WHERE co.incident_date IS NOT NULL
+WITH
+  co.incident_date.year AS year,
+  co
+WITH
+  year,
+  count(DISTINCT co) AS complaint_count,
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL THEN co END) AS closed_count
+ORDER BY year DESC
+LIMIT 7
+RETURN collect({
+  year: year,
+  complaint_count: complaint_count,
+  closed_count: closed_count
+}) AS results;
+"""
+
+
+# Last 7 Calendar years of complaint counts
+METRICS_COMPLAINTS_CYPHER_CALENDAR = """
+WITH range(date().year - 6, date().year) AS years
+UNWIND years AS year
+OPTIONAL MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
+WHERE co.incident_date IS NOT NULL AND co.incident_date.year = year
+WITH
+  year,
+  count(DISTINCT co) AS complaint_count,
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL THEN co END) AS closed_count
+ORDER BY year DESC
+RETURN collect({
+  year: year,
+  complaint_count: complaint_count,
+  closed_count: closed_count
+}) AS results;
+"""
+
+METRICS_ALLEGATIONS_TYPES = """
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(al:Allegation)
+WITH count(al) AS total_allegations, al
+WITH
+  total_allegations,
+  trim(al.type)    AS type,
+  trim(al.allegation) AS subtype
+WHERE
+  type IS NOT NULL AND type <> "" AND
+  subtype IS NOT NULL AND subtype <> ""
+WITH
+  total_allegations,
+  type,
+  subtype,
+  count(*) AS pair_count
+ORDER BY pair_count DESC, type ASC, subtype ASC
+WITH
+  total_allegations,
+  collect({type: type, subtype: subtype, count: pair_count})[0..6] AS top_type_subtypes
+RETURN {
+  total_allegations: total_allegations,
+  top_type_subtypes: top_type_subtypes
+} AS result;
+"""
+
+METRICS_ALLEGATIONS_OUTCOMES = """
+MATCH (o:Officer {uid: $uid})
+OPTIONAL MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+WITH
+  // keep only non-null / non-blank outcomes
+  [x IN collect(trim(al.outcome)) WHERE x IS NOT NULL AND x <> ""] AS outcomes
+WITH outcomes, size(outcomes) AS total
+
+// Build per-outcome counts, while still returning a row when total = 0
+WITH outcomes, total, CASE WHEN total = 0 THEN [NULL] ELSE outcomes END AS outcomes2
+UNWIND outcomes2 AS outcome
+WITH total, outcome, count(*) AS cnt
+WITH
+  total,
+  [r IN collect(CASE WHEN outcome IS NULL THEN NULL ELSE {outcome: outcome, count: cnt} END)
+   WHERE r IS NOT NULL] AS rows
+ORDER BY rows[0].count DESC  // (ordering is applied below, but harmless here)
+
+// Sort, slice top 5, compute rest
+WITH total, rows
+UNWIND rows AS r
+WITH total, r
+ORDER BY r.count DESC, r.outcome ASC
+WITH total, collect(r) AS sorted
+WITH
+  total,
+  sorted[0..5] AS top,
+  sorted[5..]  AS rest
+WITH
+  total,
+  top,
+  size(rest) AS rest_n,
+  reduce(s = 0, r IN rest | s + r.count) AS rest_count
+
+RETURN {
+  total_outcomes: total,
+  top_outcomes: [
+    r IN top |
+    {
+      outcome: r.outcome,
+      count: r.count,
+      pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+    }
+  ],
+  all_the_rest: CASE
+    WHEN rest_n > 0 THEN {
+      outcome: "All the rest",
+      count: rest_count,
+      pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * rest_count / total, 2) END
+    }
+    ELSE NULL
+  END
+} AS result;
+"""
+
+METRICS_COMPLAINANT_DEMOGRAPHICS = """
+MATCH (o:Officer {uid: $uid})
+OPTIONAL MATCH (o)-[:ACCUSED_OF]->(:Allegation)-[:REPORTED_BY]-(c:Civilian)
+WITH o, collect(DISTINCT c) AS civilians
+
+CALL {
+  WITH civilians
+  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH CASE
+    WHEN c IS NULL THEN NULL
+    WHEN c.ethnicity IS NULL OR trim(c.ethnicity) = "" THEN NULL
+    ELSE trim(c.ethnicity)
+  END AS v
+  WITH v, count(*) AS cnt
+  WITH
+    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  RETURN
+    total AS ethnicity_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        ethnicity: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS ethnicity_breakdown
+}
+
+CALL {
+  WITH civilians
+  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH CASE
+    WHEN c IS NULL THEN NULL
+    WHEN c.gender IS NULL OR trim(c.gender) = "" THEN NULL
+    ELSE trim(c.gender)
+  END AS v
+  WITH v, count(*) AS cnt
+  WITH
+    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  RETURN
+    total AS gender_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        gender: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS gender_breakdown
+}
+
+CALL {
+  WITH civilians
+  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH CASE
+    WHEN c IS NULL THEN NULL
+    WHEN c.age_range IS NULL OR trim(c.age_range) = "" THEN NULL
+    ELSE trim(c.age_range)
+  END AS v
+  WITH v, count(*) AS cnt
+  WITH
+    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  RETURN
+    total AS age_range_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        age_range: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS age_range_breakdown
+}
+
+RETURN {
+  officer_uid: o.uid,
+  civilian_count: size(civilians),
+
+  ethnicity: { total: ethnicity_total, breakdown: ethnicity_breakdown },
+  gender:    { total: gender_total,    breakdown: gender_breakdown },
+  age_range: { total: age_range_total, breakdown: age_range_breakdown }
+} AS result;
+"""
+
 
 # Create an officer profile
 @bp.route("/", methods=["POST"])
@@ -309,4 +526,38 @@ def get_employment(officer_uid: str):
         "officer_uid": officer_uid,
         "employment_history": employment_history,
         "total_records": len(employment_history)
+    })
+
+# Retrieve an officer's metrics summary
+@bp.route("/<officer_uid>/metrics", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_officer_metrics(officer_uid: str):
+    """Retrieve an officer's metrics summary.
+    """
+
+    o = Officer.nodes.get_or_none(uid=officer_uid)
+    if o is None:
+        abort(404, description="Officer not found")
+
+    # Get allegation summary
+    try:
+        results, _meta = db.cypher_query(
+            ALLEGATION_CYPHER, {'uid': officer_uid})
+    except Exception as e:
+        abort(400, description=str(e))
+    allegation_summary = []
+    for row in results:
+        allegation_summary.append({
+            "type": row[0],
+            "count": row[1],
+            "substantiated_count": row[2],
+            "earliest_incident_date": row[3],
+            "latest_incident_date": row[4],
+        })
+
+    return jsonify({
+        "officer_uid": officer_uid,
+        "allegation_summary": allegation_summary,
+        "total_allegation_types": len(allegation_summary)
     })

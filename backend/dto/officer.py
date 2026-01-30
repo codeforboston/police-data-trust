@@ -60,27 +60,6 @@ class OfficerSearchParams(PaginatedRequest):
         return " ".join(self.rank) if self.rank else None
 
 
-class SearchOfficerSchema(BaseModel):
-    name: Optional[str] = None
-    agency: Optional[str] = None
-    badgeNumber: Optional[str] = None
-    location: Optional[str] = None
-    page: Optional[int] = 1
-    perPage: Optional[int] = 20
-
-    class Config:
-        extra = "forbid"
-        json_schema_extra = {
-            "example": {
-                "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
-                "page": 1,
-                "perPage": 20,
-            }
-        }
-
-
 class AddEmploymentSchema(BaseModel):
     agency_id: int
     badge_number: str
