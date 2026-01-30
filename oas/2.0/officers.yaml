@@ -34,14 +34,19 @@ paths:
       parameters: 
         - $ref: '../common/pagination.yaml#/components/parameters/page'
         - $ref: '../common/pagination.yaml#/components/parameters/per_page'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/first_name'
+        - $ref: '#/components/parameters/middle_name'
+        - $ref: '#/components/parameters/last_name'
+        - $ref: '#/components/parameters/suffix'
         - $ref: '#/components/parameters/active_after'
         - $ref: '#/components/parameters/active_before'
         - $ref: '#/components/parameters/agency'
         - $ref: '#/components/parameters/rank'
         - $ref: '#/components/parameters/unit'
-        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/ethnicity'
         - $ref: '#/components/parameters/badge_number'
+        - $ref: '#/components/parameters/search_result'
       responses:
         "200":
           description: "Successful operation"
@@ -90,45 +95,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OfficerList"
-        '401':
-          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
-  /officers/filter:
-    post:
-      tags:
-        - "Officers"
-      summary: "Advanced Officer Filter"
-      operationId: "getOfficersByFilter"
-      description: >
-        Get officers by advanced filter. This endpoint allows for more complex queries
-        using a JSON body to specify the filters.
-      parameters: 
-        - $ref: '../common/pagination.yaml#/components/parameters/page'
-        - $ref: '../common/pagination.yaml#/components/parameters/per_page'
-        - $ref: '#/components/parameters/active_after'
-        - $ref: '#/components/parameters/active_before'
-        - $ref: '#/components/parameters/agency'
-        - $ref: '#/components/parameters/rank'
-        - $ref: '#/components/parameters/unit'
-        - $ref: '#/components/parameters/name'
-        - $ref: '#/components/parameters/ethnicity'
-        - $ref: '#/components/parameters/badge_number'
-      requestBody:
-        description: >
-          A JSON object containing the filters to apply to the search.
-        required: true
-        content: 
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OfficerFilter"
-      responses:
-        "200":
-          description: "Successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OfficerList"
-        '400':
-          $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
   /officers/{uid}:
@@ -248,13 +214,54 @@ paths:
           $ref: '../common/error.yaml#/components/responses/validationError'
         '401':
           $ref: '../common/error.yaml#/components/responses/unauthorizedError'
+  /officers/{uid}/metrics:
+    parameters: 
+      - name: uid
+        in: path
+        description: UID of the officer
+        required: true
+        schema:
+          type: string
+    get:
+      summary: "Get Officer Metrics"
+      operationId: "getOfficerMetrics"
+      description: >
+        Get metrics for an officer. This includes various statistics and data
+        points related to the officer's performance and history.
+      parameters:
+        - $ref: '#/components/parameters/start_date'
+        - $ref: '#/components/parameters/end_date'
+        - $ref: '#/components/parameters/include_source'
+        - $ref: '#/components/parameters/exclude_source'
+        - $ref: '#/components/parameters/include'
+      tags:
+        - "Officer Metrics"
+      responses: 
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficerMetrics'
+        '401':
+          $ref: '../common/error.yaml#/components/responses/unauthorizedError'
 components:
   parameters: 
+    query:
+      name: query
+      in: query
+      description: >
+        A general search query to filter officers with. This will search across
+        first, middle, and last names.
+      required: false
+      schema:
+        type: string
     active_after:
       name: active_after
       in: query
       description: >
-        Filter officers who were active after this date. The date should be in the format YYYY-MM-DD.
+        Filter officers who were active after this date. The date should be in
+        the format YYYY-MM-DD.
       required: false
       schema:
         type: string
@@ -292,11 +299,35 @@ components:
       required: false
       schema:
         type: string
-    name:
-      name: name
+    first_name:
+      name: first_name
       in: query
       description: >
-        Filter officers by their name. The value should be a string in the format "first middle last suffix".
+        Filter officers by their first name. The value should be a string.
+      required: false
+      schema:
+        type: string
+    middle_name:
+      name: middle_name
+      in: query
+      description: >
+        Filter officers by their middle name. The value should be a string.
+      required: false
+      schema:
+        type: string
+    last_name:
+      name: last_name
+      in: query
+      description: >
+        Filter officers by their last name. The value should be a string.
+      required: false
+      schema:
+        type: string
+    suffix:
+      name: suffix
+      in: query
+      description: >
+        Filter officers by their namesuffix. The value should be a string.
       required: false
       schema:
         type: string
@@ -316,6 +347,82 @@ components:
       required: false
       schema:
         type: string
+    search_result:
+      name: search_result
+      in: query
+      description: >
+        Set as true to return officers in a search result format, which includes highlights
+        and relevance scores.
+      required: false
+      schema:
+        type: boolean
+    start_date:
+      name: start_date
+      in: query
+      description: >
+        The start date for the metrics. The date should be in the format
+        YYYY-MM-DD.
+      required: false
+      schema:
+        type: string
+        format: date
+    end_date:
+      name: end_date
+      in: query
+      description: >
+        The end date for the metrics. The date should be in the format
+        YYYY-MM-DD.
+      required: false
+      schema:
+        type: string
+        format: date
+    include_source:
+      name: include_source
+      in: query
+      description: >
+        Include metrics from the specified data source. Can be sent multiple
+        times to specify multiple sources.
+      required: false
+      schema:
+        type: string
+    exclude_source:
+      name: exclude_source
+      in: query
+      description: >
+        Exclude metrics from the specified data source. Can be sent multiple
+        times to specify multiple sources.
+      required: false
+      schema:
+        type: string
+    include_officer:
+      name: include
+      in: query
+      description: >
+        Request additional officer details to be included in the metrics
+        response. You can select from the following options:
+        - `employment`: Include the officer's recent employment history.
+        - `allegations`: Include a summary the allegations made against the officer.
+      required: false
+      schema:
+        type: string
+        enum:
+          - employment
+          - allegations
+    include_metrics:
+      name: include
+      in: query
+      description: >
+        Request a specific set of metrics to be included in the response. Can
+        be sent multiple times to specify multiple sets of metrics.
+      required: false
+      schema:
+        type: string
+        enum:
+          - allegation_types
+          - allegation_subtypes
+          - allegation_outcomes
+          - complaints
+          - complainant_demographics
   securitySchemes:
     bearerAuth:
       type: http
