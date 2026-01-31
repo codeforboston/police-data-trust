@@ -1,26 +1,22 @@
 "use client"
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import { SearchResponse } from "@/utils/api"
 
 type SearchResultsProps = {
   total: number
   results: SearchResponse[]
+  tab: number
+  updateTab: (val: number) => void
 }
 
-const SearchResults = ({ total, results }: SearchResultsProps) => {
-  const [tab, setTab] = useState(0)
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue)
-  }
-
+const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) => {
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={tab}
-          onChange={handleChange}
+          onChange={(e: React.SyntheticEvent, newValue: number) => updateTab(newValue)}
           textColor="inherit"
           slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
           sx={{
@@ -37,7 +33,7 @@ const SearchResults = ({ total, results }: SearchResultsProps) => {
       </Box>
       <Box sx={{ p: 3 }}>
         <Typography sx={{ marginBottom: "1rem", fontWeight: "bold" }}>{total} results</Typography>
-        <CustomTabPanel value={tab} index={0}>
+        <CustomTabPanel value={tab} index={tab}>
           {results.map((result) => (
             <CardHeader
               key={result.uid}

@@ -8,7 +8,7 @@ import Filter from "./Filter"
 import { useSearch } from "@/providers/SearchProvider"
 
 const PageResults = () => {
-  const { searchResults, setPage, error } = useSearch()
+  const { searchResults, setPage, error, tab, updateTab } = useSearch()
 
   const handlePageChange = useCallback(
     (_event: unknown, value: number) => {
@@ -27,6 +27,8 @@ const PageResults = () => {
             <div style={{ color: "red", padding: "1rem", textAlign: "center" }}>Error: {error}</div>
           )}
           <SearchResults
+            tab={tab}
+            updateTab={updateTab}
             total={searchResults?.total ?? 0}
             results={Array.isArray(searchResults?.results) ? searchResults.results : []}
           />
