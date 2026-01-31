@@ -10,7 +10,8 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams
+from backend.dto.officer import (
+    OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams)
 from neomodel import db
 
 
@@ -66,7 +67,8 @@ LIMIT 10;
 """
 
 METRICS_COMPLAINTS_CYPHER = """
-MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->
+(:Allegation)-[:ALLEGED]->(co:Complaint)
 WHERE co.incident_date IS NOT NULL
 WITH
   co.incident_date.year AS year,
@@ -74,7 +76,8 @@ WITH
 WITH
   year,
   count(DISTINCT co) AS complaint_count,
-  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL THEN co END) AS closed_count
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL
+  THEN co END) AS closed_count
 ORDER BY year DESC
 LIMIT 7
 RETURN collect({
@@ -89,12 +92,14 @@ RETURN collect({
 METRICS_COMPLAINTS_CYPHER_CALENDAR = """
 WITH range(date().year - 6, date().year) AS years
 UNWIND years AS year
-OPTIONAL MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
+OPTIONAL MATCH (o:Officer {uid: $uid})-
+[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
 WHERE co.incident_date IS NOT NULL AND co.incident_date.year = year
 WITH
   year,
   count(DISTINCT co) AS complaint_count,
-  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL THEN co END) AS closed_count
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL
+  THEN co END) AS closed_count
 ORDER BY year DESC
 RETURN collect({
   year: year,
@@ -124,7 +129,8 @@ CALL (o) {
 
 WITH
   total_allegations,
-  collect({type: type, subtype: subtype, count: pair_count}) AS top_type_subtypes
+  collect(
+    {type: type, subtype: subtype, count: pair_count}) AS top_type_subtypes
 RETURN {
   total_allegations: total_allegations,
   top_type_subtypes: top_type_subtypes
@@ -140,14 +146,16 @@ WITH
 WITH outcomes, size(outcomes) AS total
 
 // Build per-outcome counts, while still returning a row when total = 0
-WITH outcomes, total, CASE WHEN total = 0 THEN [NULL] ELSE outcomes END AS outcomes2
+WITH outcomes, total, CASE WHEN total = 0 THEN [NULL]
+ELSE outcomes END AS outcomes2
 UNWIND outcomes2 AS outcome
 WITH total, outcome, count(*) AS cnt
 WITH
   total,
-  [r IN collect(CASE WHEN outcome IS NULL THEN NULL ELSE {outcome: outcome, count: cnt} END)
+  [r IN collect(CASE WHEN outcome IS NULL THEN NULL
+  ELSE {outcome: outcome, count: cnt} END)
    WHERE r IS NOT NULL] AS rows
-ORDER BY rows[0].count DESC  // (ordering is applied below, but harmless here)
+ORDER BY rows[0].count DESC
 
 // Sort, slice top 5, compute rest
 WITH total, rows
@@ -172,14 +180,16 @@ RETURN {
     {
       outcome: r.outcome,
       count: r.count,
-      pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+      pct: CASE WHEN total = 0 THEN 0
+      ELSE round(100.0 * r.count / total, 2) END
     }
   ],
   all_the_rest: CASE
     WHEN rest_n > 0 THEN {
       outcome: "All the rest",
       count: rest_count,
-      pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * rest_count / total, 2) END
+      pct: CASE WHEN total = 0 THEN 0
+      ELSE round(100.0 * rest_count / total, 2) END
     }
     ELSE NULL
   END
@@ -201,7 +211,8 @@ CALL {
   END AS v
   WITH v, count(*) AS cnt
   WITH
-    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE
+    {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
     sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
   WITH total, r
@@ -214,7 +225,8 @@ CALL {
       CASE WHEN r IS NULL THEN NULL ELSE {
         ethnicity: r.value,
         count: r.count,
-        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+        pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * r.count / total, 2) END
       } END
     ) WHERE x IS NOT NULL] AS ethnicity_breakdown
 }
@@ -229,7 +241,8 @@ CALL {
   END AS v
   WITH v, count(*) AS cnt
   WITH
-    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    [r IN collect(CASE WHEN v IS NULL THEN NULL
+    ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
     sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
   WITH total, r
@@ -242,7 +255,8 @@ CALL {
       CASE WHEN r IS NULL THEN NULL ELSE {
         gender: r.value,
         count: r.count,
-        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+        pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * r.count / total, 2) END
       } END
     ) WHERE x IS NOT NULL] AS gender_breakdown
 }
@@ -257,7 +271,8 @@ CALL {
   END AS v
   WITH v, count(*) AS cnt
   WITH
-    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    [r IN collect(CASE WHEN v IS NULL THEN NULL
+    ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
     sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
   WITH total, r
@@ -270,7 +285,8 @@ CALL {
       CASE WHEN r IS NULL THEN NULL ELSE {
         age_range: r.value,
         count: r.count,
-        pct: CASE WHEN total = 0 THEN 0 ELSE round(100.0 * r.count / total, 2) END
+        pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * r.count / total, 2) END
       } END
     ) WHERE x IS NOT NULL] AS age_range_breakdown
 }
