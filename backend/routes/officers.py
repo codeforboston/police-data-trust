@@ -1,4 +1,5 @@
 import logging
+from backend.database.utils.transform import transform_dates_in_dict
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import (validate_request, ordered_jsonify,
@@ -130,10 +131,10 @@ CALL (o) {
 WITH
   total_allegations,
   collect(
-    {type: type, subtype: subtype, count: pair_count}) AS top_type_subtypes
+    {type: type, subtype: subtype, count: pair_count}) AS top_types
 RETURN {
   total_allegations: total_allegations,
-  top_type_subtypes: top_type_subtypes
+  top_types: top_types
 } AS result;
 """
 
@@ -197,30 +198,30 @@ RETURN {
 """
 
 METRICS_COMPLAINANT_DEMOGRAPHICS = """
-MATCH (o:Officer {uid: $uid})
-OPTIONAL MATCH (o)-[:ACCUSED_OF]->(:Allegation)-[:REPORTED_BY]-(c:Civilian)
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->
+(:Allegation)-[:REPORTED_BY]-(c:Civilian)
 WITH o, collect(DISTINCT c) AS civilians
 
-CALL {
-  WITH civilians
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
   UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
-  WITH CASE
-    WHEN c IS NULL THEN NULL
-    WHEN c.ethnicity IS NULL OR trim(c.ethnicity) = "" THEN NULL
-    ELSE trim(c.ethnicity)
-  END AS v
-  WITH v, count(*) AS cnt
-  WITH
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.ethnicity IS NULL OR trim(c.ethnicity) = "" THEN NULL
+      ELSE trim(c.ethnicity)
+    END AS v
+  WITH total, v, count(*) AS cnt
+  WITH total,
     [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE
     {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
-    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
-  WITH total, r
+  WITH total, not_null_total, r
   ORDER BY
     (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
     (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
-  RETURN
-    total AS ethnicity_total,
+  WITH total, not_null_total,
     [x IN collect(
       CASE WHEN r IS NULL THEN NULL ELSE {
         ethnicity: r.value,
@@ -228,59 +229,80 @@ CALL {
         pct: CASE WHEN total = 0 THEN 0
         ELSE round(100.0 * r.count / total, 2) END
       } END
-    ) WHERE x IS NOT NULL] AS ethnicity_breakdown
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      ethnicity: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS ethnicity_breakdown
+  RETURN ethnicity_breakdown
 }
 
-CALL {
-  WITH civilians
-  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
-  WITH CASE
-    WHEN c IS NULL THEN NULL
-    WHEN c.gender IS NULL OR trim(c.gender) = "" THEN NULL
-    ELSE trim(c.gender)
-  END AS v
-  WITH v, count(*) AS cnt
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
+  UNWIND (CASE WHEN total = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.gender IS NULL OR trim(c.gender) = "" THEN NULL
+      ELSE trim(c.gender)
+    END AS v
+  WITH v, count(*) AS cnt, total
   WITH
     [r IN collect(CASE WHEN v IS NULL THEN NULL
     ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
-    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total,
+    total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
-  WITH total, r
+  WITH total, not_null_total, r
   ORDER BY
     (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
     (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
-  RETURN
-    total AS gender_total,
+  WITH
+    total,
+    not_null_total,
     [x IN collect(
       CASE WHEN r IS NULL THEN NULL ELSE {
         gender: r.value,
         count: r.count,
         pct: CASE WHEN total = 0 THEN 0
-        ELSE round(100.0 * r.count / total, 2) END
+                  ELSE round(100.0 * r.count / total, 2) END
       } END
-    ) WHERE x IS NOT NULL] AS gender_breakdown
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      gender: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS gender_breakdown
+  RETURN gender_breakdown
 }
 
-CALL {
-  WITH civilians
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
   UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
-  WITH CASE
-    WHEN c IS NULL THEN NULL
-    WHEN c.age_range IS NULL OR trim(c.age_range) = "" THEN NULL
-    ELSE trim(c.age_range)
-  END AS v
-  WITH v, count(*) AS cnt
-  WITH
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.age_range IS NULL OR trim(c.age_range) = "" THEN NULL
+      ELSE trim(c.age_range)
+    END AS v
+  WITH total, v, count(*) AS cnt
+  WITH total,
     [r IN collect(CASE WHEN v IS NULL THEN NULL
     ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
-    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS total
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total
   UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
-  WITH total, r
+  WITH total, not_null_total, r
   ORDER BY
     (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
     (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
-  RETURN
-    total AS age_range_total,
+  WITH total, not_null_total,
     [x IN collect(
       CASE WHEN r IS NULL THEN NULL ELSE {
         age_range: r.value,
@@ -288,15 +310,24 @@ CALL {
         pct: CASE WHEN total = 0 THEN 0
         ELSE round(100.0 * r.count / total, 2) END
       } END
-    ) WHERE x IS NOT NULL] AS age_range_breakdown
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      age_range: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS age_range_breakdown
+  RETURN age_range_breakdown
 }
 
 RETURN {
   civilian_count: size(civilians),
 
-  ethnicity: { total: ethnicity_total, breakdown: ethnicity_breakdown },
-  gender:    { total: gender_total,    breakdown: gender_breakdown },
-  age_range: { total: age_range_total, breakdown: age_range_breakdown }
+  ethnicity: ethnicity_breakdown,
+  gender:    gender_breakdown,
+  age_range: age_range_breakdown
 } AS result;
 """
 
@@ -362,7 +393,8 @@ def get_officer(officer_uid: str):
                     EMPLOYMENT_CYPHER, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
-            employment_history = [row[0] for row in results]
+            employment_history = [
+                transform_dates_in_dict(row[0]) for row in results]
             response.update({"employment_history": employment_history})
         if "allegations" in params.include:
             # Load allegation summary
@@ -377,8 +409,10 @@ def get_officer(officer_uid: str):
                     "type": row[0],
                     "count": row[1],
                     "substantiated_count": row[2],
-                    "earliest_incident_date": row[3],
-                    "latest_incident_date": row[4],
+                    "earliest_incident_date": row[3].isoformat() if row[3]
+                    else None,
+                    "latest_incident_date": row[4].isoformat() if row[4]
+                    else None,
                 })
             response.update({"allegation_summary": allegation_summary})
 
@@ -579,7 +613,10 @@ def get_officer_metrics(officer_uid: str):
                     METRICS_ALLEGATIONS_TYPES, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
-            allegation_types = results[0][0]
+            if not results or len(results) == 0:
+                allegation_types = {}
+            else:
+                allegation_types = results[0][0]
             response.update({"allegation_types": allegation_types})
         if "allegation_outcomes" in params.include:
             try:
@@ -587,15 +624,21 @@ def get_officer_metrics(officer_uid: str):
                     METRICS_ALLEGATIONS_OUTCOMES, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
-            allegation_outcomes = results[0][0]
+            if not results or len(results) == 0:
+                allegation_outcomes = {}
+            else:
+                allegation_outcomes = results[0][0]
             response.update({"allegation_outcomes": allegation_outcomes})
         if "complaint_history" in params.include:
             try:
                 results, _meta = db.cypher_query(
                     METRICS_COMPLAINTS_CYPHER_CALENDAR, {'uid': officer_uid})
             except Exception as e:
-                abort(500, description=str(e))
-            complaint_history = [row[0] for row in results]
+                return jsonify({"error message": str(e)}), 500
+            if not results or len(results) == 0:
+                complaint_history = []
+            else:
+                complaint_history = results[0][0]
             response.update({"complaint_history": complaint_history})
         if "complainant_demographics" in params.include:
             try:
@@ -603,7 +646,10 @@ def get_officer_metrics(officer_uid: str):
                     METRICS_COMPLAINANT_DEMOGRAPHICS, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
-            complainant_demographics = results[0][0]
+            if not results or len(results) == 0:
+                complainant_demographics = {}
+            else:
+                complainant_demographics = results[0][0]
             response.update(
                 {"complainant_demographics": complainant_demographics})
     else:

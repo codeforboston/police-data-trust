@@ -1,5 +1,6 @@
 """Define the Classes for Complaints."""
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 from backend.database.models.source import HasCitations
 from neomodel import (
     StructuredNode,
@@ -8,7 +9,6 @@ from neomodel import (
     Relationship,
     RelationshipTo,
     RelationshipFrom,
-    DateProperty,
     UniqueIdProperty,
     One,
     ZeroOrOne
@@ -29,13 +29,13 @@ class ComplaintSourceRel(StructuredRel, JsonSerializable):
         choices=RecordType.choices(),
         required=True
     )
-    date_published = DateProperty()
+    date_published = DateNeo4jFormatProperty()
 
     # Legal Source Properties
     court = StringProperty()
     judge = StringProperty()
     docket_number = StringProperty()
-    case_event_date = DateProperty()
+    case_event_date = DateNeo4jFormatProperty()
 
     # News Source Properties
     publication_name = StringProperty()
@@ -81,9 +81,9 @@ class Complaint(StructuredNode, HasCitations, JsonSerializable):
     record_id = StringProperty(index=True)
     complaint_key = StringProperty(unique_index=True)
     category = StringProperty()
-    incident_date = DateProperty(index=True)
-    received_date = DateProperty(index=True)
-    closed_date = DateProperty(index=True)
+    incident_date = DateNeo4jFormatProperty(index=True)
+    received_date = DateNeo4jFormatProperty(index=True)
+    closed_date = DateNeo4jFormatProperty(index=True)
     reason_for_contact = StringProperty()
     outcome_of_contact = StringProperty()
 
@@ -91,7 +91,7 @@ class Complaint(StructuredNode, HasCitations, JsonSerializable):
     source_org = RelationshipTo(
         "backend.database.models.source.Source",
         "HAS_SOURCE", model=ComplaintSourceRel)
-    location = RelationshipTo("Location", "OCCURRED_AT", cardinality=One)
+    location = RelationshipTo("Location", "OCCURRED_IN", cardinality=One)
     civilian_witnesses = RelationshipTo(
         "backend.database.models.civilian.Civilian", "WITNESSED_BY")
     police_witnesses = RelationshipTo(
@@ -140,13 +140,13 @@ class Complaint(StructuredNode, HasCitations, JsonSerializable):
         return f"<Complaint {self.uid}>"
 
 
-class Allegation(StructuredNode, JsonSerializable):
+class Allegation(StructuredNode, JsonSerializable, HasCitations):
     __property_order__ = [
         "uid", "record_id", "allegation",
         "type", "subtype", "recommended_finding",
         "recommended_outcome", "finding", "outcome"
     ]
-    __hidden_properties__ = ["complaint", "allegation_key"]
+    __hidden_properties__ = ["complaint", "allegation_key", "citations"]
 
     uid = UniqueIdProperty()
     record_id = StringProperty(index=True)
@@ -180,8 +180,8 @@ class Investigation(StructuredNode, JsonSerializable):
     __property_order__ = ["uid", "start_date", "end_date"]
 
     uid = UniqueIdProperty()
-    start_date = DateProperty()
-    end_date = DateProperty()
+    start_date = DateNeo4jFormatProperty()
+    end_date = DateNeo4jFormatProperty()
 
     # Relationships
     investigator = RelationshipTo(
@@ -204,7 +204,7 @@ class Penalty(StructuredNode, JsonSerializable):
 
     uid = UniqueIdProperty()
     penalty = StringProperty()
-    date_assessed = DateProperty()
+    date_assessed = DateNeo4jFormatProperty()
     crb_plea = StringProperty()
     crb_case_status = StringProperty()
     crb_disposition = StringProperty()

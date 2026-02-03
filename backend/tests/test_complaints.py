@@ -222,7 +222,9 @@ def test_create_complaint_no_permission(
     assert res.status_code == 403
 
 
-def test_get_complaint(client, db_session, example_complaint, access_token):
+def test_get_complaint(
+        client, db_session, example_complaint,
+        example_allegation, access_token):
     """Test that we can retrieve a complaint by its UID.
     """
     res = client.get(f"/api/v1/complaints/{example_complaint.uid}")
@@ -245,7 +247,7 @@ def test_get_complaint(client, db_session, example_complaint, access_token):
         assert getattr(example_complaint.location.single(), prop) == value
 
     for prop, value in res.json['allegations'][0].items():
-        assert getattr(example_complaint.allegations.first(), prop) == value
+        assert getattr(example_allegation, prop) == value
 
     for prop, value in res.json['penalties'][0].items():
         if prop == "date_assessed":
@@ -370,21 +372,22 @@ def test_delete_complaint_no_permission(
     assert res.status_code == 403
 
 
-def test_get_allegations(client, db_session, example_complaint, access_token):
+def test_get_allegations(
+        client, db_session, example_complaint,
+        example_allegation, access_token):
     """Test that we can retrieve allegations associated with a complaint."""
     res = client.get(
         f"/api/v1/complaints/{example_complaint.uid}/allegations",
         headers={"Authorization": f"Bearer {access_token}"},
     )
 
-    allegation_objs = example_complaint.allegations.all()
     allegations = res.json["results"]
 
     assert res.status_code == 200
-    assert res.json["total"] == len(allegation_objs)
+    assert res.json["total"] == len(example_complaint.allegations.all())
     assert res.json["page"] == 1
-    assert allegations[0]["allegation"] == allegation_objs[0].allegation
-    assert allegations[0]["type"] == allegation_objs[0].type
+    assert allegations[0]["allegation"] == example_allegation.allegation
+    assert allegations[0]["type"] == example_allegation.type
 
 
 def test_create_allegation(
@@ -420,18 +423,21 @@ def test_create_allegation(
 
 
 def test_update_allegation(
-    client, db_session, contributor_access_token, example_complaint
+    client, db_session, contributor_access_token,
+    example_complaint, example_allegation
 ):
     """Test that we can update the allegation of an existing complaint."""
     updated_data = {
         "allegation": "Updated allegation",
         "type": "Updated type"
     }
-
-    a = example_complaint.allegations.first()
+    url = "/api/v1/complaints/{c_uid}/allegations/{a_uid}".format(
+        c_uid=example_complaint.uid,
+        a_uid=example_allegation.uid
+    )
 
     res = client.patch(
-        f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
+        url,
         json=updated_data,
         headers={"Authorization": f"Bearer {contributor_access_token}"},
     )
@@ -449,7 +455,7 @@ def test_update_allegation(
     assert a_obj.type == updated_data["type"]
 
     res = client.delete(
-        f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
+        url,
         headers={"Authorization": f"Bearer {contributor_access_token}"},
     )
     assert res.status_code == 204
@@ -457,20 +463,23 @@ def test_update_allegation(
 
 
 def test_update_allegation_no_permission(
-    client, access_token, example_complaint
+    client, access_token, example_complaint, example_allegation
 ):
     """Test that a user without edit permissions cannot update an allegation."""
-    a = example_complaint.allegations.first()
+    url = "/api/v1/complaints/{c_uid}/allegations/{a_uid}".format(
+        c_uid=example_complaint.uid,
+        a_uid=example_allegation.uid
+    )
 
     res = client.patch(
-        f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
+        url,
         json={"allegation": "Unauthorized update"},
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 403
 
     res = client.delete(
-        f"/api/v1/complaints/{example_complaint.uid}/allegations/{a.uid}",
+        url,
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 403
@@ -875,8 +884,12 @@ def sample_complaint_json():
 
 def test_create_complaint_with_multiple_allegations(
         client, db_session, example_source, example_officer,
-        contributor_access_token, sample_complaint_json):
-
+        contributor_access_token, sample_complaint_json
+):
+    """
+    Test that we can create a complaint with multiple allegations
+    and that civilians are created correctly without duplicates.
+    """
     request = {
             "record_id": mock_complaint["record_id"],
             "source_details": mock_complaint["source_details"],

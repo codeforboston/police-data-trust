@@ -216,6 +216,7 @@ def test_filter_agencies(client, access_token, example_agencies):
 def test_get_agency_officers(client,
                              example_agency,
                              example_unit,
+                             example_employment,
                              access_token):
     query = f"""
                     MATCH (a:Agency)-[]-(u:Unit)-[]-(:Employment)-[]-(o:Officer)

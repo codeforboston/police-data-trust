@@ -57,11 +57,12 @@ mock_units = {
 
 
 @pytest.fixture
-def example_units():
+def example_units(example_agency):
     # Create Units in the database
     units = {}
     for name, mock in mock_units.items():
         u = Unit(**mock).save()
+        u.agency.connect(example_agency)
         units[name] = u
 
     # create citation and source
