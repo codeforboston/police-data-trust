@@ -61,6 +61,7 @@ class User(StructuredNode, JsonSerializable):
     city = StringProperty(max_length=50)
     state = StringProperty(choices=State.choices())
     website = StringProperty()
+    profile_image = StringProperty(max_length=255) 
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)
