@@ -41,10 +41,15 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
               subheader={result.subtitle}
               slotProps={{ subheader: { fontWeight: "bold", color: "#000" } }}
               action={
-                <Box sx={{ display: "flex", gap: "1rem" }}>
-                  <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
-                  <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
-                  <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
+                <Box>
+                  <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
+                  </Box>
+                  <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <span style={{ fontSize: "12px", color: "#666" }}>{result.details}</span>
+                  </Box>
                 </Box>
               }
               sx={{

@@ -57,6 +57,7 @@ export type SearchResponse = {
   ethnicity?: string
   gender?: string
   state_ids?: any[] // TODO: create subtype
+  details?: string[]
 }
 
 export type PaginatedSearchResponses = {
