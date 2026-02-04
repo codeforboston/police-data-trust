@@ -1,5 +1,6 @@
 import pytest
 import math
+from datetime import datetime
 from backend.database import Agency
 from neomodel import db
 
@@ -66,16 +67,20 @@ new_agency = {
     "hq_address": "123 Main St",
     "hq_city": "New York",
     "hq_zip": "10001",
+    "hq_state": "NY",
     "jurisdiction": "MUNICIPAL"
 }
 
 
 @pytest.fixture
-def example_agencies(db_session):
+def example_agencies(db_session, example_source):
     agencies = {}
 
     for name, mock in mock_agencies.items():
         a = Agency(**mock).save()
+        a.citations.connect(example_source, {
+            'timestamp': datetime.now(),
+        })
         agencies[name] = a
     return agencies
 
@@ -213,7 +218,7 @@ def test_get_agency_officers(client,
                              example_unit,
                              access_token):
     query = f"""
-                    MATCH (a:Agency)-[]-(u:Unit)-[]-(o:Officer)
+                    MATCH (a:Agency)-[]-(u:Unit)-[]-(:Employment)-[]-(o:Officer)
                     WHERE a.uid='{example_agency.uid}'
                     RETURN o
                     """

@@ -215,10 +215,10 @@ def index_db():
         "[n.first_name, n.last_name, n.middle_name, n.suffix]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX officerRanks IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.highest_rank]")
+        "FOR (n:Employment) ON EACH [n.highest_rank]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX officerBadgeNumbers IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.badge_number]")
+        "FOR (n:Employment) ON EACH [n.badge_number]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX allegationTypes IF NOT EXISTS "
         "FOR (a:Allegation) ON EACH [a.type]")
@@ -234,14 +234,6 @@ def index_db():
     db.cypher_query(
         "CREATE FULLTEXT INDEX sourceNames IF NOT EXISTS "
         "FOR (s:Source) ON EACH [s.name]")
-    db.cypher_query(
-        "CREATE INDEX officer_unit_earliest_date IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.earliest_date)"
-    )
-    db.cypher_query(
-        "CREATE INDEX officer_unit_latest_date IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.latest_date)"
-    )
     db.cypher_query(
         "CREATE INDEX citation_date IF NOT EXISTS "
         "FOR ()-[r:UPDATED_BY]-() ON (r.date)"

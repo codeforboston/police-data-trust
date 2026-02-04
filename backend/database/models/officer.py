@@ -1,14 +1,21 @@
-from backend.schemas import JsonSerializable, RelQuery
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
+from backend.database.models.employment import Employment
 import logging
 
 from neomodel import (
     db, StructuredNode, Relationship,
-    StringProperty, DateProperty,
+    StringProperty, IntegerProperty,
     UniqueIdProperty, One
 )
+
+
+# Enums - Not yet used for validation, but could be in the future
+class StateIDType(PropertyEnum):
+    TAX_ID_NUMBER = "TAX_ID_NUMBER"
+    NPI_ID = "NPI_ID"
 
 
 class StateID(StructuredNode, JsonSerializable):
@@ -42,7 +49,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
     suffix = StringProperty()
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
-    date_of_birth = DateProperty()
+    year_of_birth = IntegerProperty()
 
     def __repr__(self):
         return f"<Officer {self.uid}>"
@@ -77,25 +84,25 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         return Gender(self.gender) if self.gender else None
 
     @property
-    def current_unit(self):
+    def current_employment(self):
         """
         Get the current unit of the officer.
         Returns:
-            Unit: The current or most recent unit of the officer.
+            Unit: The current or most recent employment of the officer.
         """
         cy = """
-        MATCH (u:Unit)-[r:MEMBER_OF_UNIT]-(o:Officer {uid: $uid})
-        WITH u, r, o,
-            CASE WHEN r.latest_date IS NULL THEN 1 ELSE 0 END AS isCurrent
-        ORDER BY isCurrent DESC, r.earliest_date DESC
-        RETURN u AS unit, r AS membership, o
+        MATCH (o:Officer {uid: $uid})<-[]-(e:Employment)
+        WITH e, o,
+            CASE WHEN e.latest_date IS NULL THEN 1 ELSE 0 END AS isCurrent
+        ORDER BY isCurrent DESC, e.earliest_date DESC
+        RETURN e AS employment
         LIMIT 1;
         """
 
         result, meta = db.cypher_query(cy, {'uid': self.uid})
         if result:
-            unit_node = result[0][0]
-            return Unit.inflate(unit_node)
+            employment_node = result[0][0]
+            return Employment.inflate(employment_node)
         return None
 
     @property
@@ -119,7 +126,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             RelQuery: A query object for the units associated with the officer.
         """
         base = """
-        MATCH (o:Officer {uid: $uid})-[r:MEMBER_OF_UNIT]->(u:Unit)
+        MATCH (o:Officer {uid: $uid})<-[]-(:Employment)-[]->(u:Unit)
         """
         return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
 
@@ -195,14 +202,14 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             """)
         elif rank:
             match_clauses.append(f"""
-                CALL db.index.fulltext.queryRelationships('officerRanks',
-                                '{rank}') YIELD relationship AS m
+                CALL db.index.fulltext.queryNodes('officerRanks',
+                                '{rank}') YIELD node AS e
             """)
 
         match_clauses.append("MATCH (o:Officer)")
 
         if unit or active_after or active_before or badge_number or agency:
-            match_clauses.append("MATCH (o)-[m:MEMBER_OF_UNIT]-(u:Unit)")
+            match_clauses.append("MATCH (o)-[]-(e:Employment)-[]-(u:Unit)")
 
         if agency:
             match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
@@ -212,11 +219,11 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         params = {}
 
         if active_after:
-            where_clauses.append("m.latest_date > $active_after")
+            where_clauses.append("e.latest_date > $active_after")
             params["active_after"] = active_after
 
         if active_before:
-            where_clauses.append("m.earliest_date < $active_before")
+            where_clauses.append("e.earliest_date < $active_before")
             params["active_before"] = active_before
 
         if agency:
@@ -224,7 +231,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             params["agency"] = agency
 
         if badge_number:
-            where_clauses.append("m.badge_number IN $badge_number")
+            where_clauses.append("e.badge_number IN $badge_number")
             params["badge_number"] = badge_number
 
         if ethnicity:

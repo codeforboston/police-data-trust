@@ -11,7 +11,7 @@ from neomodel import (
     StructuredNode, StructuredRel,
     RelationshipTo, RelationshipFrom,
     Relationship,
-    StringProperty, DateTimeProperty,
+    StringProperty, DateTimeNeo4jFormatProperty,
     UniqueIdProperty, BooleanProperty,
     EmailProperty, One, db
 )
@@ -85,7 +85,7 @@ class SourceMember(StructuredRel, JsonSerializable):
 
     uid = UniqueIdProperty()
     role = StringProperty(choices=MemberRole.choices(), required=True)
-    date_joined = DateTimeProperty(default=datetime.now())
+    date_joined = DateTimeNeo4jFormatProperty(default_now=True)
     is_active = BooleanProperty(default=True)
 
     @property
@@ -117,15 +117,17 @@ class SourceMember(StructuredRel, JsonSerializable):
 
 
 class Citation(StructuredRel, JsonSerializable):
-    uid = UniqueIdProperty()
-    date = DateTimeProperty(default=datetime.now())
+    timestamp = DateTimeNeo4jFormatProperty(
+        default_now=True,
+        index=True
+    )
     url = StringProperty()
     user_uid = StringProperty()
     diff = StringProperty()
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return f"<Citation {self.uid}>"
+        return f"<Citation {self.timestamp}>"
 
 
 class HasCitations:
@@ -151,7 +153,7 @@ class HasCitations:
         :param data: The citation data
         """
         context = {k: v for k, v in {
-            "date": datetime.now(),
+            "timestamp": datetime.now(),
             "user_uid": user.uid,
             "diff": diff
         }.items() if v is not None}
@@ -169,7 +171,7 @@ class HasCitations:
         MATCH (n)-[r:UPDATED_BY]->(s:Source)
         WHERE elementId(n) = $eid
         RETURN s
-        ORDER BY r.date DESC
+        ORDER BY r.timestamp DESC
         LIMIT 1
         """
         result, _ = db.cypher_query(cy, {"eid": self.element_id})

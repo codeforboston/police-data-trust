@@ -35,12 +35,12 @@ def test_relationships():
     city = CityNode(name="Chicago", population=2700000).save()
 
     # Create relationships
-    state.counties.connect(county)
-    county.cities.connect(city)
+    county.state.connect(state)
+    city.county.connect(county)
 
     # Verify relationships
-    assert county in state.counties.all()
-    assert city in county.cities.all()
+    assert county.state.single() == state
+    assert city.county.single() == county
 
 
 def test_create_place_with_coordinates():
@@ -71,12 +71,12 @@ def test_relationships_with_coordinates():
                     coordinates=city_coordinates).save()
 
     # Create relationships
-    state.counties.connect(county)
-    county.cities.connect(city)
+    county.state.connect(state)
+    city.county.connect(county)
 
     # Verify relationships
-    assert county in state.counties.all()
-    assert city in county.cities.all()
+    assert county.state.single() == state
+    assert city.county.single() == county
 
     # Verify spatial data
     assert state.coordinates.latitude == 40.6331

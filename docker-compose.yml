@@ -1,6 +1,12 @@
+networks:
+  stack:
+    name: police-data-trust-net
+    driver: bridge
 services:
   db:
     image: neo4j:5.23-community
+    networks:
+      - stack
     env_file:
       - ".env"
     volumes:
@@ -15,6 +21,8 @@ services:
       - NEO4J_AUTH=neo4j/${GRAPH_PASSWORD:-password}
   test-neo4j:
     image: neo4j:5.23-community
+    networks:
+      - stack
     profiles:
       - test
     env_file:
@@ -33,6 +41,8 @@ services:
       - ./frontend:/app
       # Prevents the host node_modules from clobbering the image's
       - /app/node_modules
+    networks:
+      - stack
     environment:
       NEXT_PUBLIC_API_MODE: real
       NEXT_PUBLIC_API_BASE_URL: http://localhost:${NPDI_API_PORT:-5001}/api/v1
@@ -46,6 +56,8 @@ services:
         NPDI_API_PORT: ${NPDI_API_PORT:-5001}
     volumes:
       - .:/app
+    networks:
+      - stack
     env_file:
       - ".env"
     depends_on:

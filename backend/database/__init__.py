@@ -26,6 +26,7 @@ MODEL_NAMES = [cls.__name__ for cls in MODEL_CLASSES]
 # Neomodel models
 from .models.officer import *
 from .models.agency import *
+from .models.employment import *
 from .models.complaint import *
 from .models.litigation import *
 from .models.attachment import *

@@ -2,14 +2,14 @@ from backend.schemas import JsonSerializable
 
 from neomodel import (
     StructuredNode, StringProperty, EmailProperty,
-    DateTimeProperty, BooleanProperty, db
+    DateTimeNeo4jFormatProperty, BooleanProperty, db
 )
 
 
 class EmailContact(StructuredNode, JsonSerializable):
     email = EmailProperty(required=True, unique_index=True, max_length=255)
     confirmed = BooleanProperty(default=False)
-    email_confirmed_at = DateTimeProperty()
+    email_confirmed_at = DateTimeNeo4jFormatProperty()
 
     @classmethod
     def get_or_create(cls, email_address: str) -> "EmailContact":

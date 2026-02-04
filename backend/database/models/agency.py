@@ -6,10 +6,8 @@ from backend.database.models.source import HasCitations
 from neomodel import (
     db,
     StructuredNode,
-    StructuredRel,
     StringProperty,
-    Relationship,
-    RelationshipFrom,
+    RelationshipTo,
     DateProperty,
     UniqueIdProperty,
     One
@@ -39,13 +37,6 @@ class Jurisdiction(str, PropertyEnum):
             return ""
 
 
-class UnitMembership(StructuredRel, JsonSerializable):
-    earliest_date = DateProperty()
-    latest_date = DateProperty()
-    badge_number = StringProperty()
-    highest_rank = StringProperty()
-
-
 class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "phone",
@@ -57,29 +48,52 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
 
     uid = UniqueIdProperty()
     name = StringProperty()
-    website_url = StringProperty()
+    hq_state = StringProperty(choices=State.choices(), required=True)
+    hq_address = StringProperty()
+    hq_city = StringProperty()
+    hq_zip = StringProperty()
     phone = StringProperty()
     email = StringProperty()
+    website_url = StringProperty()
     description = StringProperty()
-    address = StringProperty()
-    city = StringProperty()
-    state = StringProperty(choices=State.choices())
-    zip = StringProperty()
-    agency_url = StringProperty()
-    officers_url = StringProperty()
     date_established = DateProperty()
 
     # Relationships
-    agency = Relationship("Agency", "ESTABLISHED_BY", cardinality=One)
-    commander = Relationship(
-        "backend.database.models.officer.Officer",
-        "COMMANDED_BY", model=UnitMembership)
-    officers = Relationship(
-        "backend.database.models.officer.Officer",
-        "MEMBER_OF_UNIT", model=UnitMembership)
+    agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
+    city_node = RelationshipTo(
+        "backend.database.models.infra.locations.CityNode",
+        "LOCATED_IN", cardinality=One)
 
     def __repr__(self):
         return f"<Unit {self.name}>"
+
+    def officers(self) -> RelQuery:
+        """
+        Query the officers related to this agency.
+        Returns:
+            RelQuery: A query object for the Officer nodes associated
+            with this agency.
+        """
+        base = """
+        MATCH (u:Unit {uid: $uid})-[]-(:Employment)-[]-(o:Officer)
+        """
+        from backend.database.models.officer import Officer
+        return RelQuery(self, base, return_alias="o", inflate_cls=Officer)
+
+    def total_officers(self):
+        """
+        Get the total number of officers in this agency.
+        Returns:
+            int: The total number of officers.
+        """
+        cy = """
+        MATCH (u:Unit {uid: $uid})-[]-(:Employment)-[]-(o:Officer)
+        RETURN COUNT(o) AS total_officers
+        """
+        result, meta = db.cypher_query(cy, {'uid': self.uid})
+        if result:
+            return result[0][0]
+        return 0
 
     @property
     def current_commander(self):
@@ -145,26 +159,21 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
 
     uid = UniqueIdProperty()
     name = StringProperty()
-    website_url = StringProperty()
+    hq_state = StringProperty(choices=State.choices(), required=True)
     hq_address = StringProperty()
     hq_city = StringProperty()
-    hq_state = StringProperty(choices=State.choices())
     hq_zip = StringProperty()
     phone = StringProperty()
     email = StringProperty()
+    website_url = StringProperty()
     description = StringProperty()
+    date_established = DateProperty()
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
 
     # Relationships
-    state_node = RelationshipFrom(
-        "backend.database.models.infra.locations.StateNode",
-        "WITHIN_STATE", cardinality=One)
-    county_node = RelationshipFrom(
-        "backend.database.models.infra.locations.CountyNode",
-        "WITHIN_COUNTY", cardinality=One)
-    city_node = RelationshipFrom(
+    city_node = RelationshipTo(
         "backend.database.models.infra.locations.CityNode",
-        "WITHIN_CITY", cardinality=One)
+        "LOCATED_IN", cardinality=One)
 
     @property
     def units(self) -> RelQuery:
@@ -189,7 +198,7 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         """
         base = """
         MATCH (a:Agency {uid: $uid})-[:ESTABLISHED_BY]
-        -(u:Unit)-[:MEMBER_OF_UNIT]-(o:Officer)
+        -(u:Unit)-[]-(:Employment)-[]-(o:Officer)
         """
         from backend.database.models.officer import Officer
         return RelQuery(self, base, return_alias="o", inflate_cls=Officer)
