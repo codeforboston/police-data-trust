@@ -43,12 +43,14 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
               action={
                 <Box>
                   <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <span style={{ fontSize: "14px", color: "#454C54", margin: "0 0 1rem 0" }}>
+                      {result.details}
+                    </span>
+                  </Box>
+                  <Box sx={{ display: "flex", gap: "1rem" }}>
                     <span style={{ fontSize: "12px", color: "#666" }}>{result.content_type}</span>
                     <span style={{ fontSize: "12px", color: "#666" }}>{result.source}</span>
                     <span style={{ fontSize: "12px", color: "#666" }}>{result.last_updated}</span>
-                  </Box>
-                  <Box sx={{ display: "flex", gap: "1rem" }}>
-                    <span style={{ fontSize: "12px", color: "#666" }}>{result.details}</span>
                   </Box>
                 </Box>
               }
