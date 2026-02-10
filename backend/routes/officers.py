@@ -333,7 +333,7 @@ RETURN {
 
 
 # Create an officer profile
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateOfficer)
@@ -420,7 +420,7 @@ def get_officer(officer_uid: str):
 
 
 # Get all officers
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_officers():
