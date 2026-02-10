@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { apiFetch } from "@/utils/apiFetch"
 import { useSearchParams } from "next/navigation"
+import { Avatar, Card, CardContent } from "@mui/material"
+import styles from "./page.module.css"
 
 interface StateId {
   id_name: string
@@ -81,156 +83,188 @@ export default function OfficerDetailsPage() {
   }, [uid])
 
   if (!uid) {
-    return <div className="p-4">No officer UID provided.</div>
+    return <div style={{ padding: "16px" }}>No officer UID provided.</div>
   }
 
   if (loading) {
-    return <div className="p-4">Loading officer details...</div>
+    return <div style={{ padding: "16px" }}>Loading officer details...</div>
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error}</div>
+    return <div style={{ padding: "16px", color: "#d32f2f" }}>Error: {error}</div>
   }
 
   if (!officer) {
-    return <div className="p-4">Officer not found.</div>
+    return <div style={{ padding: "16px" }}>Officer not found.</div>
   }
 
-  const fullName = [
-    officer.first_name,
-    officer.middle_name,
-    officer.last_name,
-    officer.suffix
-  ]
+  const fullName = [officer.first_name, officer.middle_name, officer.last_name, officer.suffix]
     .filter(Boolean)
     .join(" ")
 
+  const totalAllegations = officer.allegation_summary.reduce((sum, item) => sum + item.count, 0)
+  const totalSubstantiated = officer.allegation_summary.reduce(
+    (sum, item) => sum + item.substantiated_count,
+    0
+  )
+
+  const primaryEmployment = officer.employment_history[0]
+
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
-      <h1 className="text-3xl font-bold mb-6">Officer Details</h1>
+    <div className={styles.container}>
+      {/* Header Section */}
+      <Card variant="outlined">
+        <CardContent sx={{ p: "24px" }}>
+          <div className={styles.header}>
+            <Avatar className={styles.avatar} />
+            <div className={styles.headerInfo}>
+              <h1>{fullName}</h1>
+              <p>
+                {officer.ethnicity} {officer.gender.toLowerCase()}
+                {primaryEmployment && (
+                  <>
+                    , {primaryEmployment.highest_rank} at {primaryEmployment.agency_name}
+                  </>
+                )}
+              </p>
+              {primaryEmployment?.salary && (
+                <p>Earned ${primaryEmployment.salary.toLocaleString()}</p>
+              )}
+              {primaryEmployment?.badge_number && <p>Badge #{primaryEmployment.badge_number}</p>}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="space-y-6">
-        {/* Basic Information */}
-        <section className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-          <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Name</dt>
-              <dd className="mt-1 text-lg font-semibold">{fullName}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Gender</dt>
-              <dd className="mt-1">{officer.gender}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Ethnicity</dt>
-              <dd className="mt-1">{officer.ethnicity}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Officer ID</dt>
-              <dd className="mt-1 text-sm font-mono">{officer.uid}</dd>
-            </div>
-          </dl>
+      {/* Tab Navigation */}
+      <Card variant="outlined" sx={{ mt: "16px", mb: 0 }}>
+        <div className={styles.tabs}>
+          <button className={`${styles.tab} ${styles.active}`}>Background</button>
+          <button className={styles.tab}>Complaints</button>
+          <button className={styles.tab}>Lawsuits</button>
+          <button className={styles.tab}>Awards</button>
+          <button className={styles.tab}>Attachments</button>
+        </div>
+      </Card>
 
-          {officer.state_ids && officer.state_ids.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-3">State IDs</h3>
-              <div className="space-y-2">
-                {officer.state_ids.map((id, index) => (
-                  <div key={index} className="flex items-center space-x-4 bg-gray-50 p-3 rounded">
-                    <span className="font-medium">{id.id_name}:</span>
-                    <span>{id.value}</span>
-                    <span className="text-sm text-gray-500">({id.state})</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
+      {/* Main Content Area */}
+      <div className={styles.mainContent}>
+        {/* Left Column - Main Content */}
+        <div className={styles.leftColumn}>
+          <Card variant="outlined">
+            <CardContent sx={{ p: "24px", pb: "32px" }}>
+              <h2 className={styles.sectionTitle}>Background</h2>
 
-        {/* Employment History */}
-        {officer.employment_history && officer.employment_history.length > 0 && (
-          <section className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Employment History</h2>
-            <div className="space-y-4">
-              {officer.employment_history.map((employment, index) => (
-                <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
-                  <h3 className="font-semibold text-lg">{employment.agency_name}</h3>
-                  <div className="mt-2 space-y-1 text-sm">
-                    <p>
-                      <span className="font-medium">Unit:</span> {employment.unit_name}
-                    </p>
-                    <p>
-                      <span className="font-medium">Rank:</span> {employment.highest_rank}
-                    </p>
-                    <p>
-                      <span className="font-medium">Badge:</span> {employment.badge_number}
-                    </p>
-                    <p>
-                      <span className="font-medium">Period:</span>{" "}
-                      {new Date(employment.earliest_date).toLocaleDateString()} -{" "}
-                      {employment.latest_date
-                        ? new Date(employment.latest_date).toLocaleDateString()
-                        : "Present"}
-                    </p>
-                    {employment.salary && (
-                      <p>
-                        <span className="font-medium">Salary:</span> $
-                        {employment.salary.toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Allegation Summary */}
-        {officer.allegation_summary && officer.allegation_summary.length > 0 && (
-          <section className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Allegation Summary</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Substantiated
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date Range
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {officer.allegation_summary.map((allegation, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="px-6 py-4 whitespace-nowrap font-medium">
-                        {allegation.type}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{allegation.count}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-red-600 font-semibold">
-                          {allegation.substantiated_count}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(allegation.earliest_incident_date).toLocaleDateString()} -{" "}
-                        {new Date(allegation.latest_incident_date).toLocaleDateString()}
-                      </td>
-                    </tr>
+              {/* State Records */}
+              {officer.state_ids && officer.state_ids.length > 0 && (
+                <div style={{ marginBottom: "24px" }}>
+                  <h3 className={styles.subsectionTitle}>State records</h3>
+                  {officer.state_ids.map((id, index) => (
+                    <div key={index} className={styles.stateRecord}>
+                      <span style={{ fontWeight: 500 }}>{id.state}</span> {id.id_name},{" "}
+                      <span style={{ fontWeight: 500 }}>{id.value}</span>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
+                </div>
+              )}
+
+              {/* Employment Records */}
+              {officer.employment_history && officer.employment_history.length > 0 && (
+                <div>
+                  <h3 className={styles.subsectionTitle}>Employment records</h3>
+                  {officer.employment_history.map((employment, index) => (
+                    <div key={index} className={styles.employmentRecord}>
+                      <div className={styles.employmentDate}>
+                        {new Date(employment.earliest_date).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric"
+                        })}{" "}
+                        -{" "}
+                        {employment.latest_date
+                          ? new Date(employment.latest_date).toLocaleDateString("en-US", {
+                              month: "short",
+                              year: "numeric"
+                            })
+                          : "present"}
+                      </div>
+                      <div className={styles.employmentDetails}>
+                        <div className={styles.employmentBullet} />
+                        <div className={styles.employmentInfo}>
+                          <div className={styles.employmentRank}>{employment.highest_rank}</div>
+                          <div className={styles.employmentAgency}>
+                            {employment.agency_name}
+                            {employment.unit_name && `, ${employment.unit_name}`}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Allegations Section */}
+          {officer.allegation_summary && officer.allegation_summary.length > 0 && (
+            <Card variant="outlined" sx={{ mt: "16px" }}>
+              <CardContent sx={{ p: "24px" }}>
+                <div className={styles.allegationsHeader}>
+                  <div>
+                    <span className={styles.allegationsTitle}>Allegations</span>
+                    <span className={styles.allegationsMeta}>
+                      {totalAllegations} complaints • {totalAllegations} Allegations •{" "}
+                      {totalSubstantiated} Substantiated
+                    </span>
+                  </div>
+                  <button className={styles.viewAllButton}>View all</button>
+                </div>
+                <div>
+                  {officer.allegation_summary.map((allegation, index) => (
+                    <div key={index} className={styles.allegationItem}>
+                      <div className={styles.allegationType}>{allegation.type}</div>
+                      <div className={styles.allegationDetails}>
+                        {allegation.count} complaints, {allegation.substantiated_count}{" "}
+                        substantiated, {allegation.earliest_incident_date.split("-")[0]} -{" "}
+                        {allegation.latest_incident_date.split("-")[0]}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Right Sidebar */}
+        <div className={styles.sidebar}>
+          <Card variant="outlined" sx={{ position: "sticky", top: "24px" }}>
+            <CardContent sx={{ p: "20px" }}>
+              <h3 className={styles.sidebarTitle}>Content Details</h3>
+
+              <div className={styles.detailsLabel}>Content type</div>
+              <div className={styles.detailsValue}>Officer</div>
+
+              <div className={styles.detailsLabel}>Data sources</div>
+              <div className={styles.detailsValue}>SO_n.org</div>
+
+              <div className={styles.detailsLabel}>Last updated</div>
+              <div className={styles.detailsValue}>
+                {new Date().toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric"
+                })}
+              </div>
+
+              <div className={styles.detailsLabel}>Summary</div>
+              <div className={styles.detailsValue}>
+                <div style={{ marginBottom: "4px" }}>{totalAllegations} Complaints</div>
+                <div style={{ marginBottom: "4px" }}>{totalAllegations} Allegations</div>
+                <div>{totalSubstantiated} Substantiated</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
