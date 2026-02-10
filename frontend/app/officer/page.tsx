@@ -249,7 +249,7 @@ export default function OfficerDetailsPage() {
               <div className={styles.detailsValue}>Officer</div>
 
               <div className={styles.detailsLabel}>Data sources</div>
-              <div className={styles.detailsValue}>SO_n.org</div>
+              <div className={styles.detailsValue}>N/A</div>
 
               <div className={styles.detailsLabel}>Last updated</div>
               <div className={styles.detailsValue}>
