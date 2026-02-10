@@ -148,8 +148,6 @@ export default function OfficerDetailsPage() {
           <button className={`${styles.tab} ${styles.active}`}>Background</button>
           <button className={styles.tab}>Complaints</button>
           <button className={styles.tab}>Lawsuits</button>
-          <button className={styles.tab}>Awards</button>
-          <button className={styles.tab}>Attachments</button>
         </div>
       </Card>
 
@@ -267,8 +265,6 @@ export default function OfficerDetailsPage() {
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Complaints</div>
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Allegations</div>
                 <div style={{ marginBottom: "4px" }}>{totalSubstantiated} Substantiated</div>
-                <div>1 Awards</div>
-                <div>1 Related Articles</div>
               </div>
 
               <div className={styles.associatedOfficers}>
