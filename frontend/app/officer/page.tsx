@@ -114,23 +114,29 @@ export default function OfficerDetailsPage() {
     <div className={styles.container}>
       {/* Header Section */}
       <Card variant="outlined">
-        <CardContent sx={{ p: "24px" }}>
+        <CardContent sx={{ p: "32px" }}>
           <div className={styles.header}>
             <Avatar className={styles.avatar} />
             <div className={styles.headerInfo}>
               <h1>{fullName}</h1>
               <p>
                 {officer.ethnicity} {officer.gender.toLowerCase()}
-                {primaryEmployment && (
-                  <>
-                    , {primaryEmployment.highest_rank} at {primaryEmployment.agency_name}
-                  </>
-                )}
               </p>
+              {primaryEmployment && (
+                <p>
+                  {primaryEmployment.highest_rank} at {primaryEmployment.agency_name}
+                  {primaryEmployment.unit_name && `, ${primaryEmployment.unit_name}`}
+                </p>
+              )}
               {primaryEmployment?.salary && (
-                <p>Earned ${primaryEmployment.salary.toLocaleString()}</p>
+                <p>Earned ${primaryEmployment.salary.toLocaleString()} last year</p>
               )}
               {primaryEmployment?.badge_number && <p>Badge #{primaryEmployment.badge_number}</p>}
+              {officer.state_ids && officer.state_ids.length > 0 && (
+                <p>
+                  {officer.state_ids[0].state} Driver's License {officer.state_ids[0].value}
+                </p>
+              )}
             </div>
           </div>
         </CardContent>
@@ -161,8 +167,8 @@ export default function OfficerDetailsPage() {
                   <h3 className={styles.subsectionTitle}>State records</h3>
                   {officer.state_ids.map((id, index) => (
                     <div key={index} className={styles.stateRecord}>
-                      <span style={{ fontWeight: 500 }}>{id.state}</span> {id.id_name},{" "}
-                      <span style={{ fontWeight: 500 }}>{id.value}</span>
+                      {id.state === "NY" ? "New York" : id.state} Driver's License, {id.state}-
+                      {id.value}, 2023 - present
                     </div>
                   ))}
                 </div>
@@ -260,7 +266,26 @@ export default function OfficerDetailsPage() {
               <div className={styles.detailsValue}>
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Complaints</div>
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Allegations</div>
-                <div>{totalSubstantiated} Substantiated</div>
+                <div style={{ marginBottom: "4px" }}>{totalSubstantiated} Substantiated</div>
+                <div>1 Awards</div>
+                <div>1 Related Articles</div>
+              </div>
+
+              <div className={styles.associatedOfficers}>
+                <div className={styles.detailsLabel}>Associated officers</div>
+                <div className={styles.officerItem}>
+                  <Avatar className={styles.officerAvatar} />
+                  <span className={styles.officerName}>Adam Zelisky</span>
+                </div>
+                <div className={styles.officerItem}>
+                  <Avatar className={styles.officerAvatar} />
+                  <span className={styles.officerName}>Andrew Gamora</span>
+                </div>
+                <div className={styles.officerItem}>
+                  <Avatar className={styles.officerAvatar} />
+                  <span className={styles.officerName}>John Diadema</span>
+                </div>
+                <button className={styles.viewAllLink}>View all</button>
               </div>
             </CardContent>
           </Card>
