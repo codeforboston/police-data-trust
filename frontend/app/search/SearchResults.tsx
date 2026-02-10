@@ -2,6 +2,7 @@
 import { Tab, Tabs, Box, CardHeader, Typography } from "@mui/material"
 import React from "react"
 import { SearchResponse } from "@/utils/api"
+import { useRouter } from "next/navigation"
 
 type SearchResultsProps = {
   total: number
@@ -11,6 +12,19 @@ type SearchResultsProps = {
 }
 
 const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) => {
+  const router = useRouter()
+
+  const handleResultClick = (result: SearchResponse) => {
+    // Navigate to officer page if content type is Officer
+    if (result.content_type.toLowerCase() === "officer") {
+      router.push(`/officer?uid=${result.uid}`)
+    }
+  }
+
+  const isClickable = (result: SearchResponse) => {
+    return result.content_type.toLowerCase() === "officer"
+  }
+
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -54,6 +68,7 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
                   </Box>
                 </Box>
               }
+              onClick={() => handleResultClick(result)}
               sx={{
                 flexDirection: "column",
                 alignItems: "flex-start",
@@ -73,7 +88,14 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
                   overflow: "hidden"
                 },
                 paddingInline: "4.5rem",
-                paddingBlock: "2rem"
+                paddingBlock: "2rem",
+                cursor: isClickable(result) ? "pointer" : "default",
+                transition: "background-color 0.2s",
+                "&:hover": isClickable(result)
+                  ? {
+                      backgroundColor: "#f5f5f5"
+                    }
+                  : {}
               }}
             />
           ))}

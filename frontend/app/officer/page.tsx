@@ -120,7 +120,7 @@ export default function OfficerDetailsPage() {
             <div className={styles.headerInfo}>
               <h1>{fullName}</h1>
               <p>
-                {officer.ethnicity} {officer.gender.toLowerCase()}
+                {officer.ethnicity} {officer.gender}
               </p>
               {primaryEmployment && (
                 <p>
@@ -134,7 +134,8 @@ export default function OfficerDetailsPage() {
               {primaryEmployment?.badge_number && <p>Badge #{primaryEmployment.badge_number}</p>}
               {officer.state_ids && officer.state_ids.length > 0 && (
                 <p>
-                  {officer.state_ids[0].state} Driver's License {officer.state_ids[0].value}
+                  {officer.state_ids[0].state} {officer.state_ids[0].id_name}{" "}
+                  {officer.state_ids[0].value}
                 </p>
               )}
             </div>
@@ -165,8 +166,8 @@ export default function OfficerDetailsPage() {
                   <h3 className={styles.subsectionTitle}>State records</h3>
                   {officer.state_ids.map((id, index) => (
                     <div key={index} className={styles.stateRecord}>
-                      {id.state === "NY" ? "New York" : id.state} Driver's License, {id.state}-
-                      {id.value}, 2023 - present
+                      {id.state === "NY" ? "New York" : id.state} {id.id_name}, {id.state}-
+                      {id.value}
                     </div>
                   ))}
                 </div>
@@ -216,8 +217,7 @@ export default function OfficerDetailsPage() {
                   <div>
                     <span className={styles.allegationsTitle}>Allegations</span>
                     <span className={styles.allegationsMeta}>
-                      {totalAllegations} complaints • {totalAllegations} Allegations •{" "}
-                      {totalSubstantiated} Substantiated
+                      {totalAllegations} Allegations • {totalSubstantiated} Substantiated
                     </span>
                   </div>
                   <button className={styles.viewAllButton}>View all</button>
