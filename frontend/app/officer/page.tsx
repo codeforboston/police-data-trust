@@ -266,23 +266,6 @@ export default function OfficerDetailsPage() {
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Allegations</div>
                 <div style={{ marginBottom: "4px" }}>{totalSubstantiated} Substantiated</div>
               </div>
-
-              <div className={styles.associatedOfficers}>
-                <div className={styles.detailsLabel}>Associated officers</div>
-                <div className={styles.officerItem}>
-                  <Avatar className={styles.officerAvatar} />
-                  <span className={styles.officerName}>Adam Zelisky</span>
-                </div>
-                <div className={styles.officerItem}>
-                  <Avatar className={styles.officerAvatar} />
-                  <span className={styles.officerName}>Andrew Gamora</span>
-                </div>
-                <div className={styles.officerItem}>
-                  <Avatar className={styles.officerAvatar} />
-                  <span className={styles.officerName}>John Diadema</span>
-                </div>
-                <button className={styles.viewAllLink}>View all</button>
-              </div>
             </CardContent>
           </Card>
         </div>
