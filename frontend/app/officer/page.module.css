@@ -1,0 +1,278 @@
+/* Override MUI Card borders */
+.container :global(.MuiCard-root) {
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #fff;
+  min-height: calc(100vh - 104px);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.avatar {
+  width: 80px !important;
+  height: 80px !important;
+  background-color: #d0d0d0 !important;
+}
+
+.headerInfo h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+.headerInfo p {
+  font-size: 13px;
+  color: #424242;
+  margin: 0 0 2px 0;
+  line-height: 1.6;
+}
+
+.tabs {
+  display: flex;
+  gap: 32px;
+  padding: 0 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab {
+  padding: 12px 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #757575;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: #212121;
+}
+
+.tab.active {
+  color: #212121;
+  border-bottom-color: #212121;
+}
+
+.mainContent {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+@media screen and (max-width: 700px) {
+  .mainContent {
+    flex-direction: column;
+  }
+}
+
+.leftColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar {
+  width: 288px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #212121;
+}
+
+.subsectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #212121;
+}
+
+.stateRecord {
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+  font-size: 13px;
+  color: #333;
+  background-color: #fff;
+}
+
+.stateRecord:hover {
+  border-color: #b0b0b0;
+}
+
+.employmentRecord {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.employmentDate {
+  flex-shrink: 0;
+  width: 112px;
+  font-size: 12px;
+  color: #757575;
+  padding-top: 2px;
+}
+
+.employmentDetails {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.employmentBullet {
+  width: 6px;
+  height: 6px;
+  background-color: #9e9e9e;
+  border-radius: 50%;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.employmentInfo {
+  flex: 1;
+}
+
+.employmentRank {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212121;
+  margin-bottom: 2px;
+}
+
+.employmentAgency {
+  font-size: 14px;
+  color: #757575;
+}
+
+.allegationsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.allegationsTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #212121;
+}
+
+.allegationsMeta {
+  font-size: 12px;
+  color: #757575;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.viewAllButton {
+  font-size: 12px;
+  color: #1976d2;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.viewAllButton:hover {
+  color: #1565c0;
+}
+
+.allegationItem {
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.allegationItem:last-child {
+  border-bottom: none;
+}
+
+.allegationType {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 4px;
+}
+
+.allegationDetails {
+  font-size: 14px;
+  color: #757575;
+}
+
+.detailsLabel {
+  font-size: 12px;
+  color: #757575;
+  margin-bottom: 4px;
+}
+
+.detailsValue {
+  font-size: 14px;
+  color: #212121;
+  margin-bottom: 16px;
+}
+
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #212121;
+}
+
+.associatedOfficers {
+  margin-top: 24px;
+}
+
+.officerItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.officerAvatar {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: #d0d0d0 !important;
+}
+
+.officerName {
+  font-size: 13px;
+  color: #212121;
+}
+
+.viewAllLink {
+  font-size: 12px;
+  color: #1976d2;
+  margin-top: 8px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}
