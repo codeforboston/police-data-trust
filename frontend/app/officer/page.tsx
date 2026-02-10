@@ -262,7 +262,6 @@ export default function OfficerDetailsPage() {
 
               <div className={styles.detailsLabel}>Summary</div>
               <div className={styles.detailsValue}>
-                <div style={{ marginBottom: "4px" }}>{totalAllegations} Complaints</div>
                 <div style={{ marginBottom: "4px" }}>{totalAllegations} Allegations</div>
                 <div style={{ marginBottom: "4px" }}>{totalSubstantiated} Substantiated</div>
               </div>
