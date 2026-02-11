@@ -60,27 +60,6 @@ class OfficerSearchParams(PaginatedRequest):
         return " ".join(self.rank) if self.rank else None
 
 
-class SearchOfficerSchema(BaseModel):
-    name: Optional[str] = None
-    agency: Optional[str] = None
-    badgeNumber: Optional[str] = None
-    location: Optional[str] = None
-    page: Optional[int] = 1
-    perPage: Optional[int] = 20
-
-    class Config:
-        extra = "forbid"
-        json_schema_extra = {
-            "example": {
-                "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
-                "page": 1,
-                "perPage": 20,
-            }
-        }
-
-
 class AddEmploymentSchema(BaseModel):
     agency_id: int
     badge_number: str
@@ -106,6 +85,29 @@ class GetOfficerParams(RequestDTO):
         allowed_includes = {
             "employment",
             "allegations"
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
+        return v
+
+
+class GetOfficerMetricsParams(RequestDTO):
+    include: List[str]
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    include_source: Optional[List[str]] = None
+    exclude_source: Optional[List[str]] = None
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "allegation_types",
+            "allegation_outcomes",
+            "complaint_history",
+            "complainant_demographics"
         }
         if v:
             invalid = set(v) - allowed_includes

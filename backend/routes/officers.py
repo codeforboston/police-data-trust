@@ -1,4 +1,5 @@
 import logging
+from backend.database.utils.transform import transform_dates_in_dict
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
 from backend.schemas import (validate_request, ordered_jsonify,
@@ -10,7 +11,8 @@ from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import OfficerSearchParams, GetOfficerParams
+from backend.dto.officer import (
+    OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams)
 from neomodel import db
 
 
@@ -65,6 +67,270 @@ RETURN
 LIMIT 10;
 """
 
+METRICS_COMPLAINTS_CYPHER = """
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->
+(:Allegation)-[:ALLEGED]->(co:Complaint)
+WHERE co.incident_date IS NOT NULL
+WITH
+  co.incident_date.year AS year,
+  co
+WITH
+  year,
+  count(DISTINCT co) AS complaint_count,
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL
+  THEN co END) AS closed_count
+ORDER BY year DESC
+LIMIT 7
+RETURN collect({
+  year: year,
+  complaint_count: complaint_count,
+  closed_count: closed_count
+}) AS results;
+"""
+
+
+# Last 7 Calendar years of complaint counts
+METRICS_COMPLAINTS_CYPHER_CALENDAR = """
+WITH range(date().year - 6, date().year) AS years
+UNWIND years AS year
+OPTIONAL MATCH (o:Officer {uid: $uid})-
+[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]->(co:Complaint)
+WHERE co.incident_date IS NOT NULL AND co.incident_date.year = year
+WITH
+  year,
+  count(DISTINCT co) AS complaint_count,
+  count(DISTINCT CASE WHEN co.closed_date IS NOT NULL
+  THEN co END) AS closed_count
+ORDER BY year DESC
+RETURN collect({
+  year: year,
+  complaint_count: complaint_count,
+  closed_count: closed_count
+}) AS results;
+"""
+
+METRICS_ALLEGATIONS_TYPES = """
+MATCH (o:Officer {uid: $uid})
+
+CALL (o) {
+  MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+  RETURN count(al) AS total_allegations
+}
+
+CALL (o) {
+  MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+  WITH
+    trim(coalesce(al.type, "")) AS type,
+    trim(coalesce(al.allegation, "")) AS subtype
+  WHERE type <> "" AND subtype <> ""
+  RETURN type, subtype, count(*) AS pair_count
+  ORDER BY pair_count DESC, type ASC, subtype ASC
+  LIMIT 6
+}
+
+WITH
+  total_allegations,
+  collect(
+    {type: type, subtype: subtype, count: pair_count}) AS top_types
+RETURN {
+  total_allegations: total_allegations,
+  top_types: top_types
+} AS result;
+"""
+
+METRICS_ALLEGATIONS_OUTCOMES = """
+MATCH (o:Officer {uid: $uid})
+OPTIONAL MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
+WITH
+  // keep only non-null / non-blank outcomes
+  [x IN collect(trim(al.outcome)) WHERE x IS NOT NULL AND x <> ""] AS outcomes
+WITH outcomes, size(outcomes) AS total
+
+// Build per-outcome counts, while still returning a row when total = 0
+WITH outcomes, total, CASE WHEN total = 0 THEN [NULL]
+ELSE outcomes END AS outcomes2
+UNWIND outcomes2 AS outcome
+WITH total, outcome, count(*) AS cnt
+WITH
+  total,
+  [r IN collect(CASE WHEN outcome IS NULL THEN NULL
+  ELSE {outcome: outcome, count: cnt} END)
+   WHERE r IS NOT NULL] AS rows
+ORDER BY rows[0].count DESC
+
+// Sort, slice top 5, compute rest
+WITH total, rows
+UNWIND rows AS r
+WITH total, r
+ORDER BY r.count DESC, r.outcome ASC
+WITH total, collect(r) AS sorted
+WITH
+  total,
+  sorted[0..5] AS top,
+  sorted[5..]  AS rest
+WITH
+  total,
+  top,
+  size(rest) AS rest_n,
+  reduce(s = 0, r IN rest | s + r.count) AS rest_count
+
+RETURN {
+  total_outcomes: total,
+  top_outcomes: [
+    r IN top |
+    {
+      outcome: r.outcome,
+      count: r.count,
+      pct: CASE WHEN total = 0 THEN 0
+      ELSE round(100.0 * r.count / total, 2) END
+    }
+  ],
+  all_the_rest: CASE
+    WHEN rest_n > 0 THEN {
+      outcome: "All the rest",
+      count: rest_count,
+      pct: CASE WHEN total = 0 THEN 0
+      ELSE round(100.0 * rest_count / total, 2) END
+    }
+    ELSE NULL
+  END
+} AS result;
+"""
+
+METRICS_COMPLAINANT_DEMOGRAPHICS = """
+MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->
+(:Allegation)-[:REPORTED_BY]-(c:Civilian)
+WITH o, collect(DISTINCT c) AS civilians
+
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
+  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.ethnicity IS NULL OR trim(c.ethnicity) = "" THEN NULL
+      ELSE trim(c.ethnicity)
+    END AS v
+  WITH total, v, count(*) AS cnt
+  WITH total,
+    [r IN collect(CASE WHEN v IS NULL THEN NULL ELSE
+    {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, not_null_total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  WITH total, not_null_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        ethnicity: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      ethnicity: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS ethnicity_breakdown
+  RETURN ethnicity_breakdown
+}
+
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
+  UNWIND (CASE WHEN total = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.gender IS NULL OR trim(c.gender) = "" THEN NULL
+      ELSE trim(c.gender)
+    END AS v
+  WITH v, count(*) AS cnt, total
+  WITH
+    [r IN collect(CASE WHEN v IS NULL THEN NULL
+    ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total,
+    total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, not_null_total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  WITH
+    total,
+    not_null_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        gender: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0
+                  ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      gender: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS gender_breakdown
+  RETURN gender_breakdown
+}
+
+CALL (civilians) {
+  WITH civilians, size(civilians) AS total
+  UNWIND (CASE WHEN size(civilians) = 0 THEN [NULL] ELSE civilians END) AS c
+  WITH total,
+    CASE
+      WHEN c IS NULL THEN NULL
+      WHEN c.age_range IS NULL OR trim(c.age_range) = "" THEN NULL
+      ELSE trim(c.age_range)
+    END AS v
+  WITH total, v, count(*) AS cnt
+  WITH total,
+    [r IN collect(CASE WHEN v IS NULL THEN NULL
+    ELSE {value: v, count: cnt} END) WHERE r IS NOT NULL] AS rows,
+    sum(CASE WHEN v IS NULL THEN 0 ELSE cnt END) AS not_null_total
+  UNWIND (CASE WHEN size(rows) = 0 THEN [NULL] ELSE rows END) AS r
+  WITH total, not_null_total, r
+  ORDER BY
+    (CASE WHEN r IS NULL THEN -1 ELSE r.count END) DESC,
+    (CASE WHEN r IS NULL THEN "" ELSE r.value END) ASC
+  WITH total, not_null_total,
+    [x IN collect(
+      CASE WHEN r IS NULL THEN NULL ELSE {
+        age_range: r.value,
+        count: r.count,
+        pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * r.count / total, 2) END
+      } END
+    ) WHERE x IS NOT NULL] AS known
+  WITH total, not_null_total, known
+  WITH total, not_null_total,
+    (known + [{
+      age_range: "Unknown",
+      count: total - not_null_total,
+      pct: CASE WHEN total = 0 THEN 0
+        ELSE round(100.0 * (total - not_null_total) / total, 2) END
+    }]) AS age_range_breakdown
+  RETURN age_range_breakdown
+}
+
+RETURN {
+  civilian_count: size(civilians),
+
+  ethnicity: ethnicity_breakdown,
+  gender:    gender_breakdown,
+  age_range: age_range_breakdown
+} AS result;
+"""
+
 
 # Create an officer profile
 @bp.route("/", methods=["POST"])
@@ -99,7 +365,7 @@ def create_officer():
 @bp.route("/<officer_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_officer(officer_uid: int):
+def get_officer(officer_uid: str):
     """Get an officer profile.
     """
     o = Officer.nodes.get_or_none(uid=officer_uid)
@@ -127,7 +393,8 @@ def get_officer(officer_uid: int):
                     EMPLOYMENT_CYPHER, {'uid': officer_uid})
             except Exception as e:
                 abort(500, description=str(e))
-            employment_history = [row[0] for row in results]
+            employment_history = [
+                transform_dates_in_dict(row[0]) for row in results]
             response.update({"employment_history": employment_history})
         if "allegations" in params.include:
             # Load allegation summary
@@ -142,8 +409,10 @@ def get_officer(officer_uid: int):
                     "type": row[0],
                     "count": row[1],
                     "substantiated_count": row[2],
-                    "earliest_incident_date": row[3],
-                    "latest_incident_date": row[4],
+                    "earliest_incident_date": row[3].isoformat() if row[3]
+                    else None,
+                    "latest_incident_date": row[4].isoformat() if row[4]
+                    else None,
                 })
             response.update({"allegation_summary": allegation_summary})
 
@@ -310,3 +579,81 @@ def get_employment(officer_uid: str):
         "employment_history": employment_history,
         "total_records": len(employment_history)
     })
+
+
+# Retrieve an officer's metrics summary
+@bp.route("/<officer_uid>/metrics", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_officer_metrics(officer_uid: str):
+    """Retrieve an officer's metrics summary.
+    """
+    o = Officer.nodes.get_or_none(uid=officer_uid)
+    if o is None:
+        abort(404, description="Officer not found")
+    raw = {
+        **request.args,  # copies simple values
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetOfficerMetricsParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    response = {
+        "officer_uid": officer_uid,
+    }
+
+    # Load requested metrics
+    if params.include:
+        if "allegation_types" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_ALLEGATIONS_TYPES, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            if not results or len(results) == 0:
+                allegation_types = {}
+            else:
+                allegation_types = results[0][0]
+            response.update({"allegation_types": allegation_types})
+        if "allegation_outcomes" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_ALLEGATIONS_OUTCOMES, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            if not results or len(results) == 0:
+                allegation_outcomes = {}
+            else:
+                allegation_outcomes = results[0][0]
+            response.update({"allegation_outcomes": allegation_outcomes})
+        if "complaint_history" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_COMPLAINTS_CYPHER_CALENDAR, {'uid': officer_uid})
+            except Exception as e:
+                return jsonify({"error message": str(e)}), 500
+            if not results or len(results) == 0:
+                complaint_history = []
+            else:
+                complaint_history = results[0][0]
+            response.update({"complaint_history": complaint_history})
+        if "complainant_demographics" in params.include:
+            try:
+                results, _meta = db.cypher_query(
+                    METRICS_COMPLAINANT_DEMOGRAPHICS, {'uid': officer_uid})
+            except Exception as e:
+                abort(500, description=str(e))
+            if not results or len(results) == 0:
+                complainant_demographics = {}
+            else:
+                complainant_demographics = results[0][0]
+            response.update(
+                {"complainant_demographics": complainant_demographics})
+    else:
+        logging.error("Request validation failed. Missing include parameter.")
+        abort(400, description="Include parameter is required.")
+
+    return ordered_jsonify(response)
