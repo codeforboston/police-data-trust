@@ -30,6 +30,7 @@ EMPLOYMENT_CYPHER = """
     RETURN {
       agency_uid:   a.uid,
       agency_name:  a.name,
+      state:        a.hq_state,
       unit_uid:     u.uid,
       unit_name:    u.name,
       badge_number: rep.badge_number,
@@ -50,6 +51,7 @@ WITH
     ELSE a.type
   END AS type,
   count(*) AS occurrences,
+  count(DISTINCT c.uid) AS complaint_count,
   sum(CASE WHEN toLower(
     trim(coalesce(a.finding,""))) = "substantiated" THEN 1 ELSE 0 END)
     AS substantiated_count,
@@ -58,11 +60,21 @@ WITH
 ORDER BY occurrences DESC, type ASC
 RETURN
   type,
+  complaint_count,
   occurrences,
   substantiated_count,
   earliest_incident_date,
   latest_incident_date
 LIMIT 10;
+"""
+
+SOURCES_CYPHER = """
+MATCH (o:Officer {uid: $uid})-[:UPDATED_BY]->(s:Source)
+RETURN DISTINCT {
+  name: s.name,
+  url: s.url,
+  contact_email: s.contact_email
+} AS source
 """
 
 
@@ -117,6 +129,14 @@ def get_officer(officer_uid: int):
 
     response = o.to_dict()
 
+    # Fetch sources
+    try:
+        results, _meta = db.cypher_query(SOURCES_CYPHER, {'uid': officer_uid})
+        sources = [row[0] for row in results]
+        response.update({"sources": sources})
+    except Exception as e:
+        abort(500, description=str(e))
+
     employment_history = None
 
     if params.include:
@@ -140,10 +160,11 @@ def get_officer(officer_uid: int):
             for row in results:
                 allegation_summary.append({
                     "type": row[0],
-                    "count": row[1],
-                    "substantiated_count": row[2],
-                    "earliest_incident_date": row[3],
-                    "latest_incident_date": row[4],
+                    "complaint_count": row[1],
+                    "count": row[2],
+                    "substantiated_count": row[3],
+                    "earliest_incident_date": row[4],
+                    "latest_incident_date": row[5],
                 })
             response.update({"allegation_summary": allegation_summary})
 

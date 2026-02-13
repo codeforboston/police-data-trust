@@ -37,7 +37,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "middle_name",
         "last_name", "suffix", "ethnicity",
-        "gender", "date_of_birth"
+        "gender", "year_of_birth"
     ]
     __hidden_properties__ = ["citations"]
     __virtual_relationships__ = ["state_ids"]
