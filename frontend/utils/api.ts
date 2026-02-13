@@ -140,3 +140,47 @@ export type Organization = {
   }
   type_of_service: string
 }
+
+export type StateID = {
+  uid: string
+  state: string
+  id_name: string
+  value: string
+}
+
+export type EmploymentHistory = {
+  earliest_date?: string
+  badge_number?: string
+  highest_rank?: string
+  latest_date?: string
+  salary?: number
+  unit_name?: string
+  agency_name?: string
+  state?: string
+  agency_uid?: string
+  unit_uid?: string
+}
+
+export type AllegationSummary = {
+  type: string
+  complaint_count: number
+  count: number
+  substantiated_count: number
+  earliest_incident_date?: string
+  latest_incident_date?: string
+}
+
+export type Officer = {
+  uid: string
+  first_name: string
+  middle_name?: string
+  last_name: string
+  suffix?: string
+  ethnicity?: string
+  gender?: string
+  year_of_birth?: string
+  state_ids?: StateID[]
+  employment_history?: EmploymentHistory[]
+  allegation_summary?: AllegationSummary[]
+  sources?: Source[]
+}

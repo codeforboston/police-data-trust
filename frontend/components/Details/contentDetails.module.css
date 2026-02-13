@@ -1,0 +1,17 @@
+.sidebarContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.associatedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.associatedOfficer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
