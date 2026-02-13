@@ -1,3 +1,4 @@
+from datetime import date
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import HasCitations
@@ -178,8 +179,8 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         agency: list[str] | None = None,
         badge_number: list[str] | None = None,
         ethnicity: list[str] | None = None,
-        active_after: str | None = None,
-        active_before: str | None = None,
+        active_after: date | None = None,
+        active_before: date | None = None,
         skip: int = 0,
         limit: int = 25,
         count: bool = False,
@@ -192,6 +193,12 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             skip (int): Number of records to skip for pagination.
             limit (int): Number of records to return.
             """
+
+        # convert date strings to date objects
+        if isinstance(active_after, str):
+            active_after = date.fromisoformat(active_after)  # YYYY-MM-DD
+        if isinstance(active_before, str):
+            active_before = date.fromisoformat(active_before)  # YYYY-MM-DD
 
         # Build MATCH clauses
         match_clauses = []

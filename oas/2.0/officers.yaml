@@ -110,6 +110,8 @@ paths:
         - "Officers"
       summary: "Get officer by uid"
       operationId: "getOfficerById"
+      parameters:
+        - $ref: '#/components/parameters/include_officer'
       responses:
         "200":
           description: "Successful operation"
@@ -233,7 +235,7 @@ paths:
         - $ref: '#/components/parameters/end_date'
         - $ref: '#/components/parameters/include_source'
         - $ref: '#/components/parameters/exclude_source'
-        - $ref: '#/components/parameters/include'
+        - $ref: '#/components/parameters/include_metrics'
       tags:
         - "Officer Metrics"
       responses: 
@@ -400,8 +402,9 @@ components:
       description: >
         Request additional officer details to be included in the metrics
         response. You can select from the following options:
-        - `employment`: Include the officer's recent employment history.
-        - `allegations`: Include a summary the allegations made against the officer.
+
+          - `employment`: Include the officer's recent employment history.
+          - `allegations`: Include a summary the allegations made against the officer.
       required: false
       schema:
         type: string
@@ -414,14 +417,13 @@ components:
       description: >
         Request a specific set of metrics to be included in the response. Can
         be sent multiple times to specify multiple sets of metrics.
-      required: false
+      required: true
       schema:
         type: string
         enum:
           - allegation_types
-          - allegation_subtypes
           - allegation_outcomes
-          - complaints
+          - complaint_history
           - complainant_demographics
   securitySchemes:
     bearerAuth:
@@ -766,3 +768,12 @@ components:
         value:
           type: "string"
           description: "The value of the id."
+    OfficerMetrics:
+      type: "object"
+      properties:
+        officer_uid:
+          type: "string"
+          description: "The UID of the officer"
+        metrics:
+          type: "object"
+          description: "The metrics for the officer. This is a placeholder and will be expanded in the future."
