@@ -141,15 +141,16 @@ def example_officers():
 def test_create_officer(
         client,
         contributor_access_token,
+        example_source,
         example_agency
         ):
 
-    # Test that we can create an officer without an agency association
     request = {
         "first_name": "Max",
         "last_name": "Payne",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
+        "source_uid": example_source.uid,
     }
     res = client.post(
         "/api/v1/officers/",
@@ -168,6 +169,53 @@ def test_create_officer(
     assert officer_obj.last_name == request["last_name"]
     assert officer_obj.ethnicity == request["ethnicity"]
     assert officer_obj.gender == request["gender"]
+
+    source = officer_obj.citations.all()
+    assert len(source) == 1
+    assert source[0].uid == example_source.uid
+
+
+def test_create_officer_without_source_uid(
+        client,
+        contributor_access_token,
+        ):
+    """POST officer without source_uid should fail with 422."""
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 422
+
+
+def test_create_officer_with_invalid_source_uid(
+        client,
+        contributor_access_token,
+        ):
+    """POST officer with a non-existent source_uid should fail with 422."""
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": "nonexistent-uid-12345",
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 422
 
 
 def test_get_officer(client, example_officer, access_token):

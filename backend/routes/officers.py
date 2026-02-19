@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Optional, List
 
 from backend.auth.jwt import min_role_required
@@ -7,6 +8,7 @@ from backend.schemas import (validate_request, ordered_jsonify,
                              add_pagination_wrapper)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
+from backend.database.models.source import Source
 from backend.routes.search import create_officer_result
 from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
@@ -134,16 +136,30 @@ class AddEmploymentListSchema(BaseModel):
 @validate_request(CreateOfficer)
 def create_officer():
     """Create an officer profile.
+
+    Requires a valid source_uid. The officer will be linked to the
+    specified data source via an UPDATED_BY citation.
     """
     logger = logging.getLogger("create_officer")
     body: CreateOfficer = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
-    # try:
-    officer = Officer.from_dict(body.dict())
-    # except Exception as e:
-    #     abort(400, description=str(e))
+    source = Source.nodes.get_or_none(uid=body.source_uid)
+    if source is None:
+        abort(
+            422,
+            description=(
+                f"Source with UID '{body.source_uid}' not found. "
+                "A valid data source is required to create an officer."
+            ),
+        )
+
+    officer_data = body.dict()
+    officer_data.pop("source_uid", None)
+    officer = Officer.from_dict(officer_data)
+
+    officer.citations.connect(source, {"date": datetime.now()})
 
     logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
     track_to_mp(

@@ -83,6 +83,7 @@ class CreateOfficer(BaseOfficer, BaseModel):
     gender: Optional[str] = Field(None, description="The gender of the officer")
     date_of_birth: Optional[str] = Field(None, description="The date of birth of the officer")
     state_ids: Optional[List[StateId]] = Field(None, description="The state ids of the officer")
+    source_uid: str = Field(..., description="The UID of the data source for this officer record")
 
 
 class UpdateOfficer(BaseOfficer, BaseModel):
