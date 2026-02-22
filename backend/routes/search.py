@@ -309,8 +309,11 @@ def text_search():
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
     query = args.get("query", None, type=str)
+    location = args.get("location", None, type=str)
+
     params = {
         "query": query,
+        "location": location,
         "page": q_page,
         "per_page": q_per_page
     }
@@ -341,26 +344,76 @@ def text_search():
     if total_results < (q_page - 1) * q_per_page:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
-    # Query Everything
-    cypher = """
-    CALL () {
+    cypher = """"""
+    if location is None:
+        # Query Everything
+        cypher = """
+        CALL () {
+            CALL db.index.fulltext.queryNodes('officerNames', $query)
+                YIELD node, score
+                RETURN node, score
+            UNION ALL
+            CALL db.index.fulltext.queryNodes('agencyNames', $query)
+                YIELD node, score
+                RETURN node, score
+            UNION ALL
+            CALL db.index.fulltext.queryNodes('unitNames', $query)
+                YIELD node, score
+                RETURN node, score
+        }
+        RETURN node, score
+        ORDER BY score DESC
+        SKIP $per_page * ($page - 1)
+        LIMIT $per_page
+        """
+    else:
+        cypher = """
+        OPTIONAL MATCH (city:CityNode {name: $location})
+        -[]-(:CountyNode)-[]-(:StateNode {name: $location})
+
+        CALL {
+        WITH city
+
+        // Officers: (Officer)-[]-(Unit)-[]-(Agency)-[]-(CityNode)
         CALL db.index.fulltext.queryNodes('officerNames', $query)
             YIELD node, score
-            RETURN node, score
+        WHERE city IS NOT NULL
+            AND EXISTS {
+            (node:Officer)-[]-(:Unit)-[]-(:Agency)-[]-(city)
+            }
+        RETURN node, score
+
         UNION ALL
+
+        // Agencies: (Agency)-[]-(CityNode)
+        WITH city
         CALL db.index.fulltext.queryNodes('agencyNames', $query)
             YIELD node, score
-            RETURN node, score
+        WHERE city IS NOT NULL
+            AND EXISTS {
+            (node:Agency)-[]-(city)
+            }
+        RETURN node, score
+
         UNION ALL
+
+        // Units: (Unit)-[]-(Agency)-[]-(CityNode)
+        WITH city
         CALL db.index.fulltext.queryNodes('unitNames', $query)
             YIELD node, score
-            RETURN node, score
-    }
-    RETURN node, score
-    ORDER BY score DESC
-    SKIP $per_page * ($page - 1)
-    LIMIT $per_page
-    """
+        WHERE city IS NOT NULL
+            AND EXISTS {
+            (node:Unit)-[]-(:Agency)-[]-(city)
+            }
+        RETURN node, score
+        }
+
+        RETURN node, score
+        ORDER BY score DESC
+        SKIP $per_page * ($page - 1)
+        LIMIT $per_page
+        """
+
 
     results, meta = db.cypher_query(cypher, params)
     if not results:

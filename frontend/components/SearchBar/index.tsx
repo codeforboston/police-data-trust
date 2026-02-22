@@ -15,6 +15,7 @@ export const SearchBar = () => {
 
   const handleSearch = async (query: string) => {
     try {
+      console.log("the query", query)
       await searchAll({ query })
     } catch (error) {
       // If it's an authentication error, redirect to login
