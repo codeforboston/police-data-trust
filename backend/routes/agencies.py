@@ -23,6 +23,25 @@ CALL (a) {
 }
 """
 
+TOP_UNITS_BY_COMPLAINTS_CYPHER = """
+CALL (a) {
+  MATCH (a)-[]-(u:Unit)<-[]-(:Employment)-[]->(o:Officer)
+    -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  WITH
+    u,
+    count(DISTINCT c) AS complaint_count,
+    count(DISTINCT o) AS officer_count
+  ORDER BY complaint_count DESC, coalesce(u.name, "") ASC
+  LIMIT 3
+  RETURN collect({
+    unit_uid: u.uid,
+    unit_name: u.name,
+    complaint_count: complaint_count,
+    officer_count: officer_count
+  }) AS top_units_by_complaints
+}
+"""
+
 OFFICER_CYPHER = """
 CALL (a) {
   OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(o:Officer)
@@ -156,6 +175,9 @@ def get_agency(agency_uid: str):
         if "allegations" in params.include:
             subqueries += ALLEGATION_CYPHER
             return_clause += ", collect(type_summary) AS allegation_summary"
+        if "most_complaints" in params.include:
+            subqueries += TOP_UNITS_BY_COMPLAINTS_CYPHER
+            return_clause += ", top_units_by_complaints"
     cy = match_clause + subqueries + return_clause
 
     rows, _ = db.cypher_query(cy, {"agency_uid": agency_uid})
@@ -177,6 +199,9 @@ def get_agency(agency_uid: str):
         if "allegations" in params.include:
             agency_data["allegation_summary"] = format_allegation_summary(
                 row[idx])
+            idx += 1
+        if "most_complaints" in params.include:
+            agency_data["most_complaints"] = row[idx]
             idx += 1
     return ordered_jsonify(agency_data)
 
