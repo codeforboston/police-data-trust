@@ -37,6 +37,8 @@ interface AuthenticatedRequest {
 export interface SearchRequest extends AuthenticatedRequest {
   query: string
   location?: string
+  state?: string
+  city?: string
   source?: string
   page?: number
 }

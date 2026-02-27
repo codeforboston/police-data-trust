@@ -13,11 +13,11 @@ import { KeyboardEvent, useState, ChangeEvent } from "react"
 import { useSearch } from "@/providers/SearchProvider"
 import { useSearchParams } from "next/navigation"
 
-const FILTER_GROUP_1 = [
-  { id: 1, title: "All the locations", count: 56 },
-  { id: 2, title: "New York City", count: 15 },
-  { id: 3, title: "Texas State", count: 2 }
-]
+// const FILTER_GROUP_1 = [
+//   { id: 1, title: "All the locations", count: 56 },
+//   { id: 2, title: "New York City", count: 15 },
+//   { id: 3, title: "Texas State", count: 2 }
+// ]
 const FILTER_GROUP_2 = [
   { id: 1, title: "50.org", count: 10 },
   { id: 2, title: "Accountable", count: 5 },
@@ -25,18 +25,24 @@ const FILTER_GROUP_2 = [
 ]
 
 const Filter = () => {
-  const [localLocationInputState, setLocalLocationInputState] = useState('')
+  const [localCityInputState, setLocalCityInputState] = useState('')
+  const [localStateInputState, setLocalStateInputState] = useState('')
   const { searchAll } = useSearch()
   const searchParams = useSearchParams()
-  function changeLocalSearchVal(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function changeLocalCitySearchVal(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const changeVal = e.target.value
     // TODO: this is causing the other search box to refresh as wll
-    setLocalLocationInputState(changeVal)
+    setLocalCityInputState(changeVal)
+  }
+  function changeLocalStateSearchVal(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const changeVal = e.target.value
+    // TODO: this is causing the other search box to refresh as wll
+    setLocalStateInputState(changeVal)
   }
   async function locationFilterSearch(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === 'Enter') {
       const currentQuery = searchParams.get('query') ?? ''
-      await searchAll({ query: currentQuery, location: localLocationInputState })
+      await searchAll({ query: currentQuery, city: localCityInputState, state: localStateInputState })
     }
 
   }
@@ -45,12 +51,20 @@ const Filter = () => {
       <h3 className={styles.filterTitleText}>Filters</h3>
       <div className={styles.filterContentsWrapper}>
         <FilterGroup
-          onChangeHandler={changeLocalSearchVal}
+          onChangeHandler={changeLocalCitySearchVal}
           searchHandler={locationFilterSearch}
-          value={localLocationInputState}
+          value={localCityInputState}
           withSearch
-          filters={FILTER_GROUP_1}
-          title="Location"
+          filters={[]}
+          title="City"
+        />
+        <FilterGroup
+          onChangeHandler={changeLocalStateSearchVal}
+          searchHandler={locationFilterSearch}
+          value={localStateInputState}
+          withSearch
+          filters={[]}
+          title="State"
         />
         <FilterGroup filters={FILTER_GROUP_2} title="Data Source" />
       </div>

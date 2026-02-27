@@ -310,10 +310,14 @@ def text_search():
     q_per_page = args.get("per_page", 20, type=int)
     query = args.get("query", None, type=str)
     location = args.get("location", None, type=str)
+    state = args.get("state", None, type=str)
+    city = args.get("city", None, type=str)
 
     params = {
         "query": query,
         "location": location,
+        "city": city,
+        "state": state,
         "page": q_page,
         "per_page": q_per_page
     }
@@ -345,7 +349,7 @@ def text_search():
         return jsonify({"message": "Page number exceeds total results"}), 400
 
     cypher = """"""
-    if location is None:
+    if state is None and city is None:
         # Query Everything
         cypher = """
         CALL () {
@@ -368,8 +372,8 @@ def text_search():
         """
     else:
         cypher = """
-        OPTIONAL MATCH (city:CityNode {name: $location})
-        -[]-(:CountyNode)-[]-(:StateNode {name: $location})
+        OPTIONAL MATCH (city:CityNode {name: $city})
+        -[]-(:CountyNode)-[]-(:StateNode {name: $state})
 
         CALL {
         WITH city
@@ -414,7 +418,9 @@ def text_search():
         LIMIT $per_page
         """
 
-
+    print("city ->", city)
+    print("state ->", state)
+    print("the cypher i use", cypher)
     results, meta = db.cypher_query(cypher, params)
     if not results:
         return jsonify({"message": "No results found matching the query"}), 200
