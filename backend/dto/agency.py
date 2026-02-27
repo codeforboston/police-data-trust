@@ -56,6 +56,7 @@ class GetAgencyParams(BaseModel):
             "officers",
             "complaints",
             "allegations",
+            "most_complaints",
         }
         if v:
             invalid = set(v) - allowed_includes

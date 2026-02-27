@@ -2,12 +2,12 @@ from backend.schemas import (
     JsonSerializable, PropertyEnum
 )
 from backend.database.models.source import HasCitations
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 
 from neomodel import (
     StructuredNode,
     StringProperty,
     IntegerProperty,
-    DateProperty,
     UniqueIdProperty,
     RelationshipTo,
     One
@@ -40,8 +40,8 @@ class Employment(StructuredNode, HasCitations, JsonSerializable):
     uid = UniqueIdProperty()
     key = StringProperty()
     type = StringProperty()
-    earliest_date = DateProperty(index=True)
-    latest_date = DateProperty(index=True)
+    earliest_date = DateNeo4jFormatProperty(index=True)
+    latest_date = DateNeo4jFormatProperty(index=True)
     badge_number = StringProperty(index=True)
     highest_rank = StringProperty()
     salary = IntegerProperty()
@@ -62,8 +62,8 @@ class CommandAssignment(StructuredNode, HasCitations, JsonSerializable):
     uid = UniqueIdProperty()
     type = StringProperty()
     title = StringProperty()
-    earliest_date = DateProperty(index=True)
-    latest_date = DateProperty(index=True)
+    earliest_date = DateNeo4jFormatProperty(index=True)
+    latest_date = DateNeo4jFormatProperty(index=True)
     badge_number = StringProperty(index=True)
     highest_rank = StringProperty()
     salary = IntegerProperty()

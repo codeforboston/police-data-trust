@@ -451,16 +451,17 @@ class JsonSerializable:
                             for node in related_nodes
                         ]
         # Add virtual relationships
-        for rel_name in self.__virtual_relationships__:
-            if rel_name in all_excludes:
-                continue
-            rel_query = getattr(self, rel_name, None)
-            if isinstance(rel_query, RelQuery):
-                related_nodes = rel_query.limit(relationship_limit).all()
-                obj_props[rel_name] = [
-                    node.to_dict(include_relationships=False)
-                    for node in related_nodes
-                ]
+        if include_relationships:
+            for rel_name in self.__virtual_relationships__:
+                if rel_name in all_excludes:
+                    continue
+                rel_query = getattr(self, rel_name, None)
+                if isinstance(rel_query, RelQuery):
+                    related_nodes = rel_query.limit(relationship_limit).all()
+                    obj_props[rel_name] = [
+                        node.to_dict(include_relationships=False)
+                        for node in related_nodes
+                    ]
 
         return obj_props
 
@@ -661,6 +662,7 @@ class SearchableMixin:
         count: bool = False,
         skip: int = 0,
         limit: int = 25,
+        inflate: bool = False,
         extra_params: dict | None = None,
     ):
         """
@@ -711,7 +713,8 @@ class SearchableMixin:
         cypher = "\n".join(cypher_parts)
 
         logging.warning(f"Search Cypher:\n{cypher}\nWith params: {params}")
-        rows, _ = db.cypher_query(cypher, params)
+        rows, _ = db.cypher_query(cypher, params,
+                                  resolve_objects=inflate)
 
         if count:
             return rows[0][0] if rows else 0

@@ -20,7 +20,8 @@ from backend.database import (
     Penalty,
     Location,
     EmailContact,
-    SocialMediaContact
+    SocialMediaContact,
+    Civilian
 )
 from datetime import datetime, date
 
@@ -170,9 +171,8 @@ def example_agency(example_source):
 
 
 @pytest.fixture
-def example_unit(example_agency, example_officer, example_source):
+def example_unit(example_agency, example_source):
     agency = example_agency
-    officer = example_officer
     source = example_source
 
     unit = Unit(
@@ -185,12 +185,21 @@ def example_unit(example_agency, example_officer, example_source):
     unit.citations.connect(source, {
         'timestamp': datetime.now(),
     })
-    emp = Employment(
-        badge_number='61025'
-    ).save()
-    emp.unit.connect(unit)
-    emp.officer.connect(officer)
     yield unit
+
+
+@pytest.fixture
+def example_employment(example_source, example_officer, example_unit):
+    employment = Employment(
+        badge_number='61025',
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    employment.unit.connect(example_unit)
+    employment.officer.connect(example_officer)
+    employment.citations.connect(example_source, {
+        'timestamp': datetime.now(),
+    })
+    yield employment
 
 
 @pytest.fixture
@@ -282,11 +291,11 @@ def example_complaint(
     complaint = Complaint(
         record_id="C123456",
         category="Excessive Force",
-        incident_date=date.today(),
-        received_date=date.today(),
-        closed_date=date.today(),
-        reason_for_contact="Complaint about officer conduct",
-        outcome_of_contact="Resolved",
+        incident_date=date(datetime.now().year - 3, 1, 15),
+        received_date=date(datetime.now().year - 3, 1, 20),
+        closed_date=date(datetime.now().year - 3, 8, 1),
+        reason_for_contact="Traffic Stop",
+        outcome_of_contact="Arrest Made",
     ).save()
     location = Location(
         location_type="Incident Location",
@@ -297,15 +306,6 @@ def example_complaint(
         zip="10001",
         administrative_area="1st Precinct",
         administrative_area_type="Precinct"
-    ).save()
-    allegation = Allegation(
-        allegation="Officer used unnecessary force during arrest",
-        type="Excessive Force",
-        subtype="Physical Force",
-        recommended_finding="Sustained",
-        finding="Sustained",
-        recommended_outcome="Disciplinary Action",
-        outcome="Disciplinary Action",
     ).save()
     penalty = Penalty(
         penalty="Suspension",
@@ -319,16 +319,37 @@ def example_complaint(
         start_date=date.today(),
         end_date=date.today(),
     ).save()
-
-    allegation.accused.connect(example_officer)
-    allegation.complaint.connect(complaint)
     penalty.officer.connect(example_officer)
     penalty.complaint.connect(complaint)
     investigation.complaint.connect(complaint)
     complaint.location.connect(location)
     complaint.source_org.connect(example_source, source_rel)
-
     yield complaint
+
+
+@pytest.fixture  # type: ignore
+def example_allegation(example_source, example_complaint, example_officer):
+    allegation = Allegation(
+        allegation="Officer used unnecessary force during arrest",
+        type="Force",
+        subtype="Physical Force",
+        recommended_finding="Sustained",
+        finding="Sustained",
+        recommended_outcome="Disciplinary Action",
+        outcome="Disciplinary Action",
+    ).save()
+    complainant = Civilian(
+        age_range="24-29",
+        race="White",
+        gender="Male"
+    ).save()
+    allegation.accused.connect(example_officer)
+    allegation.complainant.connect(complainant)
+    allegation.complaint.connect(example_complaint)
+    allegation.citations.connect(example_source, {
+        'timestamp': datetime.now(),
+    })
+    yield allegation
 
 
 @pytest.fixture  # type: ignore

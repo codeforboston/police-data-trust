@@ -23,6 +23,25 @@ CALL (a) {
 }
 """
 
+TOP_UNITS_BY_COMPLAINTS_CYPHER = """
+CALL (a) {
+  MATCH (a)-[]-(u:Unit)<-[]-(:Employment)-[]->(o:Officer)
+    -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  WITH
+    u,
+    count(DISTINCT c) AS complaint_count,
+    count(DISTINCT o) AS officer_count
+  ORDER BY complaint_count DESC, coalesce(u.name, "") ASC
+  LIMIT 3
+  RETURN collect({
+    unit_uid: u.uid,
+    unit_name: u.name,
+    complaint_count: complaint_count,
+    officer_count: officer_count
+  }) AS top_units_by_complaints
+}
+"""
+
 OFFICER_CYPHER = """
 CALL (a) {
   OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(o:Officer)
@@ -66,6 +85,18 @@ CALL (a) {
   } AS type_summary
 }
 """
+
+
+# Iso Format all dates in allegation summary
+def format_allegation_summary(summary):
+    for item in summary:
+        if item.get("earliest_incident_date"):
+            item["earliest_incident_date"] = item[
+                "earliest_incident_date"].isoformat()
+        if item.get("latest_incident_date"):
+            item["latest_incident_date"] = item[
+                "latest_incident_date"].isoformat()
+    return summary
 
 
 # Create agency profile
@@ -144,6 +175,9 @@ def get_agency(agency_uid: str):
         if "allegations" in params.include:
             subqueries += ALLEGATION_CYPHER
             return_clause += ", collect(type_summary) AS allegation_summary"
+        if "most_complaints" in params.include:
+            subqueries += TOP_UNITS_BY_COMPLAINTS_CYPHER
+            return_clause += ", top_units_by_complaints"
     cy = match_clause + subqueries + return_clause
 
     rows, _ = db.cypher_query(cy, {"agency_uid": agency_uid})
@@ -163,7 +197,11 @@ def get_agency(agency_uid: str):
             agency_data["total_complaints"] = row[idx]
             idx += 1
         if "allegations" in params.include:
-            agency_data["allegation_summary"] = row[idx]
+            agency_data["allegation_summary"] = format_allegation_summary(
+                row[idx])
+            idx += 1
+        if "most_complaints" in params.include:
+            agency_data["most_complaints"] = row[idx]
             idx += 1
     return ordered_jsonify(agency_data)
 
@@ -307,86 +345,6 @@ def get_all_agencies():
     )
 
     return return_func(response), 200
-
-
-# # Add officer employment information
-# @bp.route("/<int:agency_id>/officers", methods=["POST"])
-# @jwt_required()
-# @min_role_required(UserRole.CONTRIBUTOR)
-# @validate(json=AddOfficerListSchema)
-# def add_officer_to_agency(agency_id: int):
-#     """Add any number of officer employment records to an agency.
-#     Must be a Contributor to add officers to an agency.
-#     """
-#     agency = Agency.nodes.get_or_none(uid=agency_id)
-#     if agency is None:
-#         abort(404, description="Agency not found")
-
-#     records = request.context.json.officers
-
-#     created = []
-#     failed = []
-#     for record in records:
-#         try:
-#             officer = db.session.query(Officer).get(
-#                 record.officer_id)
-#             if officer is None:
-#                 failed.append({
-#                     "officer_id": record.officer_id,
-#                     "reason": "Officer not found"
-#                 })
-#             else:
-#                 employments = db.session.query(Employment).filter(
-#                     and_(
-#                         and_(
-#                             Employment.officer_id == record.officer_id,
-#                             Employment.agency_id == agency_id
-#                         ),
-#                         Employment.badge_number == record.badge_number
-#                     )
-#                 )
-#                 if employments is not None:
-#                     # If the officer already has a records for this agency,
-#                     # we need to update the earliest and
-#                     # latest employment dates
-#                     employment = employment_to_orm(record)
-#                     employment.agency_id = agency_id
-#                     employment = merge_employment_records(
-#                         employments.all() + [employment],
-#                         currently_employed=record.currently_employed
-#                     )
-
-#                     # Delete the old records and replace them with the new one
-#                     employments.delete()
-#                     created.append(employment.create())
-#                 else:
-#                     record.agency_id = agency_id
-#                     employment = employment_to_orm(record)
-#                     created.append(employment.create())
-#         except Exception as e:
-#             failed.append({
-#                 "officer_id": record.officer_id,
-#                 "reason": str(e)
-#             })
-#     try:
-#         track_to_mp(
-#             request,
-#             "add_officers_to_agency",
-#             {
-#                 "agency_id": agency.id,
-#                 "officers_added": len(created),
-#                 "officers_failed": len(failed)
-#             },
-#         )
-#         return {
-#             "created": [
-#                 employment_orm_to_json(item) for item in created],
-#             "failed": failed,
-#             "totalCreated": len(created),
-#             "totalFailed": len(failed),
-#         }
-#     except Exception as e:
-#         abort(400, description=str(e))
 
 
 # Get agency officers

@@ -1,11 +1,11 @@
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.source import HasCitations
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 from neomodel import (
     StructuredNode,
     StringProperty,
     RelationshipFrom,
     Relationship,
-    DateProperty,
     UniqueIdProperty,
     One,
     db
@@ -34,8 +34,8 @@ class Litigation(StructuredNode, HasCitations, JsonSerializable):
     jurisdiction = StringProperty()
     state = StringProperty()
     description = StringProperty()
-    start_date = DateProperty()
-    settlement_date = DateProperty()
+    start_date = DateNeo4jFormatProperty()
+    settlement_date = DateNeo4jFormatProperty()
     settlement_amount = StringProperty()
     url = StringProperty()
     case_type = StringProperty(choices=LegalCaseType.choices())
@@ -91,7 +91,7 @@ class Document(StructuredNode, JsonSerializable):
 
 class Disposition(StructuredNode, JsonSerializable):
     description = StringProperty()
-    date = DateProperty()
+    date = DateNeo4jFormatProperty()
     disposition = StringProperty()
 
     # Relationships

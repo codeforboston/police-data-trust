@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 import math
-from datetime import date, datetime
+from datetime import date
 from backend.database import (
     Officer, Unit, Agency, Employment
 )
@@ -100,26 +100,20 @@ mock_units = {
 
 mock_unit_memberships = {
     "john": {
-        "earliest_date": datetime.strptime(
-            "2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime(
-            "2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": date(2015, 3, 4),
+        "latest_date": date(2020, 3, 4),
         "badge_number": "1234",
         "highest_rank": 'Officer'
     },
     "hazel": {
-        "earliest_date": datetime.strptime(
-            "2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime(
-            "2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": date(2018, 8, 12),
+        "latest_date": date(2021, 4, 4),
         "badge_number": "5678",
         "highest_rank": 'Sergeant',
     },
     "frank": {
-        "earliest_date": datetime.strptime(
-            "2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
-        "latest_date": datetime.strptime(
-            "2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+        "earliest_date": date(2019, 5, 3),
+        "latest_date": date(2025, 5, 4),
         "badge_number": "1234",
         "highest_rank": 'Lieutenant'
     }

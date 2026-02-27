@@ -1,0 +1,6 @@
+.identityCard {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  position: relative;
+}

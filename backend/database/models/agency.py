@@ -2,15 +2,15 @@ from backend.schemas import (JsonSerializable, PropertyEnum, RelQuery,
                              SearchableMixin)
 from backend.database.models.types.enums import State
 from backend.database.models.source import HasCitations
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 
 from neomodel import (
     db,
     StructuredNode,
     StringProperty,
     RelationshipTo,
-    DateProperty,
     UniqueIdProperty,
-    One
+    One, ZeroOrOne
 )
 
 
@@ -56,13 +56,13 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     email = StringProperty()
     website_url = StringProperty()
     description = StringProperty()
-    date_established = DateProperty()
+    date_established = DateNeo4jFormatProperty()
 
     # Relationships
     agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
     city_node = RelationshipTo(
         "backend.database.models.infra.locations.CityNode",
-        "LOCATED_IN", cardinality=One)
+        "LOCATED_IN", cardinality=ZeroOrOne)
 
     def __repr__(self):
         return f"<Unit {self.name}>"
@@ -119,7 +119,8 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
 
     @classmethod
     def search(cls, query: str = None, filters: dict = None,
-               count: bool = False, skip: int = 0, limit: int = 25):
+               count: bool = False, skip: int = 0, limit: int = 25,
+               inflate: bool = False):
         """
         Model-specific search method.
         Decides which fulltext index to use and delegates to the mixin.
@@ -144,6 +145,7 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
             skip=skip,
             limit=limit,
             extra_params=params,  # pass parameter dict to _search()
+            inflate=inflate
         )
 
 
@@ -167,7 +169,7 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     email = StringProperty()
     website_url = StringProperty()
     description = StringProperty()
-    date_established = DateProperty()
+    date_established = DateNeo4jFormatProperty()
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
 
     # Relationships

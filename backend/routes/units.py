@@ -48,7 +48,8 @@ def get_all_units():
         query=search_term,
         filters=filters,
         skip=params.skip,
-        limit=params.per_page)
+        limit=params.per_page,
+        inflate=not params.searchResult)
 
     # Optional searchResult format
     if params.searchResult:
@@ -60,7 +61,7 @@ def get_all_units():
         return_func = jsonify
 
     else:
-        page = [row._properties for row in results]
+        page = [row.to_dict() for row in results]
         return_func = ordered_jsonify
 
     response = add_pagination_wrapper(
