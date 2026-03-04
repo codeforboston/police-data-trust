@@ -8,8 +8,8 @@ import { useParams } from "next/navigation"
 import { Officer } from "@/utils/api"
 import DetailsLayout from "@/components/Details/DetailsLayout"
 import OfficerIdentityCard from "@/components/Details/IdentityCard/OfficerIdentityCard"
-import DetailsTabs from "@/components/Details/DetailsTabs"
-import ContentDetails from "@/components/Details/ContentDetails"
+import OfficerDetailsTabs from "@/components/Details/tabs/OfficerDetailsTabs"
+import OfficerContentDetails from "@/components/Details/ContentDetails/OfficerContentDetails"
 
 export default function OfficerDetailsPage() {
   const params = useParams<{ uid: string }>()
@@ -41,9 +41,9 @@ export default function OfficerDetailsPage() {
   if (!officer) return <div>Officer not found</div>
 
   return (
-    <DetailsLayout sidebar={<ContentDetails officer={officer} />}>
+    <DetailsLayout sidebar={<OfficerContentDetails officer={officer} />}>
       <OfficerIdentityCard {...officer} />
-      <DetailsTabs {...officer} />
+      <OfficerDetailsTabs {...officer} />
     </DetailsLayout>
   )
 }
