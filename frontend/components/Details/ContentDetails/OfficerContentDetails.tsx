@@ -9,16 +9,14 @@ export default function OfficerContentDetails({ officer }: OfficerContentDetails
   const totalComplaints =
     officer.allegation_summary?.reduce((sum, a) => sum + a.complaint_count, 0) || 0
 
-  const totalAllegations =
-    officer.allegation_summary?.reduce((sum, a) => sum + a.count, 0) || 0
+  const totalAllegations = officer.allegation_summary?.reduce((sum, a) => sum + a.count, 0) || 0
 
   const totalSubstantiated =
     officer.allegation_summary?.reduce((sum, a) => sum + a.substantiated_count, 0) || 0
 
   const dataSources =
-    officer.sources
-      ?.map((source) => source.name)
-      .filter((name): name is string => Boolean(name)) || []
+    officer.sources?.map((source) => source.name).filter((name): name is string => Boolean(name)) ||
+    []
 
   return (
     <ContentDetails

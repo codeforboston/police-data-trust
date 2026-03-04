@@ -43,10 +43,7 @@ function a11yProps(index: number) {
   }
 }
 
-export default function DetailsTabs({
-  tabs,
-  ariaLabel = "detail tabs"
-}: DetailsTabsProps) {
+export default function DetailsTabs({ tabs, ariaLabel = "detail tabs" }: DetailsTabsProps) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {

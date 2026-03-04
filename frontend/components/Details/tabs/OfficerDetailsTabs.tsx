@@ -16,11 +16,7 @@ export default function OfficerDetailsTabs(officer: Officer) {
       label: "Background",
       content: (
         <>
-          <Typography
-            component="h2"
-            variant="h5"
-            sx={{ fontSize: "1.3rem", fontWeight: "500" }}
-          >
+          <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
             Background
           </Typography>
           <StateRecords officer={officer} />

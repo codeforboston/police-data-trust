@@ -28,9 +28,7 @@ export default function OfficerIdentityCard(officer: Officer) {
   const subtitleParts = [
     officer.ethnicity,
     officer.gender ? officer.gender.toLowerCase() : null,
-    officer.year_of_birth
-      ? `${getAgeFromBirthYear(officer.year_of_birth)} years old`
-      : null
+    officer.year_of_birth ? `${getAgeFromBirthYear(officer.year_of_birth)} years old` : null
   ].filter(Boolean)
 
   const detail = currentEmployment
