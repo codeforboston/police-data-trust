@@ -1,15 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import {
-  Tab,
-  Tabs,
-  Box,
-  Card,
-  CardHeader,
-  CardActionArea,
-  Typography
-} from "@mui/material"
+import { Tab, Tabs, Box, Card, CardHeader, CardActionArea, Typography } from "@mui/material"
 import React from "react"
 import { SearchResponse } from "@/utils/api"
 
@@ -110,9 +102,7 @@ const SearchResults = ({ total, results, tab, updateTab }: SearchResultsProps) =
                         <span style={{ fontSize: "12px", color: "#566" }}>
                           {result.content_type}``
                         </span>
-                        <span style={{ fontSize: "12px", color: "#566" }}>
-                          {result.source}
-                        </span>
+                        <span style={{ fontSize: "12px", color: "#566" }}>{result.source}</span>
                         <span style={{ fontSize: "12px", color: "#566" }}>
                           {result.last_updated}
                         </span>
