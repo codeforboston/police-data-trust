@@ -7,7 +7,7 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useParams } from "next/navigation"
 import { Officer } from "@/utils/api"
 import DetailsLayout from "@/components/Details/DetailsLayout"
-import IdentityCard from "@/components/Details/IdentityCard"
+import OfficerIdentityCard from "@/components/Details/IdentityCard/OfficerIdentityCard"
 import DetailsTabs from "@/components/Details/DetailsTabs"
 import ContentDetails from "@/components/Details/ContentDetails"
 
@@ -42,7 +42,7 @@ export default function OfficerDetailsPage() {
 
   return (
     <DetailsLayout sidebar={<ContentDetails officer={officer} />}>
-      <IdentityCard {...officer} />
+      <OfficerIdentityCard {...officer} />
       <DetailsTabs {...officer} />
     </DetailsLayout>
   )
