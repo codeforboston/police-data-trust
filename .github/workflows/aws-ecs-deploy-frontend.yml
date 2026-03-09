@@ -72,7 +72,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
     - name: Login to ECR
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
     - name: Set up QEMU
