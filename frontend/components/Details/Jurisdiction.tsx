@@ -1,4 +1,4 @@
-import { Chip, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import DetailCard from "./DetailCard"
 import Map from "../Map/Map"
 

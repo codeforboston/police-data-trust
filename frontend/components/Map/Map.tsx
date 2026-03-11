@@ -13,23 +13,24 @@ export default function MapComponent({ center, zoom }: MapProps) {
   const mapRef = useRef<Map | null>(null)
   const markerRef = useRef<Marker | null>(null)
 
+  const initialCenterRef = useRef(center)
+  const initialZoomRef = useRef(zoom)
+
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
 
     const map = new Map({
       container: mapContainerRef.current,
       style: "https://tiles.openfreemap.org/styles/bright",
-      center,
-      zoom,
+      center: initialCenterRef.current,
+      zoom: initialZoomRef.current,
 
-      // disable panning / movement
       dragPan: false,
       dragRotate: false,
       keyboard: false,
       touchPitch: false,
       boxZoom: false,
 
-      // allow zoom, but always around the map center
       scrollZoom: { around: "center" },
       touchZoomRotate: { around: "center" },
       doubleClickZoom: true
@@ -37,7 +38,7 @@ export default function MapComponent({ center, zoom }: MapProps) {
 
     map.touchZoomRotate.disableRotation()
 
-    const marker = new Marker().setLngLat(center).addTo(map)
+    const marker = new Marker().setLngLat(initialCenterRef.current).addTo(map)
 
     mapRef.current = map
     markerRef.current = marker
