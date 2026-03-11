@@ -75,7 +75,7 @@ def test_get_all_units(client, example_units, access_token):
 
     # Test that we can get all units
     res = client.get(
-        "/api/v1/units/",
+        "/api/v1/units",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -87,7 +87,7 @@ def test_get_search_result(client, example_unit, access_token):
         name__icontains='Precinct 1'
     ).__len__()
     res = client.get(
-        "/api/v1/units/?name=Precinct 1&searchResult=true",
+        "/api/v1/units?name=Precinct 1&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200
@@ -96,7 +96,7 @@ def test_get_search_result(client, example_unit, access_token):
 
 def test_bad_query_param(client, access_token):
     res = client.get(
-        "/api/v1/units/?abc=123",
+        "/api/v1/units?abc=123",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
 
@@ -110,7 +110,7 @@ def test_unit_pagination(client, example_units, access_token):
     expected_total_pages = math.ceil(total_units//per_page)
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            f"/api/v1/units/?per_page={per_page}&page={page}",
+            f"/api/v1/units?per_page={per_page}&page={page}",
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
 
@@ -123,7 +123,7 @@ def test_unit_pagination(client, example_units, access_token):
 
     res = client.get(
         (
-            f"/api/v1/units/?per_page={per_page}"
+            f"/api/v1/units?per_page={per_page}"
             f"&page={expected_total_pages + 1}"
         ),
         headers={"Authorization": "Bearer {0}".format(access_token)},

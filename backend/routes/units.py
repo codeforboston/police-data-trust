@@ -4,7 +4,8 @@ from backend.schemas import (
     add_pagination_wrapper, ordered_jsonify)
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Unit
-from backend.routes.search import fetch_details, build_unit_result, build_officer_result
+from backend.routes.search import (
+    fetch_details, build_unit_result, build_officer_result)
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.unit import UnitQueryParams, GetUnitParams
@@ -23,7 +24,8 @@ RETURN DISTINCT {
 
 LOCATION_CYPHER = """
 CALL (u) {
-  MATCH (u)-[]-(:Agency)-[]-(city:CityNode)-[]-(:CountyNode)-[]-(state:StateNode)
+  MATCH (u)-[]-(:Agency)-[]-(city:CityNode)-[]-(:CountyNode)
+  -[]-(state:StateNode)
   RETURN {
     coords: city.coordinates,
     city: city.name,
@@ -58,10 +60,13 @@ COMPLAINT_CYPHER = """
 CALL (u) {
   OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(:Officer)
       -[:ACCUSED_OF]->(a:Allegation)-[:ALLEGED]-(c:Complaint)
-  WITH count(DISTINCT c) AS total_complaints, count(DISTINCT a) AS total_allegations
+  WITH
+    count(DISTINCT c) AS total_complaints,
+    count(DISTINCT a) AS total_allegations
   RETURN total_complaints, total_allegations
 }
 """
+
 
 @bp.route("", methods=["GET"])
 @jwt_required()
@@ -177,7 +182,9 @@ def get_unit(uid: str):
                 item.model_dump() for item in officers if item
             ]
             for item in item_dump:
-                item["last_updated"] = item["last_updated"].isoformat() if item.get("last_updated", None) else None
+                item["last_updated"] = item[
+                    "last_updated"].isoformat() if item.get(
+                    "last_updated", None) else None
             unit_data["most_reported_officers"] = item_dump
             idx += 1
         if "total_officers" in params.include:
