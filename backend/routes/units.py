@@ -4,7 +4,7 @@ from backend.schemas import (
     add_pagination_wrapper, ordered_jsonify)
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Unit
-from backend.routes.search import fetch_details, build_unit_result
+from backend.routes.search import fetch_details, build_unit_result, build_officer_result
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.unit import UnitQueryParams, GetUnitParams
@@ -23,31 +23,26 @@ RETURN DISTINCT {
 
 LOCATION_CYPHER = """
 CALL (u) {
-    MATCH (u)-[]-(:Agency)-[]-(city:CityNode)
-    RETURN city.coordinates AS location
+  MATCH (u)-[]-(:Agency)-[]-(city:CityNode)-[]-(:CountyNode)-[]-(state:StateNode)
+  RETURN {
+    coords: city.coordinates,
+    city: city.name,
+    state: state.name
+  } AS location
 }
 """
 
 MOST_REPORTED_OFFICER_CYPHER = """
 CALL (u) {
-  MATCH (u)<-[]-(e:Employment)-[]->(o:Officer)
+  MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
     -[:ACCUSED_OF]->(a:Allegation)-[:ALLEGED]-(c:Complaint)
   WITH
     o,
-    e,
     count(DISTINCT c) AS complaint_count,
     count(DISTINCT a) AS allegation_count
-  ORDER BY complaint_count DESC
+  ORDER BY complaint_count DESC, allegation_count DESC
   LIMIT 3
-  RETURN collect({
-    officer_uid: o.uid,
-    name: o.first_name + " " + o.last_name,
-    gender: o.gender,
-    ethnicity: o.ethnicity,
-    rank: e.rank,
-    complaint_count: complaint_count,
-    allegation_count: allegation_count
-  }) AS most_reported_officers
+  RETURN collect(o) AS most_reported_officers
 }
 """
 
@@ -147,8 +142,8 @@ def get_unit(uid: str):
     except Exception as e:
         logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
-    match_clause = "MATCH (u:Unit {uid: $uid})"
-    return_clause = "RETURN u"
+    match_clause = "MATCH (u:Unit {uid: $uid})-[]-(a:Agency) "
+    return_clause = "RETURN u, a"
     subqueries = ""
     if params.include:
         if "reported_officers" in params.include:
@@ -170,10 +165,20 @@ def get_unit(uid: str):
         abort(404, description="Unit not found")
     row = rows[0]
     unit_data = row[0]._properties
+    unit_data["agency"] = row[1]._properties if row[1] else None
     if params.include:
-        idx = 1
+        idx = 2
         if "reported_officers" in params.include:
-            unit_data["most_reported_officers"] = row[idx]
+            details = fetch_details(
+                [o.get("uid") for o in row[idx]], "Officer")
+            officers = [build_officer_result(
+                o, details.get(o.get("uid"), {})) for o in row[idx]]
+            item_dump = [
+                item.model_dump() for item in officers if item
+            ]
+            for item in item_dump:
+                item["last_updated"] = item["last_updated"].isoformat() if item.get("last_updated", None) else None
+            unit_data["most_reported_officers"] = item_dump
             idx += 1
         if "total_officers" in params.include:
             unit_data["total_officers"] = row[idx]
@@ -183,6 +188,11 @@ def get_unit(uid: str):
             unit_data["total_allegations"] = row[idx + 1]
             idx += 2
         if "location" in params.include:
-            coords = row[idx]
-            unit_data["location"] = {"latitude": coords.y, "longitude": coords.x} if coords else None
+            loc = row[idx]
+            unit_data["location"] = {
+                "latitude": loc["coords"].y,
+                "longitude": loc["coords"].x,
+                "city": loc["city"],
+                "state": loc["state"]
+            } if loc and loc.get("coords", None) else None
     return ordered_jsonify(unit_data), 200
