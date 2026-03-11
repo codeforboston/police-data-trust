@@ -6,16 +6,14 @@ type UnitContentDetailsProps = {
 }
 
 export default function UnitContentDetails({ unit }: UnitContentDetailsProps) {
-  const totalComplaints =
-    unit.total_complaints || 0
+  const totalComplaints = unit.total_complaints || 0
 
   const totalAllegations = unit.total_allegations || 0
 
   const totalOfficers = unit.total_officers || 0
 
   const dataSources =
-    unit.sources?.map((source) => source.name).filter((name): name is string => Boolean(name)) ||
-    []
+    unit.sources?.map((source) => source.name).filter((name): name is string => Boolean(name)) || []
 
   return (
     <ContentDetails

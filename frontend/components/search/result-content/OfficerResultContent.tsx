@@ -5,9 +5,7 @@ type OfficerResultContentProps = {
   result: SearchResponse
 }
 
-export default function OfficerResultContent({
-  result
-}: OfficerResultContentProps) {
+export default function OfficerResultContent({ result }: OfficerResultContentProps) {
   return (
     <Box>
       <Typography variant="h6" component="div">

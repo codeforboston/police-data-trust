@@ -41,12 +41,7 @@ export interface SearchRequest extends AuthenticatedRequest {
   page?: number
 }
 
-export type SearchContentType =
-  | "Officer"
-  | "Agency"
-  | "Unit"
-  | "Complaint"
-  | "Litigation"
+export type SearchContentType = "Officer" | "Agency" | "Unit" | "Complaint" | "Litigation"
 
 export type SearchResponse = {
   uid: string | number
@@ -225,7 +220,6 @@ export type Officer = {
   allegation_summary?: AllegationSummary[]
   sources?: Source[]
 }
-
 
 export type Agency = {
   uid: string

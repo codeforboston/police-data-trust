@@ -32,14 +32,12 @@ export default function MapComponent({ center, zoom }: MapProps) {
       // allow zoom, but always around the map center
       scrollZoom: { around: "center" },
       touchZoomRotate: { around: "center" },
-      doubleClickZoom: true,
+      doubleClickZoom: true
     })
 
     map.touchZoomRotate.disableRotation()
 
-    const marker = new Marker()
-      .setLngLat(center)
-      .addTo(map)
+    const marker = new Marker().setLngLat(center).addTo(map)
 
     mapRef.current = map
     markerRef.current = marker
@@ -62,10 +60,5 @@ export default function MapComponent({ center, zoom }: MapProps) {
     marker.setLngLat(center)
   }, [center, zoom])
 
-  return (
-    <div
-      ref={mapContainerRef}
-      style={{ width: "100%", height: "300px" }}
-    />
-  )
+  return <div ref={mapContainerRef} style={{ width: "100%", height: "300px" }} />
 }

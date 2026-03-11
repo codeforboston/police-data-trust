@@ -12,20 +12,13 @@ type SearchResultsProps = {
   updateTab: (val: number) => void
 }
 
-export default function SearchResults({
-  total,
-  results,
-  tab,
-  updateTab
-}: SearchResultsProps) {
+export default function SearchResults({ total, results, tab, updateTab }: SearchResultsProps) {
   return (
     <>
       <SearchResultsTabs tab={tab} updateTab={updateTab} />
 
       <Box sx={{ p: 3 }}>
-        <Typography sx={{ mb: 2, fontWeight: "bold" }}>
-          {total} results
-        </Typography>
+        <Typography sx={{ mb: 2, fontWeight: "bold" }}>{total} results</Typography>
 
         <SearchResultsList results={results} showMeta />
       </Box>

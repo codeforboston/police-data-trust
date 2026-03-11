@@ -6,9 +6,7 @@ type SearchResultContentProps = {
   result: SearchResponse
 }
 
-export default function SearchResultContent({
-  result
-}: SearchResultContentProps) {
+export default function SearchResultContent({ result }: SearchResultContentProps) {
   switch (result.content_type) {
     case "Officer":
       return <OfficerResultContent result={result} />

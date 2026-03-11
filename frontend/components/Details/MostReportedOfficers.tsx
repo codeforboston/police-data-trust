@@ -9,7 +9,10 @@ interface MostReportedOfficersProps {
   total_officers?: number
 }
 
-export default function MostReportedOfficers({ reported_officers, total_officers }: MostReportedOfficersProps) {
+export default function MostReportedOfficers({
+  reported_officers,
+  total_officers
+}: MostReportedOfficersProps) {
   const totalOfficers = total_officers || 0
 
   return (
@@ -26,21 +29,21 @@ export default function MostReportedOfficers({ reported_officers, total_officers
         <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
           Most Reported Officers
         </Typography>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexGrow: 1
-            }}
-          >
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {totalOfficers} known officers
-            </Typography>
-            <Link href="#" variant="body2" color="inherit">
-              View all
-            </Link>
-          </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexGrow: 1
+          }}
+        >
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {totalOfficers} known officers
+          </Typography>
+          <Link href="#" variant="body2" color="inherit">
+            View all
+          </Link>
+        </div>
       </div>
       <DetailCard>
         {reported_officers && reported_officers.length > 0 ? (

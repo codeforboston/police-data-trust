@@ -19,11 +19,7 @@ export default function SearchResultCard({
   showMeta = true
 }: SearchResultCardProps) {
   return (
-    <ResultCardShell
-      href={getResultHref(result)}
-      isFirst={isFirst}
-      isLast={isLast}
-    >
+    <ResultCardShell href={getResultHref(result)} isFirst={isFirst} isLast={isLast}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
         <SearchResultContent result={result} />
         {showMeta && <SearchResultMeta result={result} />}

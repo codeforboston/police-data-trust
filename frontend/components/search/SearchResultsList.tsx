@@ -6,10 +6,7 @@ type SearchResultsListProps = {
   showMeta?: boolean
 }
 
-export default function SearchResultsList({
-  results,
-  showMeta = true
-}: SearchResultsListProps) {
+export default function SearchResultsList({ results, showMeta = true }: SearchResultsListProps) {
   return (
     <>
       {results.map((result, idx) => (

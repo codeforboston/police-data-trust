@@ -5,9 +5,7 @@ type GenericResultContentProps = {
   result: SearchResponse
 }
 
-export default function GenericResultContent({
-  result
-}: GenericResultContentProps) {
+export default function GenericResultContent({ result }: GenericResultContentProps) {
   return (
     <Box>
       <Typography variant="h6" component="div">
