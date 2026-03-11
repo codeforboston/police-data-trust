@@ -4,7 +4,7 @@ import { Typography } from "@mui/material"
 import { Unit } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
 import Jurisdiction from "../Jurisdiction"
-import MostReportedOfficers from "../MostReportedOfficers"
+import MostReportedOfficers from "@/components/Details/MostReportedOfficers"
 import Attachments from "../Attachments"
 
 export default function UnitDetailsTabs(unit: Unit) {
@@ -20,7 +20,7 @@ export default function UnitDetailsTabs(unit: Unit) {
               Captain
             </Typography>
           <Jurisdiction location={{ latitude: unit.location?.latitude ?? -73.9249, longitude: unit.location?.longitude ?? 40.6943 }} />
-          <MostReportedOfficers />
+          <MostReportedOfficers reported_officers={unit.most_reported_officers} total_officers={unit.total_officers} />
           <Attachments />
         </>
       )

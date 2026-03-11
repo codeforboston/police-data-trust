@@ -9,12 +9,17 @@ function getStateName(abbreviation: string | undefined): string {
 }
 
 export default function UnitIdentityCard(unit: Unit) {
+  const titleStr = unit.name + (unit.location && unit.location.city && unit.location.state ? ` - ${unit.location.city}, ${getStateName(unit.location.state)}` : "")
+  
+  const subtitlestr = "Unit of " + (unit.agency ? unit.agency.name : "Unknown Agency")
+
+  const detailStr = unit.total_officers !== undefined ? `${unit.total_officers} known officers` : "Officer count not available"
 
   return (
     <IdentityCard
-      title={unit.name}
-      subtitle={"Coming soon"}
-      detail={"Coming soon"}
+      title={titleStr}
+      subtitle={subtitlestr}
+      detail={detailStr}
     />
   )
 }

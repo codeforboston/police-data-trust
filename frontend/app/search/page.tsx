@@ -2,7 +2,7 @@
 import { useCallback } from "react"
 import SearchBar from "@/components/SearchBar"
 import styles from "./page.module.css"
-import SearchResults from "./SearchResults"
+import SearchResults from "@/components/search/SearchResults"
 import Pagination from "./Pagination"
 import Filter from "./Filter"
 import { useSearch } from "@/providers/SearchProvider"
