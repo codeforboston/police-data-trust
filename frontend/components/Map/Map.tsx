@@ -13,50 +13,53 @@ export default function MapComponent({ center, zoom }: MapProps) {
   const mapRef = useRef<Map | null>(null)
   const markerRef = useRef<Marker | null>(null)
 
+  const initialCenterRef = useRef(center)
+  const initialZoomRef = useRef(zoom)
+
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
 
     const map = new Map({
       container: mapContainerRef.current,
       style: "https://tiles.openfreemap.org/styles/bright",
-      center,
-      zoom,
-      dragPan: false,   // lock click-and-drag panning
-      scrollZoom: true, // allow mouse wheel zoom
-      doubleClickZoom: true,
-      touchZoomRotate: true,
+      center: initialCenterRef.current,
+      zoom: initialZoomRef.current,
+
+      dragPan: false,
+      dragRotate: false,
+      keyboard: false,
+      touchPitch: false,
+      boxZoom: false,
+
+      scrollZoom: { around: "center" },
+      touchZoomRotate: { around: "center" },
+      doubleClickZoom: true
     })
 
-    // Optional: keep pinch zoom on touch, but prevent touch rotation
     map.touchZoomRotate.disableRotation()
 
-    const marker = new Marker()
-      .setLngLat(center)
-      .addTo(map)
+    const marker = new Marker().setLngLat(initialCenterRef.current).addTo(map)
 
     mapRef.current = map
     markerRef.current = marker
 
     return () => {
-      markerRef.current?.remove()
-      mapRef.current?.remove()
+      marker.remove()
+      map.remove()
       markerRef.current = null
       mapRef.current = null
     }
   }, [])
 
   useEffect(() => {
-    if (!mapRef.current || !markerRef.current) return
+    const map = mapRef.current
+    const marker = markerRef.current
+    if (!map || !marker) return
 
-    mapRef.current.setCenter(center)
-    mapRef.current.setZoom(zoom)
-    markerRef.current.setLngLat(center)
+    map.setCenter(center)
+    map.setZoom(zoom)
+    marker.setLngLat(center)
   }, [center, zoom])
 
-  return (
-    <div
-      ref={mapContainerRef}
-      style={{ width: "100%", height: "300px" }}
-    />
-  )
+  return <div ref={mapContainerRef} style={{ width: "100%", height: "300px" }} />
 }

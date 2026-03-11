@@ -41,11 +41,13 @@ export interface SearchRequest extends AuthenticatedRequest {
   page?: number
 }
 
+export type SearchContentType = "Officer" | "Agency" | "Unit" | "Complaint" | "Litigation"
+
 export type SearchResponse = {
   uid: string | number
   title: string
   subtitle: string
-  content_type: string
+  content_type: SearchContentType
   source: string
   last_updated: string
   description?: string
@@ -56,7 +58,7 @@ export type SearchResponse = {
   suffix?: string | null
   ethnicity?: string
   gender?: string
-  state_ids?: any[] // TODO: create subtype
+  state_ids?: any[] // TODO: replace with subtype
   details?: string[]
 }
 
@@ -200,6 +202,8 @@ export type OfficerMostComplaints = {
 export type Location = {
   latitude: number
   longitude: number
+  city?: string
+  state?: string
 }
 
 export type Officer = {
@@ -214,17 +218,6 @@ export type Officer = {
   state_ids?: StateID[]
   employment_history?: EmploymentHistory[]
   allegation_summary?: AllegationSummary[]
-  sources?: Source[]
-}
-
-export type Unit = {
-  uid: string
-  name: string
-  location?: Location
-  most_reported_officers?: OfficerMostComplaints[]
-  total_officers?: number
-  total_complaints?: number
-  total_allegations?: number
   sources?: Source[]
 }
 
@@ -244,5 +237,17 @@ export type Agency = {
   total_complaints?: number
   allegation_summary?: AllegationSummary[]
   most_complaints?: UnitMostComplaints[]
+  sources?: Source[]
+}
+
+export type Unit = {
+  uid: string
+  name: string
+  location?: Location
+  most_reported_officers?: SearchResponse[]
+  total_officers?: number
+  total_complaints?: number
+  total_allegations?: number
+  agency?: Agency
   sources?: Source[]
 }
