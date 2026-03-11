@@ -21,13 +21,20 @@ export default function MapComponent({ center, zoom }: MapProps) {
       style: "https://tiles.openfreemap.org/styles/bright",
       center,
       zoom,
-      dragPan: false,   // lock click-and-drag panning
-      scrollZoom: true, // allow mouse wheel zoom
+
+      // disable panning / movement
+      dragPan: false,
+      dragRotate: false,
+      keyboard: false,
+      touchPitch: false,
+      boxZoom: false,
+
+      // allow zoom, but always around the map center
+      scrollZoom: { around: "center" },
+      touchZoomRotate: { around: "center" },
       doubleClickZoom: true,
-      touchZoomRotate: true,
     })
 
-    // Optional: keep pinch zoom on touch, but prevent touch rotation
     map.touchZoomRotate.disableRotation()
 
     const marker = new Marker()
@@ -38,19 +45,21 @@ export default function MapComponent({ center, zoom }: MapProps) {
     markerRef.current = marker
 
     return () => {
-      markerRef.current?.remove()
-      mapRef.current?.remove()
+      marker.remove()
+      map.remove()
       markerRef.current = null
       mapRef.current = null
     }
   }, [])
 
   useEffect(() => {
-    if (!mapRef.current || !markerRef.current) return
+    const map = mapRef.current
+    const marker = markerRef.current
+    if (!map || !marker) return
 
-    mapRef.current.setCenter(center)
-    mapRef.current.setZoom(zoom)
-    markerRef.current.setLngLat(center)
+    map.setCenter(center)
+    map.setZoom(zoom)
+    marker.setLngLat(center)
   }, [center, zoom])
 
   return (
