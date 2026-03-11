@@ -178,6 +178,30 @@ export type AllegationSummary = {
   latest_incident_date?: string
 }
 
+export type UnitMostComplaints = {
+  unit_name: string
+  officer_count: number
+  complaint_count: number
+  unit_uid: string
+}
+
+export type OfficerMostComplaints = {
+  officer_uid: string
+  first_name: string
+  last_name: string
+  suffix?: string | null
+  gender: string
+  ethnicity: string
+  rank: string
+  complaint_count: number
+  allegation_count: number
+}
+
+export type Location = {
+  latitude: number
+  longitude: number
+}
+
 export type Officer = {
   uid: string
   first_name: string
@@ -190,5 +214,35 @@ export type Officer = {
   state_ids?: StateID[]
   employment_history?: EmploymentHistory[]
   allegation_summary?: AllegationSummary[]
+  sources?: Source[]
+}
+
+export type Unit = {
+  uid: string
+  name: string
+  location?: Location
+  most_reported_officers?: OfficerMostComplaints[]
+  total_officers?: number
+  total_complaints?: number
+  total_allegations?: number
+  sources?: Source[]
+}
+
+export type Agency = {
+  uid: string
+  name: string
+  hq_state: string
+  hq_city?: string
+  hq_address?: string
+  hq_zip?: string
+  description?: string
+  website_url?: string
+  phone?: string
+  jurisdiction?: string
+  total_units?: number
+  total_officers?: number
+  total_complaints?: number
+  allegation_summary?: AllegationSummary[]
+  most_complaints?: UnitMostComplaints[]
   sources?: Source[]
 }

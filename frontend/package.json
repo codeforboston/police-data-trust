@@ -28,6 +28,7 @@
     "@mui/material": "^7.3.7",
     "@mui/styled-engine-sc": "^6.4.3",
     "env-cmd": "^10.1.0",
+    "maplibre-gl": "^5.20.0",
     "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
