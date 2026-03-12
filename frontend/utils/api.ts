@@ -224,6 +224,7 @@ export type Officer = {
 export type Agency = {
   uid: string
   name: string
+  location?: Location
   hq_state: string
   hq_city?: string
   hq_address?: string
@@ -236,7 +237,7 @@ export type Agency = {
   total_officers?: number
   total_complaints?: number
   allegation_summary?: AllegationSummary[]
-  most_complaints?: UnitMostComplaints[]
+  most_reported_units?: SearchResponse[]
   sources?: Source[]
 }
 

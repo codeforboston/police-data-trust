@@ -42,7 +42,7 @@ export default function OfficerDetailsPage() {
 
   return (
     <DetailsLayout sidebar={<OfficerContentDetails officer={officer} />}>
-      <OfficerIdentityCard {...officer} />
+      <OfficerIdentityCard officer={officer} />
       <OfficerDetailsTabs {...officer} />
     </DetailsLayout>
   )
