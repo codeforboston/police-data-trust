@@ -1,11 +1,12 @@
 import { Avatar, IconButton, Typography } from "@mui/material"
+import type { ReactNode } from "react"
 import styles from "./identityCard.module.css"
 import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined"
 
 type IdentityCardProps = {
   title: string
   subtitle?: string
-  detail?: string
+  detail?: ReactNode
   imageSrc?: string
   onAddToCollection?: () => void
 }

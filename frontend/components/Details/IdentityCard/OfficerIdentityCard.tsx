@@ -2,6 +2,10 @@ import IdentityCard from "./IdentityCard"
 import { Officer } from "@/utils/api"
 import { US_STATES } from "@/utils/constants"
 
+type OfficerIdentityCardProps = {
+  officer: Officer
+}
+
 function getAgeFromBirthYear(yearOfBirth: string | number): number {
   return new Date().getFullYear() - Number(yearOfBirth)
 }
@@ -22,7 +26,7 @@ function getOfficerFullName(officer: Officer): string {
   return [officer.first_name, middleName, officer.last_name].filter(Boolean).join(" ")
 }
 
-export default function OfficerIdentityCard(officer: Officer) {
+export default function OfficerIdentityCard({ officer }: OfficerIdentityCardProps) {
   const currentEmployment = officer.employment_history?.find((emp) => !emp.latest_date)
 
   const subtitleParts = [

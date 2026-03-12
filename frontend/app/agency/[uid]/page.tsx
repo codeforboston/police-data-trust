@@ -5,17 +5,17 @@ import { useAuth } from "@/providers/AuthProvider"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { useParams } from "next/navigation"
-import { Unit } from "@/utils/api"
+import { Agency } from "@/utils/api"
 import DetailsLayout from "@/components/Details/DetailsLayout"
-import UnitIdentityCard from "@/components/Details/IdentityCard/UnitIdentityCard"
-import UnitDetailsTabs from "@/components/Details/tabs/UnitDetailsTabs"
-import UnitContentDetails from "@/components/Details/ContentDetails/UnitContentDetails"
+import AgencyIdentityCard from "@/components/Details/IdentityCard/AgencyIdentityCard"
+import AgencyDetailsTabs from "@/components/Details/tabs/AgencyDetailsTabs"
+import AgencyContentDetails from "@/components/Details/ContentDetails/AgencyContentDetails"
 
-export default function UnitDetailsPage() {
+export default function AgencyDetailsPage() {
   const params = useParams<{ uid: string }>()
   const uid = params.uid
 
-  const [unit, setUnit] = useState<Unit | null>(null)
+  const [agency, setAgency] = useState<Agency | null>(null)
   const { accessToken } = useAuth()
   const [loading, setLoading] = useState(true)
 
@@ -25,7 +25,7 @@ export default function UnitDetailsPage() {
     setLoading(true)
 
     apiFetch(
-      `${apiBaseUrl}${API_ROUTES.units.profile(uid)}?include=total_officers&include=reported_officers&include=total_complaints&include=location`,
+      `${apiBaseUrl}${API_ROUTES.agencies.profile(uid)}?include=complaints&include=officers&include=units&include=reported_units&include=location`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -33,17 +33,17 @@ export default function UnitDetailsPage() {
       }
     )
       .then((res) => res.json())
-      .then((data) => setUnit(data.results || data))
+      .then((data) => setAgency(data.results || data))
       .finally(() => setLoading(false))
   }, [accessToken, uid])
 
   if (loading) return <div>Loading...</div>
-  if (!unit) return <div>Unit not found</div>
+  if (!agency) return <div>Agency not found</div>
 
   return (
-    <DetailsLayout sidebar={<UnitContentDetails unit={unit} />}>
-      <UnitIdentityCard unit={unit} />
-      <UnitDetailsTabs {...unit} />
+    <DetailsLayout sidebar={<AgencyContentDetails agency={agency} />}>
+      <AgencyIdentityCard agency={agency} />
+      <AgencyDetailsTabs {...agency} />
     </DetailsLayout>
   )
 }
