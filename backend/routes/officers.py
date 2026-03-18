@@ -457,6 +457,7 @@ def get_all_officers():
         "rank": request.args.getlist("rank"),
         "badge_number": request.args.getlist("badge_number"),
         "ethnicity": request.args.getlist("ethnicity"),
+        "include": request.args.getlist("include"),
     }
     try:
         params = OfficerSearchParams(**raw)
@@ -487,7 +488,9 @@ def get_all_officers():
         name=params.officer_name,
         rank=params.officer_rank,
         unit=params.unit,
+        unit_uid=params.unit_uid,
         agency=params.agency,
+        agency_uid=params.agency_uid,
         badge_number=params.badge_number,
         ethnicity=params.ethnicity,
         active_after=params.active_after,
@@ -506,6 +509,23 @@ def get_all_officers():
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
     else:
+      if params.include:
+          if "employment" in params.include:
+              employment_map = Officer.include_employment(
+                uids = [row.get("uid") for row in results],
+                unit_uid = params.unit_uid if params.unit_uid else None,
+                agency_uid = params.agency_uid if params.agency_uid else None, 
+              )
+              logging.warning("Employment map: %s", employment_map)
+          # build page
+          page = []
+          for row in results:
+            item = {
+                **row.to_dict(),
+                "employment_history": employment_map.get(row.get("uid"), [])
+            }
+            page.append(item)
+      else:      
         page = [row.to_dict() for row in results]
         return_func = ordered_jsonify
     # logging.warning('response is --------------------------------\n%s', page)

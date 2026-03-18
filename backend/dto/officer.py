@@ -16,6 +16,8 @@ class OfficerSearchParams(PaginatedRequest):
     middle_name: Optional[str] = None
     last_name: Optional[str] = None
     suffix: Optional[str] = None
+    unit_uid: Optional[str] = None
+    agency_uid: Optional[str] = None
 
     # Other filters
     rank: List[str] = []
@@ -25,6 +27,25 @@ class OfficerSearchParams(PaginatedRequest):
     active_before: Optional[str] = None
     badge_number: List[str] = Field([], alias="badge_number")
     ethnicity: List[str] = []
+
+    # Include params
+    include: Optional[List[str]] = Field(
+        None, description="Related entities to include in the response."
+    )
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "employment"
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
+        return v
+
+
 
     # Derived fields (computed below)
     @field_validator("unit", mode="before")
