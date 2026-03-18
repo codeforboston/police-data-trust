@@ -200,63 +200,63 @@ function useHook(): SearchContext {
   useEffect(() => {
     if (!hasHydrated) return
 
-  if (skipEffectRef.current) {
-    skipEffectRef.current = false
-    return
-  }
-
-  if (!accessToken) return
-
-  if (abortControllerRef.current) {
-    abortControllerRef.current.abort()
-  }
-
-  const abortController = new AbortController()
-  abortControllerRef.current = abortController
-
-  fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
-    if (!(err instanceof Error && err.name === "AbortError")) {
-      console.error("fetchFromParams on tab change effect error", err)
+    if (skipEffectRef.current) {
+      skipEffectRef.current = false
+      return
     }
-  })
 
-  return () => {
-    abortController.abort()
-  }
-}, [tab, hasHydrated, accessToken, fetchFromParams, searchParams])
+    if (!accessToken) return
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
+    fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
+      if (!(err instanceof Error && err.name === "AbortError")) {
+        console.error("fetchFromParams on tab change effect error", err)
+      }
+    })
+
+    return () => {
+      abortController.abort()
+    }
+  }, [tab, hasHydrated, accessToken, fetchFromParams, searchParams])
 
   // Effect: when searchParams change, fetch results
-useEffect(() => {
-  if (!hasHydrated) return
+  useEffect(() => {
+    if (!hasHydrated) return
 
-  if (skipEffectRef.current) {
-    skipEffectRef.current = false
-    return
-  }
-
-  const paramsString = searchParams.toString()
-  if (!paramsString) return
-
-  if (!accessToken) return
-
-  if (abortControllerRef.current) {
-    abortControllerRef.current.abort()
-  }
-
-  const abortController = new AbortController()
-  abortControllerRef.current = abortController
-
-  const params = new URLSearchParams(paramsString)
-  fetchFromParams(params, undefined, abortController.signal).catch((err) => {
-    if (!(err instanceof Error && err.name === "AbortError")) {
-      console.error("fetchFromParams effect error", err)
+    if (skipEffectRef.current) {
+      skipEffectRef.current = false
+      return
     }
-  })
 
-  return () => {
-    abortController.abort()
-  }
-}, [searchParams, hasHydrated, accessToken, fetchFromParams])
+    const paramsString = searchParams.toString()
+    if (!paramsString) return
+
+    if (!accessToken) return
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
+    const params = new URLSearchParams(paramsString)
+    fetchFromParams(params, undefined, abortController.signal).catch((err) => {
+      if (!(err instanceof Error && err.name === "AbortError")) {
+        console.error("fetchFromParams effect error", err)
+      }
+    })
+
+    return () => {
+      abortController.abort()
+    }
+  }, [searchParams, hasHydrated, accessToken, fetchFromParams])
 
   return useMemo(
     () => ({ searchAll, searchResults, loading, error, setPage, updateTab, tab }),
