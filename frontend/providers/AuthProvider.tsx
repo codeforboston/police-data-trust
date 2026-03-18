@@ -11,7 +11,7 @@ interface AuthContext {
   accessToken: string | null
   refreshToken: string | null
   isLoggedIn: boolean
-  hasHydrated?: boolean
+  hasHydrated: boolean
   setAccessToken: (token: string | null) => void
   setRefreshToken: (token: string | null) => void
   refreshAccessToken: () => Promise<string | null>

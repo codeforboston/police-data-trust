@@ -36,7 +36,7 @@ export const useSearch = () => {
 }
 
 function useHook(): SearchContext {
-  const { accessToken, refreshAccessToken } = useAuth()
+  const { accessToken, hasHydrated } = useAuth()
   const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -98,14 +98,12 @@ function useHook(): SearchContext {
   // Fetch based on provided URLSearchParams (or current searchParams if omitted)
   const fetchFromParams = useCallback(
     async (params: URLSearchParams, updatedTab?: number, signal?: AbortSignal) => {
+      if (!hasHydrated) {
+        return { results: [] }
+      }
+
       if (!accessToken) {
-        const errorResponse: PaginatedSearchResponses = {
-          error: "No access token available",
-          results: []
-        }
-        setError("No access token available")
-        setResults(errorResponse)
-        return errorResponse
+        return { results: [] }
       }
 
       setLoading(true)
@@ -113,20 +111,23 @@ function useHook(): SearchContext {
 
       try {
         let apiUrl = apiBaseUrl
-        // need to update params for api call if tab has changed
-        if (updatedTab) {
-          const oldParams = params.toString().split("=")[1]
+
+        if (updatedTab !== undefined) {
+          const queryValue = params.get("query") ?? ""
           const paramKeys = getParamKeys(updatedTab)
           const newParams = new URLSearchParams()
-          paramKeys.forEach((key: string) => newParams.set(key, oldParams))
+
+          paramKeys.forEach((key: string) => newParams.set(key, queryValue))
+
           if (updatedTab !== 0) {
-            // needed to get back search result type data from API
             newParams.set("searchResult", "true")
           }
+
           apiUrl += `${getSearchType(updatedTab)}?${newParams.toString()}`
         } else {
           apiUrl += `${getSearchType(tab)}?${params.toString()}`
         }
+
         const response = await apiFetch(apiUrl, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -142,7 +143,6 @@ function useHook(): SearchContext {
         setError(null)
         return data
       } catch (err) {
-        // Don't set error if request was aborted
         if (err instanceof Error && err.name === "AbortError") {
           return { results: [] }
         }
@@ -159,36 +159,28 @@ function useHook(): SearchContext {
         setLoading(false)
       }
     },
-    [accessToken]
+    [accessToken, hasHydrated, tab]
   )
 
   const searchAll = useCallback(
     async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
-      // Cancel any in-flight request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
       }
 
-      // Create new AbortController for this request
       const abortController = new AbortController()
       abortControllerRef.current = abortController
 
-      // Set flag to skip the effect's fetch (we're handling it here)
       skipEffectRef.current = true
 
-      // Update URL params
       const params = updateQueryParams(tab, query as Record<string, any>)
-
-      // Fetch directly
-      const data = await fetchFromParams(params, undefined, abortController.signal)
-      return data
+      return fetchFromParams(params, undefined, abortController.signal)
     },
-    [updateQueryParams, fetchFromParams]
+    [updateQueryParams, fetchFromParams, tab]
   )
 
   const setPage = useCallback(
     (page: number) => {
-      // Validate page number
       if (page < 1) {
         setError("Page number must be at least 1")
         return
@@ -199,79 +191,72 @@ function useHook(): SearchContext {
         return
       }
 
-      // Update the page param in the URL. The effect watching params will trigger a fetch.
       updateQueryParams(tab, { page })
     },
-    [updateQueryParams, searchResults?.pages]
+    [updateQueryParams, searchResults?.pages, tab]
   )
 
   //Effect: when new tab is clicked, fetch results
   useEffect(() => {
-    // check if we should skip
-    if (skipEffectRef.current) {
-      skipEffectRef.current = false
-      return
+    if (!hasHydrated) return
+
+  if (skipEffectRef.current) {
+    skipEffectRef.current = false
+    return
+  }
+
+  if (!accessToken) return
+
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort()
+  }
+
+  const abortController = new AbortController()
+  abortControllerRef.current = abortController
+
+  fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
+    if (!(err instanceof Error && err.name === "AbortError")) {
+      console.error("fetchFromParams on tab change effect error", err)
     }
+  })
 
-    // cancel any in flight requests
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
-      // only log non abort errors
-      if (!(err instanceof Error && err.name === "AbortError")) {
-        console.error("fetchFromParams on tab change effect error", err)
-      }
-    })
-
-    // Cleanup: abort on unmount or param change
-    return () => {
-      abortController.abort()
-    }
-  }, [tab])
+  return () => {
+    abortController.abort()
+  }
+}, [tab, hasHydrated, accessToken, fetchFromParams, searchParams])
 
   // Effect: when searchParams change, fetch results
-  useEffect(() => {
-    // Check if we should skip (searchAll already handled the fetch)
-    if (skipEffectRef.current) {
-      skipEffectRef.current = false
-      return
+useEffect(() => {
+  if (!hasHydrated) return
+
+  if (skipEffectRef.current) {
+    skipEffectRef.current = false
+    return
+  }
+
+  const paramsString = searchParams.toString()
+  if (!paramsString) return
+
+  if (!accessToken) return
+
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort()
+  }
+
+  const abortController = new AbortController()
+  abortControllerRef.current = abortController
+
+  const params = new URLSearchParams(paramsString)
+  fetchFromParams(params, undefined, abortController.signal).catch((err) => {
+    if (!(err instanceof Error && err.name === "AbortError")) {
+      console.error("fetchFromParams effect error", err)
     }
+  })
 
-    const paramsString = searchParams.toString()
-
-    // Don't fetch if there are no search params
-    if (!paramsString) {
-      return
-    }
-
-    // Cancel any in-flight request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    // Create new AbortController for this request
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    const params = new URLSearchParams(paramsString)
-    fetchFromParams(params, undefined, abortController.signal).catch((err) => {
-      // Only log non-abort errors
-      if (!(err instanceof Error && err.name === "AbortError")) {
-        console.error("fetchFromParams effect error", err)
-      }
-    })
-
-    // Cleanup: abort on unmount or param change
-    return () => {
-      abortController.abort()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  return () => {
+    abortController.abort()
+  }
+}, [searchParams, hasHydrated, accessToken, fetchFromParams])
 
   return useMemo(
     () => ({ searchAll, searchResults, loading, error, setPage, updateTab, tab }),
