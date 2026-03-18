@@ -6,6 +6,7 @@ import DetailsTabs from "./DetailsTabs"
 import Jurisdiction from "../Jurisdiction"
 import MostReportedOfficers from "@/components/Details/MostReportedOfficers"
 import Attachments from "../Attachments"
+import OfficerList from "@/components/Details/OfficerList"
 
 export default function UnitDetailsTabs(unit: Unit) {
   const tabs = [
@@ -35,8 +36,7 @@ export default function UnitDetailsTabs(unit: Unit) {
     },
     {
       label: "Officer List",
-      content: <>Officer List</>,
-      disabled: true
+      content: <OfficerList unit={unit} officers={unit.most_reported_officers} />
     },
     {
       label: "Complaint List",

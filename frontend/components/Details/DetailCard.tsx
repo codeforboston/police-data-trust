@@ -1,11 +1,12 @@
 import * as React from "react"
-import { Box } from "@mui/material"
+import { Box, SxProps, Theme } from "@mui/material"
 
 interface DetailCardProps {
   children: React.ReactNode
+  sx?: SxProps<Theme>
 }
 
-export default function DetailCard({ children }: DetailCardProps) {
+export default function DetailCard({ children, sx }: DetailCardProps) {
   return (
     <Box
       sx={{
@@ -14,7 +15,8 @@ export default function DetailCard({ children }: DetailCardProps) {
         borderRadius: "16px",
         display: "flex",
         flexDirection: "column",
-        gap: "16px"
+        gap: "16px",
+        ...sx
       }}
     >
       {children}
