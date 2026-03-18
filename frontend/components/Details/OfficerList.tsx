@@ -17,7 +17,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Paper
+  Paper,
+  CircularProgress
 } from "@mui/material"
 import { Search, TableRows, Apps } from "@mui/icons-material"
 import { SearchResponse, Unit } from "@/utils/api"
@@ -29,13 +30,17 @@ type OfficerListProps = {
   officers?: SearchResponse[]
   activeOfficerCount?: number
   inactiveOfficerCount?: number
+  loading?: boolean
+  error?: Error | null
 }
 
 export default function OfficerList({
   unit,
   officers = [],
   activeOfficerCount,
-  inactiveOfficerCount
+  inactiveOfficerCount,
+  loading = false,
+  error = null
 }: OfficerListProps) {
   const [viewMode, setViewMode] = React.useState<"card" | "table">("table")
   const [searchValue, setSearchValue] = React.useState("")
@@ -80,8 +85,7 @@ export default function OfficerList({
           exclusive
           onChange={handleViewModeChange}
           size="small"
-          sx={{ borderRadius: "999px", height: 40 }}
-        >
+          sx={{ borderRadius: "999px", height: 40 }}>
           <ToggleButton value="card" aria-label="card view">
             <Apps sx={{ mr: 1 }} />
             Card view
@@ -100,8 +104,7 @@ export default function OfficerList({
           gap: 2,
           alignItems: "center",
           mt: 3
-        }}
-      >
+        }}>
         <TextField
           variant="outlined"
           placeholder="search officer or try anything"
@@ -124,8 +127,7 @@ export default function OfficerList({
           <Select
             label="Status"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
+            onChange={(e) => setStatusFilter(e.target.value)}>
             <MenuItem value="all">All</MenuItem>
             <MenuItem value="active">Active</MenuItem>
             <MenuItem value="inactive">Inactive</MenuItem>
@@ -151,7 +153,15 @@ export default function OfficerList({
         </FormControl>
       </Box>
 
-      {viewMode === "table" ? (
+      {loading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography color="error" sx={{ mt: 3 }}>
+          Could not load officers.
+        </Typography>
+      ) : viewMode === "table" ? (
         <Paper sx={{ width: "100%", mt: 3, overflowX: "auto" }}>
           <Table>
             <TableHead>
