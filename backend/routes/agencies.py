@@ -7,7 +7,8 @@ from backend.schemas import (
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
-from backend.routes.search import fetch_details, build_agency_result
+from backend.routes.search import (
+    fetch_details, build_agency_result, build_unit_result)
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
@@ -20,6 +21,32 @@ UNIT_CYPHER = """
 CALL (a) {
   OPTIONAL MATCH (a:Agency)-[]-(u:Unit)
   RETURN count(DISTINCT u) AS total_units
+}
+"""
+
+LOCATION_CYPHER = """
+CALL (a) {
+    MATCH (a)-[]-(city:CityNode)-[]-(:CountyNode)
+    -[]-(state:StateNode)
+  RETURN {
+    coords: city.coordinates,
+    city: city.name,
+    state: state.name
+  } AS location
+}
+"""
+
+TOP_UNITS_BY_COMPLAINTS_CYPHER = """
+CALL (a) {
+  MATCH (a)-[]-(u:Unit)<-[]-(:Employment)-[]->(o:Officer)
+    -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  WITH
+    u,
+    count(DISTINCT c) AS complaint_count,
+    count(DISTINCT a) AS allegation_count
+  ORDER BY complaint_count DESC, allegation_count DESC
+  LIMIT 3
+  RETURN collect(u) AS most_reported_units
 }
 """
 
@@ -156,6 +183,12 @@ def get_agency(agency_uid: str):
         if "allegations" in params.include:
             subqueries += ALLEGATION_CYPHER
             return_clause += ", collect(type_summary) AS allegation_summary"
+        if "reported_units" in params.include:
+            subqueries += TOP_UNITS_BY_COMPLAINTS_CYPHER
+            return_clause += ", most_reported_units"
+        if "location" in params.include:
+            subqueries += LOCATION_CYPHER
+            return_clause += ", location"
     cy = match_clause + subqueries + return_clause
 
     rows, _ = db.cypher_query(cy, {"agency_uid": agency_uid})
@@ -178,6 +211,28 @@ def get_agency(agency_uid: str):
             agency_data["allegation_summary"] = format_allegation_summary(
                 row[idx])
             idx += 1
+        if "reported_units" in params.include:
+            details = fetch_details(
+                [u.get("uid") for u in row[idx]], "Unit")
+            units = [build_unit_result(
+                u, details.get(u.get("uid"), {})) for u in row[idx]]
+            item_dump = [
+                item.model_dump() for item in units if item
+            ]
+            for item in item_dump:
+                item["last_updated"] = item[
+                    "last_updated"].isoformat() if item.get(
+                    "last_updated", None) else None
+            agency_data["most_reported_units"] = item_dump
+            idx += 1
+        if "location" in params.include:
+            loc = row[idx]
+            agency_data["location"] = {
+                "latitude": loc["coords"].y,
+                "longitude": loc["coords"].x,
+                "city": loc["city"],
+                "state": loc["state"]
+            } if loc and loc.get("coords", None) else None
     return ordered_jsonify(agency_data)
 
 

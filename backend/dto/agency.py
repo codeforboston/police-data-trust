@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, validator, field_validator
+from pydantic import Field, BaseModel, field_validator
 from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.dto.common import PaginatedRequest
@@ -31,13 +31,13 @@ class AgencyQueryParams(PaginatedRequest):
     # per_page: int = Field(default=20, ge=1)
     searchResult: bool = Field(default=False)
 
-    @validator("hq_state")
+    @field_validator("hq_state")
     def validate_state(cls, v):
         if v and v not in State.choices():
             raise ValueError(f"Invalid state: {v}")
         return v
 
-    @validator("jurisdiction")
+    @field_validator("jurisdiction")
     def validate_jurisdiction(cls, v):
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
@@ -56,6 +56,8 @@ class GetAgencyParams(BaseModel):
             "officers",
             "complaints",
             "allegations",
+            "reported_units",
+            "location",
         }
         if v:
             invalid = set(v) - allowed_includes

@@ -1,4 +1,4 @@
-import TextField from "@mui/material/TextField/TextField"
+import TextField from "@mui/material/TextField"
 import styles from "./filter.module.css"
 import {
   Checkbox,

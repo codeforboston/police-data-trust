@@ -1,19 +1,39 @@
-from pydantic import Field, validator
-from typing import Optional
+from pydantic import Field, field_validator
+from typing import Optional, List
 from backend.database.models.agency import State
-from backend.dto.common import PaginatedRequest
+from backend.dto.common import PaginatedRequest, RequestDTO
 
 
 class UnitQueryParams(PaginatedRequest):
     name: Optional[str] = None
     city: Optional[str] = None
     state: Optional[str] = None
-    # page: int = Field(default=1, ge=1)
-    # per_page: int = Field(default=20, ge=1)
     searchResult: bool = Field(default=False)
 
-    @validator("state")
+    @field_validator("state")
     def validate_state(cls, v):
         if v and v not in State.choices():
             raise ValueError(f"Invalid state: {v}")
+        return v
+
+
+class GetUnitParams(RequestDTO):
+    include: Optional[List[str]] = Field(
+        None, description="Related entities to include in the response."
+    )
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "total_officers",
+            "total_complaints",
+            "reported_officers",
+            "leadership",
+            "location",
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
         return v

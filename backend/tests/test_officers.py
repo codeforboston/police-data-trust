@@ -148,7 +148,7 @@ def test_create_officer(
         "gender": "Male"
     }
     res = client.post(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         json=request,
         headers={
             "Authorization": "Bearer {0}".format(contributor_access_token)
@@ -241,7 +241,7 @@ def test_search_officers(
 def test_get_officers(client, db_session, access_token, example_officers):
     all_officers = Officer.nodes.all()
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
 
@@ -260,7 +260,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            "/api/v1/officers/",
+            "/api/v1/officers",
             query_string={"per_page": per_page, "page": page},
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
@@ -271,7 +271,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
         assert len(res.json["results"]) == per_page
 
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -293,7 +293,7 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 1
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": 20, "page": 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -305,7 +305,7 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 2
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": 20, "page": 2},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -317,7 +317,7 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 3 (should return empty)
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": 20, "page": 3},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -550,7 +550,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
     officers_with_unit = [Officer.inflate(row[0]) for row in results]
 
     res = client.get(
-        "/api/v1/officers/?unit=Unit Alpha",
+        "/api/v1/officers?unit=Unit Alpha",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     print(officers_with_unit)
@@ -571,7 +571,7 @@ def test_get_officers_with_unit(client, db_session, access_token,
 
     # API request with multiple units
     res = client.get(
-        "/api/v1/officers/?unit=Unit Alpha&unit=Unit Bravo",
+        "/api/v1/officers?unit=Unit Alpha&unit=Unit Bravo",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     print(f"len results is {len(res.json['results'])}")
@@ -594,7 +594,7 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
     officers_with_unit = [Officer.inflate(row[0]) for row in results]
 
     res = client.get(
-        "/api/v1/officers/?agency=Chicago Police Department",
+        "/api/v1/officers?agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert officers_with_unit is not None
@@ -615,7 +615,7 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
 ])
 def test_get_officers_dates(client, access_token, query, expect_results,
                             create_officers_units_agencies):
-    res = client.get(f"/api/v1/officers/?{query}",
+    res = client.get(f"/api/v1/officers?{query}",
                      headers={"Authorization": f"Bearer {access_token}"})
     assert res.status_code == 200
 
@@ -634,7 +634,7 @@ def test_get_officers_dates(client, access_token, query, expect_results,
 def test_get_officers_with_rank(client, db_session, access_token,
                                 create_officers_units_agencies):
     res = client.get(
-        "/api/v1/officers/?rank=Officer",
+        "/api/v1/officers?rank=Officer",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -643,7 +643,7 @@ def test_get_officers_with_rank(client, db_session, access_token,
     assert res.json["results"][0]["last_name"] is not None
 
     res = client.get(
-        "/api/v1/officers/?rank=Officer&agency=Chicago Police Department",
+        "/api/v1/officers?rank=Officer&agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -652,7 +652,7 @@ def test_get_officers_with_rank(client, db_session, access_token,
     assert res.json["results"][0]["last_name"] is not None
 
     res = client.get(
-        "/api/v1/officers/?rank=Lieutenant",
+        "/api/v1/officers?rank=Lieutenant",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -664,7 +664,7 @@ def test_get_officers_with_rank(client, db_session, access_token,
 def test_filter_by_ethnicity(client, db_session, access_token,
                              create_officers_units_agencies):
     res = client.get(
-        "/api/v1/officers/?ethnicity=White",
+        "/api/v1/officers?ethnicity=White",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -675,7 +675,7 @@ def test_filter_by_ethnicity(client, db_session, access_token,
 
     # Multiple ethnicities
     res = client.get(
-        "/api/v1/officers/?ethnicity=White&ethnicity=Hispanic",
+        "/api/v1/officers?ethnicity=White&ethnicity=Hispanic",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
@@ -698,7 +698,7 @@ def test_filter_by_officer_name(client, db_session, access_token,
                                 first_name, last_name, expect_results):
     # Test first_name and last_name params
     res = client.get(
-        f"/api/v1/officers/?first_name={first_name}&last_name={last_name}",
+        f"/api/v1/officers?first_name={first_name}&last_name={last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
 
@@ -711,7 +711,7 @@ def test_filter_by_officer_name(client, db_session, access_token,
 
     # Test flexible full name param
     res = client.get(
-        f"/api/v1/officers/?query={first_name} {last_name}",
+        f"/api/v1/officers?query={first_name} {last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
@@ -721,7 +721,7 @@ def test_filter_by_officer_name(client, db_session, access_token,
         assert res.json == {"message": "No results found matching the query"}
 
     res = client.get(
-        f"/api/v1/officers/?query={last_name}",
+        f"/api/v1/officers?query={last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
@@ -738,8 +738,8 @@ def test_get_search_result(client, db_session, access_token, example_officer,
     )
 
     res = client.get(
-        "/api/v1/officers/?first_name=John&searchResult=true",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
+        "/api/v1/officers?first_name=John&searchResult=true",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
     )
 
     assert res.status_code == 200
@@ -758,8 +758,8 @@ def test_get_search_result_no_results(
     example_unit
 ):
     res = client.get(
-        "/api/v1/officers/?first_name=Nonexistent&searchResult=true",
-        headers={"Authorization ": "Bearer {0}".format(access_token)},
+        "/api/v1/officers?first_name=Nonexistent&searchResult=true",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
     )
 
     assert res.status_code == 200
@@ -774,7 +774,7 @@ def test_invalid_query_params(
     example_unit
 ):
     res = client.get(
-        "/api/v1/officers/?abc=123",
+        "/api/v1/officers?abc=123",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     body = res.get_data(as_text=True)

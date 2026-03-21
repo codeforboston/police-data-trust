@@ -2,9 +2,9 @@
 # From repository root folder
 # docker build --build-arg ENV=development -t police-data-trust-frontend-dev -f frontend/Dockerfile.cloud ./frontend
 
-FROM node:20-bookworm-slim as builder
+FROM node:20-bookworm-slim AS builder
 
-WORKDIR /app/
+WORKDIR /app
 ARG ENV
 
 COPY package*.json ./
@@ -14,7 +14,17 @@ COPY . .
 
 RUN npm run build:${ENV}
 
-FROM nginx:1.27-bookworm
-COPY --from=builder /app/out /usr/share/nginx/html
-COPY --from=builder /app/nginx/default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+FROM node:20-bookworm-slim AS runner
+
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

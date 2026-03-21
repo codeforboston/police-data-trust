@@ -1,0 +1,30 @@
+.detailsBackground {
+  min-height: 100vh;
+  padding: 94px 68px 32px 94px;
+}
+
+.detailsContainer {
+  display: flex;
+  gap: 32px;
+}
+
+.detailsSidebar {
+  padding: 16px;
+  border: 1px solid #b3b3b3;
+  border-radius: 16px;
+  height: fit-content;
+  max-width: 294px;
+  width: 100%;
+}
+
+@media screen and (max-width: 745px) {
+  .detailsSidebar {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 875px) {
+  .detailsBackground {
+    padding: 38px 24px;
+  }
+}
