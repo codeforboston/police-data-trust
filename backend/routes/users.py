@@ -1,11 +1,13 @@
+import logging
+
 from flask import Blueprint, jsonify, request, send_from_directory
 from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
+from urllib.parse import urlparse
 import uuid
 from werkzeug.utils import secure_filename
-PROFILE_PIC_FOLDER=os.getenv("PROFILE_PIC_FOLDER")
-
+import boto3
 from ..database import User, EmailContact, SocialMediaContact, PhoneContact
 
 bp = Blueprint("users", __name__, url_prefix="/api/v1/users")
@@ -186,10 +188,13 @@ def save_profile_photo(file, user_id):
 
     if not ext:
         raise ValueError("File must have an extension")
+    if ext not in (".jpg", ".jpeg", ".png", ".gif"):
+        raise ValueError(f"Invalid file type: {ext}")
 
     # ---------- LOCAL ----------
     if os.environ.get("FLASK_ENV") != "production":
-        upload_dir = PROFILE_PIC_FOLDER
+        upload_dir = os.getenv("PROFILE_PIC_FOLDER")
+
         os.makedirs(upload_dir, exist_ok=True)
 
         filename = f"user_{user_id}{ext}"
@@ -197,30 +202,27 @@ def save_profile_photo(file, user_id):
 
         file.save(path)
 
-        return f"Uploaded Successfully to {path}"
-    else:
-        raise NotImplementedError("Production profile photo upload not implemented")
+        return path
+
     # ---------- PRODUCTION (S3) ----------
-    # else:
-    #     import boto3
+    else:
+        s3 = boto3.client("s3")
+        bucket = os.getenv("S3_BUCKET")
 
-    #     s3 = boto3.client("s3")
-    #     bucket = current_app.config["S3_BUCKET"]
+        key = f"profile_photos/user_{user_id}_{uuid.uuid4().hex}{ext}"
 
-    #     key = f"profile_photos/user_{user_id}_{uuid.uuid4().hex}{ext}"
+        s3.upload_fileobj(
+            file,
+            bucket,
+            key,
+            ExtraArgs={
+                "ContentType": file.mimetype,
+                "ACL": "private",
+            },
+        )
 
-    #     s3.upload_fileobj(
-    #         file,
-    #         bucket,
-    #         key,
-    #         ExtraArgs={
-    #             "ContentType": file.mimetype,
-    #             "ACL": "private",
-    #         },
-    #     )
-
-    #     # store S3 path, not signed URL
-    #     return f"s3://{bucket}/{key}"
+        # S3 URI
+        return f"s3://{bucket}/{key}"
 
 
 @bp.route("/self/profile-image", methods=["GET"])
@@ -234,18 +236,14 @@ def get_profile_photo():
     if not user or not user.profile_image:
         return {"error": "No profile photo"}, 404
 
-    # import boto3
-    from urllib.parse import urlparse
-    import os
-
     if os.environ.get("FLASK_ENV") != "production":
         # local dev
+        logging.warning('retrieve image from %s', user.profile_image)
         filename = os.path.basename(user.profile_image)
-        directory = PROFILE_PIC_FOLDER
+        directory = os.getenv("PROFILE_PIC_FOLDER")
         return send_from_directory(directory, filename)
     else:
-        raise NotImplementedError("Production profile photo upload not implemented")
-        parsed = urlparse(user.profile_photo_url)
+        parsed = urlparse(user.profile_image)
         bucket = parsed.netloc
         key = parsed.path.lstrip("/")
 
@@ -255,4 +253,4 @@ def get_profile_photo():
             Params={"Bucket": bucket, "Key": key},
             ExpiresIn=3600,  # 1 hour
         )
-        return {"profile_image_url": url}, 200
+        return jsonify({"profile_image_url": url}), 200
