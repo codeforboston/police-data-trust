@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, List, Dict
 from collections import defaultdict
 from datetime import datetime
@@ -374,12 +375,25 @@ def text_search():
         """
     else:
         cypher = """
-        OPTIONAL MATCH (city:CityNode {name: $city})
+        CALL () {
+            CALL db.index.fulltext.queryNodes('officerNames', $query)
+                YIELD node, score
+                RETURN node, score
+            UNION ALL
+            CALL db.index.fulltext.queryNodes('agencyNames', $query)
+                YIELD node, score
+                RETURN node, score
+            UNION ALL
+            CALL db.index.fulltext.queryNodes('unitNames', $query)
+                YIELD node, score
+                RETURN node, score
+        }
+        
+        WITH node, score
+        MATCH (city:CityNode {name: $city})
         -[]-(:CountyNode)-[]-(:StateNode {name: $state})
 
-        CALL {
-        WITH city
-
+        CALL (city) {
         // Officers: (Officer)-[]-(Unit)-[]-(Agency)-[]-(CityNode)
         CALL db.index.fulltext.queryNodes('officerNames', $query)
             YIELD node, score
@@ -420,9 +434,11 @@ def text_search():
         LIMIT $per_page
         """
 
-    print("city ->", city)
-    print("state ->", state)
-    print("the cypher i use", cypher)
+    logging.warning("query ->", city)
+    logging.warning("city ->", city)
+    logging.warning("state ->", state)
+    logging.warning("cypher ->", cypher)
+    
     results, meta = db.cypher_query(cypher, params)
     if not results:
         return jsonify({"message": "No results found matching the query"}), 200

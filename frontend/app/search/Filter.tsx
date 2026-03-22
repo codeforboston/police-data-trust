@@ -14,7 +14,7 @@ import { useSearch } from "@/providers/SearchProvider"
 import { useSearchParams } from "next/navigation"
 
 // const FILTER_GROUP_1 = [
-//   { id: 1, title: "All the locations", count: 56 },
+//   { id: 1, title: "All e locations", count: 56 },
 //   { id: 2, title: "New York City", count: 15 },
 //   { id: 3, title: "Texas State", count: 2 }
 // ]
