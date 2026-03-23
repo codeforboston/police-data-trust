@@ -4,8 +4,11 @@ from typing import Optional, List
 
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
-from backend.schemas import (validate_request, ordered_jsonify,
-                             add_pagination_wrapper)
+from backend.schemas import (
+    validate_request,
+    ordered_jsonify,
+    add_pagination_wrapper,
+)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
 from backend.database.models.source import Source
@@ -34,8 +37,8 @@ class SearchOfficerSchema(BaseModel):
         json_schema_extra = {
             "example": {
                 "officerName": "John Doe",
-                "location" : "New York",
-                "badgeNumber" : 1234,
+                "location": "New York",
+                "badgeNumber": 1234,
                 "page": 1,
                 "perPage": 20,
             }
@@ -155,19 +158,28 @@ def create_officer():
             ),
         )
 
+    if not source.members.is_connected(current_user):
+        abort(
+            403, description="User does not have permission to use this source"
+        )
+
+    member_rel = source.members.relationship(current_user)
+    if member_rel is None or not member_rel.may_publish():
+        abort(
+            403, description="User does not have permission to use this source"
+        )
+
     officer_data = body.dict()
     officer_data.pop("source_uid", None)
     officer = Officer.from_dict(officer_data)
 
-    officer.citations.connect(source, {"date": datetime.now()})
+    officer.citations.connect(source, {"timestamp": datetime.now()})
 
     logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
     track_to_mp(
         request,
         "create_officer",
-        {
-            "officer_id": officer.uid
-        },
+        {"officer_id": officer.uid},
     )
     return officer.to_json()
 
@@ -177,8 +189,7 @@ def create_officer():
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_officer(officer_uid: int):
-    """Get an officer profile.
-    """
+    """Get an officer profile."""
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
         abort(404, description="Officer not found")
@@ -205,8 +216,10 @@ def get_all_officers():
     limit = q_per_page
 
     # Build full name
-    officer_name_parts = [args.get(k, "").strip() for k in
-                          ["firstName", "middleName", "lastName", "suffix"]]
+    officer_name_parts = [
+        args.get(k, "").strip()
+        for k in ["firstName", "middleName", "lastName", "suffix"]
+    ]
     officer_name = " AND ".join([p for p in officer_name_parts if p]) or None
 
     officer_rank = " ".join(args.getlist("rank"))
@@ -293,7 +306,7 @@ def get_all_officers():
     results, _ = db.cypher_query(cypher_query, params)
 
     # Check mode — full node or SearchResult
-    if args.get("searchResult", "").lower() == 'true':  # default is full node
+    if args.get("searchResult", "").lower() == "true":  # default is full node
         all_officers = [create_officer_result(o[0]) for o in results]
         page = [item.model_dump() for item in all_officers if item]
         return_func = jsonify
@@ -304,8 +317,7 @@ def get_all_officers():
 
     # Add pagination wrapper
     response = add_pagination_wrapper(
-        page_data=page, total=row_count,
-        page_number=q_page, per_page=q_per_page
+        page_data=page, total=row_count, page_number=q_page, per_page=q_per_page
     )
 
     logging.warning("API response: %s", response)
@@ -319,8 +331,7 @@ def get_all_officers():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateOfficer)
 def update_officer(officer_uid: str):
-    """Update an officer profile.
-    """
+    """Update an officer profile."""
     body: UpdateOfficer = request.validated_body
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
@@ -335,9 +346,7 @@ def update_officer(officer_uid: str):
     track_to_mp(
         request,
         "update_officer",
-        {
-            "officer_id": o.uid
-        },
+        {"officer_id": o.uid},
     )
     return o.to_json()
 
@@ -359,9 +368,7 @@ def delete_officer(officer_uid: str):
         track_to_mp(
             request,
             "delete_officer",
-            {
-                "officer_id": uid
-            },
+            {"officer_id": uid},
         )
         return {"message": "Officer deleted successfully"}
     except Exception as e:

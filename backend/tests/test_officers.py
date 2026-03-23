@@ -2,9 +2,7 @@ from __future__ import annotations
 import pytest
 import math
 from datetime import date, datetime
-from backend.database import (
-    Officer, Unit, Agency
-)
+from backend.database import Officer, Unit, Agency
 from neomodel import db
 
 
@@ -13,20 +11,20 @@ mock_officers = {
         "first_name": "John",
         "last_name": "Doe",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
         "ethnicity": "White",
-        "gender": "Female"
+        "gender": "Female",
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
         "ethnicity": "Black/African American",
-        "gender": "Male"
-    }
+        "gender": "Male",
+    },
 }
 
 mock_agencies = {
@@ -36,7 +34,7 @@ mock_agencies = {
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL"
+        "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
@@ -44,8 +42,8 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL"
-    }
+        "jurisdiction": "MUNICIPAL",
+    },
 }
 
 mock_units = {
@@ -62,7 +60,7 @@ mock_units = {
         "zip": "60001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-alpha/officers",
-        "date_established": date(2001, 5, 14)
+        "date_established": date(2001, 5, 14),
     },
     "unit_bravo": {
         "name": "Unit Bravo",
@@ -77,7 +75,7 @@ mock_units = {
         "zip": "75001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-bravo/officers",
-        "date_established": date(1998, 9, 3)
+        "date_established": date(1998, 9, 3),
     },
     "unit_charlie": {
         "name": "Unit Charlie",
@@ -92,40 +90,44 @@ mock_units = {
         "zip": "43001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-charlie/officers",
-        "date_established": date(2010, 2, 28)
-    }
+        "date_established": date(2010, 2, 28),
+    },
 }
 
 mock_unit_memberships = {
     "john": {
         "earliest_date": datetime.strptime(
-            "2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "latest_date": datetime.strptime(
-            "2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "badge_number": "1234",
-        "highest_rank": 'Officer'
+        "highest_rank": "Officer",
     },
     "hazel": {
         "earliest_date": datetime.strptime(
-            "2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "latest_date": datetime.strptime(
-            "2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "badge_number": "5678",
-        "highest_rank": 'Sergeant',
+        "highest_rank": "Sergeant",
     },
     "frank": {
         "earliest_date": datetime.strptime(
-            "2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "latest_date": datetime.strptime(
-            "2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S").date(),
+            "2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S"
+        ).date(),
         "badge_number": "1234",
-        "highest_rank": 'Lieutenant'
-    }
+        "highest_rank": "Lieutenant",
+    },
 }
 
-mock_sources = {
-    "cpdp": {"name": "Citizens Police Data Project"}
-}
+mock_sources = {"cpdp": {"name": "Citizens Police Data Project"}}
 
 
 @pytest.fixture
@@ -139,11 +141,8 @@ def example_officers():
 
 
 def test_create_officer(
-        client,
-        contributor_access_token,
-        example_source,
-        example_agency
-        ):
+    client, contributor_access_token, example_source, example_agency
+):
 
     request = {
         "first_name": "Max",
@@ -162,9 +161,7 @@ def test_create_officer(
     assert res.status_code == 200
     response = res.json
 
-    officer_obj = (
-       Officer.nodes.get(uid=response["uid"])
-    )
+    officer_obj = Officer.nodes.get(uid=response["uid"])
     assert officer_obj.first_name == request["first_name"]
     assert officer_obj.last_name == request["last_name"]
     assert officer_obj.ethnicity == request["ethnicity"]
@@ -176,9 +173,9 @@ def test_create_officer(
 
 
 def test_create_officer_without_source_uid(
-        client,
-        contributor_access_token,
-        ):
+    client,
+    contributor_access_token,
+):
     """POST officer without source_uid should fail with 422."""
     request = {
         "first_name": "Max",
@@ -197,9 +194,9 @@ def test_create_officer_without_source_uid(
 
 
 def test_create_officer_with_invalid_source_uid(
-        client,
-        contributor_access_token,
-        ):
+    client,
+    contributor_access_token,
+):
     """POST officer with a non-existent source_uid should fail with 422."""
     request = {
         "first_name": "Max",
@@ -216,6 +213,52 @@ def test_create_officer_with_invalid_source_uid(
         },
     )
     assert res.status_code == 422
+
+
+def test_create_officer_user_not_member(client, access_token, example_source):
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": example_source.uid,
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 403
+
+
+def test_create_officer_member_not_publisher(
+    client,
+    example_source_member,
+    example_source,
+):
+    login_res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_source_member.email,
+            "password": "my_password",
+        },
+    )
+    assert login_res.status_code == 200
+    member_access_token = login_res.json["access_token"]
+
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": example_source.uid,
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={"Authorization": "Bearer {0}".format(member_access_token)},
+    )
+    assert res.status_code == 403
 
 
 def test_get_officer(client, example_officer, access_token):
@@ -308,7 +351,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
     # Create Officers in the database
     officers = Officer.nodes.all()
     per_page = 1
-    expected_total_pages = math.ceil(len(officers)//per_page)
+    expected_total_pages = math.ceil(len(officers) // per_page)
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
@@ -335,9 +378,9 @@ def test_officer_pagination2(client, db_session, access_token):
     # Create Officers in the database
     for i in range(1, 36):
         mock_officer = {
-                "first_name": f"John{i}",
-                # "last_name": "Doe"
-            }
+            "first_name": f"John{i}",
+            # "last_name": "Doe"
+        }
         Officer(**mock_officer).save()
 
     officers = Officer.nodes.all()
@@ -566,12 +609,15 @@ def create_officers_units_agencies():
         agencies[key] = Agency(**mock).save()
 
     # Link officers to existing unit objects
-    units["unit_alpha"].officers.connect(officers["john"],
-                                         mock_unit_memberships["john"])
-    units["unit_bravo"].officers.connect(officers["hazel"],
-                                         mock_unit_memberships["hazel"])
-    units["unit_charlie"].officers.connect(officers["frank"],
-                                           mock_unit_memberships["frank"])
+    units["unit_alpha"].officers.connect(
+        officers["john"], mock_unit_memberships["john"]
+    )
+    units["unit_bravo"].officers.connect(
+        officers["hazel"], mock_unit_memberships["hazel"]
+    )
+    units["unit_charlie"].officers.connect(
+        officers["frank"], mock_unit_memberships["frank"]
+    )
 
     # Link units to agencies (one direction is enough)
     units["unit_alpha"].agency.connect(agencies["cpd"])
@@ -580,8 +626,9 @@ def create_officers_units_agencies():
     return officers
 
 
-def test_get_officers_with_unit(client, db_session, access_token,
-                                create_officers_units_agencies):
+def test_get_officers_with_unit(
+    client, db_session, access_token, create_officers_units_agencies
+):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
@@ -625,8 +672,9 @@ def test_get_officers_with_unit(client, db_session, access_token,
     assert res.json["total"] == len(officers_with_units)
 
 
-def test_get_officers_with_unit_and_agency(client, db_session, access_token,
-                                           create_officers_units_agencies):
+def test_get_officers_with_unit_and_agency(
+    client, db_session, access_token, create_officers_units_agencies
+):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)
@@ -651,16 +699,22 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
     assert res.json["total"] == len(officers_with_unit)
 
 
-@pytest.mark.parametrize("query,expect_results", [
-    ("active_after=2018-01-01", True),
-    ("active_before=2022-01-01", True),
-    ("active_before=2010-01-01", False),
-    ("active_after=2035-01-01", False),
-])
-def test_get_officers_dates(client, access_token, query, expect_results,
-                            create_officers_units_agencies):
-    res = client.get(f"/api/v1/officers/?{query}",
-                     headers={"Authorization": f"Bearer {access_token}"})
+@pytest.mark.parametrize(
+    "query,expect_results",
+    [
+        ("active_after=2018-01-01", True),
+        ("active_before=2022-01-01", True),
+        ("active_before=2010-01-01", False),
+        ("active_after=2035-01-01", False),
+    ],
+)
+def test_get_officers_dates(
+    client, access_token, query, expect_results, create_officers_units_agencies
+):
+    res = client.get(
+        f"/api/v1/officers/?{query}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
     assert res.status_code == 200
 
     if expect_results:
@@ -675,8 +729,9 @@ def test_get_officers_dates(client, access_token, query, expect_results,
         assert res.json == {"message": "No results found matching the query"}
 
 
-def test_get_officers_with_rank(client, db_session, access_token,
-                                create_officers_units_agencies):
+def test_get_officers_with_rank(
+    client, db_session, access_token, create_officers_units_agencies
+):
     res = client.get(
         "/api/v1/officers/?rank=Officer",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
@@ -705,11 +760,12 @@ def test_get_officers_with_rank(client, db_session, access_token,
     assert res.json["results"][0]["last_name"] is not None
 
 
-def test_filter_by_ethnicity(client, db_session, access_token,
-                             create_officers_units_agencies):
+def test_filter_by_ethnicity(
+    client, db_session, access_token, create_officers_units_agencies
+):
     res = client.get(
         "/api/v1/officers/?ethnicity=White",
-        headers={"Authorization": f"Bearer {access_token}"}
+        headers={"Authorization": f"Bearer {access_token}"},
     )
 
     assert res.status_code == 200
@@ -720,7 +776,7 @@ def test_filter_by_ethnicity(client, db_session, access_token,
     # Multiple ethnicities
     res = client.get(
         "/api/v1/officers/?ethnicity=White&ethnicity=Hispanic",
-        headers={"Authorization": f"Bearer {access_token}"}
+        headers={"Authorization": f"Bearer {access_token}"},
     )
     assert res.status_code == 200
     assert res.json != []
@@ -735,14 +791,20 @@ def test_filter_by_ethnicity(client, db_session, access_token,
         ("John", "Doe", True),
         ("Hazel", "Nutt", True),
         ("Alice", "Johnson", False),
-    ]
+    ],
 )
-def test_filter_by_officer_name(client, db_session, access_token,
-                                create_officers_units_agencies,
-                                first_name, last_name, expect_results):
+def test_filter_by_officer_name(
+    client,
+    db_session,
+    access_token,
+    create_officers_units_agencies,
+    first_name,
+    last_name,
+    expect_results,
+):
     res = client.get(
         f"/api/v1/officers/?firstName={first_name}&lastName={last_name}",
-        headers={"Authorization": f"Bearer {access_token}"}
+        headers={"Authorization": f"Bearer {access_token}"},
     )
 
     assert res.status_code == 200
