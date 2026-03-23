@@ -159,10 +159,8 @@ def upload_profile_image():
     if not file or not file.filename:
         return jsonify({"error": "Empty file"}), 400
 
-    # Fetch user
-    uid = get_jwt_identity()
     try:
-        user = User.nodes.get(uid=uid)
+        user = User.nodes.get(uid=user_id)
     except User.DoesNotExist:
         return jsonify({"message": "User not found"}), 404
 
@@ -217,7 +215,6 @@ def save_profile_photo(file, user_id):
             key,
             ExtraArgs={
                 "ContentType": file.mimetype,
-                "ACL": "private",
             },
         )
 
