@@ -384,10 +384,9 @@ def get_all_agencies():
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_agency_officers(agency_uid):
-    """Get all officers for an agency.
-    """
+    """Get all officers for an agency."""
     raw = {
-        **request.args,  # copies simple values
+        **request.args,
         "include": request.args.getlist("include"),
     }
     try:
@@ -397,6 +396,7 @@ def get_agency_officers(agency_uid):
         abort(400, description=str(e))
     q_page = params.page
     q_per_page = params.per_page
+    include_employment = "employment" in (params.include or [])
 
     cy_params = {
         "agency_uid": agency_uid,
@@ -404,22 +404,22 @@ def get_agency_officers(agency_uid):
         "limit": q_per_page,
     }
 
-    # Count total officers for pagination
-    count_query = f"""
-    MATCH (a:Agency {{uid: $agency_uid}})-[]-(u:Unit)-[]-(:Employment)-[]-(o:Officer)
+    # Count total distinct officers for pagination
+    count_query = """
+    MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
     RETURN count(DISTINCT o) AS total_officers
     """
     count_results, _ = db.cypher_query(count_query, cy_params)
     total_officers = count_results[0][0] if count_results else 0
-    logging.warning(f"Total officers for agency {agency_uid}: {total_officers}")
     if total_officers == 0:
         return jsonify({"message": "No officers found for this agency"}), 200
     if total_officers <= (q_page - 1) * q_per_page:
         return jsonify({"message": "Page number exceeds total results"}), 400
 
-    query = """
+    if include_employment:
+        query = """
         MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(e:Employment)-[:HELD_BY]-(o:Officer)
-        WITH o, a, u, e
+        WITH o, u, e
         ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
         WITH
             o,
@@ -441,12 +441,13 @@ def get_agency_officers(agency_uid):
             ) AS earliest_date,
             reduce(max_date = null, row IN rows |
                 CASE
+                    WHEN row.employment.latest_date IS NULL THEN null
                     WHEN max_date IS NULL THEN row.employment.latest_date
-                    WHEN row.employment.latest_date IS NULL THEN max_date
                     WHEN row.employment.latest_date > max_date THEN row.employment.latest_date
                     ELSE max_date
                 END
             ) AS latest_date
+
         RETURN
             o,
             {
@@ -463,6 +464,14 @@ def get_agency_officers(agency_uid):
         SKIP $skip
         LIMIT $limit
         """
+    else:
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+        WITH DISTINCT o
+        RETURN o
+        SKIP $skip
+        LIMIT $limit
+        """
 
     try:
         res, meta = db.cypher_query(query, cy_params, resolve_objects=True)
@@ -470,10 +479,12 @@ def get_agency_officers(agency_uid):
         officers = []
         for record in res:
             officer = record[0]
-            employment = record[1]
-
             officer_dict = officer.to_dict()
-            officer_dict["employment"] = transform_dates_in_dict(employment)
+
+            if include_employment:
+                employment = record[1]
+                officer_dict["employment"] = transform_dates_in_dict(employment)
+
             officers.append(officer_dict)
 
         logging.warning(f"Fetched {len(officers)} officers for agency {agency_uid}")
