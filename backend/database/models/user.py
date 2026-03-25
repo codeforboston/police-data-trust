@@ -6,9 +6,10 @@ from backend.schemas import JsonSerializable, PropertyEnum
 from backend.database.models.types.enums import State
 from backend.database.models.contact import (
     EmailContact, PhoneContact, SocialMediaContact)
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 from neomodel import (
     Relationship, StructuredNode,
-    StringProperty, DateProperty, BooleanProperty,
+    StringProperty, BooleanProperty,
     UniqueIdProperty, One, db
 )
 
@@ -39,12 +40,14 @@ class User(StructuredNode, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "last_name",
         "email", "email_confirmed_at",
-        "phone_number", "role", "active"
+        "phone_number", "biography", "title",
+        "organization", "city", "state", "website",
+        "social_media_contacts", "role", "active"
     ]
 
     uid = UniqueIdProperty()
     active = BooleanProperty(default=True)
-    created_at = DateProperty()
+    created_at = DateNeo4jFormatProperty()
 
     # User authentication information. The collation="NOCASE" is required
     # to search case insensitively when USER_IFIND_MODE is "nocase_collation".
@@ -58,6 +61,8 @@ class User(StructuredNode, JsonSerializable):
     organization = StringProperty(max_length=100)
     city = StringProperty(max_length=50)
     state = StringProperty(choices=State.choices())
+    website = StringProperty()
+    profile_image = StringProperty(max_length=255)
 
     role = StringProperty(
         choices=UserRole.choices(), default=UserRole.PUBLIC.value)

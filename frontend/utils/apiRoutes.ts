@@ -3,11 +3,28 @@ const API_ROUTES = {
     login: "/auth/login",
     register: "/auth/register",
     refresh: "/auth/refresh",
-    forgotPassword: "/auth/forgotPassword"
+    forgotPassword: "/auth/forgotPassword",
+    whoami: "/auth/whoami"
   },
   search: {
     all: "/search/",
-    incidents: "/incidents/search"
+    incidents: "/incidents/search",
+    officers: "/officers/"
+  },
+  users: {
+    self: "/users/self"
+  },
+  sources: {
+    all: "/sources/"
+  },
+  officers: {
+    profile: (slug: string) => `/officers/${slug}`
+  },
+  agencies: {
+    profile: (slug: string) => `/agencies/${slug}`
+  },
+  units: {
+    profile: (slug: string) => `/units/${slug}`
   }
 }
 

@@ -16,6 +16,7 @@ from backend.routes.units import bp as units_bp
 from backend.routes.search import bp as search_bp
 from backend.routes.auth import bp as auth_bp
 from backend.routes.healthcheck import bp as healthcheck_bp
+from backend.routes.users import bp as users_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
 from backend.database import MODEL_CLASSES
@@ -188,6 +189,7 @@ def register_routes(app: Flask):
     app.register_blueprint(agencies_bp)
     app.register_blueprint(units_bp)
     app.register_blueprint(search_bp)
+    app.register_blueprint(users_bp)
 
     @app.route("/")
     def hello_world():
@@ -213,10 +215,10 @@ def index_db():
         "[n.first_name, n.last_name, n.middle_name, n.suffix]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX officerRanks IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.highest_rank]")
+        "FOR (n:Employment) ON EACH [n.highest_rank]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX officerBadgeNumbers IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]->() ON EACH [r.badge_number]")
+        "FOR (n:Employment) ON EACH [n.badge_number]")
     db.cypher_query(
         "CREATE FULLTEXT INDEX allegationTypes IF NOT EXISTS "
         "FOR (a:Allegation) ON EACH [a.type]")
@@ -232,14 +234,6 @@ def index_db():
     db.cypher_query(
         "CREATE FULLTEXT INDEX sourceNames IF NOT EXISTS "
         "FOR (s:Source) ON EACH [s.name]")
-    db.cypher_query(
-        "CREATE INDEX officer_unit_earliest_date IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.earliest_date)"
-    )
-    db.cypher_query(
-        "CREATE INDEX officer_unit_latest_date IF NOT EXISTS "
-        "FOR ()-[r:MEMBER_OF_UNIT]-() ON (r.latest_date)"
-    )
     db.cypher_query(
         "CREATE INDEX citation_date IF NOT EXISTS "
         "FOR ()-[r:UPDATED_BY]-() ON (r.date)"

@@ -1,6 +1,7 @@
 import pytest
 import math
 from flask_jwt_extended import decode_token
+from slugify import slugify
 from backend.database import Source, MemberRole
 from backend.database.models.user import User, UserRole
 
@@ -88,7 +89,11 @@ def example_sources():
     created = {}
 
     for name, mock in mock_sources.items():
-        p = Source(**mock).save()
+        p = Source.create_source(
+            name=mock["name"],
+            url=mock["url"],
+            contact_email=mock["contact_email"],
+        ).save()
         created[name] = p
     return created
 
@@ -133,7 +138,13 @@ def test_create_source(client, access_token):
     )
     assert source_obj.name == request["name"]
     assert source_obj.url == request["url"]
-    assert source_obj.contact_email == request["contact_email"]
+
+    email_obj = source_obj.primary_email.single()
+    assert email_obj.email == request["contact_email"]
+
+    social_obj = source_obj.social_media.single()
+    assert social_obj is not None
+
     jwt_decoded = decode_token(access_token)
     user_obj = User.get(jwt_decoded["sub"])
 
@@ -150,7 +161,9 @@ def test_get_source(client, example_source, access_token):
     assert res.status_code == 200
     assert res.json["name"] == example_source.name
     assert res.json["url"] == example_source.url
-    assert res.json["contact_email"] == example_source.contact_email
+    assert res.json["slug"] == slugify(example_source.name)
+    email = example_source.primary_email.single().email
+    assert res.json["primary_email"][0]["email"] == email
 
 
 def test_get_all_sources(client, example_sources, access_token):
@@ -161,7 +174,8 @@ def test_get_all_sources(client, example_sources, access_token):
     )
     assert res.status_code == 200
     assert res.json['results'][0]["name"] is not None
-    assert res.json['results'][0]["contact_email"] is not None
+    assert res.json['results'][0]["slug"] is not None
+    assert res.json['results'][0]["primary_email"][0]["email"] is not None
     assert res.json["results"].__len__() == all_sources.__len__()
 
 
@@ -191,7 +205,7 @@ def test_source_pagination(client, example_sources, access_token):
         ),
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
-    assert res.status_code == 404
+    assert res.status_code == 400
 
 
 # def test_add_member_to_source(db_session, example_members):

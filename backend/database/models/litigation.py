@@ -1,12 +1,11 @@
 from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
-from backend.database.models.source import Citation
+from backend.database.models.source import HasCitations
+from backend.database.properties.datetime import DateNeo4jFormatProperty
 from neomodel import (
     StructuredNode,
     StringProperty,
-    RelationshipTo,
     RelationshipFrom,
     Relationship,
-    DateProperty,
     UniqueIdProperty,
     One,
     db
@@ -18,7 +17,7 @@ class LegalCaseType(str, PropertyEnum):
     CRIMINAL = "CRIMINAL"
 
 
-class Litigation(StructuredNode, JsonSerializable):
+class Litigation(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "case_title", "docket_number",
         "court_level", "jurisdiction", "state",
@@ -35,16 +34,14 @@ class Litigation(StructuredNode, JsonSerializable):
     jurisdiction = StringProperty()
     state = StringProperty()
     description = StringProperty()
-    start_date = DateProperty()
-    settlement_date = DateProperty()
+    start_date = DateNeo4jFormatProperty()
+    settlement_date = DateNeo4jFormatProperty()
     settlement_amount = StringProperty()
     url = StringProperty()
     case_type = StringProperty(choices=LegalCaseType.choices())
 
     # Relationships
     defendants = Relationship("Officer", "NAMED_IN")
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
     @property
     def documents(self):
@@ -94,7 +91,7 @@ class Document(StructuredNode, JsonSerializable):
 
 class Disposition(StructuredNode, JsonSerializable):
     description = StringProperty()
-    date = DateProperty()
+    date = DateNeo4jFormatProperty()
     disposition = StringProperty()
 
     # Relationships

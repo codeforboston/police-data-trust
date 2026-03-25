@@ -1,14 +1,22 @@
-from backend.schemas import JsonSerializable, RelQuery
+from datetime import date
+from backend.schemas import JsonSerializable, PropertyEnum, RelQuery
 from backend.database.models.types.enums import State, Ethnicity, Gender
-from backend.database.models.source import Source, Citation
+from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
+from backend.database.models.employment import Employment
+import logging
 
 from neomodel import (
-    db, StructuredNode,
-    RelationshipTo, Relationship,
-    StringProperty, DateProperty,
+    db, StructuredNode, Relationship,
+    StringProperty, IntegerProperty,
     UniqueIdProperty, One
 )
+
+
+# Enums - Not yet used for validation, but could be in the future
+class StateIDType(PropertyEnum):
+    TAX_ID_NUMBER = "TAX_ID_NUMBER"
+    NPI_ID = "NPI_ID"
 
 
 class StateID(StructuredNode, JsonSerializable):
@@ -26,11 +34,11 @@ class StateID(StructuredNode, JsonSerializable):
         return f"<StateID: Officer {self.officer_id}, {self.state}>"
 
 
-class Officer(StructuredNode, JsonSerializable):
+class Officer(StructuredNode, HasCitations, JsonSerializable):
     __property_order__ = [
         "uid", "first_name", "middle_name",
         "last_name", "suffix", "ethnicity",
-        "gender", "date_of_birth"
+        "gender", "year_of_birth"
     ]
     __hidden_properties__ = ["citations"]
     __virtual_relationships__ = ["state_ids"]
@@ -42,11 +50,7 @@ class Officer(StructuredNode, JsonSerializable):
     suffix = StringProperty()
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
-    date_of_birth = DateProperty()
-
-    # Relationships
-    citations = RelationshipTo(
-        'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
+    year_of_birth = IntegerProperty()
 
     def __repr__(self):
         return f"<Officer {self.uid}>"
@@ -81,25 +85,25 @@ class Officer(StructuredNode, JsonSerializable):
         return Gender(self.gender) if self.gender else None
 
     @property
-    def current_unit(self):
+    def current_employment(self):
         """
         Get the current unit of the officer.
         Returns:
-            Unit: The current or most recent unit of the officer.
+            Unit: The current or most recent employment of the officer.
         """
         cy = """
-        MATCH (u:Unit)-[r:MEMBER_OF_UNIT]-(o:Officer {uid: $uid})
-        WITH u, r, o,
-            CASE WHEN r.latest_date IS NULL THEN 1 ELSE 0 END AS isCurrent
-        ORDER BY isCurrent DESC, r.earliest_date DESC
-        RETURN u AS unit, r AS membership, o
+        MATCH (o:Officer {uid: $uid})<-[]-(e:Employment)
+        WITH e, o,
+            CASE WHEN e.latest_date IS NULL THEN 1 ELSE 0 END AS isCurrent
+        ORDER BY isCurrent DESC, e.earliest_date DESC
+        RETURN e AS employment
         LIMIT 1;
         """
 
         result, meta = db.cypher_query(cy, {'uid': self.uid})
         if result:
-            unit_node = result[0][0]
-            return Unit.inflate(unit_node)
+            employment_node = result[0][0]
+            return Employment.inflate(employment_node)
         return None
 
     @property
@@ -123,7 +127,7 @@ class Officer(StructuredNode, JsonSerializable):
             RelQuery: A query object for the units associated with the officer.
         """
         base = """
-        MATCH (o:Officer {uid: $uid})-[r:MEMBER_OF_UNIT]->(u:Unit)
+        MATCH (o:Officer {uid: $uid})<-[]-(:Employment)-[]->(u:Unit)
         """
         return RelQuery(self, base, return_alias="u", inflate_cls=Unit)
 
@@ -165,21 +169,109 @@ class Officer(StructuredNode, JsonSerializable):
         from backend.database.models.complaint import Investigation
         return RelQuery(self, base, return_alias="i", inflate_cls=Investigation)
 
-    def primary_source(self):
+    @classmethod
+    def search(
+        cls,
+        *,
+        name: str | None = None,
+        rank: str | None = None,
+        unit: list[str] | None = None,
+        agency: list[str] | None = None,
+        badge_number: list[str] | None = None,
+        ethnicity: list[str] | None = None,
+        active_after: date | None = None,
+        active_before: date | None = None,
+        skip: int = 0,
+        limit: int = 25,
+        count: bool = False,
+        inflate: bool = True
+    ):
         """
-        Get the primary source of the officer.
-        Returns:
-            Source: The primary source of the officer.
-        """
-        cy = """
-        MATCH (o:Officer {uid: $uid})-[r:UPDATED_BY]->(s:Source)
-        RETURN s
-        ORDER BY r.date DESC
-        LIMIT 1;
-        """
+        Search for officers based on filters.
+        Args:
+            filters (dict): A dictionary of filters to apply.
+            skip (int): Number of records to skip for pagination.
+            limit (int): Number of records to return.
+            """
 
-        result, meta = db.cypher_query(cy, {'uid': self.uid})
-        if result:
-            source_node = result[0][0]
-            return Source.inflate(source_node)
-        return None
+        # convert date strings to date objects
+        if isinstance(active_after, str):
+            active_after = date.fromisoformat(active_after)  # YYYY-MM-DD
+        if isinstance(active_before, str):
+            active_before = date.fromisoformat(active_before)  # YYYY-MM-DD
+
+        # Build MATCH clauses
+        match_clauses = []
+        if name:
+            match_clauses.append(f"""
+                CALL db.index.fulltext.queryNodes('officerNames',
+                                '{name}') YIELD node AS o
+            """)
+        elif rank:
+            match_clauses.append(f"""
+                CALL db.index.fulltext.queryNodes('officerRanks',
+                                '{rank}') YIELD node AS e
+            """)
+
+        match_clauses.append("MATCH (o:Officer)")
+
+        if unit or active_after or active_before or badge_number or agency:
+            match_clauses.append("MATCH (o)-[]-(e:Employment)-[]-(u:Unit)")
+
+        if agency:
+            match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
+
+        # Build WHERE clauses and params
+        where_clauses = ["TRUE"]
+        params = {}
+
+        if active_after:
+            where_clauses.append("e.latest_date > $active_after")
+            params["active_after"] = active_after
+
+        if active_before:
+            where_clauses.append("e.earliest_date < $active_before")
+            params["active_before"] = active_before
+
+        if agency:
+            where_clauses.append("ANY(n IN $agency WHERE a.name CONTAINS n)")
+            params["agency"] = agency
+
+        if badge_number:
+            where_clauses.append(
+                "ANY(n IN $badge_number WHERE e.badge_number CONTAINS n)")
+            params["badge_number"] = badge_number
+
+        if ethnicity:
+            where_clauses.append("o.ethnicity IN $ethnicity")
+            params["ethnicity"] = ethnicity
+
+        if unit:
+            where_clauses.append("ANY(n IN $unit WHERE u.name CONTAINS n)")
+            params["unit"] = unit
+
+        # Combine query
+        match_str = "\n".join(match_clauses)
+        where_str = "\nAND ".join(where_clauses)
+        cypher_query = f"""
+        {match_str}
+        WHERE {where_str}"""
+
+        if count:
+            cypher_query += "\nRETURN count(*) as c"
+            logging.warning("Cypher count query:\n%s", cypher_query)
+            logging.warning("Params: %s", params)
+            logging.warning("Query: %s", cypher_query)
+            count_results, _ = db.cypher_query(cypher_query, params)
+            return count_results[0][0] if count_results else 0
+        else:
+            cypher_query += f"""
+                RETURN o SKIP {skip} LIMIT {limit}
+            """
+
+            logging.warning("Cypher query:\n%s", cypher_query)
+            logging.warning("Params: %s", params)
+
+            rows, _ = db.cypher_query(cypher_query, params,
+                                      resolve_objects=inflate)
+            return [row[0] for row in rows]

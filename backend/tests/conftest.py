@@ -11,13 +11,17 @@ from backend.database import (
     Agency,
     Unit,
     Officer,
+    Employment,
     StateID,
     Complaint,
     RecordType,
     Investigation,
     Allegation,
     Penalty,
-    Location
+    Location,
+    EmailContact,
+    SocialMediaContact,
+    Civilian
 )
 from datetime import datetime, date
 
@@ -141,9 +145,11 @@ def example_source():
     source = Source(
         name="Example Source",
         url="www.example.com",
-        contact_email=contributor_email
     ).save()
-    add_test_property(source)
+    email_contact = EmailContact.get_or_create(contributor_email)
+    source.primary_email.connect(email_contact)
+    social_contact = SocialMediaContact().save()
+    source.social_media.connect(social_contact)
     yield source
 
 
@@ -152,39 +158,48 @@ def example_agency(example_source):
     agency = Agency(
         name="Example Agency",
         website_url="www.example.com",
+        hq_state="NY",
         hq_city="New York",
         hq_address="123 Main St",
         hq_zip="10001",
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
     agency.citations.connect(example_source, {
-        'date': datetime.now(),
+        'timestamp': datetime.now(),
     })
     yield agency
 
 
 @pytest.fixture
-def example_unit(example_agency, example_officer, example_source):
+def example_unit(example_agency, example_source):
     agency = example_agency
-    officer = example_officer
     source = example_source
 
     unit = Unit(
-        name="Precinct 1"
+        name="Precinct 1",
+        hq_state="NY"
     ).save()
 
     # Create relationships
     unit.agency.connect(agency)
     unit.citations.connect(source, {
-        'date': datetime.now(),
+        'timestamp': datetime.now(),
     })
-    unit.officers.connect(
-        officer,
-        {
-            'badge_number': '61025'
-        }
-    )
     yield unit
+
+
+@pytest.fixture
+def example_employment(example_source, example_officer, example_unit):
+    employment = Employment(
+        badge_number='61025',
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    employment.unit.connect(example_unit)
+    employment.officer.connect(example_officer)
+    employment.citations.connect(example_source, {
+        'timestamp': datetime.now(),
+    })
+    yield employment
 
 
 @pytest.fixture
@@ -201,7 +216,7 @@ def example_officer(example_source):
     officer.citations.connect(
         example_source,
         {
-            'date': datetime.now(),
+            'timestamp': datetime.now(),
         }
     )
     yield officer
@@ -276,11 +291,11 @@ def example_complaint(
     complaint = Complaint(
         record_id="C123456",
         category="Excessive Force",
-        incident_date=date.today(),
-        received_date=date.today(),
-        closed_date=date.today(),
-        reason_for_contact="Complaint about officer conduct",
-        outcome_of_contact="Resolved",
+        incident_date=date(datetime.now().year - 3, 1, 15),
+        received_date=date(datetime.now().year - 3, 1, 20),
+        closed_date=date(datetime.now().year - 3, 8, 1),
+        reason_for_contact="Traffic Stop",
+        outcome_of_contact="Arrest Made",
     ).save()
     location = Location(
         location_type="Incident Location",
@@ -291,15 +306,6 @@ def example_complaint(
         zip="10001",
         administrative_area="1st Precinct",
         administrative_area_type="Precinct"
-    ).save()
-    allegation = Allegation(
-        allegation="Officer used unnecessary force during arrest",
-        type="Excessive Force",
-        subtype="Physical Force",
-        recommended_finding="Sustained",
-        finding="Sustained",
-        recommended_outcome="Disciplinary Action",
-        outcome="Disciplinary Action",
     ).save()
     penalty = Penalty(
         penalty="Suspension",
@@ -313,16 +319,37 @@ def example_complaint(
         start_date=date.today(),
         end_date=date.today(),
     ).save()
-
-    allegation.accused.connect(example_officer)
-    allegation.complaint.connect(complaint)
     penalty.officer.connect(example_officer)
     penalty.complaint.connect(complaint)
     investigation.complaint.connect(complaint)
     complaint.location.connect(location)
     complaint.source_org.connect(example_source, source_rel)
-
     yield complaint
+
+
+@pytest.fixture  # type: ignore
+def example_allegation(example_source, example_complaint, example_officer):
+    allegation = Allegation(
+        allegation="Officer used unnecessary force during arrest",
+        type="Force",
+        subtype="Physical Force",
+        recommended_finding="Sustained",
+        finding="Sustained",
+        recommended_outcome="Disciplinary Action",
+        outcome="Disciplinary Action",
+    ).save()
+    complainant = Civilian(
+        age_range="24-29",
+        race="White",
+        gender="Male"
+    ).save()
+    allegation.accused.connect(example_officer)
+    allegation.complainant.connect(complainant)
+    allegation.complaint.connect(example_complaint)
+    allegation.citations.connect(example_source, {
+        'timestamp': datetime.now(),
+    })
+    yield allegation
 
 
 @pytest.fixture  # type: ignore

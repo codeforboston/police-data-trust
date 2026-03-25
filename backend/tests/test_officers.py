@@ -1,8 +1,10 @@
 from __future__ import annotations
 import pytest
 import math
-from datetime import date, datetime
-from backend.database import Officer, Unit, Agency
+from datetime import date
+from backend.database import (
+    Officer, Unit, Agency, Employment
+)
 from neomodel import db
 
 
@@ -33,12 +35,14 @@ mock_agencies = {
         "website_url": "https://www.chicagopolice.org/",
         "hq_address": "3510 S Michigan Ave",
         "hq_city": "Chicago",
+        "hq_state": "IL",
         "hq_zip": "60653",
         "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
         "website_url": "https://www1.nyc.gov/site/nypd/index.page",
+        "hq_state": "NY",
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
@@ -54,10 +58,10 @@ mock_units = {
         "email": "alpha@agency.gov",
         "description": "Responsible for general investigations \
             and field operations.",
-        "address": "100 Alpha Ave",
-        "city": "Chicago",
-        "state": "MI",
-        "zip": "60001",
+        "hq_address": "100 Alpha Ave",
+        "hq_city": "Chicago",
+        "hq_state": "MI",
+        "hq_zip": "60001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-alpha/officers",
         "date_established": date(2001, 5, 14),
@@ -69,10 +73,10 @@ mock_units = {
         "email": "bravo@agency.gov",
         "description": "Handles specialized enforcement and \
             tactical operations.",
-        "address": "200 Bravo Blvd",
-        "city": "NYC",
-        "state": "NY",
-        "zip": "75001",
+        "hq_address": "200 Bravo Blvd",
+        "hq_city": "NYC",
+        "hq_state": "NY",
+        "hq_zip": "75001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-bravo/officers",
         "date_established": date(1998, 9, 3),
@@ -84,10 +88,10 @@ mock_units = {
         "email": "charlie@agency.gov",
         "description": "Focuses on community outreach and \
             civilian safety programs.",
-        "address": "300 Charlie Rd",
-        "city": "Oakridge",
-        "state": "OH",
-        "zip": "43001",
+        "hq_address": "300 Charlie Rd",
+        "hq_city": "Oakridge",
+        "hq_state": "OH",
+        "hq_zip": "43001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-charlie/officers",
         "date_established": date(2010, 2, 28),
@@ -96,32 +100,20 @@ mock_units = {
 
 mock_unit_memberships = {
     "john": {
-        "earliest_date": datetime.strptime(
-            "2015-03-04 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
-        "latest_date": datetime.strptime(
-            "2020-03-04 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
+        "earliest_date": date(2015, 3, 4),
+        "latest_date": date(2020, 3, 4),
         "badge_number": "1234",
         "highest_rank": "Officer",
     },
     "hazel": {
-        "earliest_date": datetime.strptime(
-            "2018-08-12 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
-        "latest_date": datetime.strptime(
-            "2021-04-04 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
+        "earliest_date": date(2018, 8, 12),
+        "latest_date": date(2021, 4, 4),
         "badge_number": "5678",
         "highest_rank": "Sergeant",
     },
     "frank": {
-        "earliest_date": datetime.strptime(
-            "2019-05-03 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
-        "latest_date": datetime.strptime(
-            "2025-05-04 00:00:00", "%Y-%m-%d %H:%M:%S"
-        ).date(),
+        "earliest_date": date(2019, 5, 3),
+        "latest_date": date(2025, 5, 4),
         "badge_number": "1234",
         "highest_rank": "Lieutenant",
     },
@@ -152,7 +144,7 @@ def test_create_officer(
         "source_uid": example_source.uid,
     }
     res = client.post(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         json=request,
         headers={
             "Authorization": "Bearer {0}".format(contributor_access_token)
@@ -336,7 +328,7 @@ def test_search_officers(
 def test_get_officers(client, db_session, access_token, example_officers):
     all_officers = Officer.nodes.all()
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
 
@@ -355,7 +347,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            "/api/v1/officers/",
+            "/api/v1/officers",
             query_string={"per_page": per_page, "page": page},
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
@@ -366,8 +358,8 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
         assert len(res.json["results"]) == per_page
 
     res = client.get(
-        "/api/v1/officers/",
-        query_string={"perPage": per_page, "page": expected_total_pages + 1},
+        "/api/v1/officers",
+        query_string={"per_page": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 400
@@ -388,7 +380,7 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 1
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": 20, "page": 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -400,7 +392,7 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 2
     res = client.get(
-        "/api/v1/officers/",
+        "/api/v1/officers",
         query_string={"per_page": 20, "page": 2},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -412,8 +404,8 @@ def test_officer_pagination2(client, db_session, access_token):
 
     # page 3 (should return empty)
     res = client.get(
-        "/api/v1/officers/",
-        query_string={"perPage": 20, "page": 3},
+        "/api/v1/officers",
+        query_string={"per_page": 20, "page": 3},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     print(f"res is {res.json}")
@@ -609,15 +601,23 @@ def create_officers_units_agencies():
         agencies[key] = Agency(**mock).save()
 
     # Link officers to existing unit objects
-    units["unit_alpha"].officers.connect(
-        officers["john"], mock_unit_memberships["john"]
-    )
-    units["unit_bravo"].officers.connect(
-        officers["hazel"], mock_unit_memberships["hazel"]
-    )
-    units["unit_charlie"].officers.connect(
-        officers["frank"], mock_unit_memberships["frank"]
-    )
+    john_emp = Employment(
+        **mock_unit_memberships["john"]
+    ).save()
+    john_emp.unit.connect(units["unit_alpha"])
+    john_emp.officer.connect(officers["john"])
+
+    hazel_emp = Employment(
+        **mock_unit_memberships["hazel"]
+    ).save()
+    hazel_emp.unit.connect(units["unit_bravo"])
+    hazel_emp.officer.connect(officers["hazel"])
+
+    frank_emp = Employment(
+        **mock_unit_memberships["frank"]
+    ).save()
+    frank_emp.unit.connect(units["unit_charlie"])
+    frank_emp.officer.connect(officers["frank"])
 
     # Link units to agencies (one direction is enough)
     units["unit_alpha"].agency.connect(agencies["cpd"])
@@ -631,18 +631,17 @@ def test_get_officers_with_unit(
 ):
 
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
         where u.name = "Unit Alpha"
         RETURN o
     """)
     officers_with_unit = [Officer.inflate(row[0]) for row in results]
 
     res = client.get(
-        "/api/v1/officers/?unit=Unit Alpha",
+        "/api/v1/officers?unit=Unit Alpha",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
-    print(officers_with_unit[0])
+    print(officers_with_unit)
     print(f"len results is {len(res.json['results'])}")
     assert res.status_code == 200
     assert res.json["results"][0]["first_name"] is not None
@@ -652,8 +651,7 @@ def test_get_officers_with_unit(
 
     # Officers in Unit Alpha or Unit Bravo (from DB)
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
         WHERE u.name IN ["Unit Alpha", "Unit Bravo"]
         RETURN o
     """)
@@ -661,7 +659,7 @@ def test_get_officers_with_unit(
 
     # API request with multiple units
     res = client.get(
-        "/api/v1/officers/?unit=Unit Alpha&unit=Unit Bravo",
+        "/api/v1/officers?unit=Unit Alpha&unit=Unit Bravo",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     print(f"len results is {len(res.json['results'])}")
@@ -677,16 +675,15 @@ def test_get_officers_with_unit_and_agency(
 ):
 
     results, meta = db.cypher_query("""
-        MATCH (o:Officer)
-        MATCH (o)-[:MEMBER_OF_UNIT]-(u:Unit)
-        MATCH (u)-[:ESTABLISHED_BY]-(a:Agency)
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
+        -[:ESTABLISHED_BY]->(a:Agency)
         where a.name = "Chicago Police Department"
         RETURN o
     """)
     officers_with_unit = [Officer.inflate(row[0]) for row in results]
 
     res = client.get(
-        "/api/v1/officers/?agency=Chicago Police Department",
+        "/api/v1/officers?agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert officers_with_unit is not None
@@ -699,22 +696,16 @@ def test_get_officers_with_unit_and_agency(
     assert res.json["total"] == len(officers_with_unit)
 
 
-@pytest.mark.parametrize(
-    "query,expect_results",
-    [
-        ("active_after=2018-01-01", True),
-        ("active_before=2022-01-01", True),
-        ("active_before=2010-01-01", False),
-        ("active_after=2035-01-01", False),
-    ],
-)
-def test_get_officers_dates(
-    client, access_token, query, expect_results, create_officers_units_agencies
-):
-    res = client.get(
-        f"/api/v1/officers/?{query}",
-        headers={"Authorization": f"Bearer {access_token}"},
-    )
+@pytest.mark.parametrize("query,expect_results", [
+    ("active_after=2018-01-01", True),
+    ("active_before=2022-01-01", True),
+    ("active_before=2010-01-01", False),
+    ("active_after=2035-01-01", False),
+])
+def test_get_officers_dates(client, access_token, query, expect_results,
+                            create_officers_units_agencies):
+    res = client.get(f"/api/v1/officers?{query}",
+                     headers={"Authorization": f"Bearer {access_token}"})
     assert res.status_code == 200
 
     if expect_results:
@@ -733,7 +724,7 @@ def test_get_officers_with_rank(
     client, db_session, access_token, create_officers_units_agencies
 ):
     res = client.get(
-        "/api/v1/officers/?rank=Officer",
+        "/api/v1/officers?rank=Officer",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -742,7 +733,7 @@ def test_get_officers_with_rank(
     assert res.json["results"][0]["last_name"] is not None
 
     res = client.get(
-        "/api/v1/officers/?rank=Officer&agency=Chicago Police Department",
+        "/api/v1/officers?rank=Officer&agency=Chicago Police Department",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -751,7 +742,7 @@ def test_get_officers_with_rank(
     assert res.json["results"][0]["last_name"] is not None
 
     res = client.get(
-        "/api/v1/officers/?rank=Lieutenant",
+        "/api/v1/officers?rank=Lieutenant",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
     assert res.json != []
@@ -764,8 +755,8 @@ def test_filter_by_ethnicity(
     client, db_session, access_token, create_officers_units_agencies
 ):
     res = client.get(
-        "/api/v1/officers/?ethnicity=White",
-        headers={"Authorization": f"Bearer {access_token}"},
+        "/api/v1/officers?ethnicity=White",
+        headers={"Authorization": f"Bearer {access_token}"}
     )
 
     assert res.status_code == 200
@@ -775,8 +766,8 @@ def test_filter_by_ethnicity(
 
     # Multiple ethnicities
     res = client.get(
-        "/api/v1/officers/?ethnicity=White&ethnicity=Hispanic",
-        headers={"Authorization": f"Bearer {access_token}"},
+        "/api/v1/officers?ethnicity=White&ethnicity=Hispanic",
+        headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
     assert res.json != []
@@ -793,18 +784,13 @@ def test_filter_by_ethnicity(
         ("Alice", "Johnson", False),
     ],
 )
-def test_filter_by_officer_name(
-    client,
-    db_session,
-    access_token,
-    create_officers_units_agencies,
-    first_name,
-    last_name,
-    expect_results,
-):
+def test_filter_by_officer_name(client, db_session, access_token,
+                                create_officers_units_agencies,
+                                first_name, last_name, expect_results):
+    # Test first_name and last_name params
     res = client.get(
-        f"/api/v1/officers/?firstName={first_name}&lastName={last_name}",
-        headers={"Authorization": f"Bearer {access_token}"},
+        f"/api/v1/officers?first_name={first_name}&last_name={last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
     )
 
     assert res.status_code == 200
@@ -813,3 +799,76 @@ def test_filter_by_officer_name(
         assert res.json["results"] != []
     else:
         assert res.json == {"message": "No results found matching the query"}
+
+    # Test flexible full name param
+    res = client.get(
+        f"/api/v1/officers?query={first_name} {last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert res.status_code == 200
+    if expect_results:
+        assert res.json["results"] != []
+    else:
+        assert res.json == {"message": "No results found matching the query"}
+
+    res = client.get(
+        f"/api/v1/officers?query={last_name}",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert res.status_code == 200
+    if expect_results:
+        assert res.json["results"] != []
+    else:
+        assert res.json == {"message": "No results found matching the query"}
+
+
+def test_get_search_result(client, db_session, access_token, example_officer,
+                           example_unit):
+    officer = Officer.nodes.filter(
+        first_name__icontains='John'
+    )
+
+    res = client.get(
+        "/api/v1/officers?first_name=John&searchResult=true",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    print(res.json["results"][0])
+    assert res.json["results"][0]["title"] is not None
+    # assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officer)
+
+
+def test_get_search_result_no_results(
+    client,
+    db_session,
+    access_token,
+    example_officer,
+    example_unit
+):
+    res = client.get(
+        "/api/v1/officers?first_name=Nonexistent&searchResult=true",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
+
+
+def test_invalid_query_params(
+    client,
+    db_session,
+    access_token,
+    example_officer,
+    example_unit
+):
+    res = client.get(
+        "/api/v1/officers?abc=123",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    body = res.get_data(as_text=True)
+    # print(f"body is {body}")
+    assert "Extra inputs are not permitted" in body
+    assert res.status_code == 400

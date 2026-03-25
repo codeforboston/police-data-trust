@@ -227,9 +227,17 @@ def add_pagination_wrapper(
     Returns:
         dict: The paginated data.
     """
+    if len(page_data) == 0 and total == 0:
+        return {
+            "results": [],
+            "page": 1,
+            "per_page": per_page,
+            "total": 0,
+            "pages": 0
+        }
     expected_total_pages = math.ceil(total / per_page)
     if not page_number <= expected_total_pages:
-        abort(404)
+        abort(400, description="Page number exceeds total results")
     return {
         "results": page_data,
         "page": page_number,
@@ -237,6 +245,24 @@ def add_pagination_wrapper(
         "total": total,
         "pages": expected_total_pages
     }
+
+
+def args_to_dict(args, always_list=frozenset()) -> dict:
+    """
+    Convert a Flask request.args MultiDict to a regular dictionary.
+    Args:
+        args (MultiDict): The Flask request.args MultiDict.
+    Returns:
+        dict: A regular dictionary with the same keys and values.
+    """
+    raw = args.to_dict(flat=False)
+    data = {}
+    for k, v in raw.items():
+        if k in always_list:
+            data[k] = v
+        else:
+            data[k] = v[0] if len(v) == 1 else v
+    return data
 
 
 # A tiny, read-only, chainable relation view.
@@ -425,16 +451,17 @@ class JsonSerializable:
                             for node in related_nodes
                         ]
         # Add virtual relationships
-        for rel_name in self.__virtual_relationships__:
-            if rel_name in all_excludes:
-                continue
-            rel_query = getattr(self, rel_name, None)
-            if isinstance(rel_query, RelQuery):
-                related_nodes = rel_query.limit(relationship_limit).all()
-                obj_props[rel_name] = [
-                    node.to_dict(include_relationships=False)
-                    for node in related_nodes
-                ]
+        if include_relationships:
+            for rel_name in self.__virtual_relationships__:
+                if rel_name in all_excludes:
+                    continue
+                rel_query = getattr(self, rel_name, None)
+                if isinstance(rel_query, RelQuery):
+                    related_nodes = rel_query.limit(relationship_limit).all()
+                    obj_props[rel_name] = [
+                        node.to_dict(include_relationships=False)
+                        for node in related_nodes
+                    ]
 
         return obj_props
 
@@ -581,14 +608,11 @@ class JsonSerializable:
             state_node = StateNode.nodes.get_or_none(
                 abbreviation=state)
             if state_node:
-                item.state_node.connect(state_node)
-                logging.info(f"Linked {item.uid} to State {state_node.uid}")
-
                 # Add city if provided
                 if city is not None:
                     query = """
-                    MATCH (c:CityNode
-                    {name: $city})-[]-()-[]-(s:StateNode {uid: $state})
+                    MATCH (c:CityNode {name: $city})-
+                    []-(:CountyNode)-[]-(s:StateNode {uid: $state})
                     RETURN c LIMIT 25
                     """
                     results, meta = db.cypher_query(query, {
@@ -603,3 +627,95 @@ class JsonSerializable:
 
             else:
                 logging.error(f"State not found: {state}")
+
+
+class SearchableMixin:
+    """
+    Base mixin for any model that wants a searchable interface.
+    """
+
+    @classmethod
+    def _preprocess_query(cls, query: str, watchlist) -> str:
+        """
+        Preprocess the search query before using it in fulltext search.
+        Args:
+            query (str): The original search query.
+        Returns:
+            str: The preprocessed search query.
+        """
+        query_terms = query.split()
+        processed_terms = []
+        for term in query_terms:
+            if term.lower() in watchlist:
+                continue  # skip common terms
+            processed_terms.append(term)
+        query = " ".join(processed_terms)
+        return query
+
+    @classmethod
+    def _search(
+        cls,
+        label: str,
+        index: str | None = None,
+        filters: dict | None = None,
+        query: str | None = None,
+        count: bool = False,
+        skip: int = 0,
+        limit: int = 25,
+        inflate: bool = False,
+        extra_params: dict | None = None,
+    ):
+        """
+        Generic search executor for any node label.
+
+        Args:
+            label: Neo4j node label
+            index: Optional fulltext index Cypher snippet (from search)
+            filters: Dict of field->value for exact matches
+            query: Optional fulltext search term
+            count: Return count instead of nodes
+            skip: Pagination offset
+            limit: Pagination limit
+            extra_params: Additional parameters to pass to the Cypher query
+
+        Returns:
+            int if count=True, else list of nodes
+        """
+        filters = filters or {}
+        params = filters.copy()
+        if extra_params:
+            params.update(extra_params)
+
+        cypher_parts = []
+
+        # Use fulltext index if provided
+        if index:
+            cypher_parts.append(index)
+
+        cypher_parts.append(f"MATCH (n:{label})")
+
+        # Property filters
+        if filters:
+            where_clause = " AND ".join(f"n.{k} = ${k}" for k in filters)
+            if any("WHERE" in part for part in cypher_parts):
+                # Append to existing WHERE from fulltext
+                cypher_parts.append("AND " + where_clause)
+            else:
+                cypher_parts.append("WHERE " + where_clause)
+
+        # Return count or nodes
+        if count:
+            cypher_parts.append("RETURN count(n) AS count")
+        else:
+            cypher_parts.append("RETURN n SKIP $skip LIMIT $limit")
+            params.update({"skip": skip, "limit": limit})
+
+        cypher = "\n".join(cypher_parts)
+
+        logging.warning(f"Search Cypher:\n{cypher}\nWith params: {params}")
+        rows, _ = db.cypher_query(cypher, params,
+                                  resolve_objects=inflate)
+
+        if count:
+            return rows[0][0] if rows else 0
+        return [row[0] for row in rows]
