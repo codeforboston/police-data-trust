@@ -226,7 +226,10 @@ def build_unit_result(node, details_row: dict) -> Searchresult:
 
 
 def build_officer_result(node, details_row: dict) -> Searchresult:
-    o = Officer.inflate(node)
+    if not isinstance(node, Officer):
+        o = Officer.inflate(node)
+    else:
+        o = node
     uid = o.uid
     details = []
 

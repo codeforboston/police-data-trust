@@ -44,7 +44,7 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         "city", "state", "zip", "agency_url",
         "officers_url", "date_established"
     ]
-    __hidden_properties__ = ["citations"]
+    __hidden_properties__ = ["citations", "city_node"]
 
     uid = UniqueIdProperty()
     name = StringProperty()
