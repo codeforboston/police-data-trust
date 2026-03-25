@@ -163,8 +163,8 @@ export default function OfficerList({
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}>
             <MenuItem value="all">All</MenuItem>
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="inactive">Inactive</MenuItem>
+            <MenuItem value="Active">Active</MenuItem>
+            <MenuItem value="Inactive">Inactive</MenuItem>
           </Select>
         </FormControl>
 
