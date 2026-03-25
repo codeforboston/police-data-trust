@@ -2,7 +2,7 @@ import logging
 # from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
-    validate_request, add_pagination_wrapper, ordered_jsonify, paginate_results,
+    validate_request, add_pagination_wrapper, ordered_jsonify,
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
@@ -13,7 +13,10 @@ from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from neomodel import db
-from backend.dto.agency import AgencyQueryParams, GetAgencyParams
+from backend.dto.agency import (
+    AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams)
+from backend.database.utils.transform import transform_dates_in_dict
+
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
 
@@ -378,26 +381,122 @@ def get_all_agencies():
 
 
 # Get agency officers
-@bp.route("/<agency_id>/officers", methods=["GET"])
+@bp.route("/<agency_uid>/officers", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_agency_officers(agency_id):
-    """Get all officers for an agency.
+def get_agency_officers(agency_uid):
+    """Get all officers for an agency."""
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetAgencyOfficersParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+    q_page = params.page
+    q_per_page = params.per_page
+    include_employment = "employment" in (params.include or [])
+
+    cy_params = {
+        "agency_uid": agency_uid,
+        "skip": (q_page - 1) * q_per_page,
+        "limit": q_per_page,
+    }
+
+    # Count total distinct officers for pagination
+    count_query = """
+    MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
+    [:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+    RETURN count(DISTINCT o) AS total_officers
     """
-    args = request.args
-    q_page = args.get("page", 1, type=int)
-    q_per_page = args.get("per_page", 20, type=int)
+    count_results, _ = db.cypher_query(count_query, cy_params)
+    total_officers = count_results[0][0] if count_results else 0
+    if total_officers == 0:
+        return jsonify({"message": "No officers found for this agency"}), 200
+    if total_officers <= (q_page - 1) * q_per_page:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+
+    if include_employment:
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
+        [:IN_UNIT]-(e:Employment)-[:HELD_BY]-(o:Officer)
+        WITH o, u, e
+        ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
+        WITH
+            o,
+            collect({
+                employment: e,
+                unit: u
+            }) AS rows
+        WITH
+            o,
+            rows,
+            head(rows) AS most_recent,
+            reduce(min_date = null, row IN rows |
+                CASE
+                    WHEN min_date IS NULL THEN row.employment.earliest_date
+                    WHEN row.employment.earliest_date IS NULL THEN min_date
+                    WHEN row.employment.earliest_date < min_date
+                      THEN row.employment.earliest_date
+                    ELSE min_date
+                END
+            ) AS earliest_date,
+            reduce(max_date = null, row IN rows |
+                CASE
+                    WHEN row.employment.latest_date IS NULL THEN null
+                    WHEN max_date IS NULL THEN row.employment.latest_date
+                    WHEN row.employment.latest_date > max_date
+                      THEN row.employment.latest_date
+                    ELSE max_date
+                END
+            ) AS latest_date
+
+        RETURN
+            o,
+            {
+                uid: most_recent.employment.uid,
+                earliest_date: earliest_date,
+                latest_date: latest_date,
+                badge_number: most_recent.employment.badge_number,
+                rank: most_recent.employment.highest_rank,
+                unit: {
+                    uid: most_recent.unit.uid,
+                    name: most_recent.unit.name
+                }
+            } AS employment
+        SKIP $skip
+        LIMIT $limit
+        """
+    else:
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        -[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+        WITH DISTINCT o
+        RETURN o
+        SKIP $skip
+        LIMIT $limit
+        """
 
     try:
-        query = f"""
-                MATCH (a:Agency)-[]-(u:Unit)-[]-(:Employment)-[]-(o:Officer)
-                WHERE a.uid='{agency_id}'
-                RETURN o
-                """
-        res, meta = db.cypher_query(query, resolve_objects=True)
-        officers = [record[0] for record in res]
+        res, meta = db.cypher_query(query, cy_params, resolve_objects=True)
+        officers = []
+        for record in res:
+            officer = record[0]
+            officer_dict = officer.to_dict()
 
-        result = paginate_results(officers, q_page, q_per_page)
+            if include_employment:
+                employment = record[1]
+                officer_dict["employment"] = transform_dates_in_dict(employment)
+
+            officers.append(officer_dict)
+        result = add_pagination_wrapper(
+            page_data=officers,
+            total=total_officers,
+            page_number=q_page,
+            per_page=q_per_page
+        )
         return ordered_jsonify(result), 200
 
     except Exception as e:
