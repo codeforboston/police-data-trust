@@ -176,9 +176,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         name: str | None = None,
         rank: str | None = None,
         unit: list[str] | None = None,
-        unit_uid: str | None = None,
         agency: list[str] | None = None,
-        agency_uid: str | None = None,
         badge_number: list[str] | None = None,
         ethnicity: list[str] | None = None,
         active_after: date | None = None,
@@ -217,10 +215,10 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         match_clauses.append("MATCH (o:Officer)")
 
-        if unit or unit_uid or active_after or active_before or badge_number or agency:
+        if unit or active_after or active_before or badge_number or agency:
             match_clauses.append("MATCH (o)-[]-(e:Employment)-[]-(u:Unit)")
 
-        if agency or agency_uid:
+        if agency:
             match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
 
         # Build WHERE clauses and params
@@ -239,10 +237,6 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             where_clauses.append("ANY(n IN $agency WHERE a.name CONTAINS n)")
             params["agency"] = agency
 
-        if agency_uid:
-            where_clauses.append("a.uid = $agency_uid")
-            params["agency_uid"] = agency_uid
-
         if badge_number:
             where_clauses.append(
                 "ANY(n IN $badge_number WHERE e.badge_number CONTAINS n)")
@@ -255,10 +249,6 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         if unit:
             where_clauses.append("ANY(n IN $unit WHERE u.name CONTAINS n)")
             params["unit"] = unit
-        
-        if unit_uid:
-            where_clauses.append("u.uid = $unit_uid")
-            params["unit_uid"] = unit_uid
 
         # Combine query
         match_str = "\n".join(match_clauses)
@@ -285,68 +275,3 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             rows, _ = db.cypher_query(cypher_query, params,
                                       resolve_objects=inflate)
             return [row[0] for row in rows]
-
-    @classmethod
-    def include_employment(
-        cls,
-        uids: list[str],
-        unit_uid: str | None = None,
-        agency_uid: str | None = None,
-    ):
-        """
-        Include employment details for a list of officers.
-
-        Coalesces employment at the agency level:
-        - earliest_date / latest_date come from all matching employments
-        for the officer at that agency
-        - other values come from the most recent matching employment
-        """
-
-        cy = """
-        UNWIND $uids AS officer_uid
-        MATCH (o:Officer {uid: officer_uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]-(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
-        WHERE ($unit_uid IS NULL OR u.uid = $unit_uid)
-        AND ($agency_uid IS NULL OR a.uid = $agency_uid)
-
-        WITH o, a, u, e
-        ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
-
-        WITH
-            o,
-            a,
-            head(collect({e: e, u: u})) AS rep,
-            min(e.earliest_date) AS earliest_date,
-            max(e.latest_date) AS latest_date
-
-        RETURN
-            o.uid AS officer_uid,
-            {
-                agency_uid: a.uid,
-                agency_name: a.name,
-                state: a.hq_state,
-                unit_uid: rep.u.uid,
-                unit_name: rep.u.name,
-                badge_number: rep.e.badge_number,
-                highest_rank: rep.e.highest_rank,
-                salary: rep.e.salary,
-                earliest_date: earliest_date,
-                latest_date: latest_date
-            } AS item
-        """
-        logging.warning("Cypher query for employment:\n%s", cy)
-
-        params = {
-            "uids": uids,
-            "unit_uid": unit_uid,
-            "agency_uid": agency_uid,
-        }
-
-        results, _ = db.cypher_query(cy, params)
-
-        employment_map: dict[str, list[dict]] = {}
-        for row in results:
-            officer_uid = row[0]
-            item = row[1]
-            employment_map.setdefault(officer_uid, []).append(item)
-
-        return employment_map
