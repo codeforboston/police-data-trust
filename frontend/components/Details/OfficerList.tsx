@@ -178,12 +178,17 @@ export default function OfficerList({
               {filtered.length > 0 ? (
                 filtered.map((officer) => (
                   <TableRow key={officer.uid} hover>
-                    <TableCell>{officer.title}</TableCell>
-                    <TableCell>Active</TableCell>
-                    <TableCell>{officer.uid}</TableCell>
-                    <TableCell>{officer.subtitle}</TableCell>
-                    <TableCell>{unit.name}</TableCell>
-                    <TableCell>8 years</TableCell>
+                    <TableCell>
+                      {officer.first_name} {officer.middle_name} {officer.last_name}
+                    </TableCell>
+                    <TableCell>{officer.employment?.latest_date ? "Inactive" : "Active"}</TableCell>
+                    <TableCell>{officer.employment?.badge_number}</TableCell>
+                    <TableCell>{officer.employment?.rank}</TableCell>
+                    <TableCell>{officer.employment?.unit?.name}</TableCell>
+                    <TableCell>
+                      {officer.employment?.earliest_date} –{" "}
+                      {officer.employment?.latest_date ?? "Current"}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (

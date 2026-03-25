@@ -3,32 +3,31 @@
 import { useEffect, useRef, useState } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
-import { SearchResponse } from "@/utils/api"
+import { Officer } from "@/utils/api"
 import { useAuth } from "@/providers/AuthProvider"
 
 export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
   const { accessToken } = useAuth()
-  const [officers, setOfficers] = useState<SearchResponse[]>([])
+  const [officers, setOfficers] = useState<Officer[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
   const fetchedRef = useRef(false)
 
   useEffect(() => {
-    if (!enabled || fetchedRef.current || !unitUid || !accessToken) return
+    console.log({ enabled })
+    if (/*!enabled ||*/ fetchedRef.current || !unitUid || !accessToken) return
+
+    const url = `${apiBaseUrl}${API_ROUTES.agencies.profile(unitUid)}/officers?page=1&per_page=25&include=employment`
 
     fetchedRef.current = true
     setLoading(true)
     setError(null)
-
     // /api/v1/agencies/52192a89b0144fe6bf624239ed16d5db/officers?page=268&include=employment&per_page=1
-    apiFetch(
-      `${apiBaseUrl}${API_ROUTES.agencies.profile(unitUid)}/officers?page=1&per_page=25&include=employment`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+    apiFetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    )
+    })
       .then((res) => res.json())
       .then((data) => {
         setOfficers(data.results ?? [])
