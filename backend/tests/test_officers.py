@@ -13,20 +13,20 @@ mock_officers = {
         "first_name": "John",
         "last_name": "Doe",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
     },
     "hazel": {
         "first_name": "Hazel",
         "last_name": "Nutt",
         "ethnicity": "White",
-        "gender": "Female"
+        "gender": "Female",
     },
     "frank": {
         "first_name": "Frank",
         "last_name": "Furter",
         "ethnicity": "Black/African American",
-        "gender": "Male"
-    }
+        "gender": "Male",
+    },
 }
 
 mock_agencies = {
@@ -37,7 +37,7 @@ mock_agencies = {
         "hq_city": "Chicago",
         "hq_state": "IL",
         "hq_zip": "60653",
-        "jurisdiction": "MUNICIPAL"
+        "jurisdiction": "MUNICIPAL",
     },
     "nypd": {
         "name": "New York Police Department",
@@ -46,8 +46,8 @@ mock_agencies = {
         "hq_address": "1 Police Plaza",
         "hq_city": "New York",
         "hq_zip": "10038",
-        "jurisdiction": "MUNICIPAL"
-    }
+        "jurisdiction": "MUNICIPAL",
+    },
 }
 
 mock_units = {
@@ -64,7 +64,7 @@ mock_units = {
         "hq_zip": "60001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-alpha/officers",
-        "date_established": date(2001, 5, 14)
+        "date_established": date(2001, 5, 14),
     },
     "unit_bravo": {
         "name": "Unit Bravo",
@@ -79,7 +79,7 @@ mock_units = {
         "hq_zip": "75001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-bravo/officers",
-        "date_established": date(1998, 9, 3)
+        "date_established": date(1998, 9, 3),
     },
     "unit_charlie": {
         "name": "Unit Charlie",
@@ -94,8 +94,8 @@ mock_units = {
         "hq_zip": "43001",
         "agency_url": "https://agency.gov",
         "officers_url": "https://agency.gov/unit-charlie/officers",
-        "date_established": date(2010, 2, 28)
-    }
+        "date_established": date(2010, 2, 28),
+    },
 }
 
 mock_unit_memberships = {
@@ -103,25 +103,23 @@ mock_unit_memberships = {
         "earliest_date": date(2015, 3, 4),
         "latest_date": date(2020, 3, 4),
         "badge_number": "1234",
-        "highest_rank": 'Officer'
+        "highest_rank": "Officer",
     },
     "hazel": {
         "earliest_date": date(2018, 8, 12),
         "latest_date": date(2021, 4, 4),
         "badge_number": "5678",
-        "highest_rank": 'Sergeant',
+        "highest_rank": "Sergeant",
     },
     "frank": {
         "earliest_date": date(2019, 5, 3),
         "latest_date": date(2025, 5, 4),
         "badge_number": "1234",
-        "highest_rank": 'Lieutenant'
-    }
+        "highest_rank": "Lieutenant",
+    },
 }
 
-mock_sources = {
-    "cpdp": {"name": "Citizens Police Data Project"}
-}
+mock_sources = {"cpdp": {"name": "Citizens Police Data Project"}}
 
 
 @pytest.fixture
@@ -135,17 +133,15 @@ def example_officers():
 
 
 def test_create_officer(
-        client,
-        contributor_access_token,
-        example_agency
-        ):
+    client, contributor_access_token, example_source, example_agency
+):
 
-    # Test that we can create an officer without an agency association
     request = {
         "first_name": "Max",
         "last_name": "Payne",
         "ethnicity": "White",
-        "gender": "Male"
+        "gender": "Male",
+        "source_uid": example_source.uid,
     }
     res = client.post(
         "/api/v1/officers",
@@ -157,13 +153,104 @@ def test_create_officer(
     assert res.status_code == 200
     response = res.json
 
-    officer_obj = (
-       Officer.nodes.get(uid=response["uid"])
-    )
+    officer_obj = Officer.nodes.get(uid=response["uid"])
     assert officer_obj.first_name == request["first_name"]
     assert officer_obj.last_name == request["last_name"]
     assert officer_obj.ethnicity == request["ethnicity"]
     assert officer_obj.gender == request["gender"]
+
+    source = officer_obj.citations.all()
+    assert len(source) == 1
+    assert source[0].uid == example_source.uid
+
+
+def test_create_officer_without_source_uid(
+    client,
+    contributor_access_token,
+):
+    """POST officer without source_uid should fail with 422."""
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 422
+
+
+def test_create_officer_with_invalid_source_uid(
+    client,
+    contributor_access_token,
+):
+    """POST officer with a non-existent source_uid should fail with 422."""
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": "nonexistent-uid-12345",
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={
+            "Authorization": "Bearer {0}".format(contributor_access_token)
+        },
+    )
+    assert res.status_code == 422
+
+
+def test_create_officer_user_not_member(client, access_token, example_source):
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": example_source.uid,
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+    assert res.status_code == 403
+
+
+def test_create_officer_member_not_publisher(
+    client,
+    example_source_member,
+    example_source,
+):
+    login_res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": example_source_member.email,
+            "password": "my_password",
+        },
+    )
+    assert login_res.status_code == 200
+    member_access_token = login_res.json["access_token"]
+
+    request = {
+        "first_name": "Max",
+        "last_name": "Payne",
+        "ethnicity": "White",
+        "gender": "Male",
+        "source_uid": example_source.uid,
+    }
+    res = client.post(
+        "/api/v1/officers/",
+        json=request,
+        headers={"Authorization": "Bearer {0}".format(member_access_token)},
+    )
+    assert res.status_code == 403
 
 
 def test_get_officer(client, example_officer, access_token):
@@ -256,7 +343,7 @@ def test_officer_pagination(client, db_session, access_token, example_officers):
     # Create Officers in the database
     officers = Officer.nodes.all()
     per_page = 1
-    expected_total_pages = math.ceil(len(officers)//per_page)
+    expected_total_pages = math.ceil(len(officers) // per_page)
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
@@ -283,9 +370,9 @@ def test_officer_pagination2(client, db_session, access_token):
     # Create Officers in the database
     for i in range(1, 36):
         mock_officer = {
-                "first_name": f"John{i}",
-                # "last_name": "Doe"
-            }
+            "first_name": f"John{i}",
+            # "last_name": "Doe"
+        }
         Officer(**mock_officer).save()
 
     officers = Officer.nodes.all()
@@ -539,8 +626,9 @@ def create_officers_units_agencies():
     return officers
 
 
-def test_get_officers_with_unit(client, db_session, access_token,
-                                create_officers_units_agencies):
+def test_get_officers_with_unit(
+    client, db_session, access_token, create_officers_units_agencies
+):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
@@ -582,8 +670,9 @@ def test_get_officers_with_unit(client, db_session, access_token,
     assert res.json["total"] == len(officers_with_units)
 
 
-def test_get_officers_with_unit_and_agency(client, db_session, access_token,
-                                           create_officers_units_agencies):
+def test_get_officers_with_unit_and_agency(
+    client, db_session, access_token, create_officers_units_agencies
+):
 
     results, meta = db.cypher_query("""
         MATCH (o:Officer)<-[]-(:Employment)-[]->(u:Unit)
@@ -631,8 +720,9 @@ def test_get_officers_dates(client, access_token, query, expect_results,
         assert res.json == {"message": "No results found matching the query"}
 
 
-def test_get_officers_with_rank(client, db_session, access_token,
-                                create_officers_units_agencies):
+def test_get_officers_with_rank(
+    client, db_session, access_token, create_officers_units_agencies
+):
     res = client.get(
         "/api/v1/officers?rank=Officer",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
@@ -661,8 +751,9 @@ def test_get_officers_with_rank(client, db_session, access_token,
     assert res.json["results"][0]["last_name"] is not None
 
 
-def test_filter_by_ethnicity(client, db_session, access_token,
-                             create_officers_units_agencies):
+def test_filter_by_ethnicity(
+    client, db_session, access_token, create_officers_units_agencies
+):
     res = client.get(
         "/api/v1/officers?ethnicity=White",
         headers={"Authorization": f"Bearer {access_token}"}
@@ -691,7 +782,7 @@ def test_filter_by_ethnicity(client, db_session, access_token,
         ("John", "Doe", True),
         ("Hazel", "Nutt", True),
         ("Alice", "Johnson", False),
-    ]
+    ],
 )
 def test_filter_by_officer_name(client, db_session, access_token,
                                 create_officers_units_agencies,

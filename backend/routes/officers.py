@@ -2,8 +2,11 @@ import logging
 from backend.database.utils.transform import transform_dates_in_dict
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
-from backend.schemas import (validate_request, ordered_jsonify,
-                             add_pagination_wrapper)
+from backend.schemas import (
+    validate_request,
+    ordered_jsonify,
+    add_pagination_wrapper,
+)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
 from backend.routes.search import fetch_details, build_officer_result
@@ -351,24 +354,47 @@ RETURN {
 @validate_request(CreateOfficer)
 def create_officer():
     """Create an officer profile.
+
+    Requires a valid source_uid. The officer will be linked to the
+    specified data source via an UPDATED_BY citation.
     """
     logger = logging.getLogger("create_officer")
     body: CreateOfficer = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
-    # try:
-    officer = Officer.from_dict(body.model_dump())
-    # except Exception as e:
-    #     abort(400, description=str(e))
+    source = Source.nodes.get_or_none(uid=body.source_uid)
+    if source is None:
+        abort(
+            422,
+            description=(
+                f"Source with UID '{body.source_uid}' not found. "
+                "A valid data source is required to create an officer."
+            ),
+        )
+
+    if not source.members.is_connected(current_user):
+        abort(
+            403, description="User does not have permission to use this source"
+        )
+
+    member_rel = source.members.relationship(current_user)
+    if member_rel is None or not member_rel.may_publish():
+        abort(
+            403, description="User does not have permission to use this source"
+        )
+
+    officer_data = body.dict()
+    officer_data.pop("source_uid", None)
+    officer = Officer.from_dict(officer_data)
+
+    officer.citations.connect(source, {"timestamp": datetime.now()})
 
     logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
     track_to_mp(
         request,
         "create_officer",
-        {
-            "officer_id": officer.uid
-        },
+        {"officer_id": officer.uid},
     )
     return officer.to_json()
 
@@ -527,8 +553,7 @@ def get_all_officers():
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateOfficer)
 def update_officer(officer_uid: str):
-    """Update an officer profile.
-    """
+    """Update an officer profile."""
     body: UpdateOfficer = request.validated_body
     o = Officer.nodes.get_or_none(uid=officer_uid)
     if o is None:
@@ -543,9 +568,7 @@ def update_officer(officer_uid: str):
     track_to_mp(
         request,
         "update_officer",
-        {
-            "officer_id": o.uid
-        },
+        {"officer_id": o.uid},
     )
     return o.to_json()
 
@@ -567,9 +590,7 @@ def delete_officer(officer_uid: str):
         track_to_mp(
             request,
             "delete_officer",
-            {
-                "officer_id": uid
-            },
+            {"officer_id": uid},
         )
         return {"message": "Officer deleted successfully"}
     except Exception as e:
