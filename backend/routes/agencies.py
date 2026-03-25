@@ -2,7 +2,7 @@ import logging
 # from typing import Optional, List
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
-    validate_request, add_pagination_wrapper, ordered_jsonify, paginate_results,
+    validate_request, add_pagination_wrapper, ordered_jsonify,
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
@@ -13,7 +13,8 @@ from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from neomodel import db
-from backend.dto.agency import AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams
+from backend.dto.agency import (
+    AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams)
 from backend.database.utils.transform import transform_dates_in_dict
 
 
@@ -406,7 +407,8 @@ def get_agency_officers(agency_uid):
 
     # Count total distinct officers for pagination
     count_query = """
-    MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+    MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
+    [:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
     RETURN count(DISTINCT o) AS total_officers
     """
     count_results, _ = db.cypher_query(count_query, cy_params)
@@ -418,7 +420,8 @@ def get_agency_officers(agency_uid):
 
     if include_employment:
         query = """
-        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(e:Employment)-[:HELD_BY]-(o:Officer)
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
+        [:IN_UNIT]-(e:Employment)-[:HELD_BY]-(o:Officer)
         WITH o, u, e
         ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
         WITH
@@ -435,7 +438,8 @@ def get_agency_officers(agency_uid):
                 CASE
                     WHEN min_date IS NULL THEN row.employment.earliest_date
                     WHEN row.employment.earliest_date IS NULL THEN min_date
-                    WHEN row.employment.earliest_date < min_date THEN row.employment.earliest_date
+                    WHEN row.employment.earliest_date < min_date
+                      THEN row.employment.earliest_date
                     ELSE min_date
                 END
             ) AS earliest_date,
@@ -443,7 +447,8 @@ def get_agency_officers(agency_uid):
                 CASE
                     WHEN row.employment.latest_date IS NULL THEN null
                     WHEN max_date IS NULL THEN row.employment.latest_date
-                    WHEN row.employment.latest_date > max_date THEN row.employment.latest_date
+                    WHEN row.employment.latest_date > max_date
+                      THEN row.employment.latest_date
                     ELSE max_date
                 END
             ) AS latest_date
@@ -466,7 +471,8 @@ def get_agency_officers(agency_uid):
         """
     else:
         query = """
-        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        -[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
         WITH DISTINCT o
         RETURN o
         SKIP $skip
@@ -475,7 +481,6 @@ def get_agency_officers(agency_uid):
 
     try:
         res, meta = db.cypher_query(query, cy_params, resolve_objects=True)
-
         officers = []
         for record in res:
             officer = record[0]
@@ -486,10 +491,6 @@ def get_agency_officers(agency_uid):
                 officer_dict["employment"] = transform_dates_in_dict(employment)
 
             officers.append(officer_dict)
-
-        logging.warning(f"Fetched {len(officers)} officers for agency {agency_uid}")
-        logging.warning(f"Officer rows: \n{res if res else 'No officers'}")
-
         result = add_pagination_wrapper(
             page_data=officers,
             total=total_officers,
