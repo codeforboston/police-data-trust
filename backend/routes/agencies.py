@@ -8,17 +8,17 @@ from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole
 from backend.database.models.agency import Agency
 from backend.routes.search import (
-    fetch_details, build_agency_result, build_unit_result)
+    fetch_details, build_agency_result)
 from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-from neomodel import db
 from backend.dto.agency import (
     AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams)
-from backend.database.utils.transform import transform_dates_in_dict
+from backend.services.agency_service import AgencyService
 
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
+agency_service = AgencyService()
 
 UNIT_CYPHER = """
 CALL (a) {
@@ -170,73 +170,14 @@ def get_agency(agency_uid: str):
     except Exception as e:
         logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
-    match_clause = "MATCH (a:Agency {uid: $agency_uid})"
-    return_clause = "RETURN a"
-    subqueries = ""
-    if params.include:
-        if "units" in params.include:
-            subqueries += UNIT_CYPHER
-            return_clause += ", total_units"
-        if "officers" in params.include:
-            subqueries += OFFICER_CYPHER
-            return_clause += ", total_officers"
-        if "complaints" in params.include:
-            subqueries += COMPLAINT_CYPHER
-            return_clause += ", total_complaints"
-        if "allegations" in params.include:
-            subqueries += ALLEGATION_CYPHER
-            return_clause += ", collect(type_summary) AS allegation_summary"
-        if "reported_units" in params.include:
-            subqueries += TOP_UNITS_BY_COMPLAINTS_CYPHER
-            return_clause += ", most_reported_units"
-        if "location" in params.include:
-            subqueries += LOCATION_CYPHER
-            return_clause += ", location"
-    cy = match_clause + subqueries + return_clause
-
-    rows, _ = db.cypher_query(cy, {"agency_uid": agency_uid})
-    if not rows:
+    try:
+        agency_data = agency_service.get_agency_profile(
+            agency_uid=agency_uid,
+            includes=params.include or [],
+        )
+        return ordered_jsonify(agency_data), 200
+    except ValueError:
         abort(404, description="Agency not found")
-    row = rows[0]
-    agency_data = row[0]._properties
-    if params.include:
-        idx = 1
-        if "units" in params.include:
-            agency_data["total_units"] = row[idx]
-            idx += 1
-        if "officers" in params.include:
-            agency_data["total_officers"] = row[idx]
-            idx += 1
-        if "complaints" in params.include:
-            agency_data["total_complaints"] = row[idx]
-            idx += 1
-        if "allegations" in params.include:
-            agency_data["allegation_summary"] = format_allegation_summary(
-                row[idx])
-            idx += 1
-        if "reported_units" in params.include:
-            details = fetch_details(
-                [u.get("uid") for u in row[idx]], "Unit")
-            units = [build_unit_result(
-                u, details.get(u.get("uid"), {})) for u in row[idx]]
-            item_dump = [
-                item.model_dump() for item in units if item
-            ]
-            for item in item_dump:
-                item["last_updated"] = item[
-                    "last_updated"].isoformat() if item.get(
-                    "last_updated", None) else None
-            agency_data["most_reported_units"] = item_dump
-            idx += 1
-        if "location" in params.include:
-            loc = row[idx]
-            agency_data["location"] = {
-                "latitude": loc["coords"].y,
-                "longitude": loc["coords"].x,
-                "city": loc["city"],
-                "state": loc["state"]
-            } if loc and loc.get("coords", None) else None
-    return ordered_jsonify(agency_data)
 
 
 # Update agency profile
@@ -395,109 +336,16 @@ def get_agency_officers(agency_uid):
     except Exception as e:
         logging.warning(f"Invalid query params: {e}")
         abort(400, description=str(e))
-    q_page = params.page
-    q_per_page = params.per_page
-    include_employment = "employment" in (params.include or [])
-
-    cy_params = {
-        "agency_uid": agency_uid,
-        "skip": (q_page - 1) * q_per_page,
-        "limit": q_per_page,
-    }
-
-    # Count total distinct officers for pagination
-    count_query = """
-    MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
-    [:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
-    RETURN count(DISTINCT o) AS total_officers
-    """
-    count_results, _ = db.cypher_query(count_query, cy_params)
-    total_officers = count_results[0][0] if count_results else 0
-    if total_officers == 0:
-        return jsonify({"message": "No officers found for this agency"}), 200
-    if total_officers <= (q_page - 1) * q_per_page:
-        return jsonify({"message": "Page number exceeds total results"}), 400
-
-    if include_employment:
-        query = """
-        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)-
-        [:IN_UNIT]-(e:Employment)-[:HELD_BY]-(o:Officer)
-        WITH o, u, e
-        ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
-        WITH
-            o,
-            collect({
-                employment: e,
-                unit: u
-            }) AS rows
-        WITH
-            o,
-            rows,
-            head(rows) AS most_recent,
-            reduce(min_date = null, row IN rows |
-                CASE
-                    WHEN min_date IS NULL THEN row.employment.earliest_date
-                    WHEN row.employment.earliest_date IS NULL THEN min_date
-                    WHEN row.employment.earliest_date < min_date
-                      THEN row.employment.earliest_date
-                    ELSE min_date
-                END
-            ) AS earliest_date,
-            reduce(max_date = null, row IN rows |
-                CASE
-                    WHEN row.employment.latest_date IS NULL THEN null
-                    WHEN max_date IS NULL THEN row.employment.latest_date
-                    WHEN row.employment.latest_date > max_date
-                      THEN row.employment.latest_date
-                    ELSE max_date
-                END
-            ) AS latest_date
-
-        RETURN
-            o,
-            {
-                uid: most_recent.employment.uid,
-                earliest_date: earliest_date,
-                latest_date: latest_date,
-                badge_number: most_recent.employment.badge_number,
-                rank: most_recent.employment.highest_rank,
-                unit: {
-                    uid: most_recent.unit.uid,
-                    name: most_recent.unit.name
-                }
-            } AS employment
-        SKIP $skip
-        LIMIT $limit
-        """
-    else:
-        query = """
-        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
-        -[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
-        WITH DISTINCT o
-        RETURN o
-        SKIP $skip
-        LIMIT $limit
-        """
 
     try:
-        res, meta = db.cypher_query(query, cy_params, resolve_objects=True)
-        officers = []
-        for record in res:
-            officer = record[0]
-            officer_dict = officer.to_dict()
-
-            if include_employment:
-                employment = record[1]
-                officer_dict["employment"] = transform_dates_in_dict(employment)
-
-            officers.append(officer_dict)
-        result = add_pagination_wrapper(
-            page_data=officers,
-            total=total_officers,
-            page_number=q_page,
-            per_page=q_per_page
+        result = agency_service.get_agency_officers(
+            agency_uid=agency_uid,
+            page=params.page,
+            per_page=params.per_page,
+            includes=params.include or [],
         )
         return ordered_jsonify(result), 200
-
-    except Exception as e:
-        abort(400, description=str(e))
+    except IndexError:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+    except ValueError:
+        abort(404, description="Agency not found")
