@@ -65,3 +65,21 @@ class GetAgencyParams(BaseModel):
                 raise ValueError(
                     f"Invalid include parameters: {', '.join(invalid)}")
         return v
+
+
+class GetAgencyOfficersParams(PaginatedRequest):
+    include: Optional[List[str]] = Field(
+        None, description="Related data to include in the response."
+    )
+
+    @field_validator("include")
+    def validate_include(cls, v):
+        allowed_includes = {
+            "employment",
+        }
+        if v:
+            invalid = set(v) - allowed_includes
+            if invalid:
+                raise ValueError(
+                    f"Invalid include parameters: {', '.join(invalid)}")
+        return v

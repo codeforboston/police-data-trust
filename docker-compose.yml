@@ -56,6 +56,7 @@ services:
         NPDI_API_PORT: ${NPDI_API_PORT:-5001}
     volumes:
       - .:/app
+      - data_uploads:/data/uploads
     networks:
       - stack
     env_file:
@@ -77,3 +78,4 @@ volumes:
   neo4j_logs: {}
   neo4j_import: {}
   neo4j_plugins: {}
+  data_uploads: {}
