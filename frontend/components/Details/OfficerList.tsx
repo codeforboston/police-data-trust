@@ -21,13 +21,13 @@ import {
   CircularProgress
 } from "@mui/material"
 import { Search, TableRows, Apps } from "@mui/icons-material"
-import { SearchResponse, Unit } from "@/utils/api"
+import { Officer, Unit } from "@/utils/api"
 import OfficerListItem from "@/components/officer/OfficerListItem"
 import DetailCard from "@/components/Details/DetailCard"
 
 type OfficerListProps = {
   unit: Unit
-  officers?: SearchResponse[]
+  officers?: Officer[]
   activeOfficerCount?: number
   inactiveOfficerCount?: number
   loading?: boolean
@@ -58,12 +58,46 @@ export default function OfficerList({
   const activeCount = activeOfficerCount ?? unit.total_officers ?? 0
   const inactiveCount = inactiveOfficerCount ?? 0
 
+  // Extract unique values for filter dropdowns
+  const uniqueStatuses = React.useMemo(() => {
+    const statuses = new Set<string>()
+    officers.forEach((officer) => {
+      const status = officer.employment?.latest_date ? "Inactive" : "Active"
+      statuses.add(status)
+    })
+    return Array.from(statuses).sort()
+  }, [officers])
+
+  const uniqueRanks = React.useMemo(() => {
+    const ranks = new Set<string>()
+    officers.forEach((officer) => {
+      if (officer.employment?.rank) {
+        ranks.add(officer.employment.rank)
+      }
+    })
+    return Array.from(ranks).sort()
+  }, [officers])
+
+  const uniqueUnits = React.useMemo(() => {
+    const units = new Set<string>()
+    officers.forEach((officer) => {
+      if (officer.employment?.unit?.name) {
+        units.add(officer.employment.unit.name)
+      }
+    })
+    return Array.from(units).sort()
+  }, [officers])
+
   const filtered = officers.filter((officer) => {
-    const name = officer.title?.toLowerCase() ?? ""
+    const name =
+      `${officer.first_name} ${officer.middle_name || ""} ${officer.last_name}`.toLowerCase()
     const matchesSearch = searchValue.trim() === "" || name.includes(searchValue.toLowerCase())
-    const matchesStatus = statusFilter === "all" || statusFilter === "active"
-    const matchesRank = rankFilter === "all" || rankFilter === officer.subtitle
-    const matchesUnit = unitFilter === "all" || unitFilter === unit.name
+
+    const status = officer.employment?.latest_date ? "Inactive" : "Active"
+    const matchesStatus = statusFilter === "all" || statusFilter === status
+
+    const matchesRank = rankFilter === "all" || rankFilter === officer.employment?.rank
+    const matchesUnit = unitFilter === "all" || unitFilter === officer.employment?.unit?.name
 
     return matchesSearch && matchesStatus && matchesRank && matchesUnit
   })
@@ -138,9 +172,11 @@ export default function OfficerList({
           <InputLabel>Rank</InputLabel>
           <Select label="Rank" value={rankFilter} onChange={(e) => setRankFilter(e.target.value)}>
             <MenuItem value="all">All</MenuItem>
-            <MenuItem value="Detective First Grade">Detective First Grade</MenuItem>
-            <MenuItem value="Sergeant">Sergeant</MenuItem>
-            <MenuItem value="Officer">Officer</MenuItem>
+            {uniqueRanks.map((rank) => (
+              <MenuItem key={rank} value={rank}>
+                {rank}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -148,7 +184,11 @@ export default function OfficerList({
           <InputLabel>Unit</InputLabel>
           <Select label="Unit" value={unitFilter} onChange={(e) => setUnitFilter(e.target.value)}>
             <MenuItem value="all">All</MenuItem>
-            <MenuItem value={unit.name ?? ""}>{unit.name}</MenuItem>
+            {uniqueUnits.map((unit_name) => (
+              <MenuItem key={unit_name} value={unit_name}>
+                {unit_name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -203,19 +243,9 @@ export default function OfficerList({
         </Paper>
       ) : (
         <DetailCard sx={{ mt: 3 }}>
-          {filtered.length > 0 ? (
-            filtered.map((officer, index) => (
-              <OfficerListItem
-                key={officer.uid}
-                officer={officer}
-                outlined={false}
-                isFirst={index === 0}
-                isLast={index === filtered.length - 1}
-              />
-            ))
-          ) : (
-            <Typography sx={{ py: 4, textAlign: "center" }}>No officers found.</Typography>
-          )}
+          <Typography sx={{ py: 4, textAlign: "center", color: "text.disabled" }}>
+            Card view is temporarily unavailable
+          </Typography>
         </DetailCard>
       )}
     </Box>
