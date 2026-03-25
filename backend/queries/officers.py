@@ -1,23 +1,7 @@
-import logging
-from backend.auth.jwt import min_role_required
-from backend.mixpanel.mix import track_to_mp
-from backend.schemas import (validate_request, ordered_jsonify)
-from backend.database.models.user import UserRole, User
-from backend.database.models.officer import Officer
-from backend.services.officer_service import OfficerService
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
-from flask import Blueprint, abort, request, jsonify
-from flask_jwt_extended import get_jwt
-from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.officer import (
-    OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams)
 from neomodel import db
 
 
-bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
-officer_service = OfficerService()
-
-EMPLOYMENT_CYPHER = """
+EMPLOYMENT_HISTORY_QUERY = """
     MATCH (o:Officer {uid: $uid})-[:HELD_BY]-(e:Employment)-[:IN_UNIT]
     -(u:Unit)-[:ESTABLISHED_BY]-(a:Agency)
     WITH a, u, e
@@ -43,7 +27,7 @@ EMPLOYMENT_CYPHER = """
     LIMIT 20;
     """
 
-ALLEGATION_CYPHER = """
+ALLEGATION_SUMMARY_QUERY = """
 MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->(a:Allegation)
 MATCH (a)-[:ALLEGED]->(c:Complaint)
 WITH
@@ -69,7 +53,7 @@ RETURN
 LIMIT 10;
 """
 
-SOURCES_CYPHER = """
+SOURCES_QUERY = """
 MATCH (o:Officer {uid: $uid})-[:UPDATED_BY]->(s:Source)
 RETURN DISTINCT {
   name: s.name,
@@ -101,7 +85,7 @@ RETURN collect({
 
 
 # Last 7 Calendar years of complaint counts
-METRICS_COMPLAINTS_CYPHER_CALENDAR = """
+METRICS_COMPLAINT_HISTORY_QUERY = """
 WITH range(date().year - 6, date().year) AS years
 UNWIND years AS year
 OPTIONAL MATCH (o:Officer {uid: $uid})-
@@ -120,7 +104,7 @@ RETURN collect({
 }) AS results;
 """
 
-METRICS_ALLEGATIONS_TYPES = """
+METRICS_ALLEGATION_TYPES_QUERY = """
 MATCH (o:Officer {uid: $uid})
 
 CALL (o) {
@@ -149,7 +133,7 @@ RETURN {
 } AS result;
 """
 
-METRICS_ALLEGATIONS_OUTCOMES = """
+METRICS_ALLEGATION_OUTCOMES_QUERY = """
 MATCH (o:Officer {uid: $uid})
 OPTIONAL MATCH (o)-[:ACCUSED_OF]->(al:Allegation)
 WITH
@@ -208,7 +192,7 @@ RETURN {
 } AS result;
 """
 
-METRICS_COMPLAINANT_DEMOGRAPHICS = """
+METRICS_COMPLAINANT_DEMOGRAPHICS_QUERY = """
 MATCH (o:Officer {uid: $uid})-[:ACCUSED_OF]->
 (:Allegation)-[:REPORTED_BY]-(c:Civilian)
 WITH o, collect(DISTINCT c) AS civilians
@@ -343,194 +327,40 @@ RETURN {
 """
 
 
-# Create an officer profile
-@bp.route("", methods=["POST"])
-@jwt_required()
-@min_role_required(UserRole.CONTRIBUTOR)
-@validate_request(CreateOfficer)
-def create_officer():
-    """Create an officer profile.
-    """
-    logger = logging.getLogger("create_officer")
-    body: CreateOfficer = request.validated_body
-    jwt_decoded = get_jwt()
-    current_user = User.get(jwt_decoded["sub"])
-
-    # try:
-    officer = Officer.from_dict(body.model_dump())
-    # except Exception as e:
-    #     abort(400, description=str(e))
-
-    logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
-    track_to_mp(
-        request,
-        "create_officer",
-        {
-            "officer_id": officer.uid
-        },
-    )
-    return officer.to_json()
+def fetch_officer_sources(officer_uid: str):
+    rows, _ = db.cypher_query(SOURCES_QUERY, {"uid": officer_uid})
+    return [row[0] for row in rows]
 
 
-# Get an officer profile
-@bp.route("/<officer_uid>", methods=["GET"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-def get_officer(officer_uid: str):
-    """Get an officer profile.
-    """
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-    raw = {
-        **request.args,  # copies simple values
-        "include": request.args.getlist("include"),
-    }
-    try:
-        params = GetOfficerParams(**raw)
-    except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
-        abort(400, description=str(e))
-
-    response = officer_service.get_officer(
-        officer_uid=officer_uid,
-        includes=params.include or [])
-    return ordered_jsonify(response)
+def fetch_officer_employment_history(officer_uid: str):
+    rows, _ = db.cypher_query(EMPLOYMENT_HISTORY_QUERY, {"uid": officer_uid})
+    return [row[0] for row in rows]
 
 
-# Get all officers
-@bp.route("", methods=["GET"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-def get_all_officers():
-    """Get all officers.
-    Accepts Query Parameters for pagination:
-    per_page: number of results per page
-    page: page number
-    """
-    raw = {
-        **request.args,  # copies simple values
-        "unit": request.args.getlist("unit"),
-        "agency": request.args.getlist("agency"),
-        "rank": request.args.getlist("rank"),
-        "badge_number": request.args.getlist("badge_number"),
-        "ethnicity": request.args.getlist("ethnicity"),
-    }
-    try:
-        params = OfficerSearchParams(**raw)
-    except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
-        abort(400, description=str(e))
-
-    response, status_code, use_ordered = officer_service.list_officers(params)
-
-    if use_ordered:
-        return ordered_jsonify(response), status_code
-    return jsonify(response), status_code
+def fetch_officer_allegation_summary(officer_uid: str):
+    rows, _ = db.cypher_query(ALLEGATION_SUMMARY_QUERY, {"uid": officer_uid})
+    return rows
 
 
-# Update an officer profile
-@bp.route("/<officer_uid>", methods=["PUT"])
-@jwt_required()
-@min_role_required(UserRole.CONTRIBUTOR)
-@validate_request(UpdateOfficer)
-def update_officer(officer_uid: str):
-    """Update an officer profile.
-    """
-    body: UpdateOfficer = request.validated_body
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-
-    try:
-        o = Officer.from_dict(body.model_dump(), officer_uid)
-        o.refresh()
-    except Exception as e:
-        abort(400, description=str(e))
-
-    track_to_mp(
-        request,
-        "update_officer",
-        {
-            "officer_id": o.uid
-        },
-    )
-    return o.to_json()
+def fetch_officer_metric_a_types(officer_uid: str):
+    rows, _ = db.cypher_query(
+        METRICS_ALLEGATION_TYPES_QUERY, {"uid": officer_uid})
+    return rows[0][0] if rows else {}
 
 
-# Delete an officer profile
-@bp.route("/<officer_uid>", methods=["DELETE"])
-@jwt_required()
-@min_role_required(UserRole.ADMIN)
-def delete_officer(officer_uid: str):
-    """Delete an officer profile.
-    Must be an admin to delete an officer.
-    """
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-    try:
-        uid = o.uid
-        o.delete()
-        track_to_mp(
-            request,
-            "delete_officer",
-            {
-                "officer_id": uid
-            },
-        )
-        return {"message": "Officer deleted successfully"}
-    except Exception as e:
-        abort(400, description=str(e))
+def fetch_officer_metric_a_outcomes(officer_uid: str):
+    rows, _ = db.cypher_query(
+        METRICS_ALLEGATION_OUTCOMES_QUERY, {"uid": officer_uid})
+    return rows[0][0] if rows else {}
 
 
-# Retrieve an officer's employment history
-@bp.route("/<officer_uid>/employment", methods=["GET"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-def get_employment(officer_uid: str):
-    """Retrieve an officer's employment history.
-    """
-
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-
-    # Get employment history
-    try:
-        results, _meta = db.cypher_query(
-            EMPLOYMENT_CYPHER, {'uid': officer_uid})
-    except Exception as e:
-        abort(400, description=str(e))
-    employment_history = [row[0] for row in results]
-    return jsonify({
-        "officer_uid": officer_uid,
-        "employment_history": employment_history,
-        "total_records": len(employment_history)
-    })
+def fetch_officer_metric_comp_history(officer_uid: str):
+    rows, _ = db.cypher_query(
+        METRICS_COMPLAINT_HISTORY_QUERY, {"uid": officer_uid})
+    return rows[0][0] if rows else []
 
 
-# Retrieve an officer's metrics summary
-@bp.route("/<officer_uid>/metrics", methods=["GET"])
-@jwt_required()
-@min_role_required(UserRole.PUBLIC)
-def get_officer_metrics(officer_uid: str):
-    """Retrieve an officer's metrics summary.
-    """
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-    raw = {
-        **request.args,  # copies simple values
-        "include": request.args.getlist("include"),
-    }
-    try:
-        params = GetOfficerMetricsParams(**raw)
-    except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
-        abort(400, description=str(e))
-
-    response = officer_service.get_officer_metrics(
-        officer_uid=officer_uid,
-        includes=params.include or [])
-    return ordered_jsonify(response)
+def fetch_officer_metric_comp_demo(officer_uid: str):
+    rows, _ = db.cypher_query(
+        METRICS_COMPLAINANT_DEMOGRAPHICS_QUERY, {"uid": officer_uid})
+    return rows[0][0] if rows else {}
