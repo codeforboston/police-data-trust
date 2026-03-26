@@ -11,7 +11,6 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.officer import (
     OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams)
-from neomodel import db
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
@@ -166,23 +165,12 @@ def delete_officer(officer_uid: str):
 def get_employment(officer_uid: str):
     """Retrieve an officer's employment history.
     """
-
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
-
     # Get employment history
     try:
-        results, _meta = db.cypher_query(
-            EMPLOYMENT_CYPHER, {'uid': officer_uid})
+        response = officer_service.get_officer_employment(officer_uid)
+        return ordered_jsonify(response)
     except Exception as e:
-        abort(400, description=str(e))
-    employment_history = [row[0] for row in results]
-    return jsonify({
-        "officer_uid": officer_uid,
-        "employment_history": employment_history,
-        "total_records": len(employment_history)
-    })
+        abort(500, description=str(e))
 
 
 # Retrieve an officer's metrics summary

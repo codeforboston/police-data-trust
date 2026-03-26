@@ -100,6 +100,21 @@ class OfficerService:
         )
         return response, 200, use_ordered
 
+    def get_officer_employment(self, officer_uid: str) -> list[dict]:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            abort(404, description="Officer not found")
+
+        employment_history = serialize_employment_history(
+            fetch_officer_employment_history(officer_uid)
+        )
+        response = {
+            "officer_uid": officer_uid,
+            "employment_history": employment_history,
+            "total_records": len(employment_history)
+        }
+        return response
+
     METRIC_FETCHERS = {
         "allegation_types": fetch_officer_metric_a_types,
         "allegation_outcomes": fetch_officer_metric_a_outcomes,
