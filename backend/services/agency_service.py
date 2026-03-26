@@ -1,0 +1,56 @@
+from backend.queries.agencies import AgencyQueries
+from backend.schemas import add_pagination_wrapper
+from backend.serializers.agency_serializer import (
+    serialize_agency_profile_row,
+    serialize_officer_rows,
+)
+
+
+class AgencyService:
+    def __init__(self):
+        self.queries = AgencyQueries()
+
+    def get_agency_profile(self, agency_uid: str, includes: list[str]) -> dict:
+        result = self.queries.fetch_agency_profile(agency_uid, includes)
+        if result is None:
+            raise ValueError("Agency not found")
+
+        return serialize_agency_profile_row(result, includes)
+
+    def get_agency_officers(
+        self,
+        agency_uid: str,
+        page: int,
+        per_page: int,
+        includes: list[str],
+    ) -> dict:
+        include_employment = "employment" in includes
+        total = self.queries.count_agency_officers(agency_uid)
+
+        if total == 0:
+            return {
+                "message": "No officers found for this agency"
+            }
+
+        skip = (page - 1) * per_page
+        if total <= skip:
+            raise IndexError("Page number exceeds total results")
+
+        rows = self.queries.fetch_agency_officers(
+            agency_uid=agency_uid,
+            skip=skip,
+            limit=per_page,
+            include_employment=include_employment,
+        )
+
+        officers = serialize_officer_rows(
+            rows,
+            include_employment=include_employment,
+        )
+
+        return add_pagination_wrapper(
+            page_data=officers,
+            total=total,
+            page_number=page,
+            per_page=per_page,
+        )

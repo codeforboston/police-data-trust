@@ -1,0 +1,142 @@
+from flask import abort
+from backend.database.models.officer import Officer
+from backend.queries.officers import (
+    fetch_officer_sources,
+    fetch_officer_employment_history,
+    fetch_officer_allegation_summary,
+    fetch_officer_metric_a_types,
+    fetch_officer_metric_a_outcomes,
+    fetch_officer_metric_comp_history,
+    fetch_officer_metric_comp_demo,
+)
+from backend.serializers.officer_serializer import (
+    serialize_officer_sources,
+    serialize_employment_history,
+    serialize_allegation_summary,
+    serialize_officer_detail,
+    serialize_officer_list,
+    serialize_officer_search_results,
+)
+from backend.schemas import add_pagination_wrapper
+
+
+class OfficerService:
+    def get_officer(self, officer_uid: str, includes: list[str]) -> dict:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            abort(404, description="Officer not found")
+
+        sources = serialize_officer_sources(
+            fetch_officer_sources(officer_uid)
+        )
+
+        employment_history = None
+        allegation_summary = None
+
+        if "employment" in includes:
+            employment_history = serialize_employment_history(
+                fetch_officer_employment_history(officer_uid)
+            )
+
+        if "allegations" in includes:
+            allegation_summary = serialize_allegation_summary(
+                fetch_officer_allegation_summary(officer_uid)
+            )
+
+        return serialize_officer_detail(
+            officer=officer,
+            sources=sources,
+            employment_history=employment_history,
+            allegation_summary=allegation_summary,
+        )
+
+    def list_officers(self, params):
+        row_count = Officer.search(
+            name=params.officer_name,
+            rank=params.officer_rank,
+            unit=params.unit,
+            agency=params.agency,
+            badge_number=params.badge_number,
+            ethnicity=params.ethnicity,
+            active_after=params.active_after,
+            active_before=params.active_before,
+            count=True,
+        )
+
+        if row_count == 0:
+            return {
+                "message": "No results found matching the query"}, 200, False
+
+        if row_count <= params.skip:
+            return {
+                "message": "Page number exceeds total results"}, 400, False
+
+        results = Officer.search(
+            name=params.officer_name,
+            rank=params.officer_rank,
+            unit=params.unit,
+            agency=params.agency,
+            badge_number=params.badge_number,
+            ethnicity=params.ethnicity,
+            active_after=params.active_after,
+            active_before=params.active_before,
+            skip=params.skip,
+            limit=params.limit,
+            inflate=not params.searchResult,
+        )
+
+        if params.searchResult:
+            page = serialize_officer_search_results(results)
+            use_ordered = False
+        else:
+            page = serialize_officer_list(results)
+            use_ordered = True
+
+        response = add_pagination_wrapper(
+            page_data=page,
+            total=row_count,
+            page_number=params.page,
+            per_page=params.per_page,
+        )
+        return response, 200, use_ordered
+
+    def get_officer_employment(self, officer_uid: str) -> list[dict]:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            abort(404, description="Officer not found")
+
+        employment_history = serialize_employment_history(
+            fetch_officer_employment_history(officer_uid)
+        )
+        response = {
+            "officer_uid": officer_uid,
+            "employment_history": employment_history,
+            "total_records": len(employment_history)
+        }
+        return response
+
+    METRIC_FETCHERS = {
+        "allegation_types": fetch_officer_metric_a_types,
+        "allegation_outcomes": fetch_officer_metric_a_outcomes,
+        "complaint_history": fetch_officer_metric_comp_history,
+        "complainant_demographics": fetch_officer_metric_comp_demo,
+    }
+
+    def get_officer_metrics(
+            self, officer_uid: str, includes: list[str]) -> dict:
+        officer = Officer.nodes.get_or_none(uid=officer_uid)
+        if officer is None:
+            abort(404, description="Officer not found")
+
+        if not includes:
+            abort(400, description="Include parameter is required.")
+
+        response = {"officer_uid": officer_uid}
+
+        for include in includes:
+            fetcher = self.METRIC_FETCHERS.get(include)
+            if not fetcher:
+                continue
+            response[include] = fetcher(officer_uid)
+
+        return response
