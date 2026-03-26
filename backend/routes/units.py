@@ -5,7 +5,8 @@ from backend.database.models.user import UserRole
 from backend.database.models.agency import Unit
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
-from backend.dto.unit import UnitQueryParams, GetUnitParams
+from backend.dto.unit import (
+    UnitQueryParams, GetUnitParams, GetUnitOfficersParams)
 from backend.services.unit_service import UnitService
 
 bp = Blueprint("unit_routes", __name__, url_prefix="/api/v1/units")
@@ -59,3 +60,32 @@ def get_unit(uid: str):
         uid=uid,
         includes=params.include or [])
     return ordered_jsonify(unit_data), 200
+
+# Get officers for a specific unit
+@bp.route("/<uid>/officers", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_unit_officers(uid: str):
+    """Get officers for a specific unit by UID."""
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetUnitOfficersParams(**raw)
+    except Exception as e:
+        logging.warning(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    try:
+        result = unit_service.list_unit_officers(
+            unit_uid=uid,
+            page=params.page,
+            per_page=params.per_page,
+            includes=params.include or [],
+        )
+        return ordered_jsonify(result), 200
+    except IndexError:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+    except ValueError:
+        abort(404, description="Unit not found")

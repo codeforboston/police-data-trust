@@ -28,6 +28,19 @@ def serialize_officer_list(rows):
     return [row.to_dict() for row in rows]
 
 
+def serialize_officer_rows(rows, include_employment: bool) -> list[dict]:
+    officers = []
+    for row in rows:
+        officer = row[0]
+        officer_dict = officer.to_dict(include_relationships=False)
+
+        if include_employment:
+            officer_dict["employment"] = transform_dates_in_dict(row[1])
+
+        officers.append(officer_dict)
+    return officers
+
+
 def serialize_officer_search_results(rows):
     details = fetch_details([row.get("uid") for row in rows], "Officer")
     officers = [
@@ -37,7 +50,7 @@ def serialize_officer_search_results(rows):
     return [item.model_dump() for item in officers if item]
 
 
-def serialize_officer_detail(
+def serialize_officer_profile(
     officer,
     sources=None,
     employment_history=None,

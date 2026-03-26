@@ -1,19 +1,11 @@
 from flask import abort
 from backend.database.models.officer import Officer
-from backend.queries.officers import (
-    fetch_officer_sources,
-    fetch_officer_employment_history,
-    fetch_officer_allegation_summary,
-    fetch_officer_metric_a_types,
-    fetch_officer_metric_a_outcomes,
-    fetch_officer_metric_comp_history,
-    fetch_officer_metric_comp_demo,
-)
+from backend.queries.officers import OfficerQueries
 from backend.serializers.officer_serializer import (
     serialize_officer_sources,
     serialize_employment_history,
     serialize_allegation_summary,
-    serialize_officer_detail,
+    serialize_officer_profile,
     serialize_officer_list,
     serialize_officer_search_results,
 )
@@ -21,13 +13,22 @@ from backend.schemas import add_pagination_wrapper
 
 
 class OfficerService:
+    def __init__(self):
+        self.queries = OfficerQueries()
+        self.METRIC_FETCHERS = {
+            "allegation_types": self.queries.fetch_officer_metric_a_types,
+            "allegation_outcomes": self.queries.fetch_officer_metric_a_outcomes,
+            "complaint_history": self.queries.fetch_officer_metric_comp_history,
+            "complainant_demographics": self.queries.fetch_officer_metric_comp_demo,
+        }
+
     def get_officer(self, officer_uid: str, includes: list[str]) -> dict:
         officer = Officer.nodes.get_or_none(uid=officer_uid)
         if officer is None:
             abort(404, description="Officer not found")
 
         sources = serialize_officer_sources(
-            fetch_officer_sources(officer_uid)
+            self.queries.fetch_officer_sources(officer_uid)
         )
 
         employment_history = None
@@ -35,15 +36,15 @@ class OfficerService:
 
         if "employment" in includes:
             employment_history = serialize_employment_history(
-                fetch_officer_employment_history(officer_uid)
+                self.queries.fetch_officer_employment_history(officer_uid)
             )
 
         if "allegations" in includes:
             allegation_summary = serialize_allegation_summary(
-                fetch_officer_allegation_summary(officer_uid)
+                self.queries.fetch_officer_allegation_summary(officer_uid)
             )
 
-        return serialize_officer_detail(
+        return serialize_officer_profile(
             officer=officer,
             sources=sources,
             employment_history=employment_history,
@@ -106,7 +107,7 @@ class OfficerService:
             abort(404, description="Officer not found")
 
         employment_history = serialize_employment_history(
-            fetch_officer_employment_history(officer_uid)
+            self.queries.fetch_officer_employment_history(officer_uid)
         )
         response = {
             "officer_uid": officer_uid,
@@ -114,13 +115,6 @@ class OfficerService:
             "total_records": len(employment_history)
         }
         return response
-
-    METRIC_FETCHERS = {
-        "allegation_types": fetch_officer_metric_a_types,
-        "allegation_outcomes": fetch_officer_metric_a_outcomes,
-        "complaint_history": fetch_officer_metric_comp_history,
-        "complainant_demographics": fetch_officer_metric_comp_demo,
-    }
 
     def get_officer_metrics(
             self, officer_uid: str, includes: list[str]) -> dict:
