@@ -1,5 +1,8 @@
 from backend.routes.search import (
     fetch_details, build_unit_result, build_officer_result)
+from backend.serializers.location_serializer import (
+    serialize_location
+)
 
 
 def serialize_unit_list(rows):
@@ -31,19 +34,7 @@ def serialize_reported_officers(officers):
     return dumped
 
 
-def serialize_location(location):
-    if not location or not location.get("coords"):
-        return None
-
-    return {
-        "latitude": location["coords"].y,
-        "longitude": location["coords"].x,
-        "city": location["city"],
-        "state": location["state"],
-    }
-
-
-def serialize_unit_detail(result: dict, includes: list[str]) -> dict:
+def serialize_unit_profile(result: dict, includes: list[str]) -> dict:
     unit = result["u"]
     agency = result["a"]
 

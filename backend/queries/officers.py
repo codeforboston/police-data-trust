@@ -327,40 +327,37 @@ RETURN {
 """
 
 
-def fetch_officer_sources(officer_uid: str):
-    rows, _ = db.cypher_query(SOURCES_QUERY, {"uid": officer_uid})
-    return [row[0] for row in rows]
+class OfficerQueries:
+    def fetch_sources(self, officer_uid: str):
+        rows, _ = db.cypher_query(SOURCES_QUERY, {"uid": officer_uid})
+        return [row[0] for row in rows]
 
+    def fetch_emp_history(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            EMPLOYMENT_HISTORY_QUERY, {"uid": officer_uid})
+        return [row[0] for row in rows]
 
-def fetch_officer_employment_history(officer_uid: str):
-    rows, _ = db.cypher_query(EMPLOYMENT_HISTORY_QUERY, {"uid": officer_uid})
-    return [row[0] for row in rows]
+    def fetch_alleg_summary(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            ALLEGATION_SUMMARY_QUERY, {"uid": officer_uid})
+        return rows
 
+    def fetch_metric_a_types(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            METRICS_ALLEGATION_TYPES_QUERY, {"uid": officer_uid})
+        return rows[0][0] if rows else {}
 
-def fetch_officer_allegation_summary(officer_uid: str):
-    rows, _ = db.cypher_query(ALLEGATION_SUMMARY_QUERY, {"uid": officer_uid})
-    return rows
+    def fetch_metric_a_outcomes(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            METRICS_ALLEGATION_OUTCOMES_QUERY, {"uid": officer_uid})
+        return rows[0][0] if rows else {}
 
+    def fetch_metric_comp_history(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            METRICS_COMPLAINT_HISTORY_QUERY, {"uid": officer_uid})
+        return rows[0][0] if rows else []
 
-def fetch_officer_metric_a_types(officer_uid: str):
-    rows, _ = db.cypher_query(
-        METRICS_ALLEGATION_TYPES_QUERY, {"uid": officer_uid})
-    return rows[0][0] if rows else {}
-
-
-def fetch_officer_metric_a_outcomes(officer_uid: str):
-    rows, _ = db.cypher_query(
-        METRICS_ALLEGATION_OUTCOMES_QUERY, {"uid": officer_uid})
-    return rows[0][0] if rows else {}
-
-
-def fetch_officer_metric_comp_history(officer_uid: str):
-    rows, _ = db.cypher_query(
-        METRICS_COMPLAINT_HISTORY_QUERY, {"uid": officer_uid})
-    return rows[0][0] if rows else []
-
-
-def fetch_officer_metric_comp_demo(officer_uid: str):
-    rows, _ = db.cypher_query(
-        METRICS_COMPLAINANT_DEMOGRAPHICS_QUERY, {"uid": officer_uid})
-    return rows[0][0] if rows else {}
+    def fetch_metric_comp_demo(self, officer_uid: str):
+        rows, _ = db.cypher_query(
+            METRICS_COMPLAINANT_DEMOGRAPHICS_QUERY, {"uid": officer_uid})
+        return rows[0][0] if rows else {}

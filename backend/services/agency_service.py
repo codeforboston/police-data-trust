@@ -1,9 +1,10 @@
+from backend.database.models.agency import Agency
 from backend.queries.agencies import AgencyQueries
 from backend.schemas import add_pagination_wrapper
 from backend.serializers.agency_serializer import (
-    serialize_agency_profile_row,
-    serialize_officer_rows,
+    serialize_agency_profile
 )
+from backend.serializers.officer_serializer import serialize_officer_rows
 
 
 class AgencyService:
@@ -15,15 +16,19 @@ class AgencyService:
         if result is None:
             raise ValueError("Agency not found")
 
-        return serialize_agency_profile_row(result, includes)
+        return serialize_agency_profile(result, includes)
 
-    def get_agency_officers(
+    def list_agency_officers(
         self,
         agency_uid: str,
         page: int,
         per_page: int,
         includes: list[str],
     ) -> dict:
+        agency = Agency.nodes.get_or_none(uid=agency_uid)
+        if not agency:
+            raise ValueError("Agency not found")
+
         include_employment = "employment" in includes
         total = self.queries.count_agency_officers(agency_uid)
 

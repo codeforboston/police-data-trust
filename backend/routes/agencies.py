@@ -249,7 +249,7 @@ def get_agency_officers(agency_uid):
         abort(400, description=str(e))
 
     try:
-        result = agency_service.get_agency_officers(
+        result = agency_service.list_agency_officers(
             agency_uid=agency_uid,
             page=params.page,
             per_page=params.per_page,
