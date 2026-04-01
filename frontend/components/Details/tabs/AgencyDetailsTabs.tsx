@@ -12,15 +12,14 @@ import { useUnitOfficers } from "@/hooks/useUnitOfficers"
 
 export default function AgencyDetailsTabs(agency: Agency) {
   const [activeTab, setActiveTab] = useState(0)
-  const showOfficerList = activeTab === 1
-  console.log({ agencyUid: agency.uid })
+  const showOfficerList = activeTab === 2
+
   const {
     officers,
     loading: officersLoading,
     error: officersError
   } = useUnitOfficers(agency.uid, showOfficerList)
 
-  console.log({ officers, officersLoading, officersError })
   useEffect(() => {
     if (officersError) {
       // eslint-disable-next-line no-console

@@ -14,15 +14,13 @@ export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
   const fetchedRef = useRef(false)
 
   useEffect(() => {
-    console.log({ enabled })
-    if (/*!enabled ||*/ fetchedRef.current || !unitUid || !accessToken) return
+    if (!enabled || fetchedRef.current || !unitUid || !accessToken) return
 
     const url = `${apiBaseUrl}${API_ROUTES.agencies.profile(unitUid)}/officers?page=1&per_page=25&include=employment`
 
     fetchedRef.current = true
     setLoading(true)
     setError(null)
-    // /api/v1/agencies/52192a89b0144fe6bf624239ed16d5db/officers?page=268&include=employment&per_page=1
     apiFetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`
