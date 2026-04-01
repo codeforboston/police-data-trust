@@ -206,6 +206,18 @@ export type Location = {
   state?: string
 }
 
+export type OfficerEmployment = {
+  uid: string
+  earliest_date?: string
+  latest_date?: string
+  badge_number?: string
+  rank?: string
+  unit?: {
+    uid: string
+    name: string
+  }
+}
+
 export type Officer = {
   uid: string
   first_name: string
@@ -216,6 +228,7 @@ export type Officer = {
   gender?: string
   year_of_birth?: string
   state_ids?: StateID[]
+  employment?: OfficerEmployment
   employment_history?: EmploymentHistory[]
   allegation_summary?: AllegationSummary[]
   sources?: Source[]

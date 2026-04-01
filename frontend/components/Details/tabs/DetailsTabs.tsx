@@ -20,6 +20,8 @@ type TabPanelProps = {
 type DetailsTabsProps = {
   tabs: DetailTab[]
   ariaLabel?: string
+  value?: number
+  onChange?: (newValue: number) => void
 }
 
 function CustomTabPanel({ children, value, index, ...other }: TabPanelProps) {
@@ -43,18 +45,28 @@ function a11yProps(index: number) {
   }
 }
 
-export default function DetailsTabs({ tabs, ariaLabel = "detail tabs" }: DetailsTabsProps) {
+export default function DetailsTabs({
+  tabs,
+  ariaLabel = "detail tabs",
+  value: controlledValue,
+  onChange
+}: DetailsTabsProps) {
   const [value, setValue] = React.useState(0)
 
+  const activeValue = controlledValue ?? value
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
+    if (controlledValue === undefined) {
+      setValue(newValue)
+    }
+    onChange?.(newValue)
   }
 
   return (
     <Box sx={{ width: "100%" }}>
       <Box>
         <Tabs
-          value={value}
+          value={activeValue}
           onChange={handleChange}
           textColor="secondary"
           indicatorColor="secondary"
@@ -73,7 +85,7 @@ export default function DetailsTabs({ tabs, ariaLabel = "detail tabs" }: Details
       </Box>
 
       {tabs.map((tab, index) => (
-        <CustomTabPanel key={tab.label} value={value} index={index}>
+        <CustomTabPanel key={tab.label} value={activeValue} index={index}>
           {tab.content}
         </CustomTabPanel>
       ))}
