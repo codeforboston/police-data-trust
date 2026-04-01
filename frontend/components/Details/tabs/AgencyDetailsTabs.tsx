@@ -22,7 +22,6 @@ export default function AgencyDetailsTabs(agency: Agency) {
 
   useEffect(() => {
     if (officersError) {
-      // eslint-disable-next-line no-console
       console.error("Failed to load officer list", officersError)
     }
   }, [officersError])

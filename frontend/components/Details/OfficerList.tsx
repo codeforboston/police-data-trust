@@ -22,7 +22,6 @@ import {
 } from "@mui/material"
 import { Search, TableRows, Apps } from "@mui/icons-material"
 import { Officer, Unit } from "@/utils/api"
-import OfficerListItem from "@/components/officer/OfficerListItem"
 import DetailCard from "@/components/Details/DetailCard"
 
 type OfficerListProps = {
@@ -119,7 +118,8 @@ export default function OfficerList({
           exclusive
           onChange={handleViewModeChange}
           size="small"
-          sx={{ borderRadius: "999px", height: 40 }}>
+          sx={{ borderRadius: "999px", height: 40 }}
+        >
           <ToggleButton value="card" aria-label="card view">
             <Apps sx={{ mr: 1 }} />
             Card view
@@ -138,7 +138,8 @@ export default function OfficerList({
           gap: 2,
           alignItems: "center",
           mt: 3
-        }}>
+        }}
+      >
         <TextField
           variant="outlined"
           placeholder="search officer or try anything"
@@ -161,10 +162,14 @@ export default function OfficerList({
           <Select
             label="Status"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}>
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <MenuItem value="all">All</MenuItem>
-            <MenuItem value="Active">Active</MenuItem>
-            <MenuItem value="Inactive">Inactive</MenuItem>
+            {uniqueStatuses.map((status) => (
+              <MenuItem key={status} value={status}>
+                {status}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 

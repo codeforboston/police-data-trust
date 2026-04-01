@@ -14,14 +14,14 @@ export default function UnitDetailsTabs(unit: Unit) {
   const [activeTab, setActiveTab] = useState(0)
   const showOfficerList = activeTab === 1
 
-  const { officers, loading: officersLoading, error: officersError } = useUnitOfficers(
-    unit.uid,
-    showOfficerList
-  )
+  const {
+    officers,
+    loading: officersLoading,
+    error: officersError
+  } = useUnitOfficers(unit.uid, showOfficerList)
 
   useEffect(() => {
     if (officersError) {
-      // eslint-disable-next-line no-console
       console.error("Failed to load officer list", officersError)
     }
   }, [officersError])
