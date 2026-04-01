@@ -23,7 +23,7 @@ from backend.database import (
     SocialMediaContact,
     Civilian
 )
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 example_email = "test@email.com"
 admin_email = "admin@email.com"
@@ -165,7 +165,7 @@ def example_agency(example_source):
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
     agency.citations.connect(example_source, {
-        'timestamp': datetime.now(),
+        'timestamp': datetime.now(timezone.utc),
     })
     yield agency
 
@@ -183,7 +183,7 @@ def example_unit(example_agency, example_source):
     # Create relationships
     unit.agency.connect(agency)
     unit.citations.connect(source, {
-        'timestamp': datetime.now(),
+        'timestamp': datetime.now(timezone.utc),
     })
     yield unit
 
@@ -197,7 +197,7 @@ def example_employment(example_source, example_officer, example_unit):
     employment.unit.connect(example_unit)
     employment.officer.connect(example_officer)
     employment.citations.connect(example_source, {
-        'timestamp': datetime.now(),
+        'timestamp': datetime.now(timezone.utc),
     })
     yield employment
 
@@ -216,7 +216,7 @@ def example_officer(example_source):
     officer.citations.connect(
         example_source,
         {
-            'timestamp': datetime.now(),
+            'timestamp': datetime.now(timezone.utc),
         }
     )
     yield officer
@@ -244,7 +244,7 @@ def example_source_member(example_source):
         member,
         {
             'role': MemberRole.MEMBER.value,
-            'date_joined': datetime.now(),
+            'date_joined': datetime.now(timezone.utc),
             'is_active': True
         }
     )
@@ -267,7 +267,7 @@ def example_contributor(example_source):
         contributor,
         {
             'role': MemberRole.PUBLISHER.value,
-            'date_joined': datetime.now(),
+            'date_joined': datetime.now(timezone.utc),
             'is_active': True
         }
     ).save()
@@ -286,14 +286,14 @@ def example_complaint(
         "reporting_agency": "New York City Civilian Review Board",
         "reporting_agency_url": "https://www.nyc.gov/site/crb/index.page",
         "reporting_agency_email": "example@example.com",
-        "date_published": datetime.now()
+        "date_published": datetime.now(timezone.utc)
     }
     complaint = Complaint(
         record_id="C123456",
         category="Excessive Force",
-        incident_date=date(datetime.now().year - 3, 1, 15),
-        received_date=date(datetime.now().year - 3, 1, 20),
-        closed_date=date(datetime.now().year - 3, 8, 1),
+        incident_date=date(datetime.now(timezone.utc).year - 3, 1, 15),
+        received_date=date(datetime.now(timezone.utc).year - 3, 1, 20),
+        closed_date=date(datetime.now(timezone.utc).year - 3, 8, 1),
         reason_for_contact="Traffic Stop",
         outcome_of_contact="Arrest Made",
     ).save()
@@ -347,7 +347,7 @@ def example_allegation(example_source, example_complaint, example_officer):
     allegation.complainant.connect(complainant)
     allegation.complaint.connect(example_complaint)
     allegation.citations.connect(example_source, {
-        'timestamp': datetime.now(),
+        'timestamp': datetime.now(timezone.utc),
     })
     yield allegation
 
@@ -389,7 +389,7 @@ def source_admin(example_source):
         user,
         {
             'role': MemberRole.ADMIN.value,
-            'date_joined': datetime.now(),
+            'date_joined': datetime.now(timezone.utc),
             'is_active': True
         }
     )

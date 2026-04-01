@@ -5,7 +5,7 @@ import logging
 from backend.schemas import (
     JsonSerializable, PropertyEnum, NodeConflictException)
 from backend.database.models.contact import SocialMediaContact, EmailContact
-from datetime import datetime
+from datetime import datetime, timezone
 from slugify import slugify
 from neomodel import (
     StructuredNode, StructuredRel,
@@ -107,7 +107,7 @@ class SourceMember(StructuredRel, JsonSerializable):
         return MemberRole.SUBSCRIBER
 
     def create(self, refresh: bool = True):
-        self.date_joined = datetime.now()
+        self.date_joined = datetime.now(timezone.utc)
         return super().create(refresh)
 
     def __repr__(self):
@@ -153,7 +153,7 @@ class HasCitations:
         :param data: The citation data
         """
         context = {k: v for k, v in {
-            "timestamp": datetime.now(),
+            "timestamp": datetime.now(timezone.utc),
             "user_uid": user.uid,
             "diff": diff
         }.items() if v is not None}

@@ -2,6 +2,7 @@ from __future__ import annotations
 import pytest
 from datetime import datetime, date
 import math
+from datetime import timezone
 from backend.database import (
     Complaint, Source, Officer, Location, RecordType,
     Allegation, Civilian, Investigation, Penalty
@@ -83,7 +84,7 @@ def example_complaints(db_session, example_source, example_officer):
         "reporting_agency": "New York City Civilian Review Board",
         "reporting_agency_url": "https://www.nyc.gov/site/crb/index.page",
         "reporting_agency_email": "example@example.com",
-        "date_published": datetime.now()
+        "date_published":  datetime.now(timezone.utc)
     }
     for i in range(3):
         c = Complaint(
