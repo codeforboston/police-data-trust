@@ -1,4 +1,3 @@
-import logging
 from backend.database.models.agency import Unit
 from backend.queries.units import UnitQueries
 from backend.schemas import add_pagination_wrapper
@@ -92,9 +91,6 @@ class UnitService:
             limit=per_page,
             include_employment=include_employment,
         )
-
-        logging.warning(f"Fetched {len(rows)} officers for unit {unit_uid} (total: {total})")
-        logging.warning(f"rows: {rows}")
 
         officers = serialize_officer_rows(
             rows,

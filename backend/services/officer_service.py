@@ -16,10 +16,10 @@ class OfficerService:
     def __init__(self):
         self.queries = OfficerQueries()
         self.METRIC_FETCHERS = {
-            "allegation_types": self.queries.fetch_officer_metric_a_types,
-            "allegation_outcomes": self.queries.fetch_officer_metric_a_outcomes,
-            "complaint_history": self.queries.fetch_officer_metric_comp_history,
-            "complainant_demographics": self.queries.fetch_officer_metric_comp_demo,
+            "allegation_types": self.queries.fetch_metric_a_types,
+            "allegation_outcomes": self.queries.fetch_metric_a_outcomes,
+            "complaint_history": self.queries.fetch_metric_comp_history,
+            "complainant_demographics": self.queries.fetch_metric_comp_demo,
         }
 
     def get_officer(self, officer_uid: str, includes: list[str]) -> dict:
@@ -28,7 +28,7 @@ class OfficerService:
             abort(404, description="Officer not found")
 
         sources = serialize_officer_sources(
-            self.queries.fetch_officer_sources(officer_uid)
+            self.queries.fetch_sources(officer_uid)
         )
 
         employment_history = None
@@ -36,12 +36,12 @@ class OfficerService:
 
         if "employment" in includes:
             employment_history = serialize_employment_history(
-                self.queries.fetch_officer_employment_history(officer_uid)
+                self.queries.fetch_emp_history(officer_uid)
             )
 
         if "allegations" in includes:
             allegation_summary = serialize_allegation_summary(
-                self.queries.fetch_officer_allegation_summary(officer_uid)
+                self.queries.fetch_alleg_summary(officer_uid)
             )
 
         return serialize_officer_profile(
@@ -107,7 +107,7 @@ class OfficerService:
             abort(404, description="Officer not found")
 
         employment_history = serialize_employment_history(
-            self.queries.fetch_officer_employment_history(officer_uid)
+            self.queries.fetch_emp_history(officer_uid)
         )
         response = {
             "officer_uid": officer_uid,

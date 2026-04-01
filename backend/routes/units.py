@@ -61,6 +61,7 @@ def get_unit(uid: str):
         includes=params.include or [])
     return ordered_jsonify(unit_data), 200
 
+
 # Get officers for a specific unit
 @bp.route("/<uid>/officers", methods=["GET"])
 @jwt_required()

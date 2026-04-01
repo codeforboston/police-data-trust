@@ -47,6 +47,7 @@ CALL (u) {
 }
 """
 
+
 class UnitQueries:
     INCLUDE_SPECS = {
         "reported_officers": {
@@ -169,11 +170,12 @@ class UnitQueries:
             """
         else:
             query = """
-            MATCH (u:Unit {uid: $unit_uid})-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+            MATCH (u:Unit {uid: $unit_uid})-[:IN_UNIT]-
+            (:Employment)-[:HELD_BY]-(o:Officer)
             RETURN o
             SKIP $skip
             LIMIT $limit
             """
-        
+
         rows, _ = db.cypher_query(query, params, resolve_objects=True)
         return rows
