@@ -5,6 +5,7 @@ from backend.serializers.agency_serializer import (
     serialize_agency_profile
 )
 from backend.serializers.officer_serializer import serialize_officer_rows
+from backend.serializers.unit_serializer import serialize_unit_list
 
 
 class AgencyService:
@@ -55,6 +56,43 @@ class AgencyService:
 
         return add_pagination_wrapper(
             page_data=officers,
+            total=total,
+            page_number=page,
+            per_page=per_page,
+        )
+
+    def list_agency_units(
+        self,
+        agency_uid: str,
+        page: int,
+        per_page: int,
+        includes: list[str],
+    ) -> dict:
+        agency = Agency.nodes.get_or_none(uid=agency_uid)
+        if not agency:
+            raise ValueError("Agency not found")
+
+        total = self.queries.count_agency_units(agency_uid)
+
+        if total == 0:
+            return {
+                "message": "No units found for this agency"
+            }
+
+        skip = (page - 1) * per_page
+        if total <= skip:
+            raise IndexError("Page number exceeds total results")
+
+        rows = self.queries.fetch_agency_units(
+            agency_uid=agency_uid,
+            skip=skip,
+            limit=per_page,
+        )
+
+        units = [row[0].to_dict(include_relationships=False) for row in rows]
+
+        return add_pagination_wrapper(
+            page_data=units,
             total=total,
             page_number=page,
             per_page=per_page,

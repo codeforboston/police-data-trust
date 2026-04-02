@@ -1,3 +1,5 @@
+import logging
+
 from neomodel import db
 
 AGENCY_BASE_MATCH = """
@@ -145,6 +147,14 @@ class AgencyQueries:
         rows, _ = db.cypher_query(query, {"agency_uid": agency_uid})
         return rows[0][0] if rows else 0
 
+    def count_agency_units(self, agency_uid: str) -> int:
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        RETURN count(DISTINCT u) AS total_units
+        """
+        rows, _ = db.cypher_query(query, {"agency_uid": agency_uid})
+        return rows[0][0] if rows else 0
+
     def fetch_agency_officers(
         self,
         agency_uid: str,
@@ -214,6 +224,28 @@ class AgencyQueries:
             SKIP $skip
             LIMIT $limit
             """
+
+        rows, _ = db.cypher_query(query, params, resolve_objects=True)
+        return rows
+    
+    def fetch_agency_units(
+        self,
+        agency_uid: str,
+        skip: int,
+        limit: int,
+    ):
+        params = {
+            "agency_uid": agency_uid,
+            "skip": skip,
+            "limit": limit,
+        }
+
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        RETURN u
+        SKIP $skip
+        LIMIT $limit
+        """
 
         rows, _ = db.cypher_query(query, params, resolve_objects=True)
         return rows
