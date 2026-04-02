@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   Box,
   Typography,
@@ -41,6 +43,7 @@ export default function OfficerList({
   loading = false,
   error = null
 }: OfficerListProps) {
+  const router = useRouter()
   const [viewMode, setViewMode] = React.useState<"card" | "table">("table")
   const [searchValue, setSearchValue] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
@@ -222,7 +225,15 @@ export default function OfficerList({
             <TableBody>
               {filtered.length > 0 ? (
                 filtered.map((officer) => (
-                  <TableRow key={officer.uid} hover>
+                  <TableRow
+                    key={officer.uid}
+                    hover
+                    onClick={() => router.push(`/officer/${officer.uid}`)}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "action.hover" }
+                    }}
+                  >
                     <TableCell>
                       {officer.first_name} {officer.middle_name} {officer.last_name}
                     </TableCell>
