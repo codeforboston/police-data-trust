@@ -2,17 +2,26 @@
 
 import { useEffect, useState } from "react"
 import { Typography } from "@mui/material"
-import { Agency } from "@/utils/api"
+import { Agency, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
 import Jurisdiction from "../Jurisdiction"
 import MostReportedUnits from "@/components/Details/MostReportedUnits"
 import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
+import UnitList from "@/components/Details/UnitList"
 import { useUnitOfficers } from "@/hooks/useUnitOfficers"
+import { useAgencyUnits } from "@/hooks/useAgencyUnits"
 
-export default function AgencyDetailsTabs(agency: Agency) {
+export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
   const showOfficerList = activeTab === 2
+  const showUnitList = activeTab === 1
+
+  const {
+    units,
+    loading: unitsLoading,
+    error: unitsError
+  } = useAgencyUnits(agency.uid, showUnitList)
 
   const {
     officers,
@@ -53,14 +62,21 @@ export default function AgencyDetailsTabs(agency: Agency) {
     },
     {
       label: "Unit List",
-      content: <>Unit List</>,
-      disabled: true
+      content: (
+        <UnitList
+          agency={agency}
+          units={units}
+          loading={unitsLoading}
+          error={unitsError}
+        />
+      )
     },
     {
       label: "Officer List",
       content: (
         <OfficerList
-          unit={agency}
+          org={agency}
+          orgType="agency"
           officers={officers}
           loading={officersLoading}
           error={officersError}

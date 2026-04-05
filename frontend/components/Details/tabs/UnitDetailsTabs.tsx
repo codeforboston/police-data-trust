@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Typography } from "@mui/material"
-import { Unit } from "@/utils/api"
+import { Unit, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
 import Jurisdiction from "../Jurisdiction"
 import MostReportedOfficers from "@/components/Details/MostReportedOfficers"
@@ -10,7 +10,7 @@ import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
 import { useUnitOfficers } from "@/hooks/useUnitOfficers"
 
-export default function UnitDetailsTabs(unit: Unit) {
+export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
   const showOfficerList = activeTab === 1
 
@@ -55,7 +55,8 @@ export default function UnitDetailsTabs(unit: Unit) {
       label: "Officer List",
       content: (
         <OfficerList
-          unit={unit}
+          org={unit}
+          orgType="unit"
           officers={officers}
           loading={officersLoading}
           error={officersError}

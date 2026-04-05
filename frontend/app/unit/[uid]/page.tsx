@@ -25,7 +25,7 @@ export default function UnitDetailsPage() {
     setLoading(true)
 
     apiFetch(
-      `${apiBaseUrl}${API_ROUTES.units.profile(uid)}?include=total_officers&include=reported_officers&include=total_complaints&include=location`,
+      `${apiBaseUrl}${API_ROUTES.units.profile(uid)}?include=officers&include=reported_officers&include=complaints&include=location`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
