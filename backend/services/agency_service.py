@@ -1,3 +1,5 @@
+import logging
+
 from backend.database.models.agency import Agency
 from backend.queries.agencies import AgencyQueries
 from backend.schemas import add_pagination_wrapper
@@ -5,7 +7,6 @@ from backend.serializers.agency_serializer import (
     serialize_agency_profile
 )
 from backend.serializers.officer_serializer import serialize_officer_rows
-from backend.serializers.unit_serializer import serialize_unit_list
 
 
 class AgencyService:
@@ -14,6 +15,7 @@ class AgencyService:
 
     def get_agency_profile(self, agency_uid: str, includes: list[str]) -> dict:
         result = self.queries.fetch_agency_profile(agency_uid, includes)
+        logging.debug(f"Fetched agency profile result: {result}")
         if result is None:
             raise ValueError("Agency not found")
 
