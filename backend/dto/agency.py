@@ -1,6 +1,7 @@
 from pydantic import Field, BaseModel, field_validator
 from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
+from backend.database.models.employment import EmploymentStatus, EmploymentType, Rank
 from backend.dto.common import PaginatedRequest
 from typing import List
 
@@ -68,9 +69,51 @@ class GetAgencyParams(BaseModel):
 
 
 class GetAgencyOfficersParams(PaginatedRequest):
+    term: Optional[str] = Field(
+        None, description="Search term to filter officers by name or badge number."
+    )
+    type: Optional[List[str]] = Field(
+        None, description="Filter officers by employment type (e.g., 'law_enforcement', 'corrections')."
+    )
+    status: Optional[List[str]] = Field(
+        None, description="Filter officers by employment status (e.g., 'full-time', 'part-time')."
+    )
+    rank: Optional[List[str]] = Field(
+        None, description="Filter officers by rank (e.g., 'Sergeant', 'Lieutenant')."
+    )
     include: Optional[List[str]] = Field(
         None, description="Related data to include in the response."
     )
+
+    @field_validator("status")
+    def validate_status(cls, v):
+        allowed_statuses = EmploymentStatus.choices()
+        if v:
+            invalid = set(v) - set(allowed_statuses)
+            if invalid:
+                raise ValueError(
+                    f"Invalid status parameters: {', '.join(invalid)}")
+        return v
+    
+    @field_validator("type")
+    def validate_type(cls, v):
+        allowed_types = EmploymentType.choices()
+        if v:
+            invalid = set(v) - set(allowed_types)
+            if invalid:
+                raise ValueError(
+                    f"Invalid type parameters: {', '.join(invalid)}")
+        return v
+    
+    @field_validator("rank")
+    def validate_rank(cls, v):
+        allowed_ranks = Rank.choices()
+        if v:
+            invalid = set(v) - set(allowed_ranks)
+            if invalid:
+                raise ValueError(
+                    f"Invalid rank parameters: {', '.join(invalid)}")
+        return v
 
     @field_validator("include")
     def validate_include(cls, v):

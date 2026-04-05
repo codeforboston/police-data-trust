@@ -103,7 +103,7 @@ mock_unit_memberships = {
         "earliest_date": date(2015, 3, 4),
         "latest_date": date(2020, 3, 4),
         "badge_number": "1234",
-        "highest_rank": 'Officer'
+        "highest_rank": 'Police Officer'
     },
     "hazel": {
         "earliest_date": date(2018, 8, 12),

@@ -271,6 +271,9 @@ def get_agency_officers(agency_uid):
     """Get all officers for an agency."""
     raw = {
         **request.args,
+        "type": request.args.getlist("type"),
+        "status": request.args.getlist("status"),
+        "rank": request.args.getlist("rank"),
         "include": request.args.getlist("include"),
     }
     try:
@@ -279,12 +282,20 @@ def get_agency_officers(agency_uid):
         logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
+    filters = {
+        "type": params.type or [],
+        "status": params.status or [],
+        "rank": params.rank or [],
+    }
+
     try:
         result = agency_service.list_agency_officers(
             agency_uid=agency_uid,
             page=params.page,
             per_page=params.per_page,
             includes=params.include or [],
+            filters=filters,
+            term=params.term,
         )
         return ordered_jsonify(result), 200
     except IndexError:
