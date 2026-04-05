@@ -259,9 +259,9 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         if count:
             cypher_query += "\nRETURN count(*) as c"
-            logging.warning("Cypher count query:\n%s", cypher_query)
-            logging.warning("Params: %s", params)
-            logging.warning("Query: %s", cypher_query)
+            logging.debug("Cypher count query:\n%s", cypher_query)
+            logging.debug("Params: %s", params)
+            logging.debug("Query: %s", cypher_query)
             count_results, _ = db.cypher_query(cypher_query, params)
             return count_results[0][0] if count_results else 0
         else:
@@ -269,8 +269,8 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
                 RETURN o SKIP {skip} LIMIT {limit}
             """
 
-            logging.warning("Cypher query:\n%s", cypher_query)
-            logging.warning("Params: %s", params)
+            logging.debug("Cypher query:\n%s", cypher_query)
+            logging.debug("Params: %s", params)
 
             rows, _ = db.cypher_query(cypher_query, params,
                                       resolve_objects=inflate)
