@@ -70,14 +70,11 @@ export default function UnitList({
   }, [units])
 
   const filtered = units.filter((unit) => {
-    const name =
-      `${unit.name}`.toLowerCase() || ""
+    const name = `${unit.name}`.toLowerCase() || ""
     const matchesSearch = searchValue.trim() === "" || name.includes(searchValue.toLowerCase())
 
     const status = "Active"
     const matchesStatus = statusFilter === "all" || statusFilter === status
-
-
 
     return matchesSearch && matchesStatus
   })
@@ -153,7 +150,6 @@ export default function UnitList({
             ))}
           </Select>
         </FormControl>
-
       </Box>
 
       {loading ? (
@@ -184,9 +180,7 @@ export default function UnitList({
                       "&:hover": { backgroundColor: "action.hover" }
                     }}
                   >
-                    <TableCell>
-                      {unit.name}
-                    </TableCell>
+                    <TableCell>{unit.name}</TableCell>
                   </TableRow>
                 ))
               ) : (

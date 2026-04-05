@@ -62,14 +62,7 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
     },
     {
       label: "Unit List",
-      content: (
-        <UnitList
-          agency={agency}
-          units={units}
-          loading={unitsLoading}
-          error={unitsError}
-        />
-      )
+      content: <UnitList agency={agency} units={units} loading={unitsLoading} error={unitsError} />
     },
     {
       label: "Officer List",
