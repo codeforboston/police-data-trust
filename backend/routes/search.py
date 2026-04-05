@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, List, Dict
 from collections import defaultdict
 from datetime import datetime
@@ -131,7 +132,7 @@ class Searchresult(BaseModel):
     details: Optional[List[str]] = None
     content_type: str
     source: str
-    last_updated: datetime
+    last_updated: datetime | None
     href: str
 
     @field_validator("last_updated", mode="before")
@@ -151,6 +152,7 @@ def fetch_details(uids: List[str], type: str) -> Dict[str, dict]:
     type:   Type of the nodes ("Officer", "Agency", "Unit").
     returns:   A dictionary mapping uid to details dictionary.
     """
+    logging.debug(f"Fetching details for UIDs: {uids} of type {type}")
     if not uids:
         return {}
 
@@ -168,11 +170,15 @@ def fetch_details(uids: List[str], type: str) -> Dict[str, dict]:
     details = {}
     for uid, row in results:
         details[uid] = row or {}
+    logging.debug(f"Fetched details for UIDs: {uids} of type {type}: {details}")
     return details
 
 
 def build_agency_result(node, details_row: dict) -> Searchresult:
-    a = Agency.inflate(node)
+    if not isinstance(node, Agency):
+        a = Agency.inflate(node)
+    else:
+        a = node
     uid = a.uid
     details = []
 
@@ -200,8 +206,10 @@ def build_agency_result(node, details_row: dict) -> Searchresult:
 
 
 def build_unit_result(node, details_row: dict) -> Searchresult:
-    u = Unit.inflate(node)
-
+    if not isinstance(node, Unit):
+        u = Unit.inflate(node)
+    else:
+        u = node
     uid = u.uid
     details = []
 

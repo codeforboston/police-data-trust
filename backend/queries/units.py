@@ -1,7 +1,70 @@
+import logging
+
 from backend.database import db
 
 UNIT_BASE_MATCH = """
 MATCH (u:Unit {uid: $uid})-[]-(a:Agency)
+"""
+
+OFFICER_COUNT_SUBQUERY = """
+CALL (u) {
+  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
+  RETURN count(DISTINCT o) AS total_officers
+}
+"""
+
+COMPLAINT_SUBQUERY = """
+CALL (u) {
+  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(:Officer)
+      -[:ACCUSED_OF]->(allege:Allegation)-[:ALLEGED]-(c:Complaint)
+  RETURN
+    count(DISTINCT c) AS total_complaints,
+    count(DISTINCT allege) AS total_allegations
+}
+"""
+
+ALLEGATION_SUBQUERY = """
+CALL (u) {
+  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(:Officer)
+      -[:ACCUSED_OF]->(allege:Allegation)
+  MATCH (allege)-[:ALLEGED]-(c:Complaint)
+  WITH
+    CASE
+      WHEN allege.type IS NULL OR trim(allege.type) = "" THEN "Unknown"
+      ELSE allege.type
+    END AS type,
+    count(*) AS occurrences,
+    sum(
+      CASE
+        WHEN toLower(trim(coalesce(allege.finding, ""))) = "substantiated"
+        THEN 1 ELSE 0
+      END
+    ) AS substantiated_count,
+    min(c.incident_date) AS earliest_incident_date,
+    max(c.incident_date) AS latest_incident_date
+  ORDER BY occurrences DESC, type ASC
+  RETURN collect({
+    type: type,
+    occurrences: occurrences,
+    substantiated_count: substantiated_count,
+    earliest_incident_date: earliest_incident_date,
+    latest_incident_date: latest_incident_date
+  }) AS allegation_summary
+}
+"""
+
+REPORTED_OFFICER_SUBQUERY = """
+CALL (u) {
+  MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
+    -[:ACCUSED_OF]->(allege:Allegation)-[:ALLEGED]-(c:Complaint)
+  WITH
+    o,
+    count(DISTINCT c) AS complaint_count,
+    count(DISTINCT allege) AS allegation_count
+  ORDER BY complaint_count DESC, allegation_count DESC
+  LIMIT 3
+  RETURN collect(o) AS most_reported_officers
+}
 """
 
 LOCATION_SUBQUERY = """
@@ -16,51 +79,24 @@ CALL (u) {
 }
 """
 
-MOST_REPORTED_OFFICER_SUBQUERY = """
-CALL (u) {
-  MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
-    -[:ACCUSED_OF]->(a:Allegation)-[:ALLEGED]-(c:Complaint)
-  WITH
-    o,
-    count(DISTINCT c) AS complaint_count,
-    count(DISTINCT a) AS allegation_count
-  ORDER BY complaint_count DESC, allegation_count DESC
-  LIMIT 3
-  RETURN collect(o) AS most_reported_officers
-}
-"""
-
-TOTAL_OFFICER_SUBQUERY = """
-CALL (u) {
-  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
-  RETURN count(DISTINCT o) AS total_officers
-}
-"""
-
-COMPLAINT_SUBQUERY = """
-CALL (u) {
-  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(:Officer)
-      -[:ACCUSED_OF]->(a:Allegation)-[:ALLEGED]-(c:Complaint)
-  RETURN
-    count(DISTINCT c) AS total_complaints,
-    count(DISTINCT a) AS total_allegations
-}
-"""
-
 
 class UnitQueries:
     INCLUDE_SPECS = {
-        "reported_officers": {
-            "subquery": MOST_REPORTED_OFFICER_SUBQUERY,
-            "return_fields": ["most_reported_officers"],
-        },
-        "total_officers": {
-            "subquery": TOTAL_OFFICER_SUBQUERY,
+        "officers": {
+            "subquery": OFFICER_COUNT_SUBQUERY,
             "return_fields": ["total_officers"],
         },
-        "total_complaints": {
+        "complaints": {
             "subquery": COMPLAINT_SUBQUERY,
             "return_fields": ["total_complaints", "total_allegations"],
+        },
+        "allegations": {
+            "subquery": ALLEGATION_SUBQUERY,
+            "return_fields": ["allegation_summary"],
+        },
+        "reported_officers": {
+            "subquery": REPORTED_OFFICER_SUBQUERY,
+            "return_fields": ["most_reported_officers"],
         },
         "location": {
             "subquery": LOCATION_SUBQUERY,
@@ -92,10 +128,12 @@ class UnitQueries:
             + "\nRETURN "
             + ", ".join(return_fields)
         )
+        logging.debug(f"Executing Cypher query for unit profile: {cypher}")
 
         rows, _ = db.cypher_query(cypher, {"uid": uid}, resolve_objects=True)
         if not rows:
-            return None
+            raise ValueError("Unit not found")
+        logging.debug(f"Cypher query  rows: {rows[0]}")
 
         row = rows[0]
         return {field: row[idx] for idx, field in enumerate(return_fields)}
@@ -155,15 +193,11 @@ class UnitQueries:
             RETURN
                 o,
                 {
-                    uid: most_recent.employment.uid,
+                    uid: most_recent.uid,
                     earliest_date: earliest_date,
                     latest_date: latest_date,
-                    badge_number: most_recent.employment.badge_number,
-                    rank: most_recent.employment.highest_rank,
-                    unit: {
-                        uid: most_recent.unit.uid,
-                        name: most_recent.unit.name
-                    }
+                    badge_number: most_recent.badge_number,
+                    rank: most_recent.highest_rank
                 } AS employment
             SKIP $skip
             LIMIT $limit
@@ -177,5 +211,12 @@ class UnitQueries:
             LIMIT $limit
             """
 
+        logging.debug(
+            "Executing Cypher query: {} with params: {}".format(
+                query, params)
+        )
+
         rows, _ = db.cypher_query(query, params, resolve_objects=True)
+        logging.debug(
+            "Cypher query for unit officers returned rows: {}".format(rows))
         return rows

@@ -712,7 +712,7 @@ class SearchableMixin:
 
         cypher = "\n".join(cypher_parts)
 
-        logging.warning(f"Search Cypher:\n{cypher}\nWith params: {params}")
+        logging.debug(f"Search Cypher:\n{cypher}\nWith params: {params}")
         rows, _ = db.cypher_query(cypher, params,
                                   resolve_objects=inflate)
 

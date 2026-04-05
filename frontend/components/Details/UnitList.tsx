@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
   Box,
@@ -23,35 +22,32 @@ import {
   CircularProgress
 } from "@mui/material"
 import { Search, TableRows, Apps } from "@mui/icons-material"
-import { Officer, HasOfficers } from "@/utils/api"
+import { Unit, Agency } from "@/utils/api"
 import DetailCard from "@/components/Details/DetailCard"
 
-type OfficerListProps = {
-  org: HasOfficers
-  orgType: "agency" | "unit"
-  officers?: Officer[]
-  activeOfficerCount?: number
-  inactiveOfficerCount?: number
+type UnitListProps = {
+  agency: Agency
+  units?: Unit[]
+  activeUnitCount?: number
+  inactiveUnitCount?: number
   loading?: boolean
   error?: Error | null
 }
 
-export default function OfficerList({
-  org,
-  orgType,
-  officers = [],
-  activeOfficerCount,
-  inactiveOfficerCount,
+export default function UnitList({
+  agency,
+  units = [],
+  activeUnitCount,
+  inactiveUnitCount,
   loading = false,
   error = null
-}: OfficerListProps) {
+}: UnitListProps) {
   const router = useRouter()
   const [viewMode, setViewMode] = React.useState<"card" | "table">("table")
   const [searchValue, setSearchValue] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
   const [rankFilter, setRankFilter] = React.useState<string>("all")
   const [unitFilter, setUnitFilter] = React.useState<string>("all")
-  const showUnitColumn = orgType === "agency"
 
   const handleViewModeChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -60,51 +56,27 @@ export default function OfficerList({
     if (newMode) setViewMode(newMode)
   }
 
-  const activeCount = activeOfficerCount ?? org.total_officers ?? 0
-  const inactiveCount = inactiveOfficerCount ?? 0
+  const activeCount = activeUnitCount ?? agency.total_units ?? 0
+  const inactiveCount = inactiveUnitCount ?? 0
 
   // Extract unique values for filter dropdowns
   const uniqueStatuses = React.useMemo(() => {
     const statuses = new Set<string>()
-    officers.forEach((officer) => {
-      const status = officer.employment?.latest_date ? "Inactive" : "Active"
+    units.forEach((unit) => {
+      const status = "Active"
       statuses.add(status)
     })
     return Array.from(statuses).sort()
-  }, [officers])
+  }, [units])
 
-  const uniqueRanks = React.useMemo(() => {
-    const ranks = new Set<string>()
-    officers.forEach((officer) => {
-      if (officer.employment?.rank) {
-        ranks.add(officer.employment.rank)
-      }
-    })
-    return Array.from(ranks).sort()
-  }, [officers])
-
-  const uniqueUnits = React.useMemo(() => {
-    const units = new Set<string>()
-    officers.forEach((officer) => {
-      if (officer.employment?.unit?.name) {
-        units.add(officer.employment.unit.name)
-      }
-    })
-    return Array.from(units).sort()
-  }, [officers])
-
-  const filtered = officers.filter((officer) => {
-    const name =
-      `${officer.first_name} ${officer.middle_name || ""} ${officer.last_name}`.toLowerCase()
+  const filtered = units.filter((unit) => {
+    const name = `${unit.name}`.toLowerCase() || ""
     const matchesSearch = searchValue.trim() === "" || name.includes(searchValue.toLowerCase())
 
-    const status = officer.employment?.latest_date ? "Inactive" : "Active"
+    const status = "Active"
     const matchesStatus = statusFilter === "all" || statusFilter === status
 
-    const matchesRank = rankFilter === "all" || rankFilter === officer.employment?.rank
-    const matchesUnit = unitFilter === "all" || unitFilter === officer.employment?.unit?.name
-
-    return matchesSearch && matchesStatus && matchesRank && matchesUnit
+    return matchesSearch && matchesStatus
   })
 
   return (
@@ -112,10 +84,10 @@ export default function OfficerList({
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}>
         <Box sx={{ flexGrow: 1, minWidth: 240 }}>
           <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: 500 }}>
-            Officers list
+            Units list
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.5 }}>
-            {activeCount} active officers · {inactiveCount} inactive officers
+            {activeCount} active units · {inactiveCount} deactivated units
           </Typography>
         </Box>
 
@@ -148,7 +120,7 @@ export default function OfficerList({
       >
         <TextField
           variant="outlined"
-          placeholder="search officer or try anything"
+          placeholder="search unit or try anything"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           sx={{ minWidth: 240, flex: 1, maxWidth: 500 }}
@@ -178,32 +150,6 @@ export default function OfficerList({
             ))}
           </Select>
         </FormControl>
-
-        <FormControl sx={{ minWidth: 160 }} size="small">
-          <InputLabel>Rank</InputLabel>
-          <Select label="Rank" value={rankFilter} onChange={(e) => setRankFilter(e.target.value)}>
-            <MenuItem value="all">All</MenuItem>
-            {uniqueRanks.map((rank) => (
-              <MenuItem key={rank} value={rank}>
-                {rank}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {showUnitColumn && (
-          <FormControl sx={{ minWidth: 160 }} size="small">
-            <InputLabel>Unit</InputLabel>
-            <Select label="Unit" value={unitFilter} onChange={(e) => setUnitFilter(e.target.value)}>
-              <MenuItem value="all">All</MenuItem>
-              {uniqueUnits.map((unit_name) => (
-                <MenuItem key={unit_name} value={unit_name}>
-                  {unit_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
       </Box>
 
       {loading ? (
@@ -212,50 +158,35 @@ export default function OfficerList({
         </Box>
       ) : error ? (
         <Typography color="error" sx={{ mt: 3 }}>
-          Could not load officers.
+          Could not load units.
         </Typography>
       ) : viewMode === "table" ? (
         <Paper sx={{ width: "100%", mt: 3, overflowX: "auto" }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Officer name</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Badge ID</TableCell>
-                <TableCell>Rank</TableCell>
-                {showUnitColumn && <TableCell>Unit</TableCell>}
-                <TableCell>Years of service</TableCell>
+                <TableCell>Unit name</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filtered.length > 0 ? (
-                filtered.map((officer) => (
+                filtered.map((unit) => (
                   <TableRow
-                    key={officer.uid}
+                    key={unit.uid}
                     hover
-                    onClick={() => router.push(`/officer/${officer.uid}`)}
+                    onClick={() => router.push(`/unit/${unit.uid}`)}
                     sx={{
                       cursor: "pointer",
                       "&:hover": { backgroundColor: "action.hover" }
                     }}
                   >
-                    <TableCell>
-                      {officer.first_name} {officer.middle_name} {officer.last_name}
-                    </TableCell>
-                    <TableCell>{officer.employment?.latest_date ? "Inactive" : "Active"}</TableCell>
-                    <TableCell>{officer.employment?.badge_number}</TableCell>
-                    <TableCell>{officer.employment?.rank}</TableCell>
-                    {showUnitColumn && <TableCell>{officer.employment?.unit?.name}</TableCell>}
-                    <TableCell>
-                      {officer.employment?.earliest_date} –{" "}
-                      {officer.employment?.latest_date ?? "Current"}
-                    </TableCell>
+                    <TableCell>{unit.name}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={showUnitColumn ? 6 : 5} sx={{ textAlign: "center", py: 4 }}>
-                    No officers found.
+                  <TableCell colSpan={1} sx={{ textAlign: "center", py: 4 }}>
+                    No units found.
                   </TableCell>
                 </TableRow>
               )}

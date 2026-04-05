@@ -25,8 +25,9 @@ class GetUnitParams(RequestDTO):
     @field_validator("include")
     def validate_include(cls, v):
         allowed_includes = {
-            "total_officers",
-            "total_complaints",
+            "officers",
+            "complaints",
+            "allegations",
             "reported_officers",
             "leadership",
             "location",

@@ -28,7 +28,7 @@ def get_all_units():
     try:
         params = UnitQueryParams(**request.args)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     response, status_code, use_ordered = unit_service.list_units(params)
@@ -53,7 +53,7 @@ def get_unit(uid: str):
     try:
         params = GetUnitParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     unit_data = unit_service.get_unit(
@@ -75,7 +75,7 @@ def get_unit_officers(uid: str):
     try:
         params = GetUnitOfficersParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     try:

@@ -41,8 +41,8 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
         "uid", "name", "website_url", "phone",
         "email", "description", "address",
-        "city", "state", "zip", "agency_url",
-        "officers_url", "date_established"
+        "hq_address", "hq_city", "hq_state", "hq_zip",
+        "agency", "date_established"
     ]
     __hidden_properties__ = ["citations", "city_node"]
 
@@ -151,9 +151,10 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
 
 class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     __property_order__ = [
-        "uid", "name", "website_url", "hq_address",
-        "hq_city", "hq_state", "hq_zip", "phone",
-        "email", "description", "jurisdiction"
+        "uid", "name", "website_url", "phone",
+        "email", "description", "address",
+        "hq_address", "hq_city", "hq_state", "hq_zip",
+        "jurisdiction", "date_established"
     ]
     __hidden_properties__ = ["citations", "state_node",
                              "county_node", "city_node"]

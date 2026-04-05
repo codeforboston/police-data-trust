@@ -3,6 +3,7 @@ from backend.routes.search import (
 from backend.serializers.location_serializer import (
     serialize_location
 )
+from backend.serializers.complaint_serializer import format_allegation_summary
 
 
 def serialize_unit_list(rows):
@@ -47,12 +48,17 @@ def serialize_unit_profile(result: dict, includes: list[str]) -> dict:
             result.get("most_reported_officers", [])
         )
 
-    if "total_officers" in includes:
+    if "officers" in includes:
         data["total_officers"] = result.get("total_officers", 0)
 
-    if "total_complaints" in includes:
+    if "complaints" in includes:
         data["total_complaints"] = result.get("total_complaints", 0)
         data["total_allegations"] = result.get("total_allegations", 0)
+
+    if "allegations" in includes:
+        data["allegation_summary"] = format_allegation_summary(
+            result.get("allegation_summary", [])
+        )
 
     if "location" in includes:
         data["location"] = serialize_location(result.get("location"))

@@ -3,20 +3,20 @@
 import { useEffect, useRef, useState } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
-import { Officer } from "@/utils/api"
+import { Unit } from "@/utils/api"
 import { useAuth } from "@/providers/AuthProvider"
 
-export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
+export function useAgencyUnits(agencyUid: string | undefined, enabled: boolean) {
   const { accessToken } = useAuth()
-  const [officers, setOfficers] = useState<Officer[]>([])
+  const [units, setUnits] = useState<Unit[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
   const fetchedRef = useRef(false)
 
   useEffect(() => {
-    if (!enabled || fetchedRef.current || !unitUid || !accessToken) return
+    if (!enabled || fetchedRef.current || !agencyUid || !accessToken) return
 
-    const url = `${apiBaseUrl}${API_ROUTES.units.profile(unitUid)}/officers?page=1&per_page=25&include=employment`
+    const url = `${apiBaseUrl}${API_ROUTES.agencies.profile(agencyUid)}/units?page=1&per_page=25`
 
     fetchedRef.current = true
     setLoading(true)
@@ -28,11 +28,11 @@ export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
     })
       .then((res) => res.json())
       .then((data) => {
-        setOfficers(data.results ?? [])
+        setUnits(data.results ?? [])
       })
       .catch((err) => setError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => setLoading(false))
-  }, [accessToken, enabled, unitUid])
+  }, [accessToken, enabled, agencyUid])
 
-  return { officers, loading, error }
+  return { units, loading, error }
 }

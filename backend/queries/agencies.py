@@ -1,3 +1,5 @@
+import logging
+
 from neomodel import db
 
 AGENCY_BASE_MATCH = """
@@ -18,15 +20,17 @@ CALL (a) {
 }
 """
 
-COMPLAINT_COUNT_SUBQUERY = """
+COMPLAINT_SUBQUERY = """
 CALL (a) {
   OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)
-      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
-  RETURN count(c) AS total_complaints
+      -[:ACCUSED_OF]->(allege:Allegation)-[:ALLEGED]-(c:Complaint)
+  RETURN
+    count(DISTINCT c) AS total_complaints,
+    count(DISTINCT allege) AS total_allegations
 }
 """
 
-ALLEGATION_SUMMARY_SUBQUERY = """
+ALLEGATION_SUBQUERY = """
 CALL (a) {
   OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)
       -[:ACCUSED_OF]->(allege:Allegation)
@@ -56,7 +60,7 @@ CALL (a) {
 }
 """
 
-TOP_REPORTED_UNITS_SUBQUERY = """
+REPORTED_UNIT_SUBQUERY = """
 CALL (a) {
   MATCH (a)-[]-(u:Unit)<-[]-(:Employment)-[]->(:Officer)
       -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
@@ -86,27 +90,27 @@ class AgencyQueries:
     INCLUDE_SPECS = {
         "units": {
             "subquery": UNIT_COUNT_SUBQUERY,
-            "return_field": "total_units",
+            "return_fields": ["total_units"],
         },
         "officers": {
             "subquery": OFFICER_COUNT_SUBQUERY,
-            "return_field": "total_officers",
+            "return_fields": ["total_officers"],
         },
         "complaints": {
-            "subquery": COMPLAINT_COUNT_SUBQUERY,
-            "return_field": "total_complaints",
+            "subquery": COMPLAINT_SUBQUERY,
+            "return_fields": ["total_complaints", "total_allegations"],
         },
         "allegations": {
-            "subquery": ALLEGATION_SUMMARY_SUBQUERY,
-            "return_field": "allegation_summary",
+            "subquery": ALLEGATION_SUBQUERY,
+            "return_fields": ["allegation_summary"],
         },
         "reported_units": {
-            "subquery": TOP_REPORTED_UNITS_SUBQUERY,
-            "return_field": "most_reported_units",
+            "subquery": REPORTED_UNIT_SUBQUERY,
+            "return_fields": ["most_reported_units"],
         },
         "location": {
             "subquery": LOCATION_SUBQUERY,
-            "return_field": "location",
+            "return_fields": ["location"],
         },
     }
 
@@ -119,7 +123,7 @@ class AgencyQueries:
             if not spec:
                 continue
             subqueries.append(spec["subquery"])
-            return_fields.append(spec["return_field"])
+            return_fields.extend(spec["return_fields"])
 
         cypher = (
             AGENCY_BASE_MATCH
@@ -129,10 +133,13 @@ class AgencyQueries:
             + ", ".join(return_fields)
         )
 
-        rows, _ = db.cypher_query(cypher, {"agency_uid": agency_uid})
+        logging.debug(f"Cypher query: {cypher}")
+        rows, _ = db.cypher_query(
+            cypher, {"agency_uid": agency_uid}, resolve_objects=True)
         if not rows:
-            return None
+            raise ValueError("Agency not found")
 
+        logging.debug(f"Cypher query rows: {rows[0]}")
         row = rows[0]
         return {field: row[idx] for idx, field in enumerate(return_fields)}
 
@@ -141,6 +148,14 @@ class AgencyQueries:
         MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
             -[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
         RETURN count(DISTINCT o) AS total_officers
+        """
+        rows, _ = db.cypher_query(query, {"agency_uid": agency_uid})
+        return rows[0][0] if rows else 0
+
+    def count_agency_units(self, agency_uid: str) -> int:
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        RETURN count(DISTINCT u) AS total_units
         """
         rows, _ = db.cypher_query(query, {"agency_uid": agency_uid})
         return rows[0][0] if rows else 0
@@ -214,6 +229,28 @@ class AgencyQueries:
             SKIP $skip
             LIMIT $limit
             """
+
+        rows, _ = db.cypher_query(query, params, resolve_objects=True)
+        return rows
+
+    def fetch_agency_units(
+        self,
+        agency_uid: str,
+        skip: int,
+        limit: int,
+    ):
+        params = {
+            "agency_uid": agency_uid,
+            "skip": skip,
+            "limit": limit,
+        }
+
+        query = """
+        MATCH (a:Agency {uid: $agency_uid})-[:ESTABLISHED_BY]-(u:Unit)
+        RETURN u
+        SKIP $skip
+        LIMIT $limit
+        """
 
         rows, _ = db.cypher_query(query, params, resolve_objects=True)
         return rows

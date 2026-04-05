@@ -13,7 +13,8 @@ from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.agency import (
-    AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams)
+    AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams,
+    GetAgencyUnitsParams)
 from backend.services.agency_service import AgencyService
 
 
@@ -79,7 +80,7 @@ def get_agency(agency_uid: str):
     try:
         params = GetAgencyParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
     try:
         agency_data = agency_service.get_agency_profile(
@@ -161,12 +162,12 @@ def get_all_agencies():
     hq_zip: filter on agency zipcode
     jurisdiction: filter on agency jurisdiction
     """
-    logging.warning(request.args)
+    logging.debug(request.args)
     # --- Validate query parameters ---
     try:
         params = AgencyQueryParams(**request.args)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     # preprocess query
@@ -194,8 +195,8 @@ def get_all_agencies():
         filters=filters,
         count=True
     )
-    logging.warning(f"requested page: {params.page}")
-    logging.warning(f"Agency search found {row_count} results")
+    logging.debug(f"requested page: {params.page}")
+    logging.debug(f"Agency search found {row_count} results")
     if row_count == 0:
         return jsonify({"message": "No results found matching the query"}), 200
     if row_count <= params.skip:
@@ -232,6 +233,36 @@ def get_all_agencies():
     return return_func(response), 200
 
 
+# List agency units
+@bp.route("/<agency_uid>/units", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_agency_units(agency_uid):
+    """Get all units for an agency."""
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
+    try:
+        params = GetAgencyUnitsParams(**raw)
+    except Exception as e:
+        logging.debug(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    try:
+        result = agency_service.list_agency_units(
+            agency_uid=agency_uid,
+            page=params.page,
+            per_page=params.per_page,
+            includes=params.include or [],
+        )
+        return ordered_jsonify(result), 200
+    except IndexError:
+        return jsonify({"message": "Page number exceeds total results"}), 400
+    except ValueError:
+        abort(404, description="Agency not found")
+
+
 # Get agency officers
 @bp.route("/<agency_uid>/officers", methods=["GET"])
 @jwt_required()
@@ -245,7 +276,7 @@ def get_agency_officers(agency_uid):
     try:
         params = GetAgencyOfficersParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     try:
