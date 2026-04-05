@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Typography } from "@mui/material"
 import { Agency, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
@@ -9,11 +9,13 @@ import MostReportedUnits from "@/components/Details/MostReportedUnits"
 import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
 import UnitList from "@/components/Details/UnitList"
-import { useUnitOfficers } from "@/hooks/useUnitOfficers"
+import { AgencyOfficerQueryParams, useAgencyOfficers } from "@/hooks/useAgencyOfficers"
 import { useAgencyUnits } from "@/hooks/useAgencyUnits"
+import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
 
 export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
+  const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
   const showOfficerList = activeTab === 2
   const showUnitList = activeTab === 1
 
@@ -23,11 +25,24 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
     error: unitsError
   } = useAgencyUnits(agency.uid, showUnitList)
 
+  const officerParams = useMemo<AgencyOfficerQueryParams>(
+    () => ({
+      term: officerFilters.searchTerm.trim() || undefined,
+      rank: officerFilters.rank.length > 0 ? officerFilters.rank : undefined,
+      status: officerFilters.status.length > 0 ? officerFilters.status : undefined,
+      type: officerFilters.type.length > 0 ? officerFilters.type : undefined,
+      include: ["employment"],
+      page: 1,
+      per_page: 25
+    }),
+    [officerFilters.rank, officerFilters.searchTerm, officerFilters.status, officerFilters.type]
+  )
+
   const {
     officers,
     loading: officersLoading,
     error: officersError
-  } = useUnitOfficers(agency.uid, showOfficerList)
+  } = useAgencyOfficers(agency.uid, showOfficerList, officerParams)
 
   useEffect(() => {
     if (officersError) {
@@ -73,6 +88,9 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
           officers={officers}
           loading={officersLoading}
           error={officersError}
+          filters={officerFilters}
+          onFiltersChange={setOfficerFilters}
+          filterMode="hybrid"
         />
       )
     },

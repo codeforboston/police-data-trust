@@ -46,8 +46,6 @@ export default function UnitList({
   const [viewMode, setViewMode] = React.useState<"card" | "table">("table")
   const [searchValue, setSearchValue] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
-  const [rankFilter, setRankFilter] = React.useState<string>("all")
-  const [unitFilter, setUnitFilter] = React.useState<string>("all")
 
   const handleViewModeChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -62,9 +60,8 @@ export default function UnitList({
   // Extract unique values for filter dropdowns
   const uniqueStatuses = React.useMemo(() => {
     const statuses = new Set<string>()
-    units.forEach((unit) => {
-      const status = "Active"
-      statuses.add(status)
+    units.forEach(() => {
+      statuses.add("Active")
     })
     return Array.from(statuses).sort()
   }, [units])

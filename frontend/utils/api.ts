@@ -212,6 +212,8 @@ export type OfficerEmployment = {
   latest_date?: string
   badge_number?: string
   rank?: string
+  status?: string
+  type?: string
   unit?: {
     uid: string
     name: string
