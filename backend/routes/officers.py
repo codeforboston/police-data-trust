@@ -63,7 +63,7 @@ def get_officer(officer_uid: str):
     try:
         params = GetOfficerParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     response = officer_service.get_officer(
@@ -93,7 +93,7 @@ def get_all_officers():
     try:
         params = OfficerSearchParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     response, status_code, use_ordered = officer_service.list_officers(params)
@@ -190,7 +190,7 @@ def get_officer_metrics(officer_uid: str):
     try:
         params = GetOfficerMetricsParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     response = officer_service.get_officer_metrics(

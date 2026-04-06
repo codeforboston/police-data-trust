@@ -235,7 +235,7 @@ def get_profile_photo():
 
     if os.environ.get("FLASK_ENV") != "production":
         # local dev
-        logging.warning('retrieve image from %s', user.profile_image)
+        logging.debug('retrieve image from %s', user.profile_image)
         filename = os.path.basename(user.profile_image)
         directory = os.getenv("PROFILE_PIC_FOLDER")
         return send_from_directory(directory, filename)

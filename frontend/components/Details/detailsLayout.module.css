@@ -8,6 +8,15 @@
   gap: 32px;
 }
 
+.detailsMain {
+  width: 100%;
+}
+
+.detailsMainWithSidebar {
+  max-width: 840px;
+  width: 100%;
+}
+
 .detailsSidebar {
   padding: 16px;
   border: 1px solid #b3b3b3;

@@ -6,7 +6,7 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { Officer } from "@/utils/api"
 import { useAuth } from "@/providers/AuthProvider"
 
-export type UnitOfficerQueryParams = {
+export type AgencyOfficerQueryParams = {
   page?: number
   per_page?: number
   term?: string
@@ -16,7 +16,7 @@ export type UnitOfficerQueryParams = {
   include?: string[]
 }
 
-function buildUnitOfficerUrl(unitUid: string, params: UnitOfficerQueryParams = {}) {
+function buildAgencyOfficerUrl(agencyUid: string, params: AgencyOfficerQueryParams = {}) {
   const search = new URLSearchParams()
 
   search.set("page", String(params.page ?? 1))
@@ -42,13 +42,13 @@ function buildUnitOfficerUrl(unitUid: string, params: UnitOfficerQueryParams = {
     search.append("include", value)
   }
 
-  return `${apiBaseUrl}${API_ROUTES.units.profile(unitUid)}/officers?${search.toString()}`
+  return `${apiBaseUrl}${API_ROUTES.agencies.profile(agencyUid)}/officers?${search.toString()}`
 }
 
-export function useUnitOfficers(
-  unitUid: string | undefined,
+export function useAgencyOfficers(
+  agencyUid: string | undefined,
   enabled: boolean,
-  params: UnitOfficerQueryParams = {}
+  params: AgencyOfficerQueryParams = {}
 ) {
   const { accessToken } = useAuth()
   const [officers, setOfficers] = useState<Officer[]>([])
@@ -57,15 +57,15 @@ export function useUnitOfficers(
   const fetchedRef = useRef(false)
 
   const url = useMemo(() => {
-    if (!unitUid) return null
-    return buildUnitOfficerUrl(unitUid, {
+    if (!agencyUid) return null
+    return buildAgencyOfficerUrl(agencyUid, {
       include: ["employment"],
       ...params
     })
-  }, [unitUid, params])
+  }, [agencyUid, params])
 
   useEffect(() => {
-    if (!enabled || !unitUid || !accessToken || !url) return
+    if (!enabled || !agencyUid || !accessToken || !url) return
 
     fetchedRef.current = true
     setLoading(true)
@@ -81,7 +81,7 @@ export function useUnitOfficers(
       })
       .catch((err) => setError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => setLoading(false))
-  }, [accessToken, enabled, unitUid, url])
+  }, [accessToken, enabled, agencyUid, url])
 
   return { officers, loading, error }
 }

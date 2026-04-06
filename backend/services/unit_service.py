@@ -69,12 +69,14 @@ class UnitService:
         page: int,
         per_page: int,
         includes: list[str],
+        filters: dict | None = None,
+        term: str | None = None,
     ) -> dict:
         unit = Unit.nodes.get_or_none(uid=unit_uid)
         if not unit:
             raise ValueError("Unit not found")
         include_employment = "employment" in includes
-        total = self.queries.count_unit_officers(unit_uid)
+        total = self.queries.count_unit_officers(unit_uid, term, filters)
 
         if total == 0:
             return {
@@ -90,6 +92,8 @@ class UnitService:
             skip=skip,
             limit=per_page,
             include_employment=include_employment,
+            filters=filters,
+            term=term,
         )
 
         officers = serialize_officer_rows(

@@ -1,24 +1,58 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Typography } from "@mui/material"
-import { Agency } from "@/utils/api"
+import { Agency, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
 import Jurisdiction from "../Jurisdiction"
 import MostReportedUnits from "@/components/Details/MostReportedUnits"
 import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
-import { useUnitOfficers } from "@/hooks/useUnitOfficers"
+import UnitList from "@/components/Details/UnitList"
+import StickySidebarLayout from "@/components/Details/StickySidebarLayout"
+import AgencyContentDetails from "@/components/Details/ContentDetails/AgencyContentDetails"
+import { AgencyOfficerQueryParams, useAgencyOfficers } from "@/hooks/useAgencyOfficers"
+import { useAgencyUnits } from "@/hooks/useAgencyUnits"
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"
+import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
 
-export default function AgencyDetailsTabs(agency: Agency) {
+export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
+  const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
+  const debouncedOfficerFilters = useDebouncedValue(officerFilters, 300)
   const showOfficerList = activeTab === 2
+  const showUnitList = activeTab === 1
+
+  const {
+    units,
+    loading: unitsLoading,
+    error: unitsError
+  } = useAgencyUnits(agency.uid, showUnitList)
+
+  const officerParams = useMemo<AgencyOfficerQueryParams>(
+    () => ({
+      term: debouncedOfficerFilters.searchTerm.trim() || undefined,
+      rank: debouncedOfficerFilters.rank.length > 0 ? debouncedOfficerFilters.rank : undefined,
+      status:
+        debouncedOfficerFilters.status.length > 0 ? debouncedOfficerFilters.status : undefined,
+      type: debouncedOfficerFilters.type.length > 0 ? debouncedOfficerFilters.type : undefined,
+      include: ["employment"],
+      page: 1,
+      per_page: 25
+    }),
+    [
+      debouncedOfficerFilters.rank,
+      debouncedOfficerFilters.searchTerm,
+      debouncedOfficerFilters.status,
+      debouncedOfficerFilters.type
+    ]
+  )
 
   const {
     officers,
     loading: officersLoading,
     error: officersError
-  } = useUnitOfficers(agency.uid, showOfficerList)
+  } = useAgencyOfficers(agency.uid, showOfficerList, officerParams)
 
   useEffect(() => {
     if (officersError) {
@@ -30,40 +64,52 @@ export default function AgencyDetailsTabs(agency: Agency) {
     {
       label: "Overview",
       content: (
-        <>
-          <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
-            Leadership
-          </Typography>
-          <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
-            Commissioner
-          </Typography>
-          <Jurisdiction
-            location={{
-              latitude: agency.location?.latitude ?? -73.9249,
-              longitude: agency.location?.longitude ?? 40.6943
-            }}
-          />
-          <MostReportedUnits
-            most_reported_units={agency.most_reported_units}
-            total_units={agency.total_units}
-          />
-          <Attachments />
-        </>
+        <StickySidebarLayout
+          main={
+            <>
+              <Typography
+                component="h2"
+                variant="h5"
+                sx={{ fontSize: "1.3rem", fontWeight: "500" }}
+              >
+                Leadership
+              </Typography>
+              <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
+                Commissioner
+              </Typography>
+              <Jurisdiction
+                location={{
+                  latitude: agency.location?.latitude ?? -73.9249,
+                  longitude: agency.location?.longitude ?? 40.6943
+                }}
+              />
+              <MostReportedUnits
+                most_reported_units={agency.most_reported_units}
+                total_units={agency.total_units}
+              />
+              <Attachments />
+            </>
+          }
+          sidebar={<AgencyContentDetails agency={agency} />}
+        />
       )
     },
     {
       label: "Unit List",
-      content: <>Unit List</>,
-      disabled: true
+      content: <UnitList agency={agency} units={units} loading={unitsLoading} error={unitsError} />
     },
     {
       label: "Officer List",
       content: (
         <OfficerList
-          unit={agency}
+          org={agency}
+          orgType="agency"
           officers={officers}
           loading={officersLoading}
           error={officersError}
+          filters={officerFilters}
+          onFiltersChange={setOfficerFilters}
+          filterMode="hybrid"
         />
       )
     },

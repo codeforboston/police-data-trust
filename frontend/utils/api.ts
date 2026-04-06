@@ -212,6 +212,8 @@ export type OfficerEmployment = {
   latest_date?: string
   badge_number?: string
   rank?: string
+  status?: string
+  type?: string
   unit?: {
     uid: string
     name: string
@@ -234,21 +236,34 @@ export type Officer = {
   sources?: Source[]
 }
 
+export type HasOfficers = {
+  uid: string
+  name: string
+  total_officers?: number
+  total_complaints?: number
+  total_allegations?: number
+  most_reported_officers?: SearchResponse[]
+  location?: Location
+}
+
 export type Agency = {
   uid: string
   name: string
-  location?: Location
   hq_state: string
   hq_city?: string
   hq_address?: string
   hq_zip?: string
+  location?: Location
   description?: string
   website_url?: string
   phone?: string
+  email?: string
   jurisdiction?: string
+  date_established?: string
   total_units?: number
   total_officers?: number
   total_complaints?: number
+  total_allegations?: number
   allegation_summary?: AllegationSummary[]
   most_reported_units?: SearchResponse[]
   sources?: Source[]
@@ -257,11 +272,21 @@ export type Agency = {
 export type Unit = {
   uid: string
   name: string
+  hq_state: string
+  hq_city?: string
+  hq_address?: string
+  hq_zip?: string
   location?: Location
-  most_reported_officers?: SearchResponse[]
+  description?: string
+  website_url?: string
+  phone?: string
+  email?: string
+  agency?: Agency
+  date_established?: string
   total_officers?: number
   total_complaints?: number
   total_allegations?: number
-  agency?: Agency
+  allegation_summary?: AllegationSummary[]
+  most_reported_officers?: SearchResponse[]
   sources?: Source[]
 }

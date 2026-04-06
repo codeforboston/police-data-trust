@@ -1,8 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import {
   Box,
+  Checkbox,
+  Chip,
   Typography,
   ToggleButton,
   ToggleButtonGroup,
@@ -20,32 +23,71 @@ import {
   Paper,
   CircularProgress
 } from "@mui/material"
+import type { SelectChangeEvent } from "@mui/material/Select"
+import ListItemText from "@mui/material/ListItemText"
 import { Search, TableRows, Apps } from "@mui/icons-material"
-import { Officer, Unit } from "@/utils/api"
+import { Officer, HasOfficers } from "@/utils/api"
 import DetailCard from "@/components/Details/DetailCard"
+import {
+  DEFAULT_OFFICER_LIST_FILTERS,
+  mergeOfficerListFilters,
+  OfficerListFilters,
+  useOfficerListFilters
+} from "@/hooks/useOfficerListFilters"
+import {
+  EMPLOYMENT_TYPE_OPTIONS,
+  EMPLOYMENT_RANK_OPTIONS,
+  EMPLOYMENT_STATUS_OPTIONS,
+  formatEmploymentOptionLabel
+} from "@/utils/employmentOptions"
+
+type OfficerListFilterMode = "client" | "hybrid"
 
 type OfficerListProps = {
-  unit: Unit
+  org: HasOfficers
+  orgType: "agency" | "unit"
   officers?: Officer[]
   activeOfficerCount?: number
   inactiveOfficerCount?: number
   loading?: boolean
   error?: Error | null
+  filters?: OfficerListFilters
+  onFiltersChange?: (filters: OfficerListFilters) => void
+  filterMode?: OfficerListFilterMode
 }
 
 export default function OfficerList({
-  unit,
+  org,
+  orgType,
   officers = [],
   activeOfficerCount,
   inactiveOfficerCount,
   loading = false,
-  error = null
+  error = null,
+  filters,
+  onFiltersChange,
+  filterMode = "client"
 }: OfficerListProps) {
+  const router = useRouter()
   const [viewMode, setViewMode] = React.useState<"card" | "table">("table")
-  const [searchValue, setSearchValue] = React.useState("")
-  const [statusFilter, setStatusFilter] = React.useState<string>("all")
-  const [rankFilter, setRankFilter] = React.useState<string>("all")
-  const [unitFilter, setUnitFilter] = React.useState<string>("all")
+  const { filters: internalFilters, setFilters: setInternalFilters } = useOfficerListFilters(
+    DEFAULT_OFFICER_LIST_FILTERS
+  )
+  const showUnitColumn = orgType === "agency"
+  const currentFilters = filters ?? internalFilters
+
+  const updateFilters = React.useCallback(
+    (updates: Partial<OfficerListFilters>) => {
+      const nextFilters = mergeOfficerListFilters(currentFilters, updates)
+
+      if (!filters) {
+        setInternalFilters(nextFilters)
+      }
+
+      onFiltersChange?.(nextFilters)
+    },
+    [currentFilters, filters, onFiltersChange, setInternalFilters]
+  )
 
   const handleViewModeChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -54,28 +96,43 @@ export default function OfficerList({
     if (newMode) setViewMode(newMode)
   }
 
-  const activeCount = activeOfficerCount ?? unit.total_officers ?? 0
+  const activeCount = activeOfficerCount ?? org.total_officers ?? 0
   const inactiveCount = inactiveOfficerCount ?? 0
 
-  // Extract unique values for filter dropdowns
-  const uniqueStatuses = React.useMemo(() => {
-    const statuses = new Set<string>()
-    officers.forEach((officer) => {
-      const status = officer.employment?.latest_date ? "Inactive" : "Active"
-      statuses.add(status)
-    })
-    return Array.from(statuses).sort()
-  }, [officers])
+  const handleMultiSelectChange = React.useCallback(
+    (key: "status" | "rank" | "type" | "unit") => (event: SelectChangeEvent<string[]>) => {
+      const value = event.target.value
+      updateFilters({
+        [key]: typeof value === "string" ? value.split(",") : value
+      } as Pick<OfficerListFilters, typeof key>)
+    },
+    [updateFilters]
+  )
 
-  const uniqueRanks = React.useMemo(() => {
-    const ranks = new Set<string>()
-    officers.forEach((officer) => {
-      if (officer.employment?.rank) {
-        ranks.add(officer.employment.rank)
-      }
-    })
-    return Array.from(ranks).sort()
-  }, [officers])
+  const renderMultiSelectValue = React.useCallback((selected: string[]) => {
+    if (selected.length === 0) {
+      return "All"
+    }
+
+    return (
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+        {selected.map((value) => (
+          <Chip
+            key={value}
+            label={value.includes("_") ? formatEmploymentOptionLabel(value) : value}
+            size="small"
+            sx={{ maxWidth: "100%" }}
+          />
+        ))}
+      </Box>
+    )
+  }, [])
+
+  const rankOptions = React.useMemo(() => [...EMPLOYMENT_RANK_OPTIONS], [])
+
+  const typeOptions = React.useMemo(() => [...EMPLOYMENT_TYPE_OPTIONS], [])
+
+  const statusOptions = React.useMemo(() => [...EMPLOYMENT_STATUS_OPTIONS], [])
 
   const uniqueUnits = React.useMemo(() => {
     const units = new Set<string>()
@@ -84,21 +141,37 @@ export default function OfficerList({
         units.add(officer.employment.unit.name)
       }
     })
+    currentFilters.unit.forEach((unit) => units.add(unit))
     return Array.from(units).sort()
-  }, [officers])
+  }, [currentFilters.unit, officers])
 
   const filtered = officers.filter((officer) => {
     const name =
       `${officer.first_name} ${officer.middle_name || ""} ${officer.last_name}`.toLowerCase()
-    const matchesSearch = searchValue.trim() === "" || name.includes(searchValue.toLowerCase())
+    const matchesSearch =
+      filterMode === "hybrid" ||
+      currentFilters.searchTerm.trim() === "" ||
+      name.includes(currentFilters.searchTerm.toLowerCase())
 
-    const status = officer.employment?.latest_date ? "Inactive" : "Active"
-    const matchesStatus = statusFilter === "all" || statusFilter === status
+    const status = officer.employment?.status
+    const matchesStatus =
+      filterMode === "hybrid" ||
+      currentFilters.status.length === 0 ||
+      currentFilters.status.includes(status ?? "")
 
-    const matchesRank = rankFilter === "all" || rankFilter === officer.employment?.rank
-    const matchesUnit = unitFilter === "all" || unitFilter === officer.employment?.unit?.name
+    const matchesRank =
+      filterMode === "hybrid" ||
+      currentFilters.rank.length === 0 ||
+      currentFilters.rank.includes(officer.employment?.rank ?? "")
+    const matchesType =
+      filterMode === "hybrid" ||
+      currentFilters.type.length === 0 ||
+      currentFilters.type.includes(officer.employment?.type ?? "")
+    const matchesUnit =
+      currentFilters.unit.length === 0 ||
+      currentFilters.unit.includes(officer.employment?.unit?.name ?? "")
 
-    return matchesSearch && matchesStatus && matchesRank && matchesUnit
+    return matchesSearch && matchesStatus && matchesRank && matchesType && matchesUnit
   })
 
   return (
@@ -143,8 +216,8 @@ export default function OfficerList({
         <TextField
           variant="outlined"
           placeholder="search officer or try anything"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          value={currentFilters.searchTerm}
+          onChange={(e) => updateFilters({ searchTerm: e.target.value })}
           sx={{ minWidth: 240, flex: 1, maxWidth: 500 }}
           slotProps={{
             input: {
@@ -160,14 +233,16 @@ export default function OfficerList({
         <FormControl sx={{ minWidth: 160 }} size="small">
           <InputLabel>Status</InputLabel>
           <Select
+            multiple
             label="Status"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={currentFilters.status}
+            onChange={handleMultiSelectChange("status")}
+            renderValue={(selected) => renderMultiSelectValue(selected)}
           >
-            <MenuItem value="all">All</MenuItem>
-            {uniqueStatuses.map((status) => (
+            {statusOptions.map((status) => (
               <MenuItem key={status} value={status}>
-                {status}
+                <Checkbox checked={currentFilters.status.includes(status)} />
+                <ListItemText primary={formatEmploymentOptionLabel(status)} />
               </MenuItem>
             ))}
           </Select>
@@ -175,27 +250,59 @@ export default function OfficerList({
 
         <FormControl sx={{ minWidth: 160 }} size="small">
           <InputLabel>Rank</InputLabel>
-          <Select label="Rank" value={rankFilter} onChange={(e) => setRankFilter(e.target.value)}>
-            <MenuItem value="all">All</MenuItem>
-            {uniqueRanks.map((rank) => (
+          <Select
+            multiple
+            label="Rank"
+            value={currentFilters.rank}
+            onChange={handleMultiSelectChange("rank")}
+            renderValue={(selected) => renderMultiSelectValue(selected)}
+          >
+            {rankOptions.map((rank) => (
               <MenuItem key={rank} value={rank}>
-                {rank}
+                <Checkbox checked={currentFilters.rank.includes(rank)} />
+                <ListItemText primary={rank} />
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        <FormControl sx={{ minWidth: 160 }} size="small">
-          <InputLabel>Unit</InputLabel>
-          <Select label="Unit" value={unitFilter} onChange={(e) => setUnitFilter(e.target.value)}>
-            <MenuItem value="all">All</MenuItem>
-            {uniqueUnits.map((unit_name) => (
-              <MenuItem key={unit_name} value={unit_name}>
-                {unit_name}
+        <FormControl sx={{ minWidth: 180 }} size="small">
+          <InputLabel>Type</InputLabel>
+          <Select
+            multiple
+            label="Type"
+            value={currentFilters.type}
+            onChange={handleMultiSelectChange("type")}
+            renderValue={(selected) => renderMultiSelectValue(selected)}
+          >
+            {typeOptions.map((type) => (
+              <MenuItem key={type} value={type}>
+                <Checkbox checked={currentFilters.type.includes(type)} />
+                <ListItemText primary={formatEmploymentOptionLabel(type)} />
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+
+        {showUnitColumn && (
+          <FormControl sx={{ minWidth: 160 }} size="small">
+            <InputLabel>Unit</InputLabel>
+            <Select
+              multiple
+              label="Unit"
+              value={currentFilters.unit}
+              onChange={handleMultiSelectChange("unit")}
+              renderValue={(selected) => renderMultiSelectValue(selected)}
+            >
+              {uniqueUnits.map((unit_name) => (
+                <MenuItem key={unit_name} value={unit_name}>
+                  <Checkbox checked={currentFilters.unit.includes(unit_name)} />
+                  <ListItemText primary={unit_name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </Box>
 
       {loading ? (
@@ -215,21 +322,39 @@ export default function OfficerList({
                 <TableCell>Status</TableCell>
                 <TableCell>Badge ID</TableCell>
                 <TableCell>Rank</TableCell>
-                <TableCell>Unit</TableCell>
+                <TableCell>Type</TableCell>
+                {showUnitColumn && <TableCell>Unit</TableCell>}
                 <TableCell>Years of service</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filtered.length > 0 ? (
                 filtered.map((officer) => (
-                  <TableRow key={officer.uid} hover>
+                  <TableRow
+                    key={officer.uid}
+                    hover
+                    onClick={() => router.push(`/officer/${officer.uid}`)}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "action.hover" }
+                    }}
+                  >
                     <TableCell>
                       {officer.first_name} {officer.middle_name} {officer.last_name}
                     </TableCell>
-                    <TableCell>{officer.employment?.latest_date ? "Inactive" : "Active"}</TableCell>
+                    <TableCell>
+                      {officer.employment?.status
+                        ? formatEmploymentOptionLabel(officer.employment.status)
+                        : "Unknown"}
+                    </TableCell>
                     <TableCell>{officer.employment?.badge_number}</TableCell>
                     <TableCell>{officer.employment?.rank}</TableCell>
-                    <TableCell>{officer.employment?.unit?.name}</TableCell>
+                    <TableCell>
+                      {officer.employment?.type
+                        ? formatEmploymentOptionLabel(officer.employment.type)
+                        : "Unknown"}
+                    </TableCell>
+                    {showUnitColumn && <TableCell>{officer.employment?.unit?.name}</TableCell>}
                     <TableCell>
                       {officer.employment?.earliest_date} –{" "}
                       {officer.employment?.latest_date ?? "Current"}
@@ -238,7 +363,7 @@ export default function OfficerList({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
+                  <TableCell colSpan={showUnitColumn ? 7 : 6} sx={{ textAlign: "center", py: 4 }}>
                     No officers found.
                   </TableCell>
                 </TableRow>

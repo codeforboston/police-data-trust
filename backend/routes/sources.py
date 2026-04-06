@@ -128,7 +128,7 @@ def get_all_sources():
     try:
         params = SourceFilters.model_validate(q_params)
     except ValidationError as e:
-        logging.warning(f"Invalid query parameters: {e}")
+        logging.debug(f"Invalid query parameters: {e}")
         abort(400, description=f"Invalid query parameters: {e}")
 
     q_page = params.page

@@ -10,8 +10,10 @@ export default function DetailsLayout({ children, sidebar }: DetailsLayoutProps)
   return (
     <div className={styles.detailsBackground}>
       <div className={styles.detailsContainer}>
-        <div style={{ maxWidth: "840px", width: "100%" }}>{children}</div>
-        <div className={styles.detailsSidebar}>{sidebar}</div>
+        <div className={sidebar ? styles.detailsMainWithSidebar : styles.detailsMain}>
+          {children}
+        </div>
+        {sidebar && <div className={styles.detailsSidebar}>{sidebar}</div>}
       </div>
     </div>
   )

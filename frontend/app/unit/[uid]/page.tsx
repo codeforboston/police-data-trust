@@ -9,7 +9,6 @@ import { Unit } from "@/utils/api"
 import DetailsLayout from "@/components/Details/DetailsLayout"
 import UnitIdentityCard from "@/components/Details/IdentityCard/UnitIdentityCard"
 import UnitDetailsTabs from "@/components/Details/tabs/UnitDetailsTabs"
-import UnitContentDetails from "@/components/Details/ContentDetails/UnitContentDetails"
 
 export default function UnitDetailsPage() {
   const params = useParams<{ uid: string }>()
@@ -25,7 +24,7 @@ export default function UnitDetailsPage() {
     setLoading(true)
 
     apiFetch(
-      `${apiBaseUrl}${API_ROUTES.units.profile(uid)}?include=total_officers&include=reported_officers&include=total_complaints&include=location`,
+      `${apiBaseUrl}${API_ROUTES.units.profile(uid)}?include=officers&include=reported_officers&include=complaints&include=location`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -41,7 +40,7 @@ export default function UnitDetailsPage() {
   if (!unit) return <div>Unit not found</div>
 
   return (
-    <DetailsLayout sidebar={<UnitContentDetails unit={unit} />}>
+    <DetailsLayout>
       <UnitIdentityCard unit={unit} />
       <UnitDetailsTabs {...unit} />
     </DetailsLayout>

@@ -28,7 +28,7 @@ def get_all_units():
     try:
         params = UnitQueryParams(**request.args)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     response, status_code, use_ordered = unit_service.list_units(params)
@@ -53,7 +53,7 @@ def get_unit(uid: str):
     try:
         params = GetUnitParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
     unit_data = unit_service.get_unit(
@@ -70,13 +70,22 @@ def get_unit_officers(uid: str):
     """Get officers for a specific unit by UID."""
     raw = {
         **request.args,
+        "type": request.args.getlist("type"),
+        "status": request.args.getlist("status"),
+        "rank": request.args.getlist("rank"),
         "include": request.args.getlist("include"),
     }
     try:
         params = GetUnitOfficersParams(**raw)
     except Exception as e:
-        logging.warning(f"Invalid query params: {e}")
+        logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
+
+    filters = {
+        "type": params.type or [],
+        "status": params.status or [],
+        "rank": params.rank or [],
+    }
 
     try:
         result = unit_service.list_unit_officers(
@@ -84,6 +93,8 @@ def get_unit_officers(uid: str):
             page=params.page,
             per_page=params.per_page,
             includes=params.include or [],
+            filters=filters,
+            term=params.term,
         )
         return ordered_jsonify(result), 200
     except IndexError:
