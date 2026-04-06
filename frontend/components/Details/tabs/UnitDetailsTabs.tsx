@@ -10,25 +10,33 @@ import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
 import UnitContentDetails from "@/components/Details/ContentDetails/UnitContentDetails"
 import StickySidebarLayout from "@/components/Details/StickySidebarLayout"
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"
 import { UnitOfficerQueryParams, useUnitOfficers } from "@/hooks/useUnitOfficers"
 import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
 
 export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
   const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
+  const debouncedOfficerFilters = useDebouncedValue(officerFilters, 300)
   const showOfficerList = activeTab === 1
 
   const officerParams = useMemo<UnitOfficerQueryParams>(
     () => ({
-      term: officerFilters.searchTerm.trim() || undefined,
-      rank: officerFilters.rank.length > 0 ? officerFilters.rank : undefined,
-      status: officerFilters.status.length > 0 ? officerFilters.status : undefined,
-      type: officerFilters.type.length > 0 ? officerFilters.type : undefined,
+      term: debouncedOfficerFilters.searchTerm.trim() || undefined,
+      rank: debouncedOfficerFilters.rank.length > 0 ? debouncedOfficerFilters.rank : undefined,
+      status:
+        debouncedOfficerFilters.status.length > 0 ? debouncedOfficerFilters.status : undefined,
+      type: debouncedOfficerFilters.type.length > 0 ? debouncedOfficerFilters.type : undefined,
       include: ["employment"],
       page: 1,
       per_page: 25
     }),
-    [officerFilters.rank, officerFilters.searchTerm, officerFilters.status, officerFilters.type]
+    [
+      debouncedOfficerFilters.rank,
+      debouncedOfficerFilters.searchTerm,
+      debouncedOfficerFilters.status,
+      debouncedOfficerFilters.type
+    ]
   )
 
   const {

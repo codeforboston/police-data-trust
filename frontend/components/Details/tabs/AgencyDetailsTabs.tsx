@@ -13,11 +13,13 @@ import StickySidebarLayout from "@/components/Details/StickySidebarLayout"
 import AgencyContentDetails from "@/components/Details/ContentDetails/AgencyContentDetails"
 import { AgencyOfficerQueryParams, useAgencyOfficers } from "@/hooks/useAgencyOfficers"
 import { useAgencyUnits } from "@/hooks/useAgencyUnits"
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"
 import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
 
 export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
   const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
+  const debouncedOfficerFilters = useDebouncedValue(officerFilters, 300)
   const showOfficerList = activeTab === 2
   const showUnitList = activeTab === 1
 
@@ -29,15 +31,21 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
 
   const officerParams = useMemo<AgencyOfficerQueryParams>(
     () => ({
-      term: officerFilters.searchTerm.trim() || undefined,
-      rank: officerFilters.rank.length > 0 ? officerFilters.rank : undefined,
-      status: officerFilters.status.length > 0 ? officerFilters.status : undefined,
-      type: officerFilters.type.length > 0 ? officerFilters.type : undefined,
+      term: debouncedOfficerFilters.searchTerm.trim() || undefined,
+      rank: debouncedOfficerFilters.rank.length > 0 ? debouncedOfficerFilters.rank : undefined,
+      status:
+        debouncedOfficerFilters.status.length > 0 ? debouncedOfficerFilters.status : undefined,
+      type: debouncedOfficerFilters.type.length > 0 ? debouncedOfficerFilters.type : undefined,
       include: ["employment"],
       page: 1,
       per_page: 25
     }),
-    [officerFilters.rank, officerFilters.searchTerm, officerFilters.status, officerFilters.type]
+    [
+      debouncedOfficerFilters.rank,
+      debouncedOfficerFilters.searchTerm,
+      debouncedOfficerFilters.status,
+      debouncedOfficerFilters.type
+    ]
   )
 
   const {
