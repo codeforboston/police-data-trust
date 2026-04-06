@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Typography } from "@mui/material"
 import { Unit, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
@@ -8,17 +8,32 @@ import Jurisdiction from "../Jurisdiction"
 import MostReportedOfficers from "@/components/Details/MostReportedOfficers"
 import Attachments from "../Attachments"
 import OfficerList from "@/components/Details/OfficerList"
-import { useUnitOfficers } from "@/hooks/useUnitOfficers"
+import { UnitOfficerQueryParams, useUnitOfficers } from "@/hooks/useUnitOfficers"
+import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
 
 export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
   const [activeTab, setActiveTab] = useState(0)
+  const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
   const showOfficerList = activeTab === 1
+
+  const officerParams = useMemo<UnitOfficerQueryParams>(
+    () => ({
+      term: officerFilters.searchTerm.trim() || undefined,
+      rank: officerFilters.rank.length > 0 ? officerFilters.rank : undefined,
+      status: officerFilters.status.length > 0 ? officerFilters.status : undefined,
+      type: officerFilters.type.length > 0 ? officerFilters.type : undefined,
+      include: ["employment"],
+      page: 1,
+      per_page: 25
+    }),
+    [officerFilters.rank, officerFilters.searchTerm, officerFilters.status, officerFilters.type]
+  )
 
   const {
     officers,
     loading: officersLoading,
     error: officersError
-  } = useUnitOfficers(unit.uid, showOfficerList)
+  } = useUnitOfficers(unit.uid, showOfficerList, officerParams)
 
   useEffect(() => {
     if (officersError) {
@@ -60,6 +75,9 @@ export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
           officers={officers}
           loading={officersLoading}
           error={officersError}
+          filters={officerFilters}
+          onFiltersChange={setOfficerFilters}
+          filterMode="hybrid"
         />
       )
     },

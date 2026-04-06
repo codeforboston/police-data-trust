@@ -1,22 +1,71 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { Officer } from "@/utils/api"
 import { useAuth } from "@/providers/AuthProvider"
 
-export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
+export type UnitOfficerQueryParams = {
+  page?: number
+  per_page?: number
+  term?: string
+  type?: string[]
+  status?: string[]
+  rank?: string[]
+  include?: string[]
+}
+
+function buildUnitOfficerUrl(unitUid: string, params: UnitOfficerQueryParams = {}) {
+  const search = new URLSearchParams()
+
+  search.set("page", String(params.page ?? 1))
+  search.set("per_page", String(params.per_page ?? 25))
+
+  if (params.term?.trim()) {
+    search.set("term", params.term.trim())
+  }
+
+  for (const value of params.type ?? []) {
+    search.append("type", value)
+  }
+
+  for (const value of params.status ?? []) {
+    search.append("status", value)
+  }
+
+  for (const value of params.rank ?? []) {
+    search.append("rank", value)
+  }
+
+  for (const value of params.include ?? []) {
+    search.append("include", value)
+  }
+
+  return `${apiBaseUrl}${API_ROUTES.units.profile(unitUid)}/officers?${search.toString()}`
+}
+
+export function useUnitOfficers(
+  unitUid: string | undefined,
+  enabled: boolean,
+  params: UnitOfficerQueryParams = {}
+) {
   const { accessToken } = useAuth()
   const [officers, setOfficers] = useState<Officer[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
   const fetchedRef = useRef(false)
 
-  useEffect(() => {
-    if (!enabled || fetchedRef.current || !unitUid || !accessToken) return
+  const url = useMemo(() => {
+    if (!unitUid) return null
+    return buildUnitOfficerUrl(unitUid, {
+      include: ["employment"],
+      ...params
+    })
+  }, [unitUid, params])
 
-    const url = `${apiBaseUrl}${API_ROUTES.units.profile(unitUid)}/officers?page=1&per_page=25&include=employment`
+  useEffect(() => {
+    if (!enabled || !unitUid || !accessToken || !url) return
 
     fetchedRef.current = true
     setLoading(true)
@@ -32,7 +81,7 @@ export function useUnitOfficers(unitUid: string | undefined, enabled: boolean) {
       })
       .catch((err) => setError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => setLoading(false))
-  }, [accessToken, enabled, unitUid])
+  }, [accessToken, enabled, unitUid, url])
 
   return { officers, loading, error }
 }
