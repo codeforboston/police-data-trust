@@ -9,7 +9,6 @@ import { Agency } from "@/utils/api"
 import DetailsLayout from "@/components/Details/DetailsLayout"
 import AgencyIdentityCard from "@/components/Details/IdentityCard/AgencyIdentityCard"
 import AgencyDetailsTabs from "@/components/Details/tabs/AgencyDetailsTabs"
-import AgencyContentDetails from "@/components/Details/ContentDetails/AgencyContentDetails"
 
 export default function AgencyDetailsPage() {
   const params = useParams<{ uid: string }>()
@@ -41,7 +40,7 @@ export default function AgencyDetailsPage() {
   if (!agency) return <div>Agency not found</div>
 
   return (
-    <DetailsLayout sidebar={<AgencyContentDetails agency={agency} />}>
+    <DetailsLayout>
       <AgencyIdentityCard agency={agency} />
       <AgencyDetailsTabs {...agency} />
     </DetailsLayout>
