@@ -122,7 +122,6 @@ class AgencyQueries:
             "types": filters.get("type") or [],
         }
 
-
     def _classify_officer_term(self, term: str | None) -> str:
         if not term or not term.strip():
             return "none"
@@ -140,7 +139,7 @@ class AgencyQueries:
             return "name"
 
         return "ambiguous"
-    
+
     def _build_agency_officer_search_query(
         self,
         agency_uid: str,
@@ -174,7 +173,8 @@ class AgencyQueries:
                 YIELD node, score
                 RETURN node AS o, score
             }
-            MATCH (o)<-[:HELD_BY]-(e:Employment)-[:IN_UNIT]->(u:Unit)-[:ESTABLISHED_BY]->(a:Agency)
+            MATCH (o)<-[:HELD_BY]-(e:Employment)-[:IN_UNIT]->
+            (u:Unit)-[:ESTABLISHED_BY]->(a:Agency)
             WHERE a.uid = $agency_uid
             AND (coalesce($ranks, []) = [] OR e.highest_rank IN $ranks)
             AND (coalesce($statuses, []) = [] OR e.status IN $statuses)
@@ -213,7 +213,8 @@ class AgencyQueries:
             MATCH (node)-[:HELD_BY]->(o:Officer)
             RETURN o, node AS e, score
         }
-        MATCH (o)<-[:HELD_BY]-(all_e:Employment)-[:IN_UNIT]->(u:Unit)-[:ESTABLISHED_BY]->(a:Agency)
+        MATCH (o)<-[:HELD_BY]-(all_e:Employment)-[:IN_UNIT]->
+        (u:Unit)-[:ESTABLISHED_BY]->(a:Agency)
         WHERE a.uid = $agency_uid
         AND (coalesce($ranks, []) = [] OR all_e.highest_rank IN $ranks)
         AND (coalesce($statuses, []) = [] OR all_e.status IN $statuses)
@@ -270,7 +271,8 @@ class AgencyQueries:
             RETURN count(DISTINCT o) AS total_officers
             """
         )
-        logging.warning(f"Cypher query for counting officers: {query} with params {params}")
+        logging.warning(
+            f"Counting agency officers: {query} with params {params}")
         rows, _ = db.cypher_query(query, params)
         return rows[0][0] if rows else 0
 
@@ -320,8 +322,10 @@ class AgencyQueries:
                     head(rows) AS most_recent,
                     reduce(min_date = null, row IN rows |
                         CASE
-                            WHEN min_date IS NULL THEN row.employment.earliest_date
-                            WHEN row.employment.earliest_date IS NULL THEN min_date
+                            WHEN min_date IS NULL
+                              THEN row.employment.earliest_date
+                            WHEN row.employment.earliest_date IS NULL
+                              THEN min_date
                             WHEN row.employment.earliest_date < min_date
                             THEN row.employment.earliest_date
                             ELSE min_date
@@ -330,7 +334,8 @@ class AgencyQueries:
                     reduce(max_date = null, row IN rows |
                         CASE
                             WHEN row.employment.latest_date IS NULL THEN null
-                            WHEN max_date IS NULL THEN row.employment.latest_date
+                            WHEN max_date IS NULL
+                              THEN row.employment.latest_date
                             WHEN row.employment.latest_date > max_date
                             THEN row.employment.latest_date
                             ELSE max_date
@@ -352,7 +357,7 @@ class AgencyQueries:
                             name: most_recent.unit.name
                         }
                     } AS employment
-                ORDER BY score DESC, o.name ASC
+                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
                 SKIP $skip
                 LIMIT $limit
                 """
@@ -363,7 +368,7 @@ class AgencyQueries:
                 + """
                 WITH o, max(score) AS score
                 RETURN o
-                ORDER BY score DESC, o.name ASC
+                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
                 SKIP $skip
                 LIMIT $limit
                 """

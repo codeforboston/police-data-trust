@@ -70,6 +70,9 @@ def get_unit_officers(uid: str):
     """Get officers for a specific unit by UID."""
     raw = {
         **request.args,
+        "type": request.args.getlist("type"),
+        "status": request.args.getlist("status"),
+        "rank": request.args.getlist("rank"),
         "include": request.args.getlist("include"),
     }
     try:
@@ -78,12 +81,20 @@ def get_unit_officers(uid: str):
         logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
 
+    filters = {
+        "type": params.type or [],
+        "status": params.status or [],
+        "rank": params.rank or [],
+    }
+
     try:
         result = unit_service.list_unit_officers(
             unit_uid=uid,
             page=params.page,
             per_page=params.per_page,
             includes=params.include or [],
+            filters=filters,
+            term=params.term,
         )
         return ordered_jsonify(result), 200
     except IndexError:

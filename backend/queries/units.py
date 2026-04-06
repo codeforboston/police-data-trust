@@ -104,11 +104,113 @@ class UnitQueries:
         }
     }
 
-    OFFICER_INCLUDE_SPECS = {
-      "employment": {
+    def _normalize_officer_filters(self, filters: dict | None) -> dict:
+        filters = filters or {}
+        return {
+            "ranks": filters.get("ranks", []),
+            "statuses": filters.get("statuses", []),
+            "types": filters.get("types", []),
+        }
 
-      }
-    }
+    def _classify_officer_term(self, term: str | None) -> str:
+        if not term or not term.strip():
+            return "none"
+
+        t = term.strip()
+
+        has_space = " " in t
+        has_alpha = any(c.isalpha() for c in t)
+        has_digit = any(c.isdigit() for c in t)
+
+        if has_digit and not has_alpha and not has_space:
+            return "badge"
+
+        if has_alpha and not has_digit:
+            return "name"
+
+        return "ambiguous"
+
+    def _build_officer_search_query(
+        self,
+        unit_uid: str,
+        term: str | None = None,
+        filters: dict | None = None,
+    ) -> tuple[str, dict]:
+        normalized = self._normalize_officer_filters(filters)
+        strategy = self._classify_officer_term(term)
+
+        params = {
+            "unit_uid": unit_uid,
+            "term": term.strip() if term else None,
+            **normalized,
+        }
+
+        if strategy == "none":
+            cypher = """
+            MATCH (u:Unit {uid: $unit_uid})<-[:IN_UNIT]-(e:Employment)
+            -[:HELD_BY]->(o:Officer)
+            WHERE (coalesce($ranks, []) = [] OR e.highest_rank IN $ranks)
+            AND (coalesce($statuses, []) = [] OR e.status IN $statuses)
+            AND (coalesce($types, []) = [] OR e.type IN $types)
+            WITH o, e, u, 0.0 AS score
+            """
+            return cypher, params
+
+        if strategy == "name":
+            cypher = """
+            CALL () {
+                CALL db.index.fulltext.queryNodes("officerNames", $term)
+                YIELD node, score
+                RETURN node AS o, score
+            }
+            MATCH (o)<-[:HELD_BY]-(e:Employment)-[:IN_UNIT]->(u:Unit)
+            WHERE u.uid = $unit_uid
+            AND (coalesce($ranks, []) = [] OR e.highest_rank IN $ranks)
+            AND (coalesce($statuses, []) = [] OR e.status IN $statuses)
+            AND (coalesce($types, []) = [] OR e.type IN $types)
+            WITH o, e, u, score
+            """
+            return cypher, params
+
+        if strategy == "badge":
+            cypher = """
+            CALL () {
+                CALL db.index.fulltext.queryNodes("officerBadgeNumbers", $term)
+                YIELD node, score
+                RETURN node AS e, score
+            }
+            MATCH (e)-[:HELD_BY]->(o:Officer)
+            MATCH (e)-[:IN_UNIT]->(u:Unit)
+            WHERE u.uid = $unit_uid
+            AND (coalesce($ranks, []) = [] OR e.highest_rank IN $ranks)
+            AND (coalesce($statuses, []) = [] OR e.status IN $statuses)
+            AND (coalesce($types, []) = [] OR e.type IN $types)
+            WITH o, e, u, score
+            """
+            return cypher, params
+
+        cypher = """
+        CALL () {
+            CALL db.index.fulltext.queryNodes("officerNames", $term)
+            YIELD node, score
+            RETURN node AS o, null AS e, score
+
+            UNION
+
+            CALL db.index.fulltext.queryNodes("officerBadgeNumbers", $term)
+            YIELD node, score
+            MATCH (node)-[:HELD_BY]->(o:Officer)
+            RETURN o, node AS e, score
+        }
+        MATCH (o)<-[:HELD_BY]-(all_e:Employment)-[:IN_UNIT]->(u:Unit)
+        WHERE u.uid = $unit_uid
+        AND (coalesce($ranks, []) = [] OR all_e.highest_rank IN $ranks)
+        AND (coalesce($statuses, []) = [] OR all_e.status IN $statuses)
+        AND (coalesce($types, []) = [] OR all_e.type IN $types)
+        AND (e IS NULL OR all_e = e)
+        WITH o, all_e AS e, score
+        """
+        return cypher, params
 
     def fetch_unit_profile(self, uid: str, includes: list[str]):
         subqueries = []
@@ -138,12 +240,27 @@ class UnitQueries:
         row = rows[0]
         return {field: row[idx] for idx, field in enumerate(return_fields)}
 
-    def count_unit_officers(self, unit_uid: str) -> int:
-        query = """
-        MATCH (u:Unit {uid: $unit_uid})<-[]-(:Employment)-[]->(o:Officer)
-        RETURN count(DISTINCT o) AS total_officers
-        """
-        rows, _ = db.cypher_query(query, {"unit_uid": unit_uid})
+    def count_unit_officers(
+            self,
+            unit_uid: str,
+            term: str | None = None,
+            filters: dict | None = None
+    ) -> int:
+        base_query, params = self._build_officer_search_query(
+            unit_uid=unit_uid,
+            term=term,
+            filters=filters,
+        )
+
+        query = (
+            base_query
+            + """
+            RETURN count(DISTINCT o) AS total_officers
+            """
+        )
+        logging.warning(
+            f"Counting unit officers: {query} with params: {params}")
+        rows, _ = db.cypher_query(query, params)
         return rows[0][0] if rows else 0
 
     def fetch_unit_officers(
@@ -152,64 +269,79 @@ class UnitQueries:
         skip: int,
         limit: int,
         include_employment: bool = False,
-    ) -> list[dict]:
-        params = {
-            "unit_uid": unit_uid,
+        term: str | None = None,
+        filters: dict | None = None,
+    ):
+        base_query, params = self._build_officer_search_query(
+            unit_uid=unit_uid,
+            term=term,
+            filters=filters,
+        )
+        params.update({
             "skip": skip,
             "limit": limit,
-        }
+        })
 
         if include_employment:
-            query = """
-            MATCH (u:Unit {uid: $unit_uid})<-[:IN_UNIT]-
-            (e:Employment)-[:HELD_BY]->(o:Officer)
-            WITH o, e
-            ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
-            WITH
-                o,
-                collect(e) AS employment
-            WITH
-                o,
-                employment,
-                head(employment) AS most_recent,
-                reduce(min_date = null, stint IN employment |
-                    CASE
-                        WHEN min_date IS NULL THEN stint.earliest_date
-                        WHEN stint.earliest_date IS NULL THEN min_date
-                        WHEN stint.earliest_date < min_date
-                          THEN stint.earliest_date
-                        ELSE min_date
-                    END
-                ) AS earliest_date,
-                reduce(max_date = null, stint IN employment |
-                    CASE
-                        WHEN stint.latest_date IS NULL THEN null
-                        WHEN max_date IS NULL THEN stint.latest_date
-                        WHEN stint.latest_date > max_date
-                          THEN stint.latest_date
-                        ELSE max_date
-                    END
-                ) AS latest_date
-            RETURN
-                o,
-                {
-                    uid: most_recent.uid,
-                    earliest_date: earliest_date,
-                    latest_date: latest_date,
-                    badge_number: most_recent.badge_number,
-                    rank: most_recent.highest_rank
-                } AS employment
-            SKIP $skip
-            LIMIT $limit
-            """
+            query = (
+                base_query
+                + """
+                WITH o, e, score
+                ORDER BY coalesce(e.latest_date, e.earliest_date) DESC
+                WITH
+                    o,
+                    max(score) AS score,
+                    collect(e) AS employment
+                WITH
+                    o,
+                    score,
+                    employment,
+                    head(employment) AS most_recent,
+                    reduce(min_date = null, stint IN employment |
+                        CASE
+                            WHEN min_date IS NULL THEN stint.earliest_date
+                            WHEN stint.earliest_date IS NULL THEN min_date
+                            WHEN stint.earliest_date < min_date
+                            THEN stint.earliest_date
+                            ELSE min_date
+                        END
+                    ) AS earliest_date,
+                    reduce(max_date = null, stint IN employment |
+                        CASE
+                            WHEN stint.latest_date IS NULL THEN null
+                            WHEN max_date IS NULL THEN stint.latest_date
+                            WHEN stint.latest_date > max_date
+                            THEN stint.latest_date
+                            ELSE max_date
+                        END
+                    ) AS latest_date
+                RETURN
+                    o,
+                    {
+                        uid: most_recent.uid,
+                        earliest_date: earliest_date,
+                        latest_date: latest_date,
+                        badge_number: most_recent.badge_number,
+                        rank: most_recent.highest_rank,
+                        status: most_recent.status,
+                        type: most_recent.type
+                    } AS employment
+                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
+                SKIP $skip
+                LIMIT $limit
+                """
+            )
         else:
-            query = """
-            MATCH (u:Unit {uid: $unit_uid})-[:IN_UNIT]-
-            (:Employment)-[:HELD_BY]-(o:Officer)
-            RETURN o
-            SKIP $skip
-            LIMIT $limit
-            """
+            query = (
+                base_query
+                + """
+                WITH o, max(score) AS score
+                RETURN o
+                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
+                SKIP $skip
+                LIMIT $limit
+                """
+            )
 
         logging.debug(
             "Executing Cypher query: {} with params: {}".format(
