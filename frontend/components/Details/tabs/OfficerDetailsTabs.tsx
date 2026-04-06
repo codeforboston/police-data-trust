@@ -20,15 +20,19 @@ export default function OfficerDetailsTabs(officer: Officer) {
         <StickySidebarLayout
           main={
             <>
-            <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
-              Background
-            </Typography>
-            <StateRecords officer={officer} />
-            <Employment employment_history={officer.employment_history} />
-            <AllegationsSummary allegation_summary={officer.allegation_summary} />
-            <Lawsuits />
-            <Awards />
-            <Attachments />
+              <Typography
+                component="h2"
+                variant="h5"
+                sx={{ fontSize: "1.3rem", fontWeight: "500" }}
+              >
+                Background
+              </Typography>
+              <StateRecords officer={officer} />
+              <Employment employment_history={officer.employment_history} />
+              <AllegationsSummary allegation_summary={officer.allegation_summary} />
+              <Lawsuits />
+              <Awards />
+              <Attachments />
             </>
           }
           sidebar={<OfficerContentDetails officer={officer} />}

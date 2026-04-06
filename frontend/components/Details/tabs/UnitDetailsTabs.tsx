@@ -58,23 +58,27 @@ export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
         <StickySidebarLayout
           main={
             <>
-            <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
-              Leadership
-            </Typography>
-            <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
-              Captain
-            </Typography>
-            <Jurisdiction
-              location={{
-                latitude: unit.location?.latitude ?? -73.9249,
-                longitude: unit.location?.longitude ?? 40.6943
-              }}
-            />
-            <MostReportedOfficers
-              reported_officers={unit.most_reported_officers}
-              total_officers={unit.total_officers}
-            />
-            <Attachments />
+              <Typography
+                component="h2"
+                variant="h5"
+                sx={{ fontSize: "1.3rem", fontWeight: "500" }}
+              >
+                Leadership
+              </Typography>
+              <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
+                Captain
+              </Typography>
+              <Jurisdiction
+                location={{
+                  latitude: unit.location?.latitude ?? -73.9249,
+                  longitude: unit.location?.longitude ?? 40.6943
+                }}
+              />
+              <MostReportedOfficers
+                reported_officers={unit.most_reported_officers}
+                total_officers={unit.total_officers}
+              />
+              <Attachments />
             </>
           }
           sidebar={<UnitContentDetails unit={unit} />}

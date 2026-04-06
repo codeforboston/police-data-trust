@@ -67,23 +67,27 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
         <StickySidebarLayout
           main={
             <>
-            <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
-              Leadership
-            </Typography>
-            <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
-              Commissioner
-            </Typography>
-            <Jurisdiction
-              location={{
-                latitude: agency.location?.latitude ?? -73.9249,
-                longitude: agency.location?.longitude ?? 40.6943
-              }}
-            />
-            <MostReportedUnits
-              most_reported_units={agency.most_reported_units}
-              total_units={agency.total_units}
-            />
-            <Attachments />
+              <Typography
+                component="h2"
+                variant="h5"
+                sx={{ fontSize: "1.3rem", fontWeight: "500" }}
+              >
+                Leadership
+              </Typography>
+              <Typography variant="body1" sx={{ marginTop: "32px", marginBottom: "16px" }}>
+                Commissioner
+              </Typography>
+              <Jurisdiction
+                location={{
+                  latitude: agency.location?.latitude ?? -73.9249,
+                  longitude: agency.location?.longitude ?? 40.6943
+                }}
+              />
+              <MostReportedUnits
+                most_reported_units={agency.most_reported_units}
+                total_units={agency.total_units}
+              />
+              <Attachments />
             </>
           }
           sidebar={<AgencyContentDetails agency={agency} />}
