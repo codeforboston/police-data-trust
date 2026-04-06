@@ -48,7 +48,6 @@ export default function UnitDetailsTabs(unit: Unit & HasOfficers) {
       label: "Overview",
       content: (
         <StickySidebarLayout
-          stickyTop="20px"
           main={
             <>
             <Typography component="h2" variant="h5" sx={{ fontSize: "1.3rem", fontWeight: "500" }}>
