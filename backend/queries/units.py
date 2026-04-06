@@ -107,9 +107,9 @@ class UnitQueries:
     def _normalize_officer_filters(self, filters: dict | None) -> dict:
         filters = filters or {}
         return {
-            "ranks": filters.get("ranks", []),
-            "statuses": filters.get("statuses", []),
-            "types": filters.get("types", []),
+            "ranks": filters.get("rank") or [],
+            "statuses": filters.get("status") or [],
+            "types": filters.get("type") or [],
         }
 
     def _classify_officer_term(self, term: str | None) -> str:
