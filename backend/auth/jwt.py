@@ -8,6 +8,9 @@ jwt = JWTManager()
 
 
 def verify_roles_or_abort(min_role):
+    # Skip auth checks for CORS preflight requests
+    if request.method == "OPTIONS":
+        return True
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
@@ -21,6 +24,9 @@ def verify_roles_or_abort(min_role):
 
 
 def verify_contributor_has_source_or_abort():
+    # Skip auth checks for CORS preflight requests
+    if request.method == "OPTIONS":
+        return True
     verify_jwt_in_request()
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])

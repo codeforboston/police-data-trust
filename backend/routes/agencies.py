@@ -148,7 +148,7 @@ def delete_agency(agency_id: str):
 
 
 # Get all agencies
-@bp.route("/", methods=["GET"])
+@bp.route("/", methods=["GET", "OPTIONS"], strict_slashes=False)
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_agencies():
