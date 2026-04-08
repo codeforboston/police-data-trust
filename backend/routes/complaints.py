@@ -267,7 +267,7 @@ def edit_permission_required():
 
 
 # Create a complaint
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateComplaint)

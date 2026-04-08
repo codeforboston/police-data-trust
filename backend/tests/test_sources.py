@@ -124,7 +124,7 @@ def test_create_source(client, access_token):
     }
 
     res = client.post(
-        "/api/v1/sources/",
+        "/api/v1/sources",
         json=request,
         headers={
             "Authorization": f"Bearer {access_token}"
@@ -169,7 +169,7 @@ def test_get_source(client, example_source, access_token):
 def test_get_all_sources(client, example_sources, access_token):
     all_sources = Source.nodes.all()
     res = client.get(
-        "/api/v1/sources/",
+        "/api/v1/sources",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
@@ -186,7 +186,7 @@ def test_source_pagination(client, example_sources, access_token):
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            "/api/v1/sources/",
+            "/api/v1/sources",
             query_string={"per_page": per_page, "page": page},
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
@@ -200,7 +200,7 @@ def test_source_pagination(client, example_sources, access_token):
 
     res = client.get(
         (
-            f"/api/v1/sources/?per_page={per_page}"
+            f"/api/v1/sources?per_page={per_page}"
             f"&page={expected_total_pages + 1}"
         ),
         headers={"Authorization": "Bearer {0}".format(access_token)},
@@ -230,7 +230,7 @@ def test_get_source_members(
         client, example_source, example_members, access_token):
     members = example_source.members.all()
     res = client.get(
-        f"/api/v1/sources/{example_source.uid}/members/",
+        f"/api/v1/sources/{example_source.uid}/members",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
 

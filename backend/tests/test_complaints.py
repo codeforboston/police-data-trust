@@ -144,7 +144,7 @@ def test_create_complaint(
     request['allegations'][0]['accused_uid'] = example_officer.uid
     request['penalties'][0]['officer_uid'] = example_officer.uid
     res = client.post(
-        "/api/v1/complaints/",
+        "/api/v1/complaints",
         json=request,
         headers={
             "Authorization": "Bearer {0}".format(contributor_access_token)
@@ -215,7 +215,7 @@ def test_create_complaint_no_permission(
     }
 
     res = client.post(
-        "/api/v1/complaints/",
+        "/api/v1/complaints",
         json=request,
         headers={"Authorization": f"Bearer {access_token}"},
     )
@@ -263,7 +263,7 @@ def test_get_complaint(
 def test_get_complaints(client, db_session, access_token, example_complaints):
     all_complaints = Complaint.nodes.all()
     res = client.get(
-        "/api/v1/complaints/",
+        "/api/v1/complaints",
         headers={"Authorization ": "Bearer {0}".format(access_token)},
     )
 
@@ -282,7 +282,7 @@ def test_complaint_pagination(
 
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            "/api/v1/complaints/",
+            "/api/v1/complaints",
             query_string={"per_page": per_page, "page": page},
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
@@ -293,7 +293,7 @@ def test_complaint_pagination(
         assert len(res.json["results"]) == per_page
 
     res = client.get(
-        "/api/v1/complaints/",
+        "/api/v1/complaints",
         query_string={"perPage": per_page, "page": expected_total_pages + 1},
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
@@ -912,7 +912,7 @@ def test_create_complaint_with_multiple_allegations(
     # request['penalties'][0]['officer_uid'] = example_officer.uid
 
     res = client.post(
-        "/api/v1/complaints/",
+        "/api/v1/complaints",
         json=request,
         headers={
             "Authorization": "Bearer {0}".format(contributor_access_token)

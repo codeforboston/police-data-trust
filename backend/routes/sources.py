@@ -56,7 +56,7 @@ def get_source(source_uid: str):
     return p.to_json()
 
 
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 @validate_request(CreatePartner)
@@ -114,7 +114,7 @@ def create_source():
         }, 400
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_sources():
@@ -185,7 +185,7 @@ def update_source(source_uid: str):
     return p.to_json()
 
 
-@bp.route("/<source_uid>/members/", methods=["GET"])
+@bp.route("/<source_uid>/members", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_source_members(source_uid: int):

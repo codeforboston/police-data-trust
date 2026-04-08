@@ -23,7 +23,7 @@ agency_service = AgencyService()
 
 
 # Create agency profile
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateAgency)
@@ -148,7 +148,7 @@ def delete_agency(agency_id: str):
 
 
 # Get all agencies
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_agencies():

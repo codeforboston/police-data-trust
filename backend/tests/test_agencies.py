@@ -89,7 +89,7 @@ def test_create_agency(db_session, client, contributor_access_token):
     test_agency = new_agency
 
     res = client.post(
-        "/api/v1/agencies/",
+        "/api/v1/agencies",
         json=test_agency,
         headers={"Authorization": "Bearer {0}".format(
             contributor_access_token)},
@@ -110,7 +110,7 @@ def test_unauthorized_create_agency(client, access_token):
     test_agency = mock_agencies["nypd"]
 
     res = client.post(
-        "/api/v1/agencies/",
+        "/api/v1/agencies",
         json=test_agency,
         headers={"Authorization": "Bearer {0}".format(
             access_token)},
@@ -134,7 +134,7 @@ def test_get_all_agencies(client, access_token, example_agencies):
 
     # Test that we can get agencies
     res = client.get(
-        "/api/v1/agencies/",
+        "/api/v1/agencies",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -147,7 +147,7 @@ def test_filter_agencies(client, access_token, example_agencies):
         name="New York Police Department"
     ).__len__()
     res = client.get(
-        "/api/v1/agencies/?name=New York Police Department",
+        "/api/v1/agencies?name=New York Police Department",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -155,7 +155,7 @@ def test_filter_agencies(client, access_token, example_agencies):
 
     expect_city_ct = Agency.nodes.filter(hq_city="Chicago").__len__()
     res = client.get(
-        "/api/v1/agencies/?hq_city=Chicago",
+        "/api/v1/agencies?hq_city=Chicago",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -163,7 +163,7 @@ def test_filter_agencies(client, access_token, example_agencies):
 
     expect_state_ct = Agency.nodes.filter(hq_state="NY").__len__()
     res = client.get(
-        "/api/v1/agencies/?hq_state=NY",
+        "/api/v1/agencies?hq_state=NY",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -171,21 +171,21 @@ def test_filter_agencies(client, access_token, example_agencies):
 
     # State name not abbreviated correctly
     res = client.get(
-        "/api/v1/agencies/?hq_state=New York",
+        "/api/v1/agencies?hq_state=New York",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 400
 
     # No parameter "state"
     res = client.get(
-        "/api/v1/agencies/?state=NY",
+        "/api/v1/agencies?state=NY",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 400
 
     expect_zip_ct = Agency.nodes.filter(hq_zip="60653").__len__()
     res = client.get(
-        "/api/v1/agencies/?hq_zip=60653",
+        "/api/v1/agencies?hq_zip=60653",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -193,21 +193,21 @@ def test_filter_agencies(client, access_token, example_agencies):
 
     # If leading zeroes get coerced anywhere, zip codes will break
     res = client.get(
-        "/api/v1/agencies/?hq_zip=02465",
+        "/api/v1/agencies?hq_zip=02465",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
 
     expect_juri_ct = Agency.nodes.filter(jurisdiction="MUNICIPAL").__len__()
     res = client.get(
-        "/api/v1/agencies/?jurisdiction=MUNICIPAL",
+        "/api/v1/agencies?jurisdiction=MUNICIPAL",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
     assert res.json['results'].__len__() == expect_juri_ct
 
     res = client.get(
-        "/api/v1/agencies/?jurisdiction=SPACESTATION",
+        "/api/v1/agencies?jurisdiction=SPACESTATION",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 400
@@ -238,7 +238,7 @@ def test_agency_pagination(client, example_agencies, access_token):
     expected_total_pages = math.ceil(total_agencies//per_page)
     for page in range(1, expected_total_pages + 1):
         res = client.get(
-            f"/api/v1/agencies/?per_page={per_page}&page={page}",
+            f"/api/v1/agencies?per_page={per_page}&page={page}",
             headers={"Authorization": "Bearer {0}".format(access_token)},
         )
 
@@ -251,7 +251,7 @@ def test_agency_pagination(client, example_agencies, access_token):
 
     res = client.get(
         (
-            f"/api/v1/agencies/?per_page={per_page}"
+            f"/api/v1/agencies?per_page={per_page}"
             f"&page={expected_total_pages + 1}"
         ),
         headers={"Authorization": "Bearer {0}".format(access_token)},
@@ -267,7 +267,7 @@ def test_agency_search_result(client, example_agencies, access_token):
     ).__len__()
 
     res = client.get(
-        f"/api/v1/agencies/?name={search_term}&searchResult=true",
+        f"/api/v1/agencies?name={search_term}&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200
@@ -276,7 +276,7 @@ def test_agency_search_result(client, example_agencies, access_token):
 
 def test_bad_query_param(client, access_token):
     res = client.get(
-        "/api/v1/agencies/?unknown_param=value",
+        "/api/v1/agencies?unknown_param=value",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
 

@@ -307,7 +307,7 @@ def group_nodes_by_type(results) -> Dict[str, List]:
 
 
 # Text Search Endpoint
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def text_search():
