@@ -28,7 +28,7 @@ test.describe("Search Pagination", () => {
     }
 
     // Intercept search API calls
-    await page.route("**/api/v1/search/**", async (route) => {
+    await page.route("**/api/v1/search*", async (route) => {
       const url = route.request().url()
       const urlObj = new URL(url)
       const pageParam = urlObj.searchParams.get("page")
@@ -94,23 +94,13 @@ test.describe("Search Pagination", () => {
     const responsePromise = page.waitForResponse(
       (response) => {
         const url = response.url()
-        return url.includes("/api/v1/search/") && url.includes("page=2")
+        return url.includes("/api/v1/search") && url.includes("page=2")
       },
       { timeout: 10000 }
     )
 
-    // Update URL directly using Next.js router (simulating URL change)
-    // This should trigger the SearchProvider effect that watches searchParams
-    await page.evaluate(() => {
-      // Use Next.js router if available, otherwise use history API
-      if ((window as any).next?.router) {
-        ;(window as any).next.router.push("/search?term=test&page=2")
-      } else {
-        // Fallback: trigger popstate event which Next.js listens to
-        window.history.pushState({}, "", "/search?term=test&page=2")
-        window.dispatchEvent(new PopStateEvent("popstate"))
-      }
-    })
+    // Navigate to a new URL and verify the route-driven search refetches.
+    await page.goto("/search?term=test&page=2")
 
     // Wait for API request to be made
     const response = await responsePromise
@@ -141,8 +131,10 @@ test.describe("Search Pagination", () => {
       .or(pagination.getByRole("button", { name: "2" }).first())
     await page2Button.click()
 
-    // Wait for page 2 to be highlighted
-    await expect(page2Button).toHaveAttribute("aria-current", "page", { timeout: 10000 })
+    // Wait for page 2 to become the active page after the pagination rerenders
+    await expect(pagination.locator('button[aria-current="page"]')).toHaveText("2", {
+      timeout: 10000
+    })
 
     // Verify page 1 is no longer highlighted
     const newPage1Button = pagination
@@ -160,7 +152,7 @@ test.describe("Search Pagination", () => {
     const responsePromise = page.waitForResponse(
       (response) => {
         const url = response.url()
-        return url.includes("/api/v1/search/") && url.includes("page=2")
+        return url.includes("/api/v1/search") && url.includes("page=2")
       },
       { timeout: 10000 }
     )
@@ -183,5 +175,10 @@ test.describe("Search Pagination", () => {
     const url = response.url()
     const urlObj = new URL(url)
     expect(urlObj.searchParams.get("page")).toBe("2")
+
+    // Verify the rerendered pagination marks page 2 as active.
+    await expect(pagination.locator('button[aria-current="page"]')).toHaveText("2", {
+      timeout: 10000
+    })
   })
 })
