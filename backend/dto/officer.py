@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, field_validator
+from pydantic import AliasChoices, BaseModel, Field, field_validator
 from typing import Optional
 from backend.dto.common import PaginatedRequest, RequestDTO
 from typing import List
@@ -11,7 +11,10 @@ class OfficerSearchParams(PaginatedRequest):
     searchResult: bool = Field(default=False)
 
     # Name components
-    query: Optional[str] = None
+    term: Optional[str] = Field(
+        default=None,
+        validation_alias=AliasChoices("term", "query"),
+    )
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -50,8 +53,8 @@ class OfficerSearchParams(PaginatedRequest):
 
     @property
     def officer_name(self):
-        if self.query and self.query.strip():
-            return self.query.strip()
+        if self.term and self.term.strip():
+            return self.term.strip()
         else:
             return " AND ".join(self.name_parts) or None
 

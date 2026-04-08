@@ -17,15 +17,20 @@ export default function SearchResultsTabs({ tab, updateTab }: SearchResultsTabsP
         textColor="inherit"
         slotProps={{ indicator: { style: { backgroundColor: "black" } } }}
         sx={{
-          "& .MuiTab-root": { color: "black" }
+          "& .MuiTab-root": { color: "black" },
+          "& .MuiTab-root.Mui-disabled": {
+            color: "#8b9198",
+            opacity: 1,
+            cursor: "not-allowed"
+          }
         }}
       >
         <Tab label="All" />
         <Tab label="Officer" />
-        <Tab label="Complaint" />
         <Tab label="Agency" />
-        <Tab label="Unit" />
-        <Tab label="Litigation" />
+        <Tab label="Unit" disabled />
+        <Tab label="Complaint" disabled />
+        <Tab label="Litigation" disabled />
       </Tabs>
     </Box>
   )

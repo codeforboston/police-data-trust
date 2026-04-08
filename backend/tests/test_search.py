@@ -32,7 +32,7 @@ def test_search_text(
     query_string = urllib.parse.urlencode(params)
 
     # Perform a search query
-    res = client.get(f"/api/v1/search/?{query_string}")
+    res = client.get(f"/api/v1/search?{query_string}")
 
     assert res.status_code == 200
     data = res.get_json()

@@ -23,7 +23,7 @@ agency_service = AgencyService()
 
 
 # Create agency profile
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateAgency)
@@ -148,7 +148,7 @@ def delete_agency(agency_id: str):
 
 
 # Get all agencies
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_agencies():
@@ -156,7 +156,7 @@ def get_all_agencies():
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
-    name: filter on agency name
+    term: filter on agency name
     hq_city: filter on agency city
     hq_state: filter on agency state
     hq_zip: filter on agency zipcode
@@ -171,8 +171,8 @@ def get_all_agencies():
         abort(400, description=str(e))
 
     # preprocess query
-    if params.name:
-        search_term = Agency.preprocess_query(params.name)
+    if params.term:
+        search_term = Agency.preprocess_query(params.term)
     else:
         search_term = None
 

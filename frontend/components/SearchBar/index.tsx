@@ -10,12 +10,18 @@ import React from "react"
 export const SearchBar = () => {
   const { searchAll, loading } = useSearch()
   const searchParams = useSearchParams()
+  const getSearchInputValue = React.useCallback(() => {
+    return searchParams.get("term") || searchParams.get("query") || searchParams.get("name") || ""
+  }, [searchParams])
+  const [localInput, setLocalInput] = React.useState(getSearchInputValue)
 
-  const [localInput, setLocalInput] = React.useState(searchParams.get("query") || "")
+  React.useEffect(() => {
+    setLocalInput(getSearchInputValue())
+  }, [getSearchInputValue])
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (term: string) => {
     try {
-      await searchAll({ query })
+      await searchAll({ term })
     } catch (error) {
       // If it's an authentication error, redirect to login
       if (error instanceof ApiError && error.code === "NO_ACCESS_TOKEN") {

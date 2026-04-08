@@ -267,7 +267,7 @@ def edit_permission_required():
 
 
 # Create a complaint
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateComplaint)
@@ -429,7 +429,7 @@ def get_complaint(complaint_uid: int):
 
 
 # Get all complaints
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_complaints():

@@ -711,7 +711,7 @@ def test_filter_by_officer_name(client, db_session, access_token,
 
     # Test flexible full name param
     res = client.get(
-        f"/api/v1/officers?query={first_name} {last_name}",
+        f"/api/v1/officers?term={first_name} {last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200
@@ -721,7 +721,7 @@ def test_filter_by_officer_name(client, db_session, access_token,
         assert res.json == {"message": "No results found matching the query"}
 
     res = client.get(
-        f"/api/v1/officers?query={last_name}",
+        f"/api/v1/officers?term={last_name}",
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert res.status_code == 200

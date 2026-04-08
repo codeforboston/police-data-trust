@@ -8,6 +8,33 @@ import { ApiError } from "@/utils/apiError"
 import { useRouter, useSearchParams } from "next/navigation"
 import { getParamKeys } from "./config"
 
+const mapParamsForTab = (tab: number, params: URLSearchParams) => {
+  const nextParams = new URLSearchParams(params.toString())
+  const termValue = nextParams.get("term")
+  const queryValue = nextParams.get("query")
+  const nameValue = nextParams.get("name")
+  const normalizedTerm = termValue ?? queryValue ?? nameValue
+
+  if (tab !== 0) {
+    nextParams.set("searchResult", "true")
+  } else {
+    nextParams.delete("searchResult")
+  }
+
+  nextParams.delete("query")
+  nextParams.delete("name")
+
+  if (normalizedTerm !== null) {
+    if (normalizedTerm.trim() !== "") {
+      nextParams.set("term", normalizedTerm)
+    } else {
+      nextParams.delete("term")
+    }
+  }
+
+  return nextParams
+}
+
 interface SearchContext {
   searchAll: (
     query: Omit<SearchRequest, "access_token" | "accessToken">
@@ -61,31 +88,21 @@ function useHook(): SearchContext {
           params.set(key, String(value))
         }
       })
-      const destination = params.toString()
+      const destination = mapParamsForTab(tab, params).toString()
       router.push(`/search?${destination}`)
-      return params
+      return mapParamsForTab(tab, params)
     },
     [searchParams, router]
   )
-
-  // Build a SearchRequest-like payload from URLSearchParams
-  const buildRequestFromParams = useCallback((params: URLSearchParams) => {
-    const q = params.get("query") || ""
-    const location = params.get("location") || undefined
-    const source = params.get("source") || undefined
-    const pageStr = params.get("page")
-    const page = pageStr ? Number(pageStr) : undefined
-    const payload: Omit<SearchRequest, "access_token" | "accessToken"> = { query: q }
-    if (location) payload.location = location
-    if (source) payload.source = source
-    if (page !== undefined) payload.page = page
-    return payload
-  }, [])
 
   const getSearchType = (tab: number) => {
     switch (tab) {
       case 1:
         return API_ROUTES.search.officers
+      case 2:
+        return API_ROUTES.search.agencies
+      case 3:
+        return API_ROUTES.search.units
       default:
         return API_ROUTES.search.all
     }
@@ -113,7 +130,7 @@ function useHook(): SearchContext {
         let apiUrl = apiBaseUrl
 
         if (updatedTab !== undefined) {
-          const queryValue = params.get("query") ?? ""
+          const queryValue = params.get("term") ?? params.get("query") ?? params.get("name") ?? ""
           const paramKeys = getParamKeys(updatedTab)
           const newParams = new URLSearchParams()
 
@@ -125,7 +142,8 @@ function useHook(): SearchContext {
 
           apiUrl += `${getSearchType(updatedTab)}?${newParams.toString()}`
         } else {
-          apiUrl += `${getSearchType(tab)}?${params.toString()}`
+          const normalizedParams = mapParamsForTab(tab, params)
+          apiUrl += `${getSearchType(tab)}?${normalizedParams.toString()}`
         }
 
         const response = await apiFetch(apiUrl, {
