@@ -1,7 +1,7 @@
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt
 from functools import wraps
 from ..database.models.user import User
-from flask import abort
+from flask import abort, request
 
 
 jwt = JWTManager()
@@ -52,6 +52,9 @@ def min_role_required(*roles):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
+            # Skip auth checks for CORS preflight requests
+            if request.method == "OPTIONS":
+                return fn(*args, **kwargs)
             if verify_roles_or_abort(roles):
                 return fn(*args, **kwargs)
 
@@ -64,6 +67,9 @@ def contributor_has_source():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
+            # Skip auth checks for CORS preflight requests
+            if request.method == "OPTIONS":
+                return fn(*args, **kwargs)
             if verify_contributor_has_source_or_abort():
                 return fn(*args, **kwargs)
 
