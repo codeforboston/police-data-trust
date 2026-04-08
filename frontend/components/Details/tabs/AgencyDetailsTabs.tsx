@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { Typography } from "@mui/material"
 import { Agency, HasOfficers } from "@/utils/api"
 import DetailsTabs from "./DetailsTabs"
@@ -15,13 +15,30 @@ import { AgencyOfficerQueryParams, useAgencyOfficers } from "@/hooks/useAgencyOf
 import { useAgencyUnits } from "@/hooks/useAgencyUnits"
 import { useDebouncedValue } from "@/hooks/useDebouncedValue"
 import { useOfficerListFilters } from "@/hooks/useOfficerListFilters"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+
+type AgencyDetailTab = "overview" | "units" | "officers" | "complaints" | "insights"
+
+const DEFAULT_TAB: AgencyDetailTab = "overview"
+const ENABLED_TABS: AgencyDetailTab[] = ["overview", "units", "officers"]
+
+const parseTab = (value: string | null): AgencyDetailTab => {
+  if (value && ENABLED_TABS.includes(value as AgencyDetailTab)) {
+    return value as AgencyDetailTab
+  }
+
+  return DEFAULT_TAB
+}
 
 export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
-  const [activeTab, setActiveTab] = useState(0)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const activeTab = useMemo(() => parseTab(searchParams.get("tab")), [searchParams])
   const { filters: officerFilters, setFilters: setOfficerFilters } = useOfficerListFilters()
   const debouncedOfficerFilters = useDebouncedValue(officerFilters, 300)
-  const showOfficerList = activeTab === 2
-  const showUnitList = activeTab === 1
+  const showOfficerList = activeTab === "officers"
+  const showUnitList = activeTab === "units"
 
   const {
     units,
@@ -62,6 +79,7 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
 
   const tabs = [
     {
+      value: "overview",
       label: "Overview",
       content: (
         <StickySidebarLayout
@@ -95,10 +113,12 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
       )
     },
     {
+      value: "units",
       label: "Unit List",
       content: <UnitList agency={agency} units={units} loading={unitsLoading} error={unitsError} />
     },
     {
+      value: "officers",
       label: "Officer List",
       content: (
         <OfficerList
@@ -114,11 +134,13 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
       )
     },
     {
+      value: "complaints",
       label: "Complaint List",
       content: <>Complaints List</>,
       disabled: true
     },
     {
+      value: "insights",
       label: "Insights",
       content: <>Insights</>,
       disabled: true
@@ -130,7 +152,19 @@ export default function AgencyDetailsTabs(agency: Agency & HasOfficers) {
       tabs={tabs}
       ariaLabel="agency detail tabs"
       value={activeTab}
-      onChange={setActiveTab}
+      onChange={(newValue) => {
+        const nextTab = parseTab(String(newValue))
+        const nextParams = new URLSearchParams(searchParams.toString())
+
+        if (nextTab === DEFAULT_TAB) {
+          nextParams.delete("tab")
+        } else {
+          nextParams.set("tab", nextTab)
+        }
+
+        const destination = nextParams.toString()
+        router.push(destination ? `${pathname}?${destination}` : pathname)
+      }}
     />
   )
 }

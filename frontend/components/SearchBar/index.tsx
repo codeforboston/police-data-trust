@@ -3,32 +3,19 @@
 import { TextField, InputAdornment, CircularProgress, Box } from "@mui/material"
 import { Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
-import { useSearchParams } from "next/navigation"
-import { ApiError } from "@/utils/apiError"
 import React from "react"
 
 export const SearchBar = () => {
-  const { searchAll, loading } = useSearch()
-  const searchParams = useSearchParams()
-  const getSearchInputValue = React.useCallback(() => {
-    return searchParams.get("term") || searchParams.get("query") || searchParams.get("name") || ""
-  }, [searchParams])
-  const [localInput, setLocalInput] = React.useState(getSearchInputValue)
+  const {
+    loading,
+    setTerm,
+    state: { term }
+  } = useSearch()
+  const [localInput, setLocalInput] = React.useState(term)
 
   React.useEffect(() => {
-    setLocalInput(getSearchInputValue())
-  }, [getSearchInputValue])
-
-  const handleSearch = async (term: string) => {
-    try {
-      await searchAll({ term })
-    } catch (error) {
-      // If it's an authentication error, redirect to login
-      if (error instanceof ApiError && error.code === "NO_ACCESS_TOKEN") {
-        window.location.href = "/login"
-      }
-    }
-  }
+    setLocalInput(term)
+  }, [term])
 
   return (
     <Box
@@ -46,7 +33,7 @@ export const SearchBar = () => {
         onChange={(e) => setLocalInput(e.target.value)}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key === "Enter") {
-            handleSearch(localInput)
+            setTerm(localInput)
           }
         }}
         sx={{
