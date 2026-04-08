@@ -38,13 +38,15 @@ class AgencyService:
             raise ValueError("Source not found")
         if not source.members.is_connected(current_user):
             raise PermissionError(
-                f"User does not have permission to {action} this agency for the provided source."
+                f"User does not have permission to {action} "
+                f"this agency for the provided source."
             )
 
         membership = source.members.relationship(current_user)
         if not membership.may_publish():
             raise PermissionError(
-                f"User does not have permission to {action} this agency for the provided source."
+                f"User does not have permission to {action} "
+                f"this agency for the provided source."
             )
 
         return source

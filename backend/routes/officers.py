@@ -5,12 +5,12 @@ from backend.schemas import (validate_request, ordered_jsonify)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
 from backend.services.officer_service import OfficerService
-from .tmp.pydantic.officers import CreateOfficer, UpdateOfficer
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.officer import (
-    OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams)
+    OfficerSearchParams, GetOfficerParams, GetOfficerMetricsParams,
+    CreateOfficer, UpdateOfficer)
 
 
 bp = Blueprint("officer_routes", __name__, url_prefix="/api/v1/officers")
@@ -25,25 +25,34 @@ officer_service = OfficerService()
 def create_officer():
     """Create an officer profile.
     """
-    logger = logging.getLogger("create_officer")
     body: CreateOfficer = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
+    payload = body.model_dump(exclude={"source_uid"})
 
-    # try:
-    officer = Officer.from_dict(body.model_dump())
-    # except Exception as e:
-    #     abort(400, description=str(e))
-
-    logger.info(f"Officer {officer.uid} created by User {current_user.uid}")
-    track_to_mp(
-        request,
-        "create_officer",
-        {
-            "officer_id": officer.uid
-        },
-    )
-    return officer.to_json()
+    try:
+        response = officer_service.create_officer(
+            payload=payload,
+            source_uid=body.source_uid,
+            current_user=current_user,
+        )
+        logging.getLogger("create_officer").info(
+            f"Officer {response.get('uid')} created by User {current_user.uid}"
+        )
+        track_to_mp(
+            request,
+            "create_officer",
+            {
+                "officer_id": response.get("uid")
+            },
+        )
+        return ordered_jsonify(response), 201
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
+    except Exception as e:
+        abort(400, description=str(e))
 
 
 # Get an officer profile
@@ -113,13 +122,23 @@ def update_officer(officer_uid: str):
     """Update an officer profile.
     """
     body: UpdateOfficer = request.validated_body
-    o = Officer.nodes.get_or_none(uid=officer_uid)
-    if o is None:
-        abort(404, description="Officer not found")
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    payload = body.model_dump(exclude_unset=True, exclude={"source_uid"})
 
     try:
-        o = Officer.from_dict(body.model_dump(), officer_uid)
-        o.refresh()
+        response = officer_service.update_officer(
+            officer_uid=officer_uid,
+            payload=payload,
+            source_uid=body.source_uid,
+            current_user=current_user,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
@@ -127,10 +146,10 @@ def update_officer(officer_uid: str):
         request,
         "update_officer",
         {
-            "officer_id": o.uid
+            "officer_id": response.get("uid")
         },
     )
-    return o.to_json()
+    return ordered_jsonify(response)
 
 
 # Delete an officer profile
