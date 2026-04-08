@@ -5,7 +5,7 @@ from backend.database.models.agency import Agency
 from backend.database.models.source import Source
 from backend.database.models.user import User
 from backend.queries.agencies import AgencyQueries
-from backend.schemas import add_pagination_wrapper
+from backend.schemas import add_pagination_wrapper, NodeConflictException
 from backend.serializers.agency_serializer import (
     serialize_agency_profile
 )
@@ -24,13 +24,12 @@ class AgencyService:
 
         return serialize_agency_profile(result, includes)
 
-    def update_agency(
+    def _get_source_with_publish_access(
         self,
-        agency_uid: str,
-        payload: dict,
         source_uid: str | None,
         current_user: User,
-    ) -> dict:
+        action: str,
+    ) -> Source:
         if not source_uid:
             raise ValueError("source_uid is required")
 
@@ -39,14 +38,71 @@ class AgencyService:
             raise ValueError("Source not found")
         if not source.members.is_connected(current_user):
             raise PermissionError(
-                "User does not have permission to update this agency for the provided source."
+                f"User does not have permission to {action} this agency for the provided source."
             )
 
         membership = source.members.relationship(current_user)
         if not membership.may_publish():
             raise PermissionError(
-                "User does not have permission to update this agency for the provided source."
+                f"User does not have permission to {action} this agency for the provided source."
             )
+
+        return source
+
+    def create_agency(
+        self,
+        payload: dict,
+        source_uid: str | None,
+        current_user: User,
+    ) -> dict:
+        source = self._get_source_with_publish_access(
+            source_uid=source_uid,
+            current_user=current_user,
+            action="create",
+        )
+
+        try:
+            agency = Agency.from_dict(payload)
+        except NodeConflictException:
+            raise
+
+        location_linked = Agency.link_location(
+            agency,
+            state=agency.hq_state,
+            city=agency.hq_city,
+        )
+
+        created_fields = {
+            field: {
+                "old": None,
+                "new": getattr(agency, field, None),
+            }
+            for field in payload.keys()
+            if getattr(agency, field, None) is not None
+        }
+        if created_fields:
+            agency.add_citation(
+                source,
+                current_user,
+                json.dumps(created_fields),
+            )
+
+        response = agency.to_dict()
+        response["location_linked"] = location_linked
+        return response
+
+    def update_agency(
+        self,
+        agency_uid: str,
+        payload: dict,
+        source_uid: str | None,
+        current_user: User,
+    ) -> dict:
+        source = self._get_source_with_publish_access(
+            source_uid=source_uid,
+            current_user=current_user,
+            action="update",
+        )
 
         agency = Agency.nodes.get_or_none(uid=agency_uid)
         if agency is None:
