@@ -7,15 +7,18 @@ const API_ROUTES = {
     whoami: "/auth/whoami"
   },
   search: {
-    all: "/search/",
+    all: "/search",
     incidents: "/incidents/search",
-    officers: "/officers/"
+    officers: "/officers",
+    agencies: "/agencies",
+    units: "/units",
+    complaints: "/complaints"
   },
   users: {
     self: "/users/self"
   },
   sources: {
-    all: "/sources/"
+    all: "/sources"
   },
   officers: {
     profile: (slug: string) => `/officers/${slug}`

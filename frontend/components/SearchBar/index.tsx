@@ -8,10 +8,16 @@ import { ApiError } from "@/utils/apiError"
 import React from "react"
 
 export const SearchBar = () => {
-  const { searchAll, loading } = useSearch()
+  const { searchAll, loading, tab } = useSearch()
   const searchParams = useSearchParams()
+  const getSearchInputValue = React.useCallback(() => {
+    return searchParams.get("query") || searchParams.get("name") || ""
+  }, [searchParams])
+  const [localInput, setLocalInput] = React.useState(getSearchInputValue)
 
-  const [localInput, setLocalInput] = React.useState(searchParams.get("query") || "")
+  React.useEffect(() => {
+    setLocalInput(getSearchInputValue())
+  }, [getSearchInputValue])
 
   const handleSearch = async (query: string) => {
     try {
