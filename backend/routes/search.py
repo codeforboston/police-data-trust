@@ -319,7 +319,7 @@ def text_search():
     args = request.args
     q_page = args.get("page", 1, type=int)
     q_per_page = args.get("per_page", 20, type=int)
-    query = args.get("query", None, type=str)
+    query = args.get("term", None, type=str) or args.get("query", None, type=str)
     updated_query_fuzzy = query + "*"
     params = {
         "query": updated_query_fuzzy,

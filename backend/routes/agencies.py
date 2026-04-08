@@ -156,7 +156,7 @@ def get_all_agencies():
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
-    name: filter on agency name
+    term: filter on agency name
     hq_city: filter on agency city
     hq_state: filter on agency state
     hq_zip: filter on agency zipcode
@@ -171,8 +171,8 @@ def get_all_agencies():
         abort(400, description=str(e))
 
     # preprocess query
-    if params.name:
-        search_term = Agency.preprocess_query(params.name)
+    if params.term:
+        search_term = Agency.preprocess_query(params.term)
     else:
         search_term = None
 

@@ -147,7 +147,7 @@ def test_filter_agencies(client, access_token, example_agencies):
         name="New York Police Department"
     ).__len__()
     res = client.get(
-        "/api/v1/agencies?name=New York Police Department",
+        "/api/v1/agencies?term=New York Police Department",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
@@ -267,7 +267,7 @@ def test_agency_search_result(client, example_agencies, access_token):
     ).__len__()
 
     res = client.get(
-        f"/api/v1/agencies?name={search_term}&searchResult=true",
+        f"/api/v1/agencies?term={search_term}&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200

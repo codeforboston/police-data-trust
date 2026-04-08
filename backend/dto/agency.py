@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, field_validator
+from pydantic import AliasChoices, BaseModel, Field, field_validator
 from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.database.models.employment import (
@@ -23,7 +23,10 @@ class AddOfficerListSchema(BaseModel):
 
 
 class AgencyQueryParams(PaginatedRequest):
-    name: str | None = None
+    term: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("term", "name"),
+    )
     hq_city: str | None = None
     hq_state: str | None = None
     hq_zip: str | None = None

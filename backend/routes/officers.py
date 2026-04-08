@@ -81,6 +81,7 @@ def get_all_officers():
     Accepts Query Parameters for pagination:
     per_page: number of results per page
     page: page number
+    term: filter on officer name
     """
     raw = {
         **request.args,  # copies simple values
