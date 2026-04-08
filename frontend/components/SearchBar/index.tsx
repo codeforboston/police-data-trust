@@ -8,7 +8,7 @@ import { ApiError } from "@/utils/apiError"
 import React from "react"
 
 export const SearchBar = () => {
-  const { searchAll, loading, tab } = useSearch()
+  const { searchAll, loading } = useSearch()
   const searchParams = useSearchParams()
   const getSearchInputValue = React.useCallback(() => {
     return searchParams.get("query") || searchParams.get("name") || ""
