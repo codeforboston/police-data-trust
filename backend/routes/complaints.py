@@ -429,7 +429,7 @@ def get_complaint(complaint_uid: int):
 
 
 # Get all complaints
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_complaints():
