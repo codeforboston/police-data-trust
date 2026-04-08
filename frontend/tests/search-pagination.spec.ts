@@ -60,7 +60,7 @@ test.describe("Search Pagination", () => {
 
   test("URL updates when pagination page is changed", async ({ page }) => {
     // Navigate to search page with initial query
-    await page.goto("/search?query=test&page=1")
+    await page.goto("/search?term=test&page=1")
 
     // Wait for pagination component to be visible and loaded
     const pagination = page.locator('[aria-label="pagination navigation"]')
@@ -87,7 +87,7 @@ test.describe("Search Pagination", () => {
 
   test("API request is made when page changes via URL", async ({ page }) => {
     // Navigate to search page with initial query
-    await page.goto("/search?query=test&page=1")
+    await page.goto("/search?term=test&page=1")
     await page.waitForLoadState("networkidle")
 
     // Set up promise to wait for API response with page=2
@@ -104,10 +104,10 @@ test.describe("Search Pagination", () => {
     await page.evaluate(() => {
       // Use Next.js router if available, otherwise use history API
       if ((window as any).next?.router) {
-        ;(window as any).next.router.push("/search?query=test&page=2")
+        ;(window as any).next.router.push("/search?term=test&page=2")
       } else {
         // Fallback: trigger popstate event which Next.js listens to
-        window.history.pushState({}, "", "/search?query=test&page=2")
+        window.history.pushState({}, "", "/search?term=test&page=2")
         window.dispatchEvent(new PopStateEvent("popstate"))
       }
     })
@@ -124,7 +124,7 @@ test.describe("Search Pagination", () => {
 
   test("UI updates when pagination page is changed", async ({ page }) => {
     // Navigate to search page with initial query
-    await page.goto("/search?query=test&page=1")
+    await page.goto("/search?term=test&page=1")
 
     // Wait for pagination component to be visible
     const pagination = page.locator('[aria-label="pagination navigation"]')
@@ -153,7 +153,7 @@ test.describe("Search Pagination", () => {
 
   test("setPage updates URL and triggers API request", async ({ page }) => {
     // Navigate to search page with initial query first
-    await page.goto("/search?query=test&page=1")
+    await page.goto("/search?term=test&page=1")
     await page.waitForLoadState("networkidle")
 
     // Set up promise to wait for API response with page=2 BEFORE clicking

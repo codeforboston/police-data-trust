@@ -10,8 +10,10 @@ import { getParamKeys } from "./config"
 
 const mapParamsForTab = (tab: number, params: URLSearchParams) => {
   const nextParams = new URLSearchParams(params.toString())
+  const termValue = nextParams.get("term")
   const queryValue = nextParams.get("query")
   const nameValue = nextParams.get("name")
+  const normalizedTerm = termValue ?? queryValue ?? nameValue
 
   if (tab !== 0) {
     nextParams.set("searchResult", "true")
@@ -19,27 +21,14 @@ const mapParamsForTab = (tab: number, params: URLSearchParams) => {
     nextParams.delete("searchResult")
   }
 
-  if (tab === 2 || tab === 3) {
-    nextParams.delete("query")
-
-    const nextName = queryValue ?? nameValue
-
-    if (nextName && nextName.trim() !== "") {
-      nextParams.set("name", nextName)
-    } else {
-      nextParams.delete("name")
-    }
-
-    return nextParams
-  }
-
+  nextParams.delete("query")
   nextParams.delete("name")
 
-  if (queryValue !== null) {
-    if (queryValue.trim() !== "") {
-      nextParams.set("query", queryValue)
+  if (normalizedTerm !== null) {
+    if (normalizedTerm.trim() !== "") {
+      nextParams.set("term", normalizedTerm)
     } else {
-      nextParams.delete("query")
+      nextParams.delete("term")
     }
   }
 
@@ -106,20 +95,6 @@ function useHook(): SearchContext {
     [searchParams, router]
   )
 
-  // Build a SearchRequest-like payload from URLSearchParams
-  const buildRequestFromParams = useCallback((params: URLSearchParams) => {
-    const q = params.get("query") || ""
-    const location = params.get("location") || undefined
-    const source = params.get("source") || undefined
-    const pageStr = params.get("page")
-    const page = pageStr ? Number(pageStr) : undefined
-    const payload: Omit<SearchRequest, "access_token" | "accessToken"> = { query: q }
-    if (location) payload.location = location
-    if (source) payload.source = source
-    if (page !== undefined) payload.page = page
-    return payload
-  }, [])
-
   const getSearchType = (tab: number) => {
     switch (tab) {
       case 1:
@@ -155,7 +130,7 @@ function useHook(): SearchContext {
         let apiUrl = apiBaseUrl
 
         if (updatedTab !== undefined) {
-          const queryValue = params.get("query") ?? params.get("name") ?? ""
+          const queryValue = params.get("term") ?? params.get("query") ?? params.get("name") ?? ""
           const paramKeys = getParamKeys(updatedTab)
           const newParams = new URLSearchParams()
 

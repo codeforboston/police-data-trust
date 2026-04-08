@@ -1,12 +1,12 @@
 export const getParamKeys = (tab: number) => {
   switch (tab) {
     case 1:
-      return ["query"]
+      return ["term"]
     case 2:
-      return ["name"]
+      return ["term"]
     case 3:
-      return ["name"]
+      return ["term"]
     default:
-      return ["query"]
+      return ["term"]
   }
 }

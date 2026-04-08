@@ -6,7 +6,7 @@ import { SearchProvider, useSearch } from "@/providers/SearchProvider"
 // Mock next/navigation
 // Mock next/navigation with stable mocks
 const mockPush = vi.fn()
-const mockSearchParams = new URLSearchParams("query=test&location=here&page=1")
+const mockSearchParams = new URLSearchParams("term=test&location=here&page=1")
 vi.mock("next/navigation", async () => {
   return {
     useRouter: () => ({ push: mockPush }),
