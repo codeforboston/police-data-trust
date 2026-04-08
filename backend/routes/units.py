@@ -13,7 +13,7 @@ bp = Blueprint("unit_routes", __name__, url_prefix="/api/v1/units")
 unit_service = UnitService()
 
 
-@bp.route("", methods=["GET"])
+@bp.route("", methods=["GET", "OPTIONS"], strict_slashes=False)
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def get_all_units():
