@@ -3,7 +3,7 @@ from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.database.models.employment import (
     EmploymentStatus, EmploymentType, Rank)
-from backend.dto.common import PaginatedRequest
+from backend.dto.common import PaginatedRequest, RequestDTO
 from typing import List
 
 
@@ -70,6 +70,25 @@ class GetAgencyParams(BaseModel):
                 raise ValueError(
                     f"Invalid include parameters: {', '.join(invalid)}")
         return v
+
+
+class UpdateAgency(RequestDTO):
+    source_uid: str = Field(
+        ...,
+        description="UID of the source making the update",
+    )
+    name: Optional[str] = Field(None, description="Name of the agency")
+    hq_address: Optional[str] = Field(
+        None, description="Address of the agency")
+    hq_city: Optional[str] = Field(None, description="City of the agency")
+    hq_state: Optional[str] = Field(None, description="State of the agency")
+    hq_zip: Optional[str] = Field(None, description="Zip code of the agency")
+    jurisdiction: Optional[str] = Field(
+        None, description="Jurisdiction of the agency")
+    phone: Optional[str] = Field(None, description="Phone number of the agency")
+    email: Optional[str] = Field(None, description="Email of the agency")
+    website_url: Optional[str] = Field(
+        None, description="Website of the agency")
 
 
 class GetAgencyOfficersParams(PaginatedRequest):

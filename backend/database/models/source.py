@@ -184,7 +184,7 @@ class Source(StructuredNode, JsonSerializable):
     organizations, government agencies, non-profits, or private firms.
     """
     __property_order__ = [
-        "uid", "name", "url", "slug"
+        "uid", "name", "description", "url", "slug"
     ]
     __hidden_properties__ = [
         "invitations", "staged_invitations",
@@ -194,6 +194,7 @@ class Source(StructuredNode, JsonSerializable):
 
     name = StringProperty(unique_index=True, required=True)
     url = StringProperty()
+    description = StringProperty()
 
     # Slug property for easy URL access
     slug = StringProperty(unique_index=True)
