@@ -7,6 +7,7 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 import { ApiError } from "@/utils/apiError"
 import { useRouter, useSearchParams } from "next/navigation"
 import { getParamKeys } from "./config"
+import { transformSearchResults } from "@/utils/searchTransform"
 
 interface SearchContext {
   searchAll: (
@@ -143,9 +144,25 @@ function useHook(): SearchContext {
         }
 
         const data: PaginatedSearchResponses = await response.json()
-        setResults(data)
+
+        // Determine content type from current tab
+        let contentType: string | undefined
+        switch (updatedTab !== undefined ? updatedTab : tab) {
+          case 1:
+            contentType = "Officer"
+            break
+          case 2:
+            contentType = "Agency"
+            break
+          case 3:
+            contentType = "Unit"
+            break
+        }
+
+        const transformedData = transformSearchResults(data, contentType)
+        setResults(transformedData)
         setError(null)
-        return data
+        return transformedData
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") {
           return { results: [] }
