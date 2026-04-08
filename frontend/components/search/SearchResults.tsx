@@ -4,18 +4,18 @@ import { Box, Typography } from "@mui/material"
 import { SearchResponse } from "@/utils/api"
 import SearchResultsTabs from "./SearchResultsTabs"
 import SearchResultsList from "./SearchResultsList"
+import { SearchTab } from "@/providers/SearchProvider"
 
 type SearchResultsProps = {
   total: number
   results: SearchResponse[]
-  tab: number
-  updateTab: (val: number) => void
+  tab: SearchTab
 }
 
-export default function SearchResults({ total, results, tab, updateTab }: SearchResultsProps) {
+export default function SearchResults({ total, results, tab }: SearchResultsProps) {
   return (
     <>
-      <SearchResultsTabs tab={tab} updateTab={updateTab} />
+      <SearchResultsTabs tab={tab} />
 
       <Box sx={{ p: 3 }}>
         <Typography sx={{ mb: 2, fontWeight: "bold" }}>{total} results</Typography>

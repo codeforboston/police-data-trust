@@ -1,56 +1,155 @@
 "use client"
-import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from "react"
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { apiFetch } from "@/utils/apiFetch"
 import { useAuth } from "@/providers/AuthProvider"
-import { SearchRequest, SearchResponse, PaginatedSearchResponses } from "@/utils/api"
+import { PaginatedSearchResponses } from "@/utils/api"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
-import { ApiError } from "@/utils/apiError"
-import { useRouter, useSearchParams } from "next/navigation"
-import { getParamKeys } from "./config"
 
-const mapParamsForTab = (tab: number, params: URLSearchParams) => {
-  const nextParams = new URLSearchParams(params.toString())
-  const termValue = nextParams.get("term")
-  const queryValue = nextParams.get("query")
-  const nameValue = nextParams.get("name")
-  const normalizedTerm = termValue ?? queryValue ?? nameValue
+export type SearchTab = "all" | "officers" | "agencies" | "units"
 
-  if (tab !== 0) {
-    nextParams.set("searchResult", "true")
-  } else {
-    nextParams.delete("searchResult")
-  }
-
-  nextParams.delete("query")
-  nextParams.delete("name")
-
-  if (normalizedTerm !== null) {
-    if (normalizedTerm.trim() !== "") {
-      nextParams.set("term", normalizedTerm)
-    } else {
-      nextParams.delete("term")
-    }
-  }
-
-  return nextParams
+export type SearchState = {
+  term: string
+  tab: SearchTab
+  page: number
+  location?: string
+  source?: string
 }
 
+type SearchStatePatch = Partial<SearchState>
+
 interface SearchContext {
-  searchAll: (
-    query: Omit<SearchRequest, "access_token" | "accessToken">
-  ) => Promise<PaginatedSearchResponses>
+  state: SearchState
   searchResults?: PaginatedSearchResponses
   loading: boolean
   error: string | null
+  setTerm: (term: string) => void
   setPage: (page: number) => void
-  tab: number
-  updateTab: (tab: number) => void
+  setTab: (tab: SearchTab) => void
+  setFilters: (filters: { location?: string; source?: string }) => void
 }
+
+const DEFAULT_STATE: SearchState = {
+  term: "",
+  tab: "all",
+  page: 1
+}
+
+const SEARCH_TABS: SearchTab[] = ["all", "officers", "agencies", "units"]
 
 const SearchContext = createContext<SearchContext | undefined>(undefined)
 
+const getNormalizedString = (value?: string | null) => {
+  if (value === null || value === undefined) {
+    return undefined
+  }
+
+  const trimmed = value.trim()
+  return trimmed === "" ? undefined : trimmed
+}
+
+const getSearchRoute = (tab: SearchTab) => {
+  switch (tab) {
+    case "officers":
+      return API_ROUTES.search.officers
+    case "agencies":
+      return API_ROUTES.search.agencies
+    case "units":
+      return API_ROUTES.search.units
+    default:
+      return API_ROUTES.search.all
+  }
+}
+
+const parseTab = (value?: string | null): SearchTab => {
+  if (value && SEARCH_TABS.includes(value as SearchTab)) {
+    return value as SearchTab
+  }
+
+  return DEFAULT_STATE.tab
+}
+
+const parsePage = (value?: string | null) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 1 ? parsed : DEFAULT_STATE.page
+}
+
+type SearchParamReader = {
+  get: (name: string) => string | null
+}
+
+export const parseSearchState = (searchParams: SearchParamReader): SearchState => {
+  const legacyTerm =
+    searchParams.get("term") ?? searchParams.get("query") ?? searchParams.get("name")
+
+  return {
+    term: getNormalizedString(legacyTerm) ?? DEFAULT_STATE.term,
+    tab: parseTab(searchParams.get("tab")),
+    page: parsePage(searchParams.get("page")),
+    location: getNormalizedString(searchParams.get("location")),
+    source: getNormalizedString(searchParams.get("source"))
+  }
+}
+
+const buildSearchParams = (state: SearchState) => {
+  const params = new URLSearchParams()
+
+  if (state.term) {
+    params.set("term", state.term)
+  }
+
+  if (state.tab !== DEFAULT_STATE.tab) {
+    params.set("tab", state.tab)
+  }
+
+  if (state.page !== DEFAULT_STATE.page) {
+    params.set("page", String(state.page))
+  }
+
+  if (state.location) {
+    params.set("location", state.location)
+  }
+
+  if (state.source) {
+    params.set("source", state.source)
+  }
+
+  return params
+}
+
+const buildApiParams = (state: SearchState) => {
+  const params = new URLSearchParams()
+
+  if (state.term) {
+    params.set("term", state.term)
+  }
+
+  if (state.page > 1) {
+    params.set("page", String(state.page))
+  }
+
+  if (state.location) {
+    params.set("location", state.location)
+  }
+
+  if (state.source) {
+    params.set("source", state.source)
+  }
+
+  if (state.tab !== "all") {
+    params.set("searchResult", "true")
+  }
+
+  return params
+}
+
+const hasSearchCriteria = (state: SearchState) => {
+  return Boolean(state.term || state.location || state.source)
+}
+
 export function SearchProvider({ children }: { children: React.ReactNode }) {
-  const search = useHook()
+  const search = useSearchController()
   return <SearchContext.Provider value={search}>{children}</SearchContext.Provider>
 }
 
@@ -62,139 +161,61 @@ export const useSearch = () => {
   return context
 }
 
-function useHook(): SearchContext {
+function useSearchController(): SearchContext {
   const { accessToken, hasHydrated } = useAuth()
   const [searchResults, setResults] = useState<PaginatedSearchResponses | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [tab, setTab] = useState<number>(0)
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  // AbortController ref to cancel in-flight requests
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  // Track if we should skip the effect (when searchAll handles the fetch)
-  const skipEffectRef = useRef(false)
+  const state = useMemo(() => parseSearchState(searchParams), [searchParams])
 
-  // Helper to update URL search params. Returns the new URLSearchParams object.
-  const updateQueryParams = useCallback(
-    (tab: number, updates: Record<string, any>) => {
-      const params = new URLSearchParams(searchParams.toString())
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === undefined || value === null) {
-          params.delete(key)
-        } else {
-          params.set(key, String(value))
-        }
-      })
-      const destination = mapParamsForTab(tab, params).toString()
-      router.push(`/search?${destination}`)
-      return mapParamsForTab(tab, params)
+  const updateSearchState = useCallback(
+    (patch: SearchStatePatch, options?: { resetPage?: boolean }) => {
+      const nextState: SearchState = {
+        ...state,
+        ...patch
+      }
+
+      if (options?.resetPage) {
+        nextState.page = DEFAULT_STATE.page
+      }
+
+      const normalizedState: SearchState = {
+        term: getNormalizedString(nextState.term) ?? DEFAULT_STATE.term,
+        tab: parseTab(nextState.tab),
+        page: nextState.page >= 1 ? nextState.page : DEFAULT_STATE.page,
+        location: getNormalizedString(nextState.location),
+        source: getNormalizedString(nextState.source)
+      }
+
+      const destination = buildSearchParams(normalizedState).toString()
+      router.push(destination ? `/search?${destination}` : "/search")
     },
-    [searchParams, router]
+    [router, state]
   )
 
-  const getSearchType = (tab: number) => {
-    switch (tab) {
-      case 1:
-        return API_ROUTES.search.officers
-      case 2:
-        return API_ROUTES.search.agencies
-      case 3:
-        return API_ROUTES.search.units
-      default:
-        return API_ROUTES.search.all
-    }
-  }
-
-  const updateTab = (sel: number) => {
-    setTab(sel)
-  }
-
-  // Fetch based on provided URLSearchParams (or current searchParams if omitted)
-  const fetchFromParams = useCallback(
-    async (params: URLSearchParams, updatedTab?: number, signal?: AbortSignal) => {
-      if (!hasHydrated) {
-        return { results: [] }
-      }
-
-      if (!accessToken) {
-        return { results: [] }
-      }
-
-      setLoading(true)
-      setError(null)
-
-      try {
-        let apiUrl = apiBaseUrl
-
-        if (updatedTab !== undefined) {
-          const queryValue = params.get("term") ?? params.get("query") ?? params.get("name") ?? ""
-          const paramKeys = getParamKeys(updatedTab)
-          const newParams = new URLSearchParams()
-
-          paramKeys.forEach((key: string) => newParams.set(key, queryValue))
-
-          if (updatedTab !== 0) {
-            newParams.set("searchResult", "true")
-          }
-
-          apiUrl += `${getSearchType(updatedTab)}?${newParams.toString()}`
-        } else {
-          const normalizedParams = mapParamsForTab(tab, params)
-          apiUrl += `${getSearchType(tab)}?${normalizedParams.toString()}`
-        }
-
-        const response = await apiFetch(apiUrl, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          signal
-        })
-
-        if (!response.ok) {
-          throw new Error(`Failed to search content: ${response.statusText}`)
-        }
-
-        const data: PaginatedSearchResponses = await response.json()
-        setResults(data)
-        setError(null)
-        return data
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          return { results: [] }
-        }
-
-        const errorMessage = err instanceof Error ? err.message : String(err)
-        const errorResponse: PaginatedSearchResponses = {
-          error: errorMessage,
-          results: []
-        }
-        setError(errorMessage)
-        setResults(errorResponse)
-        return errorResponse
-      } finally {
-        setLoading(false)
-      }
+  const setTerm = useCallback(
+    (term: string) => {
+      updateSearchState({ term }, { resetPage: true })
     },
-    [accessToken, hasHydrated, tab]
+    [updateSearchState]
   )
 
-  const searchAll = useCallback(
-    async (query: Omit<SearchRequest, "access_token" | "accessToken">) => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
-
-      const abortController = new AbortController()
-      abortControllerRef.current = abortController
-
-      skipEffectRef.current = true
-
-      const params = updateQueryParams(tab, query as Record<string, any>)
-      return fetchFromParams(params, undefined, abortController.signal)
+  const setTab = useCallback(
+    (tab: SearchTab) => {
+      updateSearchState({ tab }, { resetPage: true })
     },
-    [updateQueryParams, fetchFromParams, tab]
+    [updateSearchState]
+  )
+
+  const setFilters = useCallback(
+    (filters: { location?: string; source?: string }) => {
+      updateSearchState(filters, { resetPage: true })
+    },
+    [updateSearchState]
   )
 
   const setPage = useCallback(
@@ -209,21 +230,32 @@ function useHook(): SearchContext {
         return
       }
 
-      updateQueryParams(tab, { page })
+      updateSearchState({ page })
     },
-    [updateQueryParams, searchResults?.pages, tab]
+    [searchResults?.pages, updateSearchState]
   )
 
-  //Effect: when new tab is clicked, fetch results
   useEffect(() => {
-    if (!hasHydrated) return
-
-    if (skipEffectRef.current) {
-      skipEffectRef.current = false
+    if (!hasHydrated) {
       return
     }
 
-    if (!accessToken) return
+    if (!accessToken) {
+      setLoading(false)
+      setResults(undefined)
+      return
+    }
+
+    if (!hasSearchCriteria(state)) {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+
+      setLoading(false)
+      setError(null)
+      setResults(undefined)
+      return
+    }
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
@@ -232,52 +264,54 @@ function useHook(): SearchContext {
     const abortController = new AbortController()
     abortControllerRef.current = abortController
 
-    fetchFromParams(searchParams, tab, abortController.signal).catch((err) => {
+    const fetchSearchResults = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const apiUrl = `${apiBaseUrl}${getSearchRoute(state.tab)}?${buildApiParams(state).toString()}`
+        const response = await apiFetch(apiUrl, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          signal: abortController.signal
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to search content: ${response.statusText}`)
+        }
+
+        const data: PaginatedSearchResponses = await response.json()
+        setResults(data)
+        setError(null)
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return
+        }
+
+        const errorMessage = err instanceof Error ? err.message : String(err)
+        setError(errorMessage)
+        setResults({
+          error: errorMessage,
+          results: []
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSearchResults().catch((err) => {
       if (!(err instanceof Error && err.name === "AbortError")) {
-        console.error("fetchFromParams on tab change effect error", err)
+        console.error("fetchSearchResults effect error", err)
       }
     })
 
     return () => {
       abortController.abort()
     }
-  }, [tab, hasHydrated, accessToken, fetchFromParams, searchParams])
-
-  // Effect: when searchParams change, fetch results
-  useEffect(() => {
-    if (!hasHydrated) return
-
-    if (skipEffectRef.current) {
-      skipEffectRef.current = false
-      return
-    }
-
-    const paramsString = searchParams.toString()
-    if (!paramsString) return
-
-    if (!accessToken) return
-
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    const params = new URLSearchParams(paramsString)
-    fetchFromParams(params, undefined, abortController.signal).catch((err) => {
-      if (!(err instanceof Error && err.name === "AbortError")) {
-        console.error("fetchFromParams effect error", err)
-      }
-    })
-
-    return () => {
-      abortController.abort()
-    }
-  }, [searchParams, hasHydrated, accessToken, fetchFromParams])
+  }, [accessToken, hasHydrated, state])
 
   return useMemo(
-    () => ({ searchAll, searchResults, loading, error, setPage, updateTab, tab }),
-    [searchResults, searchAll, loading, error, setPage, updateTab, tab]
+    () => ({ state, searchResults, loading, error, setTerm, setPage, setTab, setFilters }),
+    [error, loading, searchResults, setFilters, setPage, setTab, setTerm, state]
   )
 }
