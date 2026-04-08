@@ -9,7 +9,9 @@ const API_ROUTES = {
   search: {
     all: "/search/",
     incidents: "/incidents/search",
-    officers: "/officers/"
+    officers: "/officers",
+    agencies: "/agencies",
+    units: "/units/"
   },
   users: {
     self: "/users/self"

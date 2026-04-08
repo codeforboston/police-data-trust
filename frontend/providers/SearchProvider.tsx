@@ -86,6 +86,10 @@ function useHook(): SearchContext {
     switch (tab) {
       case 1:
         return API_ROUTES.search.officers
+      case 2:
+        return API_ROUTES.search.agencies
+      case 3:
+        return API_ROUTES.search.units
       default:
         return API_ROUTES.search.all
     }

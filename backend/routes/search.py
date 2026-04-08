@@ -174,105 +174,150 @@ def fetch_details(uids: List[str], type: str) -> Dict[str, dict]:
     return details
 
 
-def build_agency_result(node, details_row: dict) -> Searchresult:
-    if not isinstance(node, Agency):
-        a = Agency.inflate(node)
-    else:
-        a = node
-    uid = a.uid
-    details = []
+def build_agency_result(node, details_row: dict) -> Searchresult | None:
+    try:
+        if not isinstance(node, Agency):
+            a = Agency.inflate(node)
+        else:
+            a = node
+        uid = a.uid
+        details = []
 
-    subtitle = "{} Agency in {}, {}".format(
-        a.jurisdiction_enum.describe() if a.jurisdiction_enum else "",
-        a.hq_city if a.hq_city else "Unknown City",
-        a.hq_state if a.hq_state else "Unknown State"
-    )
+        subtitle = "{} Agency in {}, {}".format(
+            a.jurisdiction_enum.describe() if a.jurisdiction_enum else "",
+            a.hq_city if a.hq_city else "Unknown City",
+            a.hq_state if a.hq_state else "Unknown State"
+        )
 
-    details.append("{} Unit(s), {} Officer(s), {} Complaint(s)".format(
-        details_row.get("units", 0),
-        details_row.get("officers", 0),
-        details_row.get("complaints", 0)
-    ))
-    return Searchresult(
-        uid=uid,
-        title=a.name,
-        subtitle=subtitle,
-        details=details,
-        content_type="Agency",
-        source=details_row.get("source", "Unknown Source"),
-        last_updated=details_row.get("last_updated", None),
-        href=f"/api/v1/agencies/{uid}"
-    )
+        details.append("{} Unit(s), {} Officer(s), {} Complaint(s)".format(
+            details_row.get("units", 0),
+            details_row.get("officers", 0),
+            details_row.get("complaints", 0)
+        ))
+        return Searchresult(
+            uid=uid,
+            title=a.name,
+            subtitle=subtitle,
+            details=details,
+            content_type="Agency",
+            source=details_row.get("source", "Unknown Source"),
+            last_updated=details_row.get("last_updated", None),
+            href=f"/api/v1/agencies/{uid}"
+        )
+    except Exception as e:
+        failed_uid = None
+        try:
+            failed_uid = getattr(node, "get", lambda *_: None)("uid") or getattr(node, "uid", None)
+        except Exception:
+            pass
 
-
-def build_unit_result(node, details_row: dict) -> Searchresult:
-    if not isinstance(node, Unit):
-        u = Unit.inflate(node)
-    else:
-        u = node
-    uid = u.uid
-    details = []
-
-    subtitle = "Established by {}".format(
-        details_row.get("agency_name", "Unknown Agency")
-    )
-    details.append("{} Officer(s), {} Complaint(s)".format(
-        details_row.get("officers", 0),
-        details_row.get("complaints", 0)
-    ))
-
-    return Searchresult(
-        uid=uid,
-        title=u.name,
-        subtitle=subtitle,
-        details=details,
-        content_type="Unit",
-        source=details_row.get("source", "Unknown Source"),
-        last_updated=details_row.get("last_updated", None),
-        href=f"/api/v1/units/{uid}"
-    )
+        logging.warning(
+            "Failed to build agency search result for node uid=%s: %s",
+            failed_uid,
+            e,
+            exc_info=True,
+        )
+        return None
 
 
-def build_officer_result(node, details_row: dict) -> Searchresult:
-    if not isinstance(node, Officer):
-        o = Officer.inflate(node)
-    else:
-        o = node
-    uid = o.uid
-    details = []
+def build_unit_result(node, details_row: dict) -> Searchresult | None:
+    try:
+        if not isinstance(node, Unit):
+            u = Unit.inflate(node)
+        else:
+            u = node
+        uid = u.uid
+        details = []
 
-    subtitle = "{ethnicity} {gender}, {rank} at the {agency}".format(
-        ethnicity=(
-            o.ethnicity_enum.describe()
-            if o.ethnicity_enum else "Unknown Ethnicity"
-        ),
-        gender=(
-            o.gender_enum.describe()
-            if o.gender_enum else "Unknown Gender"
-        ),
-        rank=(
-            details_row.get("rank", "Officer")
-        ),
-        agency=(
+        subtitle = "Established by {}".format(
             details_row.get("agency_name", "Unknown Agency")
         )
-    )
+        details.append("{} Officer(s), {} Complaint(s)".format(
+            details_row.get("officers", 0),
+            details_row.get("complaints", 0)
+        ))
 
-    details.append("{} Complaints, {} Allegations, {} Substantiated".format(
-        details_row.get("complaints", 0),
-        details_row.get("allegations", 0),
-        details_row.get("substantiated", 0)
-    ))
-    return Searchresult(
-        uid=uid,
-        title=o.full_name,
-        subtitle=subtitle,
-        details=details,
-        content_type="Officer",
-        source=details_row.get("source", "Unknown Source"),
-        last_updated=details_row.get("last_updated", None),
-        href=f"/api/v1/officers/{uid}"
-    )
+        return Searchresult(
+            uid=uid,
+            title=u.name,
+            subtitle=subtitle,
+            details=details,
+            content_type="Unit",
+            source=details_row.get("source", "Unknown Source"),
+            last_updated=details_row.get("last_updated", None),
+            href=f"/api/v1/units/{uid}"
+        )
+    except Exception as e:
+        failed_uid = None
+        try:
+            failed_uid = getattr(node, "get", lambda *_: None)("uid") or getattr(node, "uid", None)
+        except Exception:
+            pass
+
+        logging.warning(
+            "Failed to build unit search result for node uid=%s: %s",
+            failed_uid,
+            e,
+            exc_info=True,
+        )
+        return None
+
+
+def build_officer_result(node, details_row: dict) -> Searchresult | None:
+    try:
+        if not isinstance(node, Officer):
+            o = Officer.inflate(node)
+        else:
+            o = node
+        uid = o.uid
+        details = []
+
+        subtitle = "{ethnicity} {gender}, {rank} at the {agency}".format(
+            ethnicity=(
+                o.ethnicity_enum.describe()
+                if o.ethnicity_enum else "Unknown Ethnicity"
+            ),
+            gender=(
+                o.gender_enum.describe()
+                if o.gender_enum else "Unknown Gender"
+            ),
+            rank=(
+                details_row.get("rank", "Officer")
+            ),
+            agency=(
+                details_row.get("agency_name", "Unknown Agency")
+            )
+        )
+
+        details.append("{} Complaints, {} Allegations, {} Substantiated".format(
+            details_row.get("complaints", 0),
+            details_row.get("allegations", 0),
+            details_row.get("substantiated", 0)
+        ))
+        return Searchresult(
+            uid=uid,
+            title=o.full_name,
+            subtitle=subtitle,
+            details=details,
+            content_type="Officer",
+            source=details_row.get("source", "Unknown Source"),
+            last_updated=details_row.get("last_updated", None),
+            href=f"/api/v1/officers/{uid}"
+        )
+    except Exception as e:
+        failed_uid = None
+        try:
+            failed_uid = getattr(node, "get", lambda *_: None)("uid") or getattr(node, "uid", None)
+        except Exception:
+            pass
+
+        logging.warning(
+            "Failed to build officer search result for node uid=%s: %s",
+            failed_uid,
+            e,
+            exc_info=True,
+        )
+        return None
 
 
 def group_nodes_by_type(results) -> Dict[str, List]:
@@ -307,7 +352,7 @@ def group_nodes_by_type(results) -> Dict[str, List]:
 
 
 # Text Search Endpoint
-@bp.route("/", methods=["GET"])
+@bp.route("/", methods=["GET", "OPTIONS"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
 def text_search():
@@ -411,7 +456,8 @@ def text_search():
         else:
             continue
 
-        page.append(item.model_dump())
+        if item:
+            page.append(item.model_dump())
 
     response = add_pagination_wrapper(
         page_data=page, total=total_results,
