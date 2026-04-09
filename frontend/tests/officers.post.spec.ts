@@ -8,35 +8,19 @@ import { test, expect } from "@playwright/test"
 // Sample officers payload - adjust fields to match backend model expectations.
 const sampleOfficers = [
   {
-    uid: `test-officer-${Date.now()}-1`,
     first_name: "TestFirst1",
     middle_name: "M",
     last_name: "TestLast1",
     suffix: "Jr.",
     ethnicity: "White",
-    gender: "Male",
-    state_ids: [
-      {
-        id_name: "Tax ID Number",
-        state: "NY",
-        value: `TAX-${Date.now()}`
-      }
-    ]
+    gender: "Male"
   },
   {
-    uid: `test-officer-${Date.now()}-2`,
     first_name: "TestFirst2",
     middle_name: "A",
     last_name: "TestLast2",
     ethnicity: "Hispanic/Latino",
-    gender: "Female",
-    state_ids: [
-      {
-        id_name: "Driver's License",
-        state: "NY",
-        value: `DL-${Date.now()}`
-      }
-    ]
+    gender: "Female"
   }
 ]
 
@@ -84,12 +68,20 @@ test.describe("Officers API", () => {
     })
 
     expect(sourceRes.ok()).toBeTruthy()
+    const sourceJson = await sourceRes.json()
+    const sourceUid = sourceJson?.uid || sourceJson?.id
+    expect(sourceUid).toBeTruthy()
 
     // POST each officer individually (API expects single-object create)
-    const createdUids: string[] = []
+    const createdOfficers: Array<{ uid: string; first_name?: string | null; last_name?: string | null }> = []
     for (const officer of sampleOfficers) {
+      const officerPayload = {
+        ...officer,
+        source_uid: sourceUid
+      }
+
       const postRes = await request.post(`${apiBase}/officers`, {
-        data: officer,
+        data: officerPayload,
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` }
       })
 
@@ -100,21 +92,27 @@ test.describe("Officers API", () => {
       expect(postRes.ok()).toBeTruthy()
 
       const postJson = await postRes.json()
-      const createdUid = postJson?.uid || postJson?.id || officer.uid
+      const createdUid = postJson?.uid || postJson?.id
       expect(createdUid).toBeTruthy()
-      createdUids.push(createdUid)
+      createdOfficers.push({
+        uid: createdUid,
+        first_name: officer.first_name,
+        last_name: officer.last_name
+      })
     }
 
     // For each created UID, query the GET endpoint to confirm existence.
-    for (const uid of createdUids) {
-      const getRes = await request.get(`${apiBase}/officers/${encodeURIComponent(uid)}`, {
+    for (const officer of createdOfficers) {
+      const getRes = await request.get(`${apiBase}/officers/${encodeURIComponent(officer.uid)}`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       })
       expect(getRes.ok()).toBeTruthy()
       const getJson = await getRes.json()
       // Basic checks: returned object has matching uid and name
       expect(getJson).toBeDefined()
-      expect(getJson.uid || getJson.id).toBeTruthy()
+      expect(getJson.uid || getJson.id).toBe(officer.uid)
+      expect(getJson.first_name).toBe(officer.first_name)
+      expect(getJson.last_name).toBe(officer.last_name)
     }
   })
 })
