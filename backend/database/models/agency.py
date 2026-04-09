@@ -176,7 +176,7 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     # Relationships
     city_node = RelationshipTo(
         "backend.database.models.infra.locations.CityNode",
-        "LOCATED_IN", cardinality=One)
+        "LOCATED_IN", cardinality=ZeroOrOne)
 
     @property
     def units(self) -> RelQuery:

@@ -85,8 +85,14 @@ def example_agencies(db_session, example_source):
     return agencies
 
 
-def test_create_agency(db_session, client, contributor_access_token):
-    test_agency = new_agency
+def test_create_agency(
+        db_session,
+        client,
+        example_source,
+        contributor_access_token
+):
+    test_agency = new_agency.copy()
+    test_agency["source_uid"] = example_source.uid
 
     res = client.post(
         "/api/v1/agencies",
@@ -94,7 +100,7 @@ def test_create_agency(db_session, client, contributor_access_token):
         headers={"Authorization": "Bearer {0}".format(
             contributor_access_token)},
     )
-    assert res.status_code == 200
+    assert res.status_code == 201
 
     agency_obj = Agency.nodes.get(uid=res.json["uid"])
 

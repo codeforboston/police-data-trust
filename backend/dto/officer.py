@@ -97,6 +97,48 @@ class GetOfficerParams(RequestDTO):
         return v
 
 
+class CreateOfficer(RequestDTO):
+    source_uid: str = Field(
+        ...,
+        description="UID of the source making the creation",
+    )
+    first_name: Optional[str] = Field(
+        None, description="First name of the officer")
+    middle_name: Optional[str] = Field(
+        None, description="Middle name of the officer")
+    last_name: Optional[str] = Field(
+        None, description="Last name of the officer")
+    suffix: Optional[str] = Field(
+        None, description="Suffix of the officer's name")
+    ethnicity: Optional[str] = Field(
+        None, description="The ethnicity of the officer")
+    gender: Optional[str] = Field(
+        None, description="The gender of the officer")
+    date_of_birth: Optional[str] = Field(
+        None, description="The date of birth of the officer")
+
+
+class UpdateOfficer(RequestDTO):
+    source_uid: str = Field(
+        ...,
+        description="UID of the source making the update",
+    )
+    first_name: Optional[str] = Field(
+        None, description="First name of the officer")
+    middle_name: Optional[str] = Field(
+        None, description="Middle name of the officer")
+    last_name: Optional[str] = Field(
+        None, description="Last name of the officer")
+    suffix: Optional[str] = Field(
+        None, description="Suffix of the officer's name")
+    ethnicity: Optional[str] = Field(
+        None, description="The ethnicity of the officer")
+    gender: Optional[str] = Field(
+        None, description="The gender of the officer")
+    date_of_birth: Optional[str] = Field(
+        None, description="The date of birth of the officer")
+
+
 class GetOfficerMetricsParams(RequestDTO):
     include: List[str]
     start_date: Optional[str] = None

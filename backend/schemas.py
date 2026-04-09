@@ -604,6 +604,7 @@ class JsonSerializable:
         :param county: The county. Should be a FIPS code or county name.
         :param city: The city. Should be a SimpleMaps ID or city name.
         """
+        linked = False
         if state is not None:
             state_node = StateNode.nodes.get_or_none(
                 abbreviation=state)
@@ -624,9 +625,11 @@ class JsonSerializable:
                         item.city_node.connect(city_node)
                         logging.info(
                             f"Linked {item.uid} to City {city_node.uid}")
+                        linked = True
 
             else:
                 logging.error(f"State not found: {state}")
+        return linked
 
 
 class SearchableMixin:

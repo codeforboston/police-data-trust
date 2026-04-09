@@ -137,6 +137,7 @@ def example_officers():
 def test_create_officer(
         client,
         contributor_access_token,
+        example_source,
         example_agency
         ):
 
@@ -147,6 +148,7 @@ def test_create_officer(
         "ethnicity": "White",
         "gender": "Male"
     }
+    request["source_uid"] = example_source.uid
     res = client.post(
         "/api/v1/officers",
         json=request,
@@ -154,7 +156,7 @@ def test_create_officer(
             "Authorization": "Bearer {0}".format(contributor_access_token)
         },
     )
-    assert res.status_code == 200
+    assert res.status_code == 201
     response = res.json
 
     officer_obj = (

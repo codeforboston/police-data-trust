@@ -5,15 +5,16 @@ from backend.schemas import (
     validate_request, add_pagination_wrapper, ordered_jsonify,
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
-from backend.database.models.user import UserRole
+from backend.database.models.user import UserRole, User
 from backend.database.models.agency import Agency
 from backend.routes.search import (
     fetch_details, build_agency_result)
-from .tmp.pydantic.agencies import CreateAgency, UpdateAgency
 from flask import Blueprint, abort, request, jsonify
+from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.agency import (
     AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams,
+    CreateAgency, UpdateAgency,
     GetAgencyUnitsParams)
 from backend.services.agency_service import AgencyService
 
@@ -28,36 +29,38 @@ agency_service = AgencyService()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(CreateAgency)
 def create_agency():
-    logger = logging.getLogger("create_agency")
     """Create an agency profile.
     User must be a Contributor to create an agency.
     Must include a name and jurisdiction.
     """
     body: CreateAgency = request.validated_body
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    payload = body.model_dump(exclude={"source_uid"})
 
     try:
-        agency = Agency.from_dict(body.model_dump())
+        response = agency_service.create_agency(
+            payload=payload,
+            source_uid=body.source_uid,
+            current_user=current_user,
+        )
+        track_to_mp(
+            request,
+            "create_agency",
+            {
+                "name": response.get("name")
+            },
+        )
+        return ordered_jsonify(response), 201
     except NodeConflictException:
         abort(409, description="Agency already exists")
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
     except Exception as e:
-        logger.error(f"Error, Agency.from_dict: {e}")
-        abort(400)
-
-    try:
-        Agency.link_location(agency, state=agency.hq_state, city=agency.hq_city)
-    except Exception as e:
-        logging.error(f"Error linking location {agency.name}: {e}")
-        print(f"Error linking location {agency.name}: {e}")
-        return
-
-    track_to_mp(
-        request,
-        "create_agency",
-        {
-            "name": agency.name
-        },
-    )
-    return agency.to_json()
+        logging.getLogger("create_agency").error(f"Error creating agency: {e}")
+        abort(400, description=str(e))
 
 
 # Get agency profile
@@ -100,23 +103,32 @@ def get_agency(agency_uid: str):
 def update_agency(agency_uid: str):
     """Update an agency profile.
     """
-    # logger = logging.getLogger("update_agency")
     body: UpdateAgency = request.validated_body
-    agency = Agency.nodes.get_or_none(uid=agency_uid)
-    if agency is None:
-        abort(404, description="Agency not found")
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+    payload = body.model_dump(exclude_unset=True, exclude={"source_uid"})
 
     try:
-        agency = Agency.from_dict(body.model_dump(), agency_uid)
-        agency.refresh()
+        response = agency_service.update_agency(
+            agency_uid=agency_uid,
+            payload=payload,
+            source_uid=body.source_uid,
+            current_user=current_user,
+        )
         track_to_mp(
             request,
             "update_agency",
             {
-                "name": agency.name
+                "name": response.get("name")
             }
         )
-        return agency.to_json()
+        return ordered_jsonify(response)
+    except LookupError as e:
+        abort(404, description=str(e))
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
