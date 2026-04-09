@@ -73,7 +73,11 @@ test.describe("Officers API", () => {
     expect(sourceUid).toBeTruthy()
 
     // POST each officer individually (API expects single-object create)
-    const createdOfficers: Array<{ uid: string; first_name?: string | null; last_name?: string | null }> = []
+    const createdOfficers: Array<{
+      uid: string
+      first_name?: string | null
+      last_name?: string | null
+    }> = []
     for (const officer of sampleOfficers) {
       const officerPayload = {
         ...officer,
