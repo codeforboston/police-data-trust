@@ -6,231 +6,19 @@ from backend.mixpanel.mix import track_to_mp
 from backend.schemas import validate_request, ordered_jsonify, paginate_results
 from backend.database.models.user import UserRole, User
 from backend.database.models.complaint import (
-    Complaint, Penalty, Allegation, Investigation, Location)
+    Complaint, Penalty, Allegation, Investigation)
 from backend.database.models.source import Source
-from backend.database.models.attachment import Attachment
-from backend.database.models.civilian import Civilian
-from backend.database.models.officer import Officer
-from .tmp.pydantic.complaints import (
+from backend.dto.complaint import (
     CreateComplaint, UpdateComplaint,
-    CreateAllegation, CreateInvestigation, CreatePenalty,
-    CreateCivilian)
+    CreateAllegation, CreateInvestigation, CreatePenalty)
+from backend.services.complaint_service import ComplaintService
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from flask_jwt_extended.view_decorators import jwt_required
 
 
 bp = Blueprint("complaint_routes", __name__, url_prefix="/api/v1/complaints")
-
-
-def create_allegation(
-        complaint: Complaint,
-        allegation_input: CreateAllegation,
-        civilian: Civilian = None):
-    """
-    Create an allegation for a complaint and the required connections.
-    Returns the created Allegation instance.
-    """
-    a_data = allegation_input.model_dump(exclude_unset=True)
-    officer_uid = a_data.pop("accused_uid", None)
-    complainant_data = a_data.pop("complainant", None)
-
-    # Officer is required
-    if not officer_uid:
-        raise ValueError("Officer UID is required for the allegation")
-
-    officer = Officer.nodes.get_or_none(uid=officer_uid)
-    if officer is None:
-        raise ValueError(f"Officer with UID {officer_uid} not found")
-
-    allegation = None
-    try:
-        allegation = Allegation(**a_data).save()
-        allegation.accused.connect(officer)
-        allegation.complaint.connect(complaint)
-        logging.info(
-            f"Allegation {allegation.uid} created for Complaint {complaint.uid}"
-        )
-    except Exception as e:
-        logging.error(f"Error creating allegation: {e}")
-        if allegation:
-            allegation.delete()
-        raise AttributeError(f"Failed to create allegation: {e}")
-
-    # Handle complainant
-    try:
-        if civilian:
-            # Civilian already looked up
-            allegation.complainant.connect(civilian)
-
-        elif complainant_data:
-            civ_id = complainant_data.get("civ_id")
-            if not civ_id:
-                raise ValueError(
-                    "civ_id must be provided in complainant_data"
-                )
-
-            new_civilian = Civilian(**complainant_data).save()
-            allegation.complainant.connect(new_civilian)
-
-    except Exception as e:
-        logging.error(f"Error connecting complainant to allegation: {e}")
-        if not civilian and "new_civilian" in locals():
-            new_civilian.delete()
-        raise
-
-    return allegation
-
-
-def update_allegation(
-        allegation: Allegation, allegation_input: CreateAllegation):
-    """
-    Update an existing allegation with new data.
-    """
-    a_data = allegation_input.model_dump(exclude_unset=True)
-    officer_uid = a_data.pop("accused_uid", None)
-    complainant_data = a_data.pop("complainant", None)
-
-    # Update Officer for Allegation
-    if officer_uid:
-        officer = Officer.nodes.get_or_none(uid=officer_uid)
-        if officer is None:
-            # Raise an error if the officer is not found
-            raise ValueError(f"Officer with UID {officer_uid} not found")
-        else:
-            allegation.accused.replace(officer)
-
-    if complainant_data:
-        # See if there is a complainant already connected
-        complainant = allegation.complainant.single()
-        if complainant:
-            # If a complainant is already connected, update their information
-            for key, value in complainant_data.items():
-                setattr(complainant, key, value)
-            complainant.save()
-        else:
-            # If no complainant is connected, create a new one
-            complainant = Civilian(**complainant_data)
-            allegation.complainant.connect(complainant)
-
-    try:
-        Allegation.from_dict(a_data, allegation.uid)
-        logging.info(f"Allegation {allegation.uid} updated")
-    except Exception as e:
-        logging.error(f"Error updating allegation: {e}")
-        raise AttributeError(
-            f"Failed to update allegation: {e}")
-    return allegation
-
-
-def create_penalty(
-        complaint: Complaint, penalty_input: CreatePenalty):
-    """
-    Create a penalty for a complaint and the required connections.
-    Returns the created Penalty instance or False if an error occurs.
-    """
-    p_data = penalty_input.model_dump(exclude_unset=True)
-    officer_uid = p_data.pop("officer_uid", None)
-    if officer_uid:
-        officer = Officer.nodes.get_or_none(uid=officer_uid)
-        if officer is None:
-            # Raise an error if the officer is not found
-            raise ValueError(f"Officer with UID {officer_uid} not found")
-    else:
-        raise ValueError("Officer UID is required for the penalty")
-    try:
-        penalty = Penalty(**p_data).save()
-        penalty.complaint.connect(complaint)
-        penalty.officer.connect(officer)
-        logging.info(
-            f"Penalty {penalty.uid} created for Complaint {complaint.uid}")
-    except Exception as e:
-        logging.error(f"Error creating penalty: {e}")
-        if penalty:
-            # If the penalty was created but failed to connect, delete it
-            logging.error(f"Deleting penalty {penalty.uid} due to error")
-            penalty.delete()
-        return AttributeError(
-            f"Failed to create penalty: {e}")
-    return penalty
-
-
-def update_penalty(
-        penalty: Penalty, penalty_input: CreatePenalty):
-    """
-    Update an existing penalty with new data.
-    """
-    p_data = penalty_input.model_dump(exclude_unset=True)
-    officer_uid = p_data.pop("officer_uid", None)
-    if officer_uid:
-        officer = Officer.nodes.get_or_none(uid=officer_uid)
-        if officer is None:
-            # Raise an error if the officer is not found
-            raise ValueError(f"Officer with UID {officer_uid} not found")
-        else:
-            penalty.officer.reconnect(
-                penalty.officer.single(),
-                officer)
-    try:
-        Penalty.from_dict(p_data, penalty.uid)
-        logging.info(
-            f"Penalty {penalty.uid} updated")
-    except Exception as e:
-        logging.error(f"Error updating penalty: {e}")
-        raise AttributeError(
-            f"Failed to update penalty: {e}")
-    return penalty
-
-
-def create_investigation(
-        complaint: Complaint, investigation_input: CreateInvestigation):
-    """
-    Create an investigation for a complaint and the required connections.
-    Returns the created Investigation instance or False if an error occurs.
-    """
-    i_data = investigation_input.model_dump(exclude_unset=True)
-    investigator_uid = i_data.pop("investigator_uid", None)
-    try:
-        investigation = Investigation(**i_data).save()
-        investigation.complaint.connect(complaint)
-        logging.info(
-            f"Investigation {investigation.uid} created "
-            f"for Complaint {complaint.uid}")
-    except Exception as e:
-        logging.error(f"Error creating investigation: {e}")
-        return AttributeError(
-            f"Failed to create investigation: {e}")
-    if investigator_uid:
-        investigator = Officer.nodes.get_or_none(uid=investigator_uid)
-        if investigator:
-            investigation.investigator.connect(investigator)
-    return investigation
-
-
-def update_investigation(
-        investigation: Investigation, investigation_input: CreateInvestigation):
-    """
-    Update an existing investigation with new data.
-    """
-    i_data = investigation_input.model_dump(exclude_unset=True)
-    investigator_uid = i_data.pop("investigator_uid", None)
-
-    if investigator_uid:
-        investigator = Officer.nodes.get_or_none(uid=investigator_uid)
-        if investigator:
-            investigation.investigator.replace(investigator)
-        else:
-            raise ValueError(
-                f"Officer with UID {investigator_uid} not found")
-    try:
-        Investigation.from_dict(i_data, investigation.uid)
-        logging.info(
-            f"Investigation {investigation.uid} updated")
-    except Exception as e:
-        logging.error(f"Error updating investigation: {e}")
-        raise AttributeError(
-            f"Failed to update investigation: {e}")
-    return investigation
+complaint_service = ComplaintService()
 
 
 def verify_edit_allowed_or_abort(c_uid: str):
@@ -274,152 +62,44 @@ def edit_permission_required():
 def create_complaint():
     """Create a complaint.
     """
-    logger = logging.getLogger("create_complaint")
     body: CreateComplaint = request.validated_body
     jwt_decoded = get_jwt()
     current_user = User.get(jwt_decoded["sub"])
 
-    complaint_data = body.model_dump(exclude_unset=True)
-
-    # Extract child objects from the body
-    source_details = complaint_data.pop("source_details", None)
-    location_data = complaint_data.pop("location", None)
-    attachments = complaint_data.pop("attachments", [])
-    allegations = complaint_data.pop("allegations", [])
-    investigations = complaint_data.pop("investigations", [])
-    penalties = complaint_data.pop("penalties", [])
-    civilian_witnesses = complaint_data.pop("civilian_witnesses", [])
-    police_witnesses = complaint_data.pop("police_witnesses", [])
-    source_uid = complaint_data.pop("source_uid", None)
-
-    source = Source.nodes.get_or_none(uid=source_uid)
-    if source is None:
-        abort(400, description="Invalid Complaint: Source not found")
-    if source_details is None:
-        abort(400, description="Invalid Complaint: Source details are required")
-    # Verify that the user is a member of the source
-    # Need to also verify that the user is a Publisher or Higher
-    if not source.members.is_connected(current_user):
-        abort(
-            403,
-            description="User does not have permission to "
-            "create a complaint for this source.")
-    if not source.members.relationship(current_user).may_publish():
-        abort(403, description="User does not have permission to "
-              "create a complaint for this source.")
-    if not location_data:
-        abort(400, description="Invalid Complaint: Location is required")
-    else:
-        loc = Location.from_dict(location_data)
-
     try:
-        complaint = Complaint.from_dict(complaint_data)
-        complaint.location.connect(loc)
-        complaint.source_org.connect(source, source_details)
+        response = complaint_service.create_complaint(
+            payload=body.model_dump(exclude_unset=True),
+            current_user=current_user,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
     except Exception as e:
-        logger.error(f"Error creating complaint: {e}")
+        logging.getLogger("create_complaint").error(
+            f"Error creating complaint: {e}")
         abort(400, description=str(e))
 
-    # Add attachments
-    if attachments:
-        for attachment in attachments:
-            try:
-                a = Attachment.from_dict(attachment)
-                complaint.attachments.connect(a)
-            except Exception as e:
-                logger.error(f"Error linking attachment: {e}")
-                abort(400, description=str(e))
-
-    # Add allegations
-    if allegations:
-        civ_map = {}  # external civ_id -> Civilian node
-        for allegation in allegations:
-            complainant_data = allegation.get("complainant")
-            civilian_node = None
-
-            if complainant_data:
-                ext_civ_id = complainant_data.get("civ_id")
-                if ext_civ_id in civ_map:
-                    # Reuse existing Civilian
-                    civilian_node = civ_map[ext_civ_id]
-                else:
-                    # Create a new Civilian node and track it
-                    civ_count = len(civ_map) + 1
-                    internal_civ_id = f"{complaint.uid}-{civ_count}"
-                    complainant_data["civ_id"] = internal_civ_id
-                    civilian_node = Civilian(**complainant_data).save()
-                    if ext_civ_id:
-                        civ_map[ext_civ_id] = civilian_node
-
-            try:
-                a_model = CreateAllegation(**allegation)
-                create_allegation(complaint, a_model, civilian_node)
-            except ValueError as ve:
-                logger.error(f"Error creating allegation: {ve}")
-            except AttributeError as ae:
-                logger.error(f"Error creating allegation: {ae}")
-
-    # Add Penalties
-    if penalties:
-        for penalty in penalties:
-            try:
-                p_model = CreatePenalty(**penalty)
-                create_penalty(complaint, p_model)
-            except ValueError as ve:
-                logger.error(f"Error creating penalty: {ve}")
-            except AttributeError as ae:
-                logger.error(f"Error creating penalty: {ae}")
-
-    # Add Investigations
-    if investigations:
-        for investigation in investigations:
-            try:
-                i_model = CreateInvestigation(**investigation)
-                create_investigation(complaint, i_model)
-            except ValueError as ve:
-                logger.error(f"Error creating investigation: {ve}")
-            except AttributeError as ae:
-                logger.error(f"Error creating investigation: {ae}")
-
-    # Add civilian witnesses
-    if civilian_witnesses:
-        for civilian in civilian_witnesses:
-            try:
-                c = CreateCivilian(**civilian)
-                civilian_instance = c.to_civilian()
-                complaint.civilian_witnesses.connect(civilian_instance)
-            except Exception as e:
-                logger.error(f"Error linking civilian witness: {e}")
-                abort(400, description=str(e))
-
-    # Add police witnesses
-    if police_witnesses:
-        for officer in police_witnesses:
-            try:
-                o = Officer.nodes.get_or_none(uid=officer)
-                if o is None:
-                    abort(404, description=f"Officer {officer} not found")
-                complaint.police_witnesses.connect(o)
-            except Exception as e:
-                logger.error(f"Error linking police witness: {e}")
-                abort(400, description=str(e))
-
-    logger.info(f"Complaint {complaint.uid} created by User {current_user.uid}")
+    logging.getLogger("create_complaint").info(
+        f"Complaint {response.get('uid')} created by User {current_user.uid}"
+    )
     track_to_mp(
         request,
         "create_complaint",
         {
-            "complaint_uid": complaint.uid
+            "complaint_uid": response.get("uid")
         },
     )
-    return complaint.to_json(), 201
+    return ordered_jsonify(response), 201
 
 
 # Get a complaint record
 @bp.route("/<complaint_uid>", methods=["GET"])
 @jwt_required()
 @min_role_required(UserRole.PUBLIC)
-def get_complaint(complaint_uid: int):
+def get_complaint(complaint_uid: str):
     """Get a complaint record.
     """
     c = Complaint.nodes.get_or_none(uid=complaint_uid)
@@ -455,17 +135,24 @@ def get_all_complaints():
 @jwt_required()
 @min_role_required(UserRole.CONTRIBUTOR)
 @validate_request(UpdateComplaint)
-@edit_permission_required()
 def update_complaint(complaint_uid: str):
     """Update a complaint record.
     """
     body: UpdateComplaint = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
     try:
-        c = Complaint.from_dict(body.model_dump(), complaint_uid)
-        c.refresh()
+        response = complaint_service.update_complaint(
+            complaint_uid=complaint_uid,
+            payload=body.model_dump(exclude_unset=True),
+            current_user=current_user,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
+    except PermissionError as e:
+        abort(403, description=str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
@@ -473,10 +160,10 @@ def update_complaint(complaint_uid: str):
         request,
         "update_complaint",
         {
-            "complaint_uid": c.uid
+            "complaint_uid": response.get("uid")
         },
     )
-    return c.to_json()
+    return ordered_jsonify(response)
 
 
 # Delete a complaint record
@@ -556,44 +243,23 @@ def create_complaint_allegation(complaint_uid: str):
     """Create an allegation for a complaint.
     """
     body: CreateAllegation = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    civilian = None
-    complainant_data: CreateCivilian = body.complainant
-
-    if complainant_data:
-        civ_id = complainant_data.civ_id  # use attribute access
-        if civ_id:
-            # Lookup existing civilian
-            civilian = Civilian.nodes.get_or_none(civ_id=civ_id)
-            if civilian is None:
-                abort(404,
-                      description=f"Civilian with civ_id {civ_id} not found")
-        else:
-            # Manufacture a new civ_id using complaint uid + complainant count
-            civ_count = len(c.complainants.all())
-            # Use Pydantic copy/update instead of item assignment
-            complainant_data = complainant_data.model_copy(update={
-                "civ_id": f"{c.uid}-{civ_count + 1}"
-            })
-            body.complainant = complainant_data
-
     try:
-        allegation = create_allegation(c, body, civilian)
+        allegation = complaint_service.create_allegation_record(
+            complaint_uid=complaint_uid,
+            allegation_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except ValueError as ve:
         abort(400, description=str(ve))
     except AttributeError as ae:
         abort(400, description=str(ae))
-    if allegation is False:
-        abort(400, description="Failed to create allegation.")
 
     track_to_mp(
         request,
         "create_complaint_allegation",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "allegation_uid": allegation.uid
         },
     )
@@ -607,18 +273,14 @@ def create_complaint_allegation(complaint_uid: str):
 def get_complaint_allegation(complaint_uid: str, allegation_uid: str):
     """Get a specific allegation for a complaint.
     """
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
-    if allegation is None:
-        abort(404, description="Allegation not found")
-
-    if allegation not in c.allegations:
-        abort(404, description="Allegation not found for this complaint")
-
-    return allegation.to_json(), 200
+    try:
+        allegation = complaint_service.get_allegation_record(
+            complaint_uid=complaint_uid,
+            allegation_uid=allegation_uid,
+        )
+        return allegation.to_json(), 200
+    except LookupError as e:
+        abort(404, description=str(e))
 
 
 # Update an allegation for a complaint
@@ -631,18 +293,14 @@ def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
     """Update an allegation for a complaint.
     """
     body: CreateAllegation = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    allegation = Allegation.nodes.get_or_none(uid=allegation_uid)
-    if allegation is None:
-        abort(404, description="Allegation not found")
-
     try:
-        allegation = update_allegation(
-            allegation, body)
-        allegation.refresh()
+        allegation = complaint_service.update_allegation_record(
+            complaint_uid=complaint_uid,
+            allegation_uid=allegation_uid,
+            allegation_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
@@ -650,7 +308,7 @@ def update_complaint_allegation(complaint_uid: str, allegation_uid: str):
         request,
         "update_complaint_allegation",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "allegation_uid": allegation.uid
         },
     )
@@ -728,12 +386,13 @@ def create_complaint_investigation(complaint_uid: str):
     """Create an investigation for a complaint.
     """
     body: CreateInvestigation = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
     try:
-        investigation = create_investigation(c, body)
+        investigation = complaint_service.create_investigation_record(
+            complaint_uid=complaint_uid,
+            investigation_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except ValueError as ve:
         abort(400, description=str(ve))
     except AttributeError as ae:
@@ -743,7 +402,7 @@ def create_complaint_investigation(complaint_uid: str):
         request,
         "create_complaint_investigation",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "investigation_uid": investigation.uid
         },
     )
@@ -758,18 +417,14 @@ def create_complaint_investigation(complaint_uid: str):
 def get_complaint_investigation(complaint_uid: str, investigation_uid: str):
     """Get a specific investigation for a complaint.
     """
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    investigation = Investigation.nodes.get_or_none(uid=investigation_uid)
-    if investigation is None:
-        abort(404, description="Investigation not found")
-
-    if investigation not in c.investigations:
-        abort(404, description="Investigation not found for this complaint")
-
-    return investigation.to_json(), 200
+    try:
+        investigation = complaint_service.get_investigation_record(
+            complaint_uid=complaint_uid,
+            investigation_uid=investigation_uid,
+        )
+        return investigation.to_json(), 200
+    except LookupError as e:
+        abort(404, description=str(e))
 
 
 # Update an investigation for a complaint
@@ -783,18 +438,14 @@ def update_complaint_investigation(complaint_uid: str, investigation_uid: str):
     """Update an investigation for a complaint.
     """
     body: CreateInvestigation = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    investigation = Investigation.nodes.get_or_none(uid=investigation_uid)
-    if investigation is None:
-        abort(404, description="Investigation not found")
-
     try:
-        investigation = Investigation.from_dict(
-            body.model_dump(), investigation_uid)
-        investigation.refresh()
+        investigation = complaint_service.update_investigation_record(
+            complaint_uid=complaint_uid,
+            investigation_uid=investigation_uid,
+            investigation_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
@@ -802,7 +453,7 @@ def update_complaint_investigation(complaint_uid: str, investigation_uid: str):
         request,
         "update_complaint_investigation",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "investigation_uid": investigation.uid
         },
     )
@@ -882,12 +533,13 @@ def create_complaint_penalty(complaint_uid: str):
     """Create a penalty for a complaint.
     """
     body: CreatePenalty = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
     try:
-        penalty = create_penalty(c, body)
+        penalty = complaint_service.create_penalty_record(
+            complaint_uid=complaint_uid,
+            penalty_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except ValueError as ve:
         abort(400, description=str(ve))
     except AttributeError as ae:
@@ -897,7 +549,7 @@ def create_complaint_penalty(complaint_uid: str):
         request,
         "create_complaint_penalty",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "penalty_uid": penalty.uid
         },
     )
@@ -911,18 +563,14 @@ def create_complaint_penalty(complaint_uid: str):
 def get_complaint_penalty(complaint_uid: str, penalty_uid: str):
     """Get a specific penalty for a complaint.
     """
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    penalty = Penalty.nodes.get_or_none(uid=penalty_uid)
-    if penalty is None:
-        abort(404, description="Penalty not found")
-
-    if penalty not in c.penalties:
-        abort(404, description="Penalty not found for this complaint")
-
-    return penalty.to_json(), 200
+    try:
+        penalty = complaint_service.get_penalty_record(
+            complaint_uid=complaint_uid,
+            penalty_uid=penalty_uid,
+        )
+        return penalty.to_json(), 200
+    except LookupError as e:
+        abort(404, description=str(e))
 
 
 # Update a penalty for a complaint
@@ -935,17 +583,14 @@ def update_complaint_penalty(complaint_uid: str, penalty_uid: str):
     """Update a penalty for a complaint.
     """
     body: CreatePenalty = request.validated_body
-    c = Complaint.nodes.get_or_none(uid=complaint_uid)
-    if c is None:
-        abort(404, description="Complaint not found")
-
-    penalty = Penalty.nodes.get_or_none(uid=penalty_uid)
-    if penalty is None:
-        abort(404, description="Penalty not found")
-
     try:
-        penalty = Penalty.from_dict(body.model_dump(), penalty_uid)
-        penalty.refresh()
+        penalty = complaint_service.update_penalty_record(
+            complaint_uid=complaint_uid,
+            penalty_uid=penalty_uid,
+            penalty_input=body,
+        )
+    except LookupError as e:
+        abort(404, description=str(e))
     except Exception as e:
         abort(400, description=str(e))
 
@@ -953,7 +598,7 @@ def update_complaint_penalty(complaint_uid: str, penalty_uid: str):
         request,
         "update_complaint_penalty",
         {
-            "complaint_uid": c.uid,
+            "complaint_uid": complaint_uid,
             "penalty_uid": penalty.uid
         },
     )

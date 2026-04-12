@@ -305,6 +305,7 @@ def test_update_complaint(
         contributor_access_token, example_complaint):
     """Test that we can update an existing complaint."""
     update = {
+        "source_uid": example_source.uid,
         "reason_for_contact": "Updated reason for contact",
         "outcome_of_contact": "Updated outcome of contact",
     }
@@ -423,11 +424,12 @@ def test_create_allegation(
 
 
 def test_update_allegation(
-    client, db_session, contributor_access_token,
+    client, db_session, example_source, contributor_access_token,
     example_complaint, example_allegation
 ):
     """Test that we can update the allegation of an existing complaint."""
     updated_data = {
+        "source_uid": example_source.uid,
         "allegation": "Updated allegation",
         "type": "Updated type"
     }
@@ -536,10 +538,11 @@ def test_create_penalty(
 
 
 def test_update_penalty(
-    client, db_session, contributor_access_token, example_complaint
+    client, db_session, example_source, contributor_access_token, example_complaint
 ):
     """Test that we can update the penalty of an existing complaint."""
     updated_data = {
+        "source_uid": example_source.uid,
         "penalty": "Updated penalty",
         "date_assessed": "2023-01-02"
     }
@@ -648,10 +651,11 @@ def test_create_investigation(
 
 
 def test_update_investigation(
-    client, db_session, contributor_access_token, example_complaint
+    client, db_session, example_source, contributor_access_token, example_complaint
 ):
     """Test that we can update the investigation of an existing complaint."""
     updated_data = {
+        "source_uid": example_source.uid,
         "start_date": "2024-01-01",
         "end_date": "2024-12-31"
     }

@@ -1,5 +1,3 @@
-import json
-
 from flask import abort
 from backend.database.models.officer import Officer
 from backend.database.models.source import Source
@@ -14,6 +12,7 @@ from backend.serializers.officer_serializer import (
     serialize_officer_search_results,
 )
 from backend.schemas import add_pagination_wrapper
+from backend.utils.citations import make_citation_diff
 
 
 class OfficerService:
@@ -67,19 +66,17 @@ class OfficerService:
 
         officer = Officer.from_dict(payload)
 
-        created_fields = {
-            field: {
-                "old": None,
-                "new": getattr(officer, field, None),
-            }
+        created_values = {
+            field: getattr(officer, field, None)
             for field in payload.keys()
             if getattr(officer, field, None) is not None
         }
-        if created_fields:
+        diff = make_citation_diff({}, created_values)
+        if diff:
             officer.add_citation(
                 source,
                 current_user,
-                json.dumps(created_fields),
+                diff,
             )
 
         return officer.to_dict()
@@ -109,19 +106,16 @@ class OfficerService:
         officer = Officer.from_dict(payload, officer_uid)
         officer.refresh()
 
-        changed_fields = {
-            field: {
-                "old": old_values[field],
-                "new": getattr(officer, field, None),
-            }
+        new_values = {
+            field: getattr(officer, field, None)
             for field in payload.keys()
-            if old_values[field] != getattr(officer, field, None)
         }
-        if changed_fields:
+        diff = make_citation_diff(old_values, new_values)
+        if diff:
             officer.add_citation(
                 source,
                 current_user,
-                json.dumps(changed_fields),
+                diff,
             )
 
         return officer.to_dict()

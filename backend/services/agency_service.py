@@ -1,5 +1,4 @@
 import logging
-import json
 
 from backend.database.models.agency import Agency
 from backend.database.models.source import Source
@@ -10,6 +9,7 @@ from backend.serializers.agency_serializer import (
     serialize_agency_profile
 )
 from backend.serializers.officer_serializer import serialize_officer_rows
+from backend.utils.citations import make_citation_diff
 
 
 class AgencyService:
@@ -74,19 +74,17 @@ class AgencyService:
             city=agency.hq_city,
         )
 
-        created_fields = {
-            field: {
-                "old": None,
-                "new": getattr(agency, field, None),
-            }
+        created_values = {
+            field: getattr(agency, field, None)
             for field in payload.keys()
             if getattr(agency, field, None) is not None
         }
-        if created_fields:
+        diff = make_citation_diff({}, created_values)
+        if diff:
             agency.add_citation(
                 source,
                 current_user,
-                json.dumps(created_fields),
+                diff,
             )
 
         response = agency.to_dict()
@@ -128,19 +126,16 @@ class AgencyService:
                 city=agency.hq_city,
             )
 
-        changed_fields = {
-            field: {
-                "old": old_values[field],
-                "new": getattr(agency, field, None),
-            }
+        new_values = {
+            field: getattr(agency, field, None)
             for field in payload.keys()
-            if old_values[field] != getattr(agency, field, None)
         }
-        if changed_fields:
+        diff = make_citation_diff(old_values, new_values)
+        if diff:
             agency.add_citation(
                 source,
                 current_user,
-                json.dumps(changed_fields),
+                diff,
             )
 
         response = agency.to_dict()
