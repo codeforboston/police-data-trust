@@ -3,6 +3,7 @@ bcrypt
 black
 boto3
 celery
+deepdiff
 flake8
 flask
 gunicorn

@@ -3,12 +3,7 @@ from flask import current_app
 
 
 def dev_only(func: callable) -> callable:
-    """Decorator that ensures a function only runs in the development
-    environment. Commands tagged with this will raise an error when you run
-    them in production.
-
-    This is mainly used in building CLI commands for dev.
-    """
+    """Decorator that ensures a function only runs in development/testing."""
 
     @wraps(func)
     def _wrap(*args, **kwargs):

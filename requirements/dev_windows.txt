@@ -57,6 +57,8 @@ click-repl==0.3.0
     # via celery
 coverage[toml]==7.4.3
     # via pytest-cov
+deepdiff==9.0.0
+    # via -r requirements/_core.in
 dnspython==2.6.1
     # via email-validator
 email-validator==2.1.1
@@ -130,6 +132,8 @@ numpy==1.26.4
     #   shapely
 openpyxl==3.0.9
     # via -r requirements/_core.in
+orderly-set==5.5.0
+    # via deepdiff
 packaging==24.0
     # via
     #   black
