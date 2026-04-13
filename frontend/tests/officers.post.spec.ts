@@ -24,9 +24,7 @@ const sampleOfficers = [
   }
 ]
 
-test.describe.skip(
-  "Officers API",
-  () => {
+test.describe.skip("Officers API", () => {
   test("POST multiple officers and verify they exist", async ({ request }) => {
     // Register a temporary user and create a source so the user is promoted
     // to CONTRIBUTOR (the backend requires that role to create officers).
@@ -121,5 +119,4 @@ test.describe.skip(
       expect(getJson.last_name).toBe(officer.last_name)
     }
   })
-  }
-)
+})
