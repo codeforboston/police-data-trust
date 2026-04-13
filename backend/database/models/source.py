@@ -194,7 +194,7 @@ class Source(StructuredNode, JsonSerializable):
 
     name = StringProperty(unique_index=True, required=True)
     url = StringProperty()
-    description = StringProperty()
+    description = StringProperty(max_length=500)
 
     # Slug property for easy URL access
     slug = StringProperty(unique_index=True)

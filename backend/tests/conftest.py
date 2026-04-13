@@ -380,7 +380,7 @@ def source_admin(example_source):
     user = User.create_user(
         email=s_admin_email,
         password=example_password,
-        role=UserRole.CONTRIBUTOR.value,
+        role=UserRole.ADMIN.value,
         first_name="contributor",
         last_name="last",
         phone_number="(012) 345-6789",
@@ -411,7 +411,20 @@ def access_token(client, example_user):
 
 
 @pytest.fixture
-def p_admin_access_token(client, source_admin):
+def admin_access_token(client, admin_user):
+    res = client.post(
+        "api/v1/auth/login",
+        json={
+            "email": admin_email,
+            "password": example_password,
+        },
+    )
+    assert res.status_code == 200
+    return res.json["access_token"]
+
+
+@pytest.fixture
+def source_admin_access_token(client, source_admin):
     res = client.post(
         "api/v1/auth/login",
         json={

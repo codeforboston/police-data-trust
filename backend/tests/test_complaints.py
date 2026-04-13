@@ -341,11 +341,11 @@ def test_update_complaint_no_edit_permission(
 
 def test_delete_complaint(
         client, db_session, access_token,
-        p_admin_access_token, example_complaint):
+        source_admin_access_token, example_complaint):
     """Test that we can delete an existing complaint."""
     res = client.delete(
         f"/api/v1/complaints/{example_complaint.uid}",
-        headers={"Authorization": f"Bearer {p_admin_access_token}"},
+        headers={"Authorization": f"Bearer {source_admin_access_token}"},
     )
 
     assert res.status_code == 204

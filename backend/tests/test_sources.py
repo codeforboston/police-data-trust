@@ -116,7 +116,7 @@ def example_members(example_source):
     return users
 
 
-def test_create_source(client, access_token):
+def test_create_source(client, admin_access_token):
     request = {
         "name": "New Source",
         "url": "newsource.com",
@@ -127,7 +127,7 @@ def test_create_source(client, access_token):
         "/api/v1/sources",
         json=request,
         headers={
-            "Authorization": f"Bearer {access_token}"
+            "Authorization": f"Bearer {admin_access_token}"
         }
     )
     assert res.status_code == 200
@@ -145,7 +145,7 @@ def test_create_source(client, access_token):
     social_obj = source_obj.social_media.single()
     assert social_obj is not None
 
-    jwt_decoded = decode_token(access_token)
+    jwt_decoded = decode_token(admin_access_token)
     user_obj = User.get(jwt_decoded["sub"])
 
     assert user_obj.role_enum.get_value() >= UserRole.CONTRIBUTOR.get_value()
