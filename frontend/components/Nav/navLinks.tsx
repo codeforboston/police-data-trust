@@ -7,6 +7,7 @@ import styles from "./navLinks.module.css"
 interface NavLinkProps {
   text: string
   href: string
+  disabled?: boolean
 }
 
 interface Props {
@@ -20,13 +21,20 @@ export default function NavLinks({ props }: Props) {
     <div>
       <ul className={styles.links}>
         {props.map((prop) => {
-          const isActive = pathname === prop.href
+          const isActive = !prop.disabled && pathname === prop.href
+          const className = prop.disabled
+            ? styles.disabledLink
+            : isActive
+              ? styles.activeLink
+              : styles.inactiveLink
+
           return (
-            <li
-              key={`${prop.text}`}
-              className={isActive ? `${styles.activeLink}` : `${styles.inactiveLink}`}
-            >
-              <Link href={prop.href}>{prop.text}</Link>
+            <li key={`${prop.text}`} className={className}>
+              {prop.disabled ? (
+                <span aria-disabled="true">{prop.text}</span>
+              ) : (
+                <Link href={prop.href}>{prop.text}</Link>
+              )}
             </li>
           )
         })}

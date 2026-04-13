@@ -4,7 +4,7 @@
   justify-items: center;
   list-style: none;
   padding: 5px;
-  font-size: 14px;
+  font-size: 16pt;
   color: #303463;
 }
 
@@ -20,12 +20,24 @@
   opacity: 0.9;
 }
 
+.disabledLink {
+  font-weight: 600;
+  opacity: 0.45;
+  color: #7a7f99;
+  cursor: not-allowed;
+}
+
 .activeLink,
-.inactiveLink {
+.inactiveLink,
+.disabledLink {
   padding: 2px 10px;
   margin: 1px;
   transition-duration: 400ms;
   cursor: pointer;
+}
+
+.disabledLink {
+  cursor: not-allowed;
 }
 
 .inactiveLink:hover {
