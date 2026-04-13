@@ -58,7 +58,7 @@ def get_source(source_uid: str):
 
 @bp.route("", methods=["POST"])
 @jwt_required()
-@min_role_required(UserRole.PUBLIC)
+@min_role_required(UserRole.ADMIN)
 @validate_request(CreatePartner)
 def create_source():
     """Create a contributing source."""

@@ -12,6 +12,8 @@ class CreatePartner(RequestDTO):
         None, description="Website URL of the partner.")
     slug: Optional[str] = Field(
         None, description="Slug for the partner organization.")
+    description: Optional[str] = Field(
+        None, description="Description of the partner organization.")
 
 
 class UpdatePartner(RequestDTO):
@@ -25,6 +27,8 @@ class UpdatePartner(RequestDTO):
         None, description="Slug for the partner organization.")
     social_media: Optional[UpdateSocialMedia] = Field(
         None, description="Social media links for the partner organization.")
+    description: Optional[str] = Field(
+        None, description="Description of the partner organization.")
 
 
 class SourceFilters(PaginatedRequest):
