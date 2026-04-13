@@ -1,14 +1,12 @@
 # Playwright end-to-end tests
 # This workflow uses docker compose to start the development environment,
 # then runs Playwright tests against it.
+# It is currently manual-only so e2e checks do not affect the standard GitHub test plan.
 
 name: Playwright E2E Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   e2e:
