@@ -181,6 +181,8 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         ethnicity: list[str] | None = None,
         active_after: date | None = None,
         active_before: date | None = None,
+        city_uids: list[str] | None = None,
+        source_uids: list[str] | None = None,
         skip: int = 0,
         limit: int = 25,
         count: bool = False,
@@ -249,6 +251,25 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         if unit:
             where_clauses.append("ANY(n IN $unit WHERE u.name CONTAINS n)")
             params["unit"] = unit
+
+        if city_uids:
+            where_clauses.append("""
+            EXISTS {
+                MATCH (o)<-[]-(:Employment)-[]->(:Unit)-[]->(:Agency)-
+                [:LOCATED_IN]->(city:CityNode)
+                WHERE city.uid IN $city_uids
+            }
+            """)
+            params["city_uids"] = city_uids
+
+        if source_uids:
+            where_clauses.append("""
+            EXISTS {
+                MATCH (o)-[:UPDATED_BY]->(source:Source)
+                WHERE source.uid IN $source_uids
+            }
+            """)
+            params["source_uids"] = source_uids
 
         # Combine query
         match_str = "\n".join(match_clauses)

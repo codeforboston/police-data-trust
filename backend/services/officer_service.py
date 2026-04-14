@@ -4,6 +4,7 @@ from flask import abort
 from backend.database.models.officer import Officer
 from backend.database.models.source import Source
 from backend.database.models.user import User
+from backend.queries.filter_resolver import FilterResolver
 from backend.queries.officers import OfficerQueries
 from backend.serializers.officer_serializer import (
     serialize_officer_sources,
@@ -19,6 +20,7 @@ from backend.schemas import add_pagination_wrapper
 class OfficerService:
     def __init__(self):
         self.queries = OfficerQueries()
+        self.filter_resolver = FilterResolver()
         self.METRIC_FETCHERS = {
             "allegation_types": self.queries.fetch_metric_a_types,
             "allegation_outcomes": self.queries.fetch_metric_a_outcomes,
@@ -156,6 +158,23 @@ class OfficerService:
         )
 
     def list_officers(self, params):
+        city_uids = self.filter_resolver.resolve_city_uids(
+            city=params.city,
+            city_uid=params.city_uid,
+            state=params.state,
+        )
+        if (params.city or params.city_uid or params.state) and not city_uids:
+            return {
+                "message": "No results found matching the query"}, 200, False
+
+        source_uids = self.filter_resolver.resolve_source_uids(
+            source=params.source,
+            source_uid=params.source_uid,
+        )
+        if (params.source or params.source_uid) and not source_uids:
+            return {
+                "message": "No results found matching the query"}, 200, False
+
         row_count = Officer.search(
             name=params.officer_name,
             rank=params.officer_rank,
@@ -165,6 +184,8 @@ class OfficerService:
             ethnicity=params.ethnicity,
             active_after=params.active_after,
             active_before=params.active_before,
+            city_uids=city_uids,
+            source_uids=source_uids,
             count=True,
         )
 
@@ -185,6 +206,8 @@ class OfficerService:
             ethnicity=params.ethnicity,
             active_after=params.active_after,
             active_before=params.active_before,
+            city_uids=city_uids,
+            source_uids=source_uids,
             skip=params.skip,
             limit=params.limit,
             inflate=not params.searchResult,

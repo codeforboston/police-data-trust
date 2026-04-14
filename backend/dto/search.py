@@ -1,6 +1,10 @@
 from pydantic import AliasChoices, Field, field_validator
 
-from backend.database.models.agency import State
+from backend.dto.common_filters import (
+    normalize_string_or_list,
+    normalize_upper_string,
+    validate_state_code,
+)
 from backend.dto.common import PaginatedRequest
 
 
@@ -30,69 +34,29 @@ class SearchQueryParams(PaginatedRequest):
     @field_validator("city", mode="before")
     @classmethod
     def normalize_city(cls, value):
-        if value is None:
-            return None
-
-        if isinstance(value, list):
-            normalized = [" ".join(str(item).split()) for item in value]
-            normalized = [item for item in normalized if item]
-            return normalized or None
-
-        normalized = " ".join(str(value).split())
-        return normalized or None
+        return normalize_string_or_list(value)
 
     @field_validator("city_uid", mode="before")
     @classmethod
     def normalize_city_uid(cls, value):
-        if value is None:
-            return None
-
-        if isinstance(value, list):
-            normalized = [" ".join(str(item).split()) for item in value]
-            normalized = [item for item in normalized if item]
-            return normalized or None
-
-        normalized = " ".join(str(value).split())
-        return normalized or None
+        return normalize_string_or_list(value)
 
     @field_validator("state", mode="before")
     @classmethod
     def normalize_state(cls, value):
-        if value is None:
-            return None
-        return str(value).strip().upper() or None
+        return normalize_upper_string(value)
 
     @field_validator("source", mode="before")
     @classmethod
     def normalize_source(cls, value):
-        if value is None:
-            return None
-
-        if isinstance(value, list):
-            normalized = [" ".join(str(item).split()) for item in value]
-            normalized = [item for item in normalized if item]
-            return normalized or None
-
-        normalized = " ".join(str(value).split())
-        return normalized or None
+        return normalize_string_or_list(value)
 
     @field_validator("source_uid", mode="before")
     @classmethod
     def normalize_source_uid(cls, value):
-        if value is None:
-            return None
-
-        if isinstance(value, list):
-            normalized = [" ".join(str(item).split()) for item in value]
-            normalized = [item for item in normalized if item]
-            return normalized or None
-
-        normalized = " ".join(str(value).split())
-        return normalized or None
+        return normalize_string_or_list(value)
 
     @field_validator("state")
     @classmethod
     def validate_state(cls, value):
-        if value and value not in State.choices():
-            raise ValueError(f"Invalid state: {value}")
-        return value
+        return validate_state_code(value)

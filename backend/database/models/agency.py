@@ -239,6 +239,8 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         cls,
         query: str | None = None,
         filters: dict | None = None,
+        city_uids: list[str] | None = None,
+        source_uids: list[str] | None = None,
         count: bool = False,
         skip: int = 0,
         limit: int = 25
@@ -249,28 +251,63 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         shared _search() in the mixin.
         """
 
-        # --- Fulltext index parameterized safely ---
-        if query:
-            fulltext_index_cypher = (
-                """CALL db.index.fulltext.queryNodes('agencyNames', $query)
-                YIELD node as n"""
-            )
-            params = {"query": query}
-        else:
-            fulltext_index_cypher = None
-            params = {}
+        filters = filters or {}
+        params = {
+            **filters,
+            "city_uids": city_uids or [],
+            "source_uids": source_uids or [],
+        }
+        cypher_parts = []
 
-        # Delegate to the shared _search() from the mixin
-        return cls._search(
-            label="Agency",
-            index=fulltext_index_cypher,
-            filters=filters or {},
-            query=query,
-            count=count,
-            skip=skip,
-            limit=limit,
-            extra_params=params,  # pass parameter dict to _search()
+        if query:
+            cypher_parts.append("""
+            CALL db.index.fulltext.queryNodes('agencyNames', $query)
+            YIELD node, score
+            WITH DISTINCT node AS n, score
+            """)
+            params["query"] = query
+        else:
+            cypher_parts.append("""
+            MATCH (n:Agency)
+            WITH DISTINCT n, 0 AS score
+            """)
+
+        where_clauses = [
+            f"n.{key} = ${key}" for key in filters
+        ]
+        where_clauses.append("""
+        (
+            size($city_uids) = 0 OR EXISTS {
+                MATCH (n)-[:LOCATED_IN]->(city:CityNode)
+                WHERE city.uid IN $city_uids
+            }
         )
+        """)
+        where_clauses.append("""
+        (
+            size($source_uids) = 0 OR EXISTS {
+                MATCH (n)-[:UPDATED_BY]->(source:Source)
+                WHERE source.uid IN $source_uids
+            }
+        )
+        """)
+        cypher_parts.append("WHERE " + " AND ".join(where_clauses))
+        cypher_parts.append("WITH n, max(score) AS score")
+
+        if count:
+            cypher_parts.append("RETURN count(n) AS count")
+            rows, _ = db.cypher_query("\n".join(cypher_parts), params)
+            return rows[0][0] if rows else 0
+
+        cypher_parts.append("""
+        RETURN n
+        ORDER BY score DESC, n.uid ASC
+        SKIP $skip
+        LIMIT $limit
+        """)
+        params.update({"skip": skip, "limit": limit})
+        rows, _ = db.cypher_query("\n".join(cypher_parts), params)
+        return [row[0] for row in rows]
 
     @classmethod
     def preprocess_query(cls, query: str) -> str:

@@ -1,10 +1,12 @@
 from __future__ import annotations
 import pytest
 import math
-from datetime import date
+from datetime import date, datetime
 from backend.database import (
     Officer, Unit, Agency, Employment
 )
+from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.source import Source
 from neomodel import db
 
 
@@ -783,3 +785,150 @@ def test_invalid_query_params(
     # print(f"body is {body}")
     assert "Extra inputs are not permitted" in body
     assert res.status_code == 400
+
+
+def test_filter_officers_by_source_name(
+        client, db_session, access_token, example_source):
+    officer = Officer(
+        first_name="John",
+        last_name="Doe",
+        ethnicity="White",
+        gender="Male",
+    ).save()
+    officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+
+    other_source = Source(name="Other Source", url="www.other.com").save()
+    other_officer = Officer(
+        first_name="John",
+        last_name="Smith",
+        ethnicity="White",
+        gender="Male",
+    ).save()
+    other_officer.citations.connect(other_source, {
+        "timestamp": datetime.now(),
+    })
+
+    res = client.get(
+        "/api/v1/officers?term=John&source=Example%20Source",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert [item["uid"] for item in res.json["results"]] == [officer.uid]
+
+
+def test_filter_officers_by_city_uid(
+        client, db_session, access_token, example_source):
+    state = StateNode(name="New York", abbreviation="NY").save()
+    county = CountyNode(name="New York County", fips="36061").save()
+    new_york = CityNode(name="New York").save()
+    buffalo = CityNode(name="Buffalo").save()
+    county.state.connect(state)
+    new_york.county.connect(county)
+    buffalo.county.connect(county)
+
+    first_agency = Agency(
+        name="First Agency",
+        website_url="https://first.example.gov",
+        hq_address="1 Main St",
+        hq_city="New York",
+        hq_state="NY",
+        hq_zip="10001",
+        jurisdiction="MUNICIPAL",
+    ).save()
+    first_agency.city_node.connect(new_york)
+
+    second_agency = Agency(
+        name="Second Agency",
+        website_url="https://second.example.gov",
+        hq_address="2 Main St",
+        hq_city="Buffalo",
+        hq_state="NY",
+        hq_zip="14201",
+        jurisdiction="MUNICIPAL",
+    ).save()
+    second_agency.city_node.connect(buffalo)
+
+    first_unit = Unit(name="Unit One", hq_state="NY").save()
+    first_unit.agency.connect(first_agency)
+    second_unit = Unit(name="Unit Two", hq_state="NY").save()
+    second_unit.agency.connect(second_agency)
+
+    first_officer = Officer(
+        first_name="Jane",
+        last_name="Doe",
+        ethnicity="White",
+        gender="Female",
+    ).save()
+    first_officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+    second_officer = Officer(
+        first_name="Jane",
+        last_name="Smith",
+        ethnicity="White",
+        gender="Female",
+    ).save()
+    second_officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+
+    first_employment = Employment(
+        badge_number="1001",
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    first_employment.unit.connect(first_unit)
+    first_employment.officer.connect(first_officer)
+
+    second_employment = Employment(
+        badge_number="1002",
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    second_employment.unit.connect(second_unit)
+    second_employment.officer.connect(second_officer)
+
+    res = client.get(
+        f"/api/v1/officers?term=Jane&city_uid={new_york.uid}",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    assert [item["uid"] for item in res.json["results"]] == [first_officer.uid]
+
+
+def test_filter_officers_by_multiple_source_uids(
+        client, db_session, access_token, example_source):
+    first_officer = Officer(
+        first_name="Alex",
+        last_name="Doe",
+        ethnicity="White",
+        gender="Male",
+    ).save()
+    first_officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+
+    other_source = Source(name="Other Source", url="www.other.com").save()
+    second_officer = Officer(
+        first_name="Alex",
+        last_name="Smith",
+        ethnicity="White",
+        gender="Male",
+    ).save()
+    second_officer.citations.connect(other_source, {
+        "timestamp": datetime.now(),
+    })
+
+    res = client.get(
+        "/api/v1/officers"
+        f"?term=Alex"
+        f"&source_uid={example_source.uid}"
+        f"&source_uid={other_source.uid}",
+        headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    result_uids = {item["uid"] for item in res.json["results"]}
+    assert result_uids == {first_officer.uid, second_officer.uid}

@@ -1,5 +1,10 @@
 from pydantic import AliasChoices, BaseModel, Field, field_validator
 from typing import Optional
+from backend.dto.common_filters import (
+    normalize_string_or_list,
+    normalize_upper_string,
+    validate_state_code,
+)
 from backend.dto.common import PaginatedRequest, RequestDTO
 from typing import List
 
@@ -28,6 +33,11 @@ class OfficerSearchParams(PaginatedRequest):
     active_before: Optional[str] = None
     badge_number: List[str] = Field([], alias="badge_number")
     ethnicity: List[str] = []
+    city: str | list[str] | None = None
+    city_uid: str | list[str] | None = None
+    state: str | None = None
+    source: str | list[str] | None = None
+    source_uid: str | list[str] | None = None
 
     # Derived fields (computed below)
     @field_validator("unit", mode="before")
@@ -37,6 +47,30 @@ class OfficerSearchParams(PaginatedRequest):
         if isinstance(v, str):
             return [v]         # convert single string → list
         return v
+
+    @field_validator("city", mode="before")
+    def normalize_city(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("city_uid", mode="before")
+    def normalize_city_uid(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("state", mode="before")
+    def normalize_state(cls, value):
+        return normalize_upper_string(value)
+
+    @field_validator("source", mode="before")
+    def normalize_source(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("source_uid", mode="before")
+    def normalize_source_uid(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("state")
+    def validate_state(cls, value):
+        return validate_state_code(value)
 
     @property
     def name_parts(self):

@@ -3,6 +3,11 @@ from typing import Optional
 from backend.database.models.agency import State, Jurisdiction
 from backend.database.models.employment import (
     EmploymentStatus, EmploymentType, Rank)
+from backend.dto.common_filters import (
+    normalize_string_or_list,
+    normalize_upper_string,
+    validate_state_code,
+)
 from backend.dto.common import PaginatedRequest, RequestDTO
 from typing import List
 
@@ -31,16 +36,43 @@ class AgencyQueryParams(PaginatedRequest):
     hq_state: str | None = None
     hq_zip: str | None = None
     jurisdiction: str | None = None
+    city: str | list[str] | None = None
+    city_uid: str | list[str] | None = None
+    state: str | None = None
+    source: str | list[str] | None = None
+    source_uid: str | list[str] | None = None
 
     # page: int = Field(default=1, ge=1)
     # per_page: int = Field(default=20, ge=1)
     searchResult: bool = Field(default=False)
 
+    @field_validator("city", mode="before")
+    def normalize_city(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("city_uid", mode="before")
+    def normalize_city_uid(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("state", mode="before")
+    def normalize_state(cls, value):
+        return normalize_upper_string(value)
+
+    @field_validator("source", mode="before")
+    def normalize_source(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("source_uid", mode="before")
+    def normalize_source_uid(cls, value):
+        return normalize_string_or_list(value)
+
     @field_validator("hq_state")
     def validate_state(cls, v):
-        if v and v not in State.choices():
-            raise ValueError(f"Invalid state: {v}")
-        return v
+        return validate_state_code(v)
+
+    @field_validator("state")
+    def validate_location_state(cls, v):
+        return validate_state_code(v)
 
     @field_validator("jurisdiction")
     def validate_jurisdiction(cls, v):
