@@ -5,7 +5,11 @@ from flask_jwt_extended.view_decorators import jwt_required
 
 from backend.auth.jwt import min_role_required
 from backend.database.models.user import UserRole
-from backend.dto.location import CityLookupParams
+from backend.dto.location import (
+    CityLookupParams,
+    CountyLookupParams,
+    StateLookupParams,
+)
 from backend.services.location_service import LocationService
 
 bp = Blueprint("location_routes", __name__, url_prefix="/api/v1/locations")
@@ -25,6 +29,43 @@ def list_cities():
     response, status_code = location_service.list_cities(
         term=params.term,
         state=params.state,
+        page=params.page,
+        per_page=params.per_page,
+    )
+    return jsonify(response), status_code
+
+
+@bp.route("/counties", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def list_counties():
+    try:
+        params = CountyLookupParams(**request.args)
+    except Exception as e:
+        logging.debug(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    response, status_code = location_service.list_counties(
+        term=params.term,
+        state=params.state,
+        page=params.page,
+        per_page=params.per_page,
+    )
+    return jsonify(response), status_code
+
+
+@bp.route("/states", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def list_states():
+    try:
+        params = StateLookupParams(**request.args)
+    except Exception as e:
+        logging.debug(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    response, status_code = location_service.list_states(
+        term=params.term,
         page=params.page,
         per_page=params.per_page,
     )

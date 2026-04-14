@@ -33,3 +33,23 @@ class CityLookupParams(PaginatedRequest):
         if value and value not in State.choices():
             raise ValueError(f"Invalid state: {value}")
         return value
+
+
+class CountyLookupParams(CityLookupParams):
+    pass
+
+
+class StateLookupParams(PaginatedRequest):
+    term: str = Field(...)
+
+    @field_validator("term", mode="before")
+    @classmethod
+    def normalize_term(cls, value):
+        if value is None:
+            raise ValueError("term is required")
+
+        normalized = " ".join(str(value).split())
+        if not normalized:
+            raise ValueError("term is required")
+
+        return normalized

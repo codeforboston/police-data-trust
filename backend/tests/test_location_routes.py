@@ -98,3 +98,88 @@ def test_city_lookup_rejects_invalid_state(client, access_token):
 
     assert res.status_code == 400
     assert "Invalid state" in res.get_data(as_text=True)
+
+
+def test_county_lookup_returns_state_context(
+    client, access_token, example_city_nodes
+):
+    res = client.get(
+        "/api/v1/locations/counties?term=County",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 2
+    assert {row["state"]["abbreviation"] for row in res.json["results"]} == {
+        "IL",
+        "NY",
+    }
+
+
+def test_county_lookup_filters_by_state(
+    client, access_token, example_city_nodes
+):
+    res = client.get(
+        "/api/v1/locations/counties?term=County&state=NY",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["state"]["abbreviation"] == "NY"
+    assert res.json["results"][0]["name"] == "New York County"
+
+
+def test_county_lookup_rejects_invalid_state(client, access_token):
+    res = client.get(
+        "/api/v1/locations/counties?term=County&state=Illinois",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 400
+    assert "Invalid state" in res.get_data(as_text=True)
+
+
+def test_state_lookup_returns_matching_states(
+    client, access_token, example_city_nodes
+):
+    res = client.get(
+        "/api/v1/locations/states?term=New",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["name"] == "New York"
+    assert res.json["results"][0]["abbreviation"] == "NY"
+
+
+def test_state_lookup_matches_abbreviation(
+    client, access_token, example_city_nodes
+):
+    res = client.get(
+        "/api/v1/locations/states?term=IL",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["abbreviation"] == "IL"
+
+
+def test_state_lookup_returns_empty_results_when_no_match(
+    client, access_token
+):
+    res = client.get(
+        "/api/v1/locations/states?term=NotARealState",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {
+        "results": [],
+        "page": 1,
+        "per_page": 20,
+        "total": 0,
+        "pages": 0,
+    }
