@@ -7,8 +7,10 @@ from backend.schemas import (
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole, User
 from backend.database.models.agency import Agency
-from backend.routes.search import (
-    fetch_details, build_agency_result)
+from backend.serializers.search_serializer import (
+    build_agency_result,
+    fetch_details,
+)
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required

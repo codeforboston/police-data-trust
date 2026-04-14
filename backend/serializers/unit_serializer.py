@@ -1,4 +1,4 @@
-from backend.routes.search import (
+from backend.serializers.search_serializer import (
     fetch_details, build_unit_result, build_officer_result)
 from backend.serializers.location_serializer import (
     serialize_location
