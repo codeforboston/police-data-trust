@@ -21,6 +21,8 @@ class SearchService:
         per_page: int,
         city: str | None = None,
         state: str | None = None,
+        source: str | None = None,
+        source_uid: str | None = None,
     ) -> tuple[dict, int]:
         city_uids = self.queries.resolve_search_city_uids(
             city=city,
@@ -29,11 +31,19 @@ class SearchService:
         if (city or state) and not city_uids:
             return {"message": "No results found matching the query"}, 200
 
+        source_uids = self.queries.resolve_search_source_uids(
+            source=source,
+            source_uid=source_uid,
+        )
+        if (source or source_uid) and not source_uids:
+            return {"message": "No results found matching the query"}, 200
+
         total_results = self.queries.count_search_results(
             query=query,
             page=page,
             per_page=per_page,
             city_uids=city_uids,
+            source_uids=source_uids,
         )
 
         if total_results == 0:
@@ -48,6 +58,7 @@ class SearchService:
             page=page,
             per_page=per_page,
             city_uids=city_uids,
+            source_uids=source_uids,
         )
         buckets = group_nodes_by_type(results)
         details = self.queries.fetch_search_details(

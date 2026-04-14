@@ -1,7 +1,10 @@
 import urllib.parse
 import pytest
 
+from backend.database.models.agency import Agency, Unit
 from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.officer import Officer
+from backend.database.models.source import Source
 from backend.queries.search import SearchQueries
 
 
@@ -199,6 +202,97 @@ def test_search_rejects_invalid_state_filter(client, access_token):
 
     assert res.status_code == 400
     assert "Invalid state" in res.get_data(as_text=True)
+
+
+def test_search_filters_by_source_name(
+        client,
+        db_session,
+        example_officer,
+        access_token):
+    other_source = Source(name="Another Source", url="www.other.com").save()
+    unmatched_officer = Officer(
+        first_name="John",
+        last_name="Smith",
+    ).save()
+    unmatched_officer.citations.connect(other_source, {})
+
+    res = client.get(
+        "/api/v1/search?query=john&source=Example%20Source",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    assert [item["uid"] for item in results] == [example_officer.uid]
+
+
+def test_search_filters_by_source_uid(
+        client,
+        db_session,
+        example_agency,
+        access_token,
+        example_source):
+    other_source = Source(name="Another Agency Source", url="www.other.com").save()
+    unmatched_agency = Agency(
+        name="Example Agency West",
+        website_url="www.example-west.com",
+        hq_state="NY",
+        hq_city="Buffalo",
+        hq_address="456 Main St",
+        hq_zip="14201",
+    ).save()
+    unmatched_agency.citations.connect(other_source, {})
+
+    res = client.get(
+        f"/api/v1/search?query=Example%20Agency&source_uid={example_source.uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    assert [item["uid"] for item in results] == [example_agency.uid]
+
+
+def test_search_filters_units_by_source_name(
+        client,
+        db_session,
+        example_unit,
+        access_token):
+    other_source = Source(name="Different Unit Source", url="www.other.com").save()
+    unmatched_unit = Unit(
+        name="Precinct 10",
+        hq_state="NY",
+    ).save()
+    unmatched_unit.citations.connect(other_source, {})
+
+    res = client.get(
+        "/api/v1/search?query=Precinct&source=Example%20Source",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    assert [item["uid"] for item in results] == [example_unit.uid]
+
+
+def test_search_returns_no_results_for_unknown_source(client, access_token):
+    res = client.get(
+        "/api/v1/search?query=john&source=NotARealSource",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
+
+
+def test_search_returns_no_results_for_unknown_source_uid(client, access_token):
+    res = client.get(
+        "/api/v1/search?query=john&source_uid=not-a-real-source-uid",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
 
 
 def test_build_fulltext_query_applies_prefix_wildcards():

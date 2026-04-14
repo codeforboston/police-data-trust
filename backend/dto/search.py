@@ -11,6 +11,8 @@ class SearchQueryParams(PaginatedRequest):
     )
     city: str | None = None
     state: str | None = None
+    source: str | None = None
+    source_uid: str | None = None
 
     @field_validator("term", mode="before")
     @classmethod
@@ -39,6 +41,24 @@ class SearchQueryParams(PaginatedRequest):
         if value is None:
             return None
         return str(value).strip().upper() or None
+
+    @field_validator("source", mode="before")
+    @classmethod
+    def normalize_source(cls, value):
+        if value is None:
+            return None
+
+        normalized = " ".join(str(value).split())
+        return normalized or None
+
+    @field_validator("source_uid", mode="before")
+    @classmethod
+    def normalize_source_uid(cls, value):
+        if value is None:
+            return None
+
+        normalized = " ".join(str(value).split())
+        return normalized or None
 
     @field_validator("state")
     @classmethod

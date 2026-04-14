@@ -35,5 +35,7 @@ def text_search():
         per_page=query_params.per_page,
         city=query_params.city,
         state=query_params.state,
+        source=query_params.source,
+        source_uid=query_params.source_uid,
     )
     return jsonify(response), status_code

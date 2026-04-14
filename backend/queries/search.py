@@ -8,25 +8,49 @@ LUCENE_BOOLEAN_OPERATORS = {"AND", "OR", "NOT"}
 SEARCH_BASE_QUERY = """
 CALL () {
     CALL db.index.fulltext.queryNodes('officerNames',$query)  YIELD node, score
-    WHERE size($city_uids) = 0 OR EXISTS {
-        MATCH (node)<-[]-(:Employment)-[]->(:Unit)-[]-(:Agency)-
-        [:LOCATED_IN]->(city:CityNode)
-        WHERE city.uid IN $city_uids
-    }
+    WHERE (
+        size($city_uids) = 0 OR EXISTS {
+            MATCH (node)<-[]-(:Employment)-[]->(:Unit)-[]-(:Agency)-
+            [:LOCATED_IN]->(city:CityNode)
+            WHERE city.uid IN $city_uids
+        }
+    )
+    AND (
+        size($source_uids) = 0 OR EXISTS {
+            MATCH (node)-[:UPDATED_BY]->(source:Source)
+            WHERE source.uid IN $source_uids
+        }
+    )
     RETURN node, score
     UNION ALL
     CALL db.index.fulltext.queryNodes('agencyNames',$query)   YIELD node, score
-    WHERE size($city_uids) = 0 OR EXISTS {
-        MATCH (node)-[:LOCATED_IN]->(city:CityNode)
-        WHERE city.uid IN $city_uids
-    }
+    WHERE (
+        size($city_uids) = 0 OR EXISTS {
+            MATCH (node)-[:LOCATED_IN]->(city:CityNode)
+            WHERE city.uid IN $city_uids
+        }
+    )
+    AND (
+        size($source_uids) = 0 OR EXISTS {
+            MATCH (node)-[:UPDATED_BY]->(source:Source)
+            WHERE source.uid IN $source_uids
+        }
+    )
     RETURN node, score
     UNION ALL
     CALL db.index.fulltext.queryNodes('unitNames',$query)     YIELD node, score
-    WHERE size($city_uids) = 0 OR EXISTS {
-        MATCH (node)-[:LOCATED_IN]->(city:CityNode)
-        WHERE city.uid IN $city_uids
-    }
+    WHERE (
+        size($city_uids) = 0 OR EXISTS {
+            MATCH (node)-[:LOCATED_IN]->(city:CityNode)
+            WHERE city.uid IN $city_uids
+        }
+    )
+    AND (
+        size($source_uids) = 0 OR EXISTS {
+            MATCH (node)-[:UPDATED_BY]->(source:Source)
+            WHERE source.uid IN $source_uids
+        }
+    )
     RETURN node, score
 }
 WITH node, max(score) AS score
@@ -194,7 +218,13 @@ class SearchQueries:
         return " ".join(terms)
 
     def build_search_params(
-        self, *, query: str, page: int, per_page: int, city_uids: list[str] | None = None
+        self,
+        *,
+        query: str,
+        page: int,
+        per_page: int,
+        city_uids: list[str] | None = None,
+        source_uids: list[str] | None = None,
     ) -> dict:
         query_terms = self.tokenize_query(query)
         return {
@@ -202,6 +232,7 @@ class SearchQueries:
             "raw_query_normalized": " ".join(query_terms),
             "query_terms": query_terms,
             "city_uids": city_uids or [],
+            "source_uids": source_uids or [],
             "page": page,
             "per_page": per_page,
         }
@@ -241,6 +272,31 @@ class SearchQueries:
         rows, _ = db.cypher_query(query, params)
         return [row[0] for row in rows]
 
+    def resolve_search_source_uids(
+        self,
+        *,
+        source: str | None = None,
+        source_uid: str | None = None,
+    ) -> list[str]:
+        if source_uid:
+            query = """
+            MATCH (s:Source {uid: $source_uid})
+            RETURN DISTINCT s.uid
+            """
+            rows, _ = db.cypher_query(query, {"source_uid": source_uid})
+            return [row[0] for row in rows]
+
+        if not source:
+            return []
+
+        query = """
+        MATCH (s:Source)
+        WHERE toLower(s.name) = toLower($source)
+        RETURN DISTINCT s.uid
+        """
+        rows, _ = db.cypher_query(query, {"source": source})
+        return [row[0] for row in rows]
+
     def count_search_results(
         self,
         *,
@@ -248,12 +304,14 @@ class SearchQueries:
         page: int,
         per_page: int,
         city_uids: list[str] | None = None,
+        source_uids: list[str] | None = None,
     ) -> int:
         params = self.build_search_params(
             query=query,
             page=page,
             per_page=per_page,
             city_uids=city_uids,
+            source_uids=source_uids,
         )
         rows, _ = db.cypher_query(SEARCH_COUNT_QUERY, params)
         return rows[0][0] if rows else 0
@@ -265,12 +323,14 @@ class SearchQueries:
         page: int,
         per_page: int,
         city_uids: list[str] | None = None,
+        source_uids: list[str] | None = None,
     ):
         params = self.build_search_params(
             query=query,
             page=page,
             per_page=per_page,
             city_uids=city_uids,
+            source_uids=source_uids,
         )
         rows, _ = db.cypher_query(SEARCH_RESULTS_QUERY, params)
         return rows
