@@ -13,11 +13,27 @@ class SearchService:
     def __init__(self, queries: SearchQueries | None = None):
         self.queries = queries or SearchQueries()
 
-    def search_text(self, *, query: str, page: int, per_page: int) -> tuple[dict, int]:
+    def search_text(
+        self,
+        *,
+        query: str,
+        page: int,
+        per_page: int,
+        city: str | None = None,
+        state: str | None = None,
+    ) -> tuple[dict, int]:
+        city_uids = self.queries.resolve_search_city_uids(
+            city=city,
+            state=state,
+        )
+        if (city or state) and not city_uids:
+            return {"message": "No results found matching the query"}, 200
+
         total_results = self.queries.count_search_results(
             query=query,
             page=page,
             per_page=per_page,
+            city_uids=city_uids,
         )
 
         if total_results == 0:
@@ -31,6 +47,7 @@ class SearchService:
             query=query,
             page=page,
             per_page=per_page,
+            city_uids=city_uids,
         )
         buckets = group_nodes_by_type(results)
         details = self.queries.fetch_search_details(

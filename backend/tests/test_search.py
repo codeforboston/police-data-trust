@@ -1,6 +1,7 @@
 import urllib.parse
 import pytest
 
+from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
 from backend.queries.search import SearchQueries
 
 
@@ -135,6 +136,69 @@ def test_search_accepts_term_alias(
 
     assert res.status_code == 200
     assert res.json["results"][0]["uid"] == example_officer.uid
+
+
+@pytest.fixture
+def example_search_location(example_agency, example_unit):
+    state = StateNode(name="New York", abbreviation="NY").save()
+    county = CountyNode(name="New York County", fips="36061").save()
+    city = CityNode(name="New York").save()
+    county.state.connect(state)
+    city.county.connect(county)
+    example_agency.city_node.connect(city)
+    example_unit.city_node.connect(city)
+    return city
+
+
+def test_search_filters_by_city_and_state_for_officers(
+        client,
+        db_session,
+        example_officer,
+        example_employment,
+        example_search_location,
+        access_token):
+    res = client.get(
+        "/api/v1/search?query=john&city=New%20York&state=NY",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json["results"][0]["uid"] == example_officer.uid
+
+
+def test_search_filters_by_state_for_agencies(
+        client,
+        db_session,
+        example_agency,
+        example_search_location,
+        access_token):
+    res = client.get(
+        "/api/v1/search?query=Example%20Agency&state=NY",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json["results"][0]["uid"] == example_agency.uid
+
+
+def test_search_returns_no_results_for_unresolved_location(client, access_token):
+    res = client.get(
+        "/api/v1/search?query=john&city=NotARealCity&state=NY",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
+
+
+def test_search_rejects_invalid_state_filter(client, access_token):
+    res = client.get(
+        "/api/v1/search?query=john&state=New%20York",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 400
+    assert "Invalid state" in res.get_data(as_text=True)
 
 
 def test_build_fulltext_query_applies_prefix_wildcards():

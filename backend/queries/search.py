@@ -8,12 +8,25 @@ LUCENE_BOOLEAN_OPERATORS = {"AND", "OR", "NOT"}
 SEARCH_BASE_QUERY = """
 CALL () {
     CALL db.index.fulltext.queryNodes('officerNames',$query)  YIELD node, score
+    WHERE size($city_uids) = 0 OR EXISTS {
+        MATCH (node)<-[]-(:Employment)-[]->(:Unit)-[]-(:Agency)-
+        [:LOCATED_IN]->(city:CityNode)
+        WHERE city.uid IN $city_uids
+    }
     RETURN node, score
     UNION ALL
     CALL db.index.fulltext.queryNodes('agencyNames',$query)   YIELD node, score
+    WHERE size($city_uids) = 0 OR EXISTS {
+        MATCH (node)-[:LOCATED_IN]->(city:CityNode)
+        WHERE city.uid IN $city_uids
+    }
     RETURN node, score
     UNION ALL
     CALL db.index.fulltext.queryNodes('unitNames',$query)     YIELD node, score
+    WHERE size($city_uids) = 0 OR EXISTS {
+        MATCH (node)-[:LOCATED_IN]->(city:CityNode)
+        WHERE city.uid IN $city_uids
+    }
     RETURN node, score
 }
 WITH node, max(score) AS score
@@ -181,24 +194,84 @@ class SearchQueries:
         return " ".join(terms)
 
     def build_search_params(
-        self, *, query: str, page: int, per_page: int
+        self, *, query: str, page: int, per_page: int, city_uids: list[str] | None = None
     ) -> dict:
         query_terms = self.tokenize_query(query)
         return {
             "query": self.build_fulltext_query(query),
             "raw_query_normalized": " ".join(query_terms),
             "query_terms": query_terms,
+            "city_uids": city_uids or [],
             "page": page,
             "per_page": per_page,
         }
 
-    def count_search_results(self, *, query: str, page: int, per_page: int) -> int:
-        params = self.build_search_params(query=query, page=page, per_page=per_page)
+    def resolve_search_city_uids(
+        self,
+        *,
+        city: str | None = None,
+        state: str | None = None,
+    ) -> list[str]:
+        if not city and not state:
+            return []
+
+        if city and state:
+            query = """
+            MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
+                ->(state:StateNode {abbreviation: $state})
+            WHERE toLower(city.name) = toLower($city)
+            RETURN DISTINCT city.uid
+            """
+            params = {"city": city, "state": state}
+        elif city:
+            query = """
+            MATCH (city:CityNode)
+            WHERE toLower(city.name) = toLower($city)
+            RETURN DISTINCT city.uid
+            """
+            params = {"city": city}
+        else:
+            query = """
+            MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
+                ->(state:StateNode {abbreviation: $state})
+            RETURN DISTINCT city.uid
+            """
+            params = {"state": state}
+
+        rows, _ = db.cypher_query(query, params)
+        return [row[0] for row in rows]
+
+    def count_search_results(
+        self,
+        *,
+        query: str,
+        page: int,
+        per_page: int,
+        city_uids: list[str] | None = None,
+    ) -> int:
+        params = self.build_search_params(
+            query=query,
+            page=page,
+            per_page=per_page,
+            city_uids=city_uids,
+        )
         rows, _ = db.cypher_query(SEARCH_COUNT_QUERY, params)
         return rows[0][0] if rows else 0
 
-    def fetch_search_results(self, *, query: str, page: int, per_page: int):
-        params = self.build_search_params(query=query, page=page, per_page=per_page)
+    def fetch_search_results(
+        self,
+        *,
+        query: str,
+        page: int,
+        per_page: int,
+        city_uids: list[str] | None = None,
+    ):
+        params = self.build_search_params(
+            query=query,
+            page=page,
+            per_page=per_page,
+            city_uids=city_uids,
+        )
         rows, _ = db.cypher_query(SEARCH_RESULTS_QUERY, params)
         return rows
 
