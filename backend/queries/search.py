@@ -199,6 +199,13 @@ RETURN content_type, uid, result
 
 
 class SearchQueries:
+    def _as_list(self, value: str | list[str] | None) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, list):
+            return value
+        return [value]
+
     def tokenize_query(self, raw_query: str) -> list[str]:
         sanitized = LUCENE_RESERVED_PATTERN.sub(" ", raw_query)
         tokens = []
@@ -275,27 +282,36 @@ class SearchQueries:
     def resolve_search_source_uids(
         self,
         *,
-        source: str | None = None,
-        source_uid: str | None = None,
+        source: str | list[str] | None = None,
+        source_uid: str | list[str] | None = None,
     ) -> list[str]:
-        if source_uid:
+        source_uid_values = self._as_list(source_uid)
+        source_name_values = self._as_list(source)
+
+        resolved_uids: list[str] = []
+
+        if source_uid_values:
             query = """
-            MATCH (s:Source {uid: $source_uid})
+            MATCH (s:Source)
+            WHERE s.uid IN $source_uids
             RETURN DISTINCT s.uid
             """
-            rows, _ = db.cypher_query(query, {"source_uid": source_uid})
-            return [row[0] for row in rows]
+            rows, _ = db.cypher_query(query, {"source_uids": source_uid_values})
+            resolved_uids.extend(row[0] for row in rows)
 
-        if not source:
-            return []
+        if source_name_values:
+            query = """
+            MATCH (s:Source)
+            WHERE toLower(s.name) IN $source_names
+            RETURN DISTINCT s.uid
+            """
+            rows, _ = db.cypher_query(
+                query,
+                {"source_names": [value.lower() for value in source_name_values]},
+            )
+            resolved_uids.extend(row[0] for row in rows)
 
-        query = """
-        MATCH (s:Source)
-        WHERE toLower(s.name) = toLower($source)
-        RETURN DISTINCT s.uid
-        """
-        rows, _ = db.cypher_query(query, {"source": source})
-        return [row[0] for row in rows]
+        return list(dict.fromkeys(resolved_uids))
 
     def count_search_results(
         self,

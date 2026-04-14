@@ -295,6 +295,61 @@ def test_search_returns_no_results_for_unknown_source_uid(client, access_token):
     assert res.json == {"message": "No results found matching the query"}
 
 
+def test_search_filters_by_multiple_source_names(
+        client,
+        db_session,
+        example_officer,
+        access_token,
+        example_source):
+    second_source = Source(name="Another Source", url="www.other.com").save()
+    second_officer = Officer(
+        first_name="John",
+        last_name="Smith",
+    ).save()
+    second_officer.citations.connect(second_source, {})
+
+    res = client.get(
+        "/api/v1/search?query=john&source=Example%20Source&source=Another%20Source",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    result_uids = {item["uid"] for item in results}
+    assert result_uids == {example_officer.uid, second_officer.uid}
+
+
+def test_search_filters_by_multiple_source_uids(
+        client,
+        db_session,
+        example_agency,
+        access_token,
+        example_source):
+    second_source = Source(name="Another Agency Source", url="www.other.com").save()
+    second_agency = Agency(
+        name="Example Agency West",
+        website_url="www.example-west.com",
+        hq_state="NY",
+        hq_city="Buffalo",
+        hq_address="456 Main St",
+        hq_zip="14201",
+    ).save()
+    second_agency.citations.connect(second_source, {})
+
+    res = client.get(
+        "/api/v1/search"
+        f"?query=Example%20Agency"
+        f"&source_uid={example_source.uid}"
+        f"&source_uid={second_source.uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    result_uids = {item["uid"] for item in results}
+    assert result_uids == {example_agency.uid, second_agency.uid}
+
+
 def test_build_fulltext_query_applies_prefix_wildcards():
     assert search_queries.build_fulltext_query("john doe") == "john* doe*"
 

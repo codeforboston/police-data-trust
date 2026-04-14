@@ -4,6 +4,7 @@ from backend.auth.jwt import min_role_required
 from backend.dto.search import SearchQueryParams
 from backend.database.models.user import UserRole
 from backend.services.search_service import SearchService
+from backend.schemas import args_to_dict
 from flask import Blueprint, abort, request
 from flask_jwt_extended.view_decorators import jwt_required
 from flask import jsonify
@@ -24,7 +25,10 @@ def text_search():
     page: page number
     """
     try:
-        query_params = SearchQueryParams(**request.args)
+        query_params = SearchQueryParams(**args_to_dict(
+            request.args,
+            always_list={"source", "source_uid"},
+        ))
     except Exception as e:
         logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))

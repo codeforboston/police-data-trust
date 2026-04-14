@@ -21,8 +21,8 @@ class SearchService:
         per_page: int,
         city: str | None = None,
         state: str | None = None,
-        source: str | None = None,
-        source_uid: str | None = None,
+        source: str | list[str] | None = None,
+        source_uid: str | list[str] | None = None,
     ) -> tuple[dict, int]:
         city_uids = self.queries.resolve_search_city_uids(
             city=city,
