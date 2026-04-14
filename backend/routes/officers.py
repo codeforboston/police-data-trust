@@ -1,7 +1,7 @@
 import logging
 from backend.auth.jwt import min_role_required
 from backend.mixpanel.mix import track_to_mp
-from backend.schemas import (validate_request, ordered_jsonify)
+from backend.schemas import (validate_request, ordered_jsonify, args_to_dict)
 from backend.database.models.user import UserRole, User
 from backend.database.models.officer import Officer
 from backend.services.officer_service import OfficerService
@@ -93,12 +93,20 @@ def get_all_officers():
     term: filter on officer name
     """
     raw = {
-        **request.args,  # copies simple values
-        "unit": request.args.getlist("unit"),
-        "agency": request.args.getlist("agency"),
-        "rank": request.args.getlist("rank"),
-        "badge_number": request.args.getlist("badge_number"),
-        "ethnicity": request.args.getlist("ethnicity"),
+        **args_to_dict(
+            request.args,
+            always_list={
+                "unit",
+                "agency",
+                "rank",
+                "badge_number",
+                "ethnicity",
+                "city",
+                "city_uid",
+                "source",
+                "source_uid",
+            },
+        ),
     }
     try:
         params = OfficerSearchParams(**raw)
