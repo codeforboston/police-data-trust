@@ -204,6 +204,11 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         # Build MATCH clauses
         match_clauses = []
+        requires_employment_path = bool(
+            unit or active_after or active_before or badge_number or agency or city_uids
+        )
+        requires_agency_path = bool(agency or city_uids)
+
         if name:
             match_clauses.append(f"""
                 CALL db.index.fulltext.queryNodes('officerNames',
@@ -217,11 +222,14 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         match_clauses.append("MATCH (o:Officer)")
 
-        if unit or active_after or active_before or badge_number or agency:
+        if requires_employment_path:
             match_clauses.append("MATCH (o)-[]-(e:Employment)-[]-(u:Unit)")
 
-        if agency:
+        if requires_agency_path:
             match_clauses.append("MATCH (u)-[:ESTABLISHED_BY]->(a:Agency)")
+
+        if city_uids:
+            match_clauses.append("MATCH (a)-[:LOCATED_IN]->(city:CityNode)")
 
         # Build WHERE clauses and params
         where_clauses = ["TRUE"]
@@ -253,13 +261,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             params["unit"] = unit
 
         if city_uids:
-            where_clauses.append("""
-            EXISTS {
-                MATCH (o)<-[]-(:Employment)-[]->(:Unit)-[]->(:Agency)-
-                [:LOCATED_IN]->(city:CityNode)
-                WHERE city.uid IN $city_uids
-            }
-            """)
+            where_clauses.append("city.uid IN $city_uids")
             params["city_uids"] = city_uids
 
         if source_uids:
@@ -279,7 +281,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         WHERE {where_str}"""
 
         if count:
-            cypher_query += "\nRETURN count(*) as c"
+            cypher_query += "\nRETURN count(DISTINCT o) as c"
             logging.debug("Cypher count query:\n%s", cypher_query)
             logging.debug("Params: %s", params)
             logging.debug("Query: %s", cypher_query)
@@ -287,7 +289,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             return count_results[0][0] if count_results else 0
         else:
             cypher_query += f"""
-                RETURN o SKIP {skip} LIMIT {limit}
+                RETURN DISTINCT o SKIP {skip} LIMIT {limit}
             """
 
             logging.debug("Cypher query:\n%s", cypher_query)
