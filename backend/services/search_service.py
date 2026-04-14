@@ -19,16 +19,18 @@ class SearchService:
         query: str,
         page: int,
         per_page: int,
-        city: str | None = None,
+        city: str | list[str] | None = None,
+        city_uid: str | list[str] | None = None,
         state: str | None = None,
         source: str | list[str] | None = None,
         source_uid: str | list[str] | None = None,
     ) -> tuple[dict, int]:
         city_uids = self.queries.resolve_search_city_uids(
             city=city,
+            city_uid=city_uid,
             state=state,
         )
-        if (city or state) and not city_uids:
+        if (city or city_uid or state) and not city_uids:
             return {"message": "No results found matching the query"}, 200
 
         source_uids = self.queries.resolve_search_source_uids(

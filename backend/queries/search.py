@@ -247,27 +247,44 @@ class SearchQueries:
     def resolve_search_city_uids(
         self,
         *,
-        city: str | None = None,
+        city: str | list[str] | None = None,
+        city_uid: str | list[str] | None = None,
         state: str | None = None,
     ) -> list[str]:
-        if not city and not state:
-            return []
+        city_values = self._as_list(city)
+        city_uid_values = self._as_list(city_uid)
+        resolved_uids: list[str] = []
 
-        if city and state:
+        if city_uid_values:
+            query = """
+            MATCH (city:CityNode)
+            WHERE city.uid IN $city_uids
+            RETURN DISTINCT city.uid
+            """
+            rows, _ = db.cypher_query(query, {"city_uids": city_uid_values})
+            resolved_uids.extend(row[0] for row in rows)
+
+        if not city_values and not state:
+            return list(dict.fromkeys(resolved_uids))
+
+        if city_values and state:
             query = """
             MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
                 ->(state:StateNode {abbreviation: $state})
-            WHERE toLower(city.name) = toLower($city)
+            WHERE toLower(city.name) IN $cities
             RETURN DISTINCT city.uid
             """
-            params = {"city": city, "state": state}
-        elif city:
+            params = {
+                "cities": [value.lower() for value in city_values],
+                "state": state,
+            }
+        elif city_values:
             query = """
             MATCH (city:CityNode)
-            WHERE toLower(city.name) = toLower($city)
+            WHERE toLower(city.name) IN $cities
             RETURN DISTINCT city.uid
             """
-            params = {"city": city}
+            params = {"cities": [value.lower() for value in city_values]}
         else:
             query = """
             MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
@@ -277,7 +294,8 @@ class SearchQueries:
             params = {"state": state}
 
         rows, _ = db.cypher_query(query, params)
-        return [row[0] for row in rows]
+        resolved_uids.extend(row[0] for row in rows)
+        return list(dict.fromkeys(resolved_uids))
 
     def resolve_search_source_uids(
         self,

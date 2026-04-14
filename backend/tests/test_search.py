@@ -184,6 +184,66 @@ def test_search_filters_by_state_for_agencies(
     assert res.json["results"][0]["uid"] == example_agency.uid
 
 
+def test_search_filters_by_city_uid_for_agencies(
+        client,
+        db_session,
+        example_agency,
+        example_search_location,
+        access_token):
+    other_city = CityNode(name="Buffalo").save()
+    unmatched_agency = Agency(
+        name="Example Agency West",
+        website_url="www.example-west.com",
+        hq_state="NY",
+        hq_city="Buffalo",
+        hq_address="456 Main St",
+        hq_zip="14201",
+    ).save()
+    unmatched_agency.city_node.connect(other_city)
+
+    res = client.get(
+        f"/api/v1/search?query=Example%20Agency&city_uid={example_search_location.uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    assert [item["uid"] for item in results] == [example_agency.uid]
+
+
+def test_search_filters_by_multiple_city_uids_for_agencies(
+        client,
+        db_session,
+        example_agency,
+        example_search_location,
+        access_token):
+    other_city = CityNode(name="Buffalo").save()
+    other_agency = Agency(
+        name="Example Agency West",
+        website_url="www.example-west.com",
+        hq_state="NY",
+        hq_city="Buffalo",
+        hq_address="456 Main St",
+        hq_zip="14201",
+    ).save()
+    other_agency.city_node.connect(other_city)
+
+    res = client.get(
+        "/api/v1/search"
+        f"?query=Example%20Agency"
+        f"&city_uid={example_search_location.uid}"
+        f"&city_uid={other_city.uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    result_uids = {item["uid"] for item in results}
+    assert result_uids == {example_agency.uid, other_agency.uid}
+    uncited_result = next(item for item in results if item["uid"] == other_agency.uid)
+    assert uncited_result["source"] == "Unknown Source"
+
+
 def test_search_returns_no_results_for_unresolved_location(client, access_token):
     res = client.get(
         "/api/v1/search?query=john&city=NotARealCity&state=NY",
@@ -202,6 +262,16 @@ def test_search_rejects_invalid_state_filter(client, access_token):
 
     assert res.status_code == 400
     assert "Invalid state" in res.get_data(as_text=True)
+
+
+def test_search_returns_no_results_for_unknown_city_uid(client, access_token):
+    res = client.get(
+        "/api/v1/search?query=john&city_uid=not-a-real-city-uid",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    assert res.json == {"message": "No results found matching the query"}
 
 
 def test_search_filters_by_source_name(

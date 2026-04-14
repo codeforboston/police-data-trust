@@ -27,7 +27,7 @@ def text_search():
     try:
         query_params = SearchQueryParams(**args_to_dict(
             request.args,
-            always_list={"source", "source_uid"},
+            always_list={"city", "city_uid", "source", "source_uid"},
         ))
     except Exception as e:
         logging.debug(f"Invalid query params: {e}")
@@ -38,6 +38,7 @@ def text_search():
         page=query_params.page,
         per_page=query_params.per_page,
         city=query_params.city,
+        city_uid=query_params.city_uid,
         state=query_params.state,
         source=query_params.source,
         source_uid=query_params.source_uid,

@@ -9,7 +9,8 @@ class SearchQueryParams(PaginatedRequest):
         ...,
         validation_alias=AliasChoices("term", "query"),
     )
-    city: str | None = None
+    city: str | list[str] | None = None
+    city_uid: str | list[str] | None = None
     state: str | None = None
     source: str | list[str] | None = None
     source_uid: str | list[str] | None = None
@@ -31,6 +32,25 @@ class SearchQueryParams(PaginatedRequest):
     def normalize_city(cls, value):
         if value is None:
             return None
+
+        if isinstance(value, list):
+            normalized = [" ".join(str(item).split()) for item in value]
+            normalized = [item for item in normalized if item]
+            return normalized or None
+
+        normalized = " ".join(str(value).split())
+        return normalized or None
+
+    @field_validator("city_uid", mode="before")
+    @classmethod
+    def normalize_city_uid(cls, value):
+        if value is None:
+            return None
+
+        if isinstance(value, list):
+            normalized = [" ".join(str(item).split()) for item in value]
+            normalized = [item for item in normalized if item]
+            return normalized or None
 
         normalized = " ".join(str(value).split())
         return normalized or None

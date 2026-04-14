@@ -206,7 +206,7 @@ def build_agency_result(node, details_row: dict) -> SearchResult:
             )
         )],
         content_type="Agency",
-        source=details_row.get("source", "Unknown Source"),
+        source=details_row.get("source") or "Unknown Source",
         last_updated=details_row.get("last_updated"),
         href=f"/api/v1/agencies/{uid}",
     )
@@ -229,7 +229,7 @@ def build_unit_result(node, details_row: dict) -> SearchResult:
             )
         )],
         content_type="Unit",
-        source=details_row.get("source", "Unknown Source"),
+        source=details_row.get("source") or "Unknown Source",
         last_updated=details_row.get("last_updated"),
         href=f"/api/v1/units/{uid}",
     )
@@ -264,7 +264,7 @@ def build_officer_result(node, details_row: dict) -> SearchResult:
             )
         )],
         content_type="Officer",
-        source=details_row.get("source", "Unknown Source"),
+        source=details_row.get("source") or "Unknown Source",
         last_updated=details_row.get("last_updated"),
         href=f"/api/v1/officers/{uid}",
     )
