@@ -2,6 +2,12 @@ import pytest
 import math
 from datetime import datetime
 from backend.database import Agency
+from backend.database.models.infra.locations import (
+    CityNode,
+    CountyNode,
+    StateNode,
+)
+from backend.database.models.source import Source
 from neomodel import db
 
 mock_officers = {
@@ -182,12 +188,28 @@ def test_filter_agencies(client, access_token, example_agencies):
     )
     assert res.status_code == 400
 
-    # No parameter "state"
+    illinois = StateNode(name="Illinois", abbreviation="IL").save()
+    new_york_state = StateNode(name="New York", abbreviation="NY").save()
+    cook = CountyNode(name="Cook County", fips="17031").save()
+    new_york_county = CountyNode(name="New York County", fips="36061").save()
+    chicago = CityNode(name="Chicago").save()
+    new_york = CityNode(name="New York").save()
+
+    cook.state.connect(illinois)
+    new_york_county.state.connect(new_york_state)
+    chicago.county.connect(cook)
+    new_york.county.connect(new_york_county)
+    example_agencies["cpd"].city_node.connect(chicago)
+    example_agencies["nypd"].city_node.connect(new_york)
+
     res = client.get(
         "/api/v1/agencies?state=NY",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
-    assert res.status_code == 400
+    assert res.status_code == 200
+    assert [agency["uid"] for agency in res.json["results"]] == [
+        example_agencies["nypd"].uid
+    ]
 
     expect_zip_ct = Agency.nodes.filter(hq_zip="60653").__len__()
     res = client.get(
@@ -217,6 +239,89 @@ def test_filter_agencies(client, access_token, example_agencies):
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 400
+
+
+def test_filter_agencies_by_city_uid(
+        client, access_token, example_agencies):
+    illinois = StateNode(name="Illinois", abbreviation="IL").save()
+    new_york_state = StateNode(name="New York", abbreviation="NY").save()
+    cook = CountyNode(name="Cook County", fips="17031").save()
+    new_york_county = CountyNode(name="New York County", fips="36061").save()
+    chicago = CityNode(name="Chicago").save()
+    new_york = CityNode(name="New York").save()
+
+    cook.state.connect(illinois)
+    new_york_county.state.connect(new_york_state)
+    chicago.county.connect(cook)
+    new_york.county.connect(new_york_county)
+    example_agencies["cpd"].city_node.connect(chicago)
+    example_agencies["nypd"].city_node.connect(new_york)
+
+    res = client.get(
+        f"/api/v1/agencies?city_uid={chicago.uid}",
+        headers={"Authorization": "Bearer {0}".format(access_token)}
+    )
+
+    assert res.status_code == 200
+    assert [agency["uid"] for agency in res.json["results"]] == [
+        example_agencies["cpd"].uid
+    ]
+
+
+def test_filter_agencies_by_source_name(
+        client, access_token, example_agencies):
+    other_source = Source(name="Another Source", url="www.other.com").save()
+    other_agency = Agency(
+        name="Albany Police Department",
+        website_url="https://albany.example.gov",
+        hq_address="10 Main St",
+        hq_city="Albany",
+        hq_zip="12207",
+        hq_state="NY",
+        jurisdiction="MUNICIPAL",
+    ).save()
+    other_agency.citations.connect(other_source, {
+        "timestamp": datetime.now(),
+    })
+
+    res = client.get(
+        "/api/v1/agencies?source=Example%20Source",
+        headers={"Authorization": "Bearer {0}".format(access_token)}
+    )
+
+    assert res.status_code == 200
+    result_uids = {agency["uid"] for agency in res.json["results"]}
+    assert example_agencies["cpd"].uid in result_uids
+    assert other_agency.uid not in result_uids
+
+
+def test_filter_agencies_by_multiple_source_uids(
+        client, access_token, example_agencies, example_source):
+    other_source = Source(name="Another Source", url="www.other.com").save()
+    other_agency = Agency(
+        name="Albany Police Department",
+        website_url="https://albany.example.gov",
+        hq_address="10 Main St",
+        hq_city="Albany",
+        hq_zip="12207",
+        hq_state="NY",
+        jurisdiction="MUNICIPAL",
+    ).save()
+    other_agency.citations.connect(other_source, {
+        "timestamp": datetime.now(),
+    })
+
+    res = client.get(
+        "/api/v1/agencies"
+        f"?source_uid={example_source.uid}"
+        f"&source_uid={other_source.uid}",
+        headers={"Authorization": "Bearer {0}".format(access_token)}
+    )
+
+    assert res.status_code == 200
+    result_uids = {agency["uid"] for agency in res.json["results"]}
+    assert example_agencies["cpd"].uid in result_uids
+    assert other_agency.uid in result_uids
 
 
 def test_get_agency_officers(client,

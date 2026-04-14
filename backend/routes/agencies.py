@@ -3,12 +3,15 @@ import logging
 from backend.auth.jwt import min_role_required
 from backend.schemas import (
     validate_request, add_pagination_wrapper, ordered_jsonify,
+    args_to_dict,
     NodeConflictException)
 from backend.mixpanel.mix import track_to_mp
 from backend.database.models.user import UserRole, User
 from backend.database.models.agency import Agency
-from backend.routes.search import (
-    fetch_details, build_agency_result)
+from backend.serializers.search_serializer import (
+    build_agency_result,
+    fetch_details,
+)
 from flask import Blueprint, abort, request, jsonify
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.view_decorators import jwt_required
@@ -17,10 +20,12 @@ from backend.dto.agency import (
     CreateAgency, UpdateAgency,
     GetAgencyUnitsParams)
 from backend.services.agency_service import AgencyService
+from backend.queries.filter_resolver import FilterResolver
 
 
 bp = Blueprint("agencies_routes", __name__, url_prefix="/api/v1/agencies")
 agency_service = AgencyService()
+filter_resolver = FilterResolver()
 
 
 # Create agency profile
@@ -177,7 +182,10 @@ def get_all_agencies():
     logging.debug(request.args)
     # --- Validate query parameters ---
     try:
-        params = AgencyQueryParams(**request.args)
+        params = AgencyQueryParams(**args_to_dict(
+            request.args,
+            always_list={"city", "city_uid", "source", "source_uid"},
+        ))
     except Exception as e:
         logging.debug(f"Invalid query params: {e}")
         abort(400, description=str(e))
@@ -201,10 +209,27 @@ def get_all_agencies():
         }.items() if v
     }
 
+    city_uids = filter_resolver.resolve_city_uids(
+        city=params.city,
+        city_uid=params.city_uid,
+        state=params.state,
+    )
+    if (params.city or params.city_uid or params.state) and not city_uids:
+        return jsonify({"message": "No results found matching the query"}), 200
+
+    source_uids = filter_resolver.resolve_source_uids(
+        source=params.source,
+        source_uid=params.source_uid,
+    )
+    if (params.source or params.source_uid) and not source_uids:
+        return jsonify({"message": "No results found matching the query"}), 200
+
     # --- Count total matches ---
     row_count = Agency.search(
         query=search_term,
         filters=filters,
+        city_uids=city_uids,
+        source_uids=source_uids,
         count=True
     )
     logging.debug(f"requested page: {params.page}")
@@ -218,6 +243,8 @@ def get_all_agencies():
     results = Agency.search(
         query=search_term,
         filters=filters,
+        city_uids=city_uids,
+        source_uids=source_uids,
         skip=params.skip,
         limit=params.limit,
     )

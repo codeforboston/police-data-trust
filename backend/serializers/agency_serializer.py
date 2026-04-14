@@ -1,7 +1,10 @@
 import logging
 from flask import abort
 
-from backend.routes.search import fetch_details, build_unit_result
+from backend.serializers.search_serializer import (
+    build_unit_result,
+    fetch_details,
+)
 from backend.serializers.location_serializer import serialize_location
 from backend.serializers.complaint_serializer import format_allegation_summary
 

@@ -1,5 +1,8 @@
 from backend.database.utils.transform import transform_dates_in_dict
-from backend.routes.search import fetch_details, build_officer_result
+from backend.serializers.search_serializer import (
+    build_officer_result,
+    fetch_details,
+)
 
 
 def serialize_officer_sources(rows: list[dict]) -> list[dict]:
