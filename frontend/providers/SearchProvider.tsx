@@ -9,13 +9,18 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 
 export type SearchTab = "all" | "officers" | "agencies" | "units"
 
+export type SearchFilters = {
+  city: string[]
+  cityUid: string[]
+  source: string[]
+  sourceUid: string[]
+}
+
 export type SearchState = {
   term: string
   tab: SearchTab
   page: number
-  location?: string
-  source?: string
-}
+} & SearchFilters
 
 type SearchStatePatch = Partial<SearchState>
 
@@ -27,13 +32,21 @@ interface SearchContext {
   setTerm: (term: string) => void
   setPage: (page: number) => void
   setTab: (tab: SearchTab) => void
-  setFilters: (filters: { location?: string; source?: string }) => void
+  setFilters: (filters: Partial<SearchFilters>) => void
+}
+
+const DEFAULT_FILTERS: SearchFilters = {
+  city: [],
+  cityUid: [],
+  source: [],
+  sourceUid: []
 }
 
 const DEFAULT_STATE: SearchState = {
   term: "",
   tab: "all",
-  page: 1
+  page: 1,
+  ...DEFAULT_FILTERS
 }
 
 const SEARCH_TABS: SearchTab[] = ["all", "officers", "agencies", "units"]
@@ -48,6 +61,9 @@ const getNormalizedString = (value?: string | null) => {
   const trimmed = value.trim()
   return trimmed === "" ? undefined : trimmed
 }
+
+const normalizeStringList = (values?: string[] | null) =>
+  (values ?? []).map((value) => value.trim()).filter(Boolean)
 
 const getSearchRoute = (tab: SearchTab) => {
   switch (tab) {
@@ -77,19 +93,41 @@ const parsePage = (value?: string | null) => {
 
 type SearchParamReader = {
   get: (name: string) => string | null
+  getAll?: (name: string) => string[]
 }
+
+const getAllParams = (searchParams: SearchParamReader, name: string) =>
+  normalizeStringList(searchParams.getAll?.(name))
+
+const normalizeFilters = (filters: Partial<SearchFilters>): SearchFilters => ({
+  city: normalizeStringList(filters.city),
+  cityUid: normalizeStringList(filters.cityUid),
+  source: normalizeStringList(filters.source),
+  sourceUid: normalizeStringList(filters.sourceUid)
+})
 
 export const parseSearchState = (searchParams: SearchParamReader): SearchState => {
   const legacyTerm =
     searchParams.get("term") ?? searchParams.get("query") ?? searchParams.get("name")
 
+  const city = getAllParams(searchParams, "city")
+  const source = getAllParams(searchParams, "source")
+
   return {
     term: getNormalizedString(legacyTerm) ?? DEFAULT_STATE.term,
     tab: parseTab(searchParams.get("tab")),
     page: parsePage(searchParams.get("page")),
-    location: getNormalizedString(searchParams.get("location")),
-    source: getNormalizedString(searchParams.get("source"))
+    city: city.length > 0 ? city : normalizeStringList([searchParams.get("location") ?? ""]),
+    cityUid: getAllParams(searchParams, "city_uid"),
+    source: source.length > 0 ? source : normalizeStringList([searchParams.get("source") ?? ""]),
+    sourceUid: getAllParams(searchParams, "source_uid")
   }
+}
+
+const appendListParams = (params: URLSearchParams, key: string, values: string[]) => {
+  values.forEach((value) => {
+    params.append(key, value)
+  })
 }
 
 const buildSearchParams = (state: SearchState) => {
@@ -107,18 +145,15 @@ const buildSearchParams = (state: SearchState) => {
     params.set("page", String(state.page))
   }
 
-  if (state.location) {
-    params.set("location", state.location)
-  }
-
-  if (state.source) {
-    params.set("source", state.source)
-  }
+  appendListParams(params, "city", state.city)
+  appendListParams(params, "city_uid", state.cityUid)
+  appendListParams(params, "source", state.source)
+  appendListParams(params, "source_uid", state.sourceUid)
 
   return params
 }
 
-const buildApiParams = (state: SearchState) => {
+export const buildApiParams = (state: SearchState) => {
   const params = new URLSearchParams()
 
   if (state.term) {
@@ -129,13 +164,10 @@ const buildApiParams = (state: SearchState) => {
     params.set("page", String(state.page))
   }
 
-  if (state.location) {
-    params.set("location", state.location)
-  }
-
-  if (state.source) {
-    params.set("source", state.source)
-  }
+  appendListParams(params, "city", state.city)
+  appendListParams(params, "city_uid", state.cityUid)
+  appendListParams(params, "source", state.source)
+  appendListParams(params, "source_uid", state.sourceUid)
 
   if (state.tab !== "all") {
     params.set("searchResult", "true")
@@ -145,7 +177,13 @@ const buildApiParams = (state: SearchState) => {
 }
 
 const hasSearchCriteria = (state: SearchState) => {
-  return Boolean(state.term || state.location || state.source)
+  return Boolean(
+    state.term ||
+      state.city.length > 0 ||
+      state.cityUid.length > 0 ||
+      state.source.length > 0 ||
+      state.sourceUid.length > 0
+  )
 }
 
 export function SearchProvider({ children }: { children: React.ReactNode }) {
@@ -176,7 +214,13 @@ function useSearchController(): SearchContext {
     (patch: SearchStatePatch, options?: { resetPage?: boolean }) => {
       const nextState: SearchState = {
         ...state,
-        ...patch
+        ...patch,
+        ...normalizeFilters({
+          city: patch.city ?? state.city,
+          cityUid: patch.cityUid ?? state.cityUid,
+          source: patch.source ?? state.source,
+          sourceUid: patch.sourceUid ?? state.sourceUid
+        })
       }
 
       if (options?.resetPage) {
@@ -187,8 +231,7 @@ function useSearchController(): SearchContext {
         term: getNormalizedString(nextState.term) ?? DEFAULT_STATE.term,
         tab: parseTab(nextState.tab),
         page: nextState.page >= 1 ? nextState.page : DEFAULT_STATE.page,
-        location: getNormalizedString(nextState.location),
-        source: getNormalizedString(nextState.source)
+        ...normalizeFilters(nextState)
       }
 
       const destination = buildSearchParams(normalizedState).toString()
@@ -212,7 +255,7 @@ function useSearchController(): SearchContext {
   )
 
   const setFilters = useCallback(
-    (filters: { location?: string; source?: string }) => {
+    (filters: Partial<SearchFilters>) => {
       updateSearchState(filters, { resetPage: true })
     },
     [updateSearchState]
