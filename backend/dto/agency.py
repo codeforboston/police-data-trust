@@ -1,6 +1,6 @@
 from pydantic import AliasChoices, BaseModel, Field, field_validator
 from typing import Optional
-from backend.database.models.agency import State, Jurisdiction
+from backend.database.models.agency import Jurisdiction
 from backend.database.models.employment import (
     EmploymentStatus, EmploymentType, Rank)
 from backend.dto.common_filters import (

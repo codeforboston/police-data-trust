@@ -34,7 +34,8 @@ class FilterResolver:
 
         if city_values and state:
             query = """
-            MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
+            MATCH (city:CityNode)-[:WITHIN_COUNTY]->
+                (:CountyNode)-[:WITHIN_STATE]
                 ->(state:StateNode {abbreviation: $state})
             WHERE toLower(city.name) IN $cities
             RETURN DISTINCT city.uid
@@ -52,7 +53,8 @@ class FilterResolver:
             params = {"cities": [value.lower() for value in city_values]}
         else:
             query = """
-            MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]
+            MATCH (city:CityNode)-[:WITHIN_COUNTY]->
+                (:CountyNode)-[:WITHIN_STATE]
                 ->(state:StateNode {abbreviation: $state})
             RETURN DISTINCT city.uid
             """
@@ -90,7 +92,11 @@ class FilterResolver:
             """
             rows, _ = db.cypher_query(
                 query,
-                {"source_names": [value.lower() for value in source_name_values]},
+                {
+                    "source_names": [
+                        value.lower() for value in source_name_values
+                    ]
+                },
             )
             resolved_uids.extend(row[0] for row in rows)
 

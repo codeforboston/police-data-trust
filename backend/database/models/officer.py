@@ -205,7 +205,12 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         # Build MATCH clauses
         match_clauses = []
         requires_employment_path = bool(
-            unit or active_after or active_before or badge_number or agency or city_uids
+            unit
+            or active_after
+            or active_before
+            or badge_number
+            or agency
+            or city_uids
         )
         requires_agency_path = bool(agency or city_uids)
 

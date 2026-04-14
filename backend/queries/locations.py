@@ -104,7 +104,9 @@ class LocationQueries:
             raise ValueError("term is required")
         return f"{normalized}*"
 
-    def count_matching_cities(self, *, term: str, state: str | None = None) -> int:
+    def count_matching_cities(
+        self, *, term: str, state: str | None = None
+    ) -> int:
         params = {
             "term": self.build_city_lookup_term(term),
             "normalized_term": " ".join(term.lower().split()),
@@ -131,7 +133,9 @@ class LocationQueries:
         rows, _ = db.cypher_query(CITY_LOOKUP_QUERY, params)
         return rows
 
-    def count_matching_counties(self, *, term: str, state: str | None = None) -> int:
+    def count_matching_counties(
+        self, *, term: str, state: str | None = None
+    ) -> int:
         params = {
             "term": self.build_city_lookup_term(term),
             "normalized_term": " ".join(term.lower().split()),

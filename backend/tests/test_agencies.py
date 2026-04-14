@@ -2,7 +2,11 @@ import pytest
 import math
 from datetime import datetime
 from backend.database import Agency
-from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.infra.locations import (
+    CityNode,
+    CountyNode,
+    StateNode,
+)
 from backend.database.models.source import Source
 from neomodel import db
 

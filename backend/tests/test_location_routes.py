@@ -1,6 +1,10 @@
 import pytest
 
-from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.infra.locations import (
+    CityNode,
+    CountyNode,
+    StateNode,
+)
 
 
 @pytest.fixture

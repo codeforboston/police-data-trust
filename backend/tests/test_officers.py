@@ -5,7 +5,11 @@ from datetime import date, datetime
 from backend.database import (
     Officer, Unit, Agency, Employment
 )
-from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.infra.locations import (
+    CityNode,
+    CountyNode,
+    StateNode,
+)
 from backend.database.models.source import Source
 from neomodel import db
 

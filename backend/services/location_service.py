@@ -17,7 +17,13 @@ class LocationService:
         total = self.queries.count_matching_cities(term=term, state=state)
 
         if total == 0:
-            return {"results": [], "page": page, "per_page": per_page, "total": 0, "pages": 0}, 200
+            return {
+                "results": [],
+                "page": page,
+                "per_page": per_page,
+                "total": 0,
+                "pages": 0,
+            }, 200
 
         skip = (page - 1) * per_page
         if total <= skip:
@@ -39,7 +45,14 @@ class LocationService:
                 },
                 "sm_id": sm_id,
             }
-            for uid, city_name, sm_id, state_abbreviation, state_name, _score in rows
+            for (
+                uid,
+                city_name,
+                sm_id,
+                state_abbreviation,
+                state_name,
+                _score,
+            ) in rows
         ]
 
         response = add_pagination_wrapper(
@@ -89,7 +102,14 @@ class LocationService:
                     "name": state_name,
                 },
             }
-            for uid, county_name, fips, state_abbreviation, state_name, _score in rows
+            for (
+                uid,
+                county_name,
+                fips,
+                state_abbreviation,
+                state_name,
+                _score,
+            ) in rows
         ]
 
         response = add_pagination_wrapper(

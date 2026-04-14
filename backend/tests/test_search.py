@@ -2,7 +2,11 @@ import urllib.parse
 import pytest
 
 from backend.database.models.agency import Agency, Unit
-from backend.database.models.infra.locations import CityNode, CountyNode, StateNode
+from backend.database.models.infra.locations import (
+    CityNode,
+    CountyNode,
+    StateNode,
+)
 from backend.database.models.officer import Officer
 from backend.database.models.source import Source
 from backend.queries.search import SearchQueries
@@ -202,7 +206,9 @@ def test_search_filters_by_city_uid_for_agencies(
     unmatched_agency.city_node.connect(other_city)
 
     res = client.get(
-        f"/api/v1/search?query=Example%20Agency&city_uid={example_search_location.uid}",
+        "/api/v1/search"
+        f"?query=Example%20Agency"
+        f"&city_uid={example_search_location.uid}",
         headers={"Authorization": f"Bearer {access_token}"},
     )
 
@@ -240,11 +246,14 @@ def test_search_filters_by_multiple_city_uids_for_agencies(
     results = res.json["results"]
     result_uids = {item["uid"] for item in results}
     assert result_uids == {example_agency.uid, other_agency.uid}
-    uncited_result = next(item for item in results if item["uid"] == other_agency.uid)
+    uncited_result = next(
+        item for item in results if item["uid"] == other_agency.uid
+    )
     assert uncited_result["source"] == "Unknown Source"
 
 
-def test_search_returns_no_results_for_unresolved_location(client, access_token):
+def test_search_returns_no_results_for_unresolved_location(
+        client, access_token):
     res = client.get(
         "/api/v1/search?query=john&city=NotARealCity&state=NY",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -302,7 +311,9 @@ def test_search_filters_by_source_uid(
         example_agency,
         access_token,
         example_source):
-    other_source = Source(name="Another Agency Source", url="www.other.com").save()
+    other_source = Source(
+        name="Another Agency Source", url="www.other.com"
+    ).save()
     unmatched_agency = Agency(
         name="Example Agency West",
         website_url="www.example-west.com",
@@ -314,7 +325,9 @@ def test_search_filters_by_source_uid(
     unmatched_agency.citations.connect(other_source, {})
 
     res = client.get(
-        f"/api/v1/search?query=Example%20Agency&source_uid={example_source.uid}",
+        "/api/v1/search"
+        f"?query=Example%20Agency"
+        f"&source_uid={example_source.uid}",
         headers={"Authorization": f"Bearer {access_token}"},
     )
 
@@ -328,7 +341,9 @@ def test_search_filters_units_by_source_name(
         db_session,
         example_unit,
         access_token):
-    other_source = Source(name="Different Unit Source", url="www.other.com").save()
+    other_source = Source(
+        name="Different Unit Source", url="www.other.com"
+    ).save()
     unmatched_unit = Unit(
         name="Precinct 10",
         hq_state="NY",
@@ -379,7 +394,10 @@ def test_search_filters_by_multiple_source_names(
     second_officer.citations.connect(second_source, {})
 
     res = client.get(
-        "/api/v1/search?query=john&source=Example%20Source&source=Another%20Source",
+        "/api/v1/search"
+        "?query=john"
+        "&source=Example%20Source"
+        "&source=Another%20Source",
         headers={"Authorization": f"Bearer {access_token}"},
     )
 
@@ -395,7 +413,9 @@ def test_search_filters_by_multiple_source_uids(
         example_agency,
         access_token,
         example_source):
-    second_source = Source(name="Another Agency Source", url="www.other.com").save()
+    second_source = Source(
+        name="Another Agency Source", url="www.other.com"
+    ).save()
     second_agency = Agency(
         name="Example Agency West",
         website_url="www.example-west.com",
