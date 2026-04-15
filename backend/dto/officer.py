@@ -29,6 +29,7 @@ class OfficerSearchParams(PaginatedRequest):
     rank: List[str] = []
     unit: List[str] = []
     agency: List[str] = []
+    agency_uid: List[str] = []
     active_after: Optional[str] = None
     active_before: Optional[str] = None
     badge_number: List[str] = Field([], alias="badge_number")
@@ -50,6 +51,10 @@ class OfficerSearchParams(PaginatedRequest):
 
     @field_validator("city", mode="before")
     def normalize_city(cls, value):
+        return normalize_string_or_list(value)
+
+    @field_validator("agency_uid", mode="before")
+    def normalize_agency_uid(cls, value):
         return normalize_string_or_list(value)
 
     @field_validator("city_uid", mode="before")

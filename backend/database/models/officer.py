@@ -177,6 +177,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         rank: str | None = None,
         unit: list[str] | None = None,
         agency: list[str] | None = None,
+        agency_uid: list[str] | None = None,
         badge_number: list[str] | None = None,
         ethnicity: list[str] | None = None,
         active_after: date | None = None,
@@ -210,9 +211,10 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             or active_before
             or badge_number
             or agency
+            or agency_uid
             or city_uids
         )
-        requires_agency_path = bool(agency or city_uids)
+        requires_agency_path = bool(agency or agency_uid or city_uids)
 
         if name:
             match_clauses.append(f"""
@@ -251,6 +253,10 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         if agency:
             where_clauses.append("ANY(n IN $agency WHERE a.name CONTAINS n)")
             params["agency"] = agency
+
+        if agency_uid:
+            where_clauses.append("a.uid IN $agency_uid")
+            params["agency_uid"] = agency_uid
 
         if badge_number:
             where_clauses.append(
