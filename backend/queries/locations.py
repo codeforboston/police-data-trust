@@ -98,8 +98,13 @@ RETURN count(DISTINCT state) AS total
 
 
 NEARBY_CITY_LOOKUP_QUERY = """
-WITH point({longitude: $longitude, latitude: $latitude, crs: 'wgs-84'}) AS user_point
-MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WITH point({
+    longitude: $longitude,
+    latitude: $latitude,
+    crs: 'wgs-84'
+}) AS user_point
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)
+    -[:WITHIN_STATE]->(state:StateNode)
 WHERE city.coordinates IS NOT NULL
 WITH
     city,
@@ -118,7 +123,8 @@ LIMIT $limit
 
 
 PROFILE_CITY_LOOKUP_QUERY = """
-MATCH (city:CityNode {name: $city_name})-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+MATCH (city:CityNode {name: $city_name})
+    -[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
 WHERE state.abbreviation = $state
 RETURN
     city.uid AS uid,
@@ -132,7 +138,8 @@ LIMIT 1
 
 
 RICH_CITY_LOOKUP_QUERY = """
-MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)
+    -[:WITHIN_STATE]->(state:StateNode)
 WHERE
     city.coordinates IS NOT NULL
     AND ($state IS NULL OR state.abbreviation = $state)

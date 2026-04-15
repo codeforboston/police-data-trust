@@ -82,10 +82,25 @@ const JURISDICTION_OPTIONS: JurisdictionOption[] = [
 
 const ETHNICITY_OPTIONS: FilterItem[] = [
   { id: "White", title: "White", checked: false, onToggle: () => {} },
-  { id: "Black/African American", title: "Black/African American", checked: false, onToggle: () => {} },
-  { id: "American Indian/Alaska Native", title: "American Indian/Alaska Native", checked: false, onToggle: () => {} },
+  {
+    id: "Black/African American",
+    title: "Black/African American",
+    checked: false,
+    onToggle: () => {}
+  },
+  {
+    id: "American Indian/Alaska Native",
+    title: "American Indian/Alaska Native",
+    checked: false,
+    onToggle: () => {}
+  },
   { id: "Asian", title: "Asian", checked: false, onToggle: () => {} },
-  { id: "Native Hawaiian/Pacific Islander", title: "Native Hawaiian/Pacific Islander", checked: false, onToggle: () => {} },
+  {
+    id: "Native Hawaiian/Pacific Islander",
+    title: "Native Hawaiian/Pacific Islander",
+    checked: false,
+    onToggle: () => {}
+  },
   { id: "Hispanic/Latino", title: "Hispanic/Latino", checked: false, onToggle: () => {} },
   { id: "Unknown", title: "Unknown", checked: false, onToggle: () => {} }
 ]
@@ -121,7 +136,10 @@ const parseLocationSearch = (value: string) => {
     return { cityTerm: "", stateAbbreviation: undefined as string | undefined, stateSearchTerm: "" }
   }
 
-  const commaParts = normalized.split(",").map((part) => part.trim()).filter(Boolean)
+  const commaParts = normalized
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
   if (commaParts.length >= 2) {
     const stateAbbreviation = findStateAbbreviation(commaParts[commaParts.length - 1])
     if (stateAbbreviation) {
@@ -140,7 +158,11 @@ const parseLocationSearch = (value: string) => {
 
     if (lowered.endsWith(` ${stateName}`)) {
       return {
-        cityTerm: normalized.slice(0, normalized.length - stateOption.name.length).trim().replace(/,$/, "").trim(),
+        cityTerm: normalized
+          .slice(0, normalized.length - stateOption.name.length)
+          .trim()
+          .replace(/,$/, "")
+          .trim(),
         stateAbbreviation: stateOption.abbreviation,
         stateSearchTerm: stateOption.name
       }
@@ -148,14 +170,22 @@ const parseLocationSearch = (value: string) => {
 
     if (lowered.endsWith(` ${stateAbbreviation}`)) {
       return {
-        cityTerm: normalized.slice(0, normalized.length - stateOption.abbreviation.length).trim().replace(/,$/, "").trim(),
+        cityTerm: normalized
+          .slice(0, normalized.length - stateOption.abbreviation.length)
+          .trim()
+          .replace(/,$/, "")
+          .trim(),
         stateAbbreviation: stateOption.abbreviation,
         stateSearchTerm: stateOption.abbreviation
       }
     }
   }
 
-  return { cityTerm: normalized, stateAbbreviation: undefined as string | undefined, stateSearchTerm: normalized }
+  return {
+    cityTerm: normalized,
+    stateAbbreviation: undefined as string | undefined,
+    stateSearchTerm: normalized
+  }
 }
 
 const fetchFilterOptions = async (url: string, accessToken: string, signal: AbortSignal) => {
@@ -307,11 +337,7 @@ const Filter = () => {
           url = `${apiBaseUrl}${API_ROUTES.agencies.relevant}?${params.toString()}`
         }
 
-        const data = await fetchFilterOptions(
-          url,
-          accessToken,
-          abortController.signal
-        )
+        const data = await fetchFilterOptions(url, accessToken, abortController.signal)
         const results = Array.isArray(data.results) ? data.results : []
         const normalized = results
           .map((item: Record<string, unknown>) => ({
@@ -456,7 +482,11 @@ const Filter = () => {
   }, [accessToken, hasHydrated, locationSearch, tab])
 
   useEffect(() => {
-    if ((tab !== "all" && tab !== "agencies" && tab !== "officers") || !hasHydrated || !accessToken) {
+    if (
+      (tab !== "all" && tab !== "agencies" && tab !== "officers") ||
+      !hasHydrated ||
+      !accessToken
+    ) {
       setNearbyCityOptions([])
       if (!hasHydrated || !accessToken) {
         setLocationStatus("idle")
@@ -784,11 +814,7 @@ type LocationFilterGroupProps = {
   relevantCities: CityOption[]
   locationStatus: "idle" | "loading" | "ready" | "denied" | "unavailable"
   onRequestNearbyCities: () => void | Promise<void>
-  onFiltersChange: (filters: {
-    state?: string[]
-    city?: string[]
-    cityUid?: string[]
-  }) => void
+  onFiltersChange: (filters: { state?: string[]; city?: string[]; cityUid?: string[] }) => void
 }
 
 const LocationFilterGroup = ({
@@ -817,11 +843,7 @@ const LocationFilterGroup = ({
   const locationGroups = useMemo<LocationStateGroup[]>(() => {
     const stateMap = new Map<string, LocationStateGroup>()
 
-    const ensureState = (
-      abbreviation: string,
-      name?: string,
-      id?: string
-    ): LocationStateGroup => {
+    const ensureState = (abbreviation: string, name?: string, id?: string): LocationStateGroup => {
       const existing = stateMap.get(abbreviation)
       if (existing) {
         if (name && existing.name === abbreviation) {

@@ -86,16 +86,19 @@ CALL (a) {
 """
 
 PROFILE_AGENCY_LOOKUP_QUERY = """
-MATCH (city:CityNode {name: $city_name})-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+MATCH (city:CityNode {name: $city_name})
+    -[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
 WHERE state.abbreviation = $state
 MATCH (a:Agency)-[:LOCATED_IN]->(city)
 WHERE NOT a.uid IN $exclude_uids
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(o:Officer)
   RETURN count(DISTINCT o) AS officer_count
 }
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(:Officer)
       -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
   RETURN count(DISTINCT c) AS complaint_count
 }
@@ -108,12 +111,15 @@ RETURN
   a.jurisdiction AS jurisdiction,
   officer_count,
   complaint_count
-ORDER BY complaint_count DESC, officer_count DESC, agency_name ASC
+ORDER BY complaint_count DESC,
+    officer_count DESC,
+    agency_name ASC
 LIMIT $limit
 """
 
 RICH_AGENCY_LOOKUP_QUERY = """
-MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)
+    -[:WITHIN_STATE]->(state:StateNode)
 WHERE
   city.coordinates IS NOT NULL
   AND ($state IS NULL OR state.abbreviation = $state)
@@ -124,11 +130,13 @@ MATCH (a:Agency)-[:LOCATED_IN]->(city)
 WHERE NOT a.uid IN $exclude_uids
 WITH DISTINCT a, city, state, population
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(o:Officer)
   RETURN count(DISTINCT o) AS officer_count
 }
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(:Officer)
       -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
   RETURN count(DISTINCT c) AS complaint_count
 }
@@ -142,21 +150,35 @@ RETURN
   officer_count,
   complaint_count,
   population
-ORDER BY complaint_count DESC, officer_count DESC, population DESC, agency_name ASC
+ORDER BY complaint_count DESC,
+    officer_count DESC,
+    population DESC,
+    agency_name ASC
 LIMIT $limit
 """
 
 NEARBY_AGENCY_LOOKUP_QUERY = """
-WITH point({longitude: $longitude, latitude: $latitude, crs: 'wgs-84'}) AS user_point
-MATCH (a:Agency)-[:LOCATED_IN]->(city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WITH point({
+    longitude: $longitude,
+    latitude: $latitude,
+    crs: 'wgs-84'
+}) AS user_point
+MATCH (a:Agency)-[:LOCATED_IN]->(city:CityNode)
+    -[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
 WHERE city.coordinates IS NOT NULL AND NOT a.uid IN $exclude_uids
-WITH DISTINCT a, city, state, point.distance(user_point, city.coordinates) AS distance_meters
+WITH DISTINCT
+    a,
+    city,
+    state,
+    point.distance(user_point, city.coordinates) AS distance_meters
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(o:Officer)
   RETURN count(DISTINCT o) AS officer_count
 }
 CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
+      -(:Employment)-[:HELD_BY]-(:Officer)
       -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
   RETURN count(DISTINCT c) AS complaint_count
 }
@@ -170,7 +192,10 @@ RETURN
   officer_count,
   complaint_count,
   distance_meters
-ORDER BY distance_meters ASC, complaint_count DESC, officer_count DESC, agency_name ASC
+ORDER BY distance_meters ASC,
+    complaint_count DESC,
+    officer_count DESC,
+    agency_name ASC
 LIMIT $limit
 """
 

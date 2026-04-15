@@ -1,7 +1,12 @@
 import React from "react"
 import { vi, describe, it, expect, beforeEach } from "vitest"
 import { render, act, waitFor } from "@testing-library/react"
-import { SearchProvider, buildApiParams, parseSearchState, useSearch } from "@/providers/SearchProvider"
+import {
+  SearchProvider,
+  buildApiParams,
+  parseSearchState,
+  useSearch
+} from "@/providers/SearchProvider"
 
 const mockPush = vi.fn()
 const mockSearchParams = new URLSearchParams(

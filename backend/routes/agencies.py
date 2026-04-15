@@ -184,7 +184,14 @@ def get_all_agencies():
     try:
         params = AgencyQueryParams(**args_to_dict(
             request.args,
-            always_list={"city", "city_uid", "state", "source", "source_uid", "jurisdiction"},
+            always_list={
+                "city",
+                "city_uid",
+                "state",
+                "source",
+                "source_uid",
+                "jurisdiction",
+            },
         ))
     except Exception as e:
         logging.debug(f"Invalid query params: {e}")

@@ -237,7 +237,7 @@ const hasSearchCriteria = (state: SearchState) => {
   }
 
   return Boolean(
-      state.term ||
+    state.term ||
       state.state.length > 0 ||
       state.city.length > 0 ||
       state.cityUid.length > 0 ||

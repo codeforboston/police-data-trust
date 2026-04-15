@@ -217,7 +217,10 @@ class LocationService:
         excluded_uids: list[str] = []
 
         if user_city and user_state:
-            row = self.queries.fetch_profile_city(city_name=user_city, state=user_state)
+            row = self.queries.fetch_profile_city(
+                city_name=user_city,
+                state=user_state,
+            )
             if row:
                 uid, city_name, sm_id, state_abbreviation, state_name = row
                 results.append(
@@ -252,7 +255,14 @@ class LocationService:
                     "sm_id": sm_id,
                     "reason": "data_rich",
                 }
-                for uid, city_name, sm_id, state_abbreviation, state_name, *_rest in rows
+                for (
+                    uid,
+                    city_name,
+                    sm_id,
+                    state_abbreviation,
+                    state_name,
+                    *_rest,
+                ) in rows
             )
             excluded_uids.extend([row[0] for row in rows])
 
@@ -273,7 +283,14 @@ class LocationService:
                     "sm_id": sm_id,
                     "reason": "data_rich",
                 }
-                for uid, city_name, sm_id, state_abbreviation, state_name, *_rest in rows
+                for (
+                    uid,
+                    city_name,
+                    sm_id,
+                    state_abbreviation,
+                    state_name,
+                    *_rest,
+                ) in rows
             )
 
         return {
