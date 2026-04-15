@@ -53,3 +53,13 @@ class StateLookupParams(PaginatedRequest):
             raise ValueError("term is required")
 
         return normalized
+
+
+class NearbyCityLookupParams(PaginatedRequest):
+    latitude: float = Field(..., ge=-90, le=90)
+    longitude: float = Field(..., ge=-180, le=180)
+    per_page: int = Field(5, ge=1, le=25)
+
+
+class RelevantCityLookupParams(PaginatedRequest):
+    per_page: int = Field(5, ge=1, le=25)

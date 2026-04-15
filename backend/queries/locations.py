@@ -97,6 +97,75 @@ RETURN count(DISTINCT state) AS total
 """
 
 
+NEARBY_CITY_LOOKUP_QUERY = """
+WITH point({longitude: $longitude, latitude: $latitude, crs: 'wgs-84'}) AS user_point
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE city.coordinates IS NOT NULL
+WITH
+    city,
+    state,
+    point.distance(user_point, city.coordinates) AS distance_meters
+RETURN
+    city.uid AS uid,
+    city.name AS city_name,
+    city.sm_id AS sm_id,
+    state.abbreviation AS state_abbreviation,
+    state.name AS state_name,
+    distance_meters
+ORDER BY distance_meters ASC, coalesce(city.population, 0) DESC, city.name ASC
+LIMIT $limit
+"""
+
+
+PROFILE_CITY_LOOKUP_QUERY = """
+MATCH (city:CityNode {name: $city_name})-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE state.abbreviation = $state
+RETURN
+    city.uid AS uid,
+    city.name AS city_name,
+    city.sm_id AS sm_id,
+    state.abbreviation AS state_abbreviation,
+    state.name AS state_name
+ORDER BY coalesce(city.population, 0) DESC, city.name ASC
+LIMIT 1
+"""
+
+
+RICH_CITY_LOOKUP_QUERY = """
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE
+    city.coordinates IS NOT NULL
+    AND ($state IS NULL OR state.abbreviation = $state)
+    AND NOT city.uid IN $exclude_uids
+WITH city, state, coalesce(city.population, 0) AS population
+ORDER BY population DESC, city.name ASC
+LIMIT $population_pool_size
+OPTIONAL MATCH (a:Agency)-[:LOCATED_IN]->(city)
+OPTIONAL MATCH (c:Complaint)-[:LOCATED_IN]->(city)
+WITH
+    city,
+    state,
+    count(DISTINCT a) AS agency_count,
+    count(DISTINCT c) AS complaint_count,
+    population
+RETURN
+    city.uid AS uid,
+    city.name AS city_name,
+    city.sm_id AS sm_id,
+    state.abbreviation AS state_abbreviation,
+    state.name AS state_name,
+    agency_count,
+    complaint_count,
+    population
+ORDER BY
+    agency_count DESC,
+    complaint_count DESC,
+    population DESC,
+    city.name ASC
+LIMIT $limit
+"""
+
+
 class LocationQueries:
     def build_city_lookup_term(self, term: str) -> str:
         normalized = " ".join(term.split())
@@ -182,4 +251,49 @@ class LocationQueries:
             "limit": limit,
         }
         rows, _ = db.cypher_query(STATE_LOOKUP_QUERY, params)
+        return rows
+
+    def fetch_nearby_cities(
+        self,
+        *,
+        latitude: float,
+        longitude: float,
+        limit: int = 5,
+    ):
+        params = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "limit": limit,
+        }
+        rows, _ = db.cypher_query(NEARBY_CITY_LOOKUP_QUERY, params)
+        return rows
+
+    def fetch_profile_city(
+        self,
+        *,
+        city_name: str,
+        state: str,
+    ):
+        params = {
+            "city_name": " ".join(city_name.split()),
+            "state": state.strip().upper(),
+        }
+        rows, _ = db.cypher_query(PROFILE_CITY_LOOKUP_QUERY, params)
+        return rows[0] if rows else None
+
+    def fetch_rich_cities(
+        self,
+        *,
+        state: str | None = None,
+        exclude_uids: list[str] | None = None,
+        limit: int = 5,
+        population_pool_size: int = 100,
+    ):
+        params = {
+            "state": state.strip().upper() if state else None,
+            "exclude_uids": exclude_uids or [],
+            "limit": limit,
+            "population_pool_size": population_pool_size,
+        }
+        rows, _ = db.cypher_query(RICH_CITY_LOOKUP_QUERY, params)
         return rows

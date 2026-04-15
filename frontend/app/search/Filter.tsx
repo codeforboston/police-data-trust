@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { type ReactNode, useEffect, useMemo, useState } from "react"
 import TextField from "@mui/material/TextField"
 import styles from "./filter.module.css"
 import {
@@ -9,6 +9,7 @@ import {
   InputAdornment,
   FormGroup,
   Box,
+  Button,
   FormControlLabel,
   Typography
 } from "@mui/material"
@@ -75,11 +76,14 @@ const Filter = () => {
   const [citySearch, setCitySearch] = useState("")
   const [sourceSearch, setSourceSearch] = useState("")
   const [cityOptions, setCityOptions] = useState<CityOption[]>([])
+  const [nearbyCityOptions, setNearbyCityOptions] = useState<CityOption[]>([])
+  const [relevantCityOptions, setRelevantCityOptions] = useState<CityOption[]>([])
   const [sourceOptions, setSourceOptions] = useState<SourceOption[]>([])
   const [defaultSourceOptions, setDefaultSourceOptions] = useState<SourceOption[]>([])
   const [hasMoreThanFiveSources, setHasMoreThanFiveSources] = useState(false)
   const [cityLoading, setCityLoading] = useState(false)
   const [sourceLoading, setSourceLoading] = useState(false)
+  const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "ready" | "denied" | "unavailable">("idle")
 
   useEffect(() => {
     if (tab !== "all") {
@@ -148,6 +152,40 @@ const Filter = () => {
     }
 
     if (!hasHydrated || !accessToken) {
+      setRelevantCityOptions([])
+      return
+    }
+
+    const abortController = new AbortController()
+
+    const loadRelevantCities = async () => {
+      try {
+        const data = await fetchFilterOptions(
+          `${apiBaseUrl}/locations/cities/relevant?per_page=5`,
+          accessToken,
+          abortController.signal
+        )
+        setRelevantCityOptions(Array.isArray(data.results) ? data.results : [])
+      } catch (error) {
+        if (!isBenignFilterFetchError(error, abortController.signal)) {
+          console.error("Failed to load relevant cities", error)
+        }
+      }
+    }
+
+    void loadRelevantCities()
+
+    return () => {
+      abortController.abort()
+    }
+  }, [accessToken, hasHydrated, tab])
+
+  useEffect(() => {
+    if (tab !== "all") {
+      return
+    }
+
+    if (!hasHydrated || !accessToken) {
       setCityOptions([])
       setCityLoading(false)
       return
@@ -197,6 +235,133 @@ const Filter = () => {
     }
   }, [accessToken, citySearch, hasHydrated, tab])
 
+  useEffect(() => {
+    if (tab !== "all" || !hasHydrated || !accessToken) {
+      setNearbyCityOptions([])
+      if (!hasHydrated || !accessToken) {
+        setLocationStatus("idle")
+      }
+      return
+    }
+
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocationStatus("unavailable")
+      return
+    }
+
+    let cancelled = false
+
+    const loadNearbyCities = async (latitude: number, longitude: number) => {
+      setLocationStatus("loading")
+      setCityLoading(true)
+
+      try {
+        const params = new URLSearchParams({
+          latitude: String(latitude),
+          longitude: String(longitude),
+          per_page: "5"
+        })
+        const data = await fetchFilterOptions(
+          `${apiBaseUrl}/locations/cities/nearby?${params.toString()}`,
+          accessToken,
+          new AbortController().signal
+        )
+
+        if (cancelled) {
+          return
+        }
+
+        setNearbyCityOptions(Array.isArray(data.results) ? data.results : [])
+        setLocationStatus("ready")
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to load nearby cities", error)
+          setLocationStatus("unavailable")
+        }
+      } finally {
+        if (!cancelled) {
+          setCityLoading(false)
+        }
+      }
+    }
+
+    const maybeAutoLocate = async () => {
+      if (!("permissions" in navigator) || !navigator.permissions?.query) {
+        return
+      }
+
+      try {
+        const permissionStatus = await navigator.permissions.query({ name: "geolocation" })
+        if (cancelled) {
+          return
+        }
+
+        if (permissionStatus.state === "granted") {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              void loadNearbyCities(position.coords.latitude, position.coords.longitude)
+            },
+            () => {
+              if (!cancelled) {
+                setLocationStatus("denied")
+              }
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+          )
+        } else if (permissionStatus.state === "denied") {
+          setLocationStatus("denied")
+        }
+      } catch {
+        // Ignore permission API failures and leave manual trigger available.
+      }
+    }
+
+    void maybeAutoLocate()
+
+    return () => {
+      cancelled = true
+    }
+  }, [accessToken, hasHydrated, tab])
+
+  const requestNearbyCities = async () => {
+    if (!accessToken || typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocationStatus("unavailable")
+      return
+    }
+
+    setLocationStatus("loading")
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+      try {
+        setCityLoading(true)
+        const params = new URLSearchParams({
+          latitude: String(position.coords.latitude),
+          longitude: String(position.coords.longitude),
+            per_page: "5"
+          })
+          const data = await fetchFilterOptions(
+            `${apiBaseUrl}/locations/cities/nearby?${params.toString()}`,
+            accessToken,
+            new AbortController().signal
+          )
+          setNearbyCityOptions(Array.isArray(data.results) ? data.results : [])
+          setLocationStatus("ready")
+        } catch (error) {
+          console.error("Failed to load nearby cities", error)
+          setLocationStatus("unavailable")
+        } finally {
+          setCityLoading(false)
+        }
+      },
+      () => {
+        setLocationStatus("denied")
+        setCityLoading(false)
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+    )
+  }
+
   const selectedCityItems = useMemo<FilterItem[]>(
     () =>
       city.map((label, index) => ({
@@ -215,7 +380,7 @@ const Filter = () => {
 
   const availableCityItems = useMemo<FilterItem[]>(
     () =>
-      cityOptions
+      (citySearch.trim() ? cityOptions : nearbyCityOptions.length > 0 ? nearbyCityOptions : relevantCityOptions)
         .filter((option) => !cityUid.includes(option.uid))
         .map((option) => ({
           id: option.uid,
@@ -228,7 +393,7 @@ const Filter = () => {
             })
           }
         })),
-    [city, cityOptions, cityUid, setFilters]
+    [city, cityOptions, cityUid, nearbyCityOptions, relevantCityOptions, citySearch, setFilters]
   )
 
   const sourceItems = useMemo<FilterItem[]>(
@@ -289,6 +454,24 @@ const Filter = () => {
           searchValue={citySearch}
           onSearchChange={setCitySearch}
           loading={cityLoading}
+          helperAction={
+            !citySearch.trim() && locationStatus !== "ready" ? (
+              <Button size="small" onClick={() => void requestNearbyCities()}>
+                Use my location
+              </Button>
+            ) : null
+          }
+          helperText={
+            !citySearch.trim() && locationStatus === "ready"
+              ? "Nearby cities"
+              : !citySearch.trim() && locationStatus === "denied"
+                ? relevantCityOptions.length > 0
+                  ? "Location access denied. Showing profile-based or data-rich cities."
+                  : "Location access denied. Search manually instead."
+              : !citySearch.trim() && relevantCityOptions.length > 0
+                ? "Suggested from your profile or cities with rich data"
+                : undefined
+          }
         />
         <FilterGroup
           withSearch={showSourceSearch}
@@ -314,6 +497,8 @@ type FilterGroupProps = {
   loading?: boolean
   searchPlaceholder?: string
   emptyMessage?: string
+  helperAction?: ReactNode
+  helperText?: string
 }
 
 const FilterGroup = ({
@@ -324,13 +509,23 @@ const FilterGroup = ({
   onSearchChange,
   loading = false,
   searchPlaceholder = "search city, state...",
-  emptyMessage = "No matching results"
+  emptyMessage = "No matching results",
+  helperAction,
+  helperText
 }: FilterGroupProps) => {
   return (
     <FormGroup sx={{ marginBottom: "1.5rem" }}>
-      <Typography variant="subtitle1" sx={{ marginBlockEnd: "0.5rem", fontWeight: "600" }}>
-        {title}
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlockEnd: "0.5rem" }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
+          {title}
+        </Typography>
+        {helperAction}
+      </Box>
+      {helperText ? (
+        <Typography variant="body2" color="text.secondary" sx={{ marginBlockEnd: "0.5rem" }}>
+          {helperText}
+        </Typography>
+      ) : null}
       {withSearch && (
         <TextField
           id="search"
