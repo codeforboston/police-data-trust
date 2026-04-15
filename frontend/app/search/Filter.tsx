@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   Typography
 } from "@mui/material"
-import { Search } from "@mui/icons-material"
+import { ExpandLess, ExpandMore, Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
 import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
@@ -25,6 +25,12 @@ type CityOption = {
     abbreviation?: string
     name?: string
   }
+}
+
+type StateOption = {
+  uid: string
+  name: string
+  abbreviation: string
 }
 
 type SourceOption = {
@@ -39,8 +45,27 @@ type FilterItem = {
   onToggle: () => void
 }
 
+type LocationStateGroup = {
+  id: string
+  name: string
+  abbreviation: string
+  cities: CityOption[]
+}
+
 const formatCityLabel = (city: CityOption) =>
   city.state?.abbreviation ? `${city.name}, ${city.state.abbreviation}` : city.name
+
+const parseCityLabel = (label: string) => {
+  const parts = label.split(",").map((part) => part.trim())
+  if (parts.length >= 2) {
+    return {
+      name: parts.slice(0, -1).join(", "),
+      stateAbbreviation: parts[parts.length - 1]
+    }
+  }
+
+  return { name: label, stateAbbreviation: undefined }
+}
 
 const fetchFilterOptions = async (url: string, accessToken: string, signal: AbortSignal) => {
   const response = await fetch(url, {
@@ -69,21 +94,23 @@ const isBenignFilterFetchError = (error: unknown, signal: AbortSignal) => {
 
 const Filter = () => {
   const {
-    state: { tab, city, cityUid, source, sourceUid },
+    state: { tab, state, city, cityUid, source, sourceUid },
     setFilters
   } = useSearch()
   const { accessToken, hasHydrated } = useAuth()
-  const [citySearch, setCitySearch] = useState("")
-  const [sourceSearch, setSourceSearch] = useState("")
-  const [cityOptions, setCityOptions] = useState<CityOption[]>([])
+  const [locationSearch, setLocationSearch] = useState("")
+  const [searchedCities, setSearchedCities] = useState<CityOption[]>([])
+  const [searchedStates, setSearchedStates] = useState<StateOption[]>([])
   const [nearbyCityOptions, setNearbyCityOptions] = useState<CityOption[]>([])
   const [relevantCityOptions, setRelevantCityOptions] = useState<CityOption[]>([])
+  const [sourceSearch, setSourceSearch] = useState("")
   const [sourceOptions, setSourceOptions] = useState<SourceOption[]>([])
-  const [defaultSourceOptions, setDefaultSourceOptions] = useState<SourceOption[]>([])
   const [hasMoreThanFiveSources, setHasMoreThanFiveSources] = useState(false)
-  const [cityLoading, setCityLoading] = useState(false)
+  const [locationLoading, setLocationLoading] = useState(false)
   const [sourceLoading, setSourceLoading] = useState(false)
-  const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "ready" | "denied" | "unavailable">("idle")
+  const [locationStatus, setLocationStatus] = useState<
+    "idle" | "loading" | "ready" | "denied" | "unavailable"
+  >("idle")
 
   useEffect(() => {
     if (tab !== "all") {
@@ -92,7 +119,6 @@ const Filter = () => {
 
     if (!hasHydrated || !accessToken) {
       setSourceOptions([])
-      setDefaultSourceOptions([])
       setHasMoreThanFiveSources(false)
       setSourceLoading(false)
       return
@@ -108,6 +134,7 @@ const Filter = () => {
         if (sourceSearch.trim()) {
           params.set("name", sourceSearch.trim())
         }
+
         const data = await fetchFilterOptions(
           `${apiBaseUrl}${API_ROUTES.sources.all}?${params.toString()}`,
           accessToken,
@@ -115,14 +142,8 @@ const Filter = () => {
         )
         const results = Array.isArray(data.results) ? data.results : []
 
-        if (sourceSearch.trim()) {
-          setSourceOptions(results)
-        } else {
-          setHasMoreThanFiveSources(results.length > 5)
-          const defaultOptions = results.slice(0, 5)
-          setDefaultSourceOptions(defaultOptions)
-          setSourceOptions(defaultOptions)
-        }
+        setHasMoreThanFiveSources(results.length > 5)
+        setSourceOptions(sourceSearch.trim() ? results : results.slice(0, 5))
       } catch (error) {
         if (!isBenignFilterFetchError(error, abortController.signal)) {
           console.error("Failed to load search filter sources", error)
@@ -186,45 +207,62 @@ const Filter = () => {
     }
 
     if (!hasHydrated || !accessToken) {
-      setCityOptions([])
-      setCityLoading(false)
+      setSearchedCities([])
+      setSearchedStates([])
+      setLocationLoading(false)
       return
     }
 
-    if (!citySearch.trim()) {
-      setCityOptions([])
+    if (!locationSearch.trim()) {
+      setSearchedCities([])
+      setSearchedStates([])
+      setLocationLoading(false)
       return
     }
 
     const abortController = new AbortController()
 
-    const loadCities = async () => {
-      setCityLoading(true)
+    const loadLocationSuggestions = async () => {
+      setLocationLoading(true)
 
       try {
-        const params = new URLSearchParams({
-          term: citySearch.trim(),
-          per_page: "25"
+        const cityParams = new URLSearchParams({
+          term: locationSearch.trim(),
+          per_page: "20"
         })
-        const data = await fetchFilterOptions(
-          `${apiBaseUrl}/locations/cities?${params.toString()}`,
-          accessToken,
-          abortController.signal
-        )
-        setCityOptions(Array.isArray(data.results) ? data.results : [])
+        const stateParams = new URLSearchParams({
+          term: locationSearch.trim(),
+          per_page: "10"
+        })
+
+        const [cityData, stateData] = await Promise.all([
+          fetchFilterOptions(
+            `${apiBaseUrl}/locations/cities?${cityParams.toString()}`,
+            accessToken,
+            abortController.signal
+          ),
+          fetchFilterOptions(
+            `${apiBaseUrl}/locations/states?${stateParams.toString()}`,
+            accessToken,
+            abortController.signal
+          )
+        ])
+
+        setSearchedCities(Array.isArray(cityData.results) ? cityData.results : [])
+        setSearchedStates(Array.isArray(stateData.results) ? stateData.results : [])
       } catch (error) {
         if (!isBenignFilterFetchError(error, abortController.signal)) {
-          console.error("Failed to load search filter locations", error)
+          console.error("Failed to load location suggestions", error)
         }
       } finally {
-        setCityLoading(false)
+        setLocationLoading(false)
       }
     }
 
     const timeoutId = window.setTimeout(() => {
-      loadCities().catch((error) => {
+      loadLocationSuggestions().catch((error) => {
         if (!isBenignFilterFetchError(error, abortController.signal)) {
-          console.error("Unhandled location load error", error)
+          console.error("Unhandled location suggestion error", error)
         }
       })
     }, 250)
@@ -233,7 +271,7 @@ const Filter = () => {
       window.clearTimeout(timeoutId)
       abortController.abort()
     }
-  }, [accessToken, citySearch, hasHydrated, tab])
+  }, [accessToken, hasHydrated, locationSearch, tab])
 
   useEffect(() => {
     if (tab !== "all" || !hasHydrated || !accessToken) {
@@ -253,7 +291,7 @@ const Filter = () => {
 
     const loadNearbyCities = async (latitude: number, longitude: number) => {
       setLocationStatus("loading")
-      setCityLoading(true)
+      setLocationLoading(true)
 
       try {
         const params = new URLSearchParams({
@@ -280,7 +318,7 @@ const Filter = () => {
         }
       } finally {
         if (!cancelled) {
-          setCityLoading(false)
+          setLocationLoading(false)
         }
       }
     }
@@ -312,7 +350,7 @@ const Filter = () => {
           setLocationStatus("denied")
         }
       } catch {
-        // Ignore permission API failures and leave manual trigger available.
+        // keep manual trigger available
       }
     }
 
@@ -330,14 +368,14 @@ const Filter = () => {
     }
 
     setLocationStatus("loading")
+    setLocationLoading(true)
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-      try {
-        setCityLoading(true)
-        const params = new URLSearchParams({
-          latitude: String(position.coords.latitude),
-          longitude: String(position.coords.longitude),
+        try {
+          const params = new URLSearchParams({
+            latitude: String(position.coords.latitude),
+            longitude: String(position.coords.longitude),
             per_page: "5"
           })
           const data = await fetchFilterOptions(
@@ -351,79 +389,44 @@ const Filter = () => {
           console.error("Failed to load nearby cities", error)
           setLocationStatus("unavailable")
         } finally {
-          setCityLoading(false)
+          setLocationLoading(false)
         }
       },
       () => {
         setLocationStatus("denied")
-        setCityLoading(false)
+        setLocationLoading(false)
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
     )
   }
 
-  const selectedCityItems = useMemo<FilterItem[]>(
-    () =>
-      city.map((label, index) => ({
-        id: cityUid[index] ?? `selected-city-${label}`,
-        title: label,
+  const sourceItems = useMemo<FilterItem[]>(
+    () => [
+      ...source.map((name, index) => ({
+        id: sourceUid[index] ?? `selected-source-${name}`,
+        title: name,
         checked: true,
         onToggle: () => {
           setFilters({
-            city: city.filter((_, cityIndex) => cityIndex !== index),
-            cityUid: cityUid.filter((_, cityIndex) => cityIndex !== index)
+            source: source.filter((_, sourceIndex) => sourceIndex !== index),
+            sourceUid: sourceUid.filter((_, sourceIndex) => sourceIndex !== index)
           })
         }
       })),
-    [city, cityUid, setFilters]
-  )
-
-  const availableCityItems = useMemo<FilterItem[]>(
-    () =>
-      (citySearch.trim() ? cityOptions : nearbyCityOptions.length > 0 ? nearbyCityOptions : relevantCityOptions)
-        .filter((option) => !cityUid.includes(option.uid))
+      ...sourceOptions
+        .filter((option) => !sourceUid.includes(option.uid))
         .map((option) => ({
           id: option.uid,
-          title: formatCityLabel(option),
+          title: option.name,
           checked: false,
           onToggle: () => {
             setFilters({
-              city: [...city, formatCityLabel(option)],
-              cityUid: [...cityUid, option.uid]
+              source: [...source, option.name],
+              sourceUid: [...sourceUid, option.uid]
             })
           }
-        })),
-    [city, cityOptions, cityUid, nearbyCityOptions, relevantCityOptions, citySearch, setFilters]
-  )
-
-  const sourceItems = useMemo<FilterItem[]>(
-    () =>
-      [
-        ...source.map((name, index) => ({
-          id: sourceUid[index] ?? `selected-source-${name}`,
-          title: name,
-          checked: true,
-          onToggle: () => {
-            setFilters({
-              source: source.filter((_, sourceIndex) => sourceIndex !== index),
-              sourceUid: sourceUid.filter((_, sourceIndex) => sourceIndex !== index)
-            })
-          }
-        })),
-        ...sourceOptions
-          .filter((option) => !sourceUid.includes(option.uid))
-          .map((option) => ({
-            id: option.uid,
-            title: option.name,
-            checked: false,
-            onToggle: () => {
-              setFilters({
-                source: [...source, option.name],
-                sourceUid: [...sourceUid, option.uid]
-              })
-            }
-          }))
-      ],
+        }))
+    ],
     [source, sourceOptions, sourceUid, setFilters]
   )
 
@@ -447,31 +450,20 @@ const Filter = () => {
     <section className={styles.filterWrapper}>
       <h3 className={styles.filterTitleText}>Filters</h3>
       <div className={styles.filterContentsWrapper}>
-        <FilterGroup
-          withSearch
-          filters={[...selectedCityItems, ...availableCityItems]}
-          title="Location"
-          searchValue={citySearch}
-          onSearchChange={setCitySearch}
-          loading={cityLoading}
-          helperAction={
-            !citySearch.trim() && locationStatus !== "ready" ? (
-              <Button size="small" onClick={() => void requestNearbyCities()}>
-                Use my location
-              </Button>
-            ) : null
-          }
-          helperText={
-            !citySearch.trim() && locationStatus === "ready"
-              ? "Nearby cities"
-              : !citySearch.trim() && locationStatus === "denied"
-                ? relevantCityOptions.length > 0
-                  ? "Location access denied. Showing profile-based or data-rich cities."
-                  : "Location access denied. Search manually instead."
-              : !citySearch.trim() && relevantCityOptions.length > 0
-                ? "Suggested from your profile or cities with rich data"
-                : undefined
-          }
+        <LocationFilterGroup
+          loading={locationLoading}
+          searchValue={locationSearch}
+          onSearchChange={setLocationSearch}
+          selectedStates={state}
+          selectedCities={city}
+          selectedCityUids={cityUid}
+          searchedStates={searchedStates}
+          searchedCities={searchedCities}
+          nearbyCities={nearbyCityOptions}
+          relevantCities={relevantCityOptions}
+          locationStatus={locationStatus}
+          onRequestNearbyCities={requestNearbyCities}
+          onFiltersChange={setFilters}
         />
         <FilterGroup
           withSearch={showSourceSearch}
@@ -485,6 +477,320 @@ const Filter = () => {
         />
       </div>
     </section>
+  )
+}
+
+type LocationFilterGroupProps = {
+  loading: boolean
+  searchValue: string
+  onSearchChange: (value: string) => void
+  selectedStates: string[]
+  selectedCities: string[]
+  selectedCityUids: string[]
+  searchedStates: StateOption[]
+  searchedCities: CityOption[]
+  nearbyCities: CityOption[]
+  relevantCities: CityOption[]
+  locationStatus: "idle" | "loading" | "ready" | "denied" | "unavailable"
+  onRequestNearbyCities: () => void | Promise<void>
+  onFiltersChange: (filters: {
+    state?: string[]
+    city?: string[]
+    cityUid?: string[]
+  }) => void
+}
+
+const LocationFilterGroup = ({
+  loading,
+  searchValue,
+  onSearchChange,
+  selectedStates,
+  selectedCities,
+  selectedCityUids,
+  searchedStates,
+  searchedCities,
+  nearbyCities,
+  relevantCities,
+  locationStatus,
+  onRequestNearbyCities,
+  onFiltersChange
+}: LocationFilterGroupProps) => {
+  const [expandedStates, setExpandedStates] = useState<Record<string, boolean>>({})
+
+  const baseCities = searchValue.trim()
+    ? searchedCities
+    : nearbyCities.length > 0
+      ? nearbyCities
+      : relevantCities
+
+  const locationGroups = useMemo<LocationStateGroup[]>(() => {
+    const stateMap = new Map<string, LocationStateGroup>()
+
+    const ensureState = (
+      abbreviation: string,
+      name?: string,
+      id?: string
+    ): LocationStateGroup => {
+      const existing = stateMap.get(abbreviation)
+      if (existing) {
+        if (name && existing.name === abbreviation) {
+          existing.name = name
+        }
+        return existing
+      }
+
+      const nextState: LocationStateGroup = {
+        id: id ?? abbreviation,
+        name: name ?? abbreviation,
+        abbreviation,
+        cities: []
+      }
+      stateMap.set(abbreviation, nextState)
+      return nextState
+    }
+
+    searchedStates.forEach((stateOption) => {
+      ensureState(stateOption.abbreviation, stateOption.name, stateOption.uid)
+    })
+
+    baseCities.forEach((cityOption) => {
+      const abbreviation = cityOption.state?.abbreviation
+      if (!abbreviation) {
+        return
+      }
+
+      const group = ensureState(abbreviation, cityOption.state?.name)
+      if (!group.cities.some((existingCity) => existingCity.uid === cityOption.uid)) {
+        group.cities.push(cityOption)
+      }
+    })
+
+    selectedStates.forEach((abbreviation) => {
+      ensureState(abbreviation)
+    })
+
+    selectedCities.forEach((label, index) => {
+      const parsed = parseCityLabel(label)
+      if (!parsed.stateAbbreviation) {
+        return
+      }
+
+      const group = ensureState(parsed.stateAbbreviation)
+      if (!group.cities.some((existingCity) => existingCity.uid === selectedCityUids[index])) {
+        group.cities.push({
+          uid: selectedCityUids[index],
+          name: parsed.name,
+          state: {
+            abbreviation: parsed.stateAbbreviation
+          }
+        })
+      }
+    })
+
+    return Array.from(stateMap.values())
+      .map((group) => ({
+        ...group,
+        cities: [...group.cities].sort((left, right) => left.name.localeCompare(right.name))
+      }))
+      .sort((left, right) => left.name.localeCompare(right.name))
+  }, [baseCities, searchedStates, selectedStates, selectedCities, selectedCityUids])
+
+  useEffect(() => {
+    if (!searchValue.trim()) {
+      return
+    }
+
+    setExpandedStates((current) => {
+      const nextState = { ...current }
+      locationGroups.forEach((group) => {
+        nextState[group.abbreviation] = true
+      })
+      return nextState
+    })
+  }, [locationGroups, searchValue])
+
+  const toggleExpanded = (abbreviation: string) => {
+    setExpandedStates((current) => ({
+      ...current,
+      [abbreviation]: !current[abbreviation]
+    }))
+  }
+
+  const toggleState = (group: LocationStateGroup) => {
+    const isSelected = selectedStates.includes(group.abbreviation)
+
+    if (isSelected) {
+      onFiltersChange({
+        state: selectedStates.filter((value) => value !== group.abbreviation)
+      })
+      return
+    }
+
+    const cityIndexesForState = selectedCities
+      .map((label, index) => ({ parsed: parseCityLabel(label), index }))
+      .filter(({ parsed }) => parsed.stateAbbreviation === group.abbreviation)
+      .map(({ index }) => index)
+
+    onFiltersChange({
+      state: [...selectedStates, group.abbreviation],
+      city: selectedCities.filter((_, index) => !cityIndexesForState.includes(index)),
+      cityUid: selectedCityUids.filter((_, index) => !cityIndexesForState.includes(index))
+    })
+  }
+
+  const toggleCity = (cityOption: CityOption) => {
+    const stateAbbreviation = cityOption.state?.abbreviation
+    if (!stateAbbreviation || selectedStates.includes(stateAbbreviation)) {
+      return
+    }
+
+    const existingIndex = selectedCityUids.indexOf(cityOption.uid)
+    if (existingIndex >= 0) {
+      onFiltersChange({
+        city: selectedCities.filter((_, index) => index !== existingIndex),
+        cityUid: selectedCityUids.filter((_, index) => index !== existingIndex)
+      })
+      return
+    }
+
+    onFiltersChange({
+      city: [...selectedCities, formatCityLabel(cityOption)],
+      cityUid: [...selectedCityUids, cityOption.uid]
+    })
+  }
+
+  const helperText =
+    !searchValue.trim() && locationStatus === "ready"
+      ? "Nearby cities grouped by state"
+      : !searchValue.trim() && locationStatus === "denied"
+        ? relevantCities.length > 0
+          ? "Location access denied. Showing profile-based or data-rich cities."
+          : "Location access denied. Search manually instead."
+        : !searchValue.trim() && relevantCities.length > 0
+          ? "Suggested from your profile or cities with rich data"
+          : undefined
+
+  return (
+    <FormGroup sx={{ marginBottom: "1.5rem" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBlockEnd: "0.5rem"
+        }}
+      >
+        <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
+          Location
+        </Typography>
+        {!searchValue.trim() && locationStatus !== "ready" ? (
+          <Button size="small" onClick={() => void onRequestNearbyCities()}>
+            Use my location
+          </Button>
+        ) : null}
+      </Box>
+      {helperText ? (
+        <Typography variant="body2" color="text.secondary" sx={{ marginBlockEnd: "0.5rem" }}>
+          {helperText}
+        </Typography>
+      ) : null}
+      <TextField
+        id="location-search"
+        variant="outlined"
+        fullWidth
+        value={searchValue}
+        onChange={(event) => onSearchChange(event.target.value)}
+        sx={{
+          marginBottom: "1rem",
+          "& .MuiInputBase-root": {
+            height: "40px"
+          }
+        }}
+        placeholder="search city or state..."
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+            endAdornment: loading ? <CircularProgress size={16} /> : undefined
+          }
+        }}
+      />
+      <Box
+        sx={{
+          maxHeight: 320,
+          overflowY: "auto",
+          pr: 0.5
+        }}
+      >
+        {locationGroups.map((group) => {
+          const isStateSelected = selectedStates.includes(group.abbreviation)
+          const selectedChildCount = group.cities.filter((cityOption) =>
+            selectedCityUids.includes(cityOption.uid)
+          ).length
+          const isIndeterminate = !isStateSelected && selectedChildCount > 0
+          const isExpanded =
+            expandedStates[group.abbreviation] ??
+            (Boolean(searchValue.trim()) || isStateSelected || isIndeterminate)
+
+          return (
+            <Box key={group.id} sx={{ marginBottom: "0.25rem" }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Button
+                  size="small"
+                  sx={{ minWidth: 0, padding: "0.25rem", marginRight: "0.25rem" }}
+                  onClick={() => toggleExpanded(group.abbreviation)}
+                >
+                  {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+                </Button>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isStateSelected}
+                      indeterminate={isIndeterminate}
+                      onChange={() => toggleState(group)}
+                    />
+                  }
+                  label={`${group.name}${group.name === group.abbreviation ? "" : ` (${group.abbreviation})`}`}
+                />
+              </Box>
+              {isExpanded ? (
+                <Box sx={{ marginLeft: "2rem" }}>
+                  {group.cities.map((cityOption) => {
+                    const parentSelected = selectedStates.includes(
+                      cityOption.state?.abbreviation ?? ""
+                    )
+                    const cityChecked = parentSelected || selectedCityUids.includes(cityOption.uid)
+
+                    return (
+                      <Box key={cityOption.uid}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={cityChecked}
+                              disabled={parentSelected}
+                              onChange={() => toggleCity(cityOption)}
+                            />
+                          }
+                          label={cityOption.name}
+                        />
+                      </Box>
+                    )
+                  })}
+                </Box>
+              ) : null}
+            </Box>
+          )
+        })}
+      </Box>
+      {locationGroups.length === 0 && !loading && searchValue.trim() ? (
+        <Typography variant="body2" color="text.secondary" className={styles.filterText}>
+          No matching locations
+        </Typography>
+      ) : null}
+    </FormGroup>
   )
 }
 
@@ -515,7 +821,14 @@ const FilterGroup = ({
 }: FilterGroupProps) => {
   return (
     <FormGroup sx={{ marginBottom: "1.5rem" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBlockEnd: "0.5rem" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBlockEnd: "0.5rem"
+        }}
+      >
         <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
           {title}
         </Typography>
@@ -528,7 +841,7 @@ const FilterGroup = ({
       ) : null}
       {withSearch && (
         <TextField
-          id="search"
+          id={`${title.toLowerCase()}-search`}
           variant="outlined"
           fullWidth
           value={searchValue}

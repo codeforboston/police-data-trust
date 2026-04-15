@@ -10,6 +10,7 @@ import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
 export type SearchTab = "all" | "officers" | "agencies" | "units"
 
 export type SearchFilters = {
+  state: string[]
   city: string[]
   cityUid: string[]
   source: string[]
@@ -36,6 +37,7 @@ interface SearchContext {
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
+  state: [],
   city: [],
   cityUid: [],
   source: [],
@@ -100,6 +102,7 @@ const getAllParams = (searchParams: SearchParamReader, name: string) =>
   normalizeStringList(searchParams.getAll?.(name))
 
 const normalizeFilters = (filters: Partial<SearchFilters>): SearchFilters => ({
+  state: normalizeStringList(filters.state),
   city: normalizeStringList(filters.city),
   cityUid: normalizeStringList(filters.cityUid),
   source: normalizeStringList(filters.source),
@@ -117,6 +120,7 @@ export const parseSearchState = (searchParams: SearchParamReader): SearchState =
     term: getNormalizedString(legacyTerm) ?? DEFAULT_STATE.term,
     tab: parseTab(searchParams.get("tab")),
     page: parsePage(searchParams.get("page")),
+    state: getAllParams(searchParams, "state"),
     city: city.length > 0 ? city : normalizeStringList([searchParams.get("location") ?? ""]),
     cityUid: getAllParams(searchParams, "city_uid"),
     source: source.length > 0 ? source : normalizeStringList([searchParams.get("source") ?? ""]),
@@ -147,6 +151,7 @@ const buildSearchParams = (state: SearchState) => {
 
   appendListParams(params, "city", state.city)
   appendListParams(params, "city_uid", state.cityUid)
+  appendListParams(params, "state", state.state)
   appendListParams(params, "source", state.source)
   appendListParams(params, "source_uid", state.sourceUid)
 
@@ -166,6 +171,7 @@ export const buildApiParams = (state: SearchState) => {
 
   appendListParams(params, "city", state.city)
   appendListParams(params, "city_uid", state.cityUid)
+  appendListParams(params, "state", state.state)
   appendListParams(params, "source", state.source)
   appendListParams(params, "source_uid", state.sourceUid)
 
@@ -178,7 +184,8 @@ export const buildApiParams = (state: SearchState) => {
 
 const hasSearchCriteria = (state: SearchState) => {
   return Boolean(
-    state.term ||
+      state.term ||
+      state.state.length > 0 ||
       state.city.length > 0 ||
       state.cityUid.length > 0 ||
       state.source.length > 0 ||
@@ -216,6 +223,7 @@ function useSearchController(): SearchContext {
         ...state,
         ...patch,
         ...normalizeFilters({
+          state: patch.state ?? state.state,
           city: patch.city ?? state.city,
           cityUid: patch.cityUid ?? state.cityUid,
           source: patch.source ?? state.source,
