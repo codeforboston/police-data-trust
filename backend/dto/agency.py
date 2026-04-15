@@ -35,7 +35,7 @@ class AgencyQueryParams(PaginatedRequest):
     hq_city: str | None = None
     hq_state: str | None = None
     hq_zip: str | None = None
-    jurisdiction: str | None = None
+    jurisdiction: str | list[str] | None = None
     city: str | list[str] | None = None
     city_uid: str | list[str] | None = None
     state: str | list[str] | None = None
@@ -76,6 +76,11 @@ class AgencyQueryParams(PaginatedRequest):
 
     @field_validator("jurisdiction")
     def validate_jurisdiction(cls, v):
+        if isinstance(v, list):
+            invalid = [item for item in v if item not in Jurisdiction.choices()]
+            if invalid:
+                raise ValueError(f"Invalid jurisdiction: {', '.join(invalid)}")
+            return v or None
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
         return v

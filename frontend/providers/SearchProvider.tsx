@@ -15,6 +15,7 @@ export type SearchFilters = {
   cityUid: string[]
   source: string[]
   sourceUid: string[]
+  jurisdiction: string[]
 }
 
 export type SearchState = {
@@ -41,7 +42,8 @@ const DEFAULT_FILTERS: SearchFilters = {
   city: [],
   cityUid: [],
   source: [],
-  sourceUid: []
+  sourceUid: [],
+  jurisdiction: []
 }
 
 const DEFAULT_STATE: SearchState = {
@@ -106,7 +108,8 @@ const normalizeFilters = (filters: Partial<SearchFilters>): SearchFilters => ({
   city: normalizeStringList(filters.city),
   cityUid: normalizeStringList(filters.cityUid),
   source: normalizeStringList(filters.source),
-  sourceUid: normalizeStringList(filters.sourceUid)
+  sourceUid: normalizeStringList(filters.sourceUid),
+  jurisdiction: normalizeStringList(filters.jurisdiction)
 })
 
 export const parseSearchState = (searchParams: SearchParamReader): SearchState => {
@@ -124,7 +127,8 @@ export const parseSearchState = (searchParams: SearchParamReader): SearchState =
     city: city.length > 0 ? city : normalizeStringList([searchParams.get("location") ?? ""]),
     cityUid: getAllParams(searchParams, "city_uid"),
     source: source.length > 0 ? source : normalizeStringList([searchParams.get("source") ?? ""]),
-    sourceUid: getAllParams(searchParams, "source_uid")
+    sourceUid: getAllParams(searchParams, "source_uid"),
+    jurisdiction: getAllParams(searchParams, "jurisdiction")
   }
 }
 
@@ -154,6 +158,7 @@ const buildSearchParams = (state: SearchState) => {
   appendListParams(params, "state", state.state)
   appendListParams(params, "source", state.source)
   appendListParams(params, "source_uid", state.sourceUid)
+  appendListParams(params, "jurisdiction", state.jurisdiction)
 
   return params
 }
@@ -174,6 +179,9 @@ export const buildApiParams = (state: SearchState) => {
   appendListParams(params, "state", state.state)
   appendListParams(params, "source", state.source)
   appendListParams(params, "source_uid", state.sourceUid)
+  if (state.tab === "agencies") {
+    appendListParams(params, "jurisdiction", state.jurisdiction)
+  }
 
   if (state.tab !== "all") {
     params.set("searchResult", "true")
@@ -183,13 +191,25 @@ export const buildApiParams = (state: SearchState) => {
 }
 
 const hasSearchCriteria = (state: SearchState) => {
+  if (state.tab === "all") {
+    return Boolean(
+      state.term ||
+        state.state.length > 0 ||
+        state.city.length > 0 ||
+        state.cityUid.length > 0 ||
+        state.source.length > 0 ||
+        state.sourceUid.length > 0
+    )
+  }
+
   return Boolean(
       state.term ||
       state.state.length > 0 ||
       state.city.length > 0 ||
       state.cityUid.length > 0 ||
       state.source.length > 0 ||
-      state.sourceUid.length > 0
+      state.sourceUid.length > 0 ||
+      state.jurisdiction.length > 0
   )
 }
 
@@ -227,7 +247,8 @@ function useSearchController(): SearchContext {
           city: patch.city ?? state.city,
           cityUid: patch.cityUid ?? state.cityUid,
           source: patch.source ?? state.source,
-          sourceUid: patch.sourceUid ?? state.sourceUid
+          sourceUid: patch.sourceUid ?? state.sourceUid,
+          jurisdiction: patch.jurisdiction ?? state.jurisdiction
         })
       }
 

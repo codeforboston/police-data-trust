@@ -17,6 +17,7 @@ import { ExpandLess, ExpandMore, Search } from "@mui/icons-material"
 import { useSearch } from "@/providers/SearchProvider"
 import { useAuth } from "@/providers/AuthProvider"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
+import { US_STATES } from "@/utils/constants"
 
 type CityOption = {
   uid: string
@@ -38,6 +39,11 @@ type SourceOption = {
   name: string
 }
 
+type JurisdictionOption = {
+  value: string
+  label: string
+}
+
 type FilterItem = {
   id: string
   title: string
@@ -55,6 +61,15 @@ type LocationStateGroup = {
 const formatCityLabel = (city: CityOption) =>
   city.state?.abbreviation ? `${city.name}, ${city.state.abbreviation}` : city.name
 
+const JURISDICTION_OPTIONS: JurisdictionOption[] = [
+  { value: "FEDERAL", label: "Federal" },
+  { value: "STATE", label: "State" },
+  { value: "COUNTY", label: "County" },
+  { value: "MUNICIPAL", label: "Municipal" },
+  { value: "PRIVATE", label: "Private" },
+  { value: "OTHER", label: "Other" }
+]
+
 const parseCityLabel = (label: string) => {
   const parts = label.split(",").map((part) => part.trim())
   if (parts.length >= 2) {
@@ -65,6 +80,62 @@ const parseCityLabel = (label: string) => {
   }
 
   return { name: label, stateAbbreviation: undefined }
+}
+
+const normalizeLocationSearchTerm = (value: string) => value.trim().replace(/\s+/g, " ")
+
+const findStateAbbreviation = (value: string) => {
+  const normalized = normalizeLocationSearchTerm(value).toLowerCase()
+  const match = US_STATES.find(
+    (stateOption) =>
+      stateOption.abbreviation.toLowerCase() === normalized ||
+      stateOption.name.toLowerCase() === normalized
+  )
+
+  return match?.abbreviation
+}
+
+const parseLocationSearch = (value: string) => {
+  const normalized = normalizeLocationSearchTerm(value)
+  if (!normalized) {
+    return { cityTerm: "", stateAbbreviation: undefined as string | undefined, stateSearchTerm: "" }
+  }
+
+  const commaParts = normalized.split(",").map((part) => part.trim()).filter(Boolean)
+  if (commaParts.length >= 2) {
+    const stateAbbreviation = findStateAbbreviation(commaParts[commaParts.length - 1])
+    if (stateAbbreviation) {
+      return {
+        cityTerm: commaParts.slice(0, -1).join(", "),
+        stateAbbreviation,
+        stateSearchTerm: commaParts[commaParts.length - 1]
+      }
+    }
+  }
+
+  for (const stateOption of US_STATES) {
+    const stateName = stateOption.name.toLowerCase()
+    const stateAbbreviation = stateOption.abbreviation.toLowerCase()
+    const lowered = normalized.toLowerCase()
+
+    if (lowered.endsWith(` ${stateName}`)) {
+      return {
+        cityTerm: normalized.slice(0, normalized.length - stateOption.name.length).trim().replace(/,$/, "").trim(),
+        stateAbbreviation: stateOption.abbreviation,
+        stateSearchTerm: stateOption.name
+      }
+    }
+
+    if (lowered.endsWith(` ${stateAbbreviation}`)) {
+      return {
+        cityTerm: normalized.slice(0, normalized.length - stateOption.abbreviation.length).trim().replace(/,$/, "").trim(),
+        stateAbbreviation: stateOption.abbreviation,
+        stateSearchTerm: stateOption.abbreviation
+      }
+    }
+  }
+
+  return { cityTerm: normalized, stateAbbreviation: undefined as string | undefined, stateSearchTerm: normalized }
 }
 
 const fetchFilterOptions = async (url: string, accessToken: string, signal: AbortSignal) => {
@@ -94,7 +165,7 @@ const isBenignFilterFetchError = (error: unknown, signal: AbortSignal) => {
 
 const Filter = () => {
   const {
-    state: { tab, state, city, cityUid, source, sourceUid },
+    state: { tab, state, city, cityUid, source, sourceUid, jurisdiction },
     setFilters
   } = useSearch()
   const { accessToken, hasHydrated } = useAuth()
@@ -113,7 +184,7 @@ const Filter = () => {
   >("idle")
 
   useEffect(() => {
-    if (tab !== "all") {
+    if (tab !== "all" && tab !== "agencies") {
       return
     }
 
@@ -168,7 +239,7 @@ const Filter = () => {
   }, [accessToken, hasHydrated, sourceSearch, tab])
 
   useEffect(() => {
-    if (tab !== "all") {
+    if (tab !== "all" && tab !== "agencies") {
       return
     }
 
@@ -202,7 +273,7 @@ const Filter = () => {
   }, [accessToken, hasHydrated, tab])
 
   useEffect(() => {
-    if (tab !== "all") {
+    if (tab !== "all" && tab !== "agencies") {
       return
     }
 
@@ -226,12 +297,16 @@ const Filter = () => {
       setLocationLoading(true)
 
       try {
+        const parsedSearch = parseLocationSearch(locationSearch)
         const cityParams = new URLSearchParams({
-          term: locationSearch.trim(),
+          term: parsedSearch.cityTerm || normalizeLocationSearchTerm(locationSearch),
           per_page: "20"
         })
+        if (parsedSearch.stateAbbreviation) {
+          cityParams.set("state", parsedSearch.stateAbbreviation)
+        }
         const stateParams = new URLSearchParams({
-          term: locationSearch.trim(),
+          term: parsedSearch.stateSearchTerm || normalizeLocationSearchTerm(locationSearch),
           per_page: "10"
         })
 
@@ -274,7 +349,7 @@ const Filter = () => {
   }, [accessToken, hasHydrated, locationSearch, tab])
 
   useEffect(() => {
-    if (tab !== "all" || !hasHydrated || !accessToken) {
+    if ((tab !== "all" && tab !== "agencies") || !hasHydrated || !accessToken) {
       setNearbyCityOptions([])
       if (!hasHydrated || !accessToken) {
         setLocationStatus("idle")
@@ -432,8 +507,29 @@ const Filter = () => {
 
   const showSourceSearch = hasMoreThanFiveSources || sourceSearch.trim().length > 0
   const sourceFilters = showSourceSearch ? sourceItems : sourceItems.slice(0, 5)
+  const jurisdictionItems = useMemo<FilterItem[]>(
+    () =>
+      JURISDICTION_OPTIONS.map((option) => ({
+        id: option.value,
+        title: option.label,
+        checked: jurisdiction.includes(option.value),
+        onToggle: () => {
+          if (jurisdiction.includes(option.value)) {
+            setFilters({
+              jurisdiction: jurisdiction.filter((value) => value !== option.value)
+            })
+            return
+          }
 
-  if (tab !== "all") {
+          setFilters({
+            jurisdiction: [...jurisdiction, option.value]
+          })
+        }
+      })),
+    [jurisdiction, setFilters]
+  )
+
+  if (tab !== "all" && tab !== "agencies") {
     return (
       <section className={styles.filterWrapper}>
         <h3 className={styles.filterTitleText}>Filters</h3>
@@ -475,6 +571,13 @@ const Filter = () => {
           searchPlaceholder="search data source..."
           emptyMessage="No matching sources"
         />
+        {tab === "agencies" ? (
+          <FilterGroup
+            filters={jurisdictionItems}
+            title="Jurisdiction"
+            helperText="Filter agencies by jurisdiction type"
+          />
+        ) : null}
       </div>
     </section>
   )

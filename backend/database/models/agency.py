@@ -272,9 +272,12 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
             WITH DISTINCT n, 0 AS score
             """)
 
-        where_clauses = [
-            f"n.{key} = ${key}" for key in filters
-        ]
+        where_clauses = []
+        for key, value in filters.items():
+            if isinstance(value, list):
+                where_clauses.append(f"n.{key} IN ${key}")
+            else:
+                where_clauses.append(f"n.{key} = ${key}")
         where_clauses.append("""
         (
             size($city_uids) = 0 OR EXISTS {
