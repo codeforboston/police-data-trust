@@ -14,10 +14,11 @@ class FilterResolver:
         *,
         city: str | list[str] | None = None,
         city_uid: str | list[str] | None = None,
-        state: str | None = None,
+        state: str | list[str] | None = None,
     ) -> list[str]:
         city_values = self._as_list(city)
         city_uid_values = self._as_list(city_uid)
+        state_values = self._as_list(state)
         resolved_uids: list[str] = []
 
         if city_uid_values:
@@ -29,20 +30,20 @@ class FilterResolver:
             rows, _ = db.cypher_query(query, {"city_uids": city_uid_values})
             resolved_uids.extend(row[0] for row in rows)
 
-        if not city_values and not state:
+        if not city_values and not state_values:
             return list(dict.fromkeys(resolved_uids))
 
-        if city_values and state:
+        if city_values and state_values:
             query = """
             MATCH (city:CityNode)-[:WITHIN_COUNTY]->
-                (:CountyNode)-[:WITHIN_STATE]
-                ->(state:StateNode {abbreviation: $state})
+                (:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
             WHERE toLower(city.name) IN $cities
+              AND state.abbreviation IN $states
             RETURN DISTINCT city.uid
             """
             params = {
                 "cities": [value.lower() for value in city_values],
-                "state": state,
+                "states": state_values,
             }
         elif city_values:
             query = """
@@ -54,11 +55,11 @@ class FilterResolver:
         else:
             query = """
             MATCH (city:CityNode)-[:WITHIN_COUNTY]->
-                (:CountyNode)-[:WITHIN_STATE]
-                ->(state:StateNode {abbreviation: $state})
+                (:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+            WHERE state.abbreviation IN $states
             RETURN DISTINCT city.uid
             """
-            params = {"state": state}
+            params = {"states": state_values}
 
         rows, _ = db.cypher_query(query, params)
         resolved_uids.extend(row[0] for row in rows)

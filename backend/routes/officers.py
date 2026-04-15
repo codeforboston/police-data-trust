@@ -98,11 +98,13 @@ def get_all_officers():
             always_list={
                 "unit",
                 "agency",
+                "agency_uid",
                 "rank",
                 "badge_number",
                 "ethnicity",
                 "city",
                 "city_uid",
+                "state",
                 "source",
                 "source_uid",
             },

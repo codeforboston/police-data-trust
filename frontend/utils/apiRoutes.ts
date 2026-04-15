@@ -24,6 +24,8 @@ const API_ROUTES = {
     profile: (slug: string) => `/officers/${slug}`
   },
   agencies: {
+    all: "/agencies",
+    relevant: "/agencies/relevant",
     profile: (slug: string) => `/agencies/${slug}`
   },
   units: {

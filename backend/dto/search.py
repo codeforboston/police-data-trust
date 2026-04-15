@@ -2,7 +2,7 @@ from pydantic import AliasChoices, Field, field_validator
 
 from backend.dto.common_filters import (
     normalize_string_or_list,
-    normalize_upper_string,
+    normalize_upper_string_or_list,
     validate_state_code,
 )
 from backend.dto.common import PaginatedRequest
@@ -15,7 +15,7 @@ class SearchQueryParams(PaginatedRequest):
     )
     city: str | list[str] | None = None
     city_uid: str | list[str] | None = None
-    state: str | None = None
+    state: str | list[str] | None = None
     source: str | list[str] | None = None
     source_uid: str | list[str] | None = None
 
@@ -44,7 +44,7 @@ class SearchQueryParams(PaginatedRequest):
     @field_validator("state", mode="before")
     @classmethod
     def normalize_state(cls, value):
-        return normalize_upper_string(value)
+        return normalize_upper_string_or_list(value)
 
     @field_validator("source", mode="before")
     @classmethod

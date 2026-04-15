@@ -5,7 +5,7 @@ from backend.database.models.employment import (
     EmploymentStatus, EmploymentType, Rank)
 from backend.dto.common_filters import (
     normalize_string_or_list,
-    normalize_upper_string,
+    normalize_upper_string_or_list,
     validate_state_code,
 )
 from backend.dto.common import PaginatedRequest, RequestDTO
@@ -35,10 +35,10 @@ class AgencyQueryParams(PaginatedRequest):
     hq_city: str | None = None
     hq_state: str | None = None
     hq_zip: str | None = None
-    jurisdiction: str | None = None
+    jurisdiction: str | list[str] | None = None
     city: str | list[str] | None = None
     city_uid: str | list[str] | None = None
-    state: str | None = None
+    state: str | list[str] | None = None
     source: str | list[str] | None = None
     source_uid: str | list[str] | None = None
 
@@ -56,7 +56,7 @@ class AgencyQueryParams(PaginatedRequest):
 
     @field_validator("state", mode="before")
     def normalize_state(cls, value):
-        return normalize_upper_string(value)
+        return normalize_upper_string_or_list(value)
 
     @field_validator("source", mode="before")
     def normalize_source(cls, value):
@@ -76,9 +76,20 @@ class AgencyQueryParams(PaginatedRequest):
 
     @field_validator("jurisdiction")
     def validate_jurisdiction(cls, v):
+        if isinstance(v, list):
+            invalid = [item for item in v if item not in Jurisdiction.choices()]
+            if invalid:
+                raise ValueError(f"Invalid jurisdiction: {', '.join(invalid)}")
+            return v or None
         if v and v not in Jurisdiction.choices():
             raise ValueError(f"Invalid jurisdiction: {v}")
         return v
+
+
+class RelevantAgencyLookupParams(PaginatedRequest):
+    latitude: float | None = Field(None, ge=-90, le=90)
+    longitude: float | None = Field(None, ge=-180, le=180)
+    per_page: int = Field(5, ge=1, le=25)
 
 
 class GetAgencyParams(BaseModel):

@@ -615,6 +615,30 @@ def test_get_officers_with_unit_and_agency(client, db_session, access_token,
     assert res.json["total"] == len(officers_with_unit)
 
 
+def test_get_officers_with_agency_uid(
+        client, db_session, access_token, create_officers_units_agencies):
+    results, meta = db.cypher_query("""
+        MATCH (o:Officer)<-[]-(:Employment)-[]->(:Unit)
+        -[:ESTABLISHED_BY]->(a:Agency)
+        WHERE a.name = "Chicago Police Department"
+        RETURN o, a.uid
+    """)
+    officers_with_unit = [Officer.inflate(row[0]) for row in results]
+    agency_uid = results[0][1]
+
+    res = client.get(
+        f"/api/v1/officers?agency_uid={agency_uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert officers_with_unit is not None
+    assert res.json is not None
+    assert res.status_code == 200
+    assert res.json["results"][0]["first_name"] is not None
+    assert res.json["results"][0]["last_name"] is not None
+    assert res.json["page"] == 1
+    assert res.json["total"] == len(officers_with_unit)
+
+
 @pytest.mark.parametrize("query,expect_results", [
     ("active_after=2018-01-01", True),
     ("active_before=2022-01-01", True),
@@ -931,6 +955,78 @@ def test_filter_officers_by_multiple_source_uids(
         f"&source_uid={example_source.uid}"
         f"&source_uid={other_source.uid}",
         headers={"Authorization": "Bearer {0}".format(access_token)},
+    )
+
+    assert res.status_code == 200
+    result_uids = {item["uid"] for item in res.json["results"]}
+    assert result_uids == {first_officer.uid, second_officer.uid}
+
+
+def test_filter_officers_by_multiple_agency_uids(
+        client, db_session, access_token, example_source):
+    first_agency = Agency(
+        name="First Agency UID Filter",
+        website_url="https://first-uid.example.gov",
+        hq_address="1 Main St",
+        hq_city="Chicago",
+        hq_state="IL",
+        hq_zip="60601",
+        jurisdiction="MUNICIPAL",
+    ).save()
+    second_agency = Agency(
+        name="Second Agency UID Filter",
+        website_url="https://second-uid.example.gov",
+        hq_address="2 Main St",
+        hq_city="Chicago",
+        hq_state="IL",
+        hq_zip="60602",
+        jurisdiction="MUNICIPAL",
+    ).save()
+
+    first_unit = Unit(name="Agency UID Unit One", hq_state="IL").save()
+    first_unit.agency.connect(first_agency)
+    second_unit = Unit(name="Agency UID Unit Two", hq_state="IL").save()
+    second_unit.agency.connect(second_agency)
+
+    first_officer = Officer(
+        first_name="Robin",
+        last_name="One",
+        ethnicity="White",
+        gender="Female",
+    ).save()
+    first_officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+    second_officer = Officer(
+        first_name="Robin",
+        last_name="Two",
+        ethnicity="White",
+        gender="Female",
+    ).save()
+    second_officer.citations.connect(example_source, {
+        "timestamp": datetime.now(),
+    })
+
+    first_employment = Employment(
+        badge_number="2001",
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    first_employment.unit.connect(first_unit)
+    first_employment.officer.connect(first_officer)
+
+    second_employment = Employment(
+        badge_number="2002",
+        earliest_date=date(2020, 1, 1),
+    ).save()
+    second_employment.unit.connect(second_unit)
+    second_employment.officer.connect(second_officer)
+
+    res = client.get(
+        "/api/v1/officers"
+        f"?term=Robin"
+        f"&agency_uid={first_agency.uid}"
+        f"&agency_uid={second_agency.uid}",
+        headers={"Authorization": f"Bearer {access_token}"},
     )
 
     assert res.status_code == 200
