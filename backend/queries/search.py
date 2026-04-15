@@ -246,7 +246,7 @@ class SearchQueries:
         *,
         city: str | list[str] | None = None,
         city_uid: str | list[str] | None = None,
-        state: str | None = None,
+        state: str | list[str] | None = None,
     ) -> list[str]:
         return self.filter_resolver.resolve_city_uids(
             city=city,

@@ -103,6 +103,7 @@ def get_all_officers():
                 "ethnicity",
                 "city",
                 "city_uid",
+                "state",
                 "source",
                 "source_uid",
             },
