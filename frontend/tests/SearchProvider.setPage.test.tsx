@@ -68,6 +68,9 @@ describe("SearchProvider", () => {
     expect(state.cityUid).toEqual(["city-1"])
     expect(state.state).toEqual([])
     expect(state.jurisdiction).toEqual([])
+    expect(state.agency).toEqual([])
+    expect(state.agencyUid).toEqual([])
+    expect(state.ethnicity).toEqual([])
     expect(state.source).toEqual(["CAPStat"])
     expect(state.sourceUid).toEqual(["source-1"])
   })
@@ -119,6 +122,9 @@ describe("SearchProvider", () => {
       page: 2,
       state: [],
       jurisdiction: [],
+      agency: [],
+      agencyUid: [],
+      ethnicity: [],
       city: ["Albany, NY", "Buffalo, NY"],
       cityUid: ["city-1", "city-2"],
       source: ["CAPStat"],

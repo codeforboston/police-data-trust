@@ -1,11 +1,11 @@
 .filterWrapper {
-  height: 100%;
+  min-height: 100%;
   margin-block-start: 9.5rem;
 }
 
 .filterContentsWrapper {
   width: 300px;
-  height: 100%;
+  min-height: 420px;
   outline: 1px solid #bed0dd;
   border-radius: 3px;
 

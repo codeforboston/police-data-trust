@@ -39,6 +39,11 @@ type SourceOption = {
   name: string
 }
 
+type AgencyOption = {
+  uid: string
+  name: string
+}
+
 type JurisdictionOption = {
   value: string
   label: string
@@ -58,6 +63,11 @@ type LocationStateGroup = {
   cities: CityOption[]
 }
 
+type SharedCoordinates = {
+  latitude: number
+  longitude: number
+}
+
 const formatCityLabel = (city: CityOption) =>
   city.state?.abbreviation ? `${city.name}, ${city.state.abbreviation}` : city.name
 
@@ -68,6 +78,16 @@ const JURISDICTION_OPTIONS: JurisdictionOption[] = [
   { value: "MUNICIPAL", label: "Municipal" },
   { value: "PRIVATE", label: "Private" },
   { value: "OTHER", label: "Other" }
+]
+
+const ETHNICITY_OPTIONS: FilterItem[] = [
+  { id: "White", title: "White", checked: false, onToggle: () => {} },
+  { id: "Black/African American", title: "Black/African American", checked: false, onToggle: () => {} },
+  { id: "American Indian/Alaska Native", title: "American Indian/Alaska Native", checked: false, onToggle: () => {} },
+  { id: "Asian", title: "Asian", checked: false, onToggle: () => {} },
+  { id: "Native Hawaiian/Pacific Islander", title: "Native Hawaiian/Pacific Islander", checked: false, onToggle: () => {} },
+  { id: "Hispanic/Latino", title: "Hispanic/Latino", checked: false, onToggle: () => {} },
+  { id: "Unknown", title: "Unknown", checked: false, onToggle: () => {} }
 ]
 
 const parseCityLabel = (label: string) => {
@@ -165,7 +185,18 @@ const isBenignFilterFetchError = (error: unknown, signal: AbortSignal) => {
 
 const Filter = () => {
   const {
-    state: { tab, state, city, cityUid, source, sourceUid, jurisdiction },
+    state: {
+      tab,
+      state,
+      city,
+      cityUid,
+      source,
+      sourceUid,
+      jurisdiction,
+      agency,
+      agencyUid,
+      ethnicity
+    },
     setFilters
   } = useSearch()
   const { accessToken, hasHydrated } = useAuth()
@@ -176,15 +207,20 @@ const Filter = () => {
   const [relevantCityOptions, setRelevantCityOptions] = useState<CityOption[]>([])
   const [sourceSearch, setSourceSearch] = useState("")
   const [sourceOptions, setSourceOptions] = useState<SourceOption[]>([])
+  const [agencySearch, setAgencySearch] = useState("")
+  const [agencyOptions, setAgencyOptions] = useState<AgencyOption[]>([])
+  const [hasMoreThanFiveAgencies, setHasMoreThanFiveAgencies] = useState(false)
   const [hasMoreThanFiveSources, setHasMoreThanFiveSources] = useState(false)
   const [locationLoading, setLocationLoading] = useState(false)
   const [sourceLoading, setSourceLoading] = useState(false)
+  const [agencyLoading, setAgencyLoading] = useState(false)
+  const [sharedCoordinates, setSharedCoordinates] = useState<SharedCoordinates | null>(null)
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "loading" | "ready" | "denied" | "unavailable"
   >("idle")
 
   useEffect(() => {
-    if (tab !== "all" && tab !== "agencies") {
+    if (tab !== "all" && tab !== "agencies" && tab !== "officers") {
       return
     }
 
@@ -239,7 +275,78 @@ const Filter = () => {
   }, [accessToken, hasHydrated, sourceSearch, tab])
 
   useEffect(() => {
-    if (tab !== "all" && tab !== "agencies") {
+    if (tab !== "officers") {
+      return
+    }
+
+    if (!hasHydrated || !accessToken) {
+      setAgencyOptions([])
+      setHasMoreThanFiveAgencies(false)
+      setAgencyLoading(false)
+      return
+    }
+
+    const abortController = new AbortController()
+
+    const loadAgencies = async () => {
+      setAgencyLoading(true)
+
+      try {
+        const hasSearchTerm = agencySearch.trim().length > 0
+        const params = new URLSearchParams({
+          per_page: hasSearchTerm ? "25" : "5"
+        })
+
+        let url = `${apiBaseUrl}${API_ROUTES.agencies.relevant}?${params.toString()}`
+        if (hasSearchTerm) {
+          params.set("term", agencySearch.trim())
+          url = `${apiBaseUrl}${API_ROUTES.search.agencies}?${params.toString()}`
+        } else if (sharedCoordinates) {
+          params.set("latitude", String(sharedCoordinates.latitude))
+          params.set("longitude", String(sharedCoordinates.longitude))
+          url = `${apiBaseUrl}${API_ROUTES.agencies.relevant}?${params.toString()}`
+        }
+
+        const data = await fetchFilterOptions(
+          url,
+          accessToken,
+          abortController.signal
+        )
+        const results = Array.isArray(data.results) ? data.results : []
+        const normalized = results
+          .map((item: Record<string, unknown>) => ({
+            uid: String(item.uid),
+            name: String(item.name ?? "")
+          }))
+          .filter((item: AgencyOption) => item.name)
+
+        setHasMoreThanFiveAgencies(normalized.length > 5)
+        setAgencyOptions(hasSearchTerm ? normalized : normalized.slice(0, 5))
+      } catch (error) {
+        if (!isBenignFilterFetchError(error, abortController.signal)) {
+          console.error("Failed to load officer agency filters", error)
+        }
+      } finally {
+        setAgencyLoading(false)
+      }
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      loadAgencies().catch((error) => {
+        if (!isBenignFilterFetchError(error, abortController.signal)) {
+          console.error("Unhandled agency load error", error)
+        }
+      })
+    }, 250)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      abortController.abort()
+    }
+  }, [accessToken, agencySearch, hasHydrated, sharedCoordinates, tab])
+
+  useEffect(() => {
+    if (tab !== "all" && tab !== "agencies" && tab !== "officers") {
       return
     }
 
@@ -273,7 +380,7 @@ const Filter = () => {
   }, [accessToken, hasHydrated, tab])
 
   useEffect(() => {
-    if (tab !== "all" && tab !== "agencies") {
+    if (tab !== "all" && tab !== "agencies" && tab !== "officers") {
       return
     }
 
@@ -349,7 +456,7 @@ const Filter = () => {
   }, [accessToken, hasHydrated, locationSearch, tab])
 
   useEffect(() => {
-    if ((tab !== "all" && tab !== "agencies") || !hasHydrated || !accessToken) {
+    if ((tab !== "all" && tab !== "agencies" && tab !== "officers") || !hasHydrated || !accessToken) {
       setNearbyCityOptions([])
       if (!hasHydrated || !accessToken) {
         setLocationStatus("idle")
@@ -367,6 +474,7 @@ const Filter = () => {
     const loadNearbyCities = async (latitude: number, longitude: number) => {
       setLocationStatus("loading")
       setLocationLoading(true)
+      setSharedCoordinates({ latitude, longitude })
 
       try {
         const params = new URLSearchParams({
@@ -390,6 +498,7 @@ const Filter = () => {
         if (!cancelled) {
           console.error("Failed to load nearby cities", error)
           setLocationStatus("unavailable")
+          setSharedCoordinates(null)
         }
       } finally {
         if (!cancelled) {
@@ -417,12 +526,14 @@ const Filter = () => {
             () => {
               if (!cancelled) {
                 setLocationStatus("denied")
+                setSharedCoordinates(null)
               }
             },
             { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
           )
         } else if (permissionStatus.state === "denied") {
           setLocationStatus("denied")
+          setSharedCoordinates(null)
         }
       } catch {
         // keep manual trigger available
@@ -439,6 +550,7 @@ const Filter = () => {
   const requestNearbyCities = async () => {
     if (!accessToken || typeof navigator === "undefined" || !navigator.geolocation) {
       setLocationStatus("unavailable")
+      setSharedCoordinates(null)
       return
     }
 
@@ -447,6 +559,10 @@ const Filter = () => {
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        setSharedCoordinates({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
         try {
           const params = new URLSearchParams({
             latitude: String(position.coords.latitude),
@@ -463,6 +579,7 @@ const Filter = () => {
         } catch (error) {
           console.error("Failed to load nearby cities", error)
           setLocationStatus("unavailable")
+          setSharedCoordinates(null)
         } finally {
           setLocationLoading(false)
         }
@@ -470,6 +587,7 @@ const Filter = () => {
       () => {
         setLocationStatus("denied")
         setLocationLoading(false)
+        setSharedCoordinates(null)
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
     )
@@ -507,6 +625,37 @@ const Filter = () => {
 
   const showSourceSearch = hasMoreThanFiveSources || sourceSearch.trim().length > 0
   const sourceFilters = showSourceSearch ? sourceItems : sourceItems.slice(0, 5)
+  const agencyItems = useMemo<FilterItem[]>(
+    () => [
+      ...agency.map((name, index) => ({
+        id: agencyUid[index] ?? `selected-agency-${name}`,
+        title: name,
+        checked: true,
+        onToggle: () => {
+          setFilters({
+            agency: agency.filter((_, agencyIndex) => agencyIndex !== index),
+            agencyUid: agencyUid.filter((_, agencyIndex) => agencyIndex !== index)
+          })
+        }
+      })),
+      ...agencyOptions
+        .filter((option) => !agencyUid.includes(option.uid))
+        .map((option) => ({
+          id: option.uid,
+          title: option.name,
+          checked: false,
+          onToggle: () => {
+            setFilters({
+              agency: [...agency, option.name],
+              agencyUid: [...agencyUid, option.uid]
+            })
+          }
+        }))
+    ],
+    [agency, agencyOptions, agencyUid, setFilters]
+  )
+  const showAgencySearch = hasMoreThanFiveAgencies || agencySearch.trim().length > 0
+  const agencyFilters = showAgencySearch ? agencyItems : agencyItems.slice(0, 5)
   const jurisdictionItems = useMemo<FilterItem[]>(
     () =>
       JURISDICTION_OPTIONS.map((option) => ({
@@ -528,8 +677,28 @@ const Filter = () => {
       })),
     [jurisdiction, setFilters]
   )
+  const ethnicityItems = useMemo<FilterItem[]>(
+    () =>
+      ETHNICITY_OPTIONS.map((option) => ({
+        ...option,
+        checked: ethnicity.includes(option.id),
+        onToggle: () => {
+          if (ethnicity.includes(option.id)) {
+            setFilters({
+              ethnicity: ethnicity.filter((value) => value !== option.id)
+            })
+            return
+          }
 
-  if (tab !== "all" && tab !== "agencies") {
+          setFilters({
+            ethnicity: [...ethnicity, option.id]
+          })
+        }
+      })),
+    [ethnicity, setFilters]
+  )
+
+  if (tab !== "all" && tab !== "agencies" && tab !== "officers") {
     return (
       <section className={styles.filterWrapper}>
         <h3 className={styles.filterTitleText}>Filters</h3>
@@ -577,6 +746,25 @@ const Filter = () => {
             title="Jurisdiction"
             helperText="Filter agencies by jurisdiction type"
           />
+        ) : null}
+        {tab === "officers" ? (
+          <>
+            <FilterGroup
+              withSearch={showAgencySearch}
+              filters={agencyFilters}
+              title="Agency"
+              searchValue={agencySearch}
+              onSearchChange={setAgencySearch}
+              loading={agencyLoading}
+              searchPlaceholder="search agency..."
+              emptyMessage="No matching agencies"
+            />
+            <FilterGroup
+              filters={ethnicityItems}
+              title="Ethnicity"
+              helperText="Filter officers by ethnicity"
+            />
+          </>
         ) : null}
       </div>
     </section>

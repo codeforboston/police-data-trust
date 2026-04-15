@@ -16,6 +16,9 @@ export type SearchFilters = {
   source: string[]
   sourceUid: string[]
   jurisdiction: string[]
+  agency: string[]
+  agencyUid: string[]
+  ethnicity: string[]
 }
 
 export type SearchState = {
@@ -43,7 +46,10 @@ const DEFAULT_FILTERS: SearchFilters = {
   cityUid: [],
   source: [],
   sourceUid: [],
-  jurisdiction: []
+  jurisdiction: [],
+  agency: [],
+  agencyUid: [],
+  ethnicity: []
 }
 
 const DEFAULT_STATE: SearchState = {
@@ -109,7 +115,10 @@ const normalizeFilters = (filters: Partial<SearchFilters>): SearchFilters => ({
   cityUid: normalizeStringList(filters.cityUid),
   source: normalizeStringList(filters.source),
   sourceUid: normalizeStringList(filters.sourceUid),
-  jurisdiction: normalizeStringList(filters.jurisdiction)
+  jurisdiction: normalizeStringList(filters.jurisdiction),
+  agency: normalizeStringList(filters.agency),
+  agencyUid: normalizeStringList(filters.agencyUid),
+  ethnicity: normalizeStringList(filters.ethnicity)
 })
 
 export const parseSearchState = (searchParams: SearchParamReader): SearchState => {
@@ -128,7 +137,10 @@ export const parseSearchState = (searchParams: SearchParamReader): SearchState =
     cityUid: getAllParams(searchParams, "city_uid"),
     source: source.length > 0 ? source : normalizeStringList([searchParams.get("source") ?? ""]),
     sourceUid: getAllParams(searchParams, "source_uid"),
-    jurisdiction: getAllParams(searchParams, "jurisdiction")
+    jurisdiction: getAllParams(searchParams, "jurisdiction"),
+    agency: getAllParams(searchParams, "agency"),
+    agencyUid: getAllParams(searchParams, "agency_uid"),
+    ethnicity: getAllParams(searchParams, "ethnicity")
   }
 }
 
@@ -159,6 +171,9 @@ const buildSearchParams = (state: SearchState) => {
   appendListParams(params, "source", state.source)
   appendListParams(params, "source_uid", state.sourceUid)
   appendListParams(params, "jurisdiction", state.jurisdiction)
+  appendListParams(params, "agency", state.agency)
+  appendListParams(params, "agency_uid", state.agencyUid)
+  appendListParams(params, "ethnicity", state.ethnicity)
 
   return params
 }
@@ -182,6 +197,11 @@ export const buildApiParams = (state: SearchState) => {
   if (state.tab === "agencies") {
     appendListParams(params, "jurisdiction", state.jurisdiction)
   }
+  if (state.tab === "officers") {
+    appendListParams(params, "agency", state.agency)
+    appendListParams(params, "agency_uid", state.agencyUid)
+    appendListParams(params, "ethnicity", state.ethnicity)
+  }
 
   if (state.tab !== "all") {
     params.set("searchResult", "true")
@@ -199,6 +219,20 @@ const hasSearchCriteria = (state: SearchState) => {
         state.cityUid.length > 0 ||
         state.source.length > 0 ||
         state.sourceUid.length > 0
+    )
+  }
+
+  if (state.tab === "officers") {
+    return Boolean(
+      state.term ||
+        state.state.length > 0 ||
+        state.city.length > 0 ||
+        state.cityUid.length > 0 ||
+        state.source.length > 0 ||
+        state.sourceUid.length > 0 ||
+        state.agency.length > 0 ||
+        state.agencyUid.length > 0 ||
+        state.ethnicity.length > 0
     )
   }
 
@@ -248,7 +282,10 @@ function useSearchController(): SearchContext {
           cityUid: patch.cityUid ?? state.cityUid,
           source: patch.source ?? state.source,
           sourceUid: patch.sourceUid ?? state.sourceUid,
-          jurisdiction: patch.jurisdiction ?? state.jurisdiction
+          jurisdiction: patch.jurisdiction ?? state.jurisdiction,
+          agency: patch.agency ?? state.agency,
+          agencyUid: patch.agencyUid ?? state.agencyUid,
+          ethnicity: patch.ethnicity ?? state.ethnicity
         })
       }
 
