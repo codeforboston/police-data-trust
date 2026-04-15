@@ -552,17 +552,25 @@ const FilterGroup = ({
           }}
         />
       )}
-      {filters.map((filter) => (
-        <Box
-          key={filter.id}
-          sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        >
-          <FormControlLabel
-            control={<Checkbox checked={filter.checked} onChange={filter.onToggle} />}
-            label={filter.title}
-          />
-        </Box>
-      ))}
+      <Box
+        sx={{
+          maxHeight: withSearch ? 260 : 220,
+          overflowY: "auto",
+          pr: 0.5
+        }}
+      >
+        {filters.map((filter) => (
+          <Box
+            key={filter.id}
+            sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+          >
+            <FormControlLabel
+              control={<Checkbox checked={filter.checked} onChange={filter.onToggle} />}
+              label={filter.title}
+            />
+          </Box>
+        ))}
+      </Box>
       {!withSearch && loading && <CircularProgress size={16} sx={{ mt: 1 }} />}
       {withSearch && filters.length === 0 && !loading && searchValue.trim() ? (
         <Typography variant="body2" color="text.secondary" className={styles.filterText}>
