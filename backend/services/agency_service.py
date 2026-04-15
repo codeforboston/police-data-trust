@@ -229,3 +229,156 @@ class AgencyService:
             page_number=page,
             per_page=per_page,
         )
+
+    def list_relevant_agencies(
+        self,
+        *,
+        latitude: float | None = None,
+        longitude: float | None = None,
+        user_city: str | None = None,
+        user_state: str | None = None,
+        per_page: int = 5,
+    ) -> tuple[dict, int]:
+        results: list[dict] = []
+        excluded_uids: list[str] = []
+
+        if latitude is not None and longitude is not None:
+            rows = self.queries.fetch_nearby_agencies(
+                latitude=latitude,
+                longitude=longitude,
+                exclude_uids=excluded_uids,
+                limit=per_page,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": agency_name,
+                    "jurisdiction": jurisdiction,
+                    "location": {
+                        "city": city_name,
+                        "state": {
+                            "abbreviation": state_abbreviation,
+                            "name": state_name,
+                        },
+                    },
+                    "distance_meters": distance_meters,
+                    "reason": "nearby",
+                }
+                for (
+                    uid,
+                    agency_name,
+                    city_name,
+                    state_abbreviation,
+                    state_name,
+                    jurisdiction,
+                    *_counts,
+                    distance_meters,
+                ) in rows
+            )
+            excluded_uids.extend([row[0] for row in rows])
+
+        remaining = max(per_page - len(results), 0)
+        if remaining > 0 and user_city and user_state:
+            rows = self.queries.fetch_profile_agencies(
+                city_name=user_city,
+                state=user_state,
+                exclude_uids=excluded_uids,
+                limit=remaining,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": agency_name,
+                    "jurisdiction": jurisdiction,
+                    "location": {
+                        "city": city_name,
+                        "state": {
+                            "abbreviation": state_abbreviation,
+                            "name": state_name,
+                        },
+                    },
+                    "reason": "profile_city",
+                }
+                for (
+                    uid,
+                    agency_name,
+                    city_name,
+                    state_abbreviation,
+                    state_name,
+                    jurisdiction,
+                    *_rest,
+                ) in rows
+            )
+            excluded_uids.extend([row[0] for row in rows])
+
+        remaining = max(per_page - len(results), 0)
+        if remaining > 0:
+            rows = self.queries.fetch_rich_agencies(
+                state=user_state,
+                exclude_uids=excluded_uids,
+                limit=remaining,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": agency_name,
+                    "jurisdiction": jurisdiction,
+                    "location": {
+                        "city": city_name,
+                        "state": {
+                            "abbreviation": state_abbreviation,
+                            "name": state_name,
+                        },
+                    },
+                    "reason": "data_rich",
+                }
+                for (
+                    uid,
+                    agency_name,
+                    city_name,
+                    state_abbreviation,
+                    state_name,
+                    jurisdiction,
+                    *_rest,
+                ) in rows
+            )
+            excluded_uids.extend([row[0] for row in rows])
+
+        remaining = max(per_page - len(results), 0)
+        if remaining > 0 and user_state:
+            rows = self.queries.fetch_rich_agencies(
+                exclude_uids=excluded_uids,
+                limit=remaining,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": agency_name,
+                    "jurisdiction": jurisdiction,
+                    "location": {
+                        "city": city_name,
+                        "state": {
+                            "abbreviation": state_abbreviation,
+                            "name": state_name,
+                        },
+                    },
+                    "reason": "data_rich",
+                }
+                for (
+                    uid,
+                    agency_name,
+                    city_name,
+                    state_abbreviation,
+                    state_name,
+                    jurisdiction,
+                    *_rest,
+                ) in rows
+            )
+
+        return {
+            "results": results,
+            "page": 1,
+            "per_page": per_page,
+            "total": len(results),
+            "pages": 1 if results else 0,
+        }, 200

@@ -18,7 +18,7 @@ from flask_jwt_extended.view_decorators import jwt_required
 from backend.dto.agency import (
     AgencyQueryParams, GetAgencyParams, GetAgencyOfficersParams,
     CreateAgency, UpdateAgency,
-    GetAgencyUnitsParams)
+    GetAgencyUnitsParams, RelevantAgencyLookupParams)
 from backend.services.agency_service import AgencyService
 from backend.queries.filter_resolver import FilterResolver
 
@@ -270,6 +270,29 @@ def get_all_agencies():
     )
 
     return return_func(response), 200
+
+
+@bp.route("/relevant", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_relevant_agencies():
+    try:
+        params = RelevantAgencyLookupParams(**request.args)
+    except Exception as e:
+        logging.debug(f"Invalid query params: {e}")
+        abort(400, description=str(e))
+
+    jwt_decoded = get_jwt()
+    current_user = User.get(jwt_decoded["sub"])
+
+    response, status_code = agency_service.list_relevant_agencies(
+        latitude=params.latitude,
+        longitude=params.longitude,
+        user_city=current_user.city if current_user else None,
+        user_state=current_user.state if current_user else None,
+        per_page=params.per_page,
+    )
+    return jsonify(response), status_code
 
 
 # List agency units

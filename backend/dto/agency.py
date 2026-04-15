@@ -86,6 +86,12 @@ class AgencyQueryParams(PaginatedRequest):
         return v
 
 
+class RelevantAgencyLookupParams(PaginatedRequest):
+    latitude: float | None = Field(None, ge=-90, le=90)
+    longitude: float | None = Field(None, ge=-180, le=180)
+    per_page: int = Field(5, ge=1, le=25)
+
+
 class GetAgencyParams(BaseModel):
     include: Optional[List[str]] = Field(
         None, description="Related data to include in the response."

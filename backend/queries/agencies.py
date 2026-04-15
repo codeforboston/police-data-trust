@@ -85,6 +85,95 @@ CALL (a) {
 }
 """
 
+PROFILE_AGENCY_LOOKUP_QUERY = """
+MATCH (city:CityNode {name: $city_name})-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE state.abbreviation = $state
+MATCH (a:Agency)-[:LOCATED_IN]->(city)
+WHERE NOT a.uid IN $exclude_uids
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  RETURN count(DISTINCT o) AS officer_count
+}
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  RETURN count(DISTINCT c) AS complaint_count
+}
+RETURN
+  a.uid AS uid,
+  a.name AS agency_name,
+  city.name AS city_name,
+  state.abbreviation AS state_abbreviation,
+  state.name AS state_name,
+  a.jurisdiction AS jurisdiction,
+  officer_count,
+  complaint_count
+ORDER BY complaint_count DESC, officer_count DESC, agency_name ASC
+LIMIT $limit
+"""
+
+RICH_AGENCY_LOOKUP_QUERY = """
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE
+  city.coordinates IS NOT NULL
+  AND ($state IS NULL OR state.abbreviation = $state)
+WITH city, state, coalesce(city.population, 0) AS population
+ORDER BY population DESC, city.name ASC
+LIMIT $population_pool_size
+MATCH (a:Agency)-[:LOCATED_IN]->(city)
+WHERE NOT a.uid IN $exclude_uids
+WITH DISTINCT a, city, state, population
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  RETURN count(DISTINCT o) AS officer_count
+}
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  RETURN count(DISTINCT c) AS complaint_count
+}
+RETURN
+  a.uid AS uid,
+  a.name AS agency_name,
+  city.name AS city_name,
+  state.abbreviation AS state_abbreviation,
+  state.name AS state_name,
+  a.jurisdiction AS jurisdiction,
+  officer_count,
+  complaint_count,
+  population
+ORDER BY complaint_count DESC, officer_count DESC, population DESC, agency_name ASC
+LIMIT $limit
+"""
+
+NEARBY_AGENCY_LOOKUP_QUERY = """
+WITH point({longitude: $longitude, latitude: $latitude, crs: 'wgs-84'}) AS user_point
+MATCH (a:Agency)-[:LOCATED_IN]->(city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE city.coordinates IS NOT NULL AND NOT a.uid IN $exclude_uids
+WITH DISTINCT a, city, state, point.distance(user_point, city.coordinates) AS distance_meters
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(o:Officer)
+  RETURN count(DISTINCT o) AS officer_count
+}
+CALL (a) {
+  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]-(:Employment)-[:HELD_BY]-(:Officer)
+      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
+  RETURN count(DISTINCT c) AS complaint_count
+}
+RETURN
+  a.uid AS uid,
+  a.name AS agency_name,
+  city.name AS city_name,
+  state.abbreviation AS state_abbreviation,
+  state.name AS state_name,
+  a.jurisdiction AS jurisdiction,
+  officer_count,
+  complaint_count,
+  distance_meters
+ORDER BY distance_meters ASC, complaint_count DESC, officer_count DESC, agency_name ASC
+LIMIT $limit
+"""
+
 
 class AgencyQueries:
     INCLUDE_SPECS = {
@@ -400,4 +489,55 @@ class AgencyQueries:
         """
 
         rows, _ = db.cypher_query(query, params, resolve_objects=True)
+        return rows
+
+    def fetch_profile_agencies(
+        self,
+        *,
+        city_name: str,
+        state: str,
+        exclude_uids: list[str] | None = None,
+        limit: int = 5,
+    ):
+        params = {
+            "city_name": " ".join(city_name.split()),
+            "state": state.strip().upper(),
+            "exclude_uids": exclude_uids or [],
+            "limit": limit,
+        }
+        rows, _ = db.cypher_query(PROFILE_AGENCY_LOOKUP_QUERY, params)
+        return rows
+
+    def fetch_rich_agencies(
+        self,
+        *,
+        state: str | None = None,
+        exclude_uids: list[str] | None = None,
+        limit: int = 5,
+        population_pool_size: int = 100,
+    ):
+        params = {
+            "state": state.strip().upper() if state else None,
+            "exclude_uids": exclude_uids or [],
+            "limit": limit,
+            "population_pool_size": population_pool_size,
+        }
+        rows, _ = db.cypher_query(RICH_AGENCY_LOOKUP_QUERY, params)
+        return rows
+
+    def fetch_nearby_agencies(
+        self,
+        *,
+        latitude: float,
+        longitude: float,
+        exclude_uids: list[str] | None = None,
+        limit: int = 5,
+    ):
+        params = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "exclude_uids": exclude_uids or [],
+            "limit": limit,
+        }
+        rows, _ = db.cypher_query(NEARBY_AGENCY_LOOKUP_QUERY, params)
         return rows
