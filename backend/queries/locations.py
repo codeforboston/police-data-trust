@@ -144,29 +144,22 @@ WHERE
     city.coordinates IS NOT NULL
     AND ($state IS NULL OR state.abbreviation = $state)
     AND NOT city.uid IN $exclude_uids
-WITH city, state, coalesce(city.population, 0) AS population
-ORDER BY population DESC, city.name ASC
-LIMIT $population_pool_size
-OPTIONAL MATCH (a:Agency)-[:LOCATED_IN]->(city)
-OPTIONAL MATCH (c:Complaint)-[:LOCATED_IN]->(city)
-WITH
-    city,
-    state,
-    count(DISTINCT a) AS agency_count,
-    count(DISTINCT c) AS complaint_count,
-    population
 RETURN
     city.uid AS uid,
     city.name AS city_name,
     city.sm_id AS sm_id,
     state.abbreviation AS state_abbreviation,
     state.name AS state_name,
-    agency_count,
-    complaint_count,
-    population
+    coalesce(city.agency_count_cached, 0) AS agency_count,
+    coalesce(city.complaint_count_cached, 0) AS complaint_count,
+    coalesce(city.officer_count_cached, 0) AS officer_count,
+    coalesce(city.population, 0) AS population,
+    coalesce(city.richness_score_cached, 0.0) AS richness_score
 ORDER BY
-    agency_count DESC,
+    richness_score DESC,
     complaint_count DESC,
+    officer_count DESC,
+    agency_count DESC,
     population DESC,
     city.name ASC
 LIMIT $limit
@@ -294,13 +287,11 @@ class LocationQueries:
         state: str | None = None,
         exclude_uids: list[str] | None = None,
         limit: int = 5,
-        population_pool_size: int = 100,
     ):
         params = {
             "state": state.strip().upper() if state else None,
             "exclude_uids": exclude_uids or [],
             "limit": limit,
-            "population_pool_size": population_pool_size,
         }
         rows, _ = db.cypher_query(RICH_CITY_LOOKUP_QUERY, params)
         return rows

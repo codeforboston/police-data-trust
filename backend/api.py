@@ -180,6 +180,16 @@ def register_commands(app: Flask):
         install_labels(MODEL_CLASSES)
         index_db()
 
+    @app.cli.command("refresh-location-cache")
+    def refresh_location_cache():
+        """Refresh cached city richness fields."""
+        from backend.services.location_cache_service import (
+            LocationCacheService,
+        )
+
+        result = LocationCacheService().refresh_location_richness_cache()
+        click.echo(result)
+
 
 def register_routes(app: Flask):
     app.register_blueprint(sources_bp)
