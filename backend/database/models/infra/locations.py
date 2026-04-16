@@ -2,6 +2,7 @@ from neomodel import (
     StructuredNode,
     StringProperty,
     IntegerProperty,
+    DateTimeNeo4jFormatProperty,
     FloatProperty,
     UniqueIdProperty,
     Relationship,
@@ -10,7 +11,6 @@ from neomodel import (
     One
 )
 from neomodel.contrib.spatial_properties import PointProperty
-from backend.database.properties.datetime import DateNeo4jFormatProperty
 
 
 STATE_INFO = {
@@ -102,7 +102,7 @@ class CountyNode(Place):
     officer_count_cached = IntegerProperty(default=0, index=True)
     complaint_count_cached = IntegerProperty(default=0, index=True)
     richness_score_cached = FloatProperty(default=0.0, index=True)
-    richness_updated_at = DateNeo4jFormatProperty()
+    richness_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     state = RelationshipTo("StateNode", "WITHIN_STATE", cardinality=One)
@@ -118,7 +118,7 @@ class CityNode(Place):
     officer_count_cached = IntegerProperty(default=0, index=True)
     complaint_count_cached = IntegerProperty(default=0, index=True)
     richness_score_cached = FloatProperty(default=0.0, index=True)
-    richness_updated_at = DateNeo4jFormatProperty()
+    richness_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     county = RelationshipTo("CountyNode", "WITHIN_COUNTY", cardinality=One)

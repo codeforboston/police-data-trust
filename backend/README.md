@@ -49,3 +49,52 @@ To authenticate your API requests, include the JWT token in the `Authorization` 
 ```
 Authorization: Bearer <your_token>
 ```
+
+## Data Retrieval Benchmarking
+
+### Unit Cache Benchmarking
+
+There is a small benchmarking script at [backend/tasks/benchmark_unit_cache.py](/Users/darrellmalone/Sync/Clients/NPDC/code/police-data-trust/backend/tasks/benchmark_unit_cache.py:1) for measuring unit-heavy endpoints.
+
+Example using an existing token:
+```bash
+python3 backend/tasks/benchmark_unit_cache.py \
+  --base-url http://localhost:5000 \
+  --token "$ACCESS_TOKEN" \
+  --unit-id <unit-uid-1> \
+  --unit-id <unit-uid-2> \
+  --search-term "precinct 1" \
+  --search-term "investigations" \
+  --output-json /tmp/unit-cache-before.json
+```
+
+Example logging in directly:
+```bash
+python3 backend/tasks/benchmark_unit_cache.py \
+  --base-url http://localhost:5000 \
+  --email you@example.com \
+  --password "your-password" \
+  --unit-id <unit-uid> \
+  --search-term "precinct 1"
+```
+
+To compare an after-run against a saved baseline:
+```bash
+python3 backend/tasks/benchmark_unit_cache.py \
+  --base-url http://localhost:5000 \
+  --token "$ACCESS_TOKEN" \
+  --unit-id <unit-uid> \
+  --search-term "precinct 1" \
+  --compare-json /tmp/unit-cache-before.json \
+  --output-json /tmp/unit-cache-after.json
+```
+
+For Neo4j query-plan profiling, there is also [backend/tasks/profile_unit_cache_queries.py](/Users/darrellmalone/Sync/Clients/NPDC/code/police-data-trust/backend/tasks/profile_unit_cache_queries.py:1). It runs `PROFILE` for the current cached query shape and a legacy traversal version of the same unit-related workload, then prints DB-hit and timing deltas.
+
+Example:
+```bash
+python3 backend/tasks/profile_unit_cache_queries.py \
+  --unit-id <unit-uid-1> \
+  --unit-id <unit-uid-2> \
+  --output-json /tmp/unit-query-profile.json
+```

@@ -190,6 +190,36 @@ def register_commands(app: Flask):
         result = LocationCacheService().refresh_location_richness_cache()
         click.echo(result)
 
+    @app.cli.command("refresh-agency-cache")
+    def refresh_agency_cache():
+        """Refresh cached agency metric fields."""
+        from backend.services.agency_cache_service import (
+            AgencyCacheService,
+        )
+
+        result = AgencyCacheService().refresh_agency_metrics_cache()
+        click.echo(result)
+
+    @app.cli.command("refresh-unit-cache")
+    def refresh_unit_cache():
+        """Refresh cached unit metric fields."""
+        from backend.services.unit_cache_service import (
+            UnitCacheService,
+        )
+
+        result = UnitCacheService().refresh_unit_metrics_cache()
+        click.echo(result)
+
+    @app.cli.command("refresh-officer-cache")
+    def refresh_officer_cache():
+        """Refresh cached officer metric fields."""
+        from backend.services.officer_cache_service import (
+            OfficerCacheService,
+        )
+
+        result = OfficerCacheService().refresh_officer_metrics_cache()
+        click.echo(result)
+
 
 def register_routes(app: Flask):
     app.register_blueprint(sources_bp)

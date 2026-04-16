@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 import math
 
 from backend.queries.location_cache import LocationCacheQueries
@@ -32,7 +32,7 @@ class LocationCacheService:
         rows = self.queries.fetch_city_richness_inputs()
         updates: list[dict] = []
         updated = 0
-        updated_at = date.today().isoformat()
+        updated_at = datetime.now().isoformat()
 
         for (
             city_uid,
@@ -78,7 +78,7 @@ class LocationCacheService:
         rows = self.queries.fetch_county_richness_inputs()
         updates: list[dict] = []
         updated = 0
-        updated_at = date.today().isoformat()
+        updated_at = datetime.now().isoformat()
 
         for (
             county_uid,

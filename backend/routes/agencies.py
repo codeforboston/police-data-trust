@@ -265,7 +265,7 @@ def get_all_agencies():
         page = [item.model_dump() for item in agencies if item]
         return_func = jsonify
     else:
-        page = [row._properties for row in results]
+        page = [row.to_dict(include_relationships=False) for row in results]
         return_func = ordered_jsonify
 
     # Add pagination wrapper

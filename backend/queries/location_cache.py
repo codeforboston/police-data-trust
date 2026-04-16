@@ -67,7 +67,7 @@ SET
     city.officer_count_cached = row.officer_count_cached,
     city.complaint_count_cached = row.complaint_count_cached,
     city.richness_score_cached = row.richness_score_cached,
-    city.richness_updated_at = date(row.richness_updated_at)
+    city.richness_updated_at = datetime(row.richness_updated_at)
 RETURN count(city) AS updated
 """
 
@@ -79,7 +79,7 @@ SET
     county.officer_count_cached = row.officer_count_cached,
     county.complaint_count_cached = row.complaint_count_cached,
     county.richness_score_cached = row.richness_score_cached,
-    county.richness_updated_at = date(row.richness_updated_at)
+    county.richness_updated_at = datetime(row.richness_updated_at)
 RETURN count(county) AS updated
 """
 
