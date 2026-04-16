@@ -144,7 +144,10 @@ def get_access_token(args: argparse.Namespace) -> str:
     )
     if status != 200:
         raise SystemExit(
-            f"Login failed with status {status}: {body.decode('utf-8', 'ignore')}"
+            "Login failed with status {}: {}".format(
+                status,
+                body.decode("utf-8", "ignore"),
+            )
         )
 
     payload = json.loads(body.decode("utf-8"))
@@ -189,7 +192,10 @@ def run_scenario(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Benchmark unit-heavy API endpoints before/after cache changes.",
+        description=(
+            "Benchmark unit-heavy API endpoints before/after cache "
+            "changes."
+        ),
     )
     parser.add_argument(
         "--base-url",
@@ -198,23 +204,35 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--token",
-        help="JWT access token. If omitted, the script logs in with --email/--password.",
+        help=(
+            "JWT access token. If omitted, the script logs in with "
+            "--email/--password."
+        ),
     )
     parser.add_argument("--email", help="Login email for fetching a token.")
-    parser.add_argument("--password", help="Login password for fetching a token.")
+    parser.add_argument(
+        "--password",
+        help="Login password for fetching a token.",
+    )
     parser.add_argument(
         "--unit-id",
         action="append",
         dest="unit_ids",
         default=[],
-        help="Unit UID to benchmark. Repeat this flag to benchmark multiple units.",
+        help=(
+            "Unit UID to benchmark. Repeat this flag to benchmark "
+            "multiple units."
+        ),
     )
     parser.add_argument(
         "--search-term",
         action="append",
         dest="search_terms",
         default=[],
-        help="Search term to benchmark against /api/v1/search. Repeat as needed.",
+        help=(
+            "Search term to benchmark against /api/v1/search. Repeat "
+            "as needed."
+        ),
     )
     parser.add_argument(
         "--repeats",
@@ -272,7 +290,10 @@ def main() -> int:
     scenario_results: dict[str, list[RequestResult]] = {}
 
     for unit_id in args.unit_ids:
-        profile_query = [("include", value) for value in DEFAULT_UNIT_PROFILE_INCLUDES]
+        profile_query = [
+            ("include", value)
+            for value in DEFAULT_UNIT_PROFILE_INCLUDES
+        ]
         profile_url = build_url(
             args.base_url,
             f"/api/v1/units/{unit_id}",
@@ -371,7 +392,10 @@ def main() -> int:
             comparison = output.get("comparisons", {}).get(name)
             if comparison:
                 print(
-                    "  delta mean={:+.2f}ms ({}) p95={:+.2f}ms ({}) errors={:+d}".format(
+                    (
+                        "  delta mean={:+.2f}ms ({}) "
+                        "p95={:+.2f}ms ({}) errors={:+d}"
+                    ).format(
                         comparison["mean_ms_delta"],
                         (
                             f"{comparison['mean_ms_pct']}%"

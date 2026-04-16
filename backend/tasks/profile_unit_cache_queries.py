@@ -9,8 +9,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from backend.config import Config
-
 
 CURRENT_UNIT_PROFILE_QUERY = """
 MATCH (u:Unit {uid: $uid})-[]-(a:Agency)
@@ -18,11 +16,16 @@ CALL (u) {
   RETURN coalesce(u.officer_count_cached, 0) AS total_officers
 }
 CALL (u) {
-  RETURN
+RETURN
     coalesce(u.complaint_count_cached, 0) AS total_complaints,
     coalesce(u.allegation_count_cached, 0) AS total_allegations
 }
-RETURN u.uid AS uid, a.uid AS agency_uid, total_officers, total_complaints, total_allegations
+RETURN
+    u.uid AS uid,
+    a.uid AS agency_uid,
+    total_officers,
+    total_complaints,
+    total_allegations
 """
 
 LEGACY_UNIT_PROFILE_QUERY = """
@@ -38,7 +41,12 @@ CALL (u) {
     count(DISTINCT c) AS total_complaints,
     count(DISTINCT allege) AS total_allegations
 }
-RETURN u.uid AS uid, a.uid AS agency_uid, total_officers, total_complaints, total_allegations
+RETURN
+    u.uid AS uid,
+    a.uid AS agency_uid,
+    total_officers,
+    total_complaints,
+    total_allegations
 """
 
 CURRENT_SEARCH_UNIT_DETAILS_QUERY = """
@@ -147,7 +155,10 @@ def to_int(value: Any) -> int:
 
 def normalize_profile_node(node: Any) -> dict[str, Any]:
     children = extract_value(node, "children", []) or []
-    normalized_children = [normalize_profile_node(child) for child in children]
+    normalized_children = [
+        normalize_profile_node(child)
+        for child in children
+    ]
 
     return {
         "operator_type": extract_value(node, "operator_type")
@@ -243,7 +254,10 @@ def print_run(run: ProfileRun) -> None:
         )
     )
     print(
-        "  root={} db_hits={} rows={} page_cache_hits={} page_cache_misses={}".format(
+        (
+            "  root={} db_hits={} rows={} page_cache_hits={} "
+            "page_cache_misses={}"
+        ).format(
             run.root_operator,
             run.db_hits,
             run.rows,
@@ -265,13 +279,19 @@ def print_comparison(
     print(
         "  rows delta: {:+d}".format(cached.rows - legacy.rows)
     )
-    if cached.available_after_ms is not None and legacy.available_after_ms is not None:
+    if (
+        cached.available_after_ms is not None
+        and legacy.available_after_ms is not None
+    ):
         print(
             "  available_after delta: {:+.2f}ms".format(
                 cached.available_after_ms - legacy.available_after_ms
             )
         )
-    if cached.consumed_after_ms is not None and legacy.consumed_after_ms is not None:
+    if (
+        cached.consumed_after_ms is not None
+        and legacy.consumed_after_ms is not None
+    ):
         print(
             "  consumed_after delta: {:+.2f}ms".format(
                 cached.consumed_after_ms - legacy.consumed_after_ms
@@ -293,6 +313,8 @@ def main() -> int:
             "Install backend dependencies, then retry."
         )
         return 1
+
+    from backend.config import Config
 
     config = Config()
     driver = GraphDatabase.driver(
