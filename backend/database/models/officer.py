@@ -9,6 +9,7 @@ import logging
 from neomodel import (
     db, StructuredNode, Relationship,
     StringProperty, IntegerProperty,
+    DateTimeNeo4jFormatProperty,
     UniqueIdProperty, One
 )
 
@@ -40,7 +41,13 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         "last_name", "suffix", "ethnicity",
         "gender", "year_of_birth"
     ]
-    __hidden_properties__ = ["citations"]
+    __hidden_properties__ = [
+        "citations",
+        "complaint_count_cached",
+        "allegation_count_cached",
+        "substantiated_count_cached",
+        "metrics_updated_at",
+    ]
     __virtual_relationships__ = ["state_ids"]
 
     uid = UniqueIdProperty()
@@ -51,6 +58,10 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
     ethnicity = StringProperty(choices=Ethnicity.choices())
     gender = StringProperty(choices=Gender.choices())
     year_of_birth = IntegerProperty()
+    complaint_count_cached = IntegerProperty(default=0, index=True)
+    allegation_count_cached = IntegerProperty(default=0, index=True)
+    substantiated_count_cached = IntegerProperty(default=0, index=True)
+    metrics_updated_at = DateTimeNeo4jFormatProperty()
 
     def __repr__(self):
         return f"<Officer {self.uid}>"

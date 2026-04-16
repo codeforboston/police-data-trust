@@ -2,6 +2,8 @@ from neomodel import (
     StructuredNode,
     StringProperty,
     IntegerProperty,
+    DateTimeNeo4jFormatProperty,
+    FloatProperty,
     UniqueIdProperty,
     Relationship,
     RelationshipTo,
@@ -96,6 +98,11 @@ class StateNode(Place):
 
 class CountyNode(Place):
     fips = StringProperty(required=True, unique_index=True)
+    agency_count_cached = IntegerProperty(default=0, index=True)
+    officer_count_cached = IntegerProperty(default=0, index=True)
+    complaint_count_cached = IntegerProperty(default=0, index=True)
+    richness_score_cached = FloatProperty(default=0.0, index=True)
+    richness_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     state = RelationshipTo("StateNode", "WITHIN_STATE", cardinality=One)
@@ -107,6 +114,11 @@ class CountyNode(Place):
 class CityNode(Place):
     population = IntegerProperty()
     sm_id = StringProperty(unique_index=True)  # SimpleMaps ID
+    agency_count_cached = IntegerProperty(default=0, index=True)
+    officer_count_cached = IntegerProperty(default=0, index=True)
+    complaint_count_cached = IntegerProperty(default=0, index=True)
+    richness_score_cached = FloatProperty(default=0.0, index=True)
+    richness_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     county = RelationshipTo("CountyNode", "WITHIN_COUNTY", cardinality=One)

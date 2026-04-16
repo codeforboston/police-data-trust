@@ -239,6 +239,35 @@ class LocationService:
 
         remaining = max(per_page - len(results), 0)
         if remaining > 0:
+            rows = self.queries.fetch_county_rich_cities(
+                state=user_state,
+                exclude_uids=excluded_uids,
+                limit=remaining,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": city_name,
+                    "state": {
+                        "abbreviation": state_abbreviation,
+                        "name": state_name,
+                    },
+                    "sm_id": sm_id,
+                    "reason": "county_rich",
+                }
+                for (
+                    uid,
+                    city_name,
+                    sm_id,
+                    state_abbreviation,
+                    state_name,
+                    *_rest,
+                ) in rows
+            )
+            excluded_uids.extend([row[0] for row in rows])
+
+        remaining = max(per_page - len(results), 0)
+        if remaining > 0:
             rows = self.queries.fetch_rich_cities(
                 state=user_state,
                 exclude_uids=excluded_uids,
@@ -254,6 +283,34 @@ class LocationService:
                     },
                     "sm_id": sm_id,
                     "reason": "data_rich",
+                }
+                for (
+                    uid,
+                    city_name,
+                    sm_id,
+                    state_abbreviation,
+                    state_name,
+                    *_rest,
+                ) in rows
+            )
+            excluded_uids.extend([row[0] for row in rows])
+
+        remaining = max(per_page - len(results), 0)
+        if remaining > 0 and user_state:
+            rows = self.queries.fetch_county_rich_cities(
+                exclude_uids=excluded_uids,
+                limit=remaining,
+            )
+            results.extend(
+                {
+                    "uid": uid,
+                    "name": city_name,
+                    "state": {
+                        "abbreviation": state_abbreviation,
+                        "name": state_name,
+                    },
+                    "sm_id": sm_id,
+                    "reason": "county_rich",
                 }
                 for (
                     uid,

@@ -7,6 +7,8 @@ from backend.database.properties.datetime import DateNeo4jFormatProperty
 from neomodel import (
     db,
     StructuredNode,
+    DateTimeNeo4jFormatProperty,
+    IntegerProperty,
     StringProperty,
     RelationshipTo,
     UniqueIdProperty,
@@ -44,7 +46,11 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         "hq_address", "hq_city", "hq_state", "hq_zip",
         "agency", "date_established"
     ]
-    __hidden_properties__ = ["citations", "city_node"]
+    __hidden_properties__ = [
+        "citations", "city_node",
+        "officer_count_cached", "complaint_count_cached",
+        "allegation_count_cached", "metrics_updated_at",
+    ]
 
     uid = UniqueIdProperty()
     name = StringProperty()
@@ -57,6 +63,10 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     website_url = StringProperty()
     description = StringProperty()
     date_established = DateNeo4jFormatProperty()
+    officer_count_cached = IntegerProperty(default=0, index=True)
+    complaint_count_cached = IntegerProperty(default=0, index=True)
+    allegation_count_cached = IntegerProperty(default=0, index=True)
+    metrics_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     agency = RelationshipTo("Agency", "ESTABLISHED_BY", cardinality=One)
@@ -86,14 +96,7 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         Returns:
             int: The total number of officers.
         """
-        cy = """
-        MATCH (u:Unit {uid: $uid})-[]-(:Employment)-[]-(o:Officer)
-        RETURN COUNT(o) AS total_officers
-        """
-        result, meta = db.cypher_query(cy, {'uid': self.uid})
-        if result:
-            return result[0][0]
-        return 0
+        return self.officer_count_cached or 0
 
     @property
     def current_commander(self):
@@ -156,8 +159,12 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         "hq_address", "hq_city", "hq_state", "hq_zip",
         "jurisdiction", "date_established"
     ]
-    __hidden_properties__ = ["citations", "state_node",
-                             "county_node", "city_node"]
+    __hidden_properties__ = [
+        "citations", "state_node", "county_node", "city_node",
+        "unit_count_cached", "officer_count_cached",
+        "complaint_count_cached", "allegation_count_cached",
+        "metrics_updated_at",
+    ]
     __virtual_relationships__ = ["units"]
 
     uid = UniqueIdProperty()
@@ -172,6 +179,11 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
     description = StringProperty()
     date_established = DateNeo4jFormatProperty()
     jurisdiction = StringProperty(choices=Jurisdiction.choices())
+    unit_count_cached = IntegerProperty(default=0, index=True)
+    officer_count_cached = IntegerProperty(default=0, index=True)
+    complaint_count_cached = IntegerProperty(default=0, index=True)
+    allegation_count_cached = IntegerProperty(default=0, index=True)
+    metrics_updated_at = DateTimeNeo4jFormatProperty()
 
     # Relationships
     city_node = RelationshipTo(
