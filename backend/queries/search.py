@@ -94,18 +94,6 @@ SEARCH_DETAILS_QUERY = """
 CALL () {
     UNWIND $officer_uids AS uid
     MATCH (o:Officer {uid: uid})
-    OPTIONAL MATCH (o)-[:ACCUSED_OF]->(al:Allegation)-[:ALLEGED]->(co:Complaint)
-    WITH
-        uid,
-        o,
-        count(DISTINCT co) AS complaint_count,
-        count(DISTINCT al) AS allegation_count,
-        sum(
-            CASE
-                WHEN toLower(trim(coalesce(al.finding, ""))) = "substantiated"
-                THEN 1 ELSE 0
-            END
-        ) AS substantiated_count
 
     CALL (o) {
         OPTIONAL MATCH (o)<-[]-(e:Employment)-[]-(u:Unit)-[]-(ag:Agency)
@@ -124,9 +112,9 @@ CALL () {
     }
 
     RETURN "Officer" AS content_type, uid, {
-        complaints: complaint_count,
-        allegations: allegation_count,
-        substantiated: substantiated_count,
+        complaints: coalesce(o.complaint_count_cached, 0),
+        allegations: coalesce(o.allegation_count_cached, 0),
+        substantiated: coalesce(o.substantiated_count_cached, 0),
         rank: e.highest_rank,
         unit_name: u.name,
         agency_name: ag.name,
@@ -138,16 +126,6 @@ CALL () {
 
     UNWIND $agency_uids AS uid
     MATCH (a:Agency {uid: uid})
-    OPTIONAL MATCH (a)-[]-(u:Unit)
-    OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
-    OPTIONAL MATCH (o)-[]-(:Allegation)-[]-(c:Complaint)
-
-    WITH
-        a,
-        uid,
-        count(DISTINCT u) AS units,
-        count(DISTINCT o) AS officers,
-        count(DISTINCT c) AS complaints
 
     CALL (a) {
         OPTIONAL MATCH (a)-[r:UPDATED_BY]->(s:Source)
@@ -157,9 +135,9 @@ CALL () {
     }
 
     RETURN "Agency" AS content_type, uid, {
-        units: units,
-        officers: officers,
-        complaints: complaints,
+        units: coalesce(a.unit_count_cached, 0),
+        officers: coalesce(a.officer_count_cached, 0),
+        complaints: coalesce(a.complaint_count_cached, 0),
         source: s.name,
         last_updated: r.timestamp
     } AS result
@@ -169,15 +147,6 @@ CALL () {
     UNWIND $unit_uids AS uid
     MATCH (u:Unit {uid: uid})
     OPTIONAL MATCH (u)-[]-(a:Agency)
-    OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
-    OPTIONAL MATCH (o)-[]-(:Allegation)-[]-(c:Complaint)
-
-    WITH
-        uid,
-        u,
-        a,
-        count(DISTINCT o) AS officers,
-        count(DISTINCT c) AS complaints
 
     CALL (u) {
         OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
@@ -189,8 +158,8 @@ CALL () {
     RETURN "Unit" AS content_type, uid, {
         name: u.name,
         agency_name: a.name,
-        officers: officers,
-        complaints: complaints,
+        officers: coalesce(u.officer_count_cached, 0),
+        complaints: coalesce(u.complaint_count_cached, 0),
         source: s.name,
         last_updated: r.timestamp
     } AS result

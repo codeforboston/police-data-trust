@@ -165,6 +165,55 @@ ORDER BY
 LIMIT $limit
 """
 
+COUNTY_RICH_CITY_LOOKUP_QUERY = """
+MATCH (county:CountyNode)-[:WITHIN_STATE]->(state:StateNode)
+WHERE $state IS NULL OR state.abbreviation = $state
+WITH
+    county,
+    state,
+    coalesce(county.agency_count_cached, 0) AS county_agency_count,
+    coalesce(county.officer_count_cached, 0) AS county_officer_count,
+    coalesce(county.complaint_count_cached, 0) AS county_complaint_count,
+    coalesce(county.richness_score_cached, 0.0) AS county_richness_score
+ORDER BY
+    county_richness_score DESC,
+    county_complaint_count DESC,
+    county_officer_count DESC,
+    county_agency_count DESC,
+    county.name ASC
+LIMIT $candidate_county_limit
+MATCH (city:CityNode)-[:WITHIN_COUNTY]->(county)
+WHERE city.coordinates IS NOT NULL AND NOT city.uid IN $exclude_uids
+WITH DISTINCT
+    city,
+    state,
+    county_richness_score,
+    county_complaint_count,
+    county_officer_count,
+    county_agency_count
+RETURN
+    city.uid AS uid,
+    city.name AS city_name,
+    city.sm_id AS sm_id,
+    state.abbreviation AS state_abbreviation,
+    state.name AS state_name,
+    coalesce(city.agency_count_cached, 0) AS agency_count,
+    coalesce(city.complaint_count_cached, 0) AS complaint_count,
+    coalesce(city.officer_count_cached, 0) AS officer_count,
+    coalesce(city.population, 0) AS population,
+    coalesce(city.richness_score_cached, 0.0) AS richness_score,
+    county_richness_score
+ORDER BY
+    county_richness_score DESC,
+    richness_score DESC,
+    complaint_count DESC,
+    officer_count DESC,
+    agency_count DESC,
+    population DESC,
+    city.name ASC
+LIMIT $limit
+"""
+
 
 class LocationQueries:
     def build_city_lookup_term(self, term: str) -> str:
@@ -294,4 +343,21 @@ class LocationQueries:
             "limit": limit,
         }
         rows, _ = db.cypher_query(RICH_CITY_LOOKUP_QUERY, params)
+        return rows
+
+    def fetch_county_rich_cities(
+        self,
+        *,
+        state: str | None = None,
+        exclude_uids: list[str] | None = None,
+        limit: int = 5,
+        candidate_county_limit: int = 25,
+    ):
+        params = {
+            "state": state.strip().upper() if state else None,
+            "exclude_uids": exclude_uids or [],
+            "limit": limit,
+            "candidate_county_limit": candidate_county_limit,
+        }
+        rows, _ = db.cypher_query(COUNTY_RICH_CITY_LOOKUP_QUERY, params)
         return rows
