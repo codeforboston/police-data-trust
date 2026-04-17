@@ -20,7 +20,6 @@ from backend.routes.healthcheck import bp as healthcheck_bp
 from backend.routes.users import bp as users_bp
 from backend.utils import dev_only
 from backend.importer.loop import Importer
-from backend.database import MODEL_CLASSES
 from neo4j import GraphDatabase
 from neomodel import db, install_all_labels, config as neo_config
 
