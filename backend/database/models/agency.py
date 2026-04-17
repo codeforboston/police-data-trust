@@ -300,7 +300,13 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         """)
         where_clauses.append("""
         (
-            size($source_uids) = 0 OR EXISTS {
+            size($source_uids) = 0
+            OR EXISTS {
+                MATCH (n)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->
+                (source:Source)
+                WHERE source.uid IN $source_uids
+            }
+            OR EXISTS {
                 MATCH (n)-[:UPDATED_BY]->(source:Source)
                 WHERE source.uid IN $source_uids
             }

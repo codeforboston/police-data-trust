@@ -79,14 +79,12 @@ new_agency = {
 
 
 @pytest.fixture
-def example_agencies(db_session, example_source):
+def example_agencies(db_session, example_source, add_test_change):
     agencies = {}
 
     for name, mock in mock_agencies.items():
         a = Agency(**mock).save()
-        a.citations.connect(example_source, {
-            'timestamp': datetime.now(),
-        })
+        add_test_change(a, example_source, timestamp=datetime.now())
         agencies[name] = a
     return agencies
 
@@ -269,7 +267,7 @@ def test_filter_agencies_by_city_uid(
 
 
 def test_filter_agencies_by_source_name(
-        client, access_token, example_agencies):
+        client, access_token, example_agencies, add_test_change):
     other_source = Source(name="Another Source", url="www.other.com").save()
     other_agency = Agency(
         name="Albany Police Department",
@@ -280,9 +278,7 @@ def test_filter_agencies_by_source_name(
         hq_state="NY",
         jurisdiction="MUNICIPAL",
     ).save()
-    other_agency.citations.connect(other_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(other_agency, other_source, timestamp=datetime.now())
 
     res = client.get(
         "/api/v1/agencies?source=Example%20Source",
@@ -296,7 +292,8 @@ def test_filter_agencies_by_source_name(
 
 
 def test_filter_agencies_by_multiple_source_uids(
-        client, access_token, example_agencies, example_source):
+        client, access_token, example_agencies, example_source,
+        add_test_change):
     other_source = Source(name="Another Source", url="www.other.com").save()
     other_agency = Agency(
         name="Albany Police Department",
@@ -307,9 +304,7 @@ def test_filter_agencies_by_multiple_source_uids(
         hq_state="NY",
         jurisdiction="MUNICIPAL",
     ).save()
-    other_agency.citations.connect(other_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(other_agency, other_source, timestamp=datetime.now())
 
     res = client.get(
         "/api/v1/agencies"

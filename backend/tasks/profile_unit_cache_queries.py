@@ -54,9 +54,10 @@ UNWIND $unit_uids AS uid
 MATCH (u:Unit {uid: uid})
 OPTIONAL MATCH (u)-[]-(a:Agency)
 CALL (u) {
-    OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
-    RETURN s, r
-    ORDER BY r.timestamp DESC
+    OPTIONAL MATCH (u)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+    (s:Source)
+    RETURN s, c.timestamp AS updated_at
+    ORDER BY updated_at DESC
     LIMIT 1
 }
 RETURN uid, {
@@ -65,7 +66,7 @@ RETURN uid, {
     officers: coalesce(u.officer_count_cached, 0),
     complaints: coalesce(u.complaint_count_cached, 0),
     source: s.name,
-    last_updated: r.timestamp
+    last_updated: updated_at
 } AS result
 """
 
@@ -82,9 +83,10 @@ WITH
     count(DISTINCT o) AS officers,
     count(DISTINCT c) AS complaints
 CALL (u) {
-    OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
-    RETURN s, r
-    ORDER BY r.timestamp DESC
+    OPTIONAL MATCH (u)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+    (s:Source)
+    RETURN s, c.timestamp AS updated_at
+    ORDER BY updated_at DESC
     LIMIT 1
 }
 RETURN uid, {
@@ -93,7 +95,7 @@ RETURN uid, {
     officers: officers,
     complaints: complaints,
     source: s.name,
-    last_updated: r.timestamp
+    last_updated: updated_at
 } AS result
 """
 

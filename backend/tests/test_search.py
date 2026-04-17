@@ -1,4 +1,5 @@
 import urllib.parse
+from datetime import datetime, timedelta
 import pytest
 
 from backend.database.models.agency import Agency, Unit
@@ -287,13 +288,14 @@ def test_search_filters_by_source_name(
         client,
         db_session,
         example_officer,
-        access_token):
+        access_token,
+        add_test_change):
     other_source = Source(name="Another Source", url="www.other.com").save()
     unmatched_officer = Officer(
         first_name="John",
         last_name="Smith",
     ).save()
-    unmatched_officer.citations.connect(other_source, {})
+    add_test_change(unmatched_officer, other_source)
 
     res = client.get(
         "/api/v1/search?query=john&source=Example%20Source",
@@ -310,7 +312,8 @@ def test_search_filters_by_source_uid(
         db_session,
         example_agency,
         access_token,
-        example_source):
+        example_source,
+        add_test_change):
     other_source = Source(
         name="Another Agency Source", url="www.other.com"
     ).save()
@@ -322,7 +325,7 @@ def test_search_filters_by_source_uid(
         hq_address="456 Main St",
         hq_zip="14201",
     ).save()
-    unmatched_agency.citations.connect(other_source, {})
+    add_test_change(unmatched_agency, other_source)
 
     res = client.get(
         "/api/v1/search"
@@ -340,7 +343,8 @@ def test_search_filters_units_by_source_name(
         client,
         db_session,
         example_unit,
-        access_token):
+        access_token,
+        add_test_change):
     other_source = Source(
         name="Different Unit Source", url="www.other.com"
     ).save()
@@ -348,7 +352,7 @@ def test_search_filters_units_by_source_name(
         name="Precinct 10",
         hq_state="NY",
     ).save()
-    unmatched_unit.citations.connect(other_source, {})
+    add_test_change(unmatched_unit, other_source)
 
     res = client.get(
         "/api/v1/search?query=Precinct&source=Example%20Source",
@@ -385,13 +389,14 @@ def test_search_filters_by_multiple_source_names(
         db_session,
         example_officer,
         access_token,
-        example_source):
+        example_source,
+        add_test_change):
     second_source = Source(name="Another Source", url="www.other.com").save()
     second_officer = Officer(
         first_name="John",
         last_name="Smith",
     ).save()
-    second_officer.citations.connect(second_source, {})
+    add_test_change(second_officer, second_source)
 
     res = client.get(
         "/api/v1/search"
@@ -412,7 +417,8 @@ def test_search_filters_by_multiple_source_uids(
         db_session,
         example_agency,
         access_token,
-        example_source):
+        example_source,
+        add_test_change):
     second_source = Source(
         name="Another Agency Source", url="www.other.com"
     ).save()
@@ -424,7 +430,7 @@ def test_search_filters_by_multiple_source_uids(
         hq_address="456 Main St",
         hq_zip="14201",
     ).save()
-    second_agency.citations.connect(second_source, {})
+    add_test_change(second_agency, second_source)
 
     res = client.get(
         "/api/v1/search"
@@ -438,6 +444,42 @@ def test_search_filters_by_multiple_source_uids(
     results = res.json["results"]
     result_uids = {item["uid"] for item in results}
     assert result_uids == {example_agency.uid, second_agency.uid}
+
+
+def test_search_uses_latest_change_source(
+        client,
+        db_session,
+        example_officer,
+        example_source,
+        access_token,
+        add_test_change):
+    older_timestamp = datetime.now() - timedelta(days=2)
+    newer_timestamp = datetime.now() - timedelta(days=1)
+
+    initial_change = example_officer.latest_change
+    assert initial_change is not None
+    initial_change.timestamp = older_timestamp
+    initial_change.save()
+
+    newer_source = Source(name="Latest Source", url="www.latest.com").save()
+    add_test_change(
+        example_officer,
+        newer_source,
+        timestamp=newer_timestamp,
+    )
+
+    res = client.get(
+        "/api/v1/search?query=John%20Doe",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+
+    assert res.status_code == 200
+    results = res.json["results"]
+    officer_result = next(
+        item for item in results if item["uid"] == example_officer.uid
+    )
+    assert officer_result["source"] == newer_source.name
+    assert officer_result["last_updated"] is not None
 
 
 def test_build_fulltext_query_applies_prefix_wildcards():

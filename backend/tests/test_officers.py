@@ -816,16 +816,14 @@ def test_invalid_query_params(
 
 
 def test_filter_officers_by_source_name(
-        client, db_session, access_token, example_source):
+        client, db_session, access_token, example_source, add_test_change):
     officer = Officer(
         first_name="John",
         last_name="Doe",
         ethnicity="White",
         gender="Male",
     ).save()
-    officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(officer, example_source, timestamp=datetime.now())
 
     other_source = Source(name="Other Source", url="www.other.com").save()
     other_officer = Officer(
@@ -834,9 +832,7 @@ def test_filter_officers_by_source_name(
         ethnicity="White",
         gender="Male",
     ).save()
-    other_officer.citations.connect(other_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(other_officer, other_source, timestamp=datetime.now())
 
     res = client.get(
         "/api/v1/officers?term=John&source=Example%20Source",
@@ -848,7 +844,7 @@ def test_filter_officers_by_source_name(
 
 
 def test_filter_officers_by_city_uid(
-        client, db_session, access_token, example_source):
+        client, db_session, access_token, example_source, add_test_change):
     state = StateNode(name="New York", abbreviation="NY").save()
     county = CountyNode(name="New York County", fips="36061").save()
     new_york = CityNode(name="New York").save()
@@ -890,18 +886,14 @@ def test_filter_officers_by_city_uid(
         ethnicity="White",
         gender="Female",
     ).save()
-    first_officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(first_officer, example_source, timestamp=datetime.now())
     second_officer = Officer(
         first_name="Jane",
         last_name="Smith",
         ethnicity="White",
         gender="Female",
     ).save()
-    second_officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(second_officer, example_source, timestamp=datetime.now())
 
     first_employment = Employment(
         badge_number="1001",
@@ -927,16 +919,14 @@ def test_filter_officers_by_city_uid(
 
 
 def test_filter_officers_by_multiple_source_uids(
-        client, db_session, access_token, example_source):
+        client, db_session, access_token, example_source, add_test_change):
     first_officer = Officer(
         first_name="Alex",
         last_name="Doe",
         ethnicity="White",
         gender="Male",
     ).save()
-    first_officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(first_officer, example_source, timestamp=datetime.now())
 
     other_source = Source(name="Other Source", url="www.other.com").save()
     second_officer = Officer(
@@ -945,9 +935,7 @@ def test_filter_officers_by_multiple_source_uids(
         ethnicity="White",
         gender="Male",
     ).save()
-    second_officer.citations.connect(other_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(second_officer, other_source, timestamp=datetime.now())
 
     res = client.get(
         "/api/v1/officers"
@@ -963,7 +951,7 @@ def test_filter_officers_by_multiple_source_uids(
 
 
 def test_filter_officers_by_multiple_agency_uids(
-        client, db_session, access_token, example_source):
+        client, db_session, access_token, example_source, add_test_change):
     first_agency = Agency(
         name="First Agency UID Filter",
         website_url="https://first-uid.example.gov",
@@ -994,18 +982,14 @@ def test_filter_officers_by_multiple_agency_uids(
         ethnicity="White",
         gender="Female",
     ).save()
-    first_officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(first_officer, example_source, timestamp=datetime.now())
     second_officer = Officer(
         first_name="Robin",
         last_name="Two",
         ethnicity="White",
         gender="Female",
     ).save()
-    second_officer.citations.connect(example_source, {
-        "timestamp": datetime.now(),
-    })
+    add_test_change(second_officer, example_source, timestamp=datetime.now())
 
     first_employment = Employment(
         badge_number="2001",
