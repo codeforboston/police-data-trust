@@ -22,7 +22,7 @@ from backend.utils import dev_only
 from backend.importer.loop import Importer
 from backend.database import MODEL_CLASSES
 from neo4j import GraphDatabase
-from neomodel import db, install_labels, config as neo_config
+from neomodel import db, install_all_labels, config as neo_config
 
 mail = Mail()
 
@@ -177,7 +177,7 @@ def register_commands(app: Flask):
     def neo4j_migrate():
         """Install Neomodel labels/indexes and run migrations."""
         click.echo("Running Neo4j migrations...")
-        install_labels(MODEL_CLASSES)
+        install_all_labels()
         index_db()
 
     @app.cli.command("refresh-location-cache")
