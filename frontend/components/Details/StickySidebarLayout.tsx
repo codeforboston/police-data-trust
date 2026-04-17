@@ -16,12 +16,12 @@ export default function StickySidebarLayout({
   stickyTop = "20px"
 }: StickySidebarLayoutProps) {
   return (
-    <Box sx={{ display: "flex", gap: 4, alignItems: "flex-start", flexWrap: "wrap" }}>
-      <Box sx={{ flex: "1 1 700px", minWidth: 0, maxWidth: mainMaxWidth }}>{main}</Box>
+    <Box sx={{ display: "flex", gap: 4, alignItems: "flex-start", flexWrap: "nowrap" }}>
+      <Box sx={{ flex: "1 1 auto", minWidth: 0, maxWidth: mainMaxWidth }}>{main}</Box>
       <Box
         sx={{
           flex: `0 0 ${sidebarWidth}`,
-          width: "100%",
+          width: sidebarWidth,
           maxWidth: sidebarWidth,
           position: "sticky",
           top: stickyTop,

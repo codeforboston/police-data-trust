@@ -5,6 +5,13 @@ type OfficerContentDetailsProps = {
   officer: Officer
 }
 
+const toOrganizationSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(".", "-")
+    .replace(/[^a-z0-9-]/g, "")
+
 export default function OfficerContentDetails({ officer }: OfficerContentDetailsProps) {
   const totalComplaints =
     officer.allegation_summary?.reduce((sum, a) => sum + a.complaint_count, 0) || 0
@@ -15,8 +22,12 @@ export default function OfficerContentDetails({ officer }: OfficerContentDetails
     officer.allegation_summary?.reduce((sum, a) => sum + a.substantiated_count, 0) || 0
 
   const dataSources =
-    officer.sources?.map((source) => source.name).filter((name): name is string => Boolean(name)) ||
-    []
+    officer.sources
+      ?.filter((source): source is { name: string; uid?: string } => Boolean(source.name))
+      .map((source) => ({
+        label: source.name,
+        href: `/organization?slug=${toOrganizationSlug(source.name)}`
+      })) || []
 
   return (
     <ContentDetails

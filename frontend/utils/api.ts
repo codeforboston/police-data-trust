@@ -1,6 +1,7 @@
 export type AccessToken = string
 
 export interface Source {
+  uid?: string
   name?: string
   id?: number
   url?: string

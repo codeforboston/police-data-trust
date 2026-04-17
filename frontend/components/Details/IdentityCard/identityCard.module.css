@@ -3,4 +3,39 @@
   gap: 28px;
   align-items: center;
   position: relative;
+  padding: 25px 20px;
+  min-height: 120px;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.title {
+  line-height: 1.5;
+}
+
+.subtitle,
+.detail {
+  line-height: 1.15;
+  color: #1e1e1e;
+}
+
+@media screen and (max-width: 875px) {
+  .identityCard {
+    padding: 8px 24px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .identityCard {
+    gap: 20px;
+    padding: 8px 0;
+    align-items: center;
+  }
 }

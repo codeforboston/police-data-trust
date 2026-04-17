@@ -1,9 +1,15 @@
+import NextLink from "next/link"
 import { Avatar, Link, Typography } from "@mui/material"
 import styles from "./contentDetails.module.css"
 
 type ContentDetailsItem = {
   label: string
   value: string
+}
+
+type DataSourceItem = {
+  label: string
+  href?: string
 }
 
 type AssociatedPerson = {
@@ -14,7 +20,7 @@ type AssociatedPerson = {
 
 type ContentDetailsProps = {
   contentType: string
-  dataSources: string[]
+  dataSources: DataSourceItem[]
   lastUpdatedText?: string
   lastUpdatedBy?: string
   lastUpdatedByImageSrc?: string
@@ -56,8 +62,25 @@ export default function ContentDetails({
         </Typography>
         {dataSources.length > 0 ? (
           dataSources.map((source, index) => (
-            <Typography key={index} variant="body2" color="#475467">
-              {source}
+            <Typography key={`${source.label}-${index}`} variant="body2" color="#475467">
+              {source.href ? (
+                <Link
+                  component={NextLink}
+                  href={source.href}
+                  underline="none"
+                  color="inherit"
+                  sx={{
+                    transition: "color 160ms ease",
+                    "&:hover": {
+                      color: "primary.main"
+                    }
+                  }}
+                >
+                  {source.label}
+                </Link>
+              ) : (
+                source.label
+              )}
             </Typography>
           ))
         ) : (
