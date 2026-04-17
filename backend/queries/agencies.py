@@ -8,25 +8,21 @@ MATCH (a:Agency {uid: $agency_uid})
 
 UNIT_COUNT_SUBQUERY = """
 CALL (a) {
-  OPTIONAL MATCH (a)-[]-(u:Unit)
-  RETURN count(DISTINCT u) AS total_units
+  RETURN coalesce(a.unit_count_cached, 0) AS total_units
 }
 """
 
 OFFICER_COUNT_SUBQUERY = """
 CALL (a) {
-  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(o:Officer)
-  RETURN count(DISTINCT o) AS total_officers
+  RETURN coalesce(a.officer_count_cached, 0) AS total_officers
 }
 """
 
 COMPLAINT_SUBQUERY = """
 CALL (a) {
-  OPTIONAL MATCH (a)-[]-(:Unit)<-[]-(:Employment)-[]->(:Officer)
-      -[:ACCUSED_OF]->(allege:Allegation)-[:ALLEGED]-(c:Complaint)
   RETURN
-    count(DISTINCT c) AS total_complaints,
-    count(DISTINCT allege) AS total_allegations
+    coalesce(a.complaint_count_cached, 0) AS total_complaints,
+    coalesce(a.allegation_count_cached, 0) AS total_allegations
 }
 """
 
@@ -91,17 +87,6 @@ MATCH (city:CityNode {name: $city_name})
 WHERE state.abbreviation = $state
 MATCH (a:Agency)-[:LOCATED_IN]->(city)
 WHERE NOT a.uid IN $exclude_uids
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(o:Officer)
-  RETURN count(DISTINCT o) AS officer_count
-}
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(:Officer)
-      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
-  RETURN count(DISTINCT c) AS complaint_count
-}
 RETURN
   a.uid AS uid,
   a.name AS agency_name,
@@ -109,8 +94,8 @@ RETURN
   state.abbreviation AS state_abbreviation,
   state.name AS state_name,
   a.jurisdiction AS jurisdiction,
-  officer_count,
-  complaint_count
+  coalesce(a.officer_count_cached, 0) AS officer_count,
+  coalesce(a.complaint_count_cached, 0) AS complaint_count
 ORDER BY complaint_count DESC,
     officer_count DESC,
     agency_name ASC
@@ -123,23 +108,32 @@ MATCH (city:CityNode)-[:WITHIN_COUNTY]->(:CountyNode)
 WHERE
   city.coordinates IS NOT NULL
   AND ($state IS NULL OR state.abbreviation = $state)
-WITH city, state, coalesce(city.population, 0) AS population
-ORDER BY population DESC, city.name ASC
-LIMIT $population_pool_size
+WITH
+  city,
+  state,
+  coalesce(city.population, 0) AS population,
+  coalesce(city.agency_count_cached, 0) AS agency_count_cached,
+  coalesce(city.officer_count_cached, 0) AS officer_count_cached,
+  coalesce(city.complaint_count_cached, 0) AS complaint_count_cached,
+  coalesce(city.richness_score_cached, 0.0) AS richness_score_cached
+ORDER BY richness_score_cached DESC,
+    complaint_count_cached DESC,
+    officer_count_cached DESC,
+    agency_count_cached DESC,
+    population DESC,
+    city.name ASC
+LIMIT $candidate_city_limit
 MATCH (a:Agency)-[:LOCATED_IN]->(city)
 WHERE NOT a.uid IN $exclude_uids
-WITH DISTINCT a, city, state, population
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(o:Officer)
-  RETURN count(DISTINCT o) AS officer_count
-}
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(:Officer)
-      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
-  RETURN count(DISTINCT c) AS complaint_count
-}
+WITH DISTINCT
+  a,
+  city,
+  state,
+  population,
+  richness_score_cached,
+  complaint_count_cached,
+  officer_count_cached,
+  agency_count_cached
 RETURN
   a.uid AS uid,
   a.name AS agency_name,
@@ -147,11 +141,16 @@ RETURN
   state.abbreviation AS state_abbreviation,
   state.name AS state_name,
   a.jurisdiction AS jurisdiction,
-  officer_count,
-  complaint_count,
-  population
+  coalesce(a.officer_count_cached, 0) AS officer_count,
+  coalesce(a.complaint_count_cached, 0) AS complaint_count,
+  population,
+  richness_score_cached
 ORDER BY complaint_count DESC,
     officer_count DESC,
+    richness_score_cached DESC,
+    complaint_count_cached DESC,
+    officer_count_cached DESC,
+    agency_count_cached DESC,
     population DESC,
     agency_name ASC
 LIMIT $limit
@@ -171,17 +170,6 @@ WITH DISTINCT
     city,
     state,
     point.distance(user_point, city.coordinates) AS distance_meters
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(o:Officer)
-  RETURN count(DISTINCT o) AS officer_count
-}
-CALL (a) {
-  OPTIONAL MATCH (a)-[:ESTABLISHED_BY]-(:Unit)<-[:IN_UNIT]
-      -(:Employment)-[:HELD_BY]-(:Officer)
-      -[:ACCUSED_OF]->(:Allegation)-[:ALLEGED]-(c:Complaint)
-  RETURN count(DISTINCT c) AS complaint_count
-}
 RETURN
   a.uid AS uid,
   a.name AS agency_name,
@@ -189,8 +177,8 @@ RETURN
   state.abbreviation AS state_abbreviation,
   state.name AS state_name,
   a.jurisdiction AS jurisdiction,
-  officer_count,
-  complaint_count,
+  coalesce(a.officer_count_cached, 0) AS officer_count,
+  coalesce(a.complaint_count_cached, 0) AS complaint_count,
   distance_meters
 ORDER BY distance_meters ASC,
     complaint_count DESC,
@@ -539,13 +527,13 @@ class AgencyQueries:
         state: str | None = None,
         exclude_uids: list[str] | None = None,
         limit: int = 5,
-        population_pool_size: int = 100,
+        candidate_city_limit: int = 100,
     ):
         params = {
             "state": state.strip().upper() if state else None,
             "exclude_uids": exclude_uids or [],
             "limit": limit,
-            "population_pool_size": population_pool_size,
+            "candidate_city_limit": candidate_city_limit,
         }
         rows, _ = db.cypher_query(RICH_AGENCY_LOOKUP_QUERY, params)
         return rows

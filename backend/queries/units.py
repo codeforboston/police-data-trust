@@ -8,18 +8,15 @@ MATCH (u:Unit {uid: $uid})-[]-(a:Agency)
 
 OFFICER_COUNT_SUBQUERY = """
 CALL (u) {
-  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(o:Officer)
-  RETURN count(DISTINCT o) AS total_officers
+  RETURN coalesce(u.officer_count_cached, 0) AS total_officers
 }
 """
 
 COMPLAINT_SUBQUERY = """
 CALL (u) {
-  OPTIONAL MATCH (u)<-[]-(:Employment)-[]->(:Officer)
-      -[:ACCUSED_OF]->(allege:Allegation)-[:ALLEGED]-(c:Complaint)
   RETURN
-    count(DISTINCT c) AS total_complaints,
-    count(DISTINCT allege) AS total_allegations
+    coalesce(u.complaint_count_cached, 0) AS total_complaints,
+    coalesce(u.allegation_count_cached, 0) AS total_allegations
 }
 """
 
