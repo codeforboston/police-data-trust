@@ -5,6 +5,13 @@ type UnitContentDetailsProps = {
   unit: Unit
 }
 
+const toOrganizationSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(".", "-")
+    .replace(/[^a-z0-9-]/g, "")
+
 export default function UnitContentDetails({ unit }: UnitContentDetailsProps) {
   const totalComplaints = unit.total_complaints || 0
 
@@ -13,7 +20,12 @@ export default function UnitContentDetails({ unit }: UnitContentDetailsProps) {
   const totalOfficers = unit.total_officers || 0
 
   const dataSources =
-    unit.sources?.map((source) => source.name).filter((name): name is string => Boolean(name)) || []
+    unit.sources
+      ?.filter((source): source is { name: string; uid?: string } => Boolean(source.name))
+      .map((source) => ({
+        label: source.name,
+        href: `/organization?slug=${toOrganizationSlug(source.name)}`
+      })) || []
 
   return (
     <ContentDetails

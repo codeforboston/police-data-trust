@@ -5,7 +5,7 @@ import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined"
 
 type IdentityCardProps = {
   title: string
-  subtitle?: string
+  subtitle?: ReactNode
   detail?: ReactNode
   imageSrc?: string
   onAddToCollection?: () => void
@@ -30,16 +30,24 @@ export default function IdentityCard({
         <AddToPhotosOutlinedIcon sx={{ width: 16, height: 16 }} />
       </IconButton>
 
-      <Avatar sx={{ width: 88, height: 88 }} src={imageSrc || "/broken-image.jpg"} />
+      <Avatar sx={{ width: 105, height: 105 }} src={imageSrc || "/broken-image.jpg"} />
 
-      <div>
-        <Typography variant="subtitle1" component="h1" fontWeight="bold">
+      <div className={styles.content}>
+        <Typography variant="subtitle1" component="h1" fontWeight="bold" className={styles.title}>
           {title}
         </Typography>
 
-        {subtitle && <Typography variant="body2">{subtitle}</Typography>}
+        {subtitle && (
+          <Typography variant="body2" className={styles.subtitle}>
+            {subtitle}
+          </Typography>
+        )}
 
-        {detail && <Typography variant="body2">{detail}</Typography>}
+        {detail && (
+          <Typography variant="body2" className={styles.detail}>
+            {detail}
+          </Typography>
+        )}
       </div>
     </div>
   )

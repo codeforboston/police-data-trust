@@ -1,3 +1,5 @@
+import Link from "next/link"
+import { Link as MuiLink } from "@mui/material"
 import IdentityCard from "./IdentityCard"
 import { Unit } from "@/utils/api"
 import { US_STATES } from "@/utils/constants"
@@ -19,7 +21,28 @@ export default function UnitIdentityCard({ unit }: UnitIdentityCardProps) {
       : ""
 
   const title = `${unit.name}${location}`
-  const subtitle = `Unit of ${unit.agency?.name ?? "Unknown Agency"}`
+  const subtitle =
+    unit.agency?.uid && unit.agency?.name ? (
+      <>
+        Unit of{" "}
+        <MuiLink
+          component={Link}
+          href={`/agency/${unit.agency.uid}`}
+          underline="none"
+          color="inherit"
+          sx={{
+            transition: "color 160ms ease",
+            "&:hover": {
+              color: "primary.main"
+            }
+          }}
+        >
+          {unit.agency.name}
+        </MuiLink>
+      </>
+    ) : (
+      `Unit of ${unit.agency?.name ?? "Unknown Agency"}`
+    )
   const detail =
     unit.total_officers !== undefined
       ? `${unit.total_officers} known officers`

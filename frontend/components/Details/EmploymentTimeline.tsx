@@ -1,4 +1,5 @@
 import * as React from "react"
+import Link from "next/link"
 import Timeline from "@mui/lab/Timeline"
 import TimelineItem from "@mui/lab/TimelineItem"
 import TimelineSeparator from "@mui/lab/TimelineSeparator"
@@ -8,7 +9,7 @@ import TimelineDot from "@mui/lab/TimelineDot"
 import TimelineOppositeContent, {
   timelineOppositeContentClasses
 } from "@mui/lab/TimelineOppositeContent"
-import { Typography } from "@mui/material"
+import { Link as MuiLink, Typography } from "@mui/material"
 import { EmploymentHistory } from "@/utils/api"
 import { US_STATES } from "@/utils/constants"
 
@@ -85,7 +86,24 @@ export default function EmploymentTimeline({ employment_history }: EmploymentTim
                 `, ${employment.unit_name}`}
             </Typography>
             <Typography variant="body2" sx={{ color: "#1E1E1E" }}>
-              {employment.agency_name}
+              {employment.agency_uid && employment.agency_name ? (
+                <MuiLink
+                  component={Link}
+                  href={`/agency/${employment.agency_uid}`}
+                  sx={{
+                    color: "inherit",
+                    textDecoration: "none",
+                    transition: "color 160ms ease",
+                    "&:hover": {
+                      color: "primary.main"
+                    }
+                  }}
+                >
+                  {employment.agency_name}
+                </MuiLink>
+              ) : (
+                employment.agency_name
+              )}
               {employment.state && `, ${getStateName(employment.state)}`}
             </Typography>
           </TimelineContent>
