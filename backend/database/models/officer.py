@@ -288,10 +288,17 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         if source_uids:
             where_clauses.append("""
-            EXISTS {
-                MATCH (o)-[:UPDATED_BY]->(source:Source)
-                WHERE source.uid IN $source_uids
-            }
+            (
+                EXISTS {
+                    MATCH (o)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->
+                    (source:Source)
+                    WHERE source.uid IN $source_uids
+                }
+                OR EXISTS {
+                    MATCH (o)-[:UPDATED_BY]->(source:Source)
+                    WHERE source.uid IN $source_uids
+                }
+            )
             """)
             params["source_uids"] = source_uids
 

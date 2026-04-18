@@ -17,8 +17,10 @@ CALL () {
         }
     )
     AND (
-        size($source_uids) = 0 OR EXISTS {
-            MATCH (node)-[:UPDATED_BY]->(source:Source)
+        size($source_uids) = 0
+        OR EXISTS {
+            MATCH (node)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->
+            (source:Source)
             WHERE source.uid IN $source_uids
         }
     )
@@ -32,8 +34,10 @@ CALL () {
         }
     )
     AND (
-        size($source_uids) = 0 OR EXISTS {
-            MATCH (node)-[:UPDATED_BY]->(source:Source)
+        size($source_uids) = 0
+        OR EXISTS {
+            MATCH (node)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->
+            (source:Source)
             WHERE source.uid IN $source_uids
         }
     )
@@ -47,8 +51,10 @@ CALL () {
         }
     )
     AND (
-        size($source_uids) = 0 OR EXISTS {
-            MATCH (node)-[:UPDATED_BY]->(source:Source)
+        size($source_uids) = 0
+        OR EXISTS {
+            MATCH (node)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->
+            (source:Source)
             WHERE source.uid IN $source_uids
         }
     )
@@ -105,9 +111,10 @@ CALL () {
     }
 
     CALL (o) {
-        OPTIONAL MATCH (o)-[r:UPDATED_BY]->(s:Source)
-        RETURN s, r
-        ORDER BY r.timestamp DESC
+        OPTIONAL MATCH (o)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+        (s:Source)
+        RETURN s, c.timestamp AS updated_at
+        ORDER BY updated_at DESC
         LIMIT 1
     }
 
@@ -119,7 +126,7 @@ CALL () {
         unit_name: u.name,
         agency_name: ag.name,
         source: s.name,
-        last_updated: r.timestamp
+        last_updated: updated_at
     } AS result
 
     UNION ALL
@@ -128,9 +135,10 @@ CALL () {
     MATCH (a:Agency {uid: uid})
 
     CALL (a) {
-        OPTIONAL MATCH (a)-[r:UPDATED_BY]->(s:Source)
-        RETURN s, r
-        ORDER BY r.timestamp DESC
+        OPTIONAL MATCH (a)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+        (s:Source)
+        RETURN s, c.timestamp AS updated_at
+        ORDER BY updated_at DESC
         LIMIT 1
     }
 
@@ -139,7 +147,7 @@ CALL () {
         officers: coalesce(a.officer_count_cached, 0),
         complaints: coalesce(a.complaint_count_cached, 0),
         source: s.name,
-        last_updated: r.timestamp
+        last_updated: updated_at
     } AS result
 
     UNION ALL
@@ -149,9 +157,10 @@ CALL () {
     OPTIONAL MATCH (u)-[]-(a:Agency)
 
     CALL (u) {
-        OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
-        RETURN s, r
-        ORDER BY r.timestamp DESC
+        OPTIONAL MATCH (u)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+        (s:Source)
+        RETURN s, c.timestamp AS updated_at
+        ORDER BY updated_at DESC
         LIMIT 1
     }
 
@@ -161,7 +170,7 @@ CALL () {
         officers: coalesce(u.officer_count_cached, 0),
         complaints: coalesce(u.complaint_count_cached, 0),
         source: s.name,
-        last_updated: r.timestamp
+        last_updated: updated_at
     } AS result
 }
 RETURN content_type, uid, result

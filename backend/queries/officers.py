@@ -54,7 +54,18 @@ LIMIT 10;
 """
 
 SOURCES_QUERY = """
-MATCH (o:Officer {uid: $uid})-[:UPDATED_BY]->(s:Source)
+MATCH (o:Officer {uid: $uid})
+CALL {
+  WITH o
+  MATCH (o)<-[:CHANGE_TO]-(:Change)-[:ATTRIBUTED_TO]->(s:Source)
+  RETURN s
+
+  UNION
+
+  WITH o
+  MATCH (o)-[:UPDATED_BY]->(s:Source)
+  RETURN s
+}
 RETURN DISTINCT {
   name: s.name,
   url: s.url,

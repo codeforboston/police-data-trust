@@ -13,7 +13,7 @@ from neomodel import (
     Relationship,
     StringProperty, DateTimeNeo4jFormatProperty,
     UniqueIdProperty, BooleanProperty,
-    EmailProperty, One, db
+    EmailProperty, One, ZeroOrOne, db
 )
 from neomodel.exceptions import DoesNotExist
 if TYPE_CHECKING:
@@ -130,6 +130,41 @@ class Citation(StructuredRel, JsonSerializable):
         return f"<Citation {self.timestamp}>"
 
 
+class Change(StructuredNode, JsonSerializable):
+    uid = UniqueIdProperty()
+    timestamp = DateTimeNeo4jFormatProperty(
+        default_now=True,
+        index=True
+    )
+    url = StringProperty()
+    diff = StringProperty()
+
+    source = RelationshipTo(
+        'backend.database.models.source.Source',
+        "ATTRIBUTED_TO",
+        cardinality=One
+    )
+    user = RelationshipTo(
+        "backend.database.models.user.User",
+        "MADE_BY",
+        cardinality=ZeroOrOne
+    )
+
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return f"<Change {self.timestamp}>"
+
+    def serialize(self):
+        return {
+            "uid": self.uid,
+            "timestamp": self.timestamp,
+            "url": self.url,
+            "diff": self.diff,
+            "source": self.source,
+            "user": self.user,
+        }
+
+
 class HasCitations:
     """Mix me into a database model to give it citation capabilities."""
     def __init_subclass__(cls, **kwargs):
@@ -141,21 +176,66 @@ class HasCitations:
             )
 
     # Relationships
+    changes = RelationshipFrom("Change", "CHANGE_TO")
     citations = RelationshipTo(
         'backend.database.models.source.Source', "UPDATED_BY", model=Citation)
 
-    def add_citation(self, source, user: "User", diff: dict = None):
+    def add_change(
+        self,
+        source: "Source",
+        user: "User" | None = None,
+        diff: dict = None,
+        url: str | None = None,
+    ) -> Change:
+        """
+        Add a source-attributed change record to an item.
+
+        :param source: The source associated with the change
+        :param user: The user that made the change, if any
+        :param diff: The change payload
+        :param url: Optional URL associated with the change
+        :return: The created Change node
+        """
+        change = Change(
+            timestamp=datetime.now(),
+            diff=diff,
+            url=url,
+        ).save()
+
+        try:
+            change.source.connect(source)
+            if user is not None:
+                change.user.connect(user)
+            self.changes.connect(change)
+            return change
+        except Exception as e:
+            logging.error(f"Error adding change: {e} to {self.uid}")
+            raise e
+
+    def add_citation(
+        self,
+        source,
+        user: "User" | None,
+        diff: dict = None,
+        url: str | None = None,
+    ):
         """
         Add a citation to an item from a source.
+
+        Transitional wrapper while the codebase moves from relationship-based
+        citations to node-based changes.
 
         :param item: The item to add the citation to
         :param source: The source of the citation
         :param data: The citation data
         """
+        self.add_change(source=source, user=user, diff=diff, url=url)
+
         context = {k: v for k, v in {
             "timestamp": datetime.now(),
-            "user_uid": user.uid,
-            "diff": diff
+            "user_uid": user.uid if user else None,
+            "diff": diff,
+            "url": url,
         }.items() if v is not None}
         try:
             self.citations.connect(source, context)
@@ -164,8 +244,32 @@ class HasCitations:
             raise e
 
     @property
+    def latest_change(self) -> Change | None:
+        """Get the latest change node for this item."""
+        cy = """
+        MATCH (n)<-[:CHANGE_TO]-(c:Change)
+        WHERE elementId(n) = $eid
+        RETURN c
+        ORDER BY c.timestamp DESC
+        LIMIT 1
+        """
+        result, _ = db.cypher_query(cy, {"eid": self.element_id})
+        return Change.inflate(result[0][0]) if result else None
+
+    @property
     def primary_source(self) -> Source | None:
-        """Get the primary source for this item based on citation scores."""
+        """Get the primary source for this item based on the latest change."""
+
+        cy = """
+        MATCH (n)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->(s:Source)
+        WHERE elementId(n) = $eid
+        RETURN s
+        ORDER BY c.timestamp DESC
+        LIMIT 1
+        """
+        result, _ = db.cypher_query(cy, {"eid": self.element_id})
+        if result:
+            return Source.inflate(result[0][0])
 
         cy = """
         MATCH (n)-[r:UPDATED_BY]->(s:Source)

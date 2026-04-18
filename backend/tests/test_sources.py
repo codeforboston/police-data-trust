@@ -1,9 +1,12 @@
 import pytest
 import math
+from datetime import datetime, timedelta
 from flask_jwt_extended import decode_token
 from slugify import slugify
 from backend.database import Source, MemberRole
 from backend.database.models.user import User, UserRole
+from backend.database.models.officer import Officer
+from neomodel import db
 
 
 publisher_email = "pub@source.com"
@@ -206,6 +209,66 @@ def test_source_pagination(client, example_sources, access_token):
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 400
+
+
+def test_add_change_creates_expected_relationships(
+        example_source, example_user):
+    officer = Officer(
+        first_name="Change",
+        last_name="Target",
+    ).save()
+
+    change = officer.add_change(
+        source=example_source,
+        user=example_user,
+        diff='{"field": "value"}',
+        url="https://example.com/change",
+    )
+
+    rows, _ = db.cypher_query(
+        """
+        MATCH (c:Change)
+        WHERE elementId(c) = $change_id
+        RETURN EXISTS {
+            MATCH (c)-[:ATTRIBUTED_TO]->(:Source)
+            WHERE elementId(c) = $change_id
+        } AS has_source,
+        EXISTS {
+            MATCH (c)-[:MADE_BY]->(:User)
+            WHERE elementId(c) = $change_id
+        } AS has_user,
+        EXISTS {
+            MATCH (:Officer)<-[:CHANGE_TO]-(c)
+            WHERE elementId(c) = $change_id
+        } AS has_target
+        """,
+        {"change_id": change.element_id},
+    )
+
+    assert rows == [[True, True, True]]
+
+
+def test_primary_source_prefers_latest_change(add_test_change):
+    officer = Officer(
+        first_name="Latest",
+        last_name="Wins",
+    ).save()
+    older_source = Source(name="Older Source", url="www.older.com").save()
+    newer_source = Source(name="Newer Source", url="www.newer.com").save()
+
+    add_test_change(
+        officer,
+        older_source,
+        timestamp=datetime.now() - timedelta(days=2),
+    )
+    add_test_change(
+        officer,
+        newer_source,
+        timestamp=datetime.now() - timedelta(days=1),
+    )
+
+    assert officer.latest_change is not None
+    assert officer.primary_source.uid == newer_source.uid
 
 
 # def test_add_member_to_source(db_session, example_members):

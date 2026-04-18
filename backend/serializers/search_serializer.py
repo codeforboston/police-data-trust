@@ -22,9 +22,10 @@ UNWIND $uids AS uid
   }
 
   CALL (o) {
-    OPTIONAL MATCH (o)-[r:UPDATED_BY]->(s:Source)
-    RETURN s, r
-    ORDER BY r.timestamp DESC
+    OPTIONAL MATCH (o)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+    (s:Source)
+    RETURN s, c.timestamp AS updated_at
+    ORDER BY updated_at DESC
     LIMIT 1
   }
 
@@ -36,7 +37,7 @@ UNWIND $uids AS uid
     unit_name: u.name,
     agency_name: ag.name,
     source: s.name,
-    last_updated: r.timestamp
+    last_updated: updated_at
   } AS result
 """
 
@@ -47,41 +48,40 @@ UNWIND $uids AS uid
   OPTIONAL MATCH (u)-[]-(a:Agency)
 
   CALL (u) {
-    OPTIONAL MATCH (u)-[r:UPDATED_BY]->(s:Source)
-            RETURN s, r
-            ORDER BY r.timestamp DESC
-            LIMIT 1
+    OPTIONAL MATCH (u)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+    (s:Source)
+    RETURN s, c.timestamp AS updated_at
+    ORDER BY updated_at DESC
+    LIMIT 1
   }
-  WITH uid, u, a, s, r
   RETURN uid, {
     name: u.name,
     agency_name: a.name,
     officers: coalesce(u.officer_count_cached, 0),
     complaints: coalesce(u.complaint_count_cached, 0),
     source: s.name,
-    last_updated: r.timestamp
+    last_updated: updated_at
   } as result
 """
 
 AGENCY_RESULT_QUERY = """
-UNWIND $uids AS uid
+  UNWIND $uids AS uid
   MATCH (a:Agency {uid: uid})
 
   CALL (a) {
-    OPTIONAL MATCH (a)-[r:UPDATED_BY]->(s:Source)
-    RETURN s, r
-    ORDER BY r.timestamp DESC
+    OPTIONAL MATCH (a)<-[:CHANGE_TO]-(c:Change)-[:ATTRIBUTED_TO]->
+    (s:Source)
+    RETURN s, c.timestamp AS updated_at
+    ORDER BY updated_at DESC
     LIMIT 1
   }
-
-  WITH uid, a, s, r
 
   RETURN uid, {
     units: coalesce(a.unit_count_cached, 0),
     officers: coalesce(a.officer_count_cached, 0),
     complaints: coalesce(a.complaint_count_cached, 0),
     source: s.name,
-    last_updated: r.timestamp
+    last_updated: updated_at
   } AS result
 """
 

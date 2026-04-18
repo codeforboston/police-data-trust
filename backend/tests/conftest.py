@@ -128,6 +128,25 @@ def cleanup_test_data():
 
 
 @pytest.fixture
+def add_test_change():
+    def _add_test_change(
+        node,
+        source,
+        *,
+        timestamp: datetime | None = None,
+        user=None,
+        diff=None,
+        url: str | None = None,
+    ):
+        change = node.add_change(source=source, user=user, diff=diff, url=url)
+        if timestamp is not None:
+            change.timestamp = timestamp
+            change.save()
+        return change
+    return _add_test_change
+
+
+@pytest.fixture
 def example_user():
     user = User.create_user(
         email=example_email,
@@ -154,7 +173,7 @@ def example_source():
 
 
 @pytest.fixture
-def example_agency(example_source):
+def example_agency(example_source, add_test_change):
     agency = Agency(
         name="Example Agency",
         website_url="www.example.com",
@@ -164,14 +183,12 @@ def example_agency(example_source):
         hq_zip="10001",
         jurisdiction=Jurisdiction.MUNICIPAL.value
     ).save()
-    agency.citations.connect(example_source, {
-        'timestamp': datetime.now(),
-    })
+    add_test_change(agency, example_source, timestamp=datetime.now())
     yield agency
 
 
 @pytest.fixture
-def example_unit(example_agency, example_source):
+def example_unit(example_agency, example_source, add_test_change):
     agency = example_agency
     source = example_source
 
@@ -182,28 +199,26 @@ def example_unit(example_agency, example_source):
 
     # Create relationships
     unit.agency.connect(agency)
-    unit.citations.connect(source, {
-        'timestamp': datetime.now(),
-    })
+    add_test_change(unit, source, timestamp=datetime.now())
     yield unit
 
 
 @pytest.fixture
-def example_employment(example_source, example_officer, example_unit):
+def example_employment(
+    example_source, example_officer, example_unit, add_test_change
+):
     employment = Employment(
         badge_number='61025',
         earliest_date=date(2020, 1, 1),
     ).save()
     employment.unit.connect(example_unit)
     employment.officer.connect(example_officer)
-    employment.citations.connect(example_source, {
-        'timestamp': datetime.now(),
-    })
+    add_test_change(employment, example_source, timestamp=datetime.now())
     yield employment
 
 
 @pytest.fixture
-def example_officer(example_source):
+def example_officer(example_source, add_test_change):
     officer = Officer(
         first_name="John",
         last_name="Doe",
@@ -213,12 +228,7 @@ def example_officer(example_source):
         state="NY",
         value="958938"
     ).save().officer.connect(officer)
-    officer.citations.connect(
-        example_source,
-        {
-            'timestamp': datetime.now(),
-        }
-    )
+    add_test_change(officer, example_source, timestamp=datetime.now())
     yield officer
 
 
@@ -328,7 +338,9 @@ def example_complaint(
 
 
 @pytest.fixture  # type: ignore
-def example_allegation(example_source, example_complaint, example_officer):
+def example_allegation(
+    example_source, example_complaint, example_officer, add_test_change
+):
     allegation = Allegation(
         allegation="Officer used unnecessary force during arrest",
         type="Force",
@@ -346,9 +358,7 @@ def example_allegation(example_source, example_complaint, example_officer):
     allegation.accused.connect(example_officer)
     allegation.complainant.connect(complainant)
     allegation.complaint.connect(example_complaint)
-    allegation.citations.connect(example_source, {
-        'timestamp': datetime.now(),
-    })
+    add_test_change(allegation, example_source, timestamp=datetime.now())
     yield allegation
 
 
