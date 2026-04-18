@@ -2,6 +2,7 @@ from __future__ import annotations  # allows type hinting of class itself
 
 from typing import TYPE_CHECKING
 import logging
+from collections import OrderedDict
 from backend.schemas import (
     JsonSerializable, PropertyEnum, NodeConflictException)
 from backend.database.models.contact import SocialMediaContact, EmailContact
@@ -353,12 +354,105 @@ class Source(StructuredNode, JsonSerializable):
         """Represent instance as a unique string."""
         return f"<Source {self.uid}>"
 
+    def get_activity_summary(self, top_locations: int = 5) -> dict:
+        """Aggregate contribution history and changed-record locations."""
+        time_query = """
+        WITH date.truncate('month', date()) AS current_month_start
+        WITH current_month_start,
+             current_month_start + duration('P1M') AS next_month_start,
+             current_month_start - duration('P11M') AS start_of_window
+        MATCH (s:Source {uid: $uid})<-[:ATTRIBUTED_TO]-(c:Change)
+        WHERE date(c.timestamp) >= start_of_window
+          AND date(c.timestamp) < next_month_start
+        WITH date.truncate('month', date(c.timestamp)) AS bucket,
+             count(*) AS count
+        RETURN toString(bucket) AS date, count
+        ORDER BY bucket ASC
+        """
+        rows, _ = db.cypher_query(time_query, {"uid": self.uid})
+
+        contributions_over_time = [
+            {"date": row[0], "count": row[1]}
+            for row in rows
+        ]
+
+        last_active_at = None
+        last_active_query = """
+        MATCH (s:Source {uid: $uid})<-[:ATTRIBUTED_TO]-(c:Change)
+        RETURN c.timestamp
+        ORDER BY c.timestamp DESC
+        LIMIT 1
+        """
+        last_active_rows, _ = db.cypher_query(last_active_query, {"uid": self.uid})
+        if last_active_rows:
+            last_active = last_active_rows[0][0]
+            last_active_at = (
+                last_active.isoformat()
+                if hasattr(last_active, "isoformat")
+                else str(last_active)
+            )
+
+        location_query = """
+        MATCH (s:Source {uid: $uid})<-[:ATTRIBUTED_TO]-(c:Change)-[:CHANGE_TO]->(n)
+        WHERE NOT n:Officer
+        OPTIONAL MATCH (n:Complaint)-[:OCCURRED_IN]->(complaint_location:Location)
+        WITH
+            coalesce(
+                complaint_location.city,
+                CASE WHEN n:Agency THEN n.hq_city END,
+                CASE WHEN n:Unit THEN n.hq_city END
+            ) AS city,
+            coalesce(
+                complaint_location.state,
+                CASE WHEN n:Agency THEN n.hq_state END,
+                CASE WHEN n:Unit THEN n.hq_state END
+            ) AS state
+        WITH CASE
+            WHEN city IS NOT NULL AND state IS NOT NULL THEN city + ', ' + state
+            WHEN city IS NOT NULL THEN city
+            WHEN state IS NOT NULL THEN state
+            ELSE 'Unknown'
+        END AS location_label,
+        count(*) AS count
+        RETURN location_label, count
+        ORDER BY count DESC, location_label ASC
+        """
+        location_rows, _ = db.cypher_query(location_query, {"uid": self.uid})
+
+        contribution_locations = []
+        other_count = 0
+        for index, row in enumerate(location_rows):
+            label, count = row
+            if index < top_locations:
+                contribution_locations.append({
+                    "label": label,
+                    "count": count
+                })
+            else:
+                other_count += count
+
+        if other_count:
+            contribution_locations.append({
+                "label": "Other",
+                "count": other_count
+            })
+
+        total_changes = sum(item["count"] for item in contributions_over_time)
+
+        return OrderedDict({
+            "last_active_at": last_active_at,
+            "total_changes": total_changes,
+            "contributions_over_time": contributions_over_time,
+            "contribution_locations": contribution_locations
+        })
+
     def update_source(
         self,
         *,
         name: str | None = None,
         contact_email: str | None = None,
         url: str | None = None,
+        description: str | None = None,
         slug: str | None = None
     ) -> None:
         """Update the source details.
@@ -375,6 +469,9 @@ class Source(StructuredNode, JsonSerializable):
             should_save = True
         if url is not None and url != self.url:
             self.url = url
+            should_save = True
+        if description is not None and description != self.description:
+            self.description = description
             should_save = True
         if contact_email is not None:
             email_node = EmailContact.get_or_create(contact_email)
@@ -398,6 +495,7 @@ class Source(StructuredNode, JsonSerializable):
         name: str,
         contact_email: str,
         url: str | None = None,
+        description: str | None = None,
         slug: str | None = None
     ) -> "Source":
         """Create a new data source.
@@ -422,7 +520,8 @@ class Source(StructuredNode, JsonSerializable):
         except DoesNotExist:
             source = cls(
                 name=name,
-                url=url
+                url=url,
+                description=description
             )
             if slug:
                 source.slug = slugify(slug)
