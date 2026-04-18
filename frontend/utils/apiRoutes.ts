@@ -20,7 +20,9 @@ const API_ROUTES = {
   sources: {
     all: "/sources",
     profile: (identifier: string) => `/sources/${identifier}`,
-    profileBySlug: (slug: string) => `/sources/slug/${slug}`
+    profileBySlug: (slug: string) => `/sources/slug/${slug}`,
+    members: (uid: string) => `/sources/${uid}/members`,
+    activity: (uid: string) => `/sources/${uid}/activity`
   },
   officers: {
     profile: (slug: string) => `/officers/${slug}`

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, Typography, IconButton } from "@mui/material"
+import { Card, CardContent, Typography, IconButton, Button } from "@mui/material"
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined"
 import EmailIcon from "@mui/icons-material/Email"
 import PublicIcon from "@mui/icons-material/Public"
@@ -24,6 +24,8 @@ interface Props {
     youtube?: string
   }
   isOwnProfile?: boolean
+  canEdit?: boolean
+  editHref?: string
 }
 
 export default function ContactCard({
@@ -31,7 +33,9 @@ export default function ContactCard({
   secondaryEmail,
   website,
   socials,
-  isOwnProfile
+  isOwnProfile,
+  canEdit,
+  editHref
 }: Props) {
   const router = useRouter()
   const hasSocials = Object.values(socials).some((val) => !!val)
@@ -45,7 +49,15 @@ export default function ContactCard({
   }
 
   return (
-    <Card variant="outlined" sx={{ marginTop: "24px", marginBottom: "24px" }}>
+    <Card
+      variant="outlined"
+      sx={{
+        marginTop: "24px",
+        marginBottom: "24px",
+        borderColor: "#CCCCCC",
+        borderRadius: "10px"
+      }}
+    >
       <CardContent
         sx={{
           p: "40px",
@@ -53,29 +65,56 @@ export default function ContactCard({
           "@media (max-width:430px)": {
             p: "24px",
             "&:last-child": { pb: "24px" }
-          }
+          },
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px"
         }}
       >
-        {isOwnProfile && (
+        {canEdit ? (
+          <Button
+            className={styles.editButton}
+            variant="text"
+            size="small"
+            startIcon={<ModeEditOutlinedIcon />}
+            onClick={() => router.push(editHref || "/profile/contact/edit")}
+          >
+            Edit contact info
+          </Button>
+        ) : null}
+        {isOwnProfile ? (
           <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
-            <ModeEditOutlinedIcon onClick={() => router.push("/profile/contact/edit")} />
+            <ModeEditOutlinedIcon
+              onClick={() => router.push(editHref || "/profile/contact/edit")}
+            />
           </IconButton>
-        )}
+        ) : null}
 
-        <Typography variant="h5" fontWeight={600}>
+        <Typography
+          variant="h5"
+          fontWeight={600}
+          sx={{
+            fontFamily: "Inter, Roboto, sans-serif",
+            fontSize: "24px",
+            lineHeight: "29px"
+          }}
+        >
           Contact
         </Typography>
 
         <div className={styles.contactWrapper}>
-          <div className={styles.contactRow}>
-            <EmailIcon />
-            <div className={styles.contactDetails}>
-              <p className={styles.contactLabel}>Email</p>
-              <a href={`mailto:${primaryEmail}`} className={styles.emailLink}>
-                {primaryEmail}
-              </a>
+          {primaryEmail ? (
+            <div className={styles.contactRow}>
+              <EmailIcon />
+              <div className={styles.contactDetails}>
+                <p className={styles.contactLabel}>Email</p>
+                <a href={`mailto:${primaryEmail}`} className={styles.emailLink}>
+                  {primaryEmail}
+                </a>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           {secondaryEmail && (
             <div className={styles.contactRow}>
@@ -109,7 +148,15 @@ export default function ContactCard({
 
         {hasSocials && (
           <>
-            <Typography variant="h5" fontWeight={600} sx={{ marginTop: "24px" }}>
+            <Typography
+              variant="h5"
+              fontWeight={600}
+              sx={{
+                fontFamily: "Inter, Roboto, sans-serif",
+                fontSize: "24px",
+                lineHeight: "29px"
+              }}
+            >
               Socials
             </Typography>
             <div className={styles.socials}>

@@ -1,63 +1,23 @@
-import React, { useState } from "react"
+import React from "react"
 import { Avatar, Button, Card, CardContent, Typography } from "@mui/material"
 import styles from "./organizationMembersCard.module.css"
+import { SourceMember } from "@/utils/api"
 
-// TODO: Replace with real data
-const members = [
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 0
-  },
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 1
-  },
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 2
-  },
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 3
-  },
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 4
-  },
-  {
-    firstName: "Jonathan",
-    lastName: "Watkins",
-    avatarUrl: "/broken-image.jpg",
-    title: "Title",
-    company: "Company Name",
-    id: 5
+export default function OrganizationMembers({ members }: { members: SourceMember[] }) {
+  if (!members.length) {
+    return null
   }
-]
 
-export default function OrganizationMembers() {
-  const [isFollowing, setIsFollowing] = useState(false)
   return (
-    <Card variant="outlined" sx={{ marginTop: "20px", marginBottom: "20px" }}>
+    <Card
+      variant="outlined"
+      sx={{
+        marginTop: "20px",
+        marginBottom: "20px",
+        borderColor: "#CCCCCC",
+        borderRadius: "10px"
+      }}
+    >
       <CardContent
         sx={{
           p: "40px",
@@ -72,32 +32,34 @@ export default function OrganizationMembers() {
           },
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
+          gap: "24px"
         }}
       >
-        <Typography variant="h5" fontWeight={600}>
+        <Typography
+          variant="h5"
+          fontWeight={600}
+          sx={{
+            fontFamily: "Inter, Roboto, sans-serif",
+            fontSize: "24px",
+            lineHeight: "29px"
+          }}
+        >
           Organization Members
         </Typography>
         <div className={styles.membersGrid}>
           {members.map((item) => {
             return (
-              <div key={item.id} className={styles.memberItem}>
+              <div key={item.uid} className={styles.memberItem}>
                 <Avatar
-                  src={item.avatarUrl || "/broken-image.jpg"}
+                  src={item.profile_image || "/broken-image.jpg"}
                   sx={{ width: 60, height: 60 }}
                 />
 
-                <p className={styles.name}>{item.firstName}</p>
-                <p className={styles.name}>{item.lastName}</p>
-                <p>{item.title}</p>
-                <p>{item.company}</p>
-                <Button
-                  color="primary"
-                  size="small"
-                  variant="outlined"
-                  onClick={() => setIsFollowing(!isFollowing)}
-                  sx={{ width: "fit-content", marginTop: "8px" }}
-                >
+                <p className={styles.name}>{`${item.first_name} ${item.last_name}`}</p>
+                {item.title ? <p>{item.title}</p> : null}
+                {item.organization ? <p>{item.organization}</p> : null}
+                <Button color="primary" size="small" variant="outlined" className={styles.viewButton}>
                   View Profile
                 </Button>
               </div>

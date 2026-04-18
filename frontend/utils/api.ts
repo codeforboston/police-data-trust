@@ -9,6 +9,20 @@ export interface Source {
   slug?: string
 }
 
+export type SourceMember = {
+  uid: string
+  first_name: string
+  last_name: string
+  title?: string
+  organization?: string
+  profile_image?: string
+}
+
+export type SourceMembership = {
+  uid: string
+  role?: string
+}
+
 export interface Perpetrator {
   first_name?: string
   last_name?: string
@@ -147,11 +161,39 @@ export type Organization = {
   logo: string
   website: string
   email: string
+  social_media?: SocialMedia
   location?: {
     city?: string
     state?: string
   }
   type_of_service: string
+  memberships?: SourceMembership[]
+}
+
+export type UpdateOrganizationPayload = {
+  name?: string
+  contact_email?: string
+  url?: string
+  slug?: string
+  description?: string
+  social_media?: SocialMedia
+}
+
+export type SourceActivityPoint = {
+  date: string
+  count: number
+}
+
+export type SourceActivityLocation = {
+  label: string
+  count: number
+}
+
+export type SourceActivity = {
+  last_active_at: string | null
+  total_changes: number
+  contributions_over_time: SourceActivityPoint[]
+  contribution_locations: SourceActivityLocation[]
 }
 
 export type StateID = {

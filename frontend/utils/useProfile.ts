@@ -3,7 +3,13 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/providers/AuthProvider"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
-import { UserProfile, UpdateUserProfilePayload, Organization } from "./api"
+import {
+  UserProfile,
+  UpdateUserProfilePayload,
+  Organization,
+  SocialMedia,
+  SourceMembership
+} from "./api"
 
 // Helper function to generate slug from name
 const generateSlug = (firstName: string, lastName?: string): string => {
@@ -16,6 +22,61 @@ const generateSlug = (firstName: string, lastName?: string): string => {
 }
 
 type ProfileType = "user" | "organization"
+
+const extractPrimaryEmail = (source: Record<string, unknown>) => {
+  const primaryEmail = source.primary_email
+
+  if (typeof source.contact_email === "string") return source.contact_email
+
+  if (Array.isArray(primaryEmail) && primaryEmail[0] && typeof primaryEmail[0] === "object") {
+    const email = (primaryEmail[0] as { email?: string }).email
+    return email || ""
+  }
+
+  return ""
+}
+
+const extractSocialMedia = (source: Record<string, unknown>): SocialMedia | undefined => {
+  const socialMedia = source.social_media
+
+  if (!Array.isArray(socialMedia) || !socialMedia[0] || typeof socialMedia[0] !== "object") {
+    return undefined
+  }
+
+  const node = socialMedia[0] as SocialMedia
+  return {
+    twitter_url: node.twitter_url,
+    facebook_url: node.facebook_url,
+    linkedin_url: node.linkedin_url,
+    instagram_url: node.instagram_url,
+    youtube_url: node.youtube_url,
+    tiktok_url: node.tiktok_url
+  }
+}
+
+const extractMemberships = (source: Record<string, unknown>): SourceMembership[] => {
+  const members = source.members
+
+  if (!Array.isArray(members)) {
+    return []
+  }
+
+  return members.flatMap((member) => {
+    if (!member || typeof member !== "object") return []
+
+    const node = (member as { node?: { uid?: string } }).node
+    const relationship = (member as { relationship?: { role?: string } }).relationship
+
+    if (!node?.uid) return []
+
+    return [
+      {
+        uid: node.uid,
+        role: relationship?.role
+      }
+    ]
+  })
+}
 
 export const useProfile = <T extends UserProfile | Organization>(
   type: ProfileType,
@@ -81,24 +142,6 @@ export const useProfile = <T extends UserProfile | Organization>(
 
           setProfile(matchedProfile as T)
         } else if (type === "organization") {
-          // Fetch all organizations/sources
-          const res = await apiFetch(`${apiBaseUrl}${API_ROUTES.sources.all}`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-
-          if (!res.ok) {
-            if (res.status === 401) {
-              router.push("/login")
-              return
-            }
-            throw new Error("Failed to fetch organizations")
-          }
-
-          const data = await res.json()
-          const sources = data.results || data
-
           if (!identifier) {
             setProfile(null)
             setLoading(false)
@@ -150,12 +193,14 @@ export const useProfile = <T extends UserProfile | Organization>(
             description: matchedSource.description || "",
             logo: matchedSource.logo || "/broken-image.jpg",
             website: matchedSource.url || "",
-            email: matchedSource.contact_email || "",
+            email: extractPrimaryEmail(matchedSource),
+            social_media: extractSocialMedia(matchedSource),
             location: {
               city: matchedSource.city || "",
               state: matchedSource.state || ""
             },
-            type_of_service: matchedSource.type_of_service || "Organization"
+            type_of_service: matchedSource.type_of_service || "Organization",
+            memberships: extractMemberships(matchedSource)
           }
 
           setProfile(organization as T)

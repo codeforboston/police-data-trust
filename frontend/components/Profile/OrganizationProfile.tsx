@@ -1,39 +1,26 @@
 "use client"
 
 import React from "react"
-import SuggestionsCard from "@/components/Profile/SuggestionsCard"
 import ProfileLayout from "@/components/Profile/ProfileLayout"
 import ProfileHeaderCard from "@/components/Profile/ProfileHeaderCard"
 import ContactCard from "@/components/Profile/ContactCard"
 import OrganizationMembers from "@/components/Profile/OrganizationMembersCard"
 import ActivityCard from "@/components/Profile/ActivityCard"
-import { Organization } from "@/utils/api"
+import { Organization, SourceActivity, SourceMember } from "@/utils/api"
 
-export default function OrganizationProfile({ organization }: { organization: Organization }) {
-  // TODO: Replace with real data
-  const peopleSuggestions = [
-    { name: "Samuel Smith", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Marian Linehan", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "June MacCabe", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Joseph Vanasse", title: "Title", avatarUrl: "/broken-image.jpg" }
-  ]
-
-  const orgSuggestions = [
-    { name: "Law Firm Name 1", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 2", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 3", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 4", title: "Title", avatarUrl: "/broken-image.jpg" }
-  ]
-
+export default function OrganizationProfile({
+  organization,
+  members,
+  canEdit = false,
+  activity
+}: {
+  organization: Organization
+  members: SourceMember[]
+  canEdit?: boolean
+  activity?: SourceActivity | null
+}) {
   return (
-    <ProfileLayout
-      sidebar={
-        <>
-          <SuggestionsCard title="People you may know" items={peopleSuggestions} />
-          <SuggestionsCard title="Organizations you may know" items={orgSuggestions} />
-        </>
-      }
-    >
+    <ProfileLayout>
       <ProfileHeaderCard
         firstName={organization.name}
         lastName=""
@@ -44,21 +31,26 @@ export default function OrganizationProfile({ organization }: { organization: Or
         state={organization.location?.state || ""}
         biography={organization.description}
         isOwnProfile={false}
+        canEdit={canEdit}
+        editHref={organization.uid ? `/sources/${organization.uid}/edit` : undefined}
+        showFollowerStats={false}
       />
       <ContactCard
         primaryEmail={organization.email}
         website={organization.website}
         socials={{
-          facebook: undefined,
-          instagram: undefined,
-          linkedin: undefined,
-          twitter: undefined,
-          youtube: undefined
+          facebook: organization.social_media?.facebook_url,
+          instagram: organization.social_media?.instagram_url,
+          linkedin: organization.social_media?.linkedin_url,
+          twitter: organization.social_media?.twitter_url,
+          youtube: organization.social_media?.youtube_url
         }}
         isOwnProfile={false}
+        canEdit={canEdit}
+        editHref={organization.uid ? `/sources/${organization.uid}/edit` : undefined}
       />
-      <ActivityCard />
-      <OrganizationMembers />
+      <ActivityCard activity={activity || null} />
+      <OrganizationMembers members={members} />
       <div style={{ height: "20px" }} />
     </ProfileLayout>
   )
