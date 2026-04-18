@@ -6,6 +6,7 @@ export interface Source {
   id?: number
   url?: string
   contact_email?: string
+  slug?: string
 }
 
 export interface Perpetrator {
@@ -140,6 +141,7 @@ export type UpdateUserProfilePayload = {
 
 export type Organization = {
   uid?: string
+  slug?: string
   name: string
   description: string
   logo: string

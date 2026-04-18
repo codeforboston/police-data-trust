@@ -368,17 +368,28 @@ class Source(StructuredNode, JsonSerializable):
             contact_email (str | None): The contact email for the source.
             url (str | None): The website URL for the source.
         """
+        should_save = False
+
         if name is not None and name != self.name:
             self.name = name
+            should_save = True
         if url is not None and url != self.url:
             self.url = url
+            should_save = True
         if contact_email is not None:
             email_node = EmailContact.get_or_create(contact_email)
             current_email = self.primary_email.single()
             self.primary_email.reconnect(current_email, email_node)
         if slug is not None:
-            self.set_slug(slug)
-        self.save()
+            self.slug = slugify(slug)
+            self.slug_generated = False
+            self.slug_generated_from = None
+            should_save = True
+        elif should_save and self.slug_generated:
+            self._auto_generate_slug()
+            should_save = True
+        if should_save:
+            self.save()
 
     @classmethod
     def create_source(
@@ -412,12 +423,17 @@ class Source(StructuredNode, JsonSerializable):
             source = cls(
                 name=name,
                 url=url
-            ).save()
+            )
+            if slug:
+                source.slug = slugify(slug)
+                source.slug_generated = False
+                source.slug_generated_from = None
+            else:
+                source._auto_generate_slug()
+            source = source.save()
         except Exception as e:
             logging.error(f"Error creating source: {e}")
             raise e
-        if slug:
-            source.set_slug(slug)
         email = EmailContact.get_or_create(contact_email)
         social = SocialMediaContact().save()
         source.primary_email.connect(email)

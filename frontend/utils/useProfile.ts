@@ -19,7 +19,7 @@ type ProfileType = "user" | "organization"
 
 export const useProfile = <T extends UserProfile | Organization>(
   type: ProfileType,
-  slug?: string
+  identifier?: string
 ) => {
   const { hasHydrated, accessToken } = useAuth()
   const router = useRouter()
@@ -39,7 +39,7 @@ export const useProfile = <T extends UserProfile | Organization>(
         if (type === "user") {
           let matchedProfile: UserProfile | null = null
 
-          if (slug) {
+          if (identifier) {
             // Fetch current user first to check if slug matches them
             const selfRes = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {
               headers: {
@@ -55,7 +55,7 @@ export const useProfile = <T extends UserProfile | Organization>(
             const selfData: UserProfile = await selfRes.json()
             const selfUsername = generateSlug(selfData.first_name, selfData.last_name)
 
-            if (slug === selfUsername) {
+            if (identifier === selfUsername) {
               matchedProfile = selfData
               setIsOwnProfile(true)
             } else {
@@ -99,23 +99,53 @@ export const useProfile = <T extends UserProfile | Organization>(
           const data = await res.json()
           const sources = data.results || data
 
-          if (!slug) {
+          if (!identifier) {
             setProfile(null)
             setLoading(false)
             return
           }
 
-          const matchedSource = sources.find(
-            (source: { name: string }) => generateSlug(source.name) === slug
-          )
+          const fetchOrganization = async () => {
+            const headers = {
+              Authorization: `Bearer ${accessToken}`
+            }
 
-          if (!matchedSource) {
-            router.push("/404")
-            return
+            const byUidResponse = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.sources.profile(identifier)}`,
+              { headers }
+            )
+
+            if (byUidResponse.ok) {
+              return byUidResponse.json()
+            }
+
+            if (byUidResponse.status !== 404) {
+              throw new Error("Failed to fetch organization by identifier")
+            }
+
+            const bySlugResponse = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.sources.profileBySlug(identifier)}`,
+              { headers }
+            )
+
+            if (!bySlugResponse.ok) {
+              if (bySlugResponse.status === 404) {
+                router.push("/404")
+                return null
+              }
+              throw new Error("Failed to fetch organization by slug")
+            }
+
+            return bySlugResponse.json()
           }
+
+          const matchedSource = await fetchOrganization()
+
+          if (!matchedSource) return
 
           const organization: Organization = {
             uid: matchedSource.uid,
+            slug: matchedSource.slug,
             name: matchedSource.name,
             description: matchedSource.description || "",
             logo: matchedSource.logo || "/broken-image.jpg",
@@ -139,7 +169,7 @@ export const useProfile = <T extends UserProfile | Organization>(
     }
 
     fetchProfile()
-  }, [hasHydrated, accessToken, type, slug, router])
+  }, [hasHydrated, accessToken, type, identifier, router])
 
   // Update user profile (only works for own profile)
   const updateProfile = async (
@@ -191,4 +221,5 @@ export const useProfile = <T extends UserProfile | Organization>(
 }
 
 export const useUserProfile = (slug?: string) => useProfile<UserProfile>("user", slug)
-export const useOrganization = (slug?: string) => useProfile<Organization>("organization", slug)
+export const useOrganization = (identifier?: string) =>
+  useProfile<Organization>("organization", identifier)
