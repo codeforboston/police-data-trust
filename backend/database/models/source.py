@@ -356,6 +356,12 @@ class Source(StructuredNode, JsonSerializable):
 
     def get_activity_summary(self, top_locations: int = 5) -> dict:
         """Aggregate contribution history and changed-record locations."""
+        def month_start_offset(base: datetime, offset: int) -> datetime:
+            month_index = (base.year * 12 + (base.month - 1)) + offset
+            year = month_index // 12
+            month = month_index % 12 + 1
+            return datetime(year, month, 1)
+
         time_query = """
         WITH date.truncate('month', date()) AS current_month_start
         WITH current_month_start,
@@ -371,10 +377,16 @@ class Source(StructuredNode, JsonSerializable):
         """
         rows, _ = db.cypher_query(time_query, {"uid": self.uid})
 
-        contributions_over_time = [
-            {"date": row[0], "count": row[1]}
-            for row in rows
-        ]
+        counts_by_month = {row[0]: row[1] for row in rows}
+        current_month_start = datetime(datetime.utcnow().year, datetime.utcnow().month, 1)
+        contributions_over_time = []
+        for offset in range(-11, 1):
+            bucket = month_start_offset(current_month_start, offset)
+            bucket_key = bucket.date().isoformat()
+            contributions_over_time.append({
+                "date": bucket_key,
+                "count": counts_by_month.get(bucket_key, 0)
+            })
 
         last_active_at = None
         last_active_query = """

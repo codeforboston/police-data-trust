@@ -12,12 +12,14 @@ export default function OrganizationProfile({
   organization,
   members,
   canEdit = false,
-  activity
+  activity,
+  activityLoading = false
 }: {
   organization: Organization
   members: SourceMember[]
   canEdit?: boolean
   activity?: SourceActivity | null
+  activityLoading?: boolean
 }) {
   return (
     <ProfileLayout>
@@ -49,7 +51,7 @@ export default function OrganizationProfile({
         canEdit={canEdit}
         editHref={organization.uid ? `/sources/${organization.uid}/edit` : undefined}
       />
-      <ActivityCard activity={activity || null} />
+      <ActivityCard activity={activity || null} loading={activityLoading} />
       <OrganizationMembers members={members} />
       <div style={{ height: "20px" }} />
     </ProfileLayout>

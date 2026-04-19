@@ -18,6 +18,7 @@ export default function SourcePage() {
   const { accessToken } = useAuth()
   const [members, setMembers] = useState<SourceMember[]>([])
   const [activity, setActivity] = useState<SourceActivity | null>(null)
+  const [activityLoading, setActivityLoading] = useState(false)
 
   useEffect(() => {
     if (!accessToken || !organization?.uid) return
@@ -44,6 +45,7 @@ export default function SourcePage() {
   useEffect(() => {
     if (!accessToken || !organization?.uid) return
 
+    setActivityLoading(true)
     apiFetch(`${apiBaseUrl}${API_ROUTES.sources.activity(organization.uid)}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -61,6 +63,7 @@ export default function SourcePage() {
         console.error(error)
         setActivity(null)
       })
+      .finally(() => setActivityLoading(false))
   }, [accessToken, organization?.uid])
 
   if (loading) {
@@ -83,6 +86,7 @@ export default function SourcePage() {
       members={members}
       canEdit={canEdit}
       activity={activity}
+      activityLoading={activityLoading}
     />
   )
 }
