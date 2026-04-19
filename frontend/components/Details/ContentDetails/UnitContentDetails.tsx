@@ -14,18 +14,19 @@ export default function UnitContentDetails({ unit }: UnitContentDetailsProps) {
   const totalOfficers = unit.total_officers || 0
 
   const dataSources =
-    unit.sources
-      ?.flatMap((source) => {
-        if (!source.name) return []
+    unit.sources?.flatMap((source) => {
+      if (!source.name) return []
 
-        const href = getSourceHref(source)
-        if (!href) return []
+      const href = getSourceHref(source)
+      if (!href) return []
 
-        return [{
+      return [
+        {
           label: source.name,
           href
-        }]
-      }) || []
+        }
+      ]
+    }) || []
 
   return (
     <ContentDetails

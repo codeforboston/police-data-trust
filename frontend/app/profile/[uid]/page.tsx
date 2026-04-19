@@ -26,13 +26,6 @@ export default function UserProfilePage() {
     href: `/profile/${person.uid}`
   }))
 
-  const orgSuggestions = [
-    { name: "Law Firm Name 1", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 2", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 3", title: "Title", avatarUrl: "/broken-image.jpg" },
-    { name: "Law Firm Name 4", title: "Title", avatarUrl: "/broken-image.jpg" }
-  ]
-
   const socialMediaContacts = profile.social_media || ({} as SocialMedia)
 
   return (
@@ -40,7 +33,6 @@ export default function UserProfilePage() {
       sidebar={
         <>
           <SuggestionsCard title="People you may know" items={peopleSuggestions} />
-          <SuggestionsCard title="Organizations you may know" items={orgSuggestions} />
         </>
       }
     >

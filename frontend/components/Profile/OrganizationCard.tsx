@@ -17,11 +17,7 @@ const formatJoinedDate = (dateJoined?: string) => {
   })
 }
 
-export default function OrganizationCard({
-  memberships
-}: {
-  memberships?: UserMembership[]
-}) {
+export default function OrganizationCard({ memberships }: { memberships?: UserMembership[] }) {
   if (!memberships?.length) {
     return null
   }
@@ -53,13 +49,21 @@ export default function OrganizationCard({
             <div key={`${membership.source.uid}-${membership.role || "member"}`}>
               <div className={styles.container}>
                 <Link
-                  href={membership.source.slug ? `/sources/${membership.source.slug}` : `/sources/${membership.source.uid}`}
+                  href={
+                    membership.source.slug
+                      ? `/sources/${membership.source.slug}`
+                      : `/sources/${membership.source.uid}`
+                  }
                 >
                   <Avatar sx={{ width: 40, height: 40 }} src={"/broken-image.jpg"} />
                 </Link>
                 <div className={styles.containerText}>
                   <Link
-                    href={membership.source.slug ? `/sources/${membership.source.slug}` : `/sources/${membership.source.uid}`}
+                    href={
+                      membership.source.slug
+                        ? `/sources/${membership.source.slug}`
+                        : `/sources/${membership.source.uid}`
+                    }
                     className={styles.sourceLink}
                   >
                     <Typography fontWeight={500} fontSize={20}>

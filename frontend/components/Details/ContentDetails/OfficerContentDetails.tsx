@@ -16,18 +16,19 @@ export default function OfficerContentDetails({ officer }: OfficerContentDetails
     officer.allegation_summary?.reduce((sum, a) => sum + a.substantiated_count, 0) || 0
 
   const dataSources =
-    officer.sources
-      ?.flatMap((source) => {
-        if (!source.name) return []
+    officer.sources?.flatMap((source) => {
+      if (!source.name) return []
 
-        const href = getSourceHref(source)
-        if (!href) return []
+      const href = getSourceHref(source)
+      if (!href) return []
 
-        return [{
+      return [
+        {
           label: source.name,
           href
-        }]
-      }) || []
+        }
+      ]
+    }) || []
 
   return (
     <ContentDetails

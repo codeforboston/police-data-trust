@@ -151,16 +151,45 @@ export default function ActivityCard({
           >
             Activity
           </Typography>
-          <Typography variant="body1" sx={{ color: "#757575", fontSize: "16px", lineHeight: "19px" }}>
+          <Typography
+            variant="body1"
+            sx={{ color: "#757575", fontSize: "16px", lineHeight: "19px" }}
+          >
             {formatLastActive(activity?.last_active_at || null)}
           </Typography>
         </div>
 
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "40px", alignItems: "center" }}>
-          <div style={{ width: "100%", maxWidth: "500px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-            <Typography sx={{ fontSize: "16px", lineHeight: "19px" }}>Contribution History</Typography>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: "40px",
+            alignItems: "center"
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "12px"
+            }}
+          >
+            <Typography sx={{ fontSize: "16px", lineHeight: "19px" }}>
+              Contribution History
+            </Typography>
             {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 295 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 295
+                }}
+              >
                 <CircularProgress
                   size={24}
                   aria-label="activity loading indicator"
@@ -172,10 +201,27 @@ export default function ActivityCard({
             )}
           </div>
 
-          <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-            <Typography sx={{ fontSize: "16px", lineHeight: "19px" }}>Locations of Contributions</Typography>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "12px"
+            }}
+          >
+            <Typography sx={{ fontSize: "16px", lineHeight: "19px" }}>
+              Locations of Contributions
+            </Typography>
             {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 260 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 260
+                }}
+              >
                 <CircularProgress
                   size={24}
                   aria-label="activity loading indicator"

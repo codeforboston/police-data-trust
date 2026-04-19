@@ -87,10 +87,13 @@ export default function EditSourcePage() {
     const newErrors = {
       name: name.trim() ? "" : "Organization name is required",
       slug: slug.trim() ? "" : "Slug is required",
-      email: !email.trim() ? "Primary email is required" : !isValidEmail(email) ? "Enter a valid email address" : "",
+      email: !email.trim()
+        ? "Primary email is required"
+        : !isValidEmail(email)
+          ? "Enter a valid email address"
+          : "",
       website: website && !isValidUrl(website) ? "Enter a valid website URL" : "",
-      description:
-        description.length > 500 ? "Description must be 500 characters or less" : "",
+      description: description.length > 500 ? "Description must be 500 characters or less" : "",
       linkedIn: linkedIn && !isValidUrl(linkedIn) ? "Enter a valid LinkedIn URL" : "",
       facebook: facebook && !isValidUrl(facebook) ? "Enter a valid Facebook URL" : "",
       instagram: instagram && !isValidUrl(instagram) ? "Enter a valid Instagram URL" : "",

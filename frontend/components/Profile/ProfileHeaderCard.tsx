@@ -110,7 +110,9 @@ export default function ProfileHeaderCard({
               </Button>
             </div>
           )}
-          {showFollowerStats ? <div className={styles.followerStats}>50 followers • 30 following</div> : null}
+          {showFollowerStats ? (
+            <div className={styles.followerStats}>50 followers • 30 following</div>
+          ) : null}
         </div>
       </CardContent>
     </Card>

@@ -47,7 +47,10 @@ class UserService:
             other,
             collect(DISTINCT s)[0..3] AS shared_sources,
             count(DISTINCT s) AS shared_source_count
-        ORDER BY shared_source_count DESC, other.last_name ASC, other.first_name ASC
+        ORDER BY
+            shared_source_count DESC,
+            other.last_name ASC,
+            other.first_name ASC
         LIMIT $limit
         RETURN
             other.uid AS uid,

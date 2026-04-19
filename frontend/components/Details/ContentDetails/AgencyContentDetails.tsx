@@ -12,18 +12,19 @@ export default function AgencyContentDetails({ agency }: AgencyContentDetailsPro
   const totalOfficers = agency.total_officers || 0
 
   const dataSources =
-    agency.sources
-      ?.flatMap((source) => {
-        if (!source.name) return []
+    agency.sources?.flatMap((source) => {
+      if (!source.name) return []
 
-        const href = getSourceHref(source)
-        if (!href) return []
+      const href = getSourceHref(source)
+      if (!href) return []
 
-        return [{
+      return [
+        {
           label: source.name,
           href
-        }]
-      }) || []
+        }
+      ]
+    }) || []
 
   return (
     <ContentDetails

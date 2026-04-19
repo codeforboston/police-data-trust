@@ -3,7 +3,15 @@ import math
 from datetime import datetime, timedelta
 from flask_jwt_extended import decode_token
 from slugify import slugify
-from backend.database import Source, MemberRole, Agency, Unit, Complaint, Location, Employment
+from backend.database import (
+    Source,
+    MemberRole,
+    Agency,
+    Unit,
+    Complaint,
+    Location,
+    Employment,
+)
 from backend.database.models.user import User, UserRole
 from backend.database.models.officer import Officer
 from neomodel import db
@@ -271,7 +279,12 @@ def test_primary_source_prefers_latest_change(add_test_change):
     assert officer.primary_source.uid == newer_source.uid
 
 
-def test_get_source_activity(client, example_source, example_user, access_token):
+def test_get_source_activity(
+    client,
+    example_source,
+    example_user,
+    access_token,
+):
     agency = Agency(
         name="Chicago Police Department Activity",
         hq_state="IL",
@@ -303,7 +316,10 @@ def test_get_source_activity(client, example_source, example_user, access_token)
     january_change.timestamp = datetime(2026, 1, 15, 10, 0, 0)
     january_change.save()
 
-    february_change = complaint.add_change(source=example_source, user=example_user)
+    february_change = complaint.add_change(
+        source=example_source,
+        user=example_user,
+    )
     february_change.timestamp = datetime(2026, 2, 10, 10, 0, 0)
     february_change.save()
 
@@ -311,7 +327,10 @@ def test_get_source_activity(client, example_source, example_user, access_token)
     march_change_1.timestamp = datetime(2026, 3, 5, 10, 0, 0)
     march_change_1.save()
 
-    march_change_2 = officer.add_change(source=example_source, user=example_user)
+    march_change_2 = officer.add_change(
+        source=example_source,
+        user=example_user,
+    )
     march_change_2.timestamp = datetime(2026, 3, 20, 10, 0, 0)
     march_change_2.save()
 

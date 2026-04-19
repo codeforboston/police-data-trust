@@ -378,7 +378,11 @@ class Source(StructuredNode, JsonSerializable):
         rows, _ = db.cypher_query(time_query, {"uid": self.uid})
 
         counts_by_month = {row[0]: row[1] for row in rows}
-        current_month_start = datetime(datetime.utcnow().year, datetime.utcnow().month, 1)
+        current_month_start = datetime(
+            datetime.utcnow().year,
+            datetime.utcnow().month,
+            1,
+        )
         contributions_over_time = []
         for offset in range(-11, 1):
             bucket = month_start_offset(current_month_start, offset)
@@ -395,7 +399,10 @@ class Source(StructuredNode, JsonSerializable):
         ORDER BY c.timestamp DESC
         LIMIT 1
         """
-        last_active_rows, _ = db.cypher_query(last_active_query, {"uid": self.uid})
+        last_active_rows, _ = db.cypher_query(
+            last_active_query,
+            {"uid": self.uid},
+        )
         if last_active_rows:
             last_active = last_active_rows[0][0]
             last_active_at = (
@@ -405,9 +412,11 @@ class Source(StructuredNode, JsonSerializable):
             )
 
         location_query = """
-        MATCH (s:Source {uid: $uid})<-[:ATTRIBUTED_TO]-(c:Change)-[:CHANGE_TO]->(n)
+        MATCH (s:Source {uid: $uid})<-[:ATTRIBUTED_TO]-(c:Change)
+            -[:CHANGE_TO]->(n)
         WHERE NOT n:Officer
-        OPTIONAL MATCH (n:Complaint)-[:OCCURRED_IN]->(complaint_location:Location)
+        OPTIONAL MATCH (n:Complaint)-[:OCCURRED_IN]->
+            (complaint_location:Location)
         WITH
             coalesce(
                 complaint_location.city,

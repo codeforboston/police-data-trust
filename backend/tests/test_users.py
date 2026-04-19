@@ -48,8 +48,13 @@ def test_get_user_by_uid(client, access_token):
     assert res.json["employment"] == {"employer": "NPDC", "title": "Researcher"}
     assert res.json["bio"] == "Profile lookup test user"
     assert res.json["primary_email"] == "lookup@example.com"
-    assert res.json["contact_info"]["additional_emails"] == ["lookup-secondary@example.com"]
-    assert res.json["social_media"]["linkedin_url"] == "https://linkedin.com/in/lookup-user"
+    assert res.json["contact_info"]["additional_emails"] == [
+        "lookup-secondary@example.com"
+    ]
+    assert (
+        res.json["social_media"]["linkedin_url"]
+        == "https://linkedin.com/in/lookup-user"
+    )
     assert "memberships" not in res.json
 
 
@@ -254,7 +259,9 @@ def test_update_current_user_preserves_omitted_contact_fields(
     example_user,
     access_token,
 ):
-    secondary_email = EmailContact.get_or_create("existing-secondary@example.com")
+    secondary_email = EmailContact.get_or_create(
+        "existing-secondary@example.com"
+    )
     example_user.secondary_emails.connect(secondary_email)
 
     phone_contact = PhoneContact.get_or_create("(555) 555-2222")
@@ -282,7 +289,9 @@ def test_update_current_user_preserves_omitted_contact_fields(
     assert [email.email for email in example_user.secondary_emails.all()] == [
         "existing-secondary@example.com"
     ]
-    assert {phone.phone_number for phone in example_user.phone_contacts.all()} == {
+    assert {
+        phone.phone_number for phone in example_user.phone_contacts.all()
+    } == {
         "(012) 345-6789",
         "(555) 555-2222",
     }
@@ -293,7 +302,9 @@ def test_update_current_user_only_updates_requested_nested_contact_field(
     example_user,
     access_token,
 ):
-    secondary_email = EmailContact.get_or_create("existing-secondary@example.com")
+    secondary_email = EmailContact.get_or_create(
+        "existing-secondary@example.com"
+    )
     example_user.secondary_emails.connect(secondary_email)
 
     example_user.phone_contacts.connect(
@@ -323,7 +334,9 @@ def test_update_current_user_only_updates_requested_nested_contact_field(
     assert [email.email for email in example_user.secondary_emails.all()] == [
         "new-secondary@example.com"
     ]
-    assert {phone.phone_number for phone in example_user.phone_contacts.all()} == {
+    assert {
+        phone.phone_number for phone in example_user.phone_contacts.all()
+    } == {
         "(012) 345-6789",
         "(555) 555-2222",
     }
