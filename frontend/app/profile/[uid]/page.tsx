@@ -23,7 +23,7 @@ export default function UserProfilePage() {
   const peopleSuggestions = suggestions.map((person) => ({
     name: `${person.first_name} ${person.last_name}`.trim(),
     title: person.title || person.organization || "",
-    avatarUrl: person.profile_image_url || "/broken-image.jpg",
+    avatarUrl: person.profile_image || "/broken-image.jpg",
     href: `/profile/${person.uid}`
   }))
 
@@ -42,7 +42,7 @@ export default function UserProfilePage() {
       <ProfileHeaderCard
         firstName={profile.first_name}
         lastName={profile.last_name}
-        avatarUrl={profile.profile_image_url}
+        avatarUrl={profile.profile_image}
         title={profile.employment?.title || ""}
         organization={profile.employment?.employer || ""}
         city={profile.location?.city || ""}
