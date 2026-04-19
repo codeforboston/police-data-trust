@@ -1,16 +1,10 @@
 import ContentDetails from "./ContentDetails"
 import { Agency } from "@/utils/api"
+import { getSourceHref } from "@/utils/sourceRoutes"
 
 type AgencyContentDetailsProps = {
   agency: Agency
 }
-
-const toOrganizationSlug = (name: string) =>
-  name
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(".", "-")
-    .replace(/[^a-z0-9-]/g, "")
 
 export default function AgencyContentDetails({ agency }: AgencyContentDetailsProps) {
   const totalComplaints = agency.total_complaints || 0
@@ -18,12 +12,19 @@ export default function AgencyContentDetails({ agency }: AgencyContentDetailsPro
   const totalOfficers = agency.total_officers || 0
 
   const dataSources =
-    agency.sources
-      ?.filter((source): source is { name: string; uid?: string } => Boolean(source.name))
-      .map((source) => ({
-        label: source.name,
-        href: `/organization?slug=${toOrganizationSlug(source.name)}`
-      })) || []
+    agency.sources?.flatMap((source) => {
+      if (!source.name) return []
+
+      const href = getSourceHref(source)
+      if (!href) return []
+
+      return [
+        {
+          label: source.name,
+          href
+        }
+      ]
+    }) || []
 
   return (
     <ContentDetails

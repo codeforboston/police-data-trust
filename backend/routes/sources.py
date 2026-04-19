@@ -80,6 +80,7 @@ def create_source():
                 name=body.name,
                 contact_email=body.contact_email,
                 url=body.url,
+                description=body.description,
                 slug=body.slug)
         except NodeConflictException:
             abort(409, description="Source already exists")
@@ -170,6 +171,7 @@ def update_source(source_uid: str):
             name=body.name,
             contact_email=body.contact_email,
             url=body.url,
+            description=body.description,
             slug=body.slug
         )
     except Exception as e:
@@ -205,6 +207,18 @@ def get_source_members(source_uid: int):
     all_members = p.members.all()
     results = paginate_results(all_members, q_page, q_per_page)
     return ordered_jsonify(results), 200
+
+
+@bp.route("/<source_uid>/activity", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_source_activity(source_uid: str):
+    """Get aggregated activity for a source."""
+    p = Source.nodes.get_or_none(uid=source_uid)
+    if p is None:
+        abort(404, description="Source not found")
+
+    return ordered_jsonify(p.get_activity_summary()), 200
 
 
 """ This class currently doesn't work with the `source_member_to_orm`

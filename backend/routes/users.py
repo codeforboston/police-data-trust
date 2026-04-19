@@ -1,253 +1,147 @@
-import logging
+from flask import Blueprint, abort, request
+from flask_jwt_extended import get_jwt, get_jwt_identity
+from flask_jwt_extended.view_decorators import jwt_required
 
-from flask import Blueprint, jsonify, request, send_from_directory
-from flask_cors import cross_origin
-from flask_jwt_extended import jwt_required, get_jwt_identity
-import os
-from urllib.parse import urlparse
-import uuid
-from werkzeug.utils import secure_filename
-import boto3
-from ..database import User, EmailContact, SocialMediaContact, PhoneContact
+from backend.auth.jwt import min_role_required
+from backend.database.models.user import UserRole
+from backend.dto.user_profile import (
+    GetUserParams,
+    UpdateCurrentUser,
+    UserSuggestionParams,
+)
+from backend.schemas import ordered_jsonify, validate_request
+from backend.services.user_service import UserService
+
 
 bp = Blueprint("users", __name__, url_prefix="/api/v1/users")
+user_service = UserService()
+
+
+def _not_found_response(message: str):
+    return ordered_jsonify({"message": message}), 404
 
 
 @bp.route("/self", methods=["GET"])
-@cross_origin()
 @jwt_required()
+@min_role_required(UserRole.PUBLIC)
 def get_current_user():
-    """Return the currently authenticated user's full profile"""
-    uid = get_jwt_identity()
-
-    try:
-        user = User.nodes.get(uid=uid)
-    except User.DoesNotExist:
-        return jsonify({"message": "User not found"}), 404
-
-    primary_email = user.email
-    additional_emails = [e.email for e in user.secondary_emails.all()]
-    phone_numbers = [p.phone_number for p in user.phone_contacts.all()]
-
-    sm = user.social_media_contacts.single()
-    social_media = {}
-    if sm:
-        social_media = {
-            "twitter_url": getattr(sm, "twitter_url", None),
-            "facebook_url": getattr(sm, "facebook_url", None),
-            "linkedin_url": getattr(sm, "linkedin_url", None),
-            "instagram_url": getattr(sm, "instagram_url", None),
-            "youtube_url": getattr(sm, "youtube_url", None),
-            "tiktok_url": getattr(sm, "tiktok_url", None),
-        }
-
-    payload = {
-        "uid": user.uid,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "primary_email": primary_email,
-        "contact_info": {
-            "additional_emails": additional_emails,
-            "phone_numbers": phone_numbers,
-        },
-        "website": user.website,
-        "location": {
-            "city": user.city,
-            "state": user.state,
-        },
-        "employment": {
-            "employer": user.organization,
-            "title": user.title,
-        },
-        "bio": user.biography,
-        "profile_image": user.profile_image,
-        "social_media": social_media,
+    """Return the currently authenticated user's full profile."""
+    jwt_decoded = get_jwt()
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
     }
 
-    return jsonify(payload), 200
+    try:
+        params = GetUserParams(**raw)
+        response = user_service.get_user_profile(
+            jwt_decoded["sub"],
+            includes=params.include or [],
+        )
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
 
 
-@bp.route("/self", methods=["PATCH", "OPTIONS"])
-@cross_origin()
+@bp.route("/<user_uid>", methods=["GET"])
 @jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_user_by_uid(user_uid: str):
+    """Return a user's profile by UID."""
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
+
+    try:
+        params = GetUserParams(**raw)
+        response = user_service.get_user_profile(
+            user_uid,
+            includes=params.include or [],
+        )
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+@bp.route("/self/suggestions/people", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_people_suggestions():
+    """Return people suggestions for the current user."""
+    jwt_decoded = get_jwt()
+
+    try:
+        params = UserSuggestionParams(**request.args)
+        response = user_service.get_people_suggestions(
+            jwt_decoded["sub"],
+            limit=params.limit,
+        )
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+@bp.route("/self", methods=["PATCH"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+@validate_request(UpdateCurrentUser)
 def update_current_user():
-    """Update current user profile"""
-    uid = get_jwt_identity()
-    user = User.nodes.get(uid=uid)
-    data = request.get_json() or {}
+    """Update the currently authenticated user's profile."""
+    body: UpdateCurrentUser = request.validated_body
+    jwt_decoded = get_jwt()
 
-    for field in ["first_name", "last_name", "bio"]:
-        if field in data:
-            setattr(user, {"bio": "biography"}.get(field, field), data[field])
-
-    if "primary_email" in data:
-        new_email = data["primary_email"]
-        if new_email:
-            email_contact = EmailContact.get_or_create(new_email)
-            existing_email = user.primary_email.single()
-            if existing_email:
-                user.primary_email.reconnect(existing_email, email_contact)
-            else:
-                user.primary_email.connect(email_contact)
-
-    contact_info = data.get("contact_info", {})
-
-    secondary_emails = contact_info.get("additional_emails", [])
-    user.secondary_emails.disconnect_all()
-
-    for email in secondary_emails:
-        if email:
-            contact = EmailContact.get_or_create(email)
-            user.secondary_emails.connect(contact)
-
-    phone_numbers = contact_info.get("phone_numbers", [])
-    if phone_numbers:
-        user.phone_contacts.disconnect_all()
-        for phone in phone_numbers:
-            if phone:
-                phone_contact = PhoneContact.get_or_create(phone)
-                user.phone_contacts.connect(phone_contact)
-
-    if "website" in data:
-        user.website = data["website"]
-
-    location = data.get("location", {})
-    if location.get("city"):
-        user.city = location["city"]
-    if location.get("state"):
-        user.state = location["state"]
-
-    employment = data.get("employment", {})
-    if employment.get("employer"):
-        user.organization = employment["employer"]
-    if employment.get("title"):
-        user.title = employment["title"]
-
-    social_media = data.get("social_media", {})
-    if social_media:
-        existing_sm = user.social_media_contacts.single()
-        if existing_sm:
-            for k, v in social_media.items():
-                if v is not None:
-                    setattr(existing_sm, k, v)
-            existing_sm.save()
-        else:
-            new_sm = SocialMediaContact(**social_media).save()
-            user.social_media_contacts.connect(new_sm)
-
-    profile_image = data.get("profile_image")
-    if profile_image:
-        user.profile_image = profile_image
-
-    user.save()
-
-    return get_current_user()
+    try:
+        response = user_service.update_current_user_profile(
+            user_uid=jwt_decoded["sub"],
+            body=body,
+        )
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        return _not_found_response(str(e))
+    except ValueError as e:
+        abort(400, description=str(e))
 
 
 @bp.route("/self/upload-profile-image", methods=["POST"])
-@cross_origin()
 @jwt_required()
+@min_role_required(UserRole.PUBLIC)
 def upload_profile_image():
-    """Update current user profile image"""
-    user_id = get_jwt_identity()
-
+    """Update the current user's profile image."""
     if "file" not in request.files:
-        return jsonify({"error": "Missing file"}), 400
+        abort(400, description="Missing file")
 
     file = request.files["file"]
-
     if not file or not file.filename:
-        return jsonify({"error": "Empty file"}), 400
+        abort(400, description="Empty file")
+
+    user_uid = get_jwt_identity()
 
     try:
-        user = User.nodes.get(uid=user_id)
-    except User.DoesNotExist:
-        return jsonify({"message": "User not found"}), 404
-
-    try:
-        url = save_profile_photo(file, user_id)
+        response = user_service.update_profile_image(user_uid, file)
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        abort(404, description=str(e))
     except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-
-    # Update Neo4j
-    user.profile_image = url
-    user.save()
-
-    return jsonify({"profile_image_url": url}), 200
-
-
-def save_profile_photo(file, user_id):
-    """
-    Saves file locally or to S3 depending on environment.
-    Returns the URL to store in Neo4j.
-    """
-    filename = secure_filename(file.filename)
-    ext = os.path.splitext(filename)[1].lower()
-
-    if not ext:
-        raise ValueError("File must have an extension")
-    if ext not in (".jpg", ".jpeg", ".png", ".gif"):
-        raise ValueError(f"Invalid file type: {ext}")
-
-    # ---------- LOCAL ----------
-    if os.environ.get("FLASK_ENV") != "production":
-        upload_dir = os.getenv("PROFILE_PIC_FOLDER")
-
-        os.makedirs(upload_dir, exist_ok=True)
-
-        filename = f"user_{user_id}{ext}"
-        path = os.path.join(upload_dir, filename)
-
-        file.save(path)
-
-        return path
-
-    # ---------- PRODUCTION (S3) ----------
-    else:
-        s3 = boto3.client("s3")
-        bucket = os.getenv("S3_BUCKET")
-
-        key = f"profile_photos/user_{user_id}_{uuid.uuid4().hex}{ext}"
-
-        s3.upload_fileobj(
-            file,
-            bucket,
-            key,
-            ExtraArgs={
-                "ContentType": file.mimetype,
-            },
-        )
-
-        # S3 URI
-        return f"s3://{bucket}/{key}"
+        abort(400, description=str(e))
 
 
 @bp.route("/self/profile-image", methods=["GET"])
 @jwt_required()
+@min_role_required(UserRole.PUBLIC)
 def get_profile_photo():
-    user_id = get_jwt_identity()
+    """Retrieve the current user's profile image."""
+    user_uid = get_jwt_identity()
+
     try:
-        user = User.nodes.get(uid=user_id)
-    except User.DoesNotExist:
-        return {"error": "User not found"}, 404
-    if not user or not user.profile_image:
-        return {"error": "No profile photo"}, 404
-
-    if os.environ.get("FLASK_ENV") != "production":
-        # local dev
-        logging.debug('retrieve image from %s', user.profile_image)
-        filename = os.path.basename(user.profile_image)
-        directory = os.getenv("PROFILE_PIC_FOLDER")
-        return send_from_directory(directory, filename)
-    else:
-        parsed = urlparse(user.profile_image)
-        bucket = parsed.netloc
-        key = parsed.path.lstrip("/")
-
-        s3 = boto3.client("s3")
-        url = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": bucket, "Key": key},
-            ExpiresIn=3600,  # 1 hour
-        )
-        return jsonify({"profile_image_url": url}), 200
+        return user_service.get_profile_photo(user_uid)
+    except LookupError as e:
+        abort(404, description=str(e))
+    except FileNotFoundError as e:
+        abort(404, description=str(e))

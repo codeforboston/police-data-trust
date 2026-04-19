@@ -6,6 +6,21 @@ export interface Source {
   id?: number
   url?: string
   contact_email?: string
+  slug?: string
+}
+
+export type SourceMember = {
+  uid: string
+  first_name: string
+  last_name: string
+  title?: string
+  organization?: string
+  profile_image?: string
+}
+
+export type SourceMembership = {
+  uid: string
+  role?: string
 }
 
 export interface Perpetrator {
@@ -106,6 +121,41 @@ export interface UserProfile {
   website?: string
   role: string
   active: boolean
+  memberships?: UserMembership[]
+}
+
+export type SharedSource = {
+  uid: string
+  slug?: string
+  name: string
+}
+
+export type UserMembership = {
+  source: {
+    uid: string
+    slug?: string
+    name: string
+    description?: string
+    website?: string
+  }
+  role?: string
+  date_joined?: string
+  is_active?: boolean
+}
+
+export type PeopleSuggestion = {
+  uid: string
+  first_name: string
+  last_name: string
+  title?: string
+  organization?: string
+  profile_image?: string
+  shared_source_count: number
+  shared_sources: SharedSource[]
+}
+
+export type PeopleSuggestionsResponse = {
+  results: PeopleSuggestion[]
 }
 
 export type UpdateUserProfilePayload = {
@@ -140,16 +190,45 @@ export type UpdateUserProfilePayload = {
 
 export type Organization = {
   uid?: string
+  slug?: string
   name: string
   description: string
   logo: string
   website: string
   email: string
+  social_media?: SocialMedia
   location?: {
     city?: string
     state?: string
   }
   type_of_service: string
+  memberships?: SourceMembership[]
+}
+
+export type UpdateOrganizationPayload = {
+  name?: string
+  contact_email?: string
+  url?: string
+  slug?: string
+  description?: string
+  social_media?: SocialMedia
+}
+
+export type SourceActivityPoint = {
+  date: string
+  count: number
+}
+
+export type SourceActivityLocation = {
+  label: string
+  count: number
+}
+
+export type SourceActivity = {
+  last_active_at: string | null
+  total_changes: number
+  contributions_over_time: SourceActivityPoint[]
+  contribution_locations: SourceActivityLocation[]
 }
 
 export type StateID = {

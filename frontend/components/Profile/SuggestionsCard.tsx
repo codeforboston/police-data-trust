@@ -4,12 +4,14 @@ import Button from "@mui/material/Button"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography"
+import Link from "next/link"
 import styles from "./suggestionsCard.module.css"
 
 interface Suggestion {
   name: string
   title: string
   avatarUrl?: string
+  href?: string
 }
 
 interface SuggestionsCardProps {
@@ -59,9 +61,21 @@ export default function SuggestionsCard({
           const isFollowing = followedUsers.has(item.name)
           return (
             <div key={index} className={styles.suggestionItem}>
-              <Avatar src={item.avatarUrl || "/broken-image.jpg"} />
+              {item.href ? (
+                <Link href={item.href}>
+                  <Avatar src={item.avatarUrl || "/broken-image.jpg"} />
+                </Link>
+              ) : (
+                <Avatar src={item.avatarUrl || "/broken-image.jpg"} />
+              )}
               <div className={styles.textContainer}>
-                <p className={styles.name}>{item.name}</p>
+                {item.href ? (
+                  <Link href={item.href} className={styles.nameLink}>
+                    <p className={styles.name}>{item.name}</p>
+                  </Link>
+                ) : (
+                  <p className={styles.name}>{item.name}</p>
+                )}
                 <p>{item.title}</p>
                 <Button
                   color="primary"

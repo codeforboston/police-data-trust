@@ -16,6 +16,9 @@ interface Props {
   city?: string
   state?: string
   isOwnProfile?: boolean
+  canEdit?: boolean
+  editHref?: string
+  showFollowerStats?: boolean
 }
 
 export default function ProfileHeaderCard({
@@ -27,14 +30,20 @@ export default function ProfileHeaderCard({
   organization,
   city,
   state,
-  isOwnProfile
+  isOwnProfile,
+  canEdit,
+  editHref,
+  showFollowerStats = true
 }: Props) {
   const router = useRouter()
 
   const [isFollowing, setIsFollowing] = useState(false)
 
   return (
-    <Card variant="outlined" sx={{ marginTop: "24px" }}>
+    <Card
+      variant="outlined"
+      sx={{ marginTop: "24px", borderColor: "#CCCCCC", borderRadius: "10px" }}
+    >
       <CardContent
         sx={{
           p: "40px",
@@ -46,33 +55,47 @@ export default function ProfileHeaderCard({
             "&:last-child": {
               pb: "24px"
             }
-          }
+          },
+          position: "relative"
         }}
       >
-        {isOwnProfile && (
+        {canEdit ? (
+          <Button
+            className={styles.editButton}
+            variant="text"
+            size="small"
+            startIcon={<ModeEditOutlinedIcon />}
+            onClick={() => router.push(editHref || "/profile/edit")}
+          >
+            Edit organization profile
+          </Button>
+        ) : null}
+        {isOwnProfile ? (
           <IconButton className={styles.editIcon} sx={{ color: "#000" }}>
-            <ModeEditOutlinedIcon onClick={() => router.push("/profile/edit")} />
+            <ModeEditOutlinedIcon onClick={() => router.push(editHref || "/profile/edit")} />
           </IconButton>
-        )}
+        ) : null}
         <div className={styles.container}>
           <Avatar sx={{ width: 160, height: 160 }} src={avatarUrl || "/broken-image.jpg"} />
           <div className={styles.info}>
-            <Typography variant="h5" fontWeight={600} lineHeight={1}>
+            <Typography className={styles.name} component="h1">
               {firstName} {lastName}
             </Typography>
             <div className={styles.meta}>
-              {title && <Typography lineHeight={1}>{title}</Typography>}
-              {organization && <Typography lineHeight={1}>{organization}</Typography>}
+              {title && <Typography className={styles.metaText}>{title}</Typography>}
+              {organization && <Typography className={styles.metaText}>{organization}</Typography>}
               {(city || state) && (
-                <Typography lineHeight={1}>{[city, state].filter(Boolean).join(", ")}</Typography>
+                <Typography className={styles.metaText}>
+                  {[city, state].filter(Boolean).join(", ")}
+                </Typography>
               )}
             </div>
           </div>
         </div>
 
         <div className={styles.bio}>
-          <p>{biography}</p>
-          {!isOwnProfile && (
+          <p className={styles.bioText}>{biography}</p>
+          {!isOwnProfile && !canEdit && (
             <div className={styles.actions}>
               <Button
                 color="primary"
@@ -87,7 +110,9 @@ export default function ProfileHeaderCard({
               </Button>
             </div>
           )}
-          <div className={styles.followerStats}>50 followers • 30 following</div>
+          {showFollowerStats ? (
+            <div className={styles.followerStats}>50 followers • 30 following</div>
+          ) : null}
         </div>
       </CardContent>
     </Card>

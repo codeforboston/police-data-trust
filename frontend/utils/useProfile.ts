@@ -3,23 +3,76 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/providers/AuthProvider"
 import { apiFetch } from "@/utils/apiFetch"
 import API_ROUTES, { apiBaseUrl } from "@/utils/apiRoutes"
-import { UserProfile, UpdateUserProfilePayload, Organization } from "./api"
-
-// Helper function to generate slug from name
-const generateSlug = (firstName: string, lastName?: string): string => {
-  const fullName = lastName ? `${firstName} ${lastName}` : firstName
-  return fullName
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(".", "-")
-    .replace(/[^a-z0-9-]/g, "")
-}
+import {
+  UserProfile,
+  UpdateUserProfilePayload,
+  Organization,
+  SocialMedia,
+  SourceMembership,
+  PeopleSuggestion,
+  PeopleSuggestionsResponse
+} from "./api"
 
 type ProfileType = "user" | "organization"
 
+const extractPrimaryEmail = (source: Record<string, unknown>) => {
+  const primaryEmail = source.primary_email
+
+  if (typeof source.contact_email === "string") return source.contact_email
+
+  if (Array.isArray(primaryEmail) && primaryEmail[0] && typeof primaryEmail[0] === "object") {
+    const email = (primaryEmail[0] as { email?: string }).email
+    return email || ""
+  }
+
+  return ""
+}
+
+const extractSocialMedia = (source: Record<string, unknown>): SocialMedia | undefined => {
+  const socialMedia = source.social_media
+
+  if (!Array.isArray(socialMedia) || !socialMedia[0] || typeof socialMedia[0] !== "object") {
+    return undefined
+  }
+
+  const node = socialMedia[0] as SocialMedia
+  return {
+    twitter_url: node.twitter_url,
+    facebook_url: node.facebook_url,
+    linkedin_url: node.linkedin_url,
+    instagram_url: node.instagram_url,
+    youtube_url: node.youtube_url,
+    tiktok_url: node.tiktok_url
+  }
+}
+
+const extractMemberships = (source: Record<string, unknown>): SourceMembership[] => {
+  const members = source.members
+
+  if (!Array.isArray(members)) {
+    return []
+  }
+
+  return members.flatMap((member) => {
+    if (!member || typeof member !== "object") return []
+
+    const node = (member as { node?: { uid?: string } }).node
+    const relationship = (member as { relationship?: { role?: string } }).relationship
+
+    if (!node?.uid) return []
+
+    return [
+      {
+        uid: node.uid,
+        role: relationship?.role
+      }
+    ]
+  })
+}
+
 export const useProfile = <T extends UserProfile | Organization>(
   type: ProfileType,
-  slug?: string
+  identifier?: string
 ) => {
   const { hasHydrated, accessToken } = useAuth()
   const router = useRouter()
@@ -37,95 +90,106 @@ export const useProfile = <T extends UserProfile | Organization>(
     const fetchProfile = async () => {
       try {
         if (type === "user") {
-          let matchedProfile: UserProfile | null = null
+          const headers = {
+            Authorization: `Bearer ${accessToken}`
+          }
 
-          if (slug) {
-            // Fetch current user first to check if slug matches them
-            const selfRes = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`
+          const selfRes = await apiFetch(
+            `${apiBaseUrl}${API_ROUTES.users.self}?include=memberships`,
+            {
+              headers
+            }
+          )
+
+          if (!selfRes.ok) {
+            router.push("/login")
+            return
+          }
+
+          const selfData: UserProfile = await selfRes.json()
+          let matchedProfile: UserProfile | null = selfData
+          setIsOwnProfile(!identifier || identifier === selfData.uid)
+
+          if (identifier && identifier !== selfData.uid) {
+            const profileRes = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.users.profile(identifier)}?include=memberships`,
+              {
+                headers
               }
-            })
+            )
 
-            if (!selfRes.ok) {
-              router.push("/login")
-              return
-            }
-
-            const selfData: UserProfile = await selfRes.json()
-            const selfUsername = generateSlug(selfData.first_name, selfData.last_name)
-
-            if (slug === selfUsername) {
-              matchedProfile = selfData
-              setIsOwnProfile(true)
-            } else {
-              router.push("/404")
-              return
-            }
-          } else {
-            // Fetch current user profile (no slug provided)
-            const res = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`
+            if (!profileRes.ok) {
+              if (profileRes.status === 404) {
+                router.push("/404")
+                return
               }
-            })
-
-            if (!res.ok) {
-              router.push("/login")
-              return
+              throw new Error("Failed to fetch user profile by uid")
             }
 
-            matchedProfile = await res.json()
-            setIsOwnProfile(true)
+            matchedProfile = await profileRes.json()
           }
 
           setProfile(matchedProfile as T)
         } else if (type === "organization") {
-          // Fetch all organizations/sources
-          const res = await apiFetch(`${apiBaseUrl}${API_ROUTES.sources.all}`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-
-          if (!res.ok) {
-            if (res.status === 401) {
-              router.push("/login")
-              return
-            }
-            throw new Error("Failed to fetch organizations")
-          }
-
-          const data = await res.json()
-          const sources = data.results || data
-
-          if (!slug) {
+          if (!identifier) {
             setProfile(null)
             setLoading(false)
             return
           }
 
-          const matchedSource = sources.find(
-            (source: { name: string }) => generateSlug(source.name) === slug
-          )
+          const fetchOrganization = async () => {
+            const headers = {
+              Authorization: `Bearer ${accessToken}`
+            }
 
-          if (!matchedSource) {
-            router.push("/404")
-            return
+            const byUidResponse = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.sources.profile(identifier)}`,
+              { headers }
+            )
+
+            if (byUidResponse.ok) {
+              return byUidResponse.json()
+            }
+
+            if (byUidResponse.status !== 404) {
+              throw new Error("Failed to fetch organization by identifier")
+            }
+
+            const bySlugResponse = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.sources.profileBySlug(identifier)}`,
+              { headers }
+            )
+
+            if (!bySlugResponse.ok) {
+              if (bySlugResponse.status === 404) {
+                router.push("/404")
+                return null
+              }
+              throw new Error("Failed to fetch organization by slug")
+            }
+
+            return bySlugResponse.json()
           }
+
+          const matchedSource = await fetchOrganization()
+
+          if (!matchedSource) return
 
           const organization: Organization = {
             uid: matchedSource.uid,
+            slug: matchedSource.slug,
             name: matchedSource.name,
             description: matchedSource.description || "",
             logo: matchedSource.logo || "/broken-image.jpg",
             website: matchedSource.url || "",
-            email: matchedSource.contact_email || "",
+            email: extractPrimaryEmail(matchedSource),
+            social_media: extractSocialMedia(matchedSource),
             location: {
               city: matchedSource.city || "",
               state: matchedSource.state || ""
             },
-            type_of_service: matchedSource.type_of_service || "Organization"
+            type_of_service: matchedSource.type_of_service || "Organization",
+            memberships: extractMemberships(matchedSource)
           }
 
           setProfile(organization as T)
@@ -139,7 +203,7 @@ export const useProfile = <T extends UserProfile | Organization>(
     }
 
     fetchProfile()
-  }, [hasHydrated, accessToken, type, slug, router])
+  }, [hasHydrated, accessToken, type, identifier, router])
 
   // Update user profile (only works for own profile)
   const updateProfile = async (
@@ -191,4 +255,49 @@ export const useProfile = <T extends UserProfile | Organization>(
 }
 
 export const useUserProfile = (slug?: string) => useProfile<UserProfile>("user", slug)
-export const useOrganization = (slug?: string) => useProfile<Organization>("organization", slug)
+export const useOrganization = (identifier?: string) =>
+  useProfile<Organization>("organization", identifier)
+
+export const usePeopleSuggestions = (limit = 4) => {
+  const { hasHydrated, accessToken } = useAuth()
+  const router = useRouter()
+  const [suggestions, setSuggestions] = useState<PeopleSuggestion[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!hasHydrated || !accessToken) {
+      if (!hasHydrated) return
+      router.push("/login")
+      return
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        const res = await apiFetch(
+          `${apiBaseUrl}${API_ROUTES.users.peopleSuggestions}?limit=${limit}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch people suggestions")
+        }
+
+        const data: PeopleSuggestionsResponse = await res.json()
+        setSuggestions(data.results || [])
+      } catch (error) {
+        console.error("Error fetching people suggestions:", error)
+        setSuggestions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSuggestions()
+  }, [hasHydrated, accessToken, limit, router])
+
+  return { suggestions, loading }
+}

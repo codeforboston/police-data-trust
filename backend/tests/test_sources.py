@@ -3,7 +3,15 @@ import math
 from datetime import datetime, timedelta
 from flask_jwt_extended import decode_token
 from slugify import slugify
-from backend.database import Source, MemberRole
+from backend.database import (
+    Source,
+    MemberRole,
+    Agency,
+    Unit,
+    Complaint,
+    Location,
+    Employment,
+)
 from backend.database.models.user import User, UserRole
 from backend.database.models.officer import Officer
 from neomodel import db
@@ -269,6 +277,85 @@ def test_primary_source_prefers_latest_change(add_test_change):
 
     assert officer.latest_change is not None
     assert officer.primary_source.uid == newer_source.uid
+
+
+def test_get_source_activity(
+    client,
+    example_source,
+    example_user,
+    access_token,
+):
+    agency = Agency(
+        name="Chicago Police Department Activity",
+        hq_state="IL",
+        hq_city="Chicago",
+    ).save()
+    unit = Unit(
+        name="Unit Activity",
+        hq_state="IL",
+        hq_city="Chicago",
+    ).save()
+    unit.agency.connect(agency)
+
+    complaint = Complaint(
+        record_id="activity-complaint",
+        complaint_key="activity-complaint-key",
+    ).save()
+    complaint_location = Location(city="Springfield", state="IL").save()
+    complaint.location.connect(complaint_location)
+
+    officer = Officer(
+        first_name="Activity",
+        last_name="Officer",
+    ).save()
+    employment = Employment(key="activity-employment").save()
+    employment.officer.connect(officer)
+    employment.unit.connect(unit)
+
+    january_change = agency.add_change(source=example_source, user=example_user)
+    january_change.timestamp = datetime(2026, 1, 15, 10, 0, 0)
+    january_change.save()
+
+    february_change = complaint.add_change(
+        source=example_source,
+        user=example_user,
+    )
+    february_change.timestamp = datetime(2026, 2, 10, 10, 0, 0)
+    february_change.save()
+
+    march_change_1 = unit.add_change(source=example_source, user=example_user)
+    march_change_1.timestamp = datetime(2026, 3, 5, 10, 0, 0)
+    march_change_1.save()
+
+    march_change_2 = officer.add_change(
+        source=example_source,
+        user=example_user,
+    )
+    march_change_2.timestamp = datetime(2026, 3, 20, 10, 0, 0)
+    march_change_2.save()
+
+    res = client.get(
+        f"/api/v1/sources/{example_source.uid}/activity",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    assert res.status_code == 200
+    assert res.json["total_changes"] == 4
+    assert res.json["last_active_at"].startswith("2026-03-20")
+    assert len(res.json["contributions_over_time"]) == 12
+    non_zero_months = [
+        item for item in res.json["contributions_over_time"]
+        if item["count"] > 0
+    ]
+    assert non_zero_months == [
+        {"date": "2026-01-01", "count": 1},
+        {"date": "2026-02-01", "count": 1},
+        {"date": "2026-03-01", "count": 2},
+    ]
+    assert res.json["contribution_locations"] == [
+        {"label": "Chicago, IL", "count": 2},
+        {"label": "Springfield, IL", "count": 1},
+    ]
 
 
 # def test_add_member_to_source(db_session, example_members):
