@@ -4,7 +4,11 @@ from flask_jwt_extended.view_decorators import jwt_required
 
 from backend.auth.jwt import min_role_required
 from backend.database.models.user import UserRole
-from backend.dto.user_profile import UpdateCurrentUser
+from backend.dto.user_profile import (
+    GetUserParams,
+    UpdateCurrentUser,
+    UserSuggestionParams,
+)
 from backend.schemas import ordered_jsonify, validate_request
 from backend.services.user_service import UserService
 
@@ -23,12 +27,22 @@ def _not_found_response(message: str):
 def get_current_user():
     """Return the currently authenticated user's full profile."""
     jwt_decoded = get_jwt()
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
 
     try:
-        response = user_service.get_user_profile(jwt_decoded["sub"])
+        params = GetUserParams(**raw)
+        response = user_service.get_user_profile(
+            jwt_decoded["sub"],
+            includes=params.include or [],
+        )
         return ordered_jsonify(response), 200
     except LookupError as e:
         return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
 
 
 @bp.route("/<user_uid>", methods=["GET"])
@@ -36,11 +50,42 @@ def get_current_user():
 @min_role_required(UserRole.PUBLIC)
 def get_user_by_uid(user_uid: str):
     """Return a user's profile by UID."""
+    raw = {
+        **request.args,
+        "include": request.args.getlist("include"),
+    }
+
     try:
-        response = user_service.get_user_profile(user_uid)
+        params = GetUserParams(**raw)
+        response = user_service.get_user_profile(
+            user_uid,
+            includes=params.include or [],
+        )
         return ordered_jsonify(response), 200
     except LookupError as e:
         return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
+
+
+@bp.route("/self/suggestions/people", methods=["GET"])
+@jwt_required()
+@min_role_required(UserRole.PUBLIC)
+def get_people_suggestions():
+    """Return people suggestions for the current user."""
+    jwt_decoded = get_jwt()
+
+    try:
+        params = UserSuggestionParams(**request.args)
+        response = user_service.get_people_suggestions(
+            jwt_decoded["sub"],
+            limit=params.limit,
+        )
+        return ordered_jsonify(response), 200
+    except LookupError as e:
+        return _not_found_response(str(e))
+    except Exception as e:
+        abort(400, description=str(e))
 
 
 @bp.route("/self", methods=["PATCH"])

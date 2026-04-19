@@ -4,12 +4,14 @@ from urllib.parse import urlparse
 
 import boto3
 from flask import jsonify, send_from_directory
+from neomodel import db
 from werkzeug.utils import secure_filename
 
 from backend.database import (
     EmailContact,
     PhoneContact,
     SocialMediaContact,
+    Source,
     User,
 )
 from backend.dto.user_profile import UpdateCurrentUser
@@ -18,11 +20,72 @@ from backend.dto.user_profile import UpdateCurrentUser
 class UserService:
     allowed_profile_photo_extensions = {".jpg", ".jpeg", ".png", ".gif"}
 
-    def get_user_profile(self, user_uid: str) -> dict:
+    def get_user_profile(
+        self,
+        user_uid: str,
+        includes: list[str] | None = None,
+    ) -> dict:
         user = User.nodes.get_or_none(uid=user_uid)
         if user is None:
             raise LookupError("User not found")
-        return self.serialize_user_profile(user)
+        return self.serialize_user_profile(user, includes=includes or [])
+
+    def get_people_suggestions(self, user_uid: str, limit: int = 4) -> dict:
+        user = User.nodes.get_or_none(uid=user_uid)
+        if user is None:
+            raise LookupError("User not found")
+
+        query = """
+        MATCH (me:User {uid: $user_uid})-[my_membership:IS_MEMBER]->(s:Source)
+            <-[other_membership:IS_MEMBER]-(other:User)
+        WHERE other.uid <> $user_uid
+          AND coalesce(my_membership.is_active, true) = true
+          AND coalesce(other_membership.is_active, true) = true
+        WITH other, s
+        ORDER BY s.name ASC
+        WITH
+            other,
+            collect(DISTINCT s)[0..3] AS shared_sources,
+            count(DISTINCT s) AS shared_source_count
+        ORDER BY shared_source_count DESC, other.last_name ASC, other.first_name ASC
+        LIMIT $limit
+        RETURN
+            other.uid AS uid,
+            other.first_name AS first_name,
+            other.last_name AS last_name,
+            other.title AS title,
+            other.organization AS organization,
+            other.profile_image AS profile_image,
+            shared_source_count,
+            [
+                source IN shared_sources |
+                {
+                    uid: source.uid,
+                    slug: source.slug,
+                    name: source.name
+                }
+            ] AS shared_sources
+        """
+        rows, _ = db.cypher_query(
+            query,
+            {"user_uid": user_uid, "limit": limit},
+        )
+
+        return {
+            "results": [
+                {
+                    "uid": row[0],
+                    "first_name": row[1],
+                    "last_name": row[2],
+                    "title": row[3],
+                    "organization": row[4],
+                    "profile_image": row[5],
+                    "shared_source_count": row[6],
+                    "shared_sources": row[7],
+                }
+                for row in rows
+            ]
+        }
 
     def update_current_user_profile(
         self,
@@ -169,7 +232,42 @@ class UserService:
         return jsonify({"profile_image_url": url}), 200
 
     @staticmethod
-    def serialize_user_profile(user: User) -> dict:
+    def _serialize_memberships(user: User) -> list[dict]:
+        query = """
+        MATCH (u:User {uid: $user_uid})-[membership:IS_MEMBER]->(s:Source)
+        RETURN s, membership
+        ORDER BY membership.date_joined DESC, s.name ASC
+        """
+        rows, _ = db.cypher_query(query, {"user_uid": user.uid})
+
+        memberships = []
+        for source_node, relationship in rows:
+            source = Source.inflate(source_node)
+            memberships.append({
+                "source": {
+                    "uid": source.uid,
+                    "slug": source.slug,
+                    "name": source.name,
+                    "description": source.description,
+                    "website": source.url,
+                },
+                "role": getattr(relationship, "role", None),
+                "date_joined": (
+                    relationship.date_joined.isoformat()
+                    if getattr(relationship, "date_joined", None) is not None
+                    else None
+                ),
+                "is_active": getattr(relationship, "is_active", None),
+            })
+
+        return memberships
+
+    @classmethod
+    def serialize_user_profile(
+        cls,
+        user: User,
+        includes: list[str] | None = None,
+    ) -> dict:
         primary_email = user.email
         additional_emails = [e.email for e in user.secondary_emails.all()]
         phone_numbers = [p.phone_number for p in user.phone_contacts.all()]
@@ -186,7 +284,7 @@ class UserService:
                 "tiktok_url": getattr(sm, "tiktok_url", None),
             }
 
-        return {
+        profile = {
             "uid": user.uid,
             "first_name": user.first_name,
             "last_name": user.last_name,
@@ -208,3 +306,8 @@ class UserService:
             "profile_image": user.profile_image,
             "social_media": social_media,
         }
+
+        if includes and "memberships" in includes:
+            profile["memberships"] = cls._serialize_memberships(user)
+
+        return profile
