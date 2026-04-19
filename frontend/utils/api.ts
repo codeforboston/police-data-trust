@@ -121,6 +121,41 @@ export interface UserProfile {
   website?: string
   role: string
   active: boolean
+  memberships?: UserMembership[]
+}
+
+export type SharedSource = {
+  uid: string
+  slug?: string
+  name: string
+}
+
+export type UserMembership = {
+  source: {
+    uid: string
+    slug?: string
+    name: string
+    description?: string
+    website?: string
+  }
+  role?: string
+  date_joined?: string
+  is_active?: boolean
+}
+
+export type PeopleSuggestion = {
+  uid: string
+  first_name: string
+  last_name: string
+  title?: string
+  organization?: string
+  profile_image?: string
+  shared_source_count: number
+  shared_sources: SharedSource[]
+}
+
+export type PeopleSuggestionsResponse = {
+  results: PeopleSuggestion[]
 }
 
 export type UpdateUserProfilePayload = {

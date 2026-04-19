@@ -15,7 +15,9 @@ const API_ROUTES = {
     complaints: "/complaints"
   },
   users: {
-    self: "/users/self"
+    self: "/users/self",
+    profile: (uid: string) => `/users/${uid}`,
+    peopleSuggestions: "/users/self/suggestions/people"
   },
   sources: {
     all: "/sources",

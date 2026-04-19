@@ -59,7 +59,13 @@ export default function OrganizationMembers({ members }: { members: SourceMember
                 <p className={styles.name}>{`${item.first_name} ${item.last_name}`}</p>
                 {item.title ? <p>{item.title}</p> : null}
                 {item.organization ? <p>{item.organization}</p> : null}
-                <Button color="primary" size="small" variant="outlined" className={styles.viewButton}>
+                <Button
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  className={styles.viewButton}
+                  href={`/profile/${item.uid}`}
+                >
                   View Profile
                 </Button>
               </div>

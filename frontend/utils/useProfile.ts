@@ -8,18 +8,10 @@ import {
   UpdateUserProfilePayload,
   Organization,
   SocialMedia,
-  SourceMembership
+  SourceMembership,
+  PeopleSuggestion,
+  PeopleSuggestionsResponse
 } from "./api"
-
-// Helper function to generate slug from name
-const generateSlug = (firstName: string, lastName?: string): string => {
-  const fullName = lastName ? `${firstName} ${lastName}` : firstName
-  return fullName
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(".", "-")
-    .replace(/[^a-z0-9-]/g, "")
-}
 
 type ProfileType = "user" | "organization"
 
@@ -98,46 +90,43 @@ export const useProfile = <T extends UserProfile | Organization>(
     const fetchProfile = async () => {
       try {
         if (type === "user") {
-          let matchedProfile: UserProfile | null = null
+          const headers = {
+            Authorization: `Bearer ${accessToken}`
+          }
 
-          if (identifier) {
-            // Fetch current user first to check if slug matches them
-            const selfRes = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`
+          const selfRes = await apiFetch(
+            `${apiBaseUrl}${API_ROUTES.users.self}?include=memberships`,
+            {
+              headers
+            }
+          )
+
+          if (!selfRes.ok) {
+            router.push("/login")
+            return
+          }
+
+          const selfData: UserProfile = await selfRes.json()
+          let matchedProfile: UserProfile | null = selfData
+          setIsOwnProfile(!identifier || identifier === selfData.uid)
+
+          if (identifier && identifier !== selfData.uid) {
+            const profileRes = await apiFetch(
+              `${apiBaseUrl}${API_ROUTES.users.profile(identifier)}?include=memberships`,
+              {
+                headers
               }
-            })
+            )
 
-            if (!selfRes.ok) {
-              router.push("/login")
-              return
-            }
-
-            const selfData: UserProfile = await selfRes.json()
-            const selfUsername = generateSlug(selfData.first_name, selfData.last_name)
-
-            if (identifier === selfUsername) {
-              matchedProfile = selfData
-              setIsOwnProfile(true)
-            } else {
-              router.push("/404")
-              return
-            }
-          } else {
-            // Fetch current user profile (no slug provided)
-            const res = await apiFetch(`${apiBaseUrl}${API_ROUTES.users.self}`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`
+            if (!profileRes.ok) {
+              if (profileRes.status === 404) {
+                router.push("/404")
+                return
               }
-            })
-
-            if (!res.ok) {
-              router.push("/login")
-              return
+              throw new Error("Failed to fetch user profile by uid")
             }
 
-            matchedProfile = await res.json()
-            setIsOwnProfile(true)
+            matchedProfile = await profileRes.json()
           }
 
           setProfile(matchedProfile as T)
@@ -268,3 +257,47 @@ export const useProfile = <T extends UserProfile | Organization>(
 export const useUserProfile = (slug?: string) => useProfile<UserProfile>("user", slug)
 export const useOrganization = (identifier?: string) =>
   useProfile<Organization>("organization", identifier)
+
+export const usePeopleSuggestions = (limit = 4) => {
+  const { hasHydrated, accessToken } = useAuth()
+  const router = useRouter()
+  const [suggestions, setSuggestions] = useState<PeopleSuggestion[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!hasHydrated || !accessToken) {
+      if (!hasHydrated) return
+      router.push("/login")
+      return
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        const res = await apiFetch(
+          `${apiBaseUrl}${API_ROUTES.users.peopleSuggestions}?limit=${limit}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch people suggestions")
+        }
+
+        const data: PeopleSuggestionsResponse = await res.json()
+        setSuggestions(data.results || [])
+      } catch (error) {
+        console.error("Error fetching people suggestions:", error)
+        setSuggestions([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSuggestions()
+  }, [hasHydrated, accessToken, limit, router])
+
+  return { suggestions, loading }
+}

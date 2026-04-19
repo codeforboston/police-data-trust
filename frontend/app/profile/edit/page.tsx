@@ -93,7 +93,7 @@ export default function EditProfilePage() {
         }
 
         await updateProfile(payload as Partial<UserProfile>)
-        router.push("/profile")
+        router.push(`/profile/${profile.uid}`)
       }
     } catch (e) {
       console.error("Profile update failed", e)
@@ -109,7 +109,11 @@ export default function EditProfilePage() {
   return (
     <div className={styles.container}>
       <div>
-        <IconButton aria-label="back to profile" href="/profile" sx={{ color: "#000" }}>
+        <IconButton
+          aria-label="back to profile"
+          href={`/profile/${profile.uid}`}
+          sx={{ color: "#000" }}
+        >
           <ArrowBackIcon />
         </IconButton>
       </div>

@@ -9,3 +9,12 @@
   display: flex;
   flex-direction: column;
 }
+
+.sourceLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sourceLink:hover {
+  text-decoration: underline;
+}

@@ -115,7 +115,7 @@ export default function EditProfileContact() {
 
         await updateProfile(payload)
 
-        router.push("/profile")
+        router.push(`/profile/${profile.uid}`)
       }
     } catch (e) {
       console.error("Failed to update profile:", e)
@@ -131,7 +131,11 @@ export default function EditProfileContact() {
   return (
     <div className={styles.container}>
       <div>
-        <IconButton aria-label="back to profile" href="/profile" sx={{ color: "#000" }}>
+        <IconButton
+          aria-label="back to profile"
+          href={`/profile/${profile.uid}`}
+          sx={{ color: "#000" }}
+        >
           <ArrowBackIcon />
         </IconButton>
       </div>
