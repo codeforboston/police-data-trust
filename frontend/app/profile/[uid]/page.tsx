@@ -15,6 +15,7 @@ export default function UserProfilePage() {
   const uid = params.uid
   const { profile, loading, isOwnProfile } = useUserProfile(uid)
   const { suggestions } = usePeopleSuggestions(4)
+  const canEdit = isOwnProfile
 
   if (loading) return <p>Loading profile...</p>
   if (!profile) return <p>Unable to load profile.</p>
@@ -22,7 +23,7 @@ export default function UserProfilePage() {
   const peopleSuggestions = suggestions.map((person) => ({
     name: `${person.first_name} ${person.last_name}`.trim(),
     title: person.title || person.organization || "",
-    avatarUrl: person.profile_image || "/broken-image.jpg",
+    avatarUrl: person.profile_image_url || "/broken-image.jpg",
     href: `/profile/${person.uid}`
   }))
 
@@ -31,22 +32,26 @@ export default function UserProfilePage() {
   return (
     <ProfileLayout
       sidebar={
-        <>
-          <SuggestionsCard title="People you may know" items={peopleSuggestions} />
-        </>
+        !canEdit ? (
+          <>
+            <SuggestionsCard title="People you may know" items={peopleSuggestions} />
+          </>
+        ) : undefined
       }
     >
       <ProfileHeaderCard
         firstName={profile.first_name}
         lastName={profile.last_name}
-        avatarUrl={profile.profile_image}
+        avatarUrl={profile.profile_image_url}
         title={profile.employment?.title || ""}
         organization={profile.employment?.employer || ""}
         city={profile.location?.city || ""}
         state={profile.location?.state || ""}
         biography={profile.bio || ""}
-        isOwnProfile={isOwnProfile}
+        isOwnProfile={false}
+        canEdit={canEdit}
         editHref="/profile/edit"
+        showFollowerStats={!canEdit}
       />
       <OrganizationCard memberships={profile.memberships} />
       <ContactCard
@@ -60,7 +65,8 @@ export default function UserProfilePage() {
           twitter: socialMediaContacts.twitter_url || undefined,
           youtube: socialMediaContacts.youtube_url || undefined
         }}
-        isOwnProfile={isOwnProfile}
+        isOwnProfile={false}
+        canEdit={canEdit}
         editHref="/profile/contact/edit"
       />
       <div style={{ height: "20px" }} />
