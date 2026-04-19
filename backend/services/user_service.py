@@ -235,13 +235,17 @@ class UserService:
     def _serialize_memberships(user: User) -> list[dict]:
         query = """
         MATCH (u:User {uid: $user_uid})-[membership:IS_MEMBER]->(s:Source)
-        RETURN s, membership
+        RETURN
+            s,
+            membership.role AS role,
+            membership.date_joined AS date_joined,
+            membership.is_active AS is_active
         ORDER BY membership.date_joined DESC, s.name ASC
         """
         rows, _ = db.cypher_query(query, {"user_uid": user.uid})
 
         memberships = []
-        for source_node, relationship in rows:
+        for source_node, role, date_joined, is_active in rows:
             source = Source.inflate(source_node)
             memberships.append({
                 "source": {
@@ -251,13 +255,13 @@ class UserService:
                     "description": source.description,
                     "website": source.url,
                 },
-                "role": getattr(relationship, "role", None),
+                "role": role,
                 "date_joined": (
-                    relationship.date_joined.isoformat()
-                    if getattr(relationship, "date_joined", None) is not None
+                    date_joined.isoformat()
+                    if date_joined is not None
                     else None
                 ),
-                "is_active": getattr(relationship, "is_active", None),
+                "is_active": is_active,
             })
 
         return memberships
