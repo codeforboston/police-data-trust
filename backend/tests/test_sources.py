@@ -323,7 +323,12 @@ def test_get_source_activity(client, example_source, example_user, access_token)
     assert res.status_code == 200
     assert res.json["total_changes"] == 4
     assert res.json["last_active_at"].startswith("2026-03-20")
-    assert res.json["contributions_over_time"] == [
+    assert len(res.json["contributions_over_time"]) == 12
+    non_zero_months = [
+        item for item in res.json["contributions_over_time"]
+        if item["count"] > 0
+    ]
+    assert non_zero_months == [
         {"date": "2026-01-01", "count": 1},
         {"date": "2026-02-01", "count": 1},
         {"date": "2026-03-01", "count": 2},
