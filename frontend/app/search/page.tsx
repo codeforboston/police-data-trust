@@ -27,7 +27,7 @@ const PageResults = () => {
       <section className={styles.searchWrapper}>
         <Filter />
         <div className={styles.searchResultsWrapper}>
-          <SearchBar />
+          <SearchBar showLoginRequiredMessage />
           {error && (
             <div style={{ color: "red", padding: "1rem", textAlign: "center" }}>Error: {error}</div>
           )}
