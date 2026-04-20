@@ -16,6 +16,7 @@ export default function NavIcons() {
   const router = useRouter()
 
   const [open, setOpen] = React.useState(false)
+  const [pulseSignin, setPulseSignin] = React.useState(false)
   const anchorRef = React.useRef<HTMLButtonElement>(null)
 
   const handleToggle = () => {
@@ -59,6 +60,39 @@ export default function NavIcons() {
     prevOpen.current = open
   }, [open])
 
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      setPulseSignin(false)
+      return
+    }
+
+    let timeoutId: number | undefined
+
+    const handleLoginRequiredSearch = () => {
+      setPulseSignin(false)
+      window.requestAnimationFrame(() => {
+        setPulseSignin(true)
+      })
+
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+
+      timeoutId = window.setTimeout(() => {
+        setPulseSignin(false)
+      }, 900)
+    }
+
+    window.addEventListener("npdc:login-required-search", handleLoginRequiredSearch)
+
+    return () => {
+      window.removeEventListener("npdc:login-required-search", handleLoginRequiredSearch)
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [isLoggedIn])
+
   return (
     <div className={styles.icons}>
       {!isLoggedIn && (
@@ -76,6 +110,7 @@ export default function NavIcons() {
         <Button
           variant="outlined"
           href="/login"
+          className={pulseSignin ? styles.signInPulse : undefined}
           sx={{
             color: "#303463",
             borderColor: "#303463",

@@ -7,7 +7,7 @@ export default function Home() {
     <div className={styles.page}>
       <section className={styles.hero}>
         <h1 className={styles.heading}>How can we help you?</h1>
-        <SearchBar />
+        <SearchBar showLoginRequiredMessage />
       </section>
     </div>
   )
