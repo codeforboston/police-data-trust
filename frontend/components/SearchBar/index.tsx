@@ -62,9 +62,7 @@ export const SearchBar = ({ showLoginRequiredMessage = false }: SearchBarProps) 
             }
           }}
           error={showAuthError}
-          helperText={
-            showAuthError ? "Please log in before searching." : " "
-          }
+          helperText={showAuthError ? "Please log in before searching." : " "}
           sx={{
             width: "100%",
             "& fieldset": { borderRadius: "20px" },
