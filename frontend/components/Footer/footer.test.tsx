@@ -12,8 +12,9 @@ test("Footer shows the same public contact details without nonprofit verificatio
   const contactSection = screen.getByLabelText("Contact details")
 
   expect(screen.getByText("National Police Data Coalition")).toBeDefined()
-  expect(contactSection.textContent).toContain("4201 Main St")
-  expect(contactSection.textContent).toContain("Houston, TX 77002")
+  expect(contactSection.textContent).toContain("5900 Balcones Drive")
+  expect(contactSection.textContent).toContain("Ste 100")
+  expect(contactSection.textContent).toContain("Austin, TX, 78731")
   expect(screen.getByRole("link", { name: "info@nationalpolicedata.org" })).toBeDefined()
 
   expect(screen.queryByText("87-4427926")).toBeNull()

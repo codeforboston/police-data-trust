@@ -17,6 +17,7 @@ test("about page includes nonprofit verification details", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "National Police Data Coalition" })).toBeVisible()
   await expect(page.getByText("87-4427926").first()).toBeVisible()
-  await expect(page.getByText("4201 Main St").first()).toBeVisible()
+  await expect(page.getByText("5900 Balcones Drive").first()).toBeVisible()
+  await expect(page.getByText("Ste 100").first()).toBeVisible()
   await expect(page.getByRole("link", { name: "info@nationalpolicedata.org" })).toBeVisible()
 })

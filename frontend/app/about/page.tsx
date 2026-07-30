@@ -22,12 +22,16 @@ export default function AboutPage() {
           <p className={styles.value}>{ORGANIZATION_DETAILS.ein}</p>
         </div>
         <div className={styles.detail}>
-          <p className={styles.label}>Office</p>
+          <p className={styles.label}>Mailing Address</p>
           <p className={styles.value}>
-            {address.venue}
-            <br />
             {address.street}
             <br />
+            {address.suite && (
+              <>
+                {address.suite}
+                <br />
+              </>
+            )}
             {address.cityStateZip}
           </p>
         </div>

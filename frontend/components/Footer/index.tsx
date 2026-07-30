@@ -17,6 +17,12 @@ export default function Footer() {
           <p className={styles.text}>
             {address.street}
             <br />
+            {address.suite && (
+              <>
+                {address.suite}
+                <br />
+              </>
+            )}
             {address.cityStateZip}
           </p>
           <a className={styles.link} href={`mailto:${ORGANIZATION_DETAILS.email}`}>
