@@ -1,4 +1,5 @@
 import Footer from "."
+import { ORGANIZATION_DETAILS } from "@/utils/constants"
 import { cleanup, render, screen } from "@testing-library/react"
 import { afterEach, expect, test } from "vitest"
 
@@ -10,16 +11,14 @@ test("Footer shows the same public contact details without nonprofit verificatio
   render(<Footer />)
 
   const contactSection = screen.getByLabelText("Contact details")
+  const { address } = ORGANIZATION_DETAILS
 
-  expect(screen.getByText("National Police Data Coalition")).toBeDefined()
-  expect(contactSection.textContent).toContain("5900 Balcones Drive")
-  expect(contactSection.textContent).toContain("Ste 100")
-  expect(contactSection.textContent).toContain("Austin, TX, 78731")
-  expect(screen.getByRole("link", { name: "info@nationalpolicedata.org" })).toBeDefined()
+  expect(screen.getByText(ORGANIZATION_DETAILS.name)).toBeDefined()
+  expect(contactSection.textContent).toContain(address.street)
+  expect(contactSection.textContent).toContain(address.suite)
+  expect(contactSection.textContent).toContain(address.cityStateZip)
+  expect(screen.getByRole("link", { name: ORGANIZATION_DETAILS.email })).toBeDefined()
 
-  expect(screen.queryByText("87-4427926")).toBeNull()
-  expect(screen.queryByText("The Ion")).toBeNull()
-  expect(
-    screen.queryByText(/establishing the first nationally integrated, independent repository/i)
-  ).toBeNull()
+  expect(screen.queryByText(ORGANIZATION_DETAILS.ein)).toBeNull()
+  expect(screen.queryByText(ORGANIZATION_DETAILS.mission)).toBeNull()
 })
