@@ -11,10 +11,10 @@ import styles from "./nav.module.css"
 export default function Nav() {
   const Links = [
     { text: "Home", href: "/" },
+    { text: "Search", href: "/search" },
     { text: "Overview", href: "/overview" },
-    { text: "Data Explorer", href: "/data-explorer", disabled: true },
-    { text: "Community", href: "/community", disabled: true },
-    { text: "Collection", href: "/collection", disabled: true }
+    { text: "About", href: "/about" },
+    { text: "Contact", href: "/contact" }
   ]
   return (
     <nav className={styles.nav}>
