@@ -50,17 +50,3 @@ export const US_STATES = [
   { name: "Wisconsin", abbreviation: "WI" },
   { name: "Wyoming", abbreviation: "WY" }
 ]
-
-export const ORGANIZATION_DETAILS = {
-  name: "National Police Data Coalition",
-  abbreviation: "NPDC",
-  ein: "87-4427926",
-  email: "info@nationalpolicedata.org",
-  address: {
-    street: "5900 Balcones Drive",
-    suite: "Ste 100",
-    cityStateZip: "Austin, TX, 78731"
-  },
-  mission:
-    "The National Police Data Coalition is establishing the first nationally integrated, independent repository of police data to create transparency, enable accountability, and unite advocates, policy makers, and agencies in making our communities safer."
-}

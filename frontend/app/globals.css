@@ -7,7 +7,7 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@ a {
 main {
   max-width: 100%;
   width: 100vw;
-  flex: 1;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: scroll;
   font-family: var(--font-inter);
 }
