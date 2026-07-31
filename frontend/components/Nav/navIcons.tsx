@@ -2,6 +2,8 @@
 
 import React from "react"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined"
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined"
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -98,6 +100,12 @@ export default function NavIcons() {
           <AddCircleOutlineIcon />
         </Link>
       )}
+      <Link href="/chat" className={styles.iconLink}>
+        <ChatBubbleOutlineOutlinedIcon />
+      </Link>
+      <Link href="/notify" className={styles.iconLink}>
+        <NotificationsOutlinedIcon />
+      </Link>
       {!isLoggedIn ? (
         <Button
           variant="outlined"

@@ -8,7 +8,6 @@ import { SearchProvider } from "@/providers/SearchProvider"
 import { Suspense } from "react"
 import { ThemeProvider } from "@mui/material/styles"
 import theme from "@/utils/theme"
-import Footer from "@/components/Footer"
 
 export const metadata: Metadata = {
   title: "NPDC (National Police Data Coalition)",
@@ -35,7 +34,6 @@ export default function RootLayout({
               <body className={`${inter.variable} ${roboto}`}>
                 <Nav />
                 <main>{children}</main>
-                <Footer />
                 <MobileNav />
               </body>
             </SearchProvider>
