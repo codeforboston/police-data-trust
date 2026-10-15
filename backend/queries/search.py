@@ -1,10 +1,11 @@
-import re
-
 from neomodel import db
 from backend.queries.filter_resolver import FilterResolver
-
-LUCENE_RESERVED_PATTERN = re.compile(r'[+\-!(){}\[\]^"~*?:\\/|&]+')
-LUCENE_BOOLEAN_OPERATORS = {"AND", "OR", "NOT"}
+from backend.queries.text_search import (
+    NAME_RANK_ORDER,
+    build_prefix_query,
+    name_rank_clauses,
+    tokenize,
+)
 
 SEARCH_BASE_QUERY = """
 CALL () {
@@ -69,32 +70,16 @@ RETURN count(node) AS totalMatches
 """
 
 
-SEARCH_RESULTS_QUERY = SEARCH_BASE_QUERY + """
-WITH node, score,
-CASE
-    WHEN 'Officer' IN labels(node) THEN trim(
-        coalesce(node.first_name, '') + ' ' +
-        coalesce(node.middle_name, '') + ' ' +
-        coalesce(node.last_name, '') + ' ' +
-        coalesce(node.suffix, '')
-    )
-    ELSE coalesce(node.name, '')
-END AS display_name
+SEARCH_RESULTS_QUERY = (
+    SEARCH_BASE_QUERY
+    + name_rank_clauses("node", "node, score", words="$query_terms")
+    + f"""
 RETURN node, score
-ORDER BY
-CASE
-    WHEN toLower(display_name) = $raw_query_normalized THEN 0
-    WHEN toLower(display_name) STARTS WITH $raw_query_normalized THEN 1
-    WHEN size($query_terms) > 0
-        AND all(term IN $query_terms WHERE toLower(display_name) CONTAINS term)
-        THEN 2
-    ELSE 3
-END ASC,
-score DESC,
-node.uid ASC
+ORDER BY {NAME_RANK_ORDER}, node.uid ASC
 SKIP $per_page * ($page - 1)
 LIMIT $per_page
 """
+)
 
 SEARCH_DETAILS_QUERY = """
 CALL () {
@@ -182,22 +167,10 @@ class SearchQueries:
         self.filter_resolver = filter_resolver or FilterResolver()
 
     def tokenize_query(self, raw_query: str) -> list[str]:
-        sanitized = LUCENE_RESERVED_PATTERN.sub(" ", raw_query)
-        tokens = []
-        for term in sanitized.split():
-            if term.upper() in LUCENE_BOOLEAN_OPERATORS:
-                continue
-            tokens.append(term.lower())
-
-        return tokens
+        return tokenize(raw_query)
 
     def build_fulltext_query(self, raw_query: str) -> str:
-        terms = [f"{term}*" for term in self.tokenize_query(raw_query)]
-
-        if not terms:
-            raise ValueError("Query parameter is required")
-
-        return " ".join(terms)
+        return build_prefix_query(raw_query)
 
     def build_search_params(
         self,
@@ -208,11 +181,9 @@ class SearchQueries:
         city_uids: list[str] | None = None,
         source_uids: list[str] | None = None,
     ) -> dict:
-        query_terms = self.tokenize_query(query)
         return {
             "query": self.build_fulltext_query(query),
-            "raw_query_normalized": " ".join(query_terms),
-            "query_terms": query_terms,
+            "query_terms": self.tokenize_query(query),
             "city_uids": city_uids or [],
             "source_uids": source_uids or [],
             "page": page,

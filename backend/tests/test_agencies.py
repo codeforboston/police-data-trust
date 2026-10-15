@@ -152,16 +152,14 @@ def test_get_all_agencies(client, access_token, example_agencies):
 
 
 def test_filter_agencies(client, access_token, example_agencies):
-    # Test filtering
-    expect_name_ct = Agency.nodes.filter(
-        name="New York Police Department"
-    ).__len__()
+    # Test filtering. The direct match comes first; partial matches such as
+    # Newton Police Dept. ("new" starts "Newton") follow it.
     res = client.get(
         "/api/v1/agencies?term=New York Police Department",
         headers={"Authorization": "Bearer {0}".format(access_token)}
     )
     assert res.status_code == 200
-    assert res.json['results'].__len__() == expect_name_ct
+    assert res.json['results'][0]['name'] == "New York Police Department"
 
     expect_city_ct = Agency.nodes.filter(hq_city="Chicago").__len__()
     res = client.get(
@@ -368,16 +366,19 @@ def test_agency_pagination(client, example_agencies, access_token):
 
 def test_agency_search_result(client, example_agencies, access_token):
     search_term = "New York"
-    expected_ct = Agency.nodes.filter(
-        name__icontains=search_term
-    ).__len__()
+    direct_matches = {
+        agency.name
+        for agency in Agency.nodes.filter(name__icontains=search_term)
+    }
 
     res = client.get(
         f"/api/v1/agencies?term={search_term}&searchResult=true",
         headers={"Authorization": "Bearer {0}".format(access_token)},
     )
     assert res.status_code == 200
-    assert res.json["results"].__len__() == expected_ct
+    # Agencies matching every word come first; partial matches follow.
+    first = res.json["results"][:len(direct_matches)]
+    assert {result["title"] for result in first} == direct_matches
 
 
 def test_bad_query_param(client, access_token):

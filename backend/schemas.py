@@ -24,6 +24,7 @@ from neomodel.exceptions import DoesNotExist
 from backend.database.models.infra.locations import (
     StateNode, CityNode
 )
+from backend.queries.text_search import NAME_RANK_ORDER, name_rank_clauses
 
 
 spec = SpecTree(
@@ -667,6 +668,7 @@ class SearchableMixin:
         limit: int = 25,
         inflate: bool = False,
         extra_params: dict | None = None,
+        ranked: bool = False,
     ):
         """
         Generic search executor for any node label.
@@ -680,6 +682,8 @@ class SearchableMixin:
             skip: Pagination offset
             limit: Pagination limit
             extra_params: Additional parameters to pass to the Cypher query
+            ranked: Order by how well the name matches $search_words; the
+                index snippet must yield `score`
 
         Returns:
             int if count=True, else list of nodes
@@ -709,6 +713,12 @@ class SearchableMixin:
         # Return count or nodes
         if count:
             cypher_parts.append("RETURN count(n) AS count")
+        elif ranked:
+            cypher_parts.append(name_rank_clauses("n", "n, score"))
+            cypher_parts.append(
+                f"RETURN n ORDER BY {NAME_RANK_ORDER}, n.uid ASC "
+                "SKIP $skip LIMIT $limit")
+            params.update({"skip": skip, "limit": limit})
         else:
             cypher_parts.append("RETURN n SKIP $skip LIMIT $limit")
             params.update({"skip": skip, "limit": limit})

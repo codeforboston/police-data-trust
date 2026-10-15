@@ -14,7 +14,7 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-block-start: 1rem;
   gap: 1rem;
 }
@@ -22,4 +22,22 @@
 .searchResultsWrapper {
   width: 100%;
   height: 100%;
+}
+
+/* globals.css gives <body> and <main> overflow settings, and a sticky element attaches to
+   the nearest such box even though only the page scrolls. Lift them on this page so the
+   filter sidebar sticks instead of scrolling away. */
+:global(body):has(.searchWrapper) {
+  overflow-x: clip;
+}
+
+:global(main):has(.searchWrapper) {
+  overflow: visible;
+}
+
+/* Phones: the filters stack above the results and scroll with the page. */
+@media screen and (max-width: 700px) {
+  .searchWrapper {
+    flex-direction: column;
+  }
 }

@@ -3,6 +3,12 @@ from backend.schemas import (JsonSerializable, PropertyEnum, RelQuery,
 from backend.database.models.types.enums import State
 from backend.database.models.source import HasCitations
 from backend.database.properties.datetime import DateNeo4jFormatProperty
+from backend.queries.text_search import (
+    NAME_RANK_ORDER,
+    build_prefix_query,
+    name_rank_clauses,
+    tokenize,
+)
 
 from neomodel import (
     db,
@@ -130,11 +136,17 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         """
         # --- Fulltext index parameterized safely ---
         if query:
+            search_words = tokenize(query)
+            if not search_words:
+                return 0 if count else []
             fulltext_index_cypher = (
                 """CALL db.index.fulltext.queryNodes('unitNames', $query)
-                YIELD node as n"""
+                YIELD node AS n, score"""
             )
-            params = {"query": query}
+            params = {
+                "query": build_prefix_query(query),
+                "search_words": search_words,
+            }
         else:
             fulltext_index_cypher = None
             params = {}
@@ -148,7 +160,8 @@ class Unit(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
             skip=skip,
             limit=limit,
             extra_params=params,  # pass parameter dict to _search()
-            inflate=inflate
+            inflate=inflate,
+            ranked=bool(query),
         )
 
 
@@ -272,12 +285,16 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
         cypher_parts = []
 
         if query:
+            search_words = tokenize(query)
+            if not search_words:
+                return 0 if count else []
             cypher_parts.append("""
             CALL db.index.fulltext.queryNodes('agencyNames', $query)
             YIELD node, score
             WITH DISTINCT node AS n, score
             """)
-            params["query"] = query
+            params["query"] = build_prefix_query(query)
+            params["search_words"] = search_words
         else:
             cypher_parts.append("""
             MATCH (n:Agency)
@@ -320,9 +337,13 @@ class Agency(StructuredNode, HasCitations, JsonSerializable, SearchableMixin):
             rows, _ = db.cypher_query("\n".join(cypher_parts), params)
             return rows[0][0] if rows else 0
 
-        cypher_parts.append("""
+        order = "score DESC, n.uid ASC"
+        if query:
+            cypher_parts.append(name_rank_clauses("n", "n, score"))
+            order = f"{NAME_RANK_ORDER}, n.uid ASC"
+        cypher_parts.append(f"""
         RETURN n
-        ORDER BY score DESC, n.uid ASC
+        ORDER BY {order}
         SKIP $skip
         LIMIT $limit
         """)
