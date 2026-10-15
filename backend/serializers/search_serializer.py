@@ -209,7 +209,7 @@ def build_officer_result(node, details_row: dict) -> SearchResult:
     officer = node if isinstance(node, Officer) else Officer.inflate(node)
     uid = officer.uid
 
-    subtitle = "{ethnicity} {gender}, {rank} at the {agency}".format(
+    demographics = "{ethnicity} {gender}".format(
         ethnicity=(
             officer.ethnicity_enum.describe()
             if officer.ethnicity_enum else "Unknown Ethnicity"
@@ -218,9 +218,14 @@ def build_officer_result(node, details_row: dict) -> SearchResult:
             officer.gender_enum.describe()
             if officer.gender_enum else "Unknown Gender"
         ),
-        rank=details_row.get("rank", "Officer"),
-        agency=details_row.get("agency_name", "Unknown Agency"),
     )
+    rank = details_row.get("rank", "Officer")
+    agency = details_row.get("agency_name", "Unknown Agency")
+    if not rank and not agency:
+        # No employment record links the officer to an agency.
+        subtitle = f"{demographics}, Employment Record Missing"
+    else:
+        subtitle = f"{demographics}, {rank} at the {agency}"
 
     return SearchResult(
         uid=uid,

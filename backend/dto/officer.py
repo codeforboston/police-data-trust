@@ -98,6 +98,12 @@ class OfficerSearchParams(PaginatedRequest):
             return " AND ".join(self.name_parts) or None
 
     @property
+    def officer_name_is_exact(self) -> bool:
+        """The name came from the separate name fields, which must all match
+        as written; a free-text term also returns partial matches."""
+        return not (self.term and self.term.strip()) and bool(self.name_parts)
+
+    @property
     def officer_rank(self):
         return " ".join(self.rank) if self.rank else None
 

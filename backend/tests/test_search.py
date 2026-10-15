@@ -1,8 +1,10 @@
 import urllib.parse
 from datetime import datetime, timedelta
 import pytest
+from neomodel import db
 
 from backend.database.models.agency import Agency, Unit
+from backend.database.models.employment import Employment
 from backend.database.models.infra.locations import (
     CityNode,
     CountyNode,
@@ -515,3 +517,33 @@ def test_tokenize_query_strips_reserved_characters_and_operators():
         "unit",
         "test",
     ]
+
+
+def test_officer_card_without_employment_record(
+        client, access_token, example_source, example_unit, add_test_change):
+    sears = Officer(first_name="Robert", last_name="Sears").save()
+    employed = Officer(first_name="Robert", last_name="Smith").save()
+    employment = Employment(highest_rank="Detective").save()
+    employment.unit.connect(example_unit)
+    employment.officer.connect(employed)
+    for officer in (sears, employed):
+        add_test_change(officer, example_source, timestamp=datetime.now())
+    db.cypher_query(
+        "CALL db.index.fulltext.awaitEventuallyConsistentIndexRefresh()")
+
+    # The All tab and the Officer tab build the same officer card.
+    for path, params in (
+            ("/api/v1/search", {"term": "Robert"}),
+            ("/api/v1/officers", {"term": "Robert", "searchResult": "true"})):
+        res = client.get(
+            path,
+            query_string=params,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        assert res.status_code == 200
+        subtitles = {r["title"]: r["subtitle"] for r in res.json["results"]}
+
+        assert subtitles["Robert Sears"] == (
+            "Unknown Ethnicity Unknown Gender, Employment Record Missing")
+        assert subtitles["Robert Smith"] == (
+            "Unknown Ethnicity Unknown Gender, Detective at the Example Agency")

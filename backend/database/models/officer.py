@@ -4,6 +4,14 @@ from backend.database.models.types.enums import State, Ethnicity, Gender
 from backend.database.models.source import HasCitations
 from backend.database.models.agency import Unit
 from backend.database.models.employment import Employment
+from backend.queries.text_search import (
+    NAME_RANK_ORDER,
+    build_all_words_query,
+    build_exact_query,
+    build_prefix_query,
+    name_rank_clauses,
+    tokenize,
+)
 import logging
 
 from neomodel import (
@@ -185,6 +193,7 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         cls,
         *,
         name: str | None = None,
+        exact_name: bool = False,
         rank: str | None = None,
         unit: list[str] | None = None,
         agency: list[str] | None = None,
@@ -203,6 +212,10 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         """
         Search for officers based on filters.
         Args:
+            name (str): A free-text name. Officers matching any of its words
+                are found; those matching all of them are ranked first.
+            exact_name (bool): `name` comes from the separate name fields,
+                so every one of its words must match.
             filters (dict): A dictionary of filters to apply.
             skip (int): Number of records to skip for pagination.
             limit (int): Number of records to return.
@@ -214,10 +227,18 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         if isinstance(active_before, str):
             active_before = date.fromisoformat(active_before)  # YYYY-MM-DD
 
+        # Search text goes in as parameters, never into the query itself.
+        params = {}
+        search_words = tokenize(name)
+        rank_only = bool(rank) and not name
+        if (name and not search_words) or (rank_only and not tokenize(rank)):
+            return 0 if count else []
+
         # Build MATCH clauses
         match_clauses = []
         requires_employment_path = bool(
-            unit
+            rank_only
+            or unit
             or active_after
             or active_before
             or badge_number
@@ -228,14 +249,20 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
         requires_agency_path = bool(agency or agency_uid or city_uids)
 
         if name:
-            match_clauses.append(f"""
+            params["name_query"] = (
+                build_all_words_query(name) if exact_name
+                else build_prefix_query(name))
+            params["search_words"] = search_words
+            match_clauses.append("""
                 CALL db.index.fulltext.queryNodes('officerNames',
-                                '{name}') YIELD node AS o
+                                $name_query) YIELD node AS o, score
             """)
         elif rank:
-            match_clauses.append(f"""
+            # The employment path below ties these employments to officers.
+            params["rank_query"] = build_exact_query(rank)
+            match_clauses.append("""
                 CALL db.index.fulltext.queryNodes('officerRanks',
-                                '{rank}') YIELD node AS e
+                                $rank_query) YIELD node AS e
             """)
 
         match_clauses.append("MATCH (o:Officer)")
@@ -251,7 +278,6 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
 
         # Build WHERE clauses and params
         where_clauses = ["TRUE"]
-        params = {}
 
         if active_after:
             where_clauses.append("e.latest_date > $active_after")
@@ -317,9 +343,21 @@ class Officer(StructuredNode, HasCitations, JsonSerializable):
             count_results, _ = db.cypher_query(cypher_query, params)
             return count_results[0][0] if count_results else 0
         else:
-            cypher_query += f"""
-                RETURN DISTINCT o SKIP {skip} LIMIT {limit}
-            """
+            params.update({"skip": skip, "limit": limit})
+            if name:
+                cypher_query += (
+                    "\nWITH DISTINCT o, score"
+                    + name_rank_clauses("o", "o, score")
+                    + f"""
+                RETURN o
+                ORDER BY {NAME_RANK_ORDER}, toLower(o.last_name),
+                    toLower(o.first_name), o.uid
+                SKIP $skip LIMIT $limit
+                """)
+            else:
+                cypher_query += """
+                RETURN DISTINCT o SKIP $skip LIMIT $limit
+                """
 
             logging.debug("Cypher query:\n%s", cypher_query)
             logging.debug("Params: %s", params)

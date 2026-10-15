@@ -2,6 +2,7 @@ from pydantic import Field, field_validator
 
 from backend.database.models.agency import State
 from backend.dto.common import PaginatedRequest
+from backend.queries.text_search import tokenize
 
 
 class CityLookupParams(PaginatedRequest):
@@ -15,7 +16,8 @@ class CityLookupParams(PaginatedRequest):
             raise ValueError("term is required")
 
         normalized = " ".join(str(value).split())
-        if not normalized:
+        # Text that is only punctuation or operators has nothing to search.
+        if not tokenize(normalized):
             raise ValueError("term is required")
 
         return normalized

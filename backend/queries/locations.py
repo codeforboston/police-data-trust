@@ -1,4 +1,8 @@
 from neomodel import db
+from backend.queries.text_search import (
+    LUCENE_BOOLEAN_OPERATORS,
+    LUCENE_RESERVED_PATTERN,
+)
 
 CITY_LOOKUP_QUERY = """
 CALL db.index.fulltext.queryNodes("cityNames", $term) YIELD node, score
@@ -217,7 +221,10 @@ LIMIT $limit
 
 class LocationQueries:
     def build_city_lookup_term(self, term: str) -> str:
-        normalized = " ".join(term.split())
+        # Lucene syntax in the term would make the full-text query fail.
+        normalized = " ".join(
+            word for word in LUCENE_RESERVED_PATTERN.sub(" ", term).split()
+            if word.upper() not in LUCENE_BOOLEAN_OPERATORS)
         if not normalized:
             raise ValueError("term is required")
         return f"{normalized}*"
