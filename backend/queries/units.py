@@ -1,6 +1,11 @@
 import logging
 
 from backend.database import db
+from backend.queries.text_search import (
+    officer_list_exact_match,
+    officer_list_ranking,
+    officer_lookup_params,
+)
 
 UNIT_BASE_MATCH = """
 MATCH (u:Unit {uid: $uid})-[]-(a:Agency)
@@ -132,15 +137,20 @@ class UnitQueries:
         unit_uid: str,
         term: str | None = None,
         filters: dict | None = None,
-    ) -> tuple[str, dict]:
+    ) -> tuple[str | None, dict]:
+        """The officer search, or None when the term has nothing to search
+        for. The term only reaches the database as cleaned parameters."""
         normalized = self._normalize_officer_filters(filters)
         strategy = self._classify_officer_term(term)
 
         params = {
             "unit_uid": unit_uid,
-            "term": term.strip() if term else None,
             **normalized,
+            **officer_lookup_params(term, strategy),
         }
+        if strategy != "none" and not (
+                "name_query" in params or "badge_query" in params):
+            return None, params
 
         if strategy == "none":
             cypher = """
@@ -156,7 +166,7 @@ class UnitQueries:
         if strategy == "name":
             cypher = """
             CALL () {
-                CALL db.index.fulltext.queryNodes("officerNames", $term)
+                CALL db.index.fulltext.queryNodes("officerNames", $name_query)
                 YIELD node, score
                 RETURN node AS o, score
             }
@@ -172,7 +182,8 @@ class UnitQueries:
         if strategy == "badge":
             cypher = """
             CALL () {
-                CALL db.index.fulltext.queryNodes("officerBadgeNumbers", $term)
+                CALL db.index.fulltext.queryNodes("officerBadgeNumbers",
+                $badge_query)
                 YIELD node, score
                 RETURN node AS e, score
             }
@@ -188,13 +199,14 @@ class UnitQueries:
 
         cypher = """
         CALL () {
-            CALL db.index.fulltext.queryNodes("officerNames", $term)
+            CALL db.index.fulltext.queryNodes("officerNames", $name_query)
             YIELD node, score
             RETURN node AS o, null AS e, score
 
             UNION
 
-            CALL db.index.fulltext.queryNodes("officerBadgeNumbers", $term)
+            CALL db.index.fulltext.queryNodes("officerBadgeNumbers",
+                $badge_query)
             YIELD node, score
             MATCH (node)-[:HELD_BY]->(o:Officer)
             RETURN o, node AS e, score
@@ -248,6 +260,8 @@ class UnitQueries:
             term=term,
             filters=filters,
         )
+        if base_query is None:
+            return 0
 
         query = (
             base_query
@@ -274,12 +288,18 @@ class UnitQueries:
             term=term,
             filters=filters,
         )
+        if base_query is None:
+            return []
         params.update({
             "skip": skip,
             "limit": limit,
         })
 
+        exact_match = officer_list_exact_match(params, "badges")
         if include_employment:
+            ranking, order = officer_list_ranking(
+                params,
+                "o, score, most_recent, earliest_date, latest_date, badges")
             query = (
                 base_query
                 + """
@@ -294,6 +314,7 @@ class UnitQueries:
                     score,
                     employment,
                     head(employment) AS most_recent,
+                    [stint IN employment | stint.badge_number] AS badges,
                     reduce(min_date = null, stint IN employment |
                         CASE
                             WHEN min_date IS NULL THEN stint.earliest_date
@@ -312,6 +333,9 @@ class UnitQueries:
                             ELSE max_date
                         END
                     ) AS latest_date
+                """
+                + ranking
+                + """
                 RETURN
                     o,
                     {
@@ -322,19 +346,32 @@ class UnitQueries:
                         rank: most_recent.highest_rank,
                         status: most_recent.status,
                         type: most_recent.type
-                    } AS employment
-                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
+                    } AS employment,
+                    """
+                + exact_match
+                + """ AS exact_match
+                ORDER BY """
+                + order
+                + """, o.last_name ASC, o.first_name ASC
                 SKIP $skip
                 LIMIT $limit
                 """
             )
         else:
+            ranking, order = officer_list_ranking(params, "o, score, badges")
             query = (
                 base_query
                 + """
-                WITH o, max(score) AS score
-                RETURN o
-                ORDER BY score DESC, o.last_name ASC, o.first_name ASC
+                WITH o, max(score) AS score, collect(e.badge_number) AS badges
+                """
+                + ranking
+                + """
+                RETURN o, """
+                + exact_match
+                + """ AS exact_match
+                ORDER BY """
+                + order
+                + """, o.last_name ASC, o.first_name ASC
                 SKIP $skip
                 LIMIT $limit
                 """

@@ -32,6 +32,8 @@ def serialize_officer_list(rows):
 
 
 def serialize_officer_rows(rows, include_employment: bool) -> list[dict]:
+    """Officer-list rows: (officer, employment, exact_match), or
+    (officer, exact_match) without employment."""
     officers = []
     for row in rows:
         officer = row[0]
@@ -40,16 +42,21 @@ def serialize_officer_rows(rows, include_employment: bool) -> list[dict]:
         if include_employment:
             officer_dict["employment"] = transform_dates_in_dict(row[1])
 
+        # Whether the officer exactly matches the search box; None when
+        # nothing was searched.
+        officer_dict["exact_match"] = row[-1]
         officers.append(officer_dict)
     return officers
 
 
 def serialize_officer_search_results(rows):
-    details = fetch_details([row.get("uid") for row in rows], "Officer")
+    """Search-result cards for (officer node, exact_match) pairs."""
+    details = fetch_details([node.get("uid") for node, _ in rows], "Officer")
     officers = [
         build_officer_result(
-            row,
-            details.get(row.get("uid"), {})) for row in rows]
+            node,
+            details.get(node.get("uid"), {}),
+            exact_match) for node, exact_match in rows]
     return [item.model_dump() for item in officers if item]
 
 

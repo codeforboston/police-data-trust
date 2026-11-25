@@ -76,6 +76,8 @@ export type SearchResponse = {
   gender?: string
   state_ids?: any[] // TODO: replace with subtype
   details?: string[]
+  // Whether every searched word is a whole word of the name; null when no text was searched.
+  exact_match?: boolean | null
 }
 
 export type PaginatedSearchResponses = {
@@ -314,6 +316,8 @@ export type Officer = {
   employment_history?: EmploymentHistory[]
   allegation_summary?: AllegationSummary[]
   sources?: Source[]
+  // In a searched officer list: whether the officer exactly matches the search.
+  exact_match?: boolean | null
 }
 
 export type HasOfficers = {

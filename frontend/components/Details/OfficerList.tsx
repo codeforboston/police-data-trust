@@ -28,6 +28,8 @@ import ListItemText from "@mui/material/ListItemText"
 import { Search, TableRows, Apps } from "@mui/icons-material"
 import { Officer, HasOfficers } from "@/utils/api"
 import DetailCard from "@/components/Details/DetailCard"
+import NoExactMatchNotice from "@/components/search/NoExactMatchNotice"
+import { hasNoExactMatch, noResultsMessage } from "@/utils/noResults"
 import {
   DEFAULT_OFFICER_LIST_FILTERS,
   mergeOfficerListFilters,
@@ -174,6 +176,18 @@ export default function OfficerList({
     return matchesSearch && matchesStatus && matchesRank && matchesType && matchesUnit
   })
 
+  const searchTerm = currentFilters.searchTerm.trim()
+  const hasFilters =
+    currentFilters.status.length > 0 ||
+    currentFilters.rank.length > 0 ||
+    currentFilters.type.length > 0 ||
+    currentFilters.unit.length > 0
+  const message = noResultsMessage(searchTerm, hasFilters)
+  // Partial matches only: say so above them.
+  const noExactMatch = hasNoExactMatch(filtered)
+  // An empty list that nobody searched or filtered keeps its plain wording.
+  const emptyMessage = searchTerm || hasFilters ? message : "No officers found."
+
   return (
     <Box>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}>
@@ -314,63 +328,70 @@ export default function OfficerList({
           Could not load officers.
         </Typography>
       ) : viewMode === "table" ? (
-        <Paper sx={{ width: "100%", mt: 3, overflowX: "auto" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Officer name</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Badge ID</TableCell>
-                <TableCell>Rank</TableCell>
-                <TableCell>Type</TableCell>
-                {showUnitColumn && <TableCell>Unit</TableCell>}
-                <TableCell>Years of service</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filtered.length > 0 ? (
-                filtered.map((officer) => (
-                  <TableRow
-                    key={officer.uid}
-                    hover
-                    onClick={() => router.push(`/officer/${officer.uid}`)}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { backgroundColor: "action.hover" }
-                    }}
-                  >
-                    <TableCell>
-                      {officer.first_name} {officer.middle_name} {officer.last_name}
-                    </TableCell>
-                    <TableCell>
-                      {officer.employment?.status
-                        ? formatEmploymentOptionLabel(officer.employment.status)
-                        : "Unknown"}
-                    </TableCell>
-                    <TableCell>{officer.employment?.badge_number}</TableCell>
-                    <TableCell>{officer.employment?.rank}</TableCell>
-                    <TableCell>
-                      {officer.employment?.type
-                        ? formatEmploymentOptionLabel(officer.employment.type)
-                        : "Unknown"}
-                    </TableCell>
-                    {showUnitColumn && <TableCell>{officer.employment?.unit?.name}</TableCell>}
-                    <TableCell>
-                      {officer.employment?.earliest_date} –{" "}
-                      {officer.employment?.latest_date ?? "Current"}
+        <>
+          {noExactMatch && (
+            <Box sx={{ mt: 3 }}>
+              <NoExactMatchNotice message={message} />
+            </Box>
+          )}
+          <Paper sx={{ width: "100%", mt: noExactMatch ? 0 : 3, overflowX: "auto" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Officer name</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Badge ID</TableCell>
+                  <TableCell>Rank</TableCell>
+                  <TableCell>Type</TableCell>
+                  {showUnitColumn && <TableCell>Unit</TableCell>}
+                  <TableCell>Years of service</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filtered.length > 0 ? (
+                  filtered.map((officer) => (
+                    <TableRow
+                      key={officer.uid}
+                      hover
+                      onClick={() => router.push(`/officer/${officer.uid}`)}
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { backgroundColor: "action.hover" }
+                      }}
+                    >
+                      <TableCell>
+                        {officer.first_name} {officer.middle_name} {officer.last_name}
+                      </TableCell>
+                      <TableCell>
+                        {officer.employment?.status
+                          ? formatEmploymentOptionLabel(officer.employment.status)
+                          : "Unknown"}
+                      </TableCell>
+                      <TableCell>{officer.employment?.badge_number}</TableCell>
+                      <TableCell>{officer.employment?.rank}</TableCell>
+                      <TableCell>
+                        {officer.employment?.type
+                          ? formatEmploymentOptionLabel(officer.employment.type)
+                          : "Unknown"}
+                      </TableCell>
+                      {showUnitColumn && <TableCell>{officer.employment?.unit?.name}</TableCell>}
+                      <TableCell>
+                        {officer.employment?.earliest_date} –{" "}
+                        {officer.employment?.latest_date ?? "Current"}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={showUnitColumn ? 7 : 6} sx={{ textAlign: "center", py: 4 }}>
+                      {emptyMessage}
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={showUnitColumn ? 7 : 6} sx={{ textAlign: "center", py: 4 }}>
-                    No officers found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Paper>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </>
       ) : (
         <DetailCard sx={{ mt: 3 }}>
           <Typography sx={{ py: 4, textAlign: "center", color: "text.disabled" }}>

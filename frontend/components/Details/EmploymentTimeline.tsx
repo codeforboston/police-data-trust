@@ -35,7 +35,7 @@ const getStateName = (abbreviation: string | undefined): string => {
 
 export default function EmploymentTimeline({ employment_history }: EmploymentTimelineProps) {
   if (!employment_history || employment_history.length === 0) {
-    return <div>No employment history available.</div>
+    return <div>Employment Record Missing</div>
   }
 
   const sortedEmployment = [...employment_history].sort((a, b) => {

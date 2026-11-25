@@ -24,6 +24,9 @@ import {
 import { Search, TableRows, Apps } from "@mui/icons-material"
 import { Unit, Agency } from "@/utils/api"
 import DetailCard from "@/components/Details/DetailCard"
+import NoExactMatchNotice from "@/components/search/NoExactMatchNotice"
+import { rankByName, tokenizeSearch } from "@/utils/nameMatch"
+import { hasNoExactMatch, noResultsMessage } from "@/utils/noResults"
 
 type UnitListProps = {
   agency: Agency
@@ -66,15 +69,26 @@ export default function UnitList({
     return Array.from(statuses).sort()
   }, [units])
 
-  const filtered = units.filter((unit) => {
-    const name = `${unit.name}`.toLowerCase() || ""
-    const matchesSearch = searchValue.trim() === "" || name.includes(searchValue.toLowerCase())
+  const searchTerm = searchValue.trim()
+  const hasFilters = statusFilter !== "all"
 
+  const matchingStatus = units.filter(() => {
     const status = "Active"
-    const matchesStatus = statusFilter === "all" || statusFilter === status
-
-    return matchesSearch && matchesStatus
+    return statusFilter === "all" || statusFilter === status
   })
+  // Searched units are ranked like the site's other name searches: exact matches first,
+  // then partial ones.
+  const matches =
+    tokenizeSearch(searchTerm).length > 0
+      ? rankByName(matchingStatus, searchTerm, (unit) => unit.name)
+      : matchingStatus.map((unit) => ({ item: unit, exact_match: null }))
+  const filtered = matches.map((match) => match.item)
+
+  const message = noResultsMessage(searchTerm, hasFilters)
+  // Partial matches only: say so above them.
+  const noExactMatch = hasNoExactMatch(matches)
+  // An empty list that nobody searched or filtered keeps its plain wording.
+  const emptyMessage = searchTerm || hasFilters ? message : "No units found."
 
   return (
     <Box>
@@ -158,38 +172,45 @@ export default function UnitList({
           Could not load units.
         </Typography>
       ) : viewMode === "table" ? (
-        <Paper sx={{ width: "100%", mt: 3, overflowX: "auto" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Unit name</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filtered.length > 0 ? (
-                filtered.map((unit) => (
-                  <TableRow
-                    key={unit.uid}
-                    hover
-                    onClick={() => router.push(`/unit/${unit.uid}`)}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { backgroundColor: "action.hover" }
-                    }}
-                  >
-                    <TableCell>{unit.name}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
+        <>
+          {noExactMatch && (
+            <Box sx={{ mt: 3 }}>
+              <NoExactMatchNotice message={message} />
+            </Box>
+          )}
+          <Paper sx={{ width: "100%", mt: noExactMatch ? 0 : 3, overflowX: "auto" }}>
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={1} sx={{ textAlign: "center", py: 4 }}>
-                    No units found.
-                  </TableCell>
+                  <TableCell>Unit name</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Paper>
+              </TableHead>
+              <TableBody>
+                {filtered.length > 0 ? (
+                  filtered.map((unit) => (
+                    <TableRow
+                      key={unit.uid}
+                      hover
+                      onClick={() => router.push(`/unit/${unit.uid}`)}
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { backgroundColor: "action.hover" }
+                      }}
+                    >
+                      <TableCell>{unit.name}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={1} sx={{ textAlign: "center", py: 4 }}>
+                      {emptyMessage}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </>
       ) : (
         <DetailCard sx={{ mt: 3 }}>
           <Typography sx={{ py: 4, textAlign: "center", color: "text.disabled" }}>

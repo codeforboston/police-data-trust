@@ -177,6 +177,7 @@ class OfficerService:
 
         row_count = Officer.search(
             name=params.officer_name,
+            exact_name=params.officer_name_is_exact,
             rank=params.officer_rank,
             unit=params.unit,
             agency=params.agency,
@@ -200,6 +201,7 @@ class OfficerService:
 
         results = Officer.search(
             name=params.officer_name,
+            exact_name=params.officer_name_is_exact,
             rank=params.officer_rank,
             unit=params.unit,
             agency=params.agency,
@@ -213,6 +215,7 @@ class OfficerService:
             skip=params.skip,
             limit=params.limit,
             inflate=not params.searchResult,
+            with_exact_match=bool(params.searchResult),
         )
 
         if params.searchResult:

@@ -39,7 +39,9 @@ export default function OfficerIdentityCard({ officer }: OfficerIdentityCardProp
     ? `${currentEmployment.highest_rank || "Officer"} at ${currentEmployment.agency_name}${
         currentEmployment.state ? `, ${getStateName(currentEmployment.state)}` : ""
       }`
-    : undefined
+    : officer.employment_history?.length === 0
+      ? "Employment Record Missing"
+      : undefined
 
   return (
     <IdentityCard

@@ -210,6 +210,31 @@ export const buildApiParams = (state: SearchState) => {
   return params
 }
 
+/** Whether any filter that buildApiParams sends for the current tab is set. */
+export const hasActiveFilters = (state: SearchState) => {
+  const locationOrSource =
+    state.state.length > 0 ||
+    state.city.length > 0 ||
+    state.cityUid.length > 0 ||
+    state.source.length > 0 ||
+    state.sourceUid.length > 0
+
+  if (state.tab === "agencies") {
+    return locationOrSource || state.jurisdiction.length > 0
+  }
+
+  if (state.tab === "officers") {
+    return (
+      locationOrSource ||
+      state.agency.length > 0 ||
+      state.agencyUid.length > 0 ||
+      state.ethnicity.length > 0
+    )
+  }
+
+  return locationOrSource
+}
+
 const hasSearchCriteria = (state: SearchState) => {
   if (state.tab === "all") {
     return Boolean(

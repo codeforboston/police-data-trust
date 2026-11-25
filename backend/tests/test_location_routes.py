@@ -187,3 +187,24 @@ def test_state_lookup_returns_empty_results_when_no_match(
         "total": 0,
         "pages": 0,
     }
+
+
+def test_city_lookup_ignores_query_syntax(
+    client, access_token, example_city_nodes
+):
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    res = client.get(
+        "/api/v1/locations/cities",
+        query_string={"term": 'Springfield ("'},
+        headers=headers,
+    )
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 2
+
+    res = client.get(
+        "/api/v1/locations/cities",
+        query_string={"term": "( AND )"},
+        headers=headers,
+    )
+    assert res.status_code == 400

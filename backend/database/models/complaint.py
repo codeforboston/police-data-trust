@@ -128,8 +128,8 @@ class Complaint(StructuredNode, HasCitations, JsonSerializable):
     def complainants(self) -> RelQuery:
         """Get the complainants related to this complaint."""
         from backend.database.models.civilian import Civilian
-        base = f"""
-        MATCH (c:Complaint {{uid: '{self.uid}'}})-[:ALLEGED]-(:Allegation)-[
+        base = """
+        MATCH (c:Complaint {uid: $uid})-[:ALLEGED]-(:Allegation)-[
         REPORTED_BY]-(civilian:Civilian)
     """
         return RelQuery(self, base, return_alias="civilian",

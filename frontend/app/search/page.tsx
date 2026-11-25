@@ -5,15 +5,11 @@ import styles from "./page.module.css"
 import SearchResults from "@/components/search/SearchResults"
 import Pagination from "./Pagination"
 import Filter from "./Filter"
-import { useSearch } from "@/providers/SearchProvider"
+import { hasActiveFilters, useSearch } from "@/providers/SearchProvider"
 
 const PageResults = () => {
-  const {
-    searchResults,
-    setPage,
-    error,
-    state: { tab }
-  } = useSearch()
+  const { searchResults, setPage, error, state } = useSearch()
+  const results = Array.isArray(searchResults?.results) ? searchResults.results : []
 
   const handlePageChange = useCallback(
     (_event: unknown, value: number) => {
@@ -32,15 +28,21 @@ const PageResults = () => {
             <div style={{ color: "red", padding: "1rem", textAlign: "center" }}>Error: {error}</div>
           )}
           <SearchResults
-            tab={tab}
+            tab={state.tab}
             total={searchResults?.total ?? 0}
-            results={Array.isArray(searchResults?.results) ? searchResults.results : []}
+            results={results}
+            term={state.term}
+            hasFilters={hasActiveFilters(state)}
+            page={searchResults?.page ?? state.page}
+            searched={searchResults !== undefined && !error}
           />
-          <Pagination
-            page={searchResults?.page}
-            count={searchResults?.pages}
-            onChangeHandler={handlePageChange}
-          />
+          {results.length > 0 && (
+            <Pagination
+              page={searchResults?.page}
+              count={searchResults?.pages}
+              onChangeHandler={handlePageChange}
+            />
+          )}
         </div>
       </section>
     </div>

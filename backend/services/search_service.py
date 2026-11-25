@@ -85,16 +85,19 @@ class SearchService:
         unit_details = details.get("Unit", {})
 
         page_data = []
-        for node, _score in results:
+        for node, _score, exact_match in results:
             content_type = get_node_type(node)
             uid = node.get("uid") if hasattr(node, "get") else None
 
             if content_type == "Officer":
-                item = build_officer_result(node, officer_details.get(uid, {}))
+                item = build_officer_result(
+                    node, officer_details.get(uid, {}), exact_match)
             elif content_type == "Agency":
-                item = build_agency_result(node, agency_details.get(uid, {}))
+                item = build_agency_result(
+                    node, agency_details.get(uid, {}), exact_match)
             elif content_type == "Unit":
-                item = build_unit_result(node, unit_details.get(uid, {}))
+                item = build_unit_result(
+                    node, unit_details.get(uid, {}), exact_match)
             else:
                 continue
 

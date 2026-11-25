@@ -6,6 +6,7 @@ from backend.dto.common_filters import (
     validate_state_code,
 )
 from backend.dto.common import PaginatedRequest
+from backend.queries.text_search import tokenize
 
 
 class SearchQueryParams(PaginatedRequest):
@@ -26,7 +27,8 @@ class SearchQueryParams(PaginatedRequest):
             raise ValueError("Query parameter is required")
 
         normalized = " ".join(str(value).split())
-        if not normalized:
+        # Text that is only punctuation or operators has nothing to search.
+        if not tokenize(normalized):
             raise ValueError("Query parameter is required")
 
         return normalized

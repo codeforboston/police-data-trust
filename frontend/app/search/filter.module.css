@@ -1,11 +1,20 @@
 .filterWrapper {
   min-height: 100%;
   margin-block-start: 9.5rem;
+
+  /* Stay in view while the results scroll. When the filters are taller than the screen,
+     the box below scrolls on its own. */
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
 }
 
 .filterContentsWrapper {
   width: 300px;
   min-height: 420px;
+  overflow-y: auto;
   outline: 1px solid #bed0dd;
   border-radius: 3px;
 
@@ -23,4 +32,18 @@
   font-size: 1rem;
   margin-bottom: 0.5rem;
   display: block;
+}
+
+/* Phones: above the results, full width, scrolling with the page. */
+@media screen and (max-width: 700px) {
+  .filterWrapper {
+    position: static;
+    max-height: none;
+    margin-block-start: 0;
+    width: 100%;
+  }
+
+  .filterContentsWrapper {
+    width: 100%;
+  }
 }

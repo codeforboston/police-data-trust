@@ -254,14 +254,16 @@ def get_all_agencies():
         source_uids=source_uids,
         skip=params.skip,
         limit=params.limit,
+        with_exact_match=bool(params.searchResult),
     )
 
     # --- Optional searchResult output ---
     if params.searchResult:
         details = fetch_details(
-            [row.get("uid") for row in results], "Agency")
+            [node.get("uid") for node, _ in results], "Agency")
         agencies = [build_agency_result(
-            row, details.get(row.get("uid"), {})) for row in results]
+            node, details.get(node.get("uid"), {}), exact_match)
+            for node, exact_match in results]
         page = [item.model_dump() for item in agencies if item]
         return_func = jsonify
     else:
