@@ -39,6 +39,9 @@ export default function Footer() {
             <Link className={styles.link} href="/contact">
               Contact
             </Link>
+            <Link className={styles.link} href="/support">
+              Support
+            </Link>
             <Link className={styles.link} href="/search">
               Search
             </Link>
