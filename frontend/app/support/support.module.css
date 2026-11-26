@@ -1,0 +1,167 @@
+.page {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  color: #303463;
+  font-family: var(--font-inter);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.intro {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.intro .eyebrow {
+  color: #5c6387;
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.intro h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.page p {
+  color: #3f456f;
+  line-height: 1.65;
+}
+
+.intro p {
+  font-size: 1.1rem;
+}
+
+.page h2 {
+  font-size: 1.4rem;
+  line-height: 1.3;
+}
+
+.donationCard {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+  border: 1px solid #dfe4ef;
+  border-top: 4px solid #303463;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.buttonContainer {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.buttonContainer input,
+.buttonContainer img {
+  max-width: 100%;
+}
+
+.paymentNote {
+  font-size: 0.875rem;
+}
+
+.impact {
+  margin-top: 4rem;
+}
+
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.impactCard {
+  padding: 1.5rem;
+  border: 1px solid #dfe4ef;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.impactCard h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.organization {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #dfe4ef;
+}
+
+.organizationDetails {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.candidSeal {
+  display: inline-flex;
+  justify-self: start;
+}
+
+.candidSeal img {
+  display: block;
+  object-fit: contain;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.link {
+  color: #0645ad;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link:focus-visible,
+.candidSeal:focus-visible,
+.buttonContainer :global(img):focus-visible,
+.buttonContainer :global(input):focus-visible,
+.buttonContainer :global(a):focus-visible {
+  outline: 3px solid #303463;
+  outline-offset: 4px;
+}
+
+@media screen and (max-width: 760px) {
+  .page {
+    padding: 2.5rem 1rem;
+  }
+
+  .hero,
+  .impactGrid,
+  .organization {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    gap: 2rem;
+  }
+
+  .donationCard {
+    padding: 1.5rem;
+  }
+
+  .impact {
+    margin-top: 3rem;
+  }
+}
